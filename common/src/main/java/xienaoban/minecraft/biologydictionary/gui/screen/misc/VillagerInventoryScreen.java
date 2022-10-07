@@ -28,7 +28,7 @@ public class VillagerInventoryScreen extends AbstractContainerScreen<VillagerInv
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack poseStack, float mouseX, int mouseY, int delta) {
+    protected void renderBg(@NotNull PoseStack poseStack, float delta, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, Resources.HORSE_INVENTORY_LOCATION);

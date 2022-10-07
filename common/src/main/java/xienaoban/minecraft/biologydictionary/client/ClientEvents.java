@@ -16,19 +16,17 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import xienaoban.minecraft.biologydictionary.BiologyDictionary;
 import xienaoban.minecraft.biologydictionary.BiologyDictionaryClient;
+import xienaoban.minecraft.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import xienaoban.minecraft.biologydictionary.network.ClientNetworkManager;
 import xienaoban.minecraft.biologydictionary.util.Keys;
 import xienaoban.minecraft.biologydictionary.util.Permissions;
-import xienaoban.minecraft.biologydictionary.util.Resources;
 import xienaoban.minecraft.biologydictionary.util.WrappedClientApis;
 
 import static xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
 
 @Environment(EnvType.CLIENT)
-public class ClientEvents {
-    private ClientEvents() { throw new AssertionError(); }
-
-    public static void onOpenBiologyDictionary(Minecraft minecraft) {
+public interface ClientEvents {
+    static void onOpenBiologyDictionary(Minecraft minecraft) {
         BiologyDictionary runtime = BiologyDictionary.get();
         BiologyDictionaryClient runtimeClient = BiologyDictionaryClient.get();
         LocalPlayer player = minecraft.player;
@@ -42,8 +40,6 @@ public class ClientEvents {
         }
         Entity target;
         float y = player.getXRot();
-        LOGGER.info("aaaaaaaaaaaa " + player.getXRot());
-        LOGGER.info(Resources.HORSE_INVENTORY_LOCATION.toString());
         HitResult hit = minecraft.hitResult;
         if (y < -88) target = null;
         else if (y > 88) target = player;
@@ -74,11 +70,13 @@ public class ClientEvents {
     private static void onOpenBoleScreen() {
         System.out.println("onOpenBoleScreen()");
         ClientNetworkManager.requestBoleScreen();
+        Minecraft.getInstance().setScreen(new AbstractBiologyDictionaryScreen());
     }
 
     private static void onOpenBoleScreen(Entity target) {
         System.out.println("onOpenBoleScreen(" + target.getType().getDescriptionId() + ")");
         ClientNetworkManager.requestBoleScreen(target);
+        Minecraft.getInstance().setScreen(new AbstractBiologyDictionaryScreen());
     }
 
     private static void onOpenBeehiveScreen(BlockPos pos) {
