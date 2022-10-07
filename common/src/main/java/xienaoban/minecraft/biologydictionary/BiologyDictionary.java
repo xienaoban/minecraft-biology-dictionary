@@ -8,7 +8,15 @@ public class BiologyDictionary {
     public static final String MOD_ID = "biologydictionary";
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public static void init() {
+    private static class BiologyDictionaryHolder {
+        private static final BiologyDictionary INSTANCE = new BiologyDictionary();
+    }
+
+    public static BiologyDictionary get() {
+        return BiologyDictionaryHolder.INSTANCE;
+    }
+
+    private BiologyDictionary() {
         LOGGER.info(Misc.getConfigPath().toAbsolutePath());
     }
 }
