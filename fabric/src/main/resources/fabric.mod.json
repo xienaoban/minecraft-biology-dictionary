@@ -14,6 +14,9 @@
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
+    "client": [
+      "xienaoban.minecraft.biologydictionary.fabric.BiologyDictionaryClientFabric"
+    ],
     "main": [
       "xienaoban.minecraft.biologydictionary.fabric.BiologyDictionaryFabric"
     ]

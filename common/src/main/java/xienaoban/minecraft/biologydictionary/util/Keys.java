@@ -3,14 +3,12 @@ package xienaoban.minecraft.biologydictionary.util;
 import java.nio.file.Path;
 
 public interface Keys {
-    // ID
-    String BOLE = "bole";
-    String NAMESPACE = "bole";
-    String GITHUB_RELEASE = "https://github.com/xienaoban/minecraft-bole/releases";
-    String CURSEFORGE_RELEASE = "https://www.curseforge.com/minecraft/mc-mods/bole";
+    // URL
+    String PROJECT_GITHUB = "https://github.com/xienaoban/minecraft-biology-dictionary";
+    String PROJECT_CURSEFORGE = "https://www.curseforge.com/minecraft/mc-mods/biology-dictionary";
 
     // Path
-    String ENTITY_SORT_ORDER_CONFIG_FILENAME = "bole_entity_sort_order.txt";
+    String ENTITY_SORT_ORDER_CONFIG_FILENAME = "biologydictionary-entity-sort-order.txt";
     static Path ENTITY_SORT_ORDER_CONFIG_PATH() {
         return Misc.getConfigPath().resolve(Keys.ENTITY_SORT_ORDER_CONFIG_FILENAME);
     }
@@ -44,20 +42,21 @@ public interface Keys {
     String ENTITY_SETTING_SIT_ON_PLAYER_COOLDOWN =                  "sit_on_player_cooldown";
     String ENTITY_SETTING_TROPICAL_FISH_VARIANT =                   "tropical_fish_variant";
 
-    // Translation Keys
+    ////////////////////////////////////      Translation Keys      ////////////////////////////////////
+
+    String AUTHOR =                     "xienaoban";
+    String AUTHOR_TRANS =               "xienaoban.trans";
+    String MOD_NAME =                   "biologydictionary";
+    String MOD_BOOK_TITLE =             "title.biologydictionary.book";
+    String MOD_BOOK_DESCRIPTION =       "description.biologydictionary.book";
+    String KEY_MOD_CATEGORY =           "key.category.biologydictionary";
+    String KEY_OPEN_MOD_GUI =           "key.biologydictionary.open_mod_gui";
+
     String GUI_OK = "gui.ok";
     String GUI_CANCEL = "gui.cancel";
     String GUI_YES = "gui.yes";
     String GUI_NO = "gui.no";
     String COLOR_PREFIX = "color.minecraft.";
-
-    String AUTHOR =                     "xienaoban";
-    String AUTHOR_TRANS =               "xienaoban.trans";
-    String MOD_NAME =                   "bole";
-    String BOLE_HANDBOOK_TITLE =        "title.bole.bole_handbook";
-    String BOLE_HANDBOOK_DESCRIPTION =  "description.bole.bole_handbook";
-    String KEY_CATEGORY_BOLE =          "key.category.bole";
-    String KEY_OPEN_BOLE_GUI =          "key.bole.open_bole_gui";
 
     String RABBIT_VARIANT_BROWN_TYPE =          "entity.minecraft.rabbit.variant.brown_type";
     String RABBIT_VARIANT_WHITE_TYPE =          "entity.minecraft.rabbit.variant.white_type";
