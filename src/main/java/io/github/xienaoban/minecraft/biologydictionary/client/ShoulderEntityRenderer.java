@@ -18,39 +18,26 @@ public class ShoulderEntityRenderer implements RenderingRegistry.RenderingListen
         RenderingRegistry.registerFirstPersonRendering(new ShoulderEntityRenderer());
     }
 
-    private static final float HEAD_YAW_SPEED = 0.02F;
-    private static final float PI_DIV_180 = (float)(Math.PI / 180);
+    private static final float HEAD_ROT_SPEED = 0.02F;
 
-    private final CompoundTag[] oldNBTs = new CompoundTag[2];
+    private final CompoundTag[] nbts = new CompoundTag[2];
     private final LivingEntity[] entities = new LivingEntity[2];
-    private final float[] nextHeadYaw = new float[2];
+    private final float[] nextYHeadRot = new float[2];
+    private final float[] nextXHeadRot = new float[2];
     private final long[] nextHeadYawTime = new long[2];
     private long lastTime;
 
     @Override
     public void run(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LocalPlayer player, int light) {
-        float rx, ry, rz;
-        double tx, ty, tz;
         String tmp = "BOTTOM";
-        switch (tmp) {
-            case "TOP" -> {
-                rx = 60 * PI_DIV_180;   tx = 0.5;
-                ry = 0 * PI_DIV_180;    ty = 0.0;
-                rz = 180 * PI_DIV_180;  tz = -1.7;
-            }
-            case "BOTTOM" -> {
-                rx = 0 * PI_DIV_180;    tx = 0.5;
-                ry = 180 * PI_DIV_180;  ty = -1.3;
-                rz = 0 * PI_DIV_180;    tz = 1.3;
-            }
-            case "SIDES" -> {
-                rx = -10 * PI_DIV_180;  tx = 2.0;
-                ry = 180 * PI_DIV_180;  ty = -0.2;
-                rz = 0 * PI_DIV_180;    tz = 1.2;
-            }
-            default -> { return; }
-        }
-        long diffTime = System.currentTimeMillis() - this.lastTime;
+        HudPosition hudPos = switch (tmp) {
+            case "TOP" -> HudPosition.TOP;
+            case "BOTTOM" -> HudPosition.BOTTOM;
+            case "SIDES" -> HudPosition.SIDES;
+            default -> null;
+        };
+        if (hudPos == null) return;
+        long diffTime = player.getLevel().getGameTime() * 50 + (long) (tickDelta * 50) - this.lastTime;
         this.lastTime += diffTime;
         for (int i = 0; i < 2; ++i) {
             update(player, i == 0 ? player.getShoulderEntityLeft() : player.getShoulderEntityRight(), i);
@@ -58,15 +45,17 @@ public class ShoulderEntityRenderer implements RenderingRegistry.RenderingListen
             if (entity == null) continue;
             if (lastTime > this.nextHeadYawTime[i]) {
                 this.nextHeadYawTime[i] = lastTime + 2000 + (long)(Math.random() * 6000);
-                this.nextHeadYaw[i] = (float) (Math.random() * 60 - 30);
+                this.nextYHeadRot[i] = (float) (Math.random() - 0.5D) * 60F;
+                this.nextXHeadRot[i] = (float) (Math.random() - 0.5D) * 20F;
             }
-            entity.setYHeadRot(entity.getYHeadRot() + HEAD_YAW_SPEED * diffTime * (this.nextHeadYaw[i] - entity.getYHeadRot()));
+            entity.setYHeadRot(entity.getYHeadRot() + HEAD_ROT_SPEED * diffTime * (this.nextYHeadRot[i] - entity.getYHeadRot()));
+            entity.setXRot(entity.getXRot() + HEAD_ROT_SPEED * diffTime * (this.nextXHeadRot[i] - entity.getXRot()));
             int pos = i * -2 + 1;
             poseStack.pushPose();
-            poseStack.mulPose(Axis.XP.rotation(rx));
-            poseStack.mulPose(Axis.YP.rotation(ry));
-            poseStack.mulPose(Axis.ZP.rotation(rz));
-            poseStack.translate(pos * tx, ty, tz);
+            poseStack.mulPose(Axis.XP.rotation(hudPos.xRot()));
+            poseStack.mulPose(Axis.YP.rotation(hudPos.yRot()));
+            poseStack.mulPose(Axis.ZP.rotation(hudPos.zRot()));
+            poseStack.translate(pos * hudPos.xPos(), hudPos.yPos() + player.getXRot() * hudPos.yOffset(), hudPos.zPos());
             entityRenderDispatcher.setRenderShadow(false);
             entityRenderDispatcher.render(entity, 0, 0, 0, 0, 1.0F, poseStack, bufferSource, light);
             entityRenderDispatcher.setRenderShadow(true);
@@ -75,8 +64,8 @@ public class ShoulderEntityRenderer implements RenderingRegistry.RenderingListen
     }
 
     private void update(LocalPlayer player, CompoundTag nbt, int index) {
-        if (oldNBTs[index] == nbt) return;
-        oldNBTs[index] = nbt;
+        if (nbts[index] == nbt) return;
+        nbts[index] = nbt;
         LivingEntity entity;
         if (nbt == null || nbt.isEmpty()) entity = null;
         else {
@@ -97,7 +86,25 @@ public class ShoulderEntityRenderer implements RenderingRegistry.RenderingListen
     }
 
     public void clear() {
-        this.oldNBTs[0] = this.oldNBTs[1] = null;
+        this.nbts[0] = this.nbts[1] = null;
         this.entities[0] = this.entities[1] = null;
+    }
+
+    private record HudPosition(float xRot, float yRot, float zRot, double xPos, double yPos, double zPos, float yOffset) {
+        private static final float PI_DIV_180 = (float)(Math.PI / 180);
+
+        public static final HudPosition TOP = new HudPosition(60, 0, 180, 0.5, 0.2, -1.8, -0.003F);
+        public static final HudPosition BOTTOM = new HudPosition(0, 180, 0, 0.5, -1.4, 1.3, 0.002F);
+        public static final HudPosition SIDES = new HudPosition(-10, 180, 0, 1.6, -0.4, 1.0, 0.004F);
+
+        private HudPosition(float xRot, float yRot, float zRot, double xPos, double yPos, double zPos, float yOffset) {
+            this.xRot = xRot * PI_DIV_180;
+            this.yRot = yRot * PI_DIV_180;
+            this.zRot = zRot * PI_DIV_180;
+            this.xPos = xPos;
+            this.yPos = yPos;
+            this.zPos = zPos;
+            this.yOffset = yOffset;
+        }
     }
 }
