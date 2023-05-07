@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "biologydictionary",
+  "id": "biology-dictionary",
   "version": "${version}",
   "name": "Biology Dictionary",
   "description": "A mod to display or modify the properties and states of entities.",
@@ -12,22 +12,22 @@
     "repo": "https://github.com/xienaoban/minecraft-biology-dictionary"
   },
   "license": "LGPL-3.0",
-  "icon": "assets/biologydictionary/icon.png",
+  "icon": "assets/biology-dictionary/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
-      "xienaoban.minecraft.biologydictionary.client.BiologyDictionaryClient"
+      "io.github.xienaoban.minecraft.biologydictionary.platform.ClientModInitializer"
     ],
     "main": [
-      "xienaoban.minecraft.biologydictionary.BiologyDictionary"
+      "io.github.xienaoban.minecraft.biologydictionary.platform.ModInitializer"
     ]
   },
   "mixins": [
-    "biologydictionary.mixins.json"
+    "biology-dictionary.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.13",
+    "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "1.19.3"
+    "minecraft": "${minecraft_version}"
   }
 }
