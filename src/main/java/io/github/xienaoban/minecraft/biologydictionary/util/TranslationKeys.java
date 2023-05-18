@@ -3,8 +3,8 @@ package io.github.xienaoban.minecraft.biologydictionary.util;
 /**
  * Translation keys
  */
-public final class TranslationKey {
-    private TranslationKey() {}
+public final class TranslationKeys {
+    private TranslationKeys() {}
 
     public static final String KEY_CATEGORY = "key.category.biologydictionary";
     public static final String KEY_OPEN_HANDBOOK = "key.biologydictionary.open_handbook";

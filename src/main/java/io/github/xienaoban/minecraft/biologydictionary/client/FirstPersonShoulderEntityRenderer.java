@@ -3,6 +3,8 @@ package io.github.xienaoban.minecraft.biologydictionary.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.github.xienaoban.minecraft.biologydictionary.platform.client.RenderingRegistry;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -13,9 +15,10 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Optional;
 
-public class ShoulderEntityRenderer implements RenderingRegistry.RenderingListener {
+@Environment(EnvType.CLIENT)
+public class FirstPersonShoulderEntityRenderer implements RenderingRegistry.RenderingListener {
     public static void init() {
-        RenderingRegistry.registerFirstPersonRendering(new ShoulderEntityRenderer());
+        RenderingRegistry.registerFirstPersonRendering(new FirstPersonShoulderEntityRenderer());
     }
 
     private static final float HEAD_ROT_SPEED = 0.02F;
@@ -24,6 +27,7 @@ public class ShoulderEntityRenderer implements RenderingRegistry.RenderingListen
     private final LivingEntity[] entities = new LivingEntity[2];
     private final float[] nextYHeadRot = new float[2];
     private final float[] nextXHeadRot = new float[2];
+    private final long[] lastHeadYawTime = new long[2];
     private final long[] nextHeadYawTime = new long[2];
     private long lastTime;
 
@@ -37,19 +41,25 @@ public class ShoulderEntityRenderer implements RenderingRegistry.RenderingListen
             default -> null;
         };
         if (hudPos == null) return;
-        long diffTime = player.getLevel().getGameTime() * 50 + (long) (tickDelta * 50) - this.lastTime;
-        this.lastTime += diffTime;
+        long curTime = player.getLevel().getGameTime() * 50 + (long) (tickDelta * 50);
+        long diffTime = Math.min(50, curTime - lastTime);
+        lastTime = curTime;
         for (int i = 0; i < 2; ++i) {
             update(player, i == 0 ? player.getShoulderEntityLeft() : player.getShoulderEntityRight(), i);
-            LivingEntity entity = this.entities[i];
+            LivingEntity entity = entities[i];
             if (entity == null) continue;
-            if (lastTime > this.nextHeadYawTime[i]) {
-                this.nextHeadYawTime[i] = lastTime + 2000 + (long)(Math.random() * 6000);
-                this.nextYHeadRot[i] = (float) (Math.random() - 0.5D) * 60F;
-                this.nextXHeadRot[i] = (float) (Math.random() - 0.5D) * 20F;
+            if (curTime > nextHeadYawTime[i]) {
+                lastHeadYawTime[i] = nextHeadYawTime[i];
+                nextHeadYawTime[i] = curTime + 2000 + (long)(Math.random() * 6000);
+                nextYHeadRot[i] = (float) (Math.random() - 0.5D) * 60F;
+                nextXHeadRot[i] = (float) (Math.random() - 0.5D) * 20F;
             }
-            entity.setYHeadRot(entity.getYHeadRot() + HEAD_ROT_SPEED * diffTime * (this.nextYHeadRot[i] - entity.getYHeadRot()));
-            entity.setXRot(entity.getXRot() + HEAD_ROT_SPEED * diffTime * (this.nextXHeadRot[i] - entity.getXRot()));
+            if (curTime - lastHeadYawTime[i] < 1000) {
+                float yHeadRotDiff = HEAD_ROT_SPEED * diffTime * (this.nextYHeadRot[i] - entity.getYHeadRot());
+                float xRotDiff     = HEAD_ROT_SPEED * diffTime * (this.nextXHeadRot[i] - entity.getXRot());
+                entity.setYHeadRot(entity.getYHeadRot() + yHeadRotDiff);
+                entity.setXRot(    entity.getXRot()     + xRotDiff);
+            }
             int pos = i * -2 + 1;
             poseStack.pushPose();
             poseStack.mulPose(Axis.XP.rotation(hudPos.xRot()));
@@ -82,12 +92,12 @@ public class ShoulderEntityRenderer implements RenderingRegistry.RenderingListen
                 entity.setSpeed(0);
             }
         }
-        this.entities[index] = entity;
+        entities[index] = entity;
     }
 
     public void clear() {
-        this.nbts[0] = this.nbts[1] = null;
-        this.entities[0] = this.entities[1] = null;
+        nbts[0] = nbts[1] = null;
+        entities[0] = entities[1] = null;
     }
 
     private record HudPosition(float xRot, float yRot, float zRot, double xPos, double yPos, double zPos, float yOffset) {
