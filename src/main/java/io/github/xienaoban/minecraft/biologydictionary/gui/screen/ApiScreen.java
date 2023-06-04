@@ -4,25 +4,26 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.util.ScreenRenderingContext;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import org.joml.Matrix4f;
 
 public abstract class ApiScreen extends Screen {
-    protected final ScreenElement rootScreenElement;
-    private final ScreenRenderingContext screenRenderingContext;
+    protected final RootScreenElement rootScreenElement;
+    protected final ScreenRenderingContext screenRenderingContext;
 
     protected ApiScreen(Component component) {
         super(component);
-        this.rootScreenElement = new ScreenElement(null);
+        this.rootScreenElement = new RootScreenElement();
         this.screenRenderingContext = new ScreenRenderingContext(this);
     }
 
     @Override
     protected void init() {
         super.init();
-        rootScreenElement.getBox().set(0, 0, width, height);
+        rootScreenElement.resize(width, height);
     }
 
     @Override
@@ -73,5 +74,19 @@ public abstract class ApiScreen extends Screen {
         bufferBuilder.vertex(matrix4f, right, top, z).color(color).endVertex();
         BufferUploader.drawWithShader(bufferBuilder.end());
         RenderSystem.disableBlend();
+    }
+
+    public static final class RootScreenElement extends ScreenElement {
+        public RootScreenElement() {
+            super(null);
+        }
+
+        @Override
+        protected void renderContent(ScreenRenderingContext ctx) {}
+
+        @Override
+        public void resizeBox(int width, int height) {
+            box.set(0, 0, width, height);
+        }
     }
 }

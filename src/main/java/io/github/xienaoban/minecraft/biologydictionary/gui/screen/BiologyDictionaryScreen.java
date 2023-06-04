@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.minecraft.biologydictionary.gui.Textures;
-import io.github.xienaoban.minecraft.biologydictionary.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -41,8 +40,11 @@ public class BiologyDictionaryScreen extends ApiScreen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (KeyMappingManager.KM_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)) {
+        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)) {
             onClose();
+            return true;
+        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
+            screenRenderingContext.setRenderBox(!screenRenderingContext.shouldRenderBox());
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);

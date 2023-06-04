@@ -13,12 +13,14 @@ import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
 public final class KeyMappingManager {
-    public static final KeyMapping KM_BIOLOGY_DICTIONARY_SCREEN = new KeyMapping(TranslationKeys.KEY_OPEN_HANDBOOK, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_GRAVE_ACCENT, TranslationKeys.KEY_CATEGORY);
+    public static final KeyMapping OPEN_BIOLOGY_DICTIONARY_SCREEN = new KeyMapping(TranslationKeys.KEY_OPEN_HANDBOOK, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_GRAVE_ACCENT, TranslationKeys.KEY_CATEGORY);
+    public static final KeyMapping TOGGLE_DEBUG = new KeyMapping(TranslationKeys.KEY_DEBUG, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_ALT, TranslationKeys.KEY_CATEGORY);
 
     public static void init() {
-        KeyMappingRegistry.registerKeyMapping(KM_BIOLOGY_DICTIONARY_SCREEN);
+        KeyMappingRegistry.registerKeyMapping(OPEN_BIOLOGY_DICTIONARY_SCREEN);
+        KeyMappingRegistry.registerKeyMapping(TOGGLE_DEBUG);
         ClientEventRegistry.registerEndTick(client -> {
-            while (KM_BIOLOGY_DICTIONARY_SCREEN.consumeClick()) {
+            while (OPEN_BIOLOGY_DICTIONARY_SCREEN.consumeClick()) {
                 if (client.player != null) {
                     client.setScreen(new BiologyDictionaryScreen());
                     client.player.displayClientMessage(Component.translatable(TranslationKeys.THANKS), false);
