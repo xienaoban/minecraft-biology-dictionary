@@ -1,20 +1,20 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.screen.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.xienaoban.minecraft.biologydictionary.gui.screen.ApiScreen;
+import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
 
 public final class ScreenRenderingContext {
-    private final ApiScreen screen;
+    private final CommonScreen screen;
     private PoseStack poseStack;
     private int mouseX, mouseY;
     private float tickDelta;
     private boolean renderBox;
 
-    public ScreenRenderingContext(ApiScreen screen) {
+    public ScreenRenderingContext(CommonScreen screen) {
         this.screen = screen;
     }
 
-    public ApiScreen getScreen() { return screen; }
+    public CommonScreen getScreen() { return screen; }
     public PoseStack getPoseStack() { return poseStack; }
     public int getMouseX() { return mouseX; }
     public int getMouseY() { return mouseY; }

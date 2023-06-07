@@ -1,6 +1,6 @@
 {
+  "title.biologydictionary": "生物学词典",
   "key.category.biologydictionary": "生物学词典",
   "key.biologydictionary.open_handbook": "打开手册",
-  "key.biologydictionary.debug": "切换调试模式",
-  "biologydictionary_thanks": "感谢"
+  "key.biologydictionary.debug": "切换调试模式"
 }

@@ -1,20 +1,20 @@
-package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
+package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.util.ScreenRenderingContext;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
-public abstract class ApiScreen extends Screen {
+public abstract class CommonScreen extends Screen {
     protected final RootScreenElement rootScreenElement;
     protected final ScreenRenderingContext screenRenderingContext;
 
-    protected ApiScreen(Component component) {
+    protected CommonScreen(Component component) {
         super(component);
         this.rootScreenElement = new RootScreenElement();
         this.screenRenderingContext = new ScreenRenderingContext(this);
@@ -74,6 +74,37 @@ public abstract class ApiScreen extends Screen {
         bufferBuilder.vertex(matrix4f, right, top, z).color(color).endVertex();
         BufferUploader.drawWithShader(bufferBuilder.end());
         RenderSystem.disableBlend();
+    }
+
+    public final void setTexture(ResourceLocation texture) {
+        RenderSystem.setShaderTexture(0, texture);
+    }
+
+    public final void renderTexture(PoseStack poseStack, float resourceWidth, float resourceHeight,
+                                    float textureLeft, float textureTop,
+                                    float z, float left, float top, float width, float height) {
+        renderTexture(poseStack, resourceWidth, resourceHeight,
+                textureLeft, textureTop, textureLeft + width, textureTop + height,
+                z, left, top, left + width,  top + height);
+    }
+
+    /**
+     * @see net.minecraft.client.gui.GuiComponent#innerBlit(Matrix4f, int, int, int, int, int, float, float, float, float)
+     */
+    public final void renderTexture(PoseStack poseStack, float resourceWidth, float resourceHeight,
+                                    float textureLeft, float textureTop, float textureRight, float textureBottom,
+                                    float z, float left, float top, float right, float bottom) {
+        textureLeft /= resourceWidth; textureRight /= resourceWidth;
+        textureTop /= resourceHeight; textureBottom /= resourceHeight;
+        Matrix4f matrix4f = poseStack.last().pose();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.vertex(matrix4f, left, top, z).uv(textureLeft, textureTop).endVertex();
+        bufferBuilder.vertex(matrix4f, left, bottom, z).uv(textureLeft, textureBottom).endVertex();
+        bufferBuilder.vertex(matrix4f, right, bottom, z).uv(textureRight, textureBottom).endVertex();
+        bufferBuilder.vertex(matrix4f, right, top, z).uv(textureRight, textureTop).endVertex();
+        BufferUploader.drawWithShader(bufferBuilder.end());
     }
 
     public static final class RootScreenElement extends ScreenElement {

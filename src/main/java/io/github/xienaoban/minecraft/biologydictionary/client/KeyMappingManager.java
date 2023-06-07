@@ -8,7 +8,6 @@ import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
@@ -23,7 +22,6 @@ public final class KeyMappingManager {
             while (OPEN_BIOLOGY_DICTIONARY_SCREEN.consumeClick()) {
                 if (client.player != null) {
                     client.setScreen(new BiologyDictionaryScreen());
-                    client.player.displayClientMessage(Component.translatable(TranslationKeys.THANKS), false);
                 }
             }
         });
