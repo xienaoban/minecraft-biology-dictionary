@@ -2,8 +2,6 @@ package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import io.github.xienaoban.minecraft.biologydictionary.gui.screen.util.ScreenElement;
-import io.github.xienaoban.minecraft.biologydictionary.gui.screen.util.ScreenRenderingContext;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -11,30 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
 public abstract class CommonScreen extends Screen {
-    protected final RootScreenElement rootScreenElement;
-    protected final ScreenRenderingContext screenRenderingContext;
-
-    protected CommonScreen(Component component) {
-        super(component);
-        this.rootScreenElement = new RootScreenElement();
-        this.screenRenderingContext = new ScreenRenderingContext(this);
-    }
-
-    @Override
-    protected void init() {
-        super.init();
-        rootScreenElement.resize(width, height);
-    }
-
-    @Override
-    public final void render(PoseStack poseStack, int mouseX, int mouseY, float tickDelta) {
-        screenRenderingContext.update(poseStack, mouseX, mouseY, tickDelta);
-        render(screenRenderingContext);
-    }
-
-    protected void render(ScreenRenderingContext ctx) {
-        super.render(ctx.getPoseStack(), ctx.getMouseX(), ctx.getMouseY(), ctx.getTickDelta());
-    }
+    protected CommonScreen(Component component) { super(component); }
 
     public final void renderText(PoseStack poseStack, Component component, int color, float x, float y) {
         font.draw(poseStack, component, x, y, color);
@@ -105,19 +80,5 @@ public abstract class CommonScreen extends Screen {
         bufferBuilder.vertex(matrix4f, right, bottom, z).uv(textureRight, textureBottom).endVertex();
         bufferBuilder.vertex(matrix4f, right, top, z).uv(textureRight, textureTop).endVertex();
         BufferUploader.drawWithShader(bufferBuilder.end());
-    }
-
-    public static final class RootScreenElement extends ScreenElement {
-        public RootScreenElement() {
-            super(null);
-        }
-
-        @Override
-        protected void renderContent(ScreenRenderingContext ctx) {}
-
-        @Override
-        public void resizeBox(int width, int height) {
-            box.set(0, 0, width, height);
-        }
     }
 }

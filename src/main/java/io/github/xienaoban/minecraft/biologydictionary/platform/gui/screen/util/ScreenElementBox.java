@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.gui.screen.util;
+package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util;
 
 public final class ScreenElementBox {
     private float left, top, right, bottom, width, height;

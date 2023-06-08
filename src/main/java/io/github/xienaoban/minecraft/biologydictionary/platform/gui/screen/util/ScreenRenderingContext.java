@@ -1,34 +1,31 @@
-package io.github.xienaoban.minecraft.biologydictionary.gui.screen.util;
+package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
+import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.ElementScreen;
 
 public final class ScreenRenderingContext {
-    private final CommonScreen screen;
+    private final ElementScreen screen;
     private PoseStack poseStack;
     private int mouseX, mouseY;
     private float tickDelta;
-    private boolean renderBox;
+    private boolean debug;
 
-    public ScreenRenderingContext(CommonScreen screen) {
+    public ScreenRenderingContext(ElementScreen screen) {
         this.screen = screen;
     }
 
-    public CommonScreen getScreen() { return screen; }
+    public ElementScreen getScreen() { return screen; }
     public PoseStack getPoseStack() { return poseStack; }
     public int getMouseX() { return mouseX; }
     public int getMouseY() { return mouseY; }
     public float getTickDelta() { return tickDelta; }
-    public boolean shouldRenderBox() { return renderBox; }
+    public boolean isDebug() { return debug; }
+    public void setDebug(boolean debug) { this.debug = debug; }
 
     public void update(PoseStack poseStack, int mouseX, int mouseY, float tickDelta) {
         this.poseStack = poseStack;
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.tickDelta = tickDelta;
-    }
-
-    public void setRenderBox(boolean renderBox) {
-        this.renderBox = renderBox;
     }
 }
