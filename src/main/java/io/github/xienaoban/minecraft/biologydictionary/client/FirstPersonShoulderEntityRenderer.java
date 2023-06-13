@@ -80,7 +80,7 @@ public class FirstPersonShoulderEntityRenderer implements RenderingRegistry.Rend
         LivingEntity entity;
         if (nbt == null || nbt.isEmpty()) entity = null;
         else {
-            Optional<Entity> optionalEntity = EntityType.create(nbt, player.level);
+            Optional<Entity> optionalEntity = EntityType.create(nbt, player.level());
             if (optionalEntity.isEmpty()) entity = null;
             else {
                 entity = (LivingEntity) optionalEntity.get();

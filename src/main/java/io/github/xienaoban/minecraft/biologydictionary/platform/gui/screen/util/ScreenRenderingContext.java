@@ -1,29 +1,30 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.ElementScreen;
+import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
+import net.minecraft.client.gui.GuiGraphics;
 
 public final class ScreenRenderingContext {
-    private final ElementScreen screen;
-    private PoseStack poseStack;
+    private final CommonScreen screen;
+
+    GuiGraphics guiGraphics;
     private int mouseX, mouseY;
     private float tickDelta;
     private boolean debug;
 
-    public ScreenRenderingContext(ElementScreen screen) {
+    public ScreenRenderingContext(CommonScreen screen) {
         this.screen = screen;
     }
 
-    public ElementScreen getScreen() { return screen; }
-    public PoseStack getPoseStack() { return poseStack; }
+    public CommonScreen getScreen() { return screen; }
+    public GuiGraphics getGuiGraphics() { return guiGraphics; }
     public int getMouseX() { return mouseX; }
     public int getMouseY() { return mouseY; }
     public float getTickDelta() { return tickDelta; }
     public boolean isDebug() { return debug; }
     public void setDebug(boolean debug) { this.debug = debug; }
 
-    public void update(PoseStack poseStack, int mouseX, int mouseY, float tickDelta) {
-        this.poseStack = poseStack;
+    public void update(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
+        this.guiGraphics = guiGraphics;
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.tickDelta = tickDelta;

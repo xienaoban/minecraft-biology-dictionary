@@ -1,6 +1,5 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.minecraft.network.chat.Component;
@@ -8,13 +7,11 @@ import net.minecraft.network.chat.Component;
 public abstract class ElementScreen extends CommonScreen {
     protected final RootScreenElement rootScreenElement;
     protected ScreenElement focusedElement;
-    protected final ScreenRenderingContext screenRenderingContext;
 
     protected ElementScreen(Component component) {
         super(component);
         this.rootScreenElement = new RootScreenElement();
         this.focusedElement = null;
-        this.screenRenderingContext = new ScreenRenderingContext(this);
     }
 
     @Override
@@ -24,15 +21,14 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     @Override
-    public final void render(PoseStack poseStack, int mouseX, int mouseY, float tickDelta) {
-        updateFocusedElement(mouseX, mouseY);
-        screenRenderingContext.update(poseStack, mouseX, mouseY, tickDelta);
-        render(screenRenderingContext);
+    protected void beforeRender(ScreenRenderingContext ctx) {
+        super.beforeRender(ctx);
+        updateFocusedElement(ctx.getMouseX(), ctx.getMouseY());
     }
 
     protected void render(ScreenRenderingContext ctx) {
+        super.render(ctx);
         rootScreenElement.render(ctx);
-        super.render(ctx.getPoseStack(), ctx.getMouseX(), ctx.getMouseY(), ctx.getTickDelta());
     }
 
     public final ScreenElement getFocusedElement() { return focusedElement; }

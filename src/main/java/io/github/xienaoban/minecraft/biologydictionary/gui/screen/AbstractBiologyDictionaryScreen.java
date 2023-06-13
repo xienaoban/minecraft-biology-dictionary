@@ -1,11 +1,10 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.minecraft.biologydictionary.gui.Textures;
+import io.github.xienaoban.minecraft.biologydictionary.gui.screen.widget.Page;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.minecraft.biologydictionary.gui.screen.widget.Page;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -16,8 +15,8 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class AbstractBiologyDictionaryScreen extends ElementScreen {
-    public static final float BOOK_LEFT = 96, BOOK_TOP = 0, BOOK_RIGHT = 416, BOOK_BOTTOM = 192;
-    public static final float BOOK_WIDTH = BOOK_RIGHT - BOOK_LEFT, BOOK_HEIGHT = BOOK_BOTTOM - BOOK_TOP;
+    public static final int BOOK_LEFT = 96, BOOK_TOP = 0, BOOK_RIGHT = 416, BOOK_BOTTOM = 192;
+    public static final int BOOK_WIDTH = BOOK_RIGHT - BOOK_LEFT, BOOK_HEIGHT = BOOK_BOTTOM - BOOK_TOP;
 
     protected final List<Page> pages;
     protected Page curLeftPage, curRightPage;
@@ -39,19 +38,15 @@ public class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     protected void render(ScreenRenderingContext ctx) {
-        renderBackground(ctx.getPoseStack());
+        renderBackground(ctx.getGuiGraphics());
+        renderTexture(ctx, Textures.BOOK, 512, 256,
+                BOOK_LEFT, BOOK_TOP, BOOK_RIGHT, BOOK_BOTTOM,
+                getZ(),
+                (width - BOOK_WIDTH) / 2, (height - BOOK_HEIGHT) / 2,
+                (width + BOOK_WIDTH) / 2, (height + BOOK_HEIGHT) / 2);
 
         // invoke it finally
         super.render(ctx);
-    }
-
-    @Override
-    public void renderBackground(PoseStack poseStack) {
-        super.renderBackground(poseStack);
-        setTexture(Textures.BOOK);
-        renderTexture(poseStack, 512, 256, BOOK_LEFT, BOOK_TOP, BOOK_RIGHT, BOOK_BOTTOM, 0,
-                (width - BOOK_WIDTH) / 2F, (height - BOOK_HEIGHT) / 2F,
-                (width + BOOK_WIDTH) / 2F, (height + BOOK_HEIGHT) / 2F);
     }
 
     @Override

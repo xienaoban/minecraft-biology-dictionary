@@ -1,5 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util;
 
+import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.ElementScreen;
+
 import java.util.ArrayList;
 
 /**
@@ -43,11 +45,11 @@ public abstract class ScreenElement {
         renderContent(ctx);
         if (ctx.isDebug()) {
             final int color;
-            if (this == ctx.getScreen().getFocusedElement()) color = 0xFF00FF00;
+            if (this == ((ElementScreen) ctx.getScreen()).getFocusedElement()) color = 0xFF00FF00;
             else if (isFocused(ctx.getMouseX(), ctx.getMouseY())) color = 0xFF0000FF;
             else color = 0xFFFF0000;
-            ctx.getScreen().renderRectangle(ctx.getPoseStack(), color, 0.5F, 0,
-                    box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
+            ctx.getScreen().renderRectangle(ctx, color, 1, ctx.getScreen().getZ(),
+                    (int) box.getLeft(), (int) box.getTop(), (int) box.getRight(), (int) box.getBottom());
         }
         for (ScreenElement subEle : subScreenElements) {
             subEle.render(ctx);
@@ -64,7 +66,7 @@ public abstract class ScreenElement {
     }
 
     public final boolean isFocused(float x, float y) {
-        return x >= box.getLeft() && x <= box.getRight() && y >= box.getTop() && y <= box.getBottom();
+        return x >= box.getLeft() && x < box.getRight() && y >= box.getTop() && y < box.getBottom();
     }
 
     /**
