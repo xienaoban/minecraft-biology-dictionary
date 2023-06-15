@@ -43,7 +43,7 @@ public abstract class ScreenElement {
 
     public final void render(ScreenRenderingContext ctx) {
         renderContent(ctx);
-        if (ctx.isDebug()) {
+        if (ctx.isDebug() && box.getWidth() * box.getHeight() > 0) {
             final int color;
             if (this == ((ElementScreen) ctx.getScreen()).getFocusedElement()) color = 0xFF00FF00;
             else if (isFocused(ctx.getMouseX(), ctx.getMouseY())) color = 0xFF0000FF;

@@ -6,10 +6,10 @@ public final class ScreenElementBox {
     public ScreenElementBox() {
         this.left = 0;
         this.top = 0;
-        this.right = 40;
-        this.bottom = 40;
-        this.width = 40;
-        this.height = 40;
+        this.right = 0;
+        this.bottom = 0;
+        this.width = 0;
+        this.height = 0;
     }
 
     public ScreenElementBox(float width, float height) {

@@ -51,7 +51,7 @@ public class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     protected void resizeBox(int width, int height) {
-        final int midMargin = 14, topMargin = 16;
+        final int midMargin = 14, topMargin = 24;
         if (curLeftPage != null) {
             curLeftPage.getBox().setPosition(width / 2F - midMargin - Page.PAGE_WIDTH,
                                              (height - BOOK_HEIGHT) / 2F + topMargin);
