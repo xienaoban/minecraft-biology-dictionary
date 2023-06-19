@@ -1,6 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.ElementScreen;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  * Each element does not overlap in pairs.
  */
 public abstract class ScreenElement {
-    protected ScreenElement parent;
+    @Nullable protected ScreenElement parent;
     protected final ScreenElementBox box;
     protected final ArrayList<ScreenElement> subScreenElements;
 
@@ -21,31 +22,36 @@ public abstract class ScreenElement {
 
     public final ScreenElementBox getBox() { return box; }
 
-    public final ScreenElement getParent() { return parent; }
+    @Nullable public final ScreenElement getParent() { return parent; }
 
     public final void setParent(ScreenElement newParent) {
+        setParent(newParent, false);
+    }
+
+    public final void setParent(ScreenElement newParent, boolean highPriority) {
         ScreenElement oldParent = parent;
         if (oldParent != null) {
             oldParent.unregisterSubScreenElement(this);
         }
         parent = newParent;
         if (newParent != null) {
-            newParent.registerSubScreenElement(this);
+            newParent.registerSubScreenElement(this, highPriority);
         }
     }
 
     public final void resize(int width, int height) {
-        resizeBox(width, height);
+        onResize(width, height);
         for (ScreenElement subEle : subScreenElements) {
             subEle.resize(width, height);
         }
     }
 
     public final void render(ScreenRenderingContext ctx) {
-        renderContent(ctx);
+        onRender(ctx);
         if (ctx.isDebug() && box.getWidth() * box.getHeight() > 0) {
             final int color;
-            if (this == ((ElementScreen) ctx.getScreen()).getFocusedElement()) color = 0xFF00FF00;
+            if (this == ((ElementScreen) ctx.getScreen()).getSelectedElement()) color = 0xFF00FF00;
+            else if (this == ((ElementScreen) ctx.getScreen()).getFocusedElement()) color = 0xFFFFFF00;
             else if (isFocused(ctx.getMouseX(), ctx.getMouseY())) color = 0xFF0000FF;
             else color = 0xFFFF0000;
             ctx.getScreen().renderRectangle(ctx, color, 1, ctx.getScreen().getZ(),
@@ -66,14 +72,18 @@ public abstract class ScreenElement {
     }
 
     public final boolean isFocused(float x, float y) {
-        return x >= box.getLeft() && x < box.getRight() && y >= box.getTop() && y < box.getBottom();
+        return x > box.getLeft() && x < box.getRight() && y > box.getTop() && y < box.getBottom();
+    }
+
+    public final boolean mouseDown(float x, float y, int code) {
+        return !onMouseDown(x, y, code) && getParent() != null && getParent().mouseDown(x, y , code);
     }
 
     /**
      * Render the content of the current element.
      * @param ctx the context of the screen
      */
-    protected abstract void renderContent(ScreenRenderingContext ctx);
+    protected void onRender(ScreenRenderingContext ctx) {}
 
     /**
      * Resize the width and height of the current element.
@@ -81,10 +91,23 @@ public abstract class ScreenElement {
      * @param width the new width of the screen, same with this.width
      * @param height the new height of the screen, same with this.height
      */
-    protected abstract void resizeBox(int width, int height);
+    protected void onResize(int width, int height) {}
 
-    private void registerSubScreenElement(ScreenElement sub) {
-        subScreenElements.add(sub);
+    /**
+     * MouseDown event.
+     * @param x the x of mouse
+     * @param y the y of mouse
+     * @param code the mouse code
+     * @return whether to consume the event (return false to pass the event to the parent element)
+     */
+    protected boolean onMouseDown(float x, float y, int code) { return false; }
+
+    private void registerSubScreenElement(ScreenElement sub, boolean highPriority) {
+        if (highPriority) {
+            subScreenElements.add(0, sub);
+        } else {
+            subScreenElements.add(sub);
+        }
     }
 
     private void unregisterSubScreenElement(ScreenElement sub) {

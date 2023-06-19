@@ -17,39 +17,33 @@ public final class Page extends ScreenElement {
         for (int i = 0; i < 5; ++i) {
             addWidget(new Widget(1, 1) {
                 @Override
-                protected void renderContent(ScreenRenderingContext ctx) {
+                protected void onRender(ScreenRenderingContext ctx) {
                     ctx.getScreen().renderCenteredText(ctx, Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE), 0xFF0000FF, (int) box.getLeft() + Widget.WIDGET_WIDTH / 2, (int) box.getTop() + 4);
                 }
 
-                @Override
-                protected void resizeBox(int width, int height) {}
             });
         }
         addWidget(new Widget(3, 2) {
             @Override
-            protected void renderContent(ScreenRenderingContext ctx) {}
-
-            @Override
-            protected void resizeBox(int width, int height) {}
+            protected boolean onMouseDown(float x, float y, int code) {
+                return true;
+            }
         });
         for (int i = 0; i < 8; ++i) {
             addWidget(new Widget(1, 1) {
                 @Override
-                protected void renderContent(ScreenRenderingContext ctx) {
+                protected void onRender(ScreenRenderingContext ctx) {
                     ctx.getScreen().renderCenteredText(ctx, Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE), 0xFF0000FF, (int) box.getLeft() + Widget.WIDGET_WIDTH / 2, (int) box.getTop() + 4);
                 }
-
-                @Override
-                protected void resizeBox(int width, int height) {}
             });
         }
     }
 
     @Override
-    protected void renderContent(ScreenRenderingContext ctx) {}
+    protected void onRender(ScreenRenderingContext ctx) {}
 
     @Override
-    protected void resizeBox(int width, int height) {
+    protected void onResize(int width, int height) {
         for (int r = 0; r < ROWS; ++r) for (int c = 0; c < COLUMNS; ++c) {
             Widget widget = widgetLayout[r][c];
             if (widget == null || widget instanceof WidgetPlaceholder) continue;
@@ -108,11 +102,5 @@ public final class Page extends ScreenElement {
 
         public int getHolderRow() { return holderRow; }
         public int getHolderCol() { return holderCol; }
-
-        @Override
-        protected void renderContent(ScreenRenderingContext ctx) {}
-
-        @Override
-        protected void resizeBox(int width, int height) {}
     }
 }

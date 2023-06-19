@@ -34,7 +34,7 @@ public abstract class CommonScreen extends Screen {
     protected void render(ScreenRenderingContext ctx) {}
 
     protected void afterRender(ScreenRenderingContext ctx) {
-        super.render(ctx.getGuiGraphics(), ctx.getMouseX(), ctx.getMouseY(), ctx.getTickDelta());
+        super.render(ctx.getGuiGraphics(), (int) ctx.getMouseX(), (int) ctx.getMouseY(), ctx.getTickDelta());
     }
 
     public final int getZ() { return 0; }

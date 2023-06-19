@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 public abstract class ElementScreen extends CommonScreen {
     protected final RootScreenElement rootScreenElement;
     protected ScreenElement focusedElement;
+    protected ScreenElement selectedElement;
 
     protected ElementScreen(Component component) {
         super(component);
@@ -21,19 +22,32 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     @Override
+    public final boolean mouseClicked(double x, double y, int code) {
+        updateSelectedElement();
+        if (getSelectedElement() != null) {
+            return getSelectedElement().mouseDown((float) x, (float) y, code);
+        } else {
+            return super.mouseClicked(x, y, code);
+        }
+    }
+
+    @Override
     protected void beforeRender(ScreenRenderingContext ctx) {
         super.beforeRender(ctx);
         updateFocusedElement(ctx.getMouseX(), ctx.getMouseY());
     }
 
+    @Override
     protected void render(ScreenRenderingContext ctx) {
         super.render(ctx);
         rootScreenElement.render(ctx);
     }
 
-    public final ScreenElement getFocusedElement() { return focusedElement; }
+    public final ScreenElement getFocusedElement() {
+        return focusedElement;
+    }
 
-    private void updateFocusedElement(int x, int y) {
+    private void updateFocusedElement(float x, float y) {
         if (focusedElement == null || !focusedElement.isFocused(x, y)) {
             focusedElement = rootScreenElement.focus(x, y);
         } else {
@@ -41,6 +55,13 @@ public abstract class ElementScreen extends CommonScreen {
         }
     }
 
+    public final ScreenElement getSelectedElement() {
+        return selectedElement;
+    }
+
+    private void updateSelectedElement() {
+        selectedElement = getFocusedElement();
+    }
 
     /**
      * Relocate the sub elements of root element.
@@ -51,10 +72,7 @@ public abstract class ElementScreen extends CommonScreen {
 
     private final class RootScreenElement extends ScreenElement {
         @Override
-        protected void renderContent(ScreenRenderingContext ctx) {}
-
-        @Override
-        public void resizeBox(int width, int height) {
+        public void onResize(int width, int height) {
             box.set(0, 0, width, height);
             ElementScreen.this.resizeBox(width, height);
         }
