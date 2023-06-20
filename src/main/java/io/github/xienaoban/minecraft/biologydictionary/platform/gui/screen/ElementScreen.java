@@ -48,10 +48,10 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     private void updateFocusedElement(float x, float y) {
-        if (focusedElement == null || !focusedElement.isFocused(x, y)) {
-            focusedElement = rootScreenElement.focus(x, y);
-        } else {
+        if (focusedElement != null && focusedElement.isFocused(x, y)) {
             focusedElement = focusedElement.focus(x, y);
+        } else {
+            focusedElement = rootScreenElement.focus(x, y);
         }
     }
 
@@ -60,7 +60,11 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     private void updateSelectedElement() {
-        selectedElement = getFocusedElement();
+        ScreenElement element = getFocusedElement();
+        while (element != null && !element.isSelectable()) {
+            element = element.getParent();
+        }
+        selectedElement = element;
     }
 
     /**
@@ -71,6 +75,10 @@ public abstract class ElementScreen extends CommonScreen {
     protected abstract void resizeBox(int width, int height);
 
     private final class RootScreenElement extends ScreenElement {
+        public RootScreenElement() {
+            super(false);
+        }
+
         @Override
         public void onResize(int width, int height) {
             box.set(0, 0, width, height);

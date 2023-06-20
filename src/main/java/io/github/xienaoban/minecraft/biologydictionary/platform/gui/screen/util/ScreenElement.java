@@ -13,17 +13,20 @@ public abstract class ScreenElement {
     @Nullable protected ScreenElement parent;
     protected final ScreenElementBox box;
     protected final ArrayList<ScreenElement> subScreenElements;
+    private boolean selectable;
 
     public ScreenElement() {
+        this(true);
+    }
+
+    public ScreenElement(boolean selectable) {
         this.parent = null;
         this.box = new ScreenElementBox();
         this.subScreenElements = new ArrayList<>();
+        this.selectable = selectable;
     }
 
-    public final ScreenElementBox getBox() { return box; }
-
     @Nullable public final ScreenElement getParent() { return parent; }
-
     public final void setParent(ScreenElement newParent) {
         setParent(newParent, false);
     }
@@ -49,10 +52,11 @@ public abstract class ScreenElement {
     public final void render(ScreenRenderingContext ctx) {
         onRender(ctx);
         if (ctx.isDebug() && box.getWidth() * box.getHeight() > 0) {
+            ElementScreen screen = (ElementScreen) ctx.getScreen();
             final int color;
-            if (this == ((ElementScreen) ctx.getScreen()).getSelectedElement()) color = 0xFF00FF00;
-            else if (this == ((ElementScreen) ctx.getScreen()).getFocusedElement()) color = 0xFFFFFF00;
-            else if (isFocused(ctx.getMouseX(), ctx.getMouseY())) color = 0xFF0000FF;
+            if (this == screen.getSelectedElement()) color = 0xFF00FF00;
+            else if (this == screen.getFocusedElement()) color = 0xFFFFFF00;
+            else if (contains(screen.getFocusedElement())) color = 0xFF0000FF;
             else color = 0xFFFF0000;
             ctx.getScreen().renderRectangle(ctx, color, 1, ctx.getScreen().getZ(),
                     (int) box.getLeft(), (int) box.getTop(), (int) box.getRight(), (int) box.getBottom());
@@ -116,5 +120,39 @@ public abstract class ScreenElement {
 
     public void clearSubScreenElements() {
         subScreenElements.clear();
+    }
+
+    public final ScreenElementBox getBox() {
+        return box;
+    }
+
+    public boolean isSelectable() {
+        return selectable;
+    }
+
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
+
+    /**
+     * In theory, the return value of this and {@link #contains} should be the same.
+     */
+    public final boolean isInStack(ScreenElement element) {
+        while (element != null) {
+            if (this == element) return true;
+            element = element.getParent();
+        }
+        return false;
+    }
+
+    /**
+     * In theory, the return value of this and {@link #isInStack} should be the same.
+     */
+    public final boolean contains(ScreenElement element) {
+        if (element == null) return false;
+        ScreenElementBox bi = element.getBox();
+        ScreenElementBox bo = getBox();
+        return bi.getLeft() >= bo.getLeft() && bi.getTop() >= bo.getTop()
+                && bi.getRight() <= bo.getRight() && bi.getBottom() <= bo.getBottom();
     }
 }

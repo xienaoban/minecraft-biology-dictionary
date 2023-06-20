@@ -12,6 +12,7 @@ public final class Page extends ScreenElement {
     private final Widget[][] widgetLayout;
 
     public Page() {
+        super(false);
         widgetLayout = new Widget[ROWS][COLUMNS];
         box.setSize(PAGE_WIDTH, PAGE_HEIGHT);
         for (int i = 0; i < 5; ++i) {
@@ -33,6 +34,7 @@ public final class Page extends ScreenElement {
             addWidget(new Widget(1, 1) {
                 @Override
                 protected void onRender(ScreenRenderingContext ctx) {
+                    setSelectable(false);
                     ctx.getScreen().renderCenteredText(ctx, Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE), 0xFF0000FF, (int) box.getLeft() + Widget.WIDGET_WIDTH / 2, (int) box.getTop() + 4);
                 }
             });
@@ -98,6 +100,7 @@ public final class Page extends ScreenElement {
         public WidgetPlaceholder(int holderRow, int holderCol) {
             this.holderRow = holderRow;
             this.holderCol = holderCol;
+            setSelectable(false);
         }
 
         public int getHolderRow() { return holderRow; }
