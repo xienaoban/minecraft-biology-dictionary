@@ -2,7 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 
 import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.minecraft.biologydictionary.gui.Textures;
-import io.github.xienaoban.minecraft.biologydictionary.gui.screen.widget.Page;
+import io.github.xienaoban.minecraft.biologydictionary.gui.screen.util.Page;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;

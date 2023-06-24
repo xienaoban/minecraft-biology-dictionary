@@ -2,8 +2,11 @@ package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 
+@Environment(EnvType.CLIENT)
 public abstract class ElementScreen extends CommonScreen {
     protected final RootScreenElement rootScreenElement;
     protected ScreenElement focusedElement;

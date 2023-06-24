@@ -1,8 +1,11 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui;
 
 import io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
 
+@Environment(EnvType.CLIENT)
 public final class Textures {
     public static final ResourceLocation HORSE_SCREEN = new ResourceLocation("textures/gui/container/horse.png");
 

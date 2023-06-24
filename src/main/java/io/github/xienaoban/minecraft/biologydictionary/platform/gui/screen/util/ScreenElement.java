@@ -1,6 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.ElementScreen;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
  * A rectangular element on the screen.
  * Each element does not overlap in pairs.
  */
+@Environment(EnvType.CLIENT)
 public abstract class ScreenElement {
     @Nullable protected ScreenElement parent;
     protected final ScreenElementBox box;
@@ -76,7 +79,7 @@ public abstract class ScreenElement {
     }
 
     public final boolean isFocused(float x, float y) {
-        return x > box.getLeft() && x < box.getRight() && y > box.getTop() && y < box.getBottom();
+        return x >= box.getLeft() && x < box.getRight() && y >= box.getTop() && y < box.getBottom();
     }
 
     public final boolean mouseDown(float x, float y, int code) {

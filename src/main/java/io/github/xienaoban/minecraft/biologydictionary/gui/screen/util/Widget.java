@@ -1,7 +1,10 @@
-package io.github.xienaoban.minecraft.biologydictionary.gui.screen.widget;
+package io.github.xienaoban.minecraft.biologydictionary.gui.screen.util;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenElement;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
+@Environment(EnvType.CLIENT)
 public abstract class Widget extends ScreenElement {
     public static final int WIDGET_WIDTH = 54, WIDGET_WIDTH_MARGIN = 2;
     public static final int WIDGET_HEIGHT = 16, WIDGET_HEIGHT_MARGIN = 2;

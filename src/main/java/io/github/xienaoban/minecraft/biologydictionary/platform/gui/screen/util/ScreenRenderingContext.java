@@ -1,9 +1,12 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 
+@Environment(EnvType.CLIENT)
 public final class ScreenRenderingContext {
     private final CommonScreen screen;
 

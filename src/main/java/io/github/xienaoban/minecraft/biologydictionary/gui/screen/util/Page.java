@@ -1,10 +1,13 @@
-package io.github.xienaoban.minecraft.biologydictionary.gui.screen.widget;
+package io.github.xienaoban.minecraft.biologydictionary.gui.screen.util;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 
+@Environment(EnvType.CLIENT)
 public final class Page extends ScreenElement {
     public static final int PAGE_WIDTH = 110, PAGE_HEIGHT = 142;
     public static final int ROWS = 8, COLUMNS = 2;
@@ -42,7 +45,9 @@ public final class Page extends ScreenElement {
     }
 
     @Override
-    protected void onRender(ScreenRenderingContext ctx) {}
+    protected void onRender(ScreenRenderingContext ctx) {
+        // render nothing for now
+    }
 
     @Override
     protected void onResize(int width, int height) {

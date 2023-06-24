@@ -2,6 +2,8 @@ package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.GuiGraphicsIMixin;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
@@ -13,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
  * 1. Because the APIs always change between different MC versions.
  * 2. Because the parameter names of the methods are missing when using the official mappings.
  */
+@Environment(EnvType.CLIENT)
 public abstract class CommonScreen extends Screen {
     protected final ScreenRenderingContext screenRenderingContext;
 
