@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.gui.screen.util;
+package io.github.xienaoban.minecraft.biologydictionary.gui.component;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenElement;
 import net.fabricmc.api.EnvType;
@@ -14,7 +14,7 @@ public abstract class Widget extends ScreenElement {
     protected Widget() {
         this.rows = 0;
         this.columns = 0;
-        box.setSize(0, 0);
+        getBox().setSize(0, 0);
     }
 
     protected Widget(int rows, int columns) {
@@ -28,7 +28,7 @@ public abstract class Widget extends ScreenElement {
         int width = (WIDGET_WIDTH + WIDGET_WIDTH_MARGIN) * columns - WIDGET_WIDTH_MARGIN;
         this.rows = rows;
         this.columns = columns;
-        box.setSize(width, height);
+        getBox().setSize(width, height);
     }
 
     public int getRows() { return rows; }

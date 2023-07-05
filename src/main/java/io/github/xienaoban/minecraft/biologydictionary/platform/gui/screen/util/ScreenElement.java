@@ -14,8 +14,8 @@ import java.util.ArrayList;
 @Environment(EnvType.CLIENT)
 public abstract class ScreenElement {
     @Nullable protected ScreenElement parent;
-    protected final ScreenElementBox box;
-    protected final ArrayList<ScreenElement> subScreenElements;
+    private final ScreenElementBox box;
+    private final ArrayList<ScreenElement> subScreenElements;
     private boolean selectable;
 
     public ScreenElement() {
@@ -127,6 +127,10 @@ public abstract class ScreenElement {
 
     public final ScreenElementBox getBox() {
         return box;
+    }
+
+    public ArrayList<ScreenElement> getSubScreenElements() {
+        return subScreenElements;
     }
 
     public boolean isSelectable() {

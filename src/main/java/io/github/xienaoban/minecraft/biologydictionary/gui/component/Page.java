@@ -1,47 +1,45 @@
-package io.github.xienaoban.minecraft.biologydictionary.gui.screen.util;
+package io.github.xienaoban.minecraft.biologydictionary.gui.component;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public final class Page extends ScreenElement {
     public static final int PAGE_WIDTH = 110, PAGE_HEIGHT = 142;
     public static final int ROWS = 8, COLUMNS = 2;
 
-    private final Widget[][] widgetLayout;
+    private final Widget[][] widgetLayout;  // widgetLayout[row][column]
 
     public Page() {
         super(false);
         widgetLayout = new Widget[ROWS][COLUMNS];
-        box.setSize(PAGE_WIDTH, PAGE_HEIGHT);
-        for (int i = 0; i < 5; ++i) {
-            addWidget(new Widget(1, 1) {
-                @Override
-                protected void onRender(ScreenRenderingContext ctx) {
-                    ctx.getScreen().renderCenteredText(ctx, Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE), 0xFF0000FF, (int) box.getLeft() + Widget.WIDGET_WIDTH / 2, (int) box.getTop() + 4);
-                }
-
-            });
-        }
-        addWidget(new Widget(3, 2) {
-            @Override
-            protected boolean onMouseDown(float x, float y, int code) {
-                return true;
-            }
-        });
-        for (int i = 0; i < 8; ++i) {
-            addWidget(new Widget(1, 1) {
-                @Override
-                protected void onRender(ScreenRenderingContext ctx) {
-                    setSelectable(false);
-                    ctx.getScreen().renderCenteredText(ctx, Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE), 0xFF0000FF, (int) box.getLeft() + Widget.WIDGET_WIDTH / 2, (int) box.getTop() + 4);
-                }
-            });
-        }
+        getBox().setSize(PAGE_WIDTH, PAGE_HEIGHT);
+//        for (int i = 0; i < 5; ++i) {
+//            addWidget(new Widget(1, 1) {
+//                @Override
+//                protected void onRender(ScreenRenderingContext ctx) {
+//                    ctx.getScreen().renderCenteredText(ctx, Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE), 0xFF0000FF, (int) getBox().getLeft() + Widget.WIDGET_WIDTH / 2, (int) getBox().getTop() + 4);
+//                }
+//
+//            });
+//        }
+//        addWidget(new Widget(3, 2) {
+//            @Override
+//            protected boolean onMouseDown(float x, float y, int code) {
+//                return true;
+//            }
+//        });
+//        for (int i = 0; i < 8; ++i) {
+//            addWidget(new Widget(1, 1) {
+//                @Override
+//                protected void onRender(ScreenRenderingContext ctx) {
+//                    setSelectable(false);
+//                    ctx.getScreen().renderCenteredText(ctx, Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE), 0xFF0000FF, (int) getBox().getLeft() + Widget.WIDGET_WIDTH / 2, (int) getBox().getTop() + 4);
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -54,8 +52,8 @@ public final class Page extends ScreenElement {
         for (int r = 0; r < ROWS; ++r) for (int c = 0; c < COLUMNS; ++c) {
             Widget widget = widgetLayout[r][c];
             if (widget == null || widget instanceof WidgetPlaceholder) continue;
-            float left = box.getLeft() + (Widget.WIDGET_WIDTH + Widget.WIDGET_WIDTH_MARGIN) * c;
-            float top = box.getTop() + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * r;
+            float left = getBox().getLeft() + (Widget.WIDGET_WIDTH + Widget.WIDGET_WIDTH_MARGIN) * c;
+            float top = getBox().getTop() + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * r;
             widget.getBox().setPosition(left, top);
         }
     }

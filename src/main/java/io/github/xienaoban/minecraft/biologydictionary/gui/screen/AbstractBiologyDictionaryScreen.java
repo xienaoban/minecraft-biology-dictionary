@@ -2,7 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 
 import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.minecraft.biologydictionary.gui.Textures;
-import io.github.xienaoban.minecraft.biologydictionary.gui.screen.util.Page;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
@@ -18,16 +18,18 @@ public class AbstractBiologyDictionaryScreen extends ElementScreen {
     public static final int BOOK_LEFT = 96, BOOK_TOP = 0, BOOK_RIGHT = 416, BOOK_BOTTOM = 192;
     public static final int BOOK_WIDTH = BOOK_RIGHT - BOOK_LEFT, BOOK_HEIGHT = BOOK_BOTTOM - BOOK_TOP;
 
-    protected final List<Page> pages;
-    protected Page curLeftPage, curRightPage;
+    private final List<Page> pages;
+    private Page curLeftPage, curRightPage;
 
     public AbstractBiologyDictionaryScreen() {
         super(Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE));
         pages = new ArrayList<>();
         curLeftPage = new Page();
-        curLeftPage.setParent(rootScreenElement);
+        curLeftPage.setParent(getRootScreenElement());
         curRightPage = new Page();
-        curRightPage.setParent(rootScreenElement);
+        curRightPage.setParent(getRootScreenElement());
+        pages.add(curLeftPage);
+        pages.add(curRightPage);
     }
 
     @Override
@@ -72,5 +74,34 @@ public class AbstractBiologyDictionaryScreen extends ElementScreen {
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    public Page getPage(int index) {
+        try {
+            return pages.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    public Page addPage() {
+        Page newPage = new Page();
+        pages.add(newPage);
+        return newPage;
+    }
+
+    public Page getOrAddPage(int index) {
+        while (index >= pages.size()) {
+            pages.add(new Page());
+        }
+        return pages.get(index);
+    }
+
+    public Page getCurLeftPage() {
+        return curLeftPage;
+    }
+
+    public Page getCurRightPage() {
+        return curRightPage;
     }
 }

@@ -1,5 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
+import io.github.xienaoban.minecraft.biologydictionary.core.registry.EntityWidgetRegistryManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,6 +11,7 @@ public class BiologyDictionary {
     public static final BiologyDictionary BD = new BiologyDictionary();
 
     private BiologyDictionary() {
+        EntityWidgetRegistryManager.init();
         LOGGER.info("BiologyDictionary initialized.");
     }
 

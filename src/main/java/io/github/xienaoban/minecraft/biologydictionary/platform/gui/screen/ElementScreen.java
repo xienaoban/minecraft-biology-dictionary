@@ -8,9 +8,9 @@ import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public abstract class ElementScreen extends CommonScreen {
-    protected final RootScreenElement rootScreenElement;
-    protected ScreenElement focusedElement;
-    protected ScreenElement selectedElement;
+    private final RootScreenElement rootScreenElement;
+    private ScreenElement focusedElement;
+    private ScreenElement selectedElement;
 
     protected ElementScreen(Component component) {
         super(component);
@@ -70,6 +70,10 @@ public abstract class ElementScreen extends CommonScreen {
         selectedElement = element;
     }
 
+    public final ScreenElement getRootScreenElement() {
+        return rootScreenElement;
+    }
+
     /**
      * Relocate the sub elements of root element.
      * @param width the new width of the screen, same with this.width
@@ -84,7 +88,7 @@ public abstract class ElementScreen extends CommonScreen {
 
         @Override
         public void onResize(int width, int height) {
-            box.set(0, 0, width, height);
+            getBox().set(0, 0, width, height);
             ElementScreen.this.resizeBox(width, height);
         }
     }
