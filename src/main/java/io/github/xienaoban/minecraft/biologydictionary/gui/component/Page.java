@@ -16,30 +16,6 @@ public final class Page extends ScreenElement {
         super(false);
         widgetLayout = new Widget[ROWS][COLUMNS];
         getBox().setSize(PAGE_WIDTH, PAGE_HEIGHT);
-//        for (int i = 0; i < 5; ++i) {
-//            addWidget(new Widget(1, 1) {
-//                @Override
-//                protected void onRender(ScreenRenderingContext ctx) {
-//                    ctx.getScreen().renderCenteredText(ctx, Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE), 0xFF0000FF, (int) getBox().getLeft() + Widget.WIDGET_WIDTH / 2, (int) getBox().getTop() + 4);
-//                }
-//
-//            });
-//        }
-//        addWidget(new Widget(3, 2) {
-//            @Override
-//            protected boolean onMouseDown(float x, float y, int code) {
-//                return true;
-//            }
-//        });
-//        for (int i = 0; i < 8; ++i) {
-//            addWidget(new Widget(1, 1) {
-//                @Override
-//                protected void onRender(ScreenRenderingContext ctx) {
-//                    setSelectable(false);
-//                    ctx.getScreen().renderCenteredText(ctx, Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE), 0xFF0000FF, (int) getBox().getLeft() + Widget.WIDGET_WIDTH / 2, (int) getBox().getTop() + 4);
-//                }
-//            });
-//        }
     }
 
     @Override

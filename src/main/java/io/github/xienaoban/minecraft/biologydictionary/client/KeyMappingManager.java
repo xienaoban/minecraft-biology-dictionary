@@ -1,7 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import io.github.xienaoban.minecraft.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.client.ClientEventRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.platform.client.KeyMappingRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
@@ -18,10 +17,10 @@ public final class KeyMappingManager {
     public static void init() {
         KeyMappingRegistry.registerKeyMapping(OPEN_BIOLOGY_DICTIONARY_SCREEN);
         KeyMappingRegistry.registerKeyMapping(TOGGLE_DEBUG);
-        ClientEventRegistry.registerEndTick(client -> {
+        ClientEventRegistry.registerEndTick(minecraft -> {
             while (OPEN_BIOLOGY_DICTIONARY_SCREEN.consumeClick()) {
-                if (client.player != null) {
-                    client.setScreen(new AbstractBiologyDictionaryScreen());
+                if (minecraft.player != null) {
+                    BiologyDictionaryEvent.openBookScreen(minecraft);
                 }
             }
         });

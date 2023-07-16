@@ -3,6 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.ElementScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -63,6 +64,8 @@ public abstract class ScreenElement {
             else color = 0xFFFF0000;
             ctx.getScreen().renderRectangle(ctx, color, 1, ctx.getScreen().getZ(),
                     (int) box.getLeft(), (int) box.getTop(), (int) box.getRight(), (int) box.getBottom());
+            ctx.getScreen().renderText(ctx, Component.literal(getClass().getSimpleName()), 0xFF7719AA,
+                    (int) box.getLeft() + 1, (int) box.getTop() - 8);
         }
         for (ScreenElement subEle : subScreenElements) {
             subEle.render(ctx);

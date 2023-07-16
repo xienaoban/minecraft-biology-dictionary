@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class AbstractBiologyDictionaryScreen extends ElementScreen {
+public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     public static final int BOOK_LEFT = 96, BOOK_TOP = 0, BOOK_RIGHT = 416, BOOK_BOTTOM = 192;
     public static final int BOOK_WIDTH = BOOK_RIGHT - BOOK_LEFT, BOOK_HEIGHT = BOOK_BOTTOM - BOOK_TOP;
 
@@ -47,8 +47,16 @@ public class AbstractBiologyDictionaryScreen extends ElementScreen {
                 (width - BOOK_WIDTH) / 2, (height - BOOK_HEIGHT) / 2,
                 (width + BOOK_WIDTH) / 2, (height + BOOK_HEIGHT) / 2);
 
+        if (ctx.isDebug()) {
+            renderDebug(ctx);
+        }
+
         // invoke it finally
         super.render(ctx);
+    }
+
+    private void renderDebug(ScreenRenderingContext ctx) {
+        renderText(ctx, Component.literal(this.getClass().getSimpleName()), 0xFFFFFFFF, 2, 2);
     }
 
     @Override

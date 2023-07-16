@@ -4,11 +4,15 @@ import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.
 import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.GuiGraphicsIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 
 /**
  * Why wrap the rendering APIs here?
@@ -43,7 +47,7 @@ public abstract class CommonScreen extends Screen {
     public final int getZ() { return 0; }
 
     public final void renderText(ScreenRenderingContext ctx, Component component, int color, int x, int y) {
-        ctx.getGuiGraphics().drawString(font, component, x, y, color);
+        ctx.getGuiGraphics().drawString(font, component, x, y, color, false);
     }
 
     public final void renderCenteredText(ScreenRenderingContext ctx, Component component, int color, int x, int y) {
@@ -91,5 +95,12 @@ public abstract class CommonScreen extends Screen {
         ((GuiGraphicsIMixin) ctx.getGuiGraphics()).callInnerBlit(texture, left, right, top, bottom, z,
                 (float) textureLeft / (float) resourceWidth, (float) textureRight / (float) resourceWidth,
                 (float) textureTop / (float) resourceHeight, (float) textureBottom / (float) resourceHeight);
+    }
+
+    /**
+     * @see net.minecraft.client.gui.screens.inventory.PageButton#playDownSound(SoundManager)
+     */
+    public static void playScreenSound(SoundEvent sound, float volume, float pitch) {
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));
     }
 }
