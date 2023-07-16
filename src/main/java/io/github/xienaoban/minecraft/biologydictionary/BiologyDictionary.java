@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class BiologyDictionary {
-    public static final String MOD_ID = "biology-dictionary";
+    public static final String MOD_ID = "biologydictionary";
     public static final String MOD_KEY = "biology_dictionary";
 
     public static final String MODRINTH_PAGE = "https://modrinth.com/mod/bole";

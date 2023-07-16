@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "biology-dictionary:item/handbook"
+    "layer0": "biologydictionary:item/handbook"
   }
 }
