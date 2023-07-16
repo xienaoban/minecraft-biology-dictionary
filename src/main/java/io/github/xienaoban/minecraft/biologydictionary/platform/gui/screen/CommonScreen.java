@@ -51,7 +51,7 @@ public abstract class CommonScreen extends Screen {
     }
 
     public final void renderCenteredText(ScreenRenderingContext ctx, Component component, int color, int x, int y) {
-        ctx.getGuiGraphics().drawCenteredString(font, component, x, y, color);
+        ctx.getGuiGraphics().drawString(font, component, x - font.width(component) / 2, y, color, false);
     }
 
     public final void renderHorizontalLine(ScreenRenderingContext ctx, int color, int width, int z, int y, int left, int right) {

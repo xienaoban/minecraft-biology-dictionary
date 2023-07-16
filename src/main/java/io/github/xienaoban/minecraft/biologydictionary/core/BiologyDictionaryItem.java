@@ -2,6 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.core;
 
 import io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.DevApi;
+import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.MinecraftMixin;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -11,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.WrittenBookItem;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * If the mod is installed correctly, a biology dictionary screen will be opened when the player right-clicks the book.
@@ -18,15 +20,21 @@ import net.minecraft.world.item.WrittenBookItem;
  * <p>
  * I didn't choose to define a new book item, instead I just made a book with custom NBT to ensure a good compatibility.
  * And I implemented the opening of the book in the mixin.
- * @see
+ * @see MinecraftMixin#useBiologyDictionaryScreen(CallbackInfo)
  */
 public class BiologyDictionaryItem {
     // Any writable book with this nbt key will be recognized as a biology dictionary.
-    public static final String ID = BiologyDictionary.MOD_KEY;
+    public static final String ID = BiologyDictionary.MOD_ID;
 
     public static ItemStack createBook() {
         return createWritableBook();
         // return createWrittenPages();
+    }
+
+    public static boolean isBook(ItemStack stack) {
+        if (stack == null || !stack.is(Items.WRITABLE_BOOK) || !stack.hasTag()) return false;
+        assert stack.getTag() != null;
+        return stack.getTag().contains(ID, Tag.TAG_STRING);
     }
 
     private static ItemStack createWritableBook() {

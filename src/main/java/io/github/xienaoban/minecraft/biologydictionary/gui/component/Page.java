@@ -77,6 +77,7 @@ public final class Page extends ScreenElement {
         private final int holderRow, holderCol;
 
         public WidgetPlaceholder(int holderRow, int holderCol) {
+            super(1, 1);
             this.holderRow = holderRow;
             this.holderCol = holderCol;
             setSelectable(false);

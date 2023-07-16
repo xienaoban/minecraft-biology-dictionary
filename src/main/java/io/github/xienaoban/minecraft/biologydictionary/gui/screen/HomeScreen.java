@@ -1,13 +1,15 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.minecraft.network.chat.Component;
 
 public class HomeScreen extends AbstractBiologyDictionaryScreen {
     public HomeScreen() {
-        for (int i = 0; i < 5; ++i) {
+        getOrAddPage(0).addWidget(new GetBookItemWidget());
+        for (int i = 0; i < 3; ++i) {
             if (!getOrAddPage(0).addWidget(new Widget(1, 1) {
                 @Override
                 protected void onRender(ScreenRenderingContext ctx) {
@@ -33,8 +35,23 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    @Override
-    protected void render(ScreenRenderingContext ctx) {
-        super.render(ctx);
+    private class GetBookItemWidget extends Widget {
+        protected GetBookItemWidget() {
+            super(1, 2);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            if (ctx.isDebug()) {
+                ctx.getScreen().renderCenteredText(ctx, Component.literal("Get Book Item"), 0xFF000000, (int) getBox().getLeft() + (int) getBox().getWidth() / 2, (int) getBox().getTop() + 4);
+            }
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            ClientNetManager.sendRequestBookItem();
+            onClose();
+            return true;
+        }
     }
 }

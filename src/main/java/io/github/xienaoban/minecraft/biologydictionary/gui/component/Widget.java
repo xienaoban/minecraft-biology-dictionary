@@ -11,12 +11,6 @@ public abstract class Widget extends ScreenElement {
 
     private final int rows, columns;
 
-    protected Widget() {
-        this.rows = 0;
-        this.columns = 0;
-        getBox().setSize(0, 0);
-    }
-
     protected Widget(int rows, int columns) {
         if (rows <= 0 || rows > Page.ROWS) {
             throw new IllegalStateException("Unexpected value: " + rows);

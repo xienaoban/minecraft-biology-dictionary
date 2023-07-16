@@ -6,6 +6,6 @@
   "key.biologydictionary.open_handbook": "打开手册",
   "key.biologydictionary.debug": "切换调试模式",
   "text.biologydictionary.mod_name_is": "模组名：",
-  "text.biologydictionary.mod_not_installed": "如果您看到了此段文字，说明您并未安装“生物辞典”模组，您可以前往以下网址下载本模组：",
+  "text.biologydictionary.mod_not_installed": "如果您看到了此段文字，说明您本地并未安装“生物辞典”模组，您可以前往以下网址下载本模组：",
   "text.biologydictionary.click_me_to_download": "点我点我点我！（≧.≦）"
 }
