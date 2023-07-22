@@ -10,15 +10,15 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
-    private final Entity entity;
+    private final Entity target;
 
-    public EntityDetailScreen(Entity entity) {
-        this.entity = entity;
-
+    public EntityDetailScreen(Entity target) {
+        this.target = target;
+        initEntityWidgets();
     }
 
     private void initEntityWidgets() {
-        List<EntityWidget<? extends Entity>> widgets = EntityWidgetManager.getInstance().getWidgets(entity);
+        List<EntityWidget<? extends Entity>> widgets = EntityWidgetManager.getInstance().getWidgets(target);
         widgets.forEach(widget -> getPage(0).addWidget(widget));
     }
 }
