@@ -7,8 +7,8 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public final class Page extends ScreenElement {
-    public static final int PAGE_WIDTH = 110, PAGE_HEIGHT = 142;
-    public static final int ROWS = 8, COLUMNS = 4;
+    public static final int PAGE_WIDTH = 112, PAGE_HEIGHT = 142;
+    public static final int ROWS = 8, COLUMNS = 6;
 
     private final Widget[][] widgetLayout;  // widgetLayout[row][column]
 

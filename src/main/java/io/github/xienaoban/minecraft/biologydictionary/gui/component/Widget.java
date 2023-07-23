@@ -6,8 +6,8 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public abstract class Widget extends ScreenElement {
-    public static final int WIDGET_WIDTH = 26, WIDGET_WIDTH_MARGIN = 2;
-    public static final int WIDGET_HEIGHT = 16, WIDGET_HEIGHT_MARGIN = 2;
+    public static final int WIDGET_WIDTH = 12, WIDGET_WIDTH_MARGIN = 8;
+    public static final int WIDGET_HEIGHT = 12, WIDGET_HEIGHT_MARGIN = 6;
 
     private final int rows, columns;
 

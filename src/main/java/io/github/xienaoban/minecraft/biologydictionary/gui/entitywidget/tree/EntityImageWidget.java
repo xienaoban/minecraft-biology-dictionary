@@ -13,8 +13,8 @@ public class EntityImageWidget extends EntityWidget<Entity> {
     private static RC calculateRowsAndColumns(Entity entity) {
         AABB box = entity.getBoundingBox();
         double x = box.getXsize(), y = box.getYsize();
-        if (x > y) return new RC(3, 4);
-        return new RC(6, 2);
+        if (x > y || x * y < 1) return new RC(3, 6);
+        return new RC(6, 3);
     }
 
     public EntityImageWidget(Entity entity) {

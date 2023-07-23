@@ -11,12 +11,12 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
     public HomeScreen() {
         getOrAddPage(0).addWidget(new GetBookItemWidget());
         for (int i = 0; i < 5; ++i) {
-            if (!getOrAddPage(0).addWidget(new Widget(1, 2) {
+            if (!getOrAddPage(0).addWidget(new Widget(1, 3) {
                 @Override
                 protected void onRender(ScreenRenderingContext ctx) {
-                    ctx.getScreen().renderRectangle(ctx, 0xFF000000, 1, getZ(), (int) getBox().getLeft() + 1, (int) getBox().getTop() + 2, (int) getBox().getLeft() + 13, (int) getBox().getBottom() - 2);
-                    ctx.getScreen().renderRectangle(ctx, 0xFFEE5555, getZ(), (int) getBox().getLeft() + 14, (int) getBox().getTop() + 8, (int) getBox().getRight() - 1, (int) getBox().getBottom() - 2);
-                    ctx.getScreen().renderText(ctx, Component.literal("256"), 0xFF222222, (int) getBox().getLeft() + 16, (int) getBox().getTop() + 4);
+                    ctx.getScreen().renderRectangle(ctx, 0xFF000000, 1, getZ(), (int) getBox().getLeft(), (int) getBox().getTop(), (int) getBox().getLeft() + 12, (int) getBox().getBottom());
+                    ctx.getScreen().renderRectangle(ctx, 0xFFEE5555, getZ(), (int) getBox().getLeft() + 13, (int) getBox().getTop() + 5, (int) getBox().getRight(), (int) getBox().getBottom() - 1);
+                    ctx.getScreen().renderText(ctx, Component.literal("256"), 0xFF222222, (int) getBox().getLeft() + 16, (int) getBox().getTop() + 2);
                 }
 
             })) System.out.println("aaa?");
@@ -27,14 +27,22 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
                 return true;
             }
         })) System.out.println("bbb?");
-        for (int i = 0; i < 9; ++i) {
+        for (int i = 0; i < 3; ++i) {
+            if (!getOrAddPage(0).addWidget(new Widget(1, 2) {
+                @Override
+                protected void onRender(ScreenRenderingContext ctx) {
+                    setSelectable(false);
+                    ctx.getScreen().renderRectangle(ctx, 0xFF000000, 1, getZ(), (int) getBox().getLeft(), (int) getBox().getTop(), (int) getBox().getLeft() + 12, (int) getBox().getBottom());
+                    ctx.getScreen().renderRectangle(ctx, 0xFF333333, 1, getZ(), (int) getBox().getLeft() + 13, (int) getBox().getTop() + 2, (int) getBox().getLeft() + 21, (int) getBox().getBottom() - 2);
+                }
+            })) System.out.println("ccc?");;
+        }
+        for (int i = 0; i < 8; ++i) {
             if (!getOrAddPage(0).addWidget(new Widget(1, 1) {
                 @Override
                 protected void onRender(ScreenRenderingContext ctx) {
                     setSelectable(false);
-                    ctx.getScreen().renderRectangle(ctx, 0xFF000000, 1, getZ(), (int) getBox().getLeft() + 1, (int) getBox().getTop() + 2, (int) getBox().getLeft() + 13, (int) getBox().getBottom() - 2);
-                    ctx.getScreen().renderRectangle(ctx, 0xFF333333, 1, getZ(), (int) getBox().getLeft() + 15, (int) getBox().getTop() + 4, (int) getBox().getLeft() + 23, (int) getBox().getBottom() - 4);
-                    // ctx.getScreen().renderText(ctx, Component.literal("25"), 0xFF0000FF, (int) getBox().getLeft() + 15, (int) getBox().getTop() + 4);
+                    ctx.getScreen().renderRectangle(ctx, 0xFF000000, 1, getZ(), (int) getBox().getLeft(), (int) getBox().getTop(), (int) getBox().getLeft() + 12, (int) getBox().getBottom());
                 }
             })) System.out.println("ccc?");;
         }
@@ -48,7 +56,7 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             if (ctx.isDebug()) {
-                ctx.getScreen().renderCenteredText(ctx, Component.literal("Get Book Item"), 0xFF000000, (int) getBox().getLeft() + (int) getBox().getWidth() / 2, (int) getBox().getTop() + 4);
+                ctx.getScreen().renderCenteredText(ctx, Component.literal("Get Book Item"), 0xFF000000, (int) getBox().getLeft() + (int) getBox().getWidth() / 2, (int) getBox().getTop() + 2);
             }
         }
 

@@ -32,9 +32,9 @@ public class BiologyDictionaryEvent {
         Entity target;
         float y = player.getXRot();
         HitResult hit = minecraft.hitResult;
-        if (y > 0.998F * 90.0F) target = null;
-        else if (y < -0.998F * 90.0F) target = player;
-        else if (y < -0.886F * 90.0F && player.isPassenger()) target = player.getVehicle();
+        if (y < -0.996F * 90.0F) target = null;
+        else if (y > 0.996F * 90.0F) target = player;
+        else if (y > 0.822F * 90.0F && player.isPassenger()) target = player.getVehicle();
         else if (hit == null) target = null;
         else if (hit.getType() != HitResult.Type.ENTITY) {
             if (hit.getType() == HitResult.Type.BLOCK) {
