@@ -1,7 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.registry.tree;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetRegistry;
-import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetFactory;
 import io.github.xienaoban.minecraft.biologydictionary.gui.entitywidget.tree.EntityImageWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

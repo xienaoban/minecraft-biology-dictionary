@@ -1,6 +1,5 @@
 package io.github.xienaoban.minecraft.biologydictionary.client;
 
-import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetFactory;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.core.registry.EntityWidgetRegistryManager;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityWidget;
@@ -22,7 +21,7 @@ public final class EntityWidgetManager {
         EntityWidgetRegistryManager.getInstance().getRegistries().forEach(manager::register);
     }
 
-    private final Map<Class<? extends Entity>, List<EntityWidgetFactory<? extends Entity>>> widgets;
+    private final Map<Class<? extends Entity>, List<EntityWidgetRegistry.EntityWidgetFactory<? extends Entity>>> widgets;
 
     private EntityWidgetManager() {
         widgets = new HashMap<>();
@@ -32,7 +31,7 @@ public final class EntityWidgetManager {
         register(registry.getEntityClass(), registry.getWidgetFactory());
     }
 
-    private <E extends Entity> void register(Class<E> entityClazz, EntityWidgetFactory<E> widgetFactory) {
+    private <E extends Entity> void register(Class<E> entityClazz, EntityWidgetRegistry.EntityWidgetFactory<E> widgetFactory) {
         widgets.computeIfAbsent(entityClazz,  clazz ->  new ArrayList<>()).add(widgetFactory);
     }
 

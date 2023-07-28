@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.registry;
 
-import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetRegister;
+import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetRegistrar;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.core.registry.tree.EntityImageWidgetRegistry;
 import net.minecraft.world.entity.Entity;
@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Set;
 
 
-public final class EntityWidgetRegistryManager {
+public final class EntityWidgetRegistryManager implements EntityWidgetRegistrar {
     private static final EntityWidgetRegistryManager INSTANCE = new EntityWidgetRegistryManager();
 
     public static EntityWidgetRegistryManager getInstance() { return INSTANCE; }
 
     public static void init() {
-        new DefaultEntityWidgetRegistries().registerTo(getInstance());
-        getInstance().clear();
+        getInstance().registerDefaultEntityWidgets();
+        getInstance().clearCache();
     }
 
     private final List<EntityWidgetRegistry<? extends Entity>> registries;
@@ -36,7 +36,7 @@ public final class EntityWidgetRegistryManager {
         }
     }
 
-    private void clear() {
+    private void clearCache() {
         visited = null;
     }
 
@@ -44,10 +44,7 @@ public final class EntityWidgetRegistryManager {
         return registries;
     }
 
-    private static class DefaultEntityWidgetRegistries implements EntityWidgetRegister {
-        @Override
-        public void registerTo(EntityWidgetRegistryManager manager) {
-            manager.register(new EntityImageWidgetRegistry());
-        }
+    private void registerDefaultEntityWidgets() {
+        register(new EntityImageWidgetRegistry());
     }
 }
