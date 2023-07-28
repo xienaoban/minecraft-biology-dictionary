@@ -18,7 +18,7 @@ public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private void initEntityWidgets() {
-        List<EntityWidget<? extends Entity>> widgets = EntityWidgetManager.getInstance().getWidgets(target);
+        List<EntityWidget<?>> widgets = EntityWidgetManager.getInstance().getWidgets(target);
         widgets.forEach(widget -> getPage(0).addWidget(widget));
     }
 }

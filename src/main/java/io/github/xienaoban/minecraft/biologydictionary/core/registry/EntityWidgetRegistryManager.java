@@ -3,7 +3,6 @@ package io.github.xienaoban.minecraft.biologydictionary.core.registry;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetRegistrar;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.core.registry.tree.EntityImageWidgetRegistry;
-import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,7 +20,7 @@ public final class EntityWidgetRegistryManager implements EntityWidgetRegistrar 
         getInstance().clearCache();
     }
 
-    private final List<EntityWidgetRegistry<? extends Entity>> registries;
+    private final List<EntityWidgetRegistry<?>> registries;
     private Set<Class<?>> visited;
 
     private EntityWidgetRegistryManager() {
@@ -29,7 +28,7 @@ public final class EntityWidgetRegistryManager implements EntityWidgetRegistrar 
         visited = new HashSet<>();
     }
 
-    public void register(EntityWidgetRegistry<? extends Entity> registry) {
+    public void register(EntityWidgetRegistry<?> registry) {
         registries.add(registry);
         if (!visited.add(registry.getClass())) {
             throw new RuntimeException(registry.getClass().getName() + " is already registered!");
@@ -40,7 +39,7 @@ public final class EntityWidgetRegistryManager implements EntityWidgetRegistrar 
         visited = null;
     }
 
-    public List<EntityWidgetRegistry<? extends Entity>> getRegistries() {
+    public List<EntityWidgetRegistry<?>> getRegistries() {
         return registries;
     }
 

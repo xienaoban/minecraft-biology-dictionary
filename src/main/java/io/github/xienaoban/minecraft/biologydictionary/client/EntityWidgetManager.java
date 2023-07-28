@@ -21,51 +21,32 @@ public final class EntityWidgetManager {
         EntityWidgetRegistryManager.getInstance().getRegistries().forEach(manager::register);
     }
 
-    private final Map<Class<? extends Entity>, List<EntityWidgetRegistry.EntityWidgetFactory<? extends Entity>>> widgets;
+    private final Map<Class<? extends Entity>, List<EntityWidgetRegistry.EntityWidgetFactory<?>>> widgets;
 
     private EntityWidgetManager() {
         widgets = new HashMap<>();
     }
 
-    public <E extends Entity> void register(EntityWidgetRegistry<E> registry) {
+    private void register(EntityWidgetRegistry<?> registry) {
         register(registry.getEntityClass(), registry.getWidgetFactory());
     }
 
-    private <E extends Entity> void register(Class<E> entityClazz, EntityWidgetRegistry.EntityWidgetFactory<E> widgetFactory) {
+    private void register(Class<? extends Entity> entityClazz, EntityWidgetRegistry.EntityWidgetFactory<?> widgetFactory) {
         widgets.computeIfAbsent(entityClazz,  clazz ->  new ArrayList<>()).add(widgetFactory);
     }
 
-//    public <E extends Entity> List<EntityWidget<? super E>> getWidgets(E entity) {
-//        List<EntityWidget<? super E>> res = new ArrayList<>();
-//        Deque<Class<? extends Entity>> stack = new ArrayDeque<>();
-//        Class<? extends Entity> clazz = entity.getClass();
-//        while (clazz != Entity.class) {
-//            stack.addFirst(clazz);
-//            clazz = MiscUtil.cast(clazz.getSuperclass());
-//        }
-//        stack.addFirst(Entity.class);
-//        while ((clazz = stack.pollFirst()) != null) {
-//            for (EntityWidgetFactory<? extends Entity> factory : widgets.getOrDefault(clazz, Collections.emptyList())) {
-//                EntityWidgetFactory<? super E> trueTypeFactory = MiscUtil.cast(factory);
-//                EntityWidget<? super E> widget = trueTypeFactory.create(entity);
-//                res.add(widget);
-//            }
-//        }
-//        return res;
-//    }
-
-    public List<EntityWidget<? extends Entity>> getWidgets(Entity entity) {
-        List<EntityWidget<? extends Entity>> res = new ArrayList<>();
-        Deque<Class<? extends Entity>> stack = new ArrayDeque<>();
-        Class<? extends Entity> clazz = entity.getClass();
+    public List<EntityWidget<?>> getWidgets(Entity entity) {
+        List<EntityWidget<?>> res = new ArrayList<>();
+        Deque<Class<?>> stack = new ArrayDeque<>();
+        Class<?> clazz = entity.getClass();
         while (clazz != Entity.class) {
             stack.addFirst(clazz);
-            clazz = MiscUtil.cast(clazz.getSuperclass());
+            clazz = clazz.getSuperclass();
         }
         stack.addFirst(Entity.class);
         while ((clazz = stack.pollFirst()) != null) {
             widgets.getOrDefault(clazz, Collections.emptyList()).forEach(factory -> {
-                EntityWidget<? extends Entity> widget = factory.create(MiscUtil.cast(entity));
+                EntityWidget<?> widget = factory.create(MiscUtil.cast(entity));
                 res.add(widget);
             });
         }
