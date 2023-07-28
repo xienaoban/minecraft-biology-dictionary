@@ -13,6 +13,9 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import org.joml.Quaternionf;
 
 /**
  * Why wrap the rendering APIs here?
@@ -44,25 +47,25 @@ public abstract class CommonScreen extends Screen {
         super.render(ctx.getGuiGraphics(), (int) ctx.getMouseX(), (int) ctx.getMouseY(), ctx.getTickDelta());
     }
 
-    public final int getZ() { return 0; }
+    public float getZ() { return 0; }
 
-    public final void renderText(ScreenRenderingContext ctx, Component component, int color, int x, int y) {
-        ctx.getGuiGraphics().drawString(font, component, x, y, color, false);
+    public final void renderText(ScreenRenderingContext ctx, Component component, int color, float x, float y) {
+        ctx.getGuiGraphics().drawString(font, component, (int) x, (int) y, color, false);
     }
 
-    public final void renderCenteredText(ScreenRenderingContext ctx, Component component, int color, int x, int y) {
-        ctx.getGuiGraphics().drawString(font, component, x - font.width(component) / 2, y, color, false);
+    public final void renderCenteredText(ScreenRenderingContext ctx, Component component, int color, float x, float y) {
+        ctx.getGuiGraphics().drawString(font, component, (int) x - font.width(component) / 2, (int) y, color, false);
     }
 
-    public final void renderHorizontalLine(ScreenRenderingContext ctx, int color, int width, int z, int y, int left, int right) {
+    public final void renderHorizontalLine(ScreenRenderingContext ctx, int color, float width, float z, float y, float left, float right) {
         renderRectangle(ctx, color, z, left, y, right, y + width);
     }
 
-    public final void renderVerticalLine(ScreenRenderingContext ctx, int color, int width, int z, int x, int top, int bottom) {
+    public final void renderVerticalLine(ScreenRenderingContext ctx, int color, float width, float z, float x, float top, float bottom) {
         renderRectangle(ctx, color, z, x, top, x + width, bottom);
     }
 
-    public final void renderRectangle(ScreenRenderingContext ctx, int color, int width, int z, int left, int top, int right, int bottom) {
+    public final void renderRectangle(ScreenRenderingContext ctx, int color, float width, float z, float left, float top, float right, float bottom) {
         renderHorizontalLine(ctx, color, width, z, top, left, right);
         renderHorizontalLine(ctx, color, width, z, bottom - width, left, right);
         renderVerticalLine(ctx, color, width, z, left, top, bottom);
@@ -77,9 +80,9 @@ public abstract class CommonScreen extends Screen {
     }
 
     public final void renderTexture(ScreenRenderingContext ctx, ResourceLocation texture,
-                                    int resourceWidth, int resourceHeight,
-                                    int textureLeft, int textureTop,
-                                    int z, int left, int top, int width, int height) {
+                                    float resourceWidth, float resourceHeight,
+                                    float textureLeft, float textureTop,
+                                    float z, float left, float top, float width, float height) {
         renderTexture(ctx, texture, resourceWidth, resourceHeight,
                 textureLeft, textureTop, textureLeft + width, textureTop + height,
                 z, left, top, left + width,  top + height);
@@ -89,12 +92,19 @@ public abstract class CommonScreen extends Screen {
      * @see net.minecraft.client.gui.GuiGraphics#innerBlit(ResourceLocation, int, int, int, int, int, float, float, float, float)
      */
     public final void renderTexture(ScreenRenderingContext ctx, ResourceLocation texture,
-                                    int resourceWidth, int resourceHeight,
-                                    int textureLeft, int textureTop, int textureRight, int textureBottom,
-                                    int z, int left, int top, int right, int bottom) {
-        ((GuiGraphicsIMixin) ctx.getGuiGraphics()).callInnerBlit(texture, left, right, top, bottom, z,
-                (float) textureLeft / (float) resourceWidth, (float) textureRight / (float) resourceWidth,
-                (float) textureTop / (float) resourceHeight, (float) textureBottom / (float) resourceHeight);
+                                    float resourceWidth, float resourceHeight,
+                                    float textureLeft, float textureTop, float textureRight, float textureBottom,
+                                    float z, float left, float top, float right, float bottom) {
+        ((GuiGraphicsIMixin) ctx.getGuiGraphics()).callInnerBlit(texture, (int) left, (int) right, (int) top, (int) bottom, (int) z,
+                textureLeft / resourceWidth, textureRight / resourceWidth,
+                textureTop / resourceHeight, textureBottom / resourceHeight);
+    }
+
+    /**
+     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(GuiGraphics, int, int, int, Quaternionf, Quaternionf, LivingEntity)
+     */
+    public static void renderEntity(ScreenRenderingContext ctx, Entity entity, float midX, float bottom, float height) {
+        GuiGraphics guiGraphics = ctx.getGuiGraphics();
     }
 
     /**

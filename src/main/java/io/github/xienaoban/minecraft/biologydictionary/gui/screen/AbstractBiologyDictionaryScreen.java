@@ -44,8 +44,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         renderTexture(ctx, Textures.BOOK, 512, 256,
                 BOOK_LEFT, BOOK_TOP, BOOK_RIGHT, BOOK_BOTTOM,
                 getZ(),
-                (width - BOOK_WIDTH) / 2, (height - BOOK_HEIGHT) / 2,
-                (width + BOOK_WIDTH) / 2, (height + BOOK_HEIGHT) / 2);
+                (width - BOOK_WIDTH) / 2F, (height - BOOK_HEIGHT) / 2F,
+                (width + BOOK_WIDTH) / 2F, (height + BOOK_HEIGHT) / 2F);
 
         if (ctx.isDebug()) {
             renderDebug(ctx);
