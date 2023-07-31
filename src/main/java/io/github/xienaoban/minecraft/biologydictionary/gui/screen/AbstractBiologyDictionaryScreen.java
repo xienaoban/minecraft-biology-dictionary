@@ -8,21 +8,28 @@ import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     public static final int BOOK_LEFT = 96, BOOK_TOP = 0, BOOK_RIGHT = 416, BOOK_BOTTOM = 192;
     public static final int BOOK_WIDTH = BOOK_RIGHT - BOOK_LEFT, BOOK_HEIGHT = BOOK_BOTTOM - BOOK_TOP;
 
+    // Replace the `@Nullable minecraft` in class `Screen`. This `minecraft` must not be null.
+    protected final Minecraft minecraft;
+
     private final List<Page> pages;
     private Page curLeftPage, curRightPage;
 
     public AbstractBiologyDictionaryScreen() {
         super(Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE));
+        minecraft = Objects.requireNonNull(Minecraft.getInstance());
+
         pages = new ArrayList<>();
         curLeftPage = new Page();
         curLeftPage.setParent(getRootScreenElement());
@@ -35,6 +42,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     @Override
     protected void init() {
         super.init();
+        if (this.minecraft != super.minecraft) {
+            throw new RuntimeException("this.minecraft != super.minecraft");
+        }
         // add some vanilla-widgets here
     }
 
@@ -74,7 +84,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)) {
+        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)
+                || minecraft.options.keyInventory.matches(keyCode, scanCode)) {
             onClose();
             return true;
         } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {

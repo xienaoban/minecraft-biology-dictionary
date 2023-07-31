@@ -7,6 +7,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -100,11 +101,15 @@ public abstract class CommonScreen extends Screen {
                 textureTop / resourceHeight, textureBottom / resourceHeight);
     }
 
+    public static void renderLivingEntityFollowsMouse(ScreenRenderingContext ctx, Entity entity, float midX, float bottom, float scale, float rotateX, float rotateY) {
+        InventoryScreen.renderEntityInInventoryFollowsMouse(ctx.getGuiGraphics(), (int) midX, (int) bottom, (int) scale, rotateX, rotateY, (LivingEntity) entity);
+    }
+
     /**
+     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(GuiGraphics, int, int, int, float, float, LivingEntity)
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(GuiGraphics, int, int, int, Quaternionf, Quaternionf, LivingEntity)
      */
-    public static void renderEntity(ScreenRenderingContext ctx, Entity entity, float midX, float bottom, float height) {
-        GuiGraphics guiGraphics = ctx.getGuiGraphics();
+    public static void renderEntity(ScreenRenderingContext ctx, Entity entity, float midX, float bottom, float scale, float rotateX, float rotateY) {
     }
 
     /**

@@ -19,6 +19,7 @@ public final class ScreenRenderingContext {
     public ScreenRenderingContext(CommonScreen screen) {
         this.minecraft = Minecraft.getInstance();
         this.screen = screen;
+        this.debug = true;
     }
 
     public CommonScreen getScreen() { return screen; }
