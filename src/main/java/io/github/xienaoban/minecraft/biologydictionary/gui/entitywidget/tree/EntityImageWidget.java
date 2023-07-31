@@ -5,11 +5,13 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityWidge
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -56,7 +58,16 @@ public class EntityImageWidget extends EntityWidget<Entity> {
         tag.remove("AngryAt");
         tag.remove("HurtTime");
         tag.remove("Pos");
+
+        if (from instanceof AbstractClientPlayer) {
+            tag.remove("Inventory");
+        } else if (from instanceof Dolphin) {
+            tag.remove("GotFish");
+        }
+
         to.load(tag);
+
+        // options not controlled by nbt
         if (to instanceof WaterAnimal waterAnimal) {
             EntityApi.setInWater(waterAnimal, true);
         }
