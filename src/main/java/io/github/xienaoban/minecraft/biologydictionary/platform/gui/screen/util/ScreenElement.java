@@ -126,7 +126,7 @@ public abstract class ScreenElement {
         subScreenElements.remove(sub);
     }
 
-    public void clearSubScreenElements() {
+    public final void clearSubScreenElements() {
         subScreenElements.clear();
     }
 
@@ -134,15 +134,15 @@ public abstract class ScreenElement {
         return box;
     }
 
-    public ArrayList<ScreenElement> getSubScreenElements() {
+    public final ArrayList<ScreenElement> getSubScreenElements() {
         return subScreenElements;
     }
 
-    public boolean isSelectable() {
+    public final boolean isSelectable() {
         return selectable;
     }
 
-    public void setSelectable(boolean selectable) {
+    public final void setSelectable(boolean selectable) {
         this.selectable = selectable;
     }
 

@@ -8,7 +8,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -102,10 +101,6 @@ public abstract class CommonScreen extends Screen {
         ((GuiGraphicsIMixin) ctx.getGuiGraphics()).callInnerBlit(texture, (int) left, (int) right, (int) top, (int) bottom, (int) z,
                 textureLeft / resourceWidth, textureRight / resourceWidth,
                 textureTop / resourceHeight, textureBottom / resourceHeight);
-    }
-
-    public static void renderLivingEntityFollowsMouse(ScreenRenderingContext ctx, Entity entity, float midX, float bottom, float scale, float rotateX, float rotateY) {
-        InventoryScreen.renderEntityInInventoryFollowsMouse(ctx.getGuiGraphics(), (int) midX, (int) bottom, (int) scale, rotateX, rotateY, (LivingEntity) entity);
     }
 
     /**

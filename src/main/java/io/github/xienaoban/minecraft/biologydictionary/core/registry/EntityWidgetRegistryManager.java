@@ -3,6 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary.core.registry;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetRegistrar;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.core.registry.tree.EntityImageWidgetRegistry;
+import io.github.xienaoban.minecraft.biologydictionary.core.registry.tree.LivingEntityHealthWidgetRegistry;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,5 +46,6 @@ public final class EntityWidgetRegistryManager implements EntityWidgetRegistrar 
 
     private void registerDefaultEntityWidgets() {
         register(new EntityImageWidgetRegistry());
+        register(new LivingEntityHealthWidgetRegistry());
     }
 }

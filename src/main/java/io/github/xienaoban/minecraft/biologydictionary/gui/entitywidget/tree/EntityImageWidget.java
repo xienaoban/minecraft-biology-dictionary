@@ -5,6 +5,8 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityWidge
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
@@ -20,6 +22,7 @@ import net.minecraft.world.phys.Vec3;
  * A widget that displays the target entity. <br/>
  * The entity can be rotated according to the mouse.
  */
+@Environment(EnvType.CLIENT)
 public class EntityImageWidget extends EntityWidget<Entity> {
 
     private static RC calculateRowsAndColumns(Entity entity) {

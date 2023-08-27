@@ -14,4 +14,3 @@ public class EntityImageWidgetRegistry implements EntityWidgetRegistry<Entity> {
     @Override
     public EntityWidgetFactory<Entity> getWidgetFactory() { return EntityImageWidget::new; }
 }
-

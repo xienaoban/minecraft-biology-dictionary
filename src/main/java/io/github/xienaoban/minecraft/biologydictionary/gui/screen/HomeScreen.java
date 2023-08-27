@@ -4,8 +4,11 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 
+@Environment(EnvType.CLIENT)
 public class HomeScreen extends AbstractBiologyDictionaryScreen {
     public HomeScreen() {
         getOrAddPage(0).addWidget(new GetBookItemWidget());

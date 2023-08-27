@@ -25,6 +25,6 @@ public abstract class Widget extends ScreenElement {
         getBox().setSize(width, height);
     }
 
-    public int getRows() { return rows; }
-    public int getColumns() { return columns; }
+    public final int getRows() { return rows; }
+    public final int getColumns() { return columns; }
 }
