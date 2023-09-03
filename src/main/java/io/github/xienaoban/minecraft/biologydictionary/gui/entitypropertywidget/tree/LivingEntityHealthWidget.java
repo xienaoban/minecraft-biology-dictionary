@@ -1,8 +1,8 @@
-package io.github.xienaoban.minecraft.biologydictionary.gui.entitywidget.tree;
+package io.github.xienaoban.minecraft.biologydictionary.gui.entitypropertywidget.tree;
 
 import io.github.xienaoban.minecraft.biologydictionary.gui.Textures;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityWidget;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.PropertyIcon;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -10,11 +10,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 
 @Environment(EnvType.CLIENT)
-public class LivingEntityHealthWidget extends EntityWidget<LivingEntity> {
-    private final PropertyIcon propertyIcon;
+public class LivingEntityHealthWidget extends EntityPropertyWidget<LivingEntity> {
+    private final EntityPropertyIcon propertyIcon;
     public LivingEntityHealthWidget(LivingEntity entity) {
         super(entity, 1, 3);
-        propertyIcon = new PropertyIcon(Textures.BEEHIVE, 256, 256, 55, 12);
+        propertyIcon = new EntityPropertyIcon(Textures.BEEHIVE, 256, 256, 55, 12);
         propertyIcon.setParent(this);
     }
 

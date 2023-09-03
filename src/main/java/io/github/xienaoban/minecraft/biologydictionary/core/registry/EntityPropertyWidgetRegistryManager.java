@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.registry;
 
-import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetRegistrar;
-import io.github.xienaoban.minecraft.biologydictionary.api.EntityWidgetRegistry;
+import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistrar;
+import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.core.registry.tree.EntityImageWidgetRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.core.registry.tree.LivingEntityHealthWidgetRegistry;
 
@@ -11,25 +11,25 @@ import java.util.List;
 import java.util.Set;
 
 
-public final class EntityWidgetRegistryManager implements EntityWidgetRegistrar {
-    private static final EntityWidgetRegistryManager INSTANCE = new EntityWidgetRegistryManager();
+public final class EntityPropertyWidgetRegistryManager implements EntityPropertyWidgetRegistrar {
+    private static final EntityPropertyWidgetRegistryManager INSTANCE = new EntityPropertyWidgetRegistryManager();
 
-    public static EntityWidgetRegistryManager getInstance() { return INSTANCE; }
+    public static EntityPropertyWidgetRegistryManager getInstance() { return INSTANCE; }
 
     public static void init() {
-        getInstance().registerDefaultEntityWidgets();
+        getInstance().registerDefaultEntityPropertyWidgets();
         getInstance().clearCache();
     }
 
-    private final List<EntityWidgetRegistry<?>> registries;
+    private final List<EntityPropertyWidgetRegistry<?>> registries;
     private Set<Class<?>> visited;
 
-    private EntityWidgetRegistryManager() {
+    private EntityPropertyWidgetRegistryManager() {
         registries = new ArrayList<>();
         visited = new HashSet<>();
     }
 
-    public void register(EntityWidgetRegistry<?> registry) {
+    public void register(EntityPropertyWidgetRegistry<?> registry) {
         registries.add(registry);
         if (!visited.add(registry.getClass())) {
             throw new RuntimeException(registry.getClass().getName() + " is already registered!");
@@ -40,11 +40,11 @@ public final class EntityWidgetRegistryManager implements EntityWidgetRegistrar 
         visited = null;
     }
 
-    public List<EntityWidgetRegistry<?>> getRegistries() {
+    public List<EntityPropertyWidgetRegistry<?>> getRegistries() {
         return registries;
     }
 
-    private void registerDefaultEntityWidgets() {
+    private void registerDefaultEntityPropertyWidgets() {
         register(new EntityImageWidgetRegistry());
         register(new LivingEntityHealthWidgetRegistry());
     }

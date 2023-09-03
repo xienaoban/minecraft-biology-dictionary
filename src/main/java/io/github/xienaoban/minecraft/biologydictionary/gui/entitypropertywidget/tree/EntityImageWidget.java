@@ -1,7 +1,7 @@
-package io.github.xienaoban.minecraft.biologydictionary.gui.entitywidget.tree;
+package io.github.xienaoban.minecraft.biologydictionary.gui.entitypropertywidget.tree;
 
 import com.mojang.authlib.GameProfile;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityWidget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
  * The entity can be rotated according to the mouse.
  */
 @Environment(EnvType.CLIENT)
-public class EntityImageWidget extends EntityWidget<Entity> {
+public class EntityImageWidget extends EntityPropertyWidget<Entity> {
 
     private static RC calculateRowsAndColumns(Entity entity) {
         AABB box = entity.getBoundingBox();

@@ -7,13 +7,13 @@ import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
 
 @Environment(EnvType.CLIENT)
-public class PropertyIcon extends ScreenElement {
+public class EntityPropertyIcon extends ScreenElement {
     private final ResourceLocation texture;
     private final float width, height;
     private final float left, top;
 
-    public PropertyIcon(ResourceLocation texture, float resourceWidth, float resourceHeight,
-                        float textureLeft, float textureTop) {
+    public EntityPropertyIcon(ResourceLocation texture, float resourceWidth, float resourceHeight,
+                              float textureLeft, float textureTop) {
         this.texture = texture;
         this.width = resourceWidth;
         this.height = resourceHeight;

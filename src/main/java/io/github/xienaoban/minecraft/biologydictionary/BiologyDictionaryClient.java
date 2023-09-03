@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
-import io.github.xienaoban.minecraft.biologydictionary.client.EntityWidgetManager;
+import io.github.xienaoban.minecraft.biologydictionary.client.EntityPropertyWidgetManager;
 import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.minecraft.biologydictionary.client.FirstPersonShoulderEntityRenderer;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
@@ -23,7 +23,7 @@ public class BiologyDictionaryClient {
         hitBlock = null;
 
         FirstPersonShoulderEntityRenderer.init();
-        EntityWidgetManager.init();
+        EntityPropertyWidgetManager.init();
         KeyMappingManager.init();
         ClientNetManager.init();
         LOGGER.info("BiologyDictionary (client) initialized.");
