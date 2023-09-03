@@ -13,8 +13,10 @@ import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -32,40 +34,49 @@ public class EntityImageWidget extends EntityPropertyWidget<Entity> {
         return new RC(5, 3);
     }
 
-    private static Entity createFakeEntity(Entity from) {
-        Entity to = from.getType().create(from.level());
-        if (to == null) {
-            if (from instanceof LocalPlayer me) {
+    private static Entity createFakeEntity(Entity entity) {
+        Entity fake = entity.getType().create(entity.level());
+        if (fake == null) {
+            if (entity instanceof LocalPlayer me) {
                 GameProfile profile = me.getGameProfile();
-                to = new RemotePlayer(me.clientLevel, new GameProfile(profile.getId(), profile.getName()));
+                fake = new RemotePlayer(me.clientLevel, new GameProfile(profile.getId(), profile.getName()));
                 // to make name label invisible
                 // @see net.minecraft.client.renderer.entity.LivingEntityRenderer.shouldShowName
-                Vec3 pos = to.position();
-                to.setPos(pos.x(), pos.y() - 4097, pos.z());
+                Vec3 pos = fake.position();
+                fake.setPos(pos.x(), pos.y() - 4097, pos.z());
             } else {
-                to = EntityType.ARMOR_STAND.create(from.level());
+                fake = EntityType.ARMOR_STAND.create(entity.level());
             }
         }
-        assert to != null;
-        updateCompoundTag(from, to);
-        return to;
+        assert fake != null;
+        updateCompoundTag(entity, fake);
+        return fake;
     }
 
     private static void updateCompoundTag(Entity from, Entity to) {
         CompoundTag tag = new CompoundTag();
         from.saveWithoutId(tag);
-        tag.remove("Dimension");
-        tag.remove("Rotation");
+        tag.remove("AngryAt");
         tag.remove("CustomName");
         tag.remove("CustomNameVisible");
-        tag.remove("AngryAt");
+        tag.remove("Dimension");
         tag.remove("HurtTime");
         tag.remove("Pos");
+        tag.remove("Rotation");
+
+        if (from instanceof LivingEntity) {
+            tag.remove("Brain");
+            tag.remove("SleepingX");
+            tag.remove("SleepingY");
+            tag.remove("SleepingZ");
+        }
 
         if (from instanceof AbstractClientPlayer) {
             tag.remove("Inventory");
         } else if (from instanceof Dolphin) {
             tag.remove("GotFish");
+        } else if (from instanceof Camel) {
+            tag.remove("LastPoseTick");
         }
 
         to.load(tag);
@@ -82,16 +93,20 @@ public class EntityImageWidget extends EntityPropertyWidget<Entity> {
     private final float entityBottom;
 
     public EntityImageWidget(Entity entity) {
-        super(entity, calculateRowsAndColumns(entity));
-        fake = createFakeEntity(entity);
+        this(entity, createFakeEntity(entity));
+    }
+
+    private EntityImageWidget(Entity entity, Entity fake) {
+        super(entity, calculateRowsAndColumns(fake));
+        this.fake = fake;
         float[] sp = calculateScaleAndPosition();
         entityScale = sp[0];
         entityBottom = sp[1];
     }
 
     private float[] calculateScaleAndPosition() {
-        float entityWidth = (float) entity.getBoundingBox().getXsize();
-        float entityHeight = (float) entity.getBoundingBox().getYsize();
+        float entityWidth = (float) fake.getBoundingBox().getXsize();
+        float entityHeight = (float) fake.getBoundingBox().getYsize();
         float widgetWidth = getBox().getWidth() - 8;
         float widgetHeight = getBox().getHeight() - 16;
         float scale = Math.min(
