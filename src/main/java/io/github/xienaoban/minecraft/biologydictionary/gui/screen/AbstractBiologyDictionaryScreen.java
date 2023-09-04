@@ -51,7 +51,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     @Override
     protected void render(ScreenRenderingContext ctx) {
         renderBackground(ctx.getGuiGraphics());
-        renderTexture(ctx, Textures.BOOK, 512, 256,
+        ctx.renderTexture(Textures.BOOK, 512, 256,
                 BOOK_LEFT, BOOK_TOP, BOOK_RIGHT, BOOK_BOTTOM,
                 getZ(),
                 (width - BOOK_WIDTH) / 2F, (height - BOOK_HEIGHT) / 2F,
@@ -66,7 +66,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     private void renderDebug(ScreenRenderingContext ctx) {
-        renderText(ctx, Component.literal(this.getClass().getSimpleName()), 0xFFFFFFFF, 2, 2);
+        ctx.renderText(Component.literal(this.getClass().getSimpleName()), 0xFFFFFFFF, 2, 2);
     }
 
     @Override

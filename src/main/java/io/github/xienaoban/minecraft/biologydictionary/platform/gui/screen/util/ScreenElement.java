@@ -62,10 +62,10 @@ public abstract class ScreenElement {
             else if (this == screen.getFocusedElement()) color = 0xFFFFFF00;
             else if (contains(screen.getFocusedElement())) color = 0xFF0000FF;
             else color = 0xFFFF0000;
-            ctx.getScreen().renderRectangle(ctx, color, 1, ctx.getScreen().getZ(),
+            ctx.renderRectangle(color, 1, ctx.getScreen().getZ(),
                     box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
             if (this == screen.getFocusedElement()) {
-                ctx.getScreen().renderText(ctx, Component.literal(getClass().getSimpleName()), 0xFF7719AA,
+                ctx.renderText(Component.literal(getClass().getSimpleName()), 0xFF7719AA,
                         box.getLeft() + 1, box.getTop() - 8);
             }
         }

@@ -1,24 +1,12 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen;
 
-import com.mojang.blaze3d.platform.Lighting;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.GuiGraphicsIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 
 /**
  * Why wrap the rendering APIs here?
@@ -50,89 +38,7 @@ public abstract class CommonScreen extends Screen {
         super.render(ctx.getGuiGraphics(), (int) ctx.getMouseX(), (int) ctx.getMouseY(), ctx.getTickDelta());
     }
 
+    public Font getFont() { return font; }
+
     public float getZ() { return 0; }
-
-    public final void renderText(ScreenRenderingContext ctx, Component component, int color, float x, float y) {
-        ctx.getGuiGraphics().drawString(font, component, (int) x, (int) y, color, false);
-    }
-
-    public final void renderCenteredText(ScreenRenderingContext ctx, Component component, int color, float x, float y) {
-        ctx.getGuiGraphics().drawString(font, component, (int) x - font.width(component) / 2, (int) y, color, false);
-    }
-
-    public final void renderHorizontalLine(ScreenRenderingContext ctx, int color, float width, float z, float y, float left, float right) {
-        renderRectangle(ctx, color, z, left, y, right, y + width);
-    }
-
-    public final void renderVerticalLine(ScreenRenderingContext ctx, int color, float width, float z, float x, float top, float bottom) {
-        renderRectangle(ctx, color, z, x, top, x + width, bottom);
-    }
-
-    public final void renderRectangle(ScreenRenderingContext ctx, int color, float width, float z, float left, float top, float right, float bottom) {
-        renderHorizontalLine(ctx, color, width, z, top, left, right);
-        renderHorizontalLine(ctx, color, width, z, bottom - width, left, right);
-        renderVerticalLine(ctx, color, width, z, left, top, bottom);
-        renderVerticalLine(ctx, color, width, z, right - width, top, bottom);
-    }
-
-    /**
-     * @see net.minecraft.client.gui.GuiGraphics#fill(RenderType, int, int, int, int, int, int)
-     */
-    public final void renderRectangle(ScreenRenderingContext ctx, int color, float z, float left, float top, float right, float bottom) {
-        ctx.getGuiGraphics().fill((int) left, (int) top, (int) right, (int) bottom, (int) z, color);
-    }
-
-    public final void renderTexture(ScreenRenderingContext ctx, ResourceLocation texture,
-                                    float resourceWidth, float resourceHeight,
-                                    float textureLeft, float textureTop,
-                                    float z, float left, float top, float width, float height) {
-        renderTexture(ctx, texture, resourceWidth, resourceHeight,
-                textureLeft, textureTop, textureLeft + width, textureTop + height,
-                z, left, top, left + width,  top + height);
-    }
-
-    /**
-     * @see net.minecraft.client.gui.GuiGraphics#innerBlit(ResourceLocation, int, int, int, int, int, float, float, float, float)
-     */
-    public final void renderTexture(ScreenRenderingContext ctx, ResourceLocation texture,
-                                    float resourceWidth, float resourceHeight,
-                                    float textureLeft, float textureTop, float textureRight, float textureBottom,
-                                    float z, float left, float top, float right, float bottom) {
-        ((GuiGraphicsIMixin) ctx.getGuiGraphics()).callInnerBlit(texture, (int) left, (int) right, (int) top, (int) bottom, (int) z,
-                textureLeft / resourceWidth, textureRight / resourceWidth,
-                textureTop / resourceHeight, textureBottom / resourceHeight);
-    }
-
-    /**
-     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(GuiGraphics, int, int, int, float, float, LivingEntity)
-     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(GuiGraphics, int, int, int, Quaternionf, Quaternionf, LivingEntity)
-     */
-    public static void renderEntity(ScreenRenderingContext ctx, Entity entity, float midX, float bottom, float scale, float rotateX, float rotateY, boolean lightFromBelow) {
-        float sign = lightFromBelow ? -1 : 1;
-        GuiGraphics guiGraphics = ctx.getGuiGraphics();
-        Quaternionf quaternionf = new Quaternionf()
-                .rotateX(rotateY * sign)
-                .rotateY((float) Math.PI - rotateX * sign)
-                .rotateZ(lightFromBelow ? 0 : (float) Math.PI);
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(midX, bottom, 50.0);
-        // control light by x and y
-        guiGraphics.pose().mulPoseMatrix(new Matrix4f().scaling(scale * sign, scale * sign, -scale));
-        guiGraphics.pose().mulPose(quaternionf);
-        Lighting.setupForEntityInInventory();
-        EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-        entityRenderDispatcher.setRenderShadow(false);
-        entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 0.0f, 1.0f, guiGraphics.pose(), guiGraphics.bufferSource(), 0xF000F0);
-        guiGraphics.flush();
-        entityRenderDispatcher.setRenderShadow(true);
-        guiGraphics.pose().popPose();
-        Lighting.setupFor3DItems();
-    }
-
-    /**
-     * @see net.minecraft.client.gui.screens.inventory.PageButton#playDownSound(SoundManager)
-     */
-    public static void playScreenSound(SoundEvent sound, float volume, float pitch) {
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));
-    }
 }

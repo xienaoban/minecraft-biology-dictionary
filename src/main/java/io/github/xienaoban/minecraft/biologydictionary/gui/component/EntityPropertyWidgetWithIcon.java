@@ -2,15 +2,14 @@ package io.github.xienaoban.minecraft.biologydictionary.gui.component;
 
 import net.minecraft.world.entity.Entity;
 
-public abstract class EntityPropertyWidgetTemplate1<E extends Entity> extends EntityPropertyWidget<E> {
+public abstract class EntityPropertyWidgetWithIcon<E extends Entity> extends EntityPropertyWidget<E> {
     private final EntityPropertyIcon propertyIcon;
 
-    protected EntityPropertyWidgetTemplate1(E entity, RC rowsAndColumns, EntityPropertyIcon propertyIcon) {
-        super(entity, rowsAndColumns);
-        this.propertyIcon = propertyIcon;
+    protected EntityPropertyWidgetWithIcon(E entity, RC rowsAndColumns, EntityPropertyIcon propertyIcon) {
+        this(entity, rowsAndColumns.rows(), rowsAndColumns.columns(), propertyIcon);
     }
 
-    protected EntityPropertyWidgetTemplate1(E entity, int rows, int columns, EntityPropertyIcon propertyIcon) {
+    protected EntityPropertyWidgetWithIcon(E entity, int rows, int columns, EntityPropertyIcon propertyIcon) {
         super(entity, rows, columns);
         this.propertyIcon = propertyIcon;
         propertyIcon.setParent(this);

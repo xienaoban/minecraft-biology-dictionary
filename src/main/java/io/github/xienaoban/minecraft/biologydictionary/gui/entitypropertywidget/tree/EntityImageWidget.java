@@ -3,7 +3,6 @@ package io.github.xienaoban.minecraft.biologydictionary.gui.entitypropertywidget
 import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
-import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -120,7 +119,7 @@ public class EntityImageWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        CommonScreen.renderEntity(ctx, fake, (getBox().getLeft() + getBox().getRight()) / 2,
+        ctx.renderEntity(fake, (getBox().getLeft() + getBox().getRight()) / 2,
                 getBox().getTop() + entityBottom, entityScale,
                 0.06F + (float) Math.atan(ctx.getMouseX() / 40F) / 10,
                 0.02F + (float) Math.atan(ctx.getMouseY() / 40F) / 20,
