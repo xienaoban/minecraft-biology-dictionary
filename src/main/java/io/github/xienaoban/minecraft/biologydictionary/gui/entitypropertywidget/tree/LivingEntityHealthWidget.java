@@ -12,7 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 @Environment(EnvType.CLIENT)
 public class LivingEntityHealthWidget extends EntityPropertyWidgetWithIcon<LivingEntity> {
     public LivingEntityHealthWidget(LivingEntity entity) {
-        super(entity, 1, 3, new EntityPropertyIcon(Textures.BEEHIVE, 256, 256, 55, 12));
+        super(entity, 1, 3, new EntityPropertyIcon(Textures.ICONS, 256, 256, 0, 0));
     }
 
     @Override

@@ -24,7 +24,15 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
 
             })) System.out.println("aaa?");
         }
-        if (!getOrAddPage(0).addWidget(new Widget(3, Page.COLUMNS) {
+        if (!getOrAddPage(0).addWidget(new Widget(1, Page.COLUMNS) {
+            @Override
+            protected void onRender(ScreenRenderingContext ctx) {
+                ctx.renderRectangle(0xFFCCFFCC, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + 12, getBox().getBottom());
+                ctx.renderRectangle(0xFF88FF88, getZ(), getBox().getLeft() + 1, getBox().getTop() + 1, getBox().getLeft() + 12 - 1, getBox().getBottom() - 1);
+                ctx.renderRectangle(0xFF88EE88, getZ(), getBox().getLeft() + 13, getBox().getTop() + 1, getBox().getRight(), getBox().getBottom() - 1);
+                ctx.renderText(Component.literal("1.5 2.5 1.5"), 0xFF222222, getBox().getLeft() + 16, getBox().getTop() + 2);
+            }
+
             @Override
             protected boolean onMouseDown(float x, float y, int code) {
                 return true;

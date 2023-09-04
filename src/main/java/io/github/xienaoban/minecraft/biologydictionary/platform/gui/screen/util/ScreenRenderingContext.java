@@ -33,7 +33,7 @@ public final class ScreenRenderingContext {
     public ScreenRenderingContext(CommonScreen screen) {
         this.minecraft = Minecraft.getInstance();
         this.screen = screen;
-        this.debug = true;
+        this.debug = false;
     }
 
     /**
@@ -62,6 +62,10 @@ public final class ScreenRenderingContext {
     public float getZ()                 { return screen.getZ(); }
     public boolean isDebug()            { return debug; }
     public void setDebug(boolean debug) { this.debug = debug; }
+
+    public AutoCloseable scaleOnce(float size) {
+        return new ScaleRAII(this, size);
+    }
 
     public void renderText(Component component, int color, float x, float y) {
         getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
@@ -146,5 +150,20 @@ public final class ScreenRenderingContext {
      */
     public void playScreenSound(SoundEvent sound, float volume, float pitch) {
         getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));
+    }
+
+    private static class ScaleRAII implements AutoCloseable {
+        private final GuiGraphics guiGraphics;
+
+        private ScaleRAII(ScreenRenderingContext ctx, float size) {
+            guiGraphics = ctx.getGuiGraphics();
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().scale(size, size, size);
+        }
+
+        @Override
+        public void close() throws Exception {
+            guiGraphics.pose().popPose();
+        }
     }
 }

@@ -11,5 +11,6 @@ public final class Textures {
 
     public static final ResourceLocation ICON = new ResourceLocation(BiologyDictionary.MOD_ID, "icon.png");
     public static final ResourceLocation BOOK = new ResourceLocation(BiologyDictionary.MOD_ID, "textures/gui/book.png");
+    public static final ResourceLocation ICONS = new ResourceLocation(BiologyDictionary.MOD_ID, "textures/gui/icons.png");
     public static final ResourceLocation BEEHIVE = new ResourceLocation(BiologyDictionary.MOD_ID, "textures/gui/beehive.png");
 }
