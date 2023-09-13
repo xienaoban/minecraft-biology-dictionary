@@ -57,16 +57,17 @@ public abstract class ScreenElement {
         onRender(ctx);
         if (ctx.isDebug() && box.getWidth() > 0 && box.getHeight() > 0) {
             ElementScreen screen = (ElementScreen) ctx.getScreen();
+            final int alpha = 0xFF000000;
             final int color;
-            if (this == screen.getSelectedElement()) color = 0xFF00FF00;
-            else if (this == screen.getFocusedElement()) color = 0xFFFFFF00;
-            else if (contains(screen.getFocusedElement())) color = 0xFF0000FF;
-            else color = 0xFFFF0000;
-            ctx.renderRectangle(color, 1, ctx.getScreen().getZ(),
+            if (this == screen.getSelectedElement()) color = 0x0044CC00;
+            else if (this == screen.getFocusedElement()) color = 0x00FFAA00;
+            else if (contains(screen.getFocusedElement())) color = 0x000055FF;
+            else color = 0x00CC0000;
+            ctx.renderRectangle(color | alpha, 0.6F, ctx.getScreen().getZ(),
                     box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
             if (this == screen.getFocusedElement()) {
                 ctx.renderText(Component.literal(getClass().getSimpleName()), 0xFF7719AA,
-                        box.getLeft() + 1, box.getTop() - 8);
+                        0.5F, box.getLeft() + 1, box.getTop() - 4.5F);
             }
         }
         for (ScreenElement subEle : subScreenElements) {

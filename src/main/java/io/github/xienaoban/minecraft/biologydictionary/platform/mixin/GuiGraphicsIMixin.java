@@ -8,5 +8,11 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(GuiGraphics.class)
 public interface GuiGraphicsIMixin {
     @Invoker
+    void callFlushIfUnmanaged();
+
+    @Invoker
+    void callFlushIfManaged();
+
+    @Invoker
     void callInnerBlit(ResourceLocation resourceLocation, int i, int j, int k, int l, int m, float f, float g, float h, float n);
 }

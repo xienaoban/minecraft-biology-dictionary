@@ -1,6 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util;
 
 import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.GuiGraphicsIMixin;
 import net.fabricmc.api.EnvType;
@@ -8,6 +10,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -88,25 +91,39 @@ public final class ScreenRenderingContext {
     }
 
     public void renderHorizontalLine(int color, float width, float z, float y, float left, float right) {
-        renderRectangle(color, z, left, y, right, y + width);
+        renderRectangle(color, z, left, y - width / 2.0F, right, y + width / 2.0F);
     }
 
     public void renderVerticalLine(int color, float width, float z, float x, float top, float bottom) {
-        renderRectangle(color, z, x, top, x + width, bottom);
+        renderRectangle(color, z, x - width / 2.0F, top, x + width / 2.0F, bottom);
     }
 
     public void renderRectangle(int color, float width, float z, float left, float top, float right, float bottom) {
-        renderHorizontalLine(color, width, z, top, left, right);
-        renderHorizontalLine(color, width, z, bottom - width, left, right);
-        renderVerticalLine(color, width, z, left, top, bottom);
-        renderVerticalLine(color, width, z, right - width, top, bottom);
+         renderRectangle(color, z, left, top, right, top + width);
+         renderRectangle(color, z, left, bottom - width, right, bottom);
+         renderRectangle(color, z, left, top, left + width, bottom);
+         renderRectangle(color, z, right - width, top, right, bottom);
+         // Or use the following code:
+         // renderHorizontalLine(color, width, z, top, left, right);
+         // renderHorizontalLine(color, width, z, bottom - width, left, right);
+         // renderVerticalLine(color, width, z, left, top, bottom);
+         // renderVerticalLine(color, width, z, right - width, top, bottom);
     }
 
     /**
      * @see net.minecraft.client.gui.GuiGraphics#fill(RenderType, int, int, int, int, int, int)
      */
     public void renderRectangle(int color, float z, float left, float top, float right, float bottom) {
-        getGuiGraphics().fill((int) left, (int) top, (int) right, (int) bottom, (int) z, color);
+        // Another choice is:
+        // getGuiGraphics().fill((int) left, (int) top, (int) right, (int) bottom, (int) z, color);
+        // But it only supports `int`.
+        Matrix4f matrix4f = getGuiGraphics().pose().last().pose();
+        VertexConsumer vertexConsumer = getGuiGraphics().bufferSource().getBuffer(RenderType.gui());
+        vertexConsumer.vertex(matrix4f, left, top, z).color(color).endVertex();
+        vertexConsumer.vertex(matrix4f, left, bottom, z).color(color).endVertex();
+        vertexConsumer.vertex(matrix4f, right, bottom, z).color(color).endVertex();
+        vertexConsumer.vertex(matrix4f, right, top, z).color(color).endVertex();
+        ((GuiGraphicsIMixin) getGuiGraphics()).callFlushIfUnmanaged();
     }
 
     public void renderTexture(ResourceLocation texture,
@@ -125,9 +142,25 @@ public final class ScreenRenderingContext {
                               float resourceWidth, float resourceHeight,
                               float textureLeft, float textureTop, float textureRight, float textureBottom,
                               float z, float left, float top, float right, float bottom) {
-        ((GuiGraphicsIMixin) getGuiGraphics()).callInnerBlit(texture, (int) left, (int) right, (int) top, (int) bottom, (int) z,
-                textureLeft / resourceWidth, textureRight / resourceWidth,
-                textureTop / resourceHeight, textureBottom / resourceHeight);
+        // Another choice is:
+        // ((GuiGraphicsIMixin) getGuiGraphics()).callInnerBlit(texture, (int) left, (int) right, (int) top, (int) bottom, (int) z,
+        //         textureLeft / resourceWidth, textureRight / resourceWidth,
+        //         textureTop / resourceHeight, textureBottom / resourceHeight);
+        // But it only supports `int`.
+        float uvLeft = textureLeft / resourceWidth;
+        float uvTop = textureTop / resourceHeight;
+        float uvRight = textureRight / resourceWidth;
+        float uvBottom = textureBottom / resourceHeight;
+        RenderSystem.setShaderTexture(0, texture);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        Matrix4f matrix4f = getGuiGraphics().pose().last().pose();
+        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.vertex(matrix4f, left, top, z).uv(uvLeft, uvTop).endVertex();
+        bufferBuilder.vertex(matrix4f, left, bottom, z).uv(uvLeft, uvBottom).endVertex();
+        bufferBuilder.vertex(matrix4f, right, bottom, z).uv(uvRight, uvBottom).endVertex();
+        bufferBuilder.vertex(matrix4f, right, top, z).uv(uvRight, uvTop).endVertex();
+        BufferUploader.drawWithShader(bufferBuilder.end());
     }
 
     /**
