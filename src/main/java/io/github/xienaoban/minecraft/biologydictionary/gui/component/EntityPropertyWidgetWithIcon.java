@@ -11,8 +11,8 @@ public abstract class EntityPropertyWidgetWithIcon<E extends Entity> extends Ent
 
     protected EntityPropertyWidgetWithIcon(E entity, int rows, int columns, EntityPropertyIcon propertyIcon) {
         super(entity, rows, columns);
-        this.propertyIcon = propertyIcon;
         propertyIcon.setParent(this);
+        this.propertyIcon = propertyIcon;
     }
 
     @Override

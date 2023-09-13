@@ -63,7 +63,7 @@ public final class ScreenRenderingContext {
     public boolean isDebug()            { return debug; }
     public void setDebug(boolean debug) { this.debug = debug; }
 
-    public AutoCloseable scaleOnce(float size) {
+    public ScaleRAII scaleOnce(float size) {
         return new ScaleRAII(this, size);
     }
 
@@ -71,8 +71,20 @@ public final class ScreenRenderingContext {
         getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
     }
 
+    public void renderText(Component component, int color, float size, float x, float y) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            renderText(component, color, x / size, y / size);
+        }
+    }
+
     public void renderCenteredText(Component component, int color, float x, float y) {
         getGuiGraphics().drawString(getFont(), component, (int) x - getFont().width(component) / 2, (int) y, color, false);
+    }
+
+    public void renderCenteredText(Component component, int color, float size, float x, float y) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            renderCenteredText(component, color, x / size, y / size);
+        }
     }
 
     public void renderHorizontalLine(int color, float width, float z, float y, float left, float right) {
@@ -150,20 +162,5 @@ public final class ScreenRenderingContext {
      */
     public void playScreenSound(SoundEvent sound, float volume, float pitch) {
         getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));
-    }
-
-    private static class ScaleRAII implements AutoCloseable {
-        private final GuiGraphics guiGraphics;
-
-        private ScaleRAII(ScreenRenderingContext ctx, float size) {
-            guiGraphics = ctx.getGuiGraphics();
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().scale(size, size, size);
-        }
-
-        @Override
-        public void close() throws Exception {
-            guiGraphics.pose().popPose();
-        }
     }
 }

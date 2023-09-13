@@ -9,6 +9,14 @@ public abstract class Widget extends ScreenElement {
     public static final int WIDGET_WIDTH = 12, WIDGET_WIDTH_MARGIN = 8;
     public static final int WIDGET_HEIGHT = 12, WIDGET_HEIGHT_MARGIN = 6;
 
+    public static int calcHeight(int rows) {
+        return (WIDGET_HEIGHT + WIDGET_HEIGHT_MARGIN) * rows - WIDGET_HEIGHT_MARGIN;
+    }
+
+    public static int calcWidth(int columns) {
+        return (WIDGET_WIDTH + WIDGET_WIDTH_MARGIN) * columns - WIDGET_WIDTH_MARGIN;
+    }
+
     private final int rows, columns;
 
     protected Widget(int rows, int columns) {
@@ -18,11 +26,9 @@ public abstract class Widget extends ScreenElement {
         if (columns <= 0 || columns > Page.COLUMNS) {
             throw new IllegalStateException("Unexpected value: " + columns);
         }
-        int height = (WIDGET_HEIGHT + WIDGET_HEIGHT_MARGIN) * rows - WIDGET_HEIGHT_MARGIN;
-        int width = (WIDGET_WIDTH + WIDGET_WIDTH_MARGIN) * columns - WIDGET_WIDTH_MARGIN;
         this.rows = rows;
         this.columns = columns;
-        getBox().setSize(width, height);
+        getBox().setSize(calcWidth(columns), calcHeight(rows));
     }
 
     public final int getRows() { return rows; }
