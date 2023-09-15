@@ -27,6 +27,9 @@ public class EntityPropertyBar extends ScreenElement {
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
         ctx.renderTexture(texture, width, height, left, top, ctx.getZ(), getBox().getLeft(), getBox().getTop(), getBox().getWidth(), getBox().getHeight());
-        ctx.renderText(Component.literal("0.5 0.5 1.5"), 0xFFFFFFFF, 0.5F, getBox().getLeft() + 2, getBox().getTop() + 4);
+    }
+
+    protected void renderText(ScreenRenderingContext ctx, Component text) {
+        ctx.renderText(text, 0xFFFFFFFF, 0.5F, getBox().getLeft() + 3, getBox().getTop() + 3.25F);
     }
 }

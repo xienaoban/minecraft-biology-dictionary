@@ -71,7 +71,8 @@ public final class ScreenRenderingContext {
     }
 
     public void renderText(Component component, int color, float x, float y) {
-        getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
+        getFont().drawInBatch(component.getVisualOrderText(), x, y, color, false, getGuiGraphics().pose().last().pose(), getGuiGraphics().bufferSource(), Font.DisplayMode.NORMAL, 0, 0xF000F0);
+        ((GuiGraphicsIMixin) getGuiGraphics()).callFlushIfUnmanaged();
     }
 
     public void renderText(Component component, int color, float size, float x, float y) {
@@ -81,7 +82,7 @@ public final class ScreenRenderingContext {
     }
 
     public void renderCenteredText(Component component, int color, float x, float y) {
-        getGuiGraphics().drawString(getFont(), component, (int) x - getFont().width(component) / 2, (int) y, color, false);
+        renderText(component, color, x - getFont().width(component) / 2.0F, y);
     }
 
     public void renderCenteredText(Component component, int color, float size, float x, float y) {

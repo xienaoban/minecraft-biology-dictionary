@@ -29,8 +29,8 @@ public class EntityImageWidget extends EntityPropertyWidget<Entity> {
     private static RC calculateRowsAndColumns(Entity entity) {
         AABB box = entity.getBoundingBox();
         double x = box.getXsize(), y = box.getYsize();
-        if (x > y) return new RC(3, 5);
-        return new RC(5, 3);
+        if (x > y) return new RC(3, 6);
+        return new RC(5, 4);
     }
 
     private static Entity createFakeEntity(Entity entity) {

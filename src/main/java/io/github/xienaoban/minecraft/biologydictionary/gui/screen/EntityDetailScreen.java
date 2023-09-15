@@ -13,6 +13,7 @@ public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
     private final Entity target;
 
     public EntityDetailScreen(Entity target) {
+        super(target.getType().getDescription());
         this.target = target;
         initEntityPropertyWidgets();
     }

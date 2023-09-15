@@ -5,7 +5,6 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -20,14 +19,16 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     public static final int BOOK_LEFT = 96, BOOK_TOP = 0, BOOK_RIGHT = 416, BOOK_BOTTOM = 192;
     public static final int BOOK_WIDTH = BOOK_RIGHT - BOOK_LEFT, BOOK_HEIGHT = BOOK_BOTTOM - BOOK_TOP;
 
+    private static final int PAGE_MID_MARGIN = 12, PAGE_TOP_MARGIN = 30;
+
     // Replace the `@Nullable minecraft` in class `Screen`. This `minecraft` must not be null.
     protected final Minecraft minecraft;
 
     private final List<Page> pages;
     private Page curLeftPage, curRightPage;
 
-    public AbstractBiologyDictionaryScreen() {
-        super(Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE));
+    public AbstractBiologyDictionaryScreen(Component title) {
+        super(title);
         minecraft = Objects.requireNonNull(Minecraft.getInstance());
 
         pages = new ArrayList<>();
@@ -56,6 +57,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 getZ(),
                 (width - BOOK_WIDTH) / 2F, (height - BOOK_HEIGHT) / 2F,
                 (width + BOOK_WIDTH) / 2F, (height + BOOK_HEIGHT) / 2F);
+        renderTitle(ctx, title);
 
         if (ctx.isDebug()) {
             renderDebug(ctx);
@@ -65,20 +67,26 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         super.render(ctx);
     }
 
+    private void renderTitle(ScreenRenderingContext ctx, Component title) {
+        float left = width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH + 2;
+        float top = (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN - 12;
+        ctx.renderText(title, 0x66000000, left + 0.6F, top + 0.6F);
+        ctx.renderText(title, 0xFF080808, left, top);
+    }
+
     private void renderDebug(ScreenRenderingContext ctx) {
         ctx.renderText(Component.literal(this.getClass().getSimpleName()), 0xFFFFFFFF, 2, 2);
     }
 
     @Override
     protected void resizeBox(int width, int height) {
-        final int midMargin = 14, topMargin = 24;
         if (curLeftPage != null) {
-            curLeftPage.getBox().setPosition(width / 2F - midMargin - Page.PAGE_WIDTH,
-                                             (height - BOOK_HEIGHT) / 2F + topMargin);
+            curLeftPage.getBox().setPosition(width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH,
+                                             (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN);
         }
         if (curRightPage != null) {
-            curRightPage.getBox().setPosition(width / 2F + midMargin,
-                                              (height - BOOK_HEIGHT) / 2F + topMargin);
+            curRightPage.getBox().setPosition(width / 2F + PAGE_MID_MARGIN,
+                                              (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN);
         }
     }
 

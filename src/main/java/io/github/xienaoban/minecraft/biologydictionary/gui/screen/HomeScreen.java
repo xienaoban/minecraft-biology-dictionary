@@ -4,6 +4,7 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -11,9 +12,20 @@ import net.minecraft.network.chat.Component;
 @Environment(EnvType.CLIENT)
 public class HomeScreen extends AbstractBiologyDictionaryScreen {
     public HomeScreen() {
+        super(Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE));
+        for (int i = 0; i < 9; ++i) {
+            if (!getOrAddPage(0).addWidget(new Widget(1, 1) {
+                @Override
+                protected void onRender(ScreenRenderingContext ctx) {
+                    setSelectable(false);
+                    ctx.renderRectangle(0xFFCCCCFF, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + Widget.WIDGET_WIDTH, getBox().getBottom());
+                    ctx.renderRectangle(0xFF8888FF, getZ(), getBox().getLeft() + 1, getBox().getTop() + 1, getBox().getLeft() + Widget.WIDGET_WIDTH - 1, getBox().getBottom() - 1);
+                }
+            })) System.out.println("ccc?");
+        }
         getOrAddPage(0).addWidget(new GetBookItemWidget());
         for (int i = 0; i < 5; ++i) {
-            if (!getOrAddPage(0).addWidget(new Widget(1, 3) {
+            if (!getOrAddPage(0).addWidget(new Widget(1, Page.COLUMNS / 2) {
                 @Override
                 protected void onRender(ScreenRenderingContext ctx) {
                     ctx.renderRectangle(0xFFFFCCCC, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + Widget.WIDGET_WIDTH, getBox().getBottom());
@@ -49,15 +61,29 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
                 }
             })) System.out.println("ccc?");
         }
-        for (int i = 0; i < 8; ++i) {
-            if (!getOrAddPage(0).addWidget(new Widget(1, 1) {
+
+        if (!getOrAddPage(1).addWidget(new Widget(3, Page.COLUMNS) {
+            @Override
+            protected void onRender(ScreenRenderingContext ctx) {
+                ctx.renderRectangle(0xFFFFCCCC, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + Widget.WIDGET_WIDTH, getBox().getBottom());
+                ctx.renderRectangle(0xFFFF8888, getZ(), getBox().getLeft() + 1, getBox().getTop() + 1, getBox().getLeft() + Widget.WIDGET_WIDTH, - 1, getBox().getBottom() - 1);
+                ctx.renderRectangle(0xFFEE8888, getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 1, getBox().getTop() + 1, getBox().getRight(), getBox().getBottom() - 1);
+                ctx.renderText(Component.literal("256"), 0xFF222222, 0.5F, getBox().getLeft() + Widget.WIDGET_WIDTH + 2, getBox().getTop() + 3);
+            }
+
+        })) System.out.println("aaa?");
+
+        for (int i = 0; i < 11; ++i) {
+            if (!getOrAddPage(1).addWidget(new Widget(1, Page.COLUMNS / 2) {
                 @Override
                 protected void onRender(ScreenRenderingContext ctx) {
-                    setSelectable(false);
-                    ctx.renderRectangle(0xFFCCCCFF, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + Widget.WIDGET_WIDTH, getBox().getBottom());
-                    ctx.renderRectangle(0xFF8888FF, getZ(), getBox().getLeft() + 1, getBox().getTop() + 1, getBox().getLeft() + Widget.WIDGET_WIDTH - 1, getBox().getBottom() - 1);
+                    ctx.renderRectangle(0xFFFFCCCC, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + Widget.WIDGET_WIDTH, getBox().getBottom());
+                    ctx.renderRectangle(0xFFFF8888, getZ(), getBox().getLeft() + 1, getBox().getTop() + 1, getBox().getLeft() + Widget.WIDGET_WIDTH, - 1, getBox().getBottom() - 1);
+                    ctx.renderRectangle(0xFFEE8888, getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 1, getBox().getTop() + 1, getBox().getRight(), getBox().getBottom() - 1);
+                    ctx.renderText(Component.literal("256"), 0xFF222222, 0.5F, getBox().getLeft() + Widget.WIDGET_WIDTH + 2, getBox().getTop() + 3);
                 }
-            })) System.out.println("ccc?");
+
+            })) System.out.println("aaa?");
         }
     }
 
