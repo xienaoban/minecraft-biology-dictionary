@@ -3,6 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.TextureInfo;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.GuiGraphicsIMixin;
 import net.fabricmc.api.EnvType;
@@ -127,11 +128,10 @@ public final class ScreenRenderingContext {
         ((GuiGraphicsIMixin) getGuiGraphics()).callFlushIfUnmanaged();
     }
 
-    public void renderTexture(ResourceLocation texture,
-                              float resourceWidth, float resourceHeight,
+    public void renderTexture(TextureInfo texture,
                               float textureLeft, float textureTop,
                               float z, float left, float top, float width, float height) {
-        renderTexture(texture, resourceWidth, resourceHeight,
+        renderTexture(texture,
                 textureLeft, textureTop, textureLeft + width, textureTop + height,
                 z, left, top, left + width,  top + height);
     }
@@ -139,8 +139,7 @@ public final class ScreenRenderingContext {
     /**
      * @see net.minecraft.client.gui.GuiGraphics#innerBlit(ResourceLocation, int, int, int, int, int, float, float, float, float)
      */
-    public void renderTexture(ResourceLocation texture,
-                              float resourceWidth, float resourceHeight,
+    public void renderTexture(TextureInfo texture,
                               float textureLeft, float textureTop, float textureRight, float textureBottom,
                               float z, float left, float top, float right, float bottom) {
         // Another choice is:
@@ -148,11 +147,11 @@ public final class ScreenRenderingContext {
         //         textureLeft / resourceWidth, textureRight / resourceWidth,
         //         textureTop / resourceHeight, textureBottom / resourceHeight);
         // But it only supports `int`.
-        float uvLeft = textureLeft / resourceWidth;
-        float uvTop = textureTop / resourceHeight;
-        float uvRight = textureRight / resourceWidth;
-        float uvBottom = textureBottom / resourceHeight;
-        RenderSystem.setShaderTexture(0, texture);
+        float uvLeft = textureLeft / texture.width();
+        float uvTop = textureTop / texture.height();
+        float uvRight = textureRight / texture.width();
+        float uvBottom = textureBottom / texture.height();
+        RenderSystem.setShaderTexture(0, texture.location());
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         Matrix4f matrix4f = getGuiGraphics().pose().last().pose();
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();

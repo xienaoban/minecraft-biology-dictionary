@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.entitypropertywidget.tree;
 
-import io.github.xienaoban.minecraft.biologydictionary.gui.Textures;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidgetStandard;
@@ -16,8 +16,8 @@ public class LivingEntityHealthWidget extends EntityPropertyWidgetStandard<Livin
     public LivingEntityHealthWidget(LivingEntity entity) {
         super(
                 entity,
-                new EntityPropertyIcon(Textures.ICONS, 256, 256, 0, 0),
-                new EntityPropertyBar(Textures.ICONS, 256, 256, Widget.WIDGET_WIDTH, 0) {
+                new EntityPropertyIcon(Textures.ICONS, 0, 0),
+                new EntityPropertyBar(Textures.ICONS, Widget.WIDGET_WIDTH, 0) {
                     @Override
                     protected void onRender(ScreenRenderingContext ctx) {
                         super.onRender(ctx);

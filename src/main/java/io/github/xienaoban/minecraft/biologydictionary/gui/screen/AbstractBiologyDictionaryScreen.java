@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 
 import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
-import io.github.xienaoban.minecraft.biologydictionary.gui.Textures;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
@@ -52,7 +52,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     @Override
     protected void render(ScreenRenderingContext ctx) {
         renderBackground(ctx.getGuiGraphics());
-        ctx.renderTexture(Textures.BOOK, 512, 256,
+        ctx.renderTexture(Textures.BOOK,
                 BOOK_LEFT, BOOK_TOP, BOOK_RIGHT, BOOK_BOTTOM,
                 getZ(),
                 (width - BOOK_WIDTH) / 2F, (height - BOOK_HEIGHT) / 2F,
