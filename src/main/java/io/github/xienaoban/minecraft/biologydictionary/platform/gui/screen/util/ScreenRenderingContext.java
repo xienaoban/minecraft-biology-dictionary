@@ -3,7 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import io.github.xienaoban.minecraft.biologydictionary.gui.util.TextureInfo;
+import io.github.xienaoban.minecraft.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.GuiGraphicsIMixin;
 import net.fabricmc.api.EnvType;
@@ -105,20 +105,19 @@ public final class ScreenRenderingContext {
          renderRectangle(color, z, left, bottom - width, right, bottom);
          renderRectangle(color, z, left, top, left + width, bottom);
          renderRectangle(color, z, right - width, top, right, bottom);
-         // Or use the following code:
-         // renderHorizontalLine(color, width, z, top, left, right);
-         // renderHorizontalLine(color, width, z, bottom - width, left, right);
-         // renderVerticalLine(color, width, z, left, top, bottom);
-         // renderVerticalLine(color, width, z, right - width, top, bottom);
+         /*
+         Another choice is:
+         renderHorizontalLine(color, width, z, top, left, right);
+         renderHorizontalLine(color, width, z, bottom - width, left, right);
+         renderVerticalLine(color, width, z, left, top, bottom);
+         renderVerticalLine(color, width, z, right - width, top, bottom);
+         */
     }
 
     /**
      * @see net.minecraft.client.gui.GuiGraphics#fill(RenderType, int, int, int, int, int, int)
      */
     public void renderRectangle(int color, float z, float left, float top, float right, float bottom) {
-        // Another choice is:
-        // getGuiGraphics().fill((int) left, (int) top, (int) right, (int) bottom, (int) z, color);
-        // But it only supports `int`.
         Matrix4f matrix4f = getGuiGraphics().pose().last().pose();
         VertexConsumer vertexConsumer = getGuiGraphics().bufferSource().getBuffer(RenderType.gui());
         vertexConsumer.vertex(matrix4f, left, top, z).color(color).endVertex();
@@ -126,6 +125,11 @@ public final class ScreenRenderingContext {
         vertexConsumer.vertex(matrix4f, right, bottom, z).color(color).endVertex();
         vertexConsumer.vertex(matrix4f, right, top, z).color(color).endVertex();
         ((GuiGraphicsIMixin) getGuiGraphics()).callFlushIfUnmanaged();
+        /*
+        Another choice is:
+        getGuiGraphics().fill((int) left, (int) top, (int) right, (int) bottom, (int) z, color);
+        But it only supports `int`.
+        */
     }
 
     public void renderTexture(TextureInfo texture,
@@ -142,11 +146,6 @@ public final class ScreenRenderingContext {
     public void renderTexture(TextureInfo texture,
                               float textureLeft, float textureTop, float textureRight, float textureBottom,
                               float z, float left, float top, float right, float bottom) {
-        // Another choice is:
-        // ((GuiGraphicsIMixin) getGuiGraphics()).callInnerBlit(texture, (int) left, (int) right, (int) top, (int) bottom, (int) z,
-        //         textureLeft / resourceWidth, textureRight / resourceWidth,
-        //         textureTop / resourceHeight, textureBottom / resourceHeight);
-        // But it only supports `int`.
         float uvLeft = textureLeft / texture.width();
         float uvTop = textureTop / texture.height();
         float uvRight = textureRight / texture.width();
@@ -161,6 +160,13 @@ public final class ScreenRenderingContext {
         bufferBuilder.vertex(matrix4f, right, bottom, z).uv(uvRight, uvBottom).endVertex();
         bufferBuilder.vertex(matrix4f, right, top, z).uv(uvRight, uvTop).endVertex();
         BufferUploader.drawWithShader(bufferBuilder.end());
+        /*
+        Another choice is:
+        ((GuiGraphicsIMixin) getGuiGraphics()).callInnerBlit(texture, (int) left, (int) right, (int) top, (int) bottom, (int) z,
+                textureLeft / resourceWidth, textureRight / resourceWidth,
+                textureTop / resourceHeight, textureBottom / resourceHeight);
+        But it only supports `int`.
+        */
     }
 
     /**

@@ -20,4 +20,8 @@ public abstract class EntityPropertyWidgetWithIcon<E extends Entity> extends Ent
         super.onResize(width, height);
         propertyIcon.getBox().setPosition(getBox().getLeft(), getBox().getTop());
     }
+
+    protected EntityPropertyIcon geIcon() {
+        return propertyIcon;
+    }
 }
