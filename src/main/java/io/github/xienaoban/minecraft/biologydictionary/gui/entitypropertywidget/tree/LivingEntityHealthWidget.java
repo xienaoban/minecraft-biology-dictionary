@@ -14,8 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 @Environment(EnvType.CLIENT)
 public class LivingEntityHealthWidget extends EntityPropertyStandardBarWidget<LivingEntity> {
     public LivingEntityHealthWidget(LivingEntity entity) {
-        super(
-                entity,
+        super(entity,
                 new EntityPropertyIcon(Textures.ICONS, 0, 0),
                 new EntityPropertyBar(Textures.ICONS, Widget.WIDGET_WIDTH, 0)
         );

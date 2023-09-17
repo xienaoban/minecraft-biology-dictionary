@@ -21,4 +21,8 @@ public final class MinecraftApi {
     public static long getGameTimeMillis(float tickDelta) {
         return Objects.requireNonNull(Minecraft.getInstance().level).getGameTime() * 50L + (long) (tickDelta * 50F);
     }
+
+    public static int getTicksPerSecond() {
+        return 20;
+    }
 }

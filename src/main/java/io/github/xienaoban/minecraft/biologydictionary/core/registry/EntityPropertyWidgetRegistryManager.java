@@ -2,6 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.core.registry;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistrar;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistry;
+import io.github.xienaoban.minecraft.biologydictionary.core.registry.tree.EntityAirWidgetRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.core.registry.tree.EntityImageWidgetRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.core.registry.tree.LivingEntityHealthWidgetRegistry;
 
@@ -47,5 +48,6 @@ public final class EntityPropertyWidgetRegistryManager implements EntityProperty
     private void registerDefaultEntityPropertyWidgets() {
         register(new EntityImageWidgetRegistry());
         register(new LivingEntityHealthWidgetRegistry());
+        register(new EntityAirWidgetRegistry());
     }
 }
