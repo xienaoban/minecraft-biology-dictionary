@@ -61,7 +61,7 @@ public class EntityPropertyBar extends ScreenElement {
     }
 
     private void renderText(ScreenRenderingContext ctx) {
-        ctx.renderText(text, 0xFFFFFFFF, 0.5F, getBox().getLeft() + 3.0F, getBox().getTop() + 2.25F);
+        ctx.renderText(text, 0xBBFFFFFF, 0.5F, getBox().getLeft() + 3.0F, getBox().getTop() + 2.25F);
     }
 
     public void updatePercent(float zeroToOne) {
