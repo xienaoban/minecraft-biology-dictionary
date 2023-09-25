@@ -83,3 +83,33 @@ publishing {
         // retrieving dependencies.
     }
 }
+
+sourceSets {
+    testModClient {
+        runtimeClasspath += main.runtimeClasspath + main.output
+        compileClasspath += main.compileClasspath + main.output
+    }
+    testModServer {
+        runtimeClasspath += main.runtimeClasspath + main.output
+        compileClasspath += main.compileClasspath + main.output
+    }
+}
+
+loom {
+    runs {
+        testModClient {
+            client()
+            source sourceSets.testModClient
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
+            runDir "build/gametest"
+        }
+        testModServer {
+            server()
+            source sourceSets.testModServer
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
+            runDir "build/gametest"
+        }
+    }
+}

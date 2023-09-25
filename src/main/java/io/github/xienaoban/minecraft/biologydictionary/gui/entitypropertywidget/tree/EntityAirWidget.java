@@ -7,9 +7,12 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.MinecraftApi;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
+@Environment(EnvType.CLIENT)
 public class EntityAirWidget extends EntityPropertyStandardBarWidget<Entity> {
     public EntityAirWidget(Entity entity) {
         super(entity,

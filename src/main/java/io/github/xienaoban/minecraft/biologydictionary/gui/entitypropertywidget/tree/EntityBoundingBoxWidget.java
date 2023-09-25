@@ -6,10 +6,13 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPrope
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 
+@Environment(EnvType.CLIENT)
 public class EntityBoundingBoxWidget extends EntityPropertyStandardBarWidget<Entity> {
     public EntityBoundingBoxWidget(Entity entity) {
         super(entity,

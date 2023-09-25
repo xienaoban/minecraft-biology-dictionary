@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "biologydictionary",
+  "version": "${version}",
+  "name": "Biology Dictionary",
+  "description": "A mod to display or modify the properties and states of entities.",
+  "license": "LGPL-3.0",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-gametest": [
+      "io.github.xienaoban.minecraft.VanillaEntitiesTest"
+    ]
+  },
+  "mixins": [],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

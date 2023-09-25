@@ -48,8 +48,8 @@ public final class EntityPropertyWidgetRegistryManager implements EntityProperty
 
     private void registerDefaultEntityPropertyWidgets() {
         register(new EntityImageWidgetRegistry());
-        register(new LivingEntityHealthWidgetRegistry());
-        register(new EntityAirWidgetRegistry());
         register(new EntityBoundingBoxWidgetRegistry());
+        register(new EntityAirWidgetRegistry());
+        register(new LivingEntityHealthWidgetRegistry());
     }
 }
