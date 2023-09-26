@@ -85,11 +85,7 @@ publishing {
 }
 
 sourceSets {
-    testModClient {
-        runtimeClasspath += main.runtimeClasspath + main.output
-        compileClasspath += main.compileClasspath + main.output
-    }
-    testModServer {
+    testUnit {
         runtimeClasspath += main.runtimeClasspath + main.output
         compileClasspath += main.compileClasspath + main.output
     }
@@ -97,19 +93,24 @@ sourceSets {
 
 loom {
     runs {
-        testModClient {
-            client()
-            source sourceSets.testModClient
-            vmArg "-Dfabric-api.gametest"
-            vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
-            runDir "build/gametest"
-        }
-        testModServer {
+        testUnit {
             server()
-            source sourceSets.testModServer
+            source sourceSets.testUnit
             vmArg "-Dfabric-api.gametest"
             vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
-            runDir "build/gametest"
+            runDir "build/testUnit"
         }
+        // testModClient {
+        //     client()
+        //     source sourceSets.testUnit
+        //     ideConfigGenerated project.rootProject == project
+        //     runDir "run/testModClient"
+        // }
+        // testModServer {
+        //     server()
+        //     source sourceSets.testUnit
+        //     ideConfigGenerated project.rootProject == project
+        //     runDir "run/testModServer"
+        // }
     }
 }
