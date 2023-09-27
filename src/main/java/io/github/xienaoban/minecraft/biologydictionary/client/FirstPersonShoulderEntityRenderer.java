@@ -17,7 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
-public class FirstPersonShoulderEntityRenderer implements RenderingRegistry.RenderingListener {
+public final class FirstPersonShoulderEntityRenderer implements RenderingRegistry.RenderingListener {
     public static void init() {
         RenderingRegistry.registerFirstPersonRendering(new FirstPersonShoulderEntityRenderer());
     }

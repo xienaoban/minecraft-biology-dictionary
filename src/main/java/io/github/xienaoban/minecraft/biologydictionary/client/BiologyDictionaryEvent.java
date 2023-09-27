@@ -20,7 +20,7 @@ import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.
 import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionaryClient.BDC;
 
 @Environment(EnvType.CLIENT)
-public class BiologyDictionaryEvent {
+public final class BiologyDictionaryEvent {
     public static void openBookScreen(Minecraft minecraft) {
         LocalPlayer player = minecraft.player;
         BDC.setHitEntity(null);

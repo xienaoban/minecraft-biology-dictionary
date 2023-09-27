@@ -94,7 +94,7 @@ sourceSets {
 loom {
     runs {
         testUnit {
-            server()
+            client()
             source sourceSets.testUnit
             vmArg "-Dfabric-api.gametest"
             vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
