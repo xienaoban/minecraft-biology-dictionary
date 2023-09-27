@@ -14,6 +14,8 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.*;
 
+import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
+
 @Environment(EnvType.CLIENT)
 public final class EntityManager {
     private static final EntityManager instance = new EntityManager();
@@ -26,6 +28,7 @@ public final class EntityManager {
     private final Map<Class<?>, EntityTreeNode> tree = new HashMap<>();
     private final Map<EntityType<?>, EntityClassInfo> info = new HashMap<>();
     private final List<EntityClassInfo> sortedInfo = new ArrayList<>();
+    private final Map<Class<?>, EntityType<?>> clazzToType = new HashMap<>();
 
     private final List<TagGroup> tagGroups = new ArrayList<>();
 
@@ -45,9 +48,14 @@ public final class EntityManager {
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
             EntityClassInfo entityClassInfo;
             try { entityClassInfo = new EntityClassInfo(entityType); }
-            catch (Exception e) { continue; }
+            catch (NotLivingEntityException ignored) { continue; }
+            catch (Exception e) {
+                LOGGER.error("Cannot init EntityClassInfo of\"" + EntityType.getKey(entityType) + "\": " + e);
+                throw e;
+            }
             info.put(entityClassInfo.getType(), entityClassInfo);
             sortedInfo.add(entityClassInfo);
+            clazzToType.put(entityClassInfo.getClazz(), entityType);
             getOrCreateEntityTreeNode(entityClassInfo.getClazz());
         }
         // [Should I?] info.put(EntityType.PLAYER, new EntityInfo(EntityType.PLAYER, PlayerEntity.class));
@@ -56,8 +64,8 @@ public final class EntityManager {
 
     private void initEntitiesSortClassInfo() {
         sortedInfo.sort((a, b) -> {
-            Integer oa = VanillaEntityClassNameAndOrder.getOrder(a.getClazz());
-            Integer ob = VanillaEntityClassNameAndOrder.getOrder(b.getClazz());
+            Integer oa = VanillaEntityClassNameAndOrder.getMyPreferredOrder(a.getType());
+            Integer ob = VanillaEntityClassNameAndOrder.getMyPreferredOrder(b.getType());
             if (oa != null && ob != null) {
                 return oa - ob;
             }
@@ -108,12 +116,25 @@ public final class EntityManager {
         return tagGroups;
     }
 
-    public EntityClassInfo getEntityInfo(EntityType<?> entityType) {
+    public EntityType<?> getEntityType(Class<?> entityClazz) {
+        return clazzToType.get(entityClazz);
+    }
+
+    public EntityClassInfo getEntityClassInfo(EntityType<?> entityType) {
         return info.get(entityType);
     }
 
-    public List<EntityClassInfo> getEntityInfo() {
+    public EntityClassInfo getEntityClassInfo(Class<?> entityClazz) {
+        return getEntityClassInfo(getEntityType(entityClazz));
+    }
+
+    public List<EntityClassInfo> getEntityInfoList() {
         return sortedInfo;
+    }
+
+    public boolean isVanillaEntity(EntityType<?> entityType) {
+        return ResourceLocation.DEFAULT_NAMESPACE
+                .equals(getEntityClassInfo(entityType).getLocation().getNamespace());
     }
 
     public static String getClassRealName(Class<?> clazz) {
@@ -153,9 +174,12 @@ public final class EntityManager {
 
         public EntityClassInfo(EntityType<?> entityType) {
             type = entityType;
-            instance = type.create(Minecraft.getInstance().level);
+            instance = type.create(Minecraft.getInstance().level);  // todo: memory leak
             if (!(instance instanceof LivingEntity)) {
-                throw new RuntimeException("not a LivingEntity?");
+                String name = EntityType.getKey(getType()).toString();
+                if (instance != null) throw new NotLivingEntityException(name);
+                if (type == EntityType.PLAYER) throw new NotLivingEntityException(name);
+                throw new NullPointerException("Failed to create \"" + name + "\".");
             }
             clazz = instance.getClass();
             tags = new ArrayList<>();
@@ -333,5 +357,11 @@ public final class EntityManager {
         }
 
         boolean execute(E cur, int depth);
+    }
+
+    private static class NotLivingEntityException extends RuntimeException {
+        public NotLivingEntityException(String entityName) {
+            super("\"" + entityName + "\" is not a LivingEntity!");
+        }
     }
 }

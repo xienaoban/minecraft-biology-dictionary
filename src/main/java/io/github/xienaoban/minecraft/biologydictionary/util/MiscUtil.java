@@ -5,4 +5,8 @@ public final class MiscUtil {
     public static <T> T cast(Object obj) {
         return (T) obj;
     }
+
+    public static boolean isVanillaClass(Class<?> clazz) {
+        return clazz.getPackage().getName().startsWith("net.minecraft");
+    }
 }
