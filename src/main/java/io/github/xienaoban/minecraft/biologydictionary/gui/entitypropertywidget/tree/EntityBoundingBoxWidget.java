@@ -1,8 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.entitypropertywidget.tree;
 
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyBar;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyIcon;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardBarWidget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyProgressBarWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
@@ -13,15 +13,15 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 
 @Environment(EnvType.CLIENT)
-public class EntityBoundingBoxWidget extends EntityPropertyStandardBarWidget<Entity> {
+public class EntityBoundingBoxWidget extends EntityPropertyProgressBarWidget<Entity> {
     public EntityBoundingBoxWidget(Entity entity) {
         super(entity,
-                new EntityPropertyIcon(Textures.ICONS, 0, 2 * Widget.WIDGET_WIDTH),
+                new EntityPropertyIcon(Textures.ICONS, 5 * Widget.WIDGET_WIDTH, 0),
                 new BoxBar(entity)
         );
     }
 
-    private static class BoxBar extends EntityPropertyBar {
+    private static class BoxBar extends EntityPropertyProgressBar {
         private final Entity entity;
         private AABB lastBox;
         private Component textX, textY, textZ;

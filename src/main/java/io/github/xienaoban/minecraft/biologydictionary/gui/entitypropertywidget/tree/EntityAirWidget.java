@@ -1,8 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.entitypropertywidget.tree;
 
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyBar;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyIcon;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardBarWidget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyProgressBarWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.MinecraftApi;
@@ -13,11 +13,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
-public class EntityAirWidget extends EntityPropertyStandardBarWidget<Entity> {
+public class EntityAirWidget extends EntityPropertyProgressBarWidget<Entity> {
     public EntityAirWidget(Entity entity) {
         super(entity,
                 new EntityPropertyIcon(Textures.ICONS, 0, Widget.WIDGET_HEIGHT),
-                new EntityPropertyBar(Textures.ICONS, Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT)
+                new EntityPropertyProgressBar(Textures.ICONS, Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT)
         );
     }
 

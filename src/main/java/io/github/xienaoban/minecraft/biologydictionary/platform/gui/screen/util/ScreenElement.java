@@ -18,6 +18,7 @@ public abstract class ScreenElement {
     private final ScreenElementBox box;
     private final ArrayList<ScreenElement> subScreenElements;
     private boolean selectable;
+    private float priority;
 
     public ScreenElement() {
         this(true);
@@ -32,17 +33,12 @@ public abstract class ScreenElement {
 
     @Nullable public final ScreenElement getParent() { return parent; }
     public final void setParent(ScreenElement newParent) {
-        setParent(newParent, false);
-    }
-
-    public final void setParent(ScreenElement newParent, boolean highPriority) {
-        ScreenElement oldParent = parent;
-        if (oldParent != null) {
-            oldParent.unregisterSubScreenElement(this);
+        if (parent != null) {
+            parent.unregisterSubScreenElement(this);
         }
         parent = newParent;
-        if (newParent != null) {
-            newParent.registerSubScreenElement(this, highPriority);
+        if (parent != null) {
+            parent.registerSubScreenElement(this);
         }
     }
 
@@ -115,36 +111,18 @@ public abstract class ScreenElement {
      */
     protected boolean onMouseDown(float x, float y, int code) { return false; }
 
-    private void registerSubScreenElement(ScreenElement sub, boolean highPriority) {
-        if (highPriority) {
-            subScreenElements.add(0, sub);
-        } else {
-            subScreenElements.add(sub);
+    public final ScreenElementBox getBox() { return box; }
+
+    public final boolean isSelectable() { return selectable; }
+    public final void setSelectable(boolean selectable) { this.selectable = selectable; }
+
+    public final float getPriority() { return priority; }
+    public final void setPriority(float priority) {
+        this.priority = priority;
+        if (parent != null) {
+            parent.unregisterSubScreenElement(this);
+            parent.registerSubScreenElement(this);
         }
-    }
-
-    private void unregisterSubScreenElement(ScreenElement sub) {
-        subScreenElements.remove(sub);
-    }
-
-    public final void clearSubScreenElements() {
-        subScreenElements.clear();
-    }
-
-    public final ScreenElementBox getBox() {
-        return box;
-    }
-
-    public final ArrayList<ScreenElement> getSubScreenElements() {
-        return subScreenElements;
-    }
-
-    public final boolean isSelectable() {
-        return selectable;
-    }
-
-    public final void setSelectable(boolean selectable) {
-        this.selectable = selectable;
     }
 
     /**
@@ -167,5 +145,26 @@ public abstract class ScreenElement {
         ScreenElementBox bo = getBox();
         return bi.getLeft() >= bo.getLeft() && bi.getTop() >= bo.getTop()
                 && bi.getRight() <= bo.getRight() && bi.getBottom() <= bo.getBottom();
+    }
+
+    protected void updateSubScreenElement(ScreenElement prev, ScreenElement next) {
+        if (prev != null) {
+            prev.setParent(null);
+        }
+        if (next != null) {
+            next.setParent(this);
+        }
+    }
+
+    private void registerSubScreenElement(ScreenElement sub) {
+        int i;
+        for (i = subScreenElements.size() - 1; i >= 0; --i) {
+            if (subScreenElements.get(i).getPriority() <= sub.getPriority()) break;
+        }
+        subScreenElements.add(i + 1, sub);
+    }
+
+    private void unregisterSubScreenElement(ScreenElement sub) {
+        subScreenElements.remove(sub);
     }
 }

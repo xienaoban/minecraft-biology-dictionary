@@ -21,7 +21,7 @@ public final class EntityManager {
     private static final EntityManager instance = new EntityManager();
 
     /**
-     * Don't invoke it before joining a world.
+     * Don't invoke it before joining a world because we need a Minecraft.getInstance().level.
      */
     public static EntityManager getInstance() { return instance; }
 
@@ -174,14 +174,16 @@ public final class EntityManager {
 
         public EntityClassInfo(EntityType<?> entityType) {
             type = entityType;
-            instance = type.create(Minecraft.getInstance().level);  // todo: memory leak
-            if (!(instance instanceof LivingEntity)) {
+            Entity entity = type.create(Minecraft.getInstance().level);
+            // Do not assign it for now to prevent memory leak because of the client level.
+            instance = null;
+            if (!(entity instanceof LivingEntity)) {
                 String name = EntityType.getKey(getType()).toString();
-                if (instance != null) throw new NotLivingEntityException(name);
+                if (entity != null) throw new NotLivingEntityException(name);
                 if (type == EntityType.PLAYER) throw new NotLivingEntityException(name);
                 throw new NullPointerException("Failed to create \"" + name + "\".");
             }
-            clazz = instance.getClass();
+            clazz = entity.getClass();
             tags = new ArrayList<>();
         }
 

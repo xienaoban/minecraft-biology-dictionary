@@ -1,5 +1,6 @@
-package io.github.xienaoban.minecraft.biologydictionary.gui.component;
+package io.github.xienaoban.minecraft.biologydictionary.gui.component.control;
 
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
@@ -15,6 +16,7 @@ public class EntityPropertyIcon extends ScreenElement {
         this.texture = texture;
         this.textureLeft = textureLeft;
         this.textureTop = textureTop;
+
         getBox().setSize(Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
         setSelectable(false);
     }
