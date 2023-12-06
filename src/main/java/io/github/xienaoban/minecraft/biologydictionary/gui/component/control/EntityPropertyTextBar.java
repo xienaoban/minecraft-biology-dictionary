@@ -14,8 +14,4 @@ public class EntityPropertyTextBar extends EntityPropertyBar {
         super.onRender(ctx);
         renderFullBar(ctx);
     }
-
-//    protected void renderText(ScreenRenderingContext ctx) {
-//        ctx.renderText(text, 0xBBFFFFFF, 0.5F, getBox().getLeft() + 3.0F, getBox().getTop() + 2.25F);
-//    }
 }

@@ -11,6 +11,10 @@ public class EntityPropertyStandardWidget<E extends Entity> extends EntityProper
     private EntityPropertyBar bar;
     private final List<ScreenElement> buttons;
 
+    protected EntityPropertyStandardWidget(E entity) {
+        this(entity, Page.COLUMNS / 2);
+    }
+
     protected EntityPropertyStandardWidget(E entity, int columns) {
         super(entity, 1, columns);
         this.bar = null;

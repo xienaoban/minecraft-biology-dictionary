@@ -1,9 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.entitypropertywidget.tree;
 
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyProgressBarWidget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyBar;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
@@ -13,28 +13,26 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 
 @Environment(EnvType.CLIENT)
-public class EntityBoundingBoxWidget extends EntityPropertyProgressBarWidget<Entity> {
+public class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<Entity> {
     public EntityBoundingBoxWidget(Entity entity) {
-        super(entity,
-                new EntityPropertyIcon(Textures.ICONS, 5 * Widget.WIDGET_WIDTH, 0),
-                new BoxBar(entity)
-        );
+        super(entity);
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, 5 * Widget.WIDGET_WIDTH, 0));
+        setElementBar(new BoxBar());
     }
 
-    private static class BoxBar extends EntityPropertyProgressBar {
-        private final Entity entity;
+    private final class BoxBar extends EntityPropertyBar {
         private AABB lastBox;
         private Component textX, textY, textZ;
 
-        public BoxBar(Entity entity) {
-            super(Textures.ICONS, Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT);
-            this.entity = entity;
+        public BoxBar() {
+            super(Textures.ICONS, 6 * Widget.WIDGET_WIDTH, 0);
             updateTexts();
         }
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
+            renderFullBar(ctx);
             updateTexts();
             ctx.renderText(textX, 0xFFEE3D3D, 0.5F, getBox().getLeft() + 3 + 0, getBox().getTop() + 2.25F);
             ctx.renderText(textY, 0xFF04B904, 0.5F, getBox().getLeft() + 3 + 12, getBox().getTop() + 2.25F);
@@ -42,7 +40,7 @@ public class EntityBoundingBoxWidget extends EntityPropertyProgressBarWidget<Ent
         }
 
         private void updateTexts() {
-            AABB currBox = entity.getBoundingBox();
+            AABB currBox = e().getBoundingBox();
             if (lastBox == currBox) return;
             lastBox = currBox;
             textX = Component.literal(String.format("%.2f", lastBox.getXsize()));

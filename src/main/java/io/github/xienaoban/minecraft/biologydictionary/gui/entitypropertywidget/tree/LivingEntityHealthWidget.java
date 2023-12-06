@@ -16,14 +16,19 @@ public class LivingEntityHealthWidget extends EntityPropertyStandardWidget<Livin
     public LivingEntityHealthWidget(LivingEntity entity) {
         super(entity, 4);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, 0, 0));
-        setElementBar(new EntityPropertyProgressBar(Textures.ICONS, Widget.WIDGET_WIDTH, 0));
+        setElementBar(new HealthBar());
     }
 
-    @Override
-    protected void onRender(ScreenRenderingContext ctx) {
-        super.onRender(ctx);
-        EntityPropertyProgressBar bar = (EntityPropertyProgressBar) getElementBar();
-        bar.updatePercent(e().getHealth() / e().getMaxHealth());
-        bar.getElementText().updateText(Component.literal(((int) e().getHealth()) + "/" + ((int) e().getMaxHealth())));
+    private final class HealthBar extends EntityPropertyProgressBar {
+        public HealthBar() {
+            super(Textures.ICONS, Widget.WIDGET_WIDTH, 0);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            updatePercent(e().getHealth() / e().getMaxHealth());
+            super.onRender(ctx);
+            renderInnerText(ctx, Component.literal(((int) e().getHealth()) + "/" + ((int) e().getMaxHealth())));
+        }
     }
 }
