@@ -25,6 +25,7 @@ public final class Page extends ScreenElement {
 
     @Override
     protected void onResize(int width, int height) {
+        super.onResize(width, height);
         for (int r = 0; r < ROWS; ++r) for (int c = 0; c < COLUMNS; ++c) {
             Widget widget = widgetLayout[r][c];
             if (widget == null || widget instanceof WidgetPlaceholder) continue;

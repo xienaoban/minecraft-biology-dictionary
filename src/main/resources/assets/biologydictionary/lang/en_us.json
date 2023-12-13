@@ -7,5 +7,7 @@
   "key.biologydictionary.debug": "Toggle Debug Mode",
   "text.biologydictionary.mod_name_is": "Mod name: ",
   "text.biologydictionary.mod_not_installed": "It means that you have not installed the mod `Biology Dictionary` if you see this text. You may download this mod at: ",
-  "text.biologydictionary.click_me_to_download": "Click me to download!"
+  "text.biologydictionary.click_me_to_download": "Click me to download!",
+  "text.biologydictionary.empty_with_brackets": "(Empty)",
+  "": ""
 }

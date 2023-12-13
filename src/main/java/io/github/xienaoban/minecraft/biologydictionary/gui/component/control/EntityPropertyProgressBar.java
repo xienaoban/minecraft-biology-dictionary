@@ -22,6 +22,6 @@ public class EntityPropertyProgressBar extends EntityPropertyBar {
     }
 
     public void updatePercent(float zeroToOne) {
-        this.percent = zeroToOne;
+        this.percent = Math.min(Math.max(zeroToOne, 0.0F), 1.0F);
     }
 }

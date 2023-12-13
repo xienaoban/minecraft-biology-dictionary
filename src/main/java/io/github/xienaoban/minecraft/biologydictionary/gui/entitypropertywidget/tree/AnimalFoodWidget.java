@@ -1,0 +1,69 @@
+package io.github.xienaoban.minecraft.biologydictionary.gui.entitypropertywidget.tree;
+
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyBar;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.Comparator;
+
+@Environment(EnvType.CLIENT)
+public class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal> {
+    private final ItemStack[] foods;
+
+    public AnimalFoodWidget(Animal entity) {
+        super(entity);
+        foods = getFoodItems();
+
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, 5 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT));
+        setElementBar(new FoodBar());
+    }
+
+    private final class FoodBar extends EntityPropertyBar {
+        private float gap;
+
+        public FoodBar() {
+            super(Textures.ICONS, 6 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            if (foods.length == 0) {
+                renderFullBar(ctx);
+                renderInnerText(ctx, Component.translatable(TranslationKeys.TEXT_EMPTY_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
+                return;
+            }
+            for (int i = foods.length - 1; i >= 0; --i) {
+                ctx.renderTexture(Textures.ICONS, 24 * 10.0F, 0, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
+            }
+            for (int i = foods.length - 1; i >= 0; --i) {
+                ctx.renderItem(foods[i], 0.5F, getBox().getLeft() + i * gap, getBox().getTop());
+            }
+        }
+
+        @Override
+        protected void onResize(int width, int height) {
+            super.onResize(width, height);
+            gap = Math.min(10.0F, (getBox().getWidth() - 8.0F) / Math.max(1, foods.length - 1));
+        }
+    }
+
+    private ItemStack[] getFoodItems() {
+        return BuiltInRegistries.ITEM.stream()
+                .map(ItemStack::new)
+                .filter(itemStack -> e().isFood(itemStack))
+                .sorted(Comparator.comparingInt(o -> BuiltInRegistries.ITEM.getId(o.getItem())))
+                .toArray(ItemStack[]::new);
+    }
+}

@@ -1,6 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.component;
 
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyBar;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenElement;
 import net.minecraft.world.entity.Entity;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class EntityPropertyStandardWidget<E extends Entity> extends EntityPropertyIconWidget<E> {
     private EntityPropertyBar bar;
-    private final List<ScreenElement> buttons;
+    private final List<EntityPropertyButton> buttons;
 
     protected EntityPropertyStandardWidget(E entity) {
         this(entity, Page.COLUMNS / 2);
@@ -27,8 +28,8 @@ public class EntityPropertyStandardWidget<E extends Entity> extends EntityProper
         this.bar = bar;
     }
 
-    public List<ScreenElement> getElementButtons() { return  buttons; }
-    public void addElementButton(ScreenElement button) {
+    public List<EntityPropertyButton> getElementButtons() { return buttons; }
+    public void addElementButton(EntityPropertyButton button) {
         button.setParent(this);
         buttons.add(button);
     }

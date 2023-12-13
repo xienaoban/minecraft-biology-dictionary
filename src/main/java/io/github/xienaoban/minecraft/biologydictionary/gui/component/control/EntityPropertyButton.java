@@ -1,0 +1,25 @@
+package io.github.xienaoban.minecraft.biologydictionary.gui.component.control;
+
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.platform.gui.TextureInfo;
+import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenElement;
+import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+
+public class EntityPropertyButton extends ScreenElement {
+    private final TextureInfo texture;
+    private final float textureLeft, textureTop;
+
+    public EntityPropertyButton(TextureInfo texture, float textureLeft, float textureTop) {
+        this.texture = texture;
+        this.textureLeft = textureLeft;
+        this.textureTop = textureTop;
+
+        getBox().setSize(Widget.WIDGET_WIDTH - 2, Widget.WIDGET_HEIGHT - 2);
+    }
+
+    @Override
+    protected void onRender(ScreenRenderingContext ctx) {
+        super.onRender(ctx);
+        ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(), getBox().getLeft() - 1, getBox().getTop() - 1, getBox().getWidth() + 2, getBox().getHeight() + 2);
+    }
+}
