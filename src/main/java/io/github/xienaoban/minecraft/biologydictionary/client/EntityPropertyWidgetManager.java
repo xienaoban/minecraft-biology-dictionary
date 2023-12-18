@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.client;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistry;
-import io.github.xienaoban.minecraft.biologydictionary.core.registry.EntityPropertyWidgetRegistryManager;
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityPropertyWidgetRegistryManager;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.util.MiscUtil;
 import net.fabricmc.api.EnvType;

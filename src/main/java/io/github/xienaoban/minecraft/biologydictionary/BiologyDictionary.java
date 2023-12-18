@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
-import io.github.xienaoban.minecraft.biologydictionary.core.registry.EntityPropertyWidgetRegistryManager;
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityPropertyWidgetRegistryManager;
 import io.github.xienaoban.minecraft.biologydictionary.net.ServerNetManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

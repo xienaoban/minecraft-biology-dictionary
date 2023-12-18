@@ -1,8 +1,8 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.registry;
+package io.github.xienaoban.minecraft.biologydictionary.core;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistrar;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistry;
-import io.github.xienaoban.minecraft.biologydictionary.core.registry.tree.*;
+import io.github.xienaoban.minecraft.biologydictionary.core.tree.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
