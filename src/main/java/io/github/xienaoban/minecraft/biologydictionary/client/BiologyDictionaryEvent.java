@@ -2,6 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.client;
 
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.EntityDetailScreen;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.HomeScreen;
+import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -53,6 +54,7 @@ public final class BiologyDictionaryEvent {
             minecraft.setScreen(new HomeScreen());
         } else {
             BDC.setHitEntity(target);
+            ClientNetManager.requestEntityData(target);
             minecraft.setScreen(new EntityDetailScreen(target));
         }
         new ScreenRenderingContext(null).playScreenSound(SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);

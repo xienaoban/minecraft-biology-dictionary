@@ -101,7 +101,7 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            ClientNetManager.sendRequestBookItem();
+            ClientNetManager.requestBookItem();
             onClose();
             return true;
         }

@@ -3,11 +3,9 @@ package io.github.xienaoban.minecraft.biologydictionary.core;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistrar;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.core.tree.*;
+import net.minecraft.world.entity.Entity;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public final class EntityPropertyWidgetRegistryManager implements EntityPropertyWidgetRegistrar {
@@ -20,27 +18,27 @@ public final class EntityPropertyWidgetRegistryManager implements EntityProperty
         getInstance().clearCache();
     }
 
-    private final List<EntityPropertyWidgetRegistry<?>> registries;
+    private final Map<Class<? extends Entity>, List<EntityPropertyWidgetRegistry<?>>> registries;
     private Set<Class<?>> visited;
 
     private EntityPropertyWidgetRegistryManager() {
-        registries = new ArrayList<>();
-        visited = new HashSet<>();
+        this.registries = new HashMap<>();
+        this.visited = new HashSet<>();
     }
 
     public void register(EntityPropertyWidgetRegistry<?> registry) {
-        registries.add(registry);
+        registries.computeIfAbsent(registry.getEntityClass(), clazz -> new ArrayList<>()).add(registry);
         if (!visited.add(registry.getClass())) {
-            throw new RuntimeException(registry.getClass().getName() + " is already registered!");
+            throw new IllegalStateException(registry.getClass().getName() + " is already registered!");
         }
+    }
+
+    public List<EntityPropertyWidgetRegistry<?>> getRegistries(Class<? extends Entity> clazz) {
+        return registries.getOrDefault(clazz, Collections.emptyList());
     }
 
     private void clearCache() {
         visited = null;
-    }
-
-    public List<EntityPropertyWidgetRegistry<?>> getRegistries() {
-        return registries;
     }
 
     private void registerDefaultEntityPropertyWidgets() {
