@@ -2,7 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.core;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistrar;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistry;
-import io.github.xienaoban.minecraft.biologydictionary.core.tree.*;
+import io.github.xienaoban.minecraft.biologydictionary.core.widget.*;
 import net.minecraft.world.entity.Entity;
 
 import java.util.*;

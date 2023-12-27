@@ -1,9 +1,16 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityPropertyWidgetRegistryManager;
+import io.github.xienaoban.minecraft.biologydictionary.core.entity.VanillaEntityClassNameAndOrder;
 import io.github.xienaoban.minecraft.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.minecraft.biologydictionary.platform.server.ServerEventRegistry;
+import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BiologyDictionary {
     public static final String MOD_ID = "biologydictionary";
@@ -14,11 +21,25 @@ public class BiologyDictionary {
 
     public static final BiologyDictionary BD = new BiologyDictionary();
 
+    private final Set<MinecraftServer> servers;
+
     private BiologyDictionary() {
+        this.servers = ConcurrentHashMap.newKeySet();
+
+        VanillaEntityClassNameAndOrder.init();
         EntityPropertyWidgetRegistryManager.init();
         ServerNetManager.init();
+
+        ServerEventRegistry.registerStarted(servers::add);
+        ServerEventRegistry.registerStopping(servers::remove);
+        ServerEventRegistry.registerStarted(server -> EntityManager.init());
+
         LOGGER.info("BiologyDictionary initialized.");
     }
 
     public void forceInitialize() { /* do nothing but to trigger cinit */ }
+
+    public Set<MinecraftServer> getServers() {
+        return servers;
+    }
 }

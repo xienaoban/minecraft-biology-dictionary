@@ -1,9 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
 import io.github.xienaoban.minecraft.biologydictionary.client.EntityPropertyWidgetManager;
-import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.minecraft.biologydictionary.client.FirstPersonShoulderEntityRenderer;
-import io.github.xienaoban.minecraft.biologydictionary.client.batch.VanillaEntityClassNameAndOrder;
+import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -27,7 +26,6 @@ public class BiologyDictionaryClient {
         EntityPropertyWidgetManager.init();
         KeyMappingManager.init();
         ClientNetManager.init();
-        VanillaEntityClassNameAndOrder.init();
         LOGGER.info("BiologyDictionary (client) initialized.");
     }
 

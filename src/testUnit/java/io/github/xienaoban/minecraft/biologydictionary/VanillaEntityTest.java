@@ -1,13 +1,15 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
-import io.github.xienaoban.minecraft.biologydictionary.client.EntityManager;
-import io.github.xienaoban.minecraft.biologydictionary.client.batch.VanillaEntityClassNameAndOrder;
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
+import io.github.xienaoban.minecraft.biologydictionary.core.entity.VanillaEntityClassNameAndOrder;
 import io.github.xienaoban.minecraft.biologydictionary.util.MiscUtil;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -19,9 +21,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static io.github.xienaoban.minecraft.biologydictionary.BioDicUnitTest.LOGGER;
-
-public class VanillaEntitiesTest implements FabricGameTest {
+public class VanillaEntityTest implements FabricGameTest {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @GameTest(template = EMPTY_STRUCTURE)
     public void testDeobfuscationBatch(GameTestHelper helper) {

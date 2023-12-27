@@ -1,29 +1,39 @@
-package io.github.xienaoban.minecraft.biologydictionary.client;
+package io.github.xienaoban.minecraft.biologydictionary.core;
 
-import io.github.xienaoban.minecraft.biologydictionary.client.batch.VanillaEntityClassNameAndOrder;
+import io.github.xienaoban.minecraft.biologydictionary.core.entity.VanillaEntityClassNameAndOrder;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 
 import java.util.*;
 
+import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.BD;
 import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
 
-@Environment(EnvType.CLIENT)
 public final class EntityManager {
-    private static final EntityManager instance = new EntityManager();
+    private static final EntityManager instance = new EntityManager(getTempLevel());
 
     /**
-     * Don't invoke it before joining a world because we need a Minecraft.getInstance().level.
+     * Don't invoke it before joining a world because we need a minecraft level.
      */
     public static EntityManager getInstance() { return instance; }
+
+    public static void init() {}
+
+    private static Level getTempLevel() {
+        for (MinecraftServer server : BD.getServers()) {
+            for (Level level : server.getAllLevels()) {
+                return level;
+            }
+        }
+        throw new RuntimeException("Should not reach here!");
+    }
 
     private final Map<Class<?>, EntityTreeNode> tree = new HashMap<>();
     private final Map<EntityType<?>, EntityClassInfo> info = new HashMap<>();
@@ -37,17 +47,17 @@ public final class EntityManager {
     private final TagGroup interfaceTags = new TagGroup(TranslationKeys.TAG_GROUP_INTERFACE);
     private final TagGroup namespaceTags = new TagGroup(TranslationKeys.TAG_GROUP_NAMESPACE);
 
-    private EntityManager() {
-        initEntities();
+    private EntityManager(Level level) {
+        initEntities(level);
         initEntitiesSortClassInfo();
         initEntitiesSortTreeNode();
     }
 
-    private void initEntities() {
+    private void initEntities(Level level) {
         tree.put(Entity.class, new EntityTreeNode());
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
             EntityClassInfo entityClassInfo;
-            try { entityClassInfo = new EntityClassInfo(entityType); }
+            try { entityClassInfo = new EntityClassInfo(entityType, level); }
             catch (NotLivingEntityException ignored) { continue; }
             catch (Exception e) {
                 LOGGER.error("Cannot init EntityClassInfo of\"" + EntityType.getKey(entityType) + "\": " + e);
@@ -172,9 +182,9 @@ public final class EntityManager {
         private final List<Tag> tags;
         private int sortId;
 
-        public EntityClassInfo(EntityType<?> entityType) {
+        public EntityClassInfo(EntityType<?> entityType, Level level) {
             type = entityType;
-            Entity entity = type.create(Minecraft.getInstance().level);
+            Entity entity = type.create(level);
             // Do not assign it for now to prevent memory leak because of the client level.
             instance = null;
             if (!(entity instanceof LivingEntity)) {

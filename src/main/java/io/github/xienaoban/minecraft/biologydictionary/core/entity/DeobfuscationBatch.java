@@ -1,11 +1,7 @@
-package io.github.xienaoban.minecraft.biologydictionary.client.batch;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+package io.github.xienaoban.minecraft.biologydictionary.core.entity;
 
 import java.util.HashMap;
 
-@Environment(EnvType.CLIENT)
 final class DeobfuscationBatch {
     static final HashMap<Class<?>, String> map = new HashMap<>();
     

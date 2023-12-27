@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.tree;
+package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;

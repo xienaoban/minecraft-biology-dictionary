@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.tree;
+package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistry;
 import net.fabricmc.api.EnvType;
