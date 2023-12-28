@@ -6,7 +6,8 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "io.github.xienaoban.minecraft.biologydictionary.VanillaEntitiesTest"
+      "io.github.xienaoban.minecraft.biologydictionary.VanillaEntityNbtTest",
+      "io.github.xienaoban.minecraft.biologydictionary.VanillaEntityTest"
     ]
   }
 }
