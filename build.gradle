@@ -34,9 +34,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    testUnitImplementation "com.github.javaparser:javaparser-symbol-solver-core:${project.javaparser_version}"
-    testUnitImplementation "org.bitbucket.mstrobel:procyon-compilertools:${project.procyon_version}"
-
+    testUnitImplementation "org.ow2.asm:asm:${project.asm_version}"
 }
 
 processResources {
