@@ -2,7 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.core.entity.VanillaEntityClassNameAndOrder;
-import io.github.xienaoban.minecraft.biologydictionary.util.MiscUtil;
+import io.github.xienaoban.minecraft.biologydictionary.platform.access.MinecraftApi;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
@@ -32,7 +32,7 @@ public class VanillaEntityTest implements FabricGameTest {
             Class<?> clazz = cur.getClazz();
 
             // skip non-vanilla classes
-            if (!MiscUtil.isVanillaClass(clazz)) {
+            if (!MinecraftApi.isVanillaClass(clazz)) {
                 LOGGER.info("Skipped non-vanilla class: \"" + clazz.getName() + "\".");
                 return true;
             }
@@ -69,13 +69,13 @@ public class VanillaEntityTest implements FabricGameTest {
 
             // skip entities that are not LivingEntity (like arrow or boat)
             if (classInfo == null) {
-                LOGGER.info("Skipped entities like arrow or boat: \"" + EntityType.getKey(entityType) + "\".");
+                LOGGER.trace("Skipped entities like arrow or boat: \"" + EntityType.getKey(entityType) + "\".");
                 continue;
             }
 
             // skip non-vanilla classes
             Class<?> clazz = classInfo.getClazz();
-            if (!MiscUtil.isVanillaClass(clazz)) {
+            if (!MinecraftApi.isVanillaClass(clazz)) {
                 LOGGER.info("Skipped non-vanilla class: \"" + clazz.getName() + "\".");
                 continue;
             }
@@ -98,14 +98,15 @@ public class VanillaEntityTest implements FabricGameTest {
             Class<?> clazz = cur.getClazz();
 
             // skip non-vanilla classes
-            if (!MiscUtil.isVanillaClass(clazz)) return true;
+            if (!MinecraftApi.isVanillaClass(clazz)) return true;
 
             out.println(space + "/*" + "-".repeat(depth * 2) + "*/ "
                     + "f(" + clazz.getName() + ".class, \""
                     + clazz.getName() + "\");");
             for (Class<?> interfaze : clazz.getInterfaces()) {
-                if (interfaze.getPackageName().indexOf("net.minecraft") != 0) continue;
-                interfazes.add(interfaze);
+                if (MinecraftApi.isVanillaClass(interfaze)) {
+                    interfazes.add(interfaze);
+                }
             }
             return true;
         });

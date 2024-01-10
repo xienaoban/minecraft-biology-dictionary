@@ -2,6 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.net;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityPropertyWidgetRegistryManager;
+import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.PlayerApi;
 import io.github.xienaoban.minecraft.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.minecraft.biologydictionary.util.MiscUtil;
@@ -52,7 +53,7 @@ public final class ServerNetManager {
 
                 // Write data that not in vanilla NBT.
                 CompoundTag additionalNbt = new CompoundTag();
-                for (var clazz : MiscUtil.topDown(entity)) {
+                for (var clazz : EntityApi.topDown(entity)) {
                     for (var registry : EntityPropertyWidgetRegistryManager.getInstance().getRegistries(clazz)) {
                         for (var handler : registry.getEntityDataBufHandlers().values()) {
                             handler.write(additionalNbt, MiscUtil.cast(entity));
