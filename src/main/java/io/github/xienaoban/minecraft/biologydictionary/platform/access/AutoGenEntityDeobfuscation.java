@@ -1,14 +1,14 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.entity;
+package io.github.xienaoban.minecraft.biologydictionary.platform.access;
 
 import java.util.HashMap;
 
-final class DeobfuscationBatch {
+final class AutoGenEntityDeobfuscation {
     static final HashMap<Class<?>, String> map = new HashMap<>();
-    
+
     private static void f(Class<?> c, String s) {
         map.put(c, s);
     }
-    
+
     static {
         // classes
         /**/ f(net.minecraft.world.entity.Entity.class, "net.minecraft.world.entity.Entity");

@@ -2,7 +2,6 @@ package io.github.xienaoban.minecraft.biologydictionary;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityPropertyWidgetRegistryManager;
-import io.github.xienaoban.minecraft.biologydictionary.core.entity.VanillaEntityClassNameAndOrder;
 import io.github.xienaoban.minecraft.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.minecraft.biologydictionary.platform.server.ServerEventRegistry;
 import net.minecraft.server.MinecraftServer;
@@ -26,7 +25,6 @@ public class BiologyDictionary {
     private BiologyDictionary() {
         this.servers = ConcurrentHashMap.newKeySet();
 
-        VanillaEntityClassNameAndOrder.init();
         EntityPropertyWidgetRegistryManager.init();
         ServerNetManager.init();
 

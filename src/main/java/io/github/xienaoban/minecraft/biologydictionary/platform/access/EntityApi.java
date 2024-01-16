@@ -9,6 +9,10 @@ import java.util.Collections;
 import java.util.List;
 
 public final class EntityApi {
+    public static void init() {
+        AutoGenEntityDeobfuscation.map.get(null);
+    }
+
     public static void setInWater(Entity entity, boolean inWater) {
         ((EntityIMixin) entity).setWasTouchingWater(inWater);
     }
@@ -28,5 +32,12 @@ public final class EntityApi {
         }
         list.add(Entity.class);
         return list;
+    }
+
+    /**
+     * Get deobfuscated class name of the vanilla entity.
+     */
+    public static String getDeobfuscatedName(Class<?> clazz) {
+        return AutoGenEntityDeobfuscation.map.get(clazz);
     }
 }

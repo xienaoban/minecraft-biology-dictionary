@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core;
 
-import io.github.xienaoban.minecraft.biologydictionary.core.entity.VanillaEntityClassNameAndOrder;
+import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -24,7 +24,18 @@ public final class EntityManager {
      */
     public static EntityManager getInstance() { return instance; }
 
-    public static void init() {}
+    public static void init() {
+        EntityApi.init();
+        AutoGenEntityOrder.map.get(null);
+    }
+
+    /**
+     * Get my preferred order of the vanilla entity.
+     * Returns Integer rather than int because it can be null.
+     */
+    public static Integer getMyPreferredEntityOrder(EntityType<?> clazz) {
+        return AutoGenEntityOrder.map.get(clazz);
+    }
 
     private static Level getTempLevel() {
         for (MinecraftServer server : BD.getServers()) {
@@ -74,8 +85,8 @@ public final class EntityManager {
 
     private void initEntitiesSortClassInfo() {
         sortedInfo.sort((a, b) -> {
-            Integer oa = VanillaEntityClassNameAndOrder.getMyPreferredOrder(a.getType());
-            Integer ob = VanillaEntityClassNameAndOrder.getMyPreferredOrder(b.getType());
+            Integer oa = getMyPreferredEntityOrder(a.getType());
+            Integer ob = getMyPreferredEntityOrder(b.getType());
             if (oa != null && ob != null) {
                 return oa - ob;
             }
@@ -148,7 +159,7 @@ public final class EntityManager {
     }
 
     public static String getClassRealName(Class<?> clazz) {
-        String res = VanillaEntityClassNameAndOrder.getDeobfuscatedName(clazz);
+        String res = EntityApi.getDeobfuscatedName(clazz);
         if (res == null) res = clazz.getName();
         return res;
     }

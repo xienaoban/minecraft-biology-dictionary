@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
-import io.github.xienaoban.minecraft.biologydictionary.core.entity.VanillaEntityClassNameAndOrder;
+import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.MinecraftApi;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -39,7 +39,7 @@ public class VanillaEntityTest implements FabricGameTest {
 
             // check deobfuscation
             String realName = clazz.getName();
-            String storedName = VanillaEntityClassNameAndOrder.getDeobfuscatedName(clazz);
+            String storedName = EntityApi.getDeobfuscatedName(clazz);
             if (!Objects.equals(realName, storedName)) {
                 success.set(false);
                 LOGGER.error("Needed \"" + realName + "\" but got \"" + storedName + "\".");
@@ -80,7 +80,7 @@ public class VanillaEntityTest implements FabricGameTest {
                 continue;
             }
 
-            if (VanillaEntityClassNameAndOrder.getMyPreferredOrder(entityType) == null) {
+            if (EntityManager.getMyPreferredEntityOrder(entityType) == null) {
                 success = false;
                 LOGGER.error("Entity \"" + classInfo.getStringId() + "\" is not assigned an order.");
             }

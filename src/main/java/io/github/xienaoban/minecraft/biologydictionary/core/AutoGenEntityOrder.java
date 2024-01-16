@@ -1,10 +1,10 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.entity;
+package io.github.xienaoban.minecraft.biologydictionary.core;
 
 import net.minecraft.world.entity.EntityType;
 
 import java.util.HashMap;
 
-final class OrderBatch {
+final class AutoGenEntityOrder {
     static final HashMap<EntityType<?>, Integer> map = new HashMap<>();
 
     private static int order = 0;
