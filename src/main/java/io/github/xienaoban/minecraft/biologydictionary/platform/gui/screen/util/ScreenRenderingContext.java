@@ -43,7 +43,7 @@ public final class ScreenRenderingContext {
 
     /**
      * We don't use the mouseX and mouseY parameters because they are int.
-     * @see net.minecraft.client.renderer.GameRenderer#render(float, long, boolean)
+     * @see net.minecraft.client.renderer.GameRenderer#render(net.minecraft.client.DeltaTracker, boolean)
      *
      * @param mouseX not used
      * @param mouseY not used
@@ -116,15 +116,15 @@ public final class ScreenRenderingContext {
     }
 
     /**
-     * @see net.minecraft.client.gui.GuiGraphics#fill(RenderType, int, int, int, int, int, int)
+     * @see net.minecraft.client.gui.GuiGraphics#fill(net.minecraft.client.renderer.RenderType, int, int, int, int, int, int)
      */
     public void renderRectangle(int color, float z, float left, float top, float right, float bottom) {
         Matrix4f matrix4f = getGuiGraphics().pose().last().pose();
         VertexConsumer vertexConsumer = getGuiGraphics().bufferSource().getBuffer(RenderType.gui());
-        vertexConsumer.vertex(matrix4f, left, top, z).color(color).endVertex();
-        vertexConsumer.vertex(matrix4f, left, bottom, z).color(color).endVertex();
-        vertexConsumer.vertex(matrix4f, right, bottom, z).color(color).endVertex();
-        vertexConsumer.vertex(matrix4f, right, top, z).color(color).endVertex();
+        vertexConsumer.addVertex(matrix4f, left, top, z).setColor(color);
+        vertexConsumer.addVertex(matrix4f, left, bottom, z).setColor(color);
+        vertexConsumer.addVertex(matrix4f, right, bottom, z).setColor(color);
+        vertexConsumer.addVertex(matrix4f, right, top, z).setColor(color);
         ((GuiGraphicsIMixin) getGuiGraphics()).callFlushIfUnmanaged();
         /*
         Another choice is:
@@ -154,13 +154,12 @@ public final class ScreenRenderingContext {
         RenderSystem.setShaderTexture(0, texture.location());
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         Matrix4f matrix4f = getGuiGraphics().pose().last().pose();
-        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.vertex(matrix4f, left, top, z).uv(uvLeft, uvTop).endVertex();
-        bufferBuilder.vertex(matrix4f, left, bottom, z).uv(uvLeft, uvBottom).endVertex();
-        bufferBuilder.vertex(matrix4f, right, bottom, z).uv(uvRight, uvBottom).endVertex();
-        bufferBuilder.vertex(matrix4f, right, top, z).uv(uvRight, uvTop).endVertex();
-        BufferUploader.drawWithShader(bufferBuilder.end());
+        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.addVertex(matrix4f, left, top, z).setUv(uvLeft, uvTop);
+        bufferBuilder.addVertex(matrix4f, left, bottom, z).setUv(uvLeft, uvBottom);
+        bufferBuilder.addVertex(matrix4f, right, bottom, z).setUv(uvRight, uvBottom);
+        bufferBuilder.addVertex(matrix4f, right, top, z).setUv(uvRight, uvTop);
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
         /*
         Another choice is:
         ((GuiGraphicsIMixin) getGuiGraphics()).callInnerBlit(texture, (int) left, (int) right, (int) top, (int) bottom, (int) z,
@@ -181,8 +180,8 @@ public final class ScreenRenderingContext {
     }
 
     /**
-     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(GuiGraphics, int, int, int, float, float, LivingEntity)
-     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(GuiGraphics, int, int, int, Quaternionf, Quaternionf, LivingEntity)
+     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
+     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(net.minecraft.client.gui.GuiGraphics, float, float, float, org.joml.Vector3f, org.joml.Quaternionf, org.joml.Quaternionf, net.minecraft.world.entity.LivingEntity)
      */
     public void renderEntity(Entity entity, float midX, float bottom, float scale,
                              float rotateX, float rotateY, boolean lightFromBelow) {
@@ -195,7 +194,7 @@ public final class ScreenRenderingContext {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(midX, bottom, 50.0);
         // control light by x and y
-        guiGraphics.pose().mulPoseMatrix(new Matrix4f().scaling(scale * sign, scale * sign, -scale));
+        guiGraphics.pose().scale(scale * sign, scale * sign, -scale);
         guiGraphics.pose().mulPose(quaternionf);
         Lighting.setupForEntityInInventory();
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
@@ -208,7 +207,7 @@ public final class ScreenRenderingContext {
     }
 
     /**
-     * @see net.minecraft.client.gui.screens.inventory.PageButton#playDownSound(SoundManager)
+     * @see net.minecraft.client.gui.screens.inventory.PageButton#playDownSound(net.minecraft.client.sounds.SoundManager)
      */
     public void playScreenSound(SoundEvent sound, float volume, float pitch) {
         getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));

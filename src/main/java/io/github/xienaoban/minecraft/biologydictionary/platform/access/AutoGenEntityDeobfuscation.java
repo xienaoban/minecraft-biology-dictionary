@@ -129,7 +129,7 @@ final class AutoGenEntityDeobfuscation {
         f(net.minecraft.world.entity.PlayerRideableJumping.class, "net.minecraft.world.entity.PlayerRideableJumping");
         f(net.minecraft.world.entity.PowerableMob.class, "net.minecraft.world.entity.PowerableMob");
         f(net.minecraft.world.entity.ReputationEventHandler.class, "net.minecraft.world.entity.ReputationEventHandler");
-        f(net.minecraft.world.entity.RiderShieldingMount.class, "net.minecraft.world.entity.RiderShieldingMount");
+//        f(net.minecraft.world.entity.RiderShieldingMount.class, "net.minecraft.world.entity.RiderShieldingMount");
         f(net.minecraft.world.entity.Saddleable.class, "net.minecraft.world.entity.Saddleable");
         f(net.minecraft.world.entity.Shearable.class, "net.minecraft.world.entity.Shearable");
         f(net.minecraft.world.entity.Targeting.class, "net.minecraft.world.entity.Targeting");

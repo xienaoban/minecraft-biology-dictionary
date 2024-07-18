@@ -1,17 +1,26 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.util;
 
-import io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.TextureInfo;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
 
+import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.MOD_ID;
+
 @Environment(EnvType.CLIENT)
 public final class Textures {
-    public static final TextureInfo HORSE_SCREEN = new TextureInfo(new ResourceLocation("textures/gui/container/horse.png"), 256, 256);
+    private static ResourceLocation mc(String path) {
+        return ResourceLocation.withDefaultNamespace(path);
+    }
 
-    public static final TextureInfo ICON = new TextureInfo(new ResourceLocation(BiologyDictionary.MOD_ID, "icon.png"), 256, 256);
-    public static final TextureInfo BOOK = new TextureInfo(new ResourceLocation(BiologyDictionary.MOD_ID, "textures/gui/book.png"), 512, 256);
-    public static final TextureInfo ICONS = new TextureInfo(new ResourceLocation(BiologyDictionary.MOD_ID, "textures/gui/icons.png"), 256, 256);
-    public static final TextureInfo BEEHIVE = new TextureInfo(new ResourceLocation(BiologyDictionary.MOD_ID, "textures/gui/beehive.png"), 256, 256);
+    private static ResourceLocation my(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
+
+    public static final TextureInfo HORSE_SCREEN = new TextureInfo(mc("textures/gui/container/horse.png"), 256, 256);
+
+    public static final TextureInfo ICON = new TextureInfo(my("icon.png"), 256, 256);
+    public static final TextureInfo BOOK = new TextureInfo(my("textures/gui/book.png"), 512, 256);
+    public static final TextureInfo ICONS = new TextureInfo(my("textures/gui/icons.png"), 256, 256);
+    public static final TextureInfo BEEHIVE = new TextureInfo(my("textures/gui/beehive.png"), 256, 256);
 }

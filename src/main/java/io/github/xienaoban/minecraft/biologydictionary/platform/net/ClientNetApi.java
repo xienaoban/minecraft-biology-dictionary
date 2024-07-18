@@ -5,21 +5,29 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 @Environment(EnvType.CLIENT)
 public class ClientNetApi {
-    public static void registerReceiver(ResourceLocation channelName, ChannelHandler channelHandler) {
-        ClientPlayNetworking.registerGlobalReceiver(channelName, channelHandler::receive);
+    public static <T extends CustomPacketPayload> void registerReceiver(Class<T> clazz, ChannelHandler<T> channelHandler) {
+        try {
+            @SuppressWarnings("unchecked")
+            PacketPayloadMeta<T> meta = (PacketPayloadMeta<T>) clazz.getField("META").get(null);
+            ClientPlayNetworking.registerGlobalReceiver(meta.type(), (payload, context) ->
+                    channelHandler.receive(payload, context.client(), context.player(), context.responseSender())
+            );
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static void send(ResourceLocation channelName, FriendlyByteBuf buf) {
-        ClientPlayNetworking.send(channelName, buf);
+    public static <T extends CustomPacketPayload> void send(T payload) {
+        ClientPlayNetworking.send(payload);
     }
 
-    public interface ChannelHandler {
-        void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender);
+    @FunctionalInterface
+    public interface ChannelHandler<T extends CustomPacketPayload> {
+        void receive(T payload, Minecraft client, LocalPlayer player, PacketSender responseSender);
     }
 }

@@ -51,7 +51,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     protected void render(ScreenRenderingContext ctx) {
-        renderBackground(ctx.getGuiGraphics());
+        renderBackground(ctx.getGuiGraphics(), (int) ctx.getMouseX(), (int) ctx.getMouseY(), ctx.getTickDelta());
         ctx.renderTexture(Textures.BOOK,
                 BOOK_LEFT, BOOK_TOP, BOOK_RIGHT, BOOK_BOTTOM,
                 getZ(),
