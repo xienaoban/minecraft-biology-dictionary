@@ -4,17 +4,18 @@ import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayloa
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import org.jetbrains.annotations.NotNull;
 
 public record SendEntityDataPacketPayload(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag additionalNbt) implements CustomPacketPayload {
     public static final PacketPayloadMeta<SendEntityDataPacketPayload> META = PacketPayloadMeta.create(SendEntityDataPacketPayload.class);
 
     @SuppressWarnings("unused")
-    private SendEntityDataPacketPayload(FriendlyByteBuf buf) {
+    public SendEntityDataPacketPayload(FriendlyByteBuf buf) {
         this(buf.readBoolean(), buf.readInt(), buf.readNbt(), buf.readNbt());
     }
 
     @SuppressWarnings("unused")
-    private void write(FriendlyByteBuf buf) {
+    public void write(FriendlyByteBuf buf) {
         buf.writeBoolean(notNull);
         buf.writeInt(entityId);
         buf.writeNbt(vanillaNbt);
@@ -22,5 +23,5 @@ public record SendEntityDataPacketPayload(boolean notNull, int entityId, Compoun
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type() { return META.type(); }
+    public @NotNull Type<? extends CustomPacketPayload> type() { return META.type(); }
 }

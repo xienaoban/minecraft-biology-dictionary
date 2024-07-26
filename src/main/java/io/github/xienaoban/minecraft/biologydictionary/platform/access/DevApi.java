@@ -1,5 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.access;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
@@ -15,5 +16,9 @@ public final class DevApi {
         Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(modId);
         if (modContainer.isPresent()) version = modContainer.get().getMetadata().getVersion().toString();
         return modVersion = version;
+    }
+
+    public static boolean isClient() {
+        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     }
 }
