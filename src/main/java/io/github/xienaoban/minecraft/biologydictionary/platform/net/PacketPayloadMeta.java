@@ -15,18 +15,18 @@ import java.util.Optional;
 
 import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.MOD_ID;
 
-public record PacketPayloadMeta<T extends CustomPacketPayload>(CustomPacketPayload.Type<T> type,
+public record PacketPayloadMeta<T extends PacketPayload>(CustomPacketPayload.Type<T> type,
                                                                StreamCodec<FriendlyByteBuf, T> codec,
                                                                ClientReceiver<T> clientReceiver,
                                                                ServerReceiver<T> serverReceiver) {
 
-    public static <T extends CustomPacketPayload> PacketPayloadMeta<T> create(Class<T> clazz) {
+    public static <T extends PacketPayload> PacketPayloadMeta<T> create(Class<T> clazz) {
         try {
             MethodHandles.Lookup lookup = MethodHandles.lookup();
             CustomPacketPayload.Type<T> type        = generateType(clazz);
             StreamCodec<FriendlyByteBuf, T> codec   = generateCodec(clazz, lookup);
-            ClientReceiver<T> clientReceiver        = generateClientReceiver(clazz, lookup);
-            ServerReceiver<T> serverReceiver        = generateServerReceiver(clazz, lookup);
+            ClientReceiver<T> clientReceiver        = generateClientReceiver(clazz);
+            ServerReceiver<T> serverReceiver        = generateServerReceiver(clazz);
 
             return new PacketPayloadMeta<>(type, codec, clientReceiver, serverReceiver);
         } catch (NoSuchMethodException | IllegalAccessException e) {
@@ -34,7 +34,7 @@ public record PacketPayloadMeta<T extends CustomPacketPayload>(CustomPacketPaylo
         }
     }
 
-    private static <T extends CustomPacketPayload> CustomPacketPayload.Type<T> generateType(Class<T> clazz) {
+    private static <T extends PacketPayload> CustomPacketPayload.Type<T> generateType(Class<T> clazz) {
         final String classEnd = "PacketPayload";
         final String className = clazz.getSimpleName();
         if (!className.endsWith(classEnd)) {
@@ -45,24 +45,15 @@ public record PacketPayloadMeta<T extends CustomPacketPayload>(CustomPacketPaylo
         return new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MOD_ID, path));
     }
 
-    private static <T extends CustomPacketPayload> StreamCodec<FriendlyByteBuf, T> generateCodec(Class<T> clazz, MethodHandles.Lookup lookup) throws NoSuchMethodException, IllegalAccessException {
-        MethodHandle encoder;
-        MethodHandle decoder;
-        encoder = lookup.unreflect(clazz.getDeclaredMethod("write", FriendlyByteBuf.class));
-        decoder = lookup.unreflectConstructor(clazz.getConstructor(FriendlyByteBuf.class));
+    private static <T extends PacketPayload> StreamCodec<FriendlyByteBuf, T> generateCodec(Class<T> clazz, MethodHandles.Lookup lookup) throws NoSuchMethodException, IllegalAccessException {
+        final MethodHandle decoder = lookup.unreflectConstructor(clazz.getConstructor(FriendlyByteBuf.class));
 
         @SuppressWarnings("unchecked")
         StreamCodec<FriendlyByteBuf, T> codec = CustomPacketPayload.codec(
-                (payload, buf) -> {
-                    try {
-                        encoder.invokeExact(payload, buf);
-                    } catch (Throwable e) {
-                        throw new RuntimeException(e);
-                    }
-                },
+                PacketPayload::write,
                 (buf) -> {
                     try {
-                        return (T) decoder.invokeExact(buf);
+                        return (T) decoder.invoke(buf);
                     } catch (Throwable e) {
                         throw new RuntimeException(e);
                     }
@@ -71,40 +62,26 @@ public record PacketPayloadMeta<T extends CustomPacketPayload>(CustomPacketPaylo
         return codec;
     }
 
-    private static <T extends CustomPacketPayload> ClientReceiver<T> generateClientReceiver(Class<T> clazz, MethodHandles.Lookup lookup) throws IllegalAccessException {
-        Optional<Method> m = Arrays.stream(clazz.getMethods()).filter(method -> "clientReceive".equals(method.getName())).findAny();
+    private static <T extends PacketPayload> ClientReceiver<T> generateClientReceiver(Class<T> clazz) throws IllegalAccessException {
+        Optional<Method> m = Arrays.stream(clazz.getDeclaredMethods()).filter(method -> "clientReceive".equals(method.getName())).findAny();
         if (m.isEmpty()) return null;
-        MethodHandle mh = lookup.unreflect(m.get());
-        return (payload, ctx) -> {
-            try {
-                mh.invokeExact(payload, ctx);
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
-        };
+        return PacketPayload::clientReceive;
     }
 
-    private static <T extends CustomPacketPayload> ServerReceiver<T> generateServerReceiver(Class<T> clazz, MethodHandles.Lookup lookup) throws IllegalAccessException {
-        Optional<Method> m = Arrays.stream(clazz.getMethods()).filter(method -> "serverReceive".equals(method.getName())).findAny();
+    private static <T extends PacketPayload> ServerReceiver<T> generateServerReceiver(Class<T> clazz) throws IllegalAccessException {
+        Optional<Method> m = Arrays.stream(clazz.getDeclaredMethods()).filter(method -> "serverReceive".equals(method.getName())).findAny();
         if (m.isEmpty()) return null;
-        MethodHandle mh = lookup.unreflect(m.get());
-        return (payload, ctx) -> {
-            try {
-                mh.invokeExact(payload, ctx);
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
-        };
+        return PacketPayload::serverReceive;
     }
 
     @FunctionalInterface
-    public interface ClientReceiver<T extends CustomPacketPayload> {
+    public interface ClientReceiver<T extends PacketPayload> {
         @Environment(EnvType.CLIENT)
         void receive(T payload, ClientNetApi.Context ctx);
     }
 
     @FunctionalInterface
-    public interface ServerReceiver<T extends CustomPacketPayload> {
+    public interface ServerReceiver<T extends PacketPayload> {
         void receive(T payload, ServerNetApi.Context ctx);
     }
 }

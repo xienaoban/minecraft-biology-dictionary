@@ -11,7 +11,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 @Environment(EnvType.CLIENT)
 public final class ClientNetApi {
 
-    public static <T extends CustomPacketPayload> void register(Class<T> clazz) {
+    public static <T extends PacketPayload> void register(Class<T> clazz) {
         try {
             @SuppressWarnings("unchecked")
             PacketPayloadMeta<T> meta = (PacketPayloadMeta<T>) clazz.getField("META").get(null);
@@ -28,7 +28,7 @@ public final class ClientNetApi {
         }
     }
 
-    public static <T extends CustomPacketPayload> void send(T payload) {
+    public static <T extends PacketPayload> void send(T payload) {
         ClientPlayNetworking.send(payload);
     }
 

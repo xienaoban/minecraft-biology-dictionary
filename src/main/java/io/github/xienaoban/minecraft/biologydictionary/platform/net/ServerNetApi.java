@@ -10,7 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public final class ServerNetApi {
-    public static <T extends CustomPacketPayload> void register(Class<T> clazz) {
+    public static <T extends PacketPayload> void register(Class<T> clazz) {
         try {
             @SuppressWarnings("unchecked")
             PacketPayloadMeta<T> meta = (PacketPayloadMeta<T>) clazz.getField("META").get(null);
@@ -34,7 +34,7 @@ public final class ServerNetApi {
         }
     }
 
-    public static <T extends CustomPacketPayload> void send(ServerPlayer player, T payload) {
+    public static <T extends PacketPayload> void send(ServerPlayer player, T payload) {
         ServerPlayNetworking.send(player, payload);
     }
 
