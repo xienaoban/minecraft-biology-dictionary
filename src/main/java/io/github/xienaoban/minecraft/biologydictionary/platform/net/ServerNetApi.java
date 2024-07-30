@@ -1,19 +1,34 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.net;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ServerNetApi {
-    public static <T extends CustomPacketPayload> void registerReceiver(Class<T> clazz, ChannelHandler<T> channelHandler) {
+public final class ServerNetApi {
+    public static <T extends CustomPacketPayload> void register(Class<T> clazz) {
         try {
             @SuppressWarnings("unchecked")
             PacketPayloadMeta<T> meta = (PacketPayloadMeta<T>) clazz.getField("META").get(null);
-            ServerPlayNetworking.registerGlobalReceiver(meta.type(), (payload, context) ->
-                    channelHandler.receive(payload, context.server(), context.player(), context.responseSender())
-            );
+            CustomPacketPayload.Type<T> type = meta.type();
+            StreamCodec<FriendlyByteBuf, T> codec = meta.codec();
+            PacketPayloadMeta.ServerReceiver<T> serverReceiver = meta.serverReceiver();
+            PacketPayloadMeta.ClientReceiver<T> clientReceiver = meta.clientReceiver();
+
+            if (clientReceiver != null) {
+                PayloadTypeRegistry.playS2C().register(type, codec);
+            }
+
+            if (serverReceiver != null) {
+                PayloadTypeRegistry.playC2S().register(type, codec);
+                ServerPlayNetworking.registerGlobalReceiver(type, (payload, context) ->
+                        serverReceiver.receive(payload, new ServerNetApi.Context(context.server(), context.player(), context.responseSender()))
+                );
+            }
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
@@ -23,8 +38,5 @@ public class ServerNetApi {
         ServerPlayNetworking.send(player, payload);
     }
 
-    @FunctionalInterface
-    public interface ChannelHandler<T extends CustomPacketPayload> {
-        void receive(T payload, MinecraftServer server, ServerPlayer player, PacketSender responseSender);
-    }
+    public record Context(MinecraftServer server, ServerPlayer player, PacketSender responseSender) {}
 }
