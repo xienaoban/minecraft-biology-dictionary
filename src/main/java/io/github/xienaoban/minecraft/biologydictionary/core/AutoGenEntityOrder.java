@@ -26,6 +26,7 @@ final class AutoGenEntityOrder {
         f(EntityType.OCELOT);
         f(EntityType.WOLF);
         f(EntityType.FOX);
+        f(EntityType.ARMADILLO);
         f(EntityType.HORSE);
         f(EntityType.SKELETON_HORSE);
         f(EntityType.ZOMBIE_HORSE);
@@ -69,11 +70,13 @@ final class AutoGenEntityOrder {
         f(EntityType.CREEPER);
         f(EntityType.SKELETON);
         f(EntityType.STRAY);
+        f(EntityType.BOGGED);
         f(EntityType.WITHER_SKELETON);
         f(EntityType.ENDERMAN);
         f(EntityType.SILVERFISH);
         f(EntityType.SPIDER);
         f(EntityType.CAVE_SPIDER);
+        f(EntityType.BREEZE);
         f(EntityType.GUARDIAN);
         f(EntityType.ELDER_GUARDIAN);
         f(EntityType.SLIME);
