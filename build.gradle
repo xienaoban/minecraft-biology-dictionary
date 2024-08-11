@@ -19,14 +19,14 @@ repositories {
 }
 
 sourceSets {
-    testUnit {
+    testGame {
         runtimeClasspath += main.runtimeClasspath + main.output
         compileClasspath += main.compileClasspath + main.output
     }
 }
 
 configurations {
-    testUnitImplementation.extendsFrom implementation
+    testGameImplementation.extendsFrom implementation
 }
 
 dependencies {
@@ -37,6 +37,9 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    testGameImplementation "com.github.javaparser:javaparser-symbol-solver-core:${project.javaparser_version}"
+    testGameImplementation "org.bitbucket.mstrobel:procyon-compilertools:${project.procyon_version}"
 }
 
 processResources {
@@ -97,22 +100,22 @@ publishing {
 
 loom {
     runs {
-        testUnit {
+        testGame {
             server()
-            source sourceSets.testUnit
+            source sourceSets.testGame
             vmArg "-Dfabric-api.gametest"
             vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
-            runDir "build/testUnit"
+            runDir "build/testGame"
         }
         // testClient {
         //     client()
-        //     source sourceSets.testUnit
+        //     source sourceSets.testGame
         //     ideConfigGenerated project.rootProject == project
         //     runDir "run/testModClient"
         // }
         // testServer {
         //     server()
-        //     source sourceSets.testUnit
+        //     source sourceSets.testGame
         //     ideConfigGenerated project.rootProject == project
         //     runDir "run/testModServer"
         // }

@@ -46,10 +46,10 @@ public final class EntityManager {
         throw new RuntimeException("Should not reach here!");
     }
 
-    private final Map<Class<?>, EntityTreeNode> tree = new HashMap<>();
+    private final Map<Class<? extends Entity>, EntityTreeNode> tree = new HashMap<>();
     private final Map<EntityType<?>, EntityClassInfo> info = new HashMap<>();
     private final List<EntityClassInfo> sortedInfo = new ArrayList<>();
-    private final Map<Class<?>, EntityType<?>> clazzToType = new HashMap<>();
+    private final Map<Class<? extends Entity>, EntityType<?>> clazzToType = new HashMap<>();
 
     private final List<TagGroup> tagGroups = new ArrayList<>();
 
@@ -124,10 +124,10 @@ public final class EntityManager {
         }
     }
 
-    private EntityTreeNode getOrCreateEntityTreeNode(Class<?> clazz) {
+    private EntityTreeNode getOrCreateEntityTreeNode(Class<? extends Entity> clazz) {
         EntityTreeNode node = tree.get(clazz);
         if (node == null) {
-            node = new EntityTreeNode(clazz, getOrCreateEntityTreeNode(clazz.getSuperclass()));
+            node = new EntityTreeNode(clazz, getOrCreateEntityTreeNode(clazz.getSuperclass().asSubclass(Entity.class)));
             tree.put(clazz, node);
         }
         return node;
@@ -137,7 +137,7 @@ public final class EntityManager {
         return tagGroups;
     }
 
-    public EntityType<?> getEntityType(Class<?> entityClazz) {
+    public EntityType<?> getEntityType(Class<? extends Entity> entityClazz) {
         return clazzToType.get(entityClazz);
     }
 
@@ -145,7 +145,7 @@ public final class EntityManager {
         return info.get(entityType);
     }
 
-    public EntityClassInfo getEntityClassInfo(Class<?> entityClazz) {
+    public EntityClassInfo getEntityClassInfo(Class<? extends Entity> entityClazz) {
         return getEntityClassInfo(getEntityType(entityClazz));
     }
 
@@ -158,7 +158,7 @@ public final class EntityManager {
                 .equals(getEntityClassInfo(entityType).getLocation().getNamespace());
     }
 
-    public static String getClassRealName(Class<?> clazz) {
+    public static String getClassRealName(Class<? extends Entity> clazz) {
         String res = EntityApi.getDeobfuscatedName(clazz);
         if (res == null) res = clazz.getName();
         return res;
@@ -188,7 +188,7 @@ public final class EntityManager {
 
     public static class EntityClassInfo implements Comparable<EntityClassInfo> {
         private final EntityType<?> type;
-        private final Class<?> clazz;
+        private final Class<? extends Entity> clazz;
         private final Entity instance;
         private final List<Tag> tags;
         private int sortId;
@@ -209,7 +209,7 @@ public final class EntityManager {
         }
 
         public EntityType<?> getType() { return type; }
-        public Class<?> getClazz() { return clazz; }
+        public Class<? extends Entity> getClazz() { return clazz; }
         public Entity getInstance() { return instance; }
         public ResourceLocation getLocation() { return EntityType.getKey(getType()); }
         public String getStringId() { return getLocation().toString(); }
@@ -228,7 +228,7 @@ public final class EntityManager {
     }
 
     public static class EntityTreeNode {
-        private final Class<?> clazz;
+        private final Class<? extends Entity> clazz;
         private final EntityTreeNode father;
         private final List<EntityTreeNode> sons;
 
@@ -238,14 +238,14 @@ public final class EntityManager {
             sons = new ArrayList<>();
         }
 
-        public EntityTreeNode(Class<?> entityClazz, EntityTreeNode entityFatherNode) {
+        public EntityTreeNode(Class<? extends Entity> entityClazz, EntityTreeNode entityFatherNode) {
             clazz = entityClazz;
             father = entityFatherNode;
             sons = new ArrayList<>();
             entityFatherNode.addSon(this);
         }
 
-        public Class<?> getClazz() { return clazz; }
+        public Class<? extends Entity> getClazz() { return clazz; }
         public String getClazzName() { return getClassRealName(clazz); }
 
         public EntityTreeNode getFather() { return father; }

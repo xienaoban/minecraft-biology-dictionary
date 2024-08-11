@@ -1,7 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.access;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.EntityIMixin;
-import io.github.xienaoban.minecraft.biologydictionary.util.MiscUtil;
 import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public final class EntityApi {
         Class<? extends Entity> clazz = entity.getClass();
         while (clazz != Entity.class) {
             list.add(clazz);
-            clazz = MiscUtil.cast(clazz.getSuperclass());
+            clazz = clazz.getSuperclass().asSubclass(Entity.class);
         }
         list.add(Entity.class);
         return list;
