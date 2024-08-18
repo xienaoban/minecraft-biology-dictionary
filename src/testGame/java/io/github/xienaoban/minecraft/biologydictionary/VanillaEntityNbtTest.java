@@ -14,14 +14,12 @@ import com.github.javaparser.utils.Pair;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.PlainTextOutput;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
-import io.github.xienaoban.minecraft.biologydictionary.javaparser.PrintNodeVisitor;
 import io.github.xienaoban.minecraft.biologydictionary.javaparser.ReadAdditionalNbtVisitor;
 import io.github.xienaoban.minecraft.biologydictionary.platform.util.JavaNames;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.animal.Animal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,15 +36,14 @@ public class VanillaEntityNbtTest implements FabricGameTest {
         ClassOrInterfaceDeclaration cl = res.b;
         try {
             EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
-                if (cur.getClazz() != Animal.class) return true;
-                decompile(cur.getClazz(), cl);
+//                if (cur.getClazz() != LivingEntity.class) return true;
+                parse(cur.getClazz(), cl);
                 return true;
             });
             LOGGER.info("Class:\n" + cu);
             helper.succeed();
         } catch (AssertionError e) {
             LOGGER.error("Current class:\n" + cu);
-            e.printStackTrace();
             throw e;
         }
     }
@@ -57,7 +54,8 @@ public class VanillaEntityNbtTest implements FabricGameTest {
         return new Pair<>(res, clazz);
     }
 
-    private static void decompile(Class<? extends Entity> entityClazz, ClassOrInterfaceDeclaration res) {
+    private static void parse(Class<? extends Entity> entityClazz, ClassOrInterfaceDeclaration res) {
+        LOGGER.info("Start parsing entity class: " + entityClazz);
         PlainTextOutput output = new PlainTextOutput();
         java.util.logging.Logger.getLogger(com.strobel.assembler.metadata.signatures.Reifier.class.getSimpleName()).setLevel(Level.OFF);
         Decompiler.decompile(entityClazz.getName().replace('.', '/'), output);
@@ -93,8 +91,7 @@ public class VanillaEntityNbtTest implements FabricGameTest {
             } else return;
 
             BlockStmt blockStmt = md.getBody().orElseThrow(() -> new AssertionError("No body?!"));
-            LOGGER.info("Current entity class: " + entityClazz);
-            new PrintNodeVisitor<>().visit(blockStmt, res);
+            // new PrintNodeVisitor<>().visit(blockStmt, res);
             visitor.visit(blockStmt, null);
         }
     }

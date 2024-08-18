@@ -12,10 +12,25 @@ import com.github.javaparser.ast.type.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public abstract class AbstractVisitorWrapper<A> extends VoidVisitorAdapter<A> {
-    protected boolean runBefore(Node n, A arg) { return true; }
-    protected boolean runBefore(NodeList<?> n, A arg) { return true; }
-    protected void runAfter(Node n, A arg) {}
-    protected void runAfter(NodeList<?> n, A arg) {}
+    protected int depth = 0;
+
+    protected boolean runBefore(Node n, A arg) {
+        ++depth;
+        return true;
+    }
+
+    protected boolean runBefore(NodeList<?> n, A arg) {
+        ++depth;
+        return true;
+    }
+
+    protected void runAfter(Node n, A arg) {
+        --depth;
+    }
+
+    protected void runAfter(NodeList<?> n, A arg) {
+        --depth;
+    }
 
     @Override
     public void visit(final AnnotationDeclaration n, final A arg) {
