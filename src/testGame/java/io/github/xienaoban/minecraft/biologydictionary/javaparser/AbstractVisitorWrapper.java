@@ -14,6 +14,8 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 public abstract class AbstractVisitorWrapper<A> extends VoidVisitorAdapter<A> {
     protected int depth = 0;
 
+    public void end() {}
+
     protected boolean runBefore(Node n, A arg) {
         ++depth;
         return true;

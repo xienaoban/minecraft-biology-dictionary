@@ -5,6 +5,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -24,10 +25,12 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
     private final ClassOrInterfaceDeclaration targetClazz;
     private final Class<? extends Entity> entityClazz;
     private boolean superSkipped = false;
+    private int genMethodCnt = 0;
 
     private String curKey;
     private BlockStmt body;
-    private boolean done;
+    private boolean foundTagGet;
+    private boolean foundTargetSet;
 
     public ReadAdditionalNbtVisitor(ClassOrInterfaceDeclaration targetClazz, Class<? extends Entity> entityClazz) {
         this.targetClazz = targetClazz;
@@ -38,18 +41,39 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
     private void reset() {
         curKey = null;
         body = new BlockStmt();
-        done = false;
+        foundTagGet = false;
+        foundTargetSet = false;
     }
 
     private void createMethod() {
         if (curKey == null) {
             throw new AssertionError();
         }
-        MethodDeclaration m = targetClazz.addMethod("set_" + entityClazz.getSimpleName() + "_" + curKey, Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
+        MethodDeclaration m = targetClazz.addMethod("set__" + entityClazz.getSimpleName() + "__" + curKey, Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
         m.addParameter(entityClazz, TARGET);
         m.addParameter(CompoundTag.class, TAG);
         m.setBody(body);
+        genMethodCnt++;
         reset();
+    }
+
+    private boolean isGetter(String methodName) {
+        return methodName.startsWith("get") || methodName.equals("contains") || methodName.startsWith("has");
+    }
+
+    private boolean isSetter(String methodName) {
+        return methodName.startsWith("set") || methodName.startsWith("update") || methodName.startsWith("read") || methodName.startsWith("get") || methodName.startsWith("make") || methodName.contains("Set");
+    }
+
+    @Override
+    public void end() {
+        if (foundTagGet || foundTargetSet) {
+            throw new AssertionError("Unresolved remaining compoundTag.getXXX() / this.setXXX()");
+        }
+
+        if (genMethodCnt == 0) {
+            targetClazz.addOrphanComment(new BlockComment("No setter for " + entityClazz.getName()));
+        }
     }
 
     @Override
@@ -82,7 +106,7 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
                 n.getStatements().forEach(p -> {
                     body.addStatement(p);
                     p.accept(ReadAdditionalNbtVisitor.this, arg);
-                    if (done) createMethod();
+                    if (foundTagGet && foundTargetSet) createMethod();
                 });
             } catch (TagSkipException e) {
                 LOGGER.warn("Skip unresolvable tag: " + e.getMessage());
@@ -116,44 +140,75 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
 
     @Override
     public void visit(MethodCallExpr n, Void arg) {
-        super.visit(n, arg);
-        n.getScope().ifPresent(expression -> expression.ifNameExpr(nameExpr -> {
-            // compoundTag.getXXX()
-            if (TAG.equals(nameExpr.getName().getIdentifier())) {
-                NodeList<Expression> arguments = n.getArguments();
-                if (arguments.size() == 2) {
-                    Expression second = arguments.get(1);
-                    IntegerLiteralExpr integerLiteralExpr = second.asIntegerLiteralExpr();
-                    FieldAccessExpr tag = new FieldAccessExpr(new NameExpr(Tag.class.getSimpleName()), TagMap.get(integerLiteralExpr.asNumber().intValue()));
-                    n.getArguments().set(1, tag);
-                }
-                String name = n.getName().getIdentifier();
-                if (name.startsWith("get") || name.equals("contains") || name.startsWith("has")) {
-                    Expression first = arguments.get(0);
-                    StringLiteralExpr stringLiteralExpr = first.asStringLiteralExpr();
-                    String newKey = stringLiteralExpr.getValue();
-                    if (curKey != null && !curKey.equals(newKey)) {
-                        throw new TagSkipException("The key has been set: old=\"" + curKey + "\", new=\"" + stringLiteralExpr.getValue() + "\"");
+        String methodName = n.getName().getIdentifier();
+        n.getScope().ifPresent(expression -> {
+            // Try to find `compoundTag.getXXX()`.
+            expression.ifNameExpr(nameExpr -> {
+                String methodScope = nameExpr.getName().getIdentifier();
+                if (TAG.equals(methodScope)) {
+                    NodeList<Expression> arguments = n.getArguments();
+                    if (arguments.size() == 2) {
+                        Expression second = arguments.get(1);
+                        IntegerLiteralExpr integerLiteralExpr = second.asIntegerLiteralExpr();
+                        FieldAccessExpr tag = new FieldAccessExpr(new NameExpr(Tag.class.getSimpleName()), TagMap.get(integerLiteralExpr.asNumber().intValue()));
+                        n.getArguments().set(1, tag);
                     }
-                    curKey = newKey;
-                    done = true;
-                } else {
-                    throw new AssertionError("Handle it.");
+                    if (isGetter(methodName)) {
+                        Expression first = arguments.get(0);
+                        StringLiteralExpr stringLiteralExpr = first.asStringLiteralExpr();
+                        String newKey = stringLiteralExpr.getValue();
+                        if (curKey != null && !curKey.equals(newKey)) {
+                            curKey += "_" + newKey;
+                            // throw new TagSkipException("The key has been set: old=\"" + curKey + "\", new=\"" + stringLiteralExpr.getValue() + "\"");
+                        } else {
+                            curKey = newKey;
+                        }
+                        foundTagGet = true;
+                    } else {
+                        throw new AssertionError("Handle it.");
+                    }
                 }
+            });
+            // Try to find `this.setXXX()`.
+            expression.ifThisExpr(thisExpr -> {
+                if (isSetter(methodName)) {
+                    foundTargetSet = true;
+                }
+
+            });
+        });
+        super.visit(n, arg);
+    }
+
+    @Override
+    public void visit(MethodReferenceExpr n, Void arg) {
+        // Try to find `this::setXXX` or `(T) this::setXXX`.
+        boolean[] isTarget = { false };
+        n.getScope().ifCastExpr(castExpr -> castExpr.getExpression().ifThisExpr(thisExpr -> isTarget[0] = true));
+        n.getScope().ifThisExpr(thisExpr -> isTarget[0] = true);
+        if (isTarget[0]) {
+            if (isSetter(n.getIdentifier())) {
+                foundTargetSet = true;
             }
-        }));
+        }
+        super.visit(n, arg);
+    }
+
+    @Override
+    public void visit(AssignExpr n, Void arg) {
+        n.getTarget().ifFieldAccessExpr(fieldAccessExpr -> fieldAccessExpr.getScope().ifThisExpr(thisExpr -> foundTargetSet = true));
+        super.visit(n, arg);
     }
 
     @Override
     public void visit(final ThisExpr n, Void arg) {
-        super.visit(n, arg);
         Node parent = n.getParentNode().orElseThrow(AssertionError::new);
-        if (parent instanceof FieldAccessExpr fieldAccessExpr) {
-            fieldAccessExpr.setScope(new NameExpr(new SimpleName(TARGET)));
-        } else if (parent instanceof MethodCallExpr methodCallExpr) {
-            methodCallExpr.setScope(new NameExpr(new SimpleName(TARGET)));
-        } else {
-            throw new AssertionError("Please implement processing logic.");
+        switch (parent) {
+            case FieldAccessExpr fieldAccessExpr -> fieldAccessExpr.setScope(new NameExpr(new SimpleName(TARGET)));
+            case MethodCallExpr methodCallExpr -> methodCallExpr.setScope(new NameExpr(new SimpleName(TARGET)));
+            case CastExpr castExpr -> castExpr.setExpression(new NameExpr(new SimpleName(TARGET)));
+            case null, default -> throw new AssertionError("Please implement processing logic.");
         }
+        super.visit(n, arg);
     }
 }

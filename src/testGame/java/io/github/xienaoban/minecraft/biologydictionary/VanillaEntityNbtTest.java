@@ -12,6 +12,7 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.utils.Pair;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
+import io.github.xienaoban.minecraft.biologydictionary.javaparser.AbstractVisitorWrapper;
 import io.github.xienaoban.minecraft.biologydictionary.javaparser.Decompiler;
 import io.github.xienaoban.minecraft.biologydictionary.javaparser.ReadAdditionalNbtVisitor;
 import io.github.xienaoban.minecraft.biologydictionary.platform.util.JavaNames;
@@ -35,7 +36,6 @@ public class VanillaEntityNbtTest implements FabricGameTest {
         ClassOrInterfaceDeclaration cl = res.b;
         try {
             EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
-                if (cur.getClazz() != net.minecraft.world.entity.animal.Cat.class) return true;
                 parse(cur.getClazz(), cl);
                 return true;
             });
@@ -74,7 +74,8 @@ public class VanillaEntityNbtTest implements FabricGameTest {
             if (source == null) {
                 LOGGER.error("The decompiled source code is null.");
             } else {
-                LOGGER.error("Something wrong with the decompiled source code:\n" + Decompiler.addLineNumber(source));
+                // LOGGER.error("Something wrong with the decompiled source code:\n" + Decompiler.addLineNumber(source));
+                LOGGER.error("Something wrong with the decompiled source code.");
             }
             throw e;
         }
@@ -90,7 +91,7 @@ public class VanillaEntityNbtTest implements FabricGameTest {
         @Override
         public void visit(MethodDeclaration md, ClassOrInterfaceDeclaration res) {
             super.visit(md, res);
-            final VoidVisitor<Void> visitor;
+            final AbstractVisitorWrapper<Void> visitor;
             if (JavaNames.ENTITY_READ_ADDITIONAL_NBT.equals(md.getNameAsString())) {
                 visitor = new ReadAdditionalNbtVisitor(res, entityClazz);
             } else if (JavaNames.ENTITY_WRITE_ADDITIONAL_NBT.equals(md.getNameAsString())) {
@@ -100,6 +101,7 @@ public class VanillaEntityNbtTest implements FabricGameTest {
             BlockStmt blockStmt = md.getBody().orElseThrow(() -> new AssertionError("No body?!"));
             // new PrintNodeVisitor<>().visit(blockStmt, res);
             visitor.visit(blockStmt, null);
+            visitor.end();
         }
     }
 }
