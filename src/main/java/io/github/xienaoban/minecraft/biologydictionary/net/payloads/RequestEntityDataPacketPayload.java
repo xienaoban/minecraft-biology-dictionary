@@ -5,7 +5,7 @@ import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi
 import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayload;
 import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayloadMeta;
 import io.github.xienaoban.minecraft.biologydictionary.platform.net.ServerNetApi;
-import io.github.xienaoban.minecraft.biologydictionary.util.MiscUtil;
+import io.github.xienaoban.minecraft.biologydictionary.util.Misc;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -37,7 +37,7 @@ public record RequestEntityDataPacketPayload(int entityId) implements PacketPayl
             for (var clazz : EntityApi.topDown(entity)) {
                 for (var registry : EntityPropertyWidgetRegistryManager.getInstance().getRegistries(clazz)) {
                     for (var handler : registry.getEntityDataBufHandlers().values()) {
-                        handler.write(additionalNbt, MiscUtil.cast(entity));
+                        handler.write(additionalNbt, Misc.cast(entity));
                     }
                 }
             }

@@ -7,6 +7,7 @@ public final class TranslationKeys {
     private TranslationKeys() {}
 
     public static final String BIOLOGY_DICTIONARY = "biologydictionary";
+    public static final String PACKAGE = "io.github.xienaoban.minecraft.biologydictionary";
 
     public static final String BIOLOGY_DICTIONARY_TITLE = "title.biologydictionary";
     public static final String BIOLOGY_DICTIONARY_DESCRIPTION = "description.biologydictionary";
@@ -23,5 +24,5 @@ public final class TranslationKeys {
     public static final String TEXT_MOD_NAME_IS          = "text.biologydictionary.mod_name_is";
     public static final String TEXT_MOD_NOT_INSTALLED    = "text.biologydictionary.mod_not_installed";
     public static final String TEXT_CLICK_ME_TO_DOWNLOAD = "text.biologydictionary.click_me_to_download";
-    public static final String TEXT_EMPTY_WITH_BRACKETS = "text.biologydictionary.empty_with_brackets";
+    public static final String TEXT_EMPTY_WITH_BRACKETS  = "text.biologydictionary.empty_with_brackets";
 }

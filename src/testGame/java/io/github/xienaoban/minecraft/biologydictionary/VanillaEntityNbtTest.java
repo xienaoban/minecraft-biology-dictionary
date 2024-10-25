@@ -4,18 +4,20 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.github.javaparser.utils.Pair;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.javaparser.AbstractVisitorWrapper;
 import io.github.xienaoban.minecraft.biologydictionary.javaparser.Decompiler;
 import io.github.xienaoban.minecraft.biologydictionary.javaparser.ReadAdditionalNbtVisitor;
 import io.github.xienaoban.minecraft.biologydictionary.platform.util.JavaNames;
+import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
+import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -23,37 +25,38 @@ import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
 
 public class VanillaEntityNbtTest implements FabricGameTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private static final String OutputClazzPackage = TranslationKeys.PACKAGE + ".core.nbt";
+    private static final String OutputClazzName = "AutoGenEntityNbtApi";
+
     @GameTest(template = EMPTY_STRUCTURE)
     public void testNbtElements(GameTestHelper helper) {
-        Pair<CompilationUnit, ClassOrInterfaceDeclaration> res = createNbtGetterAndSetterClass();
-        CompilationUnit cu = res.a;
-        ClassOrInterfaceDeclaration cl = res.b;
+        CompilationUnit cu = new CompilationUnit(OutputClazzPackage);
+        ClassOrInterfaceDeclaration cl = cu.addClass(OutputClazzName, Modifier.Keyword.PUBLIC, Modifier.Keyword.FINAL);
         try {
             EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
-                parse(cur.getClazz(), cl);
+                // if (cur.getClazz() != net.minecraft.world.entity.Mob.class) return true;
+                parseNbtMethods(cur.getClazz(), cl);
                 return true;
             });
-            LOGGER.info("Class:\n" + cu);
+            LOGGER.info("Class generation successful: " + OutputClazzPackage + "." + OutputClazzName);
             helper.succeed();
-        } catch (AssertionError e) {
-            LOGGER.error("Current generated class:\n" + cu);
-            throw e;
+        } finally {
+            writeClassToFile(cu);
         }
     }
 
-    private static Pair<CompilationUnit, ClassOrInterfaceDeclaration> createNbtGetterAndSetterClass() {
-        CompilationUnit res = new CompilationUnit("io.github.xienaoban.minecraft.biologydictionary");
-        ClassOrInterfaceDeclaration clazz = res.addClass("AutoGenEntityNbtApi", Modifier.Keyword.PUBLIC, Modifier.Keyword.FINAL);
-        return new Pair<>(res, clazz);
-    }
-
-    private static void parse(Class<? extends Entity> entityClazz, ClassOrInterfaceDeclaration res) {
+    private static void parseNbtMethods(Class<? extends Entity> entityClazz, ClassOrInterfaceDeclaration res) {
         LOGGER.info("Start parsing entity class: " + entityClazz);
 
         String source = null;
@@ -81,11 +84,27 @@ public class VanillaEntityNbtTest implements FabricGameTest {
         }
     }
 
+    private static void writeClassToFile(CompilationUnit cl) {
+        Path path = Paths.get(TestUtils.MAIN_JAVA_ROOT.toString(), OutputClazzPackage.replaceAll("\\.", "/"), OutputClazzName + ".java");
+        if (Files.isRegularFile(path)) return; // do not overwrite
+        try (PrintWriter out = new PrintWriter(path.toFile())) {
+            out.print(cl.toString());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static final class AdditionalNbtMethodsVisitor extends VoidVisitorAdapter<ClassOrInterfaceDeclaration> {
         private final Class<? extends Entity> entityClazz;
 
         private AdditionalNbtMethodsVisitor(Class<? extends Entity> entityClazz) {
             this.entityClazz = entityClazz;
+        }
+
+        @Override
+        public void visit(ImportDeclaration n, ClassOrInterfaceDeclaration arg) {
+            super.visit(n, arg);
+            arg.getParentNode().ifPresent(node -> ((CompilationUnit) node).addImport(n));
         }
 
         @Override

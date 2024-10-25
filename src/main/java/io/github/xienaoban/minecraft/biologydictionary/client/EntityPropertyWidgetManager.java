@@ -3,7 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary.client;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityPropertyWidgetRegistryManager;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
-import io.github.xienaoban.minecraft.biologydictionary.util.MiscUtil;
+import io.github.xienaoban.minecraft.biologydictionary.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -25,7 +25,7 @@ public final class EntityPropertyWidgetManager {
         List<EntityPropertyWidget<?>> res = new ArrayList<>();
         for (var clazz : EntityApi.topDown(entity)) {
             for (var registry : EntityPropertyWidgetRegistryManager.getInstance().getRegistries(clazz)) {
-                EntityPropertyWidget<?> widget = registry.getWidgetFactory().create(MiscUtil.cast(entity));
+                EntityPropertyWidget<?> widget = registry.getWidgetFactory().create(Misc.cast(entity));
                 res.add(widget);
             }
         }

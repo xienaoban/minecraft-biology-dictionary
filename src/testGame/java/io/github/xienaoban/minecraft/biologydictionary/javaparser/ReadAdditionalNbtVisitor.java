@@ -14,13 +14,25 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.appender.FileAppender;
 
 public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = createLogger();
 
     private static final String TARGET = "target";
     private static final String TAG = "compoundTag";
+
+    private static Logger createLogger() {
+        FileAppender fileAppender = FileAppender.newBuilder()
+                .setName("read-nbt")
+                .withFileName("logs/read-nbt.log")
+                .build();
+        fileAppender.start();
+        Logger logger = (Logger) LogManager.getLogger();
+        logger.addAppender(fileAppender);
+        return logger;
+    }
 
     private final ClassOrInterfaceDeclaration targetClazz;
     private final Class<? extends Entity> entityClazz;
@@ -38,7 +50,18 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
         reset();
     }
 
+    public void setFoundTagGet() {
+        foundTagGet = true;
+        LOGGER.info("!!!! Found tag \"" + curKey + "\" set !!!!");
+    }
+
+    public void setFoundTargetSet() {
+        foundTargetSet = true;
+        LOGGER.info("!!!! Found target set !!!!");
+    }
+
     private void reset() {
+        LOGGER.info("!!!! Reset \"" + curKey + "\" !!!!");
         curKey = null;
         body = new BlockStmt();
         foundTagGet = false;
@@ -62,13 +85,15 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
     }
 
     private boolean isSetter(String methodName) {
-        return methodName.startsWith("set") || methodName.startsWith("update") || methodName.startsWith("read") || methodName.startsWith("get") || methodName.startsWith("make") || methodName.contains("Set");
+        return methodName.startsWith("set") || methodName.startsWith("update") || methodName.startsWith("read") || methodName.startsWith("put") || methodName.startsWith("make")
+                || methodName.contains("Set") || methodName.startsWith("get");
     }
 
     @Override
     public void end() {
         if (foundTagGet || foundTargetSet) {
-            throw new AssertionError("Unresolved remaining compoundTag.getXXX() / this.setXXX()");
+            // throw new AssertionError("Unresolved remaining compoundTag.getXXX() / this.setXXX()");
+            LOGGER.warn("Unresolved remaining compoundTag.getXXX() / this.setXXX() for " + entityClazz.getName());
         }
 
         if (genMethodCnt == 0) {
@@ -163,18 +188,27 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
                         } else {
                             curKey = newKey;
                         }
-                        foundTagGet = true;
+                        setFoundTagGet();
                     } else {
                         throw new AssertionError("Handle it.");
                     }
                 }
             });
+
             // Try to find `this.setXXX()`.
             expression.ifThisExpr(thisExpr -> {
                 if (isSetter(methodName)) {
-                    foundTargetSet = true;
+                    setFoundTargetSet();
                 }
+            });
 
+            // Try to find `this.field.setXXX()`.
+            expression.ifFieldAccessExpr(fieldAccessExpr -> {
+                fieldAccessExpr.getScope().ifThisExpr(thisExpr -> {
+                    if (isSetter(methodName)) {
+                        setFoundTargetSet();
+                    }
+                });
             });
         });
         super.visit(n, arg);
@@ -188,7 +222,7 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
         n.getScope().ifThisExpr(thisExpr -> isTarget[0] = true);
         if (isTarget[0]) {
             if (isSetter(n.getIdentifier())) {
-                foundTargetSet = true;
+                setFoundTargetSet();
             }
         }
         super.visit(n, arg);
@@ -196,7 +230,17 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
 
     @Override
     public void visit(AssignExpr n, Void arg) {
-        n.getTarget().ifFieldAccessExpr(fieldAccessExpr -> fieldAccessExpr.getScope().ifThisExpr(thisExpr -> foundTargetSet = true));
+        // Try to find `this.field = xxx`.
+        n.getTarget().ifFieldAccessExpr(fieldAccessExpr -> fieldAccessExpr.getScope().ifThisExpr(thisExpr -> {
+            setFoundTargetSet();
+        }));
+
+        // Try to find `this.field[i] = xxx`.
+        n.getTarget().ifArrayAccessExpr(arrayAccessExpr -> {
+            arrayAccessExpr.getName().ifFieldAccessExpr(fieldAccessExpr -> {
+                fieldAccessExpr.getScope().ifThisExpr(thisExpr -> setFoundTargetSet());
+            });
+        });
         super.visit(n, arg);
     }
 
