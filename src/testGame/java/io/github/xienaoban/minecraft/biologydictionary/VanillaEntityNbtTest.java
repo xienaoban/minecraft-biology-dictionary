@@ -25,6 +25,7 @@ import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -41,6 +42,7 @@ public class VanillaEntityNbtTest implements FabricGameTest {
 
     @GameTest(template = EMPTY_STRUCTURE)
     public void testNbtElements(GameTestHelper helper) {
+        boolean ignored = new File(TestUtils.MAIN_JAVA_ROOT.toString(), OutputClazzPackage.replaceAll("\\.", "/")).mkdirs();
         CompilationUnit cu = new CompilationUnit(OutputClazzPackage);
         ClassOrInterfaceDeclaration cl = cu.addClass(OutputClazzName, Modifier.Keyword.PUBLIC, Modifier.Keyword.FINAL);
         try {

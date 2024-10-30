@@ -22,8 +22,8 @@ public class BiologyDictionaryClient {
         hitEntity = null;
         hitBlock = null;
 
-        FirstPersonShoulderEntityRenderer.init();
         EntityPropertyWidgetManager.init();
+        FirstPersonShoulderEntityRenderer.init();
         KeyMappingManager.init();
         ClientNetManager.init();
         LOGGER.info("BiologyDictionary (client) initialized.");

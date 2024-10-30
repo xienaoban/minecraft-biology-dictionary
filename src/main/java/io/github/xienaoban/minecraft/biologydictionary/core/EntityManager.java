@@ -24,10 +24,7 @@ public final class EntityManager {
      */
     public static EntityManager getInstance() { return instance; }
 
-    public static void init() {
-        EntityApi.init();
-        AutoGenEntityOrder.map.get(null);
-    }
+    public static void init() {}
 
     /**
      * Get my preferred order of the vanilla entity.
@@ -59,6 +56,9 @@ public final class EntityManager {
     private final TagGroup namespaceTags = new TagGroup(TranslationKeys.TAG_GROUP_NAMESPACE);
 
     private EntityManager(Level level) {
+        EntityApi.init();
+        AutoGenEntityOrder.map.get(null);
+
         initEntities(level);
         initEntitiesSortClassInfo();
         initEntitiesSortTreeNode();
