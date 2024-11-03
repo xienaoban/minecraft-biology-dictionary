@@ -1,5 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.client;
 
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.EntityDetailScreen;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.HomeScreen;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
@@ -26,6 +27,7 @@ public final class BiologyDictionaryEvent {
         LocalPlayer player = minecraft.player;
         BDC.setHitEntity(null);
         BDC.setHitBlock(null);
+        BDC.setHitEntityProperties(null);
         if (player == null) {
             LOGGER.error("Client player is null. Fail to open the Bole Screen.");
             return;
@@ -54,8 +56,10 @@ public final class BiologyDictionaryEvent {
             minecraft.setScreen(new HomeScreen());
         } else {
             BDC.setHitEntity(target);
+            EntityProperties<Entity> properties = new EntityProperties<>(target);
+            BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target);
-            minecraft.setScreen(new EntityDetailScreen(target));
+            minecraft.setScreen(new EntityDetailScreen(properties));
         }
         new ScreenRenderingContext(null).playScreenSound(SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
     }

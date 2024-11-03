@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.client;
 
-import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistrar;
-import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegistry;
+import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegister;
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.*;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
@@ -17,7 +17,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 @Environment(EnvType.CLIENT)
-public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRegistrar {
+public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRegister {
     private static final EntityPropertyWidgetManager INSTANCE = new EntityPropertyWidgetManager();
 
     public static EntityPropertyWidgetManager getInstance() { return INSTANCE; }
@@ -27,7 +27,7 @@ public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRe
         getInstance().clearCache();
     }
 
-    private final Map<Class<? extends Entity>, List<EntityPropertyWidgetRegistry<?>>> registries;
+    private final Map<Class<? extends Entity>, List<WidgetRegistry<?>>> registries;
 
     private Set<Class<?>> visited;
     private MethodHandles.Lookup lookup;
@@ -39,11 +39,11 @@ public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRe
         this.lookup = MethodHandles.lookup();
     }
 
-    public List<EntityPropertyWidget<?>> getWidgets(Entity entity) {
+    public List<EntityPropertyWidget<?>> getWidgets(EntityProperties<?> properties) {
         List<EntityPropertyWidget<?>> res = new ArrayList<>();
-        for (var clazz : EntityApi.topDown(entity)) {
+        for (var clazz : EntityApi.topDown(properties.entity())) {
             for (var registry : getRegistries(clazz)) {
-                EntityPropertyWidget<?> widget = registry.createWidget(Misc.cast(entity));
+                EntityPropertyWidget<?> widget = registry.createWidget(Misc.cast(properties));
                 res.add(widget);
             }
         }
@@ -67,23 +67,23 @@ public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRe
             entityClazz = Misc.cast(c);
 
             // Get the constructor of the widget class.
-            Constructor<? extends EntityPropertyWidget<E>> constructor = widgetClazz.getDeclaredConstructor(entityClazz);
+            Constructor<? extends EntityPropertyWidget<E>> constructor = widgetClazz.getDeclaredConstructor(EntityProperties.class);
             createWidget = lookup.unreflectConstructor(constructor);
         } catch (Exception e) {
             throw new RuntimeException("Failed to register " + widgetClazz, e);
         }
 
         // Register it.
-        EntityPropertyWidgetRegistry<E> registry = new EntityPropertyWidgetRegistry<E>() {
+        WidgetRegistry<E> registry = new WidgetRegistry<>() {
             @Override
             public Class<E> getEntityClass() {
                 return entityClazz;
             }
 
             @Override
-            public EntityPropertyWidget<E> createWidget(E entity) {
+            public EntityPropertyWidget<E> createWidget(EntityProperties<E> properties) {
                 try {
-                    return Misc.cast(createWidget.invoke(entity));
+                    return Misc.cast(createWidget.invoke(properties));
                 } catch (Throwable e) {
                     throw new RuntimeException(e);
                 }
@@ -92,7 +92,7 @@ public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRe
         registries.computeIfAbsent(registry.getEntityClass(), clazz -> new ArrayList<>()).add(registry);
     }
 
-    public List<EntityPropertyWidgetRegistry<?>> getRegistries(Class<? extends Entity> clazz) {
+    private List<WidgetRegistry<?>> getRegistries(Class<? extends Entity> clazz) {
         return registries.getOrDefault(clazz, Collections.emptyList());
     }
 
@@ -107,5 +107,12 @@ public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRe
         register(EntityAirWidget.class);
         register(AnimalFoodWidget.class);
         register(EntityBoundingBoxWidget.class);
+    }
+
+    private interface WidgetRegistry<E extends Entity> {
+        Class<E> getEntityClass();
+
+        @Environment(EnvType.CLIENT)
+        EntityPropertyWidget<E> createWidget(EntityProperties<E> properties);
     }
 }

@@ -1,6 +1,5 @@
 package io.github.xienaoban.minecraft.biologydictionary.net.payloads;
 
-import io.github.xienaoban.minecraft.biologydictionary.client.EntityPropertyWidgetManager;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
 import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayload;
 import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayloadMeta;
@@ -34,11 +33,11 @@ public record RequestEntityDataPacketPayload(int entityId) implements PacketPayl
             // Write data that not in vanilla NBT.
             CompoundTag additionalNbt = new CompoundTag();
             for (var clazz : EntityApi.topDown(entity)) {
-                for (var registry : EntityPropertyWidgetManager.getInstance().getRegistries(clazz)) {
-                    // for (var handler : registry.getEntityDataBufHandlers().values()) {
-                    //     handler.write(additionalNbt, Misc.cast(entity));
-                    // }
-                }
+                // for (var registry : EntityPropertyWidgetManager.getInstance().getRegistries(clazz)) {
+                //     for (var handler : registry.getEntityDataBufHandlers().values()) {
+                //         handler.write(additionalNbt, Misc.cast(entity));
+                //     }
+                // }
             }
             toSend = new SendEntityDataPacketPayload(true, entity.getId(), vanillaNbt, additionalNbt);
         } else {

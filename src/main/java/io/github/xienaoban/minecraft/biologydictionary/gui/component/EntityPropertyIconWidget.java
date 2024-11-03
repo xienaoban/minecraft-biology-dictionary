@@ -1,5 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.component;
 
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -9,8 +10,8 @@ import net.minecraft.world.entity.Entity;
 public abstract class EntityPropertyIconWidget<E extends Entity> extends EntityPropertyWidget<E> {
     private EntityPropertyIcon icon;
 
-    protected EntityPropertyIconWidget(E entity, int rows, int columns) {
-        super(entity, rows, columns);
+    protected EntityPropertyIconWidget(EntityProperties<E> properties, int rows, int columns) {
+        super(properties, rows, columns);
         this.icon = null;
     }
 

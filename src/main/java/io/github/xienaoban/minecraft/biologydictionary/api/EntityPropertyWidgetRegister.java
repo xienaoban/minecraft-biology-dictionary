@@ -4,6 +4,6 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPrope
 import net.minecraft.world.entity.Entity;
 
 @FunctionalInterface
-public interface EntityPropertyWidgetRegistrar {
+public interface EntityPropertyWidgetRegister {
     <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz);
 }

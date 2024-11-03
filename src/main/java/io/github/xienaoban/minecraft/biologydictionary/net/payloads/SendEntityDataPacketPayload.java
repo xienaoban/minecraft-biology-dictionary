@@ -1,5 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.net.payloads;
 
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayload;
 import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayloadMeta;
@@ -36,9 +37,12 @@ public record SendEntityDataPacketPayload(boolean notNull, int entityId, Compoun
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         if (!notNull) return;
-        Entity entity = BDC.getHitEntity();
-        if (entity == null || entity.getId() != entityId) return;
         LOGGER.info("vanillaNbt = " + vanillaNbt);
         LOGGER.info("additionalNbt = " + additionalNbt);
+
+        Entity entity = BDC.getHitEntity();
+        EntityProperties<?> properties = BDC.getHitEntityProperties();
+        if (entity == null || entity.getId() != entityId || properties == null) return;
+        properties.update(vanillaNbt, additionalNbt);
     }
 }

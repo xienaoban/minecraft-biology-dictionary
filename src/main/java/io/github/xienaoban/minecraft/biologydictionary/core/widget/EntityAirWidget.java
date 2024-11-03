@@ -1,5 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
@@ -13,9 +14,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
-public class EntityAirWidget extends EntityPropertyStandardWidget<Entity> {
-    public EntityAirWidget(Entity entity) {
-        super(entity);
+public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> {
+    public EntityAirWidget(EntityProperties<Entity> properties) {
+        super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, 0, Widget.WIDGET_HEIGHT));
         setElementBar(new AirBar());
     }

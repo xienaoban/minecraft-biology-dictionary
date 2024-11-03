@@ -1,5 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.component;
 
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenElement;
@@ -12,12 +13,12 @@ public class EntityPropertyStandardWidget<E extends Entity> extends EntityProper
     private EntityPropertyBar bar;
     private final List<EntityPropertyButton> buttons;
 
-    protected EntityPropertyStandardWidget(E entity) {
-        this(entity, Page.COLUMNS / 2);
+    protected EntityPropertyStandardWidget(EntityProperties<E> properties) {
+        this(properties, Page.COLUMNS / 2);
     }
 
-    protected EntityPropertyStandardWidget(E entity, int columns) {
-        super(entity, 1, columns);
+    protected EntityPropertyStandardWidget(EntityProperties<E> properties, int columns) {
+        super(properties, 1, columns);
         this.bar = null;
         this.buttons = new ArrayList<>();
     }

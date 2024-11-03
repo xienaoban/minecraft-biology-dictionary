@@ -1,5 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyBar;
@@ -18,11 +19,11 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Comparator;
 
 @Environment(EnvType.CLIENT)
-public class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal> {
+public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal> {
     private final ItemStack[] foods;
 
-    public AnimalFoodWidget(Animal entity) {
-        super(entity);
+    public AnimalFoodWidget(EntityProperties<Animal> properties) {
+        super(properties);
         foods = getFoodItems();
 
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, 5 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT));

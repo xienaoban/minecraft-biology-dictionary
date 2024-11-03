@@ -3,6 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary;
 import io.github.xienaoban.minecraft.biologydictionary.client.EntityPropertyWidgetManager;
 import io.github.xienaoban.minecraft.biologydictionary.client.FirstPersonShoulderEntityRenderer;
 import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -18,9 +19,12 @@ public class BiologyDictionaryClient {
     private Entity hitEntity;
     private BlockPos hitBlock;
 
+    private EntityProperties<?> hitEntityProperties;
+
     private BiologyDictionaryClient() {
         hitEntity = null;
         hitBlock = null;
+        hitEntityProperties = null;
 
         EntityPropertyWidgetManager.init();
         FirstPersonShoulderEntityRenderer.init();
@@ -36,4 +40,8 @@ public class BiologyDictionaryClient {
 
     public BlockPos getHitBlock() { return hitBlock; }
     public void setHitBlock(BlockPos hitBlock) { this.hitBlock = hitBlock; }
+
+
+    public EntityProperties<?> getHitEntityProperties() { return hitEntityProperties; }
+    public void setHitEntityProperties(EntityProperties<?> hitEntityProperties) { this.hitEntityProperties = hitEntityProperties; }
 }

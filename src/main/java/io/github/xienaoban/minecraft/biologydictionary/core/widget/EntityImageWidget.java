@@ -1,6 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 
 import com.mojang.authlib.GameProfile;
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
@@ -24,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
  * The entity can be rotated according to the mouse.
  */
 @Environment(EnvType.CLIENT)
-public class EntityImageWidget extends EntityPropertyWidget<Entity> {
+public final class EntityImageWidget extends EntityPropertyWidget<Entity> {
 
     private static RC calculateRowsAndColumns(Entity entity) {
         AABB box = entity.getBoundingBox();
@@ -91,12 +92,12 @@ public class EntityImageWidget extends EntityPropertyWidget<Entity> {
     private final float entityScale;
     private final float entityBottom;
 
-    public EntityImageWidget(Entity entity) {
-        this(entity, createFakeEntity(entity));
+    public EntityImageWidget(EntityProperties<Entity> properties) {
+        this(properties, createFakeEntity(properties.entity()));
     }
 
-    private EntityImageWidget(Entity entity, Entity fake) {
-        super(entity, calculateRowsAndColumns(fake));
+    private EntityImageWidget(EntityProperties<Entity> properties, Entity fake) {
+        super(properties, calculateRowsAndColumns(fake));
         this.fake = fake;
         float[] sp = calculateScaleAndPosition();
         entityScale = sp[0];

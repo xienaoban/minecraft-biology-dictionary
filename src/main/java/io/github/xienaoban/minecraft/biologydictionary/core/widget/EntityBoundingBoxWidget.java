@@ -1,5 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyBar;
@@ -13,9 +14,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 
 @Environment(EnvType.CLIENT)
-public class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<Entity> {
-    public EntityBoundingBoxWidget(Entity entity) {
-        super(entity);
+public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<Entity> {
+    public EntityBoundingBoxWidget(EntityProperties<Entity> properties) {
+        super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, 5 * Widget.WIDGET_WIDTH, 0));
         setElementBar(new BoxBar());
     }
