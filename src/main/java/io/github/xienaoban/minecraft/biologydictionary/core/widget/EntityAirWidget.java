@@ -33,7 +33,7 @@ public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> 
             if (ctx.isDebug()) {
                 renderInnerText(ctx, Component.literal(e().getAirSupply() + "t/" + e().getMaxAirSupply() + "t"));
             } else {
-                renderInnerText(ctx, Component.literal((e().getAirSupply() / MinecraftApi.getTicksPerSecond()) + "s/" + (e().getMaxAirSupply() / MinecraftApi.getTicksPerSecond()) + "s"));
+                renderInnerText(ctx, Component.literal((e().getAirSupply() / MinecraftApi.getClientTickCountPerSecond()) + "s/" + (e().getMaxAirSupply() / MinecraftApi.getClientTickCountPerSecond()) + "s"));
             }
         }
     }

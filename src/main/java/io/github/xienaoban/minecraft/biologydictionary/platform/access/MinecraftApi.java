@@ -30,7 +30,8 @@ public final class MinecraftApi {
         return Objects.requireNonNull(Minecraft.getInstance().level).getGameTime() * 50L + (long) (tickDelta * 50F);
     }
 
-    public static int getTicksPerSecond() {
+    @Environment(EnvType.CLIENT)
+    public static int getClientTickCountPerSecond() {
         return 20;
     }
 }

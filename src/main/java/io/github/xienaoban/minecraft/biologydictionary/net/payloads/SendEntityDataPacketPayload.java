@@ -11,7 +11,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
 import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionaryClient.BDC;
 
 public record SendEntityDataPacketPayload(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag additionalNbt) implements PacketPayload {
@@ -37,8 +36,6 @@ public record SendEntityDataPacketPayload(boolean notNull, int entityId, Compoun
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         if (!notNull) return;
-        LOGGER.info("vanillaNbt = " + vanillaNbt);
-        LOGGER.info("additionalNbt = " + additionalNbt);
 
         Entity entity = BDC.getHitEntity();
         EntityProperties<?> properties = BDC.getHitEntityProperties();
