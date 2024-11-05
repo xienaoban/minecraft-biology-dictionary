@@ -31,15 +31,15 @@ public record RequestEntityDataPacketPayload(int entityId) implements PacketPayl
             CompoundTag vanillaNbt = entity.saveWithoutId(new CompoundTag());
 
             // Write data that not in vanilla NBT.
-            CompoundTag additionalNbt = new CompoundTag();
+            CompoundTag extraNbt = new CompoundTag();
             for (var clazz : EntityApi.topDown(entity)) {
                 // for (var registry : EntityPropertyWidgetManager.getInstance().getRegistries(clazz)) {
                 //     for (var handler : registry.getEntityDataBufHandlers().values()) {
-                //         handler.write(additionalNbt, Misc.cast(entity));
+                //         handler.write(extraNbt, Misc.cast(entity));
                 //     }
                 // }
             }
-            toSend = new SendEntityDataPacketPayload(true, entity.getId(), vanillaNbt, additionalNbt);
+            toSend = new SendEntityDataPacketPayload(true, entity.getId(), vanillaNbt, extraNbt);
         } else {
             toSend = new SendEntityDataPacketPayload(false, -1, null, null);
         }

@@ -1,5 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.javaparser;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
@@ -9,6 +10,7 @@ import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
@@ -20,8 +22,8 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
     private static final Logger LOGGER = createLogger();
 
-    private static final String TARGET = "target";
-    private static final String TAG = "compoundTag";
+    private static final String TAG_ARG = "compoundTag";
+    private static final String TARGET_TAG_ARG = "vanillaNbt";
 
     private static Logger createLogger() {
         FileAppender fileAppender = FileAppender.newBuilder()
@@ -72,9 +74,23 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
         if (curKey == null) {
             throw new AssertionError();
         }
-        MethodDeclaration m = targetClazz.addMethod("set__" + entityClazz.getSimpleName() + "__" + curKey, Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
-        m.addParameter(entityClazz, TARGET);
-        m.addParameter(CompoundTag.class, TAG);
+        ClassOrInterfaceDeclaration innerClazz = new ClassOrInterfaceDeclaration(
+                Modifier.createModifierList(Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC, Modifier.Keyword.FINAL),
+                false, curKey);
+        targetClazz.addMember(innerClazz);
+        targetClazz.findAncestor(CompilationUnit.class).ifPresent(p -> p.addImport("io.github.xienaoban.minecraft.biologydictionary.api.EntityVanillaProperty"));
+        innerClazz.addImplementedType("EntityVanillaProperty");
+        MethodDeclaration m = innerClazz.addMethod("readFromNbt", Modifier.Keyword.PUBLIC);
+        m.addParameter(CompoundTag.class, TARGET_TAG_ARG);
+        body.accept(new VoidVisitorAdapter<Void>() {
+            @Override
+            public void visit(NameExpr n, Void arg) {
+                super.visit(n, arg);
+                if (TAG_ARG.equals(n.getName().getIdentifier())) {
+                    n.setName(TARGET_TAG_ARG);
+                }
+            }
+        }, null);
         m.setBody(body);
         genMethodCnt++;
         reset();
@@ -170,7 +186,7 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
             // Try to find `compoundTag.getXXX()`.
             expression.ifNameExpr(nameExpr -> {
                 String methodScope = nameExpr.getName().getIdentifier();
-                if (TAG.equals(methodScope)) {
+                if (TAG_ARG.equals(methodScope)) {
                     NodeList<Expression> arguments = n.getArguments();
                     if (arguments.size() == 2) {
                         Expression second = arguments.get(1);
@@ -246,13 +262,13 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
 
     @Override
     public void visit(final ThisExpr n, Void arg) {
-        Node parent = n.getParentNode().orElseThrow(AssertionError::new);
-        switch (parent) {
-            case FieldAccessExpr fieldAccessExpr -> fieldAccessExpr.setScope(new NameExpr(new SimpleName(TARGET)));
-            case MethodCallExpr methodCallExpr -> methodCallExpr.setScope(new NameExpr(new SimpleName(TARGET)));
-            case CastExpr castExpr -> castExpr.setExpression(new NameExpr(new SimpleName(TARGET)));
-            case null, default -> throw new AssertionError("Please implement processing logic.");
-        }
+        // Node parent = n.getParentNode().orElseThrow(AssertionError::new);
+        // switch (parent) {
+        //     case FieldAccessExpr fieldAccessExpr -> fieldAccessExpr.setScope(new NameExpr(new SimpleName(TARGET)));
+        //     case MethodCallExpr methodCallExpr -> methodCallExpr.setScope(new NameExpr(new SimpleName(TARGET)));
+        //     case CastExpr castExpr -> castExpr.setExpression(new NameExpr(new SimpleName(TARGET)));
+        //     case null, default -> throw new AssertionError("Please implement processing logic.");
+        // }
         super.visit(n, arg);
     }
 }

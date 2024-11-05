@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionaryClient.BDC;
 
-public record SendEntityDataPacketPayload(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag additionalNbt) implements PacketPayload {
+public record SendEntityDataPacketPayload(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt) implements PacketPayload {
     public static final PacketPayloadMeta<SendEntityDataPacketPayload> META = PacketPayloadMeta.create(SendEntityDataPacketPayload.class);
 
     @Override
@@ -29,7 +29,7 @@ public record SendEntityDataPacketPayload(boolean notNull, int entityId, Compoun
         buf.writeBoolean(notNull);
         buf.writeInt(entityId);
         buf.writeNbt(vanillaNbt);
-        buf.writeNbt(additionalNbt);
+        buf.writeNbt(extraNbt);
     }
 
     @Environment(EnvType.CLIENT)
@@ -40,6 +40,6 @@ public record SendEntityDataPacketPayload(boolean notNull, int entityId, Compoun
         Entity entity = BDC.getHitEntity();
         EntityProperties<?> properties = BDC.getHitEntityProperties();
         if (entity == null || entity.getId() != entityId || properties == null) return;
-        properties.update(vanillaNbt, additionalNbt);
+        properties.update(vanillaNbt, extraNbt);
     }
 }

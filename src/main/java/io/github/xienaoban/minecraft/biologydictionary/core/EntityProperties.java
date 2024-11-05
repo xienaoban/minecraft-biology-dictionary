@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core;
 
-import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
+import io.github.xienaoban.minecraft.biologydictionary.api.EntityVanillaProperty;
 import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
 import io.github.xienaoban.minecraft.biologydictionary.util.Misc;
 import net.fabricmc.api.EnvType;
@@ -16,26 +16,26 @@ import java.util.Map;
 public final class EntityProperties<E extends Entity> {
     private final E entity;
 
-    private final Map<Class<? extends EntityProperty<? super E>>, EntityProperty<? super E>> properties;
+    private final Map<Class<? extends EntityVanillaProperty<? super E>>, EntityVanillaProperty<? super E>> vanillaProperties;
 
     public EntityProperties(E entity) {
-        HashMap<Class<? extends EntityProperty<? super E>>, EntityProperty<? super E>> map = new HashMap<>();
+        HashMap<Class<? extends EntityVanillaProperty<? super E>>, EntityVanillaProperty<? super E>> map = new HashMap<>();
         for (var clazz : EntityApi.bottomUp(entity)) {
 
         }
         this.entity = entity;
-        this.properties = Collections.unmodifiableMap(map);
+        this.vanillaProperties = Collections.unmodifiableMap(map);
     }
 
     public E entity() { return entity; }
 
-    public <EP extends EntityProperty<? super E>> EP p(Class<EP> clazz) {
-        return Misc.cast(properties.get(clazz));
+    public <EP extends EntityVanillaProperty<? super E>> EP p(Class<EP> clazz) {
+        return Misc.cast(vanillaProperties.get(clazz));
     }
 
-    public void update(CompoundTag vanillaNbt, CompoundTag additionalNbt) {
-        for (EntityProperty<? super E> property : properties.values()) {
-            property.readFromNbt(vanillaNbt, additionalNbt);
+    public void update(CompoundTag vanillaNbt, CompoundTag extraNbt) {
+        for (EntityVanillaProperty<? super E> property : vanillaProperties.values()) {
+            property.readFromNbt(vanillaNbt);
         }
     }
 }
