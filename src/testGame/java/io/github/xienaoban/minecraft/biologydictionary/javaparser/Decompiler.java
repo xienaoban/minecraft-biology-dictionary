@@ -50,6 +50,7 @@ public final class Decompiler {
         java.util.logging.Logger.getLogger(com.strobel.assembler.metadata.signatures.Reifier.class.getSimpleName()).setLevel(java.util.logging.Level.OFF);
         DecompilerSettings settings = new DecompilerSettings();
         settings.setForcedCompilerTarget(CompilerTarget.JDK17);
+        settings.setForceExplicitImports(true);
         com.strobel.decompiler.Decompiler.decompile(clazz.getName().replace('.', '/'), output, settings);
         return output.toString();
     }

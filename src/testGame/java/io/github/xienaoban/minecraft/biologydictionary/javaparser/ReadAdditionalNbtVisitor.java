@@ -1,19 +1,13 @@
 package io.github.xienaoban.minecraft.biologydictionary.javaparser;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -22,8 +16,6 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
     private static final Logger LOGGER = createLogger();
 
-    private static final String TAG_ARG = "compoundTag";
-    private static final String TARGET_TAG_ARG = "vanillaNbt";
 
     private static Logger createLogger() {
         FileAppender fileAppender = FileAppender.newBuilder()
@@ -36,8 +28,7 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
         return logger;
     }
 
-    private final ClassOrInterfaceDeclaration targetClazz;
-    private final Class<? extends Entity> entityClazz;
+    private final AdditionalNbtMethodsVisitor ctx;
     private boolean superSkipped = false;
     private int genMethodCnt = 0;
 
@@ -46,9 +37,8 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
     private boolean foundTagGet;
     private boolean foundTargetSet;
 
-    public ReadAdditionalNbtVisitor(ClassOrInterfaceDeclaration targetClazz, Class<? extends Entity> entityClazz) {
-        this.targetClazz = targetClazz;
-        this.entityClazz = entityClazz;
+    public ReadAdditionalNbtVisitor(AdditionalNbtMethodsVisitor ctx) {
+        this.ctx = ctx;
         reset();
     }
 
@@ -74,30 +64,14 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
         if (curKey == null) {
             throw new AssertionError();
         }
-        ClassOrInterfaceDeclaration innerClazz = new ClassOrInterfaceDeclaration(
-                Modifier.createModifierList(Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC, Modifier.Keyword.FINAL),
-                false, curKey);
-        targetClazz.addMember(innerClazz);
-        targetClazz.findAncestor(CompilationUnit.class).ifPresent(p -> p.addImport("io.github.xienaoban.minecraft.biologydictionary.api.EntityVanillaProperty"));
-        innerClazz.addImplementedType("EntityVanillaProperty");
-        MethodDeclaration m = innerClazz.addMethod("readFromNbt", Modifier.Keyword.PUBLIC);
-        m.addParameter(CompoundTag.class, TARGET_TAG_ARG);
-        body.accept(new VoidVisitorAdapter<Void>() {
-            @Override
-            public void visit(NameExpr n, Void arg) {
-                super.visit(n, arg);
-                if (TAG_ARG.equals(n.getName().getIdentifier())) {
-                    n.setName(TARGET_TAG_ARG);
-                }
-            }
-        }, null);
+        MethodDeclaration m = ctx.createPropertyReadMethodDeclaration(curKey);
         m.setBody(body);
         genMethodCnt++;
         reset();
     }
 
     private boolean isGetter(String methodName) {
-        return methodName.startsWith("get") || methodName.equals("contains") || methodName.startsWith("has");
+        return methodName.startsWith("get");
     }
 
     private boolean isSetter(String methodName) {
@@ -109,11 +83,11 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
     public void end() {
         if (foundTagGet || foundTargetSet) {
             // throw new AssertionError("Unresolved remaining compoundTag.getXXX() / this.setXXX()");
-            LOGGER.warn("Unresolved remaining compoundTag.getXXX() / this.setXXX() for " + entityClazz.getName());
+            LOGGER.warn("Unresolved remaining compoundTag.getXXX() / this.setXXX() for " + ctx.getEntityClazz().getName());
         }
 
         if (genMethodCnt == 0) {
-            targetClazz.addOrphanComment(new BlockComment("No setter for " + entityClazz.getName()));
+            ctx.getTargetClazzDeclaration().addOrphanComment(new BlockComment("No setter for " + ctx.getEntityClazz().getName()));
         }
     }
 
@@ -172,7 +146,7 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
             if (isSuper[0]) {
                 reset();
                 return;
-            } else if (entityClazz != LivingEntity.class) {
+            } else if (ctx.getEntityClazz() != LivingEntity.class) {
                 throw new AssertionError("Handle it.");
             }
         }
@@ -186,12 +160,12 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
             // Try to find `compoundTag.getXXX()`.
             expression.ifNameExpr(nameExpr -> {
                 String methodScope = nameExpr.getName().getIdentifier();
-                if (TAG_ARG.equals(methodScope)) {
+                if (AdditionalNbtMethodsVisitor.TAG_ARG.equals(methodScope)) {
                     NodeList<Expression> arguments = n.getArguments();
                     if (arguments.size() == 2) {
                         Expression second = arguments.get(1);
                         IntegerLiteralExpr integerLiteralExpr = second.asIntegerLiteralExpr();
-                        FieldAccessExpr tag = new FieldAccessExpr(new NameExpr(Tag.class.getSimpleName()), TagMap.get(integerLiteralExpr.asNumber().intValue()));
+                        FieldAccessExpr tag = new FieldAccessExpr(new NameExpr(Tag.class.getSimpleName()), TagMap.getByValue(integerLiteralExpr.asNumber().intValue()).getField());
                         n.getArguments().set(1, tag);
                     }
                     if (isGetter(methodName)) {
@@ -205,8 +179,11 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
                             curKey = newKey;
                         }
                         setFoundTagGet();
-                    } else {
-                        throw new AssertionError("Handle it.");
+                        ctx.putPropertyNameAndType(n);
+                    } else if (methodName.equals("contains")) /* do nothing */;
+                    else if (methodName.equals("hasUUID")) /* do nothing */;
+                    else {
+                        throw new AssertionError("Handle it:\n" + n);
                     }
                 }
             });
@@ -257,18 +234,6 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
                 fieldAccessExpr.getScope().ifThisExpr(thisExpr -> setFoundTargetSet());
             });
         });
-        super.visit(n, arg);
-    }
-
-    @Override
-    public void visit(final ThisExpr n, Void arg) {
-        // Node parent = n.getParentNode().orElseThrow(AssertionError::new);
-        // switch (parent) {
-        //     case FieldAccessExpr fieldAccessExpr -> fieldAccessExpr.setScope(new NameExpr(new SimpleName(TARGET)));
-        //     case MethodCallExpr methodCallExpr -> methodCallExpr.setScope(new NameExpr(new SimpleName(TARGET)));
-        //     case CastExpr castExpr -> castExpr.setExpression(new NameExpr(new SimpleName(TARGET)));
-        //     case null, default -> throw new AssertionError("Please implement processing logic.");
-        // }
         super.visit(n, arg);
     }
 }

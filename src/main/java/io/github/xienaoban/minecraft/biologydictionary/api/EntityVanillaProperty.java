@@ -7,6 +7,6 @@ import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public interface EntityVanillaProperty<E extends Entity>  {
-    void readFromNbt(CompoundTag vanillaNbt);
-    void writeToNbt(CompoundTag vanillaNbt);
+    void readFrom(CompoundTag vanillaNbt);
+    void writeTo(CompoundTag vanillaNbt);
 }

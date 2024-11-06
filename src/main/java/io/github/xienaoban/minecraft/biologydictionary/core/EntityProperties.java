@@ -35,7 +35,7 @@ public final class EntityProperties<E extends Entity> {
 
     public void update(CompoundTag vanillaNbt, CompoundTag extraNbt) {
         for (EntityVanillaProperty<? super E> property : vanillaProperties.values()) {
-            property.readFromNbt(vanillaNbt);
+            property.readFrom(vanillaNbt);
         }
     }
 }
