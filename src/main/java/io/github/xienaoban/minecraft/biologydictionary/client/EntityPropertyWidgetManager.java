@@ -4,7 +4,7 @@ import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetR
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.*;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
-import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
+import io.github.xienaoban.minecraft.biologydictionary.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -41,7 +41,7 @@ public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRe
 
     public List<EntityPropertyWidget<?>> getWidgets(EntityProperties<?> properties) {
         List<EntityPropertyWidget<?>> res = new ArrayList<>();
-        for (var clazz : EntityApi.topDown(properties.entity())) {
+        for (var clazz : EntityUtils.topDown(properties.entity())) {
             for (var registry : getRegistries(clazz)) {
                 EntityPropertyWidget<?> widget = registry.createWidget(Misc.cast(properties));
                 res.add(widget);

@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
-import io.github.xienaoban.minecraft.biologydictionary.javaparser.AdditionalNbtMethodsVisitor;
+import io.github.xienaoban.minecraft.biologydictionary.nbtparser.AdditionalNbtMethodsVisitor;
 import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;

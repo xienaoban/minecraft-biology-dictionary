@@ -6,7 +6,7 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.minecraft.biologydictionary.platform.access.MinecraftApi;
+import io.github.xienaoban.minecraft.biologydictionary.util.MinecraftUtils;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -33,7 +33,7 @@ public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> 
             if (ctx.isDebug()) {
                 renderInnerText(ctx, Component.literal(e().getAirSupply() + "t/" + e().getMaxAirSupply() + "t"));
             } else {
-                renderInnerText(ctx, Component.literal((e().getAirSupply() / MinecraftApi.getClientTickCountPerSecond()) + "s/" + (e().getMaxAirSupply() / MinecraftApi.getClientTickCountPerSecond()) + "s"));
+                renderInnerText(ctx, Component.literal((e().getAirSupply() / MinecraftUtils.getClientTickCountPerSecond()) + "s/" + (e().getMaxAirSupply() / MinecraftUtils.getClientTickCountPerSecond()) + "s"));
             }
         }
     }

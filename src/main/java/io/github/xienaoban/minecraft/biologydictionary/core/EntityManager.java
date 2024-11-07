@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core;
 
-import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
+import io.github.xienaoban.minecraft.biologydictionary.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -31,7 +31,7 @@ public final class EntityManager {
      * Returns Integer rather than int because it can be null.
      */
     public static Integer getMyPreferredEntityOrder(EntityType<?> clazz) {
-        return AutoGenEntityOrder.map.get(clazz);
+        return EntityOrder.map.get(clazz);
     }
 
     private static Level getTempLevel() {
@@ -56,8 +56,8 @@ public final class EntityManager {
     private final TagGroup namespaceTags = new TagGroup(TranslationKeys.TAG_GROUP_NAMESPACE);
 
     private EntityManager(Level level) {
-        EntityApi.init();
-        AutoGenEntityOrder.map.get(null);
+        EntityUtils.init();
+        EntityOrder.map.get(null);
 
         initEntities(level);
         initEntitiesSortClassInfo();
@@ -159,7 +159,7 @@ public final class EntityManager {
     }
 
     public static String getClassRealName(Class<? extends Entity> clazz) {
-        String res = EntityApi.getDeobfuscatedName(clazz);
+        String res = EntityUtils.getDeobfuscatedName(clazz);
         if (res == null) res = clazz.getName();
         return res;
     }

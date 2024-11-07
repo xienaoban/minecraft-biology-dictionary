@@ -1,8 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
-import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
-import io.github.xienaoban.minecraft.biologydictionary.platform.access.MinecraftApi;
+import io.github.xienaoban.minecraft.biologydictionary.util.EntityUtils;
+import io.github.xienaoban.minecraft.biologydictionary.util.MinecraftUtils;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
@@ -32,14 +32,14 @@ public class VanillaEntityTest implements FabricGameTest {
             Class<?> clazz = cur.getClazz();
 
             // skip non-vanilla classes
-            if (!MinecraftApi.isVanillaClass(clazz)) {
+            if (!MinecraftUtils.isVanillaClass(clazz)) {
                 LOGGER.info("Skipped non-vanilla class: \"" + clazz.getName() + "\".");
                 return true;
             }
 
             // check deobfuscation
             String realName = clazz.getName();
-            String storedName = EntityApi.getDeobfuscatedName(clazz);
+            String storedName = EntityUtils.getDeobfuscatedName(clazz);
             if (!Objects.equals(realName, storedName)) {
                 success.set(false);
                 LOGGER.error("Needed \"" + realName + "\" but got \"" + storedName + "\".");
@@ -75,7 +75,7 @@ public class VanillaEntityTest implements FabricGameTest {
 
             // skip non-vanilla classes
             Class<?> clazz = classInfo.getClazz();
-            if (!MinecraftApi.isVanillaClass(clazz)) {
+            if (!MinecraftUtils.isVanillaClass(clazz)) {
                 LOGGER.info("Skipped non-vanilla class: \"" + clazz.getName() + "\".");
                 continue;
             }
@@ -98,13 +98,13 @@ public class VanillaEntityTest implements FabricGameTest {
             Class<?> clazz = cur.getClazz();
 
             // skip non-vanilla classes
-            if (!MinecraftApi.isVanillaClass(clazz)) return true;
+            if (!MinecraftUtils.isVanillaClass(clazz)) return true;
 
             out.println(space + "/*" + "-".repeat(depth * 2) + "*/ "
                     + "f(" + clazz.getName() + ".class, \""
                     + clazz.getName() + "\");");
             for (Class<?> interfaze : clazz.getInterfaces()) {
-                if (MinecraftApi.isVanillaClass(interfaze)) {
+                if (MinecraftUtils.isVanillaClass(interfaze)) {
                     interfazes.add(interfaze);
                 }
             }

@@ -4,7 +4,7 @@ import io.github.xienaoban.minecraft.biologydictionary.client.EntityPropertyWidg
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
-import io.github.xienaoban.minecraft.biologydictionary.platform.access.MinecraftApi;
+import io.github.xienaoban.minecraft.biologydictionary.util.MinecraftUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
-    private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT = (int) (MinecraftApi.getClientTickCountPerSecond() * 1.5);
+    private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT = (int) (MinecraftUtils.getClientTickCountPerSecond() * 1.5);
 
     private final Entity entity;
     private final EntityProperties<Entity> properties;

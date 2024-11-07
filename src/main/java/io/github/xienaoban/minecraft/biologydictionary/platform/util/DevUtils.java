@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.platform.access;
+package io.github.xienaoban.minecraft.biologydictionary.platform.util;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -6,7 +6,7 @@ import net.fabricmc.loader.api.ModContainer;
 
 import java.util.Optional;
 
-public final class DevApi {
+public final class DevUtils {
     private static String modVersion = null;
 
     public static String getModVersion(String modId) {

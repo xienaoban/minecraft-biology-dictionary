@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityVanillaProperty;
-import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
+import io.github.xienaoban.minecraft.biologydictionary.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,7 +20,7 @@ public final class EntityProperties<E extends Entity> {
 
     public EntityProperties(E entity) {
         HashMap<Class<? extends EntityVanillaProperty<? super E>>, EntityVanillaProperty<? super E>> map = new HashMap<>();
-        for (var clazz : EntityApi.bottomUp(entity)) {
+        for (var clazz : EntityUtils.bottomUp(entity)) {
 
         }
         this.entity = entity;

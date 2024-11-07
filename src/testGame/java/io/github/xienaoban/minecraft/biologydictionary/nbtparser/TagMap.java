@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.javaparser;
+package io.github.xienaoban.minecraft.biologydictionary.nbtparser;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;

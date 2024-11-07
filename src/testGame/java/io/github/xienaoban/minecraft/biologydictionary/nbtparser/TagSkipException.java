@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.javaparser;
+package io.github.xienaoban.minecraft.biologydictionary.nbtparser;
 
 public class TagSkipException extends RuntimeException {
     public TagSkipException(String message) {

@@ -3,7 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
-import io.github.xienaoban.minecraft.biologydictionary.platform.access.EntityApi;
+import io.github.xienaoban.minecraft.biologydictionary.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -83,7 +83,7 @@ public final class EntityImageWidget extends EntityPropertyWidget<Entity> {
 
         // options not controlled by nbt
         if (to instanceof WaterAnimal waterAnimal) {
-            EntityApi.setInWater(waterAnimal, true);
+            EntityUtils.setInWater(waterAnimal, true);
         }
     }
 

@@ -4,7 +4,7 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.HashMap;
 
-final class AutoGenEntityOrder {
+final class EntityOrder {
     static final HashMap<EntityType<?>, Integer> map = new HashMap<>();
 
     private static int order = 0;

@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.javaparser;
+package io.github.xienaoban.minecraft.biologydictionary.nbtparser;
 
 import com.strobel.assembler.metadata.CompilerTarget;
 import com.strobel.decompiler.DecompilerSettings;

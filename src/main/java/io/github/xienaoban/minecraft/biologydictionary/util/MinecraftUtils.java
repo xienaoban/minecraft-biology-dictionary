@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.platform.access;
+package io.github.xienaoban.minecraft.biologydictionary.util;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.util.JavaNames;
 import net.fabricmc.api.EnvType;
@@ -9,7 +9,7 @@ import net.minecraft.client.player.LocalPlayer;
 
 import java.util.Objects;
 
-public final class MinecraftApi {
+public final class MinecraftUtils {
 
     public static boolean isVanillaClass(Class<?> clazz) {
         return clazz.getPackageName().startsWith(JavaNames.MINECRAFT_PACKAGE);

@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.platform.access;
+package io.github.xienaoban.minecraft.biologydictionary.util;
 
 import java.util.HashMap;
 

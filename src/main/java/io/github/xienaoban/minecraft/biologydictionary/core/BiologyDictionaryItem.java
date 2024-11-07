@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core;
 
 import io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.minecraft.biologydictionary.platform.access.DevApi;
+import io.github.xienaoban.minecraft.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.MinecraftMixin;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.minecraft.core.component.DataComponents;
@@ -72,7 +72,7 @@ public class BiologyDictionaryItem {
 
     private static CompoundTag initIdTag() {
         CompoundTag tag = new CompoundTag();
-        tag.putString(ID, DevApi.getModVersion(BiologyDictionary.MOD_ID));
+        tag.putString(ID, DevUtils.getModVersion(BiologyDictionary.MOD_ID));
         return tag;
     }
 

@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.platform.access;
+package io.github.xienaoban.minecraft.biologydictionary.util;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.EntityIMixin;
 import net.minecraft.world.entity.Entity;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class EntityApi {
+public final class EntityUtils {
     public static void init() {
         AutoGenEntityDeobfuscation.map.get(null);
     }
