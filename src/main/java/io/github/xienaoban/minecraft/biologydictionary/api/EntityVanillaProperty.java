@@ -6,7 +6,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
-public interface EntityVanillaProperty<E extends Entity>  {
+public interface EntityVanillaProperty<E extends Entity> {
     void readFrom(CompoundTag vanillaNbt);
     void writeTo(CompoundTag vanillaNbt);
+
+    @interface Property {
+        String value();
+    }
 }

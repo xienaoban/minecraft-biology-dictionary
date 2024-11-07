@@ -167,6 +167,7 @@ public class ReadAdditionalNbtVisitor extends AbstractVisitorWrapper<Void> {
                         IntegerLiteralExpr integerLiteralExpr = second.asIntegerLiteralExpr();
                         FieldAccessExpr tag = new FieldAccessExpr(new NameExpr(Tag.class.getSimpleName()), TagMap.getByValue(integerLiteralExpr.asNumber().intValue()).getField());
                         n.getArguments().set(1, tag);
+                        ctx.getTargetCompilationUnit().addImport(Tag.class);
                     }
                     if (isGetter(methodName)) {
                         Expression first = arguments.get(0);
