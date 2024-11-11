@@ -1,8 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util;
 
 import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.GuiGraphicsIMixin;
@@ -11,7 +10,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -22,6 +21,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+
+import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public final class ScreenRenderingContext {
@@ -66,13 +67,19 @@ public final class ScreenRenderingContext {
     public boolean isDebug()            { return debug; }
     public void setDebug(boolean debug) { this.debug = debug; }
 
+    public MultiBufferSource.BufferSource getBufferSource() {
+        return ((GuiGraphicsIMixin) getGuiGraphics()).getBufferSource();
+    }
+
     public ScaleRAII scaleOnce(float size) {
         return new ScaleRAII(this, size);
     }
 
+    /**
+     * @see net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip#renderText(net.minecraft.client.gui.Font, int, int, org.joml.Matrix4f, net.minecraft.client.renderer.MultiBufferSource.BufferSource)
+     */
     public void renderText(Component component, int color, float x, float y) {
-        getFont().drawInBatch(component.getVisualOrderText(), x, y, color, false, getGuiGraphics().pose().last().pose(), getGuiGraphics().bufferSource(), Font.DisplayMode.NORMAL, 0, 0xF000F0);
-        ((GuiGraphicsIMixin) getGuiGraphics()).callFlushIfUnmanaged();
+        getFont().drawInBatch(component.getVisualOrderText(), x, y, color, false, getGuiGraphics().pose().last().pose(), getBufferSource(), Font.DisplayMode.NORMAL, 0, 0xF000F0);
     }
 
     public void renderText(Component component, int color, float size, float x, float y) {
@@ -118,12 +125,11 @@ public final class ScreenRenderingContext {
      */
     public void renderRectangle(int color, float z, float left, float top, float right, float bottom) {
         Matrix4f matrix4f = getGuiGraphics().pose().last().pose();
-        VertexConsumer vertexConsumer = getGuiGraphics().bufferSource().getBuffer(RenderType.gui());
+        VertexConsumer vertexConsumer = getBufferSource().getBuffer(RenderType.gui());
         vertexConsumer.addVertex(matrix4f, left, top, z).setColor(color);
         vertexConsumer.addVertex(matrix4f, left, bottom, z).setColor(color);
         vertexConsumer.addVertex(matrix4f, right, bottom, z).setColor(color);
         vertexConsumer.addVertex(matrix4f, right, top, z).setColor(color);
-        ((GuiGraphicsIMixin) getGuiGraphics()).callFlushIfUnmanaged();
         /*
         Another choice is:
         getGuiGraphics().fill((int) left, (int) top, (int) right, (int) bottom, (int) z, color);
@@ -140,7 +146,7 @@ public final class ScreenRenderingContext {
     }
 
     /**
-     * @see net.minecraft.client.gui.GuiGraphics#innerBlit(ResourceLocation, int, int, int, int, int, float, float, float, float)
+     * @see net.minecraft.client.gui.GuiGraphics#innerBlit(Function, ResourceLocation, int, int, int, int, float, float, float, float, int)
      */
     public void renderTexture(TextureInfo texture,
                               float textureLeft, float textureTop, float textureRight, float textureBottom,
@@ -149,22 +155,14 @@ public final class ScreenRenderingContext {
         float uvTop = textureTop / texture.height();
         float uvRight = textureRight / texture.width();
         float uvBottom = textureBottom / texture.height();
-        RenderSystem.setShaderTexture(0, texture.location());
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+
+        RenderType renderType = RenderType.guiTextured(texture.location());
         Matrix4f matrix4f = getGuiGraphics().pose().last().pose();
-        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.addVertex(matrix4f, left, top, z).setUv(uvLeft, uvTop);
-        bufferBuilder.addVertex(matrix4f, left, bottom, z).setUv(uvLeft, uvBottom);
-        bufferBuilder.addVertex(matrix4f, right, bottom, z).setUv(uvRight, uvBottom);
-        bufferBuilder.addVertex(matrix4f, right, top, z).setUv(uvRight, uvTop);
-        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
-        /*
-        Another choice is:
-        ((GuiGraphicsIMixin) getGuiGraphics()).callInnerBlit(texture, (int) left, (int) right, (int) top, (int) bottom, (int) z,
-                textureLeft / resourceWidth, textureRight / resourceWidth,
-                textureTop / resourceHeight, textureBottom / resourceHeight);
-        But it only supports `int`.
-        */
+        VertexConsumer vertexConsumer = getBufferSource().getBuffer(renderType).setColor(-1);
+        vertexConsumer.addVertex(matrix4f, left,  top,    z).setUv(uvLeft,  uvTop).setColor(-1);
+        vertexConsumer.addVertex(matrix4f, left,  bottom, z).setUv(uvLeft,  uvBottom).setColor(-1);
+        vertexConsumer.addVertex(matrix4f, right, bottom, z).setUv(uvRight, uvBottom).setColor(-1);
+        vertexConsumer.addVertex(matrix4f, right, top,    z).setUv(uvRight, uvTop).setColor(-1);
     }
 
     public void renderItem(ItemStack itemStack, float left, float top) {
@@ -197,7 +195,9 @@ public final class ScreenRenderingContext {
         Lighting.setupForEntityInInventory();
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         entityRenderDispatcher.setRenderShadow(false);
-        entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 0.0f, 1.0f, guiGraphics.pose(), guiGraphics.bufferSource(), 0xF000F0);
+        guiGraphics.drawSpecial(
+                multiBufferSource -> entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 1.0F, guiGraphics.pose(), multiBufferSource, 15728880)
+        );
         guiGraphics.flush();
         entityRenderDispatcher.setRenderShadow(true);
         guiGraphics.pose().popPose();

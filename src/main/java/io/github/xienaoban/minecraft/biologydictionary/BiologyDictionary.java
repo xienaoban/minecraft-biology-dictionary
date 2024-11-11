@@ -28,7 +28,9 @@ public class BiologyDictionary {
 
         ServerEventRegistry.registerStarted(servers::add);
         ServerEventRegistry.registerStopping(servers::remove);
+
         ServerEventRegistry.registerStarted(server -> EntityManager.init());
+        ServerEventRegistry.registerStopping(server -> EntityManager.deinit());
 
         LOGGER.info("BiologyDictionary initialized.");
     }

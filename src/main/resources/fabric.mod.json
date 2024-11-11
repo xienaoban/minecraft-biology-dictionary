@@ -26,8 +26,8 @@
     "biologydictionary.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.7",
+    "fabricloader": ">=0.16.9",
     "fabric": "*",
-    "minecraft": "1.21.1"
+    "minecraft": "1.21.3"
   }
 }

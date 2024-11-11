@@ -19,6 +19,10 @@ final class AutoGenEntityDeobfuscation {
         /*--------*/ f(net.minecraft.world.entity.monster.Phantom.class, "net.minecraft.world.entity.monster.Phantom");
         /*------*/ f(net.minecraft.world.entity.PathfinderMob.class, "net.minecraft.world.entity.PathfinderMob");
         /*--------*/ f(net.minecraft.world.entity.AgeableMob.class, "net.minecraft.world.entity.AgeableMob");
+        /*----------*/ f(net.minecraft.world.entity.animal.AgeableWaterCreature.class, "net.minecraft.world.entity.animal.AgeableWaterCreature");
+        /*------------*/ f(net.minecraft.world.entity.animal.Dolphin.class, "net.minecraft.world.entity.animal.Dolphin");
+        /*------------*/ f(net.minecraft.world.entity.animal.Squid.class, "net.minecraft.world.entity.animal.Squid");
+        /*--------------*/ f(net.minecraft.world.entity.GlowSquid.class, "net.minecraft.world.entity.GlowSquid");
         /*----------*/ f(net.minecraft.world.entity.animal.Animal.class, "net.minecraft.world.entity.animal.Animal");
         /*------------*/ f(net.minecraft.world.entity.TamableAnimal.class, "net.minecraft.world.entity.TamableAnimal");
         /*--------------*/ f(net.minecraft.world.entity.animal.Cat.class, "net.minecraft.world.entity.animal.Cat");
@@ -69,9 +73,6 @@ final class AutoGenEntityDeobfuscation {
         /*--------------*/ f(net.minecraft.world.entity.animal.TropicalFish.class, "net.minecraft.world.entity.animal.TropicalFish");
         /*------------*/ f(net.minecraft.world.entity.animal.Pufferfish.class, "net.minecraft.world.entity.animal.Pufferfish");
         /*------------*/ f(net.minecraft.world.entity.animal.frog.Tadpole.class, "net.minecraft.world.entity.animal.frog.Tadpole");
-        /*----------*/ f(net.minecraft.world.entity.animal.Dolphin.class, "net.minecraft.world.entity.animal.Dolphin");
-        /*----------*/ f(net.minecraft.world.entity.animal.Squid.class, "net.minecraft.world.entity.animal.Squid");
-        /*------------*/ f(net.minecraft.world.entity.GlowSquid.class, "net.minecraft.world.entity.GlowSquid");
         /*--------*/ f(net.minecraft.world.entity.animal.allay.Allay.class, "net.minecraft.world.entity.animal.allay.Allay");
         /*--------*/ f(net.minecraft.world.entity.monster.Monster.class, "net.minecraft.world.entity.monster.Monster");
         /*----------*/ f(net.minecraft.world.entity.boss.wither.WitherBoss.class, "net.minecraft.world.entity.boss.wither.WitherBoss");
@@ -108,6 +109,8 @@ final class AutoGenEntityDeobfuscation {
         /*------------*/ f(net.minecraft.world.entity.monster.ZombieVillager.class, "net.minecraft.world.entity.monster.ZombieVillager");
         /*------------*/ f(net.minecraft.world.entity.monster.ZombifiedPiglin.class, "net.minecraft.world.entity.monster.ZombifiedPiglin");
         /*----------*/ f(net.minecraft.world.entity.monster.breeze.Breeze.class, "net.minecraft.world.entity.monster.breeze.Breeze");
+        /*----------*/ f(net.minecraft.world.entity.monster.creaking.Creaking.class, "net.minecraft.world.entity.monster.creaking.Creaking");
+        /*------------*/ f(net.minecraft.world.entity.monster.creaking.CreakingTransient.class, "net.minecraft.world.entity.monster.creaking.CreakingTransient");
         /*----------*/ f(net.minecraft.world.entity.monster.piglin.AbstractPiglin.class, "net.minecraft.world.entity.monster.piglin.AbstractPiglin");
         /*------------*/ f(net.minecraft.world.entity.monster.piglin.Piglin.class, "net.minecraft.world.entity.monster.piglin.Piglin");
         /*------------*/ f(net.minecraft.world.entity.monster.piglin.PiglinBrute.class, "net.minecraft.world.entity.monster.piglin.PiglinBrute");
@@ -120,7 +123,6 @@ final class AutoGenEntityDeobfuscation {
         /*----*/ f(net.minecraft.world.entity.decoration.ArmorStand.class, "net.minecraft.world.entity.decoration.ArmorStand");
 
         // interfaces
-        f(net.minecraft.commands.CommandSource.class, "net.minecraft.commands.CommandSource");
         f(net.minecraft.network.syncher.SyncedDataHolder.class, "net.minecraft.network.syncher.SyncedDataHolder");
         f(net.minecraft.world.ContainerListener.class, "net.minecraft.world.ContainerListener");
         f(net.minecraft.world.Nameable.class, "net.minecraft.world.Nameable");
@@ -129,11 +131,9 @@ final class AutoGenEntityDeobfuscation {
         f(net.minecraft.world.entity.HasCustomInventoryScreen.class, "net.minecraft.world.entity.HasCustomInventoryScreen");
         f(net.minecraft.world.entity.ItemSteerable.class, "net.minecraft.world.entity.ItemSteerable");
         f(net.minecraft.world.entity.Leashable.class, "net.minecraft.world.entity.Leashable");
-        f(net.minecraft.world.entity.LerpingModel.class, "net.minecraft.world.entity.LerpingModel");
         f(net.minecraft.world.entity.NeutralMob.class, "net.minecraft.world.entity.NeutralMob");
         f(net.minecraft.world.entity.OwnableEntity.class, "net.minecraft.world.entity.OwnableEntity");
         f(net.minecraft.world.entity.PlayerRideableJumping.class, "net.minecraft.world.entity.PlayerRideableJumping");
-        f(net.minecraft.world.entity.PowerableMob.class, "net.minecraft.world.entity.PowerableMob");
         f(net.minecraft.world.entity.ReputationEventHandler.class, "net.minecraft.world.entity.ReputationEventHandler");
         f(net.minecraft.world.entity.Saddleable.class, "net.minecraft.world.entity.Saddleable");
         f(net.minecraft.world.entity.Shearable.class, "net.minecraft.world.entity.Shearable");
@@ -149,6 +149,7 @@ final class AutoGenEntityDeobfuscation {
         f(net.minecraft.world.entity.npc.InventoryCarrier.class, "net.minecraft.world.entity.npc.InventoryCarrier");
         f(net.minecraft.world.entity.npc.Npc.class, "net.minecraft.world.entity.npc.Npc");
         f(net.minecraft.world.entity.npc.VillagerDataHolder.class, "net.minecraft.world.entity.npc.VillagerDataHolder");
+        f(net.minecraft.world.item.component.Consumable.OverrideConsumeSound.class, "net.minecraft.world.item.component.Consumable$OverrideConsumeSound");
         f(net.minecraft.world.item.trading.Merchant.class, "net.minecraft.world.item.trading.Merchant");
         f(net.minecraft.world.level.entity.EntityAccess.class, "net.minecraft.world.level.entity.EntityAccess");
         f(net.minecraft.world.level.gameevent.vibrations.VibrationSystem.class, "net.minecraft.world.level.gameevent.vibrations.VibrationSystem");

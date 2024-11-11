@@ -35,7 +35,7 @@ public final class EntityImageWidget extends EntityPropertyWidget<Entity> {
     }
 
     private static Entity createFakeEntity(Entity entity) {
-        Entity fake = entity.getType().create(entity.level());
+        Entity fake = entity.getType().create(entity.level(), null);
         if (fake == null) {
             if (entity instanceof LocalPlayer me) {
                 GameProfile profile = me.getGameProfile();
@@ -45,7 +45,7 @@ public final class EntityImageWidget extends EntityPropertyWidget<Entity> {
                 Vec3 pos = fake.position();
                 fake.setPos(pos.x(), pos.y() - 4097, pos.z());
             } else {
-                fake = EntityType.ARMOR_STAND.create(entity.level());
+                fake = EntityType.ARMOR_STAND.create(entity.level(), null);
             }
         }
         assert fake != null;

@@ -17,14 +17,28 @@ import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.
 import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
 
 public final class EntityManager {
-    private static final EntityManager instance = new EntityManager(getTempLevel());
+    private static EntityManager instance = null;
 
     /**
      * Don't invoke it before joining a world because we need a minecraft level.
      */
-    public static EntityManager getInstance() { return instance; }
+    public static EntityManager getInstance() {
+        return instance;
+    }
 
-    public static void init() {}
+    public static void init() {
+        synchronized (EntityManager.class) {
+            if (instance != null) throw new AssertionError("EntityManager is null?!");
+            instance = new EntityManager(getTempLevel());
+        }
+    }
+
+    public static void deinit() {
+        synchronized (EntityManager.class) {
+            // if (instance == null) throw new AssertionError("EntityManager is not null?!");
+            instance = null;
+        }
+    }
 
     /**
      * Get my preferred order of the vanilla entity.
@@ -68,9 +82,11 @@ public final class EntityManager {
         tree.put(Entity.class, new EntityTreeNode());
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
             EntityClassInfo entityClassInfo;
-            try { entityClassInfo = new EntityClassInfo(entityType, level); }
-            catch (NotLivingEntityException ignored) { continue; }
-            catch (Exception e) {
+            try {
+                Optional<EntityClassInfo> o = EntityClassInfo.create(entityType, level);
+                if (o.isEmpty()) continue;
+                entityClassInfo = o.get();
+            } catch (Exception e) {
                 LOGGER.error("Cannot init EntityClassInfo of\"" + EntityType.getKey(entityType) + "\": " + e);
                 throw e;
             }
@@ -187,23 +203,29 @@ public final class EntityManager {
     }
 
     public static class EntityClassInfo implements Comparable<EntityClassInfo> {
+        public static Optional<EntityClassInfo> create(EntityType<?> entityType, Level level) {
+            Entity entity = entityType.create(level, null);
+            if (entity == null) {
+                if (entityType == EntityType.PLAYER) return Optional.empty();
+                if (!entityType.isEnabled(level.enabledFeatures())) return Optional.empty();
+                String name = EntityType.getKey(entityType).toString();
+                throw new NullPointerException("Failed to create \"" + name + "\".");
+            } else if (!(entity instanceof LivingEntity)) {
+                return Optional.empty();
+            }
+            return Optional.of(new EntityClassInfo(entityType, entity));
+        }
+
         private final EntityType<?> type;
         private final Class<? extends Entity> clazz;
         private final Entity instance;
         private final List<Tag> tags;
         private int sortId;
 
-        public EntityClassInfo(EntityType<?> entityType, Level level) {
+        private EntityClassInfo(EntityType<?> entityType, Entity entity) {
             type = entityType;
-            Entity entity = type.create(level);
             // Do not assign it for now to prevent memory leak because of the client level.
             instance = null;
-            if (!(entity instanceof LivingEntity)) {
-                String name = EntityType.getKey(getType()).toString();
-                if (entity != null) throw new NotLivingEntityException(name);
-                if (type == EntityType.PLAYER) throw new NotLivingEntityException(name);
-                throw new NullPointerException("Failed to create \"" + name + "\".");
-            }
             clazz = entity.getClass();
             tags = new ArrayList<>();
         }
@@ -380,11 +402,5 @@ public final class EntityManager {
         }
 
         boolean execute(E cur, int depth);
-    }
-
-    private static class NotLivingEntityException extends RuntimeException {
-        public NotLivingEntityException(String entityName) {
-            super("\"" + entityName + "\" is not a LivingEntity!");
-        }
     }
 }

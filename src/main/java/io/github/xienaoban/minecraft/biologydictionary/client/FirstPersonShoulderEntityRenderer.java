@@ -7,12 +7,12 @@ import io.github.xienaoban.minecraft.biologydictionary.platform.client.Rendering
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 
 import java.util.Optional;
 
@@ -32,6 +32,10 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
     private final long[] nextHeadYawTime = new long[2];
     private long lastTime;
 
+    /**
+     * @see ItemInHandRenderer#renderPlayerArm(PoseStack, MultiBufferSource, int, float, float, HumanoidArm)
+     * @see EntityRenderDispatcher#render(Entity, double, double, double, float, PoseStack, MultiBufferSource, int, EntityRenderer)
+     */
     @Override
     public void run(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LocalPlayer player, int light) {
         String tmp = "BOTTOM";
@@ -68,7 +72,7 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
             poseStack.mulPose(Axis.ZP.rotation(hudPos.zRot()));
             poseStack.translate(pos * hudPos.xPos(), hudPos.yPos() + player.getXRot() * hudPos.yOffset(), hudPos.zPos());
             entityRenderDispatcher.setRenderShadow(false);
-            entityRenderDispatcher.render(entity, 0, 0, 0, 0, 1.0F, poseStack, bufferSource, light);
+            entityRenderDispatcher.render(entity, 0, 0, 0, 1.0F, poseStack, bufferSource, light);
             entityRenderDispatcher.setRenderShadow(true);
             poseStack.popPose();
         }
@@ -80,7 +84,7 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
         LivingEntity entity;
         if (nbt == null || nbt.isEmpty()) entity = null;
         else {
-            Optional<Entity> optionalEntity = EntityType.create(nbt, player.level());
+            Optional<Entity> optionalEntity = EntityType.create(nbt, player.level(), null);
             if (optionalEntity.isEmpty()) entity = null;
             else {
                 entity = (LivingEntity) optionalEntity.get();

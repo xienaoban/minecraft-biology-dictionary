@@ -101,7 +101,7 @@ public class VanillaEntityTest implements FabricGameTest {
             if (!MinecraftUtils.isVanillaClass(clazz)) return true;
 
             out.println(space + "/*" + "-".repeat(depth * 2) + "*/ "
-                    + "f(" + clazz.getName() + ".class, \""
+                    + "f(" + clazz.getName().replace('$', '.') + ".class, \""
                     + clazz.getName() + "\");");
             for (Class<?> interfaze : clazz.getInterfaces()) {
                 if (MinecraftUtils.isVanillaClass(interfaze)) {
@@ -114,7 +114,7 @@ public class VanillaEntityTest implements FabricGameTest {
         out.println();
         out.println(space + "// interfaces");
         interfazes.stream().sorted(Comparator.comparing(Class::getName)).forEach(clazz ->
-                out.println(space + "f(" + clazz.getName() + ".class, \"" + clazz.getName() + "\");")
+                out.println(space + "f(" + clazz.getName().replace('$', '.') + ".class, \"" + clazz.getName() + "\");")
         );
     }
 }
