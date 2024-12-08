@@ -1,13 +1,11 @@
 package io.github.xienaoban.minecraft.biologydictionary.core;
 
 import io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.minecraft.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.MinecraftMixin;
+import io.github.xienaoban.minecraft.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -40,7 +38,6 @@ public class BiologyDictionaryItem {
 
     public static ItemStack createBook() {
         return createWritableBook();
-        // return createWrittenPages();
     }
 
     public static boolean isBook(ItemStack stack) {
@@ -53,7 +50,7 @@ public class BiologyDictionaryItem {
         ItemStack stack = new ItemStack(Items.WRITABLE_BOOK);
 
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(ID_TAG));
-        stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(14489768));
+        stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of("biologydictionary:handbook"), List.of()));
         stack.set(DataComponents.ITEM_NAME, Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE).withStyle(
                 Style.EMPTY.withColor(TextColor.parseColor("aqua").getOrThrow())
                         .withBold(true).withItalic(false)
@@ -76,7 +73,6 @@ public class BiologyDictionaryItem {
         return tag;
     }
 
-    @SuppressWarnings("unused")
     private static String createWritablePageString() {
         return """
                 §l%s§2§l%s
@@ -90,51 +86,6 @@ public class BiologyDictionaryItem {
                         trans(TranslationKeys.BIOLOGY_DICTIONARY),
                         trans(TranslationKeys.TEXT_MOD_NOT_INSTALLED),
                         BiologyDictionary.MODRINTH_PAGE);
-    }
-
-    @SuppressWarnings("unused")
-    private static ListTag createWrittenPages() {
-        String page0Json = """
-                [
-                    {
-                        "text": "%s",
-                        "color": "black",
-                        "bold": true
-                    },
-                    {
-                        "text": "%s",
-                        "color": "dark_green",
-                        "bold": true
-                    },
-                    "\\n\\n",
-                    {
-                        "text": "%s",
-                        "color": "black",
-                        "bold": false
-                    },
-                    "\\n\\n",
-                    {
-                        "text": "[ Github ]",
-                        "color": "blue",
-                        "bold": false,
-                        "underlined": true,
-                        "clickEvent": {
-                            "action": "open_url",
-                            "value": "%s"
-                        },
-                        "hoverEvent": {
-                            "action": "show_text",
-                            "contents": {
-                                "text": "%s"
-                            }
-                        }
-                    }
-                ]
-                """
-                .formatted(trans(TranslationKeys.TEXT_MOD_NAME_IS), trans(TranslationKeys.BIOLOGY_DICTIONARY), trans(TranslationKeys.TEXT_MOD_NOT_INSTALLED), BiologyDictionary.MODRINTH_PAGE, trans(TranslationKeys.TEXT_CLICK_ME_TO_DOWNLOAD));
-        ListTag pages = new ListTag();
-        pages.add(StringTag.valueOf(page0Json));
-        return pages;
     }
 
     /**

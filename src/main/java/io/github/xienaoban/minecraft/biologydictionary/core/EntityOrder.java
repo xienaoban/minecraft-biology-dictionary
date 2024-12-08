@@ -80,7 +80,6 @@ final class EntityOrder {
         f(EntityType.GUARDIAN);
         f(EntityType.ELDER_GUARDIAN);
         f(EntityType.SLIME);
-        f(EntityType.CREAKING_TRANSIENT);
         f(EntityType.CREAKING);
         f(EntityType.SLIME);
         f(EntityType.MAGMA_CUBE);

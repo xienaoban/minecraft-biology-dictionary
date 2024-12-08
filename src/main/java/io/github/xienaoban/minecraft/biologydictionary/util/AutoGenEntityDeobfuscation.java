@@ -110,7 +110,6 @@ final class AutoGenEntityDeobfuscation {
         /*------------*/ f(net.minecraft.world.entity.monster.ZombifiedPiglin.class, "net.minecraft.world.entity.monster.ZombifiedPiglin");
         /*----------*/ f(net.minecraft.world.entity.monster.breeze.Breeze.class, "net.minecraft.world.entity.monster.breeze.Breeze");
         /*----------*/ f(net.minecraft.world.entity.monster.creaking.Creaking.class, "net.minecraft.world.entity.monster.creaking.Creaking");
-        /*------------*/ f(net.minecraft.world.entity.monster.creaking.CreakingTransient.class, "net.minecraft.world.entity.monster.creaking.CreakingTransient");
         /*----------*/ f(net.minecraft.world.entity.monster.piglin.AbstractPiglin.class, "net.minecraft.world.entity.monster.piglin.AbstractPiglin");
         /*------------*/ f(net.minecraft.world.entity.monster.piglin.Piglin.class, "net.minecraft.world.entity.monster.piglin.Piglin");
         /*------------*/ f(net.minecraft.world.entity.monster.piglin.PiglinBrute.class, "net.minecraft.world.entity.monster.piglin.PiglinBrute");
