@@ -40,7 +40,8 @@ dependencies {
 
     testGameImplementation "com.github.javaparser:javaparser-symbol-solver-core:${project.javaparser_version}"
     testGameImplementation "org.bitbucket.mstrobel:procyon-compilertools:${project.procyon_version}"
-    testGameImplementation "org.jboss.windup.decompiler:decompiler-fernflower:${project.fernflower_version}"
+    testGameImplementation "org.vineflower:vineflower:${vineflower_version}"
+    // testGameImplementation "org.jboss.windup.decompiler:decompiler-fernflower:${project.fernflower_version}"
     // testGameImplementation "org.jetbrains:intellij-fernflower:1.2.1.16"
     // testGameImplementation "net.fabricmc:fabric-fernflower:2.0.0"
 }

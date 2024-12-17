@@ -21,8 +21,14 @@ import java.util.Objects;
 import java.util.jar.Manifest;
 import java.util.stream.IntStream;
 
-public final class Decompiler {
+public final class BytecodeDecompiler {
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private enum Tool {
+        Procyon, Fernflower, Cfr
+    }
+
+    private static final Tool TOOL = Tool.Procyon;
 
     /**
      * Decompile the class bytecode to java source code.
@@ -30,8 +36,11 @@ public final class Decompiler {
      */
     public static String decompile(Class<?> clazz) {
         // Procyon is better than Fernflower here according to my test.
-        // String source =  decompileByFernflower(clazz);
-        String source = decompileByProcyon(clazz);
+        String source = switch (TOOL) {
+            case Procyon -> decompileByProcyon(clazz);
+            case Fernflower -> decompileByFernflower(clazz);
+            default -> throw new AssertionError();
+        };
         return preprocess(clazz, source);
     }
 
@@ -108,8 +117,8 @@ public final class Decompiler {
         options.put(IFernflowerPreferences.LOG_LEVEL, IFernflowerLogger.Severity.INFO.name());
 
         Fernflower fernflower = new Fernflower(bytecodeProvider, resultSaver, options, logger);
-        // fernflower.addSource(new File("ThisArgIsUselessHere", getClassPath(clazz))); // for older version
-        fernflower.getStructContext().addSpace(new File("ThisArgIsUselessHere", getClassPath(clazz)), true);
+        fernflower.addSource(new File("ThisArgIsUselessHere", getClassPath(clazz))); // for older version
+        // fernflower.getStructContext().addSpace(new File("ThisArgIsUselessHere", getClassPath(clazz)), true);
         fernflower.decompileContext();
 
         return resultSaver.toString();
@@ -140,6 +149,16 @@ public final class Decompiler {
                     """;
             String to = """
                                 super(cat, class_, f, d, e, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
+                    """;
+            source = source.replace(from, to);
+        } else if (clazz == net.minecraft.world.entity.animal.Ocelot.class) {
+            String from = """
+                                final Predicate<Entity> no_CREATIVE_OR_SPECTATOR = EntitySelector.NO_CREATIVE_OR_SPECTATOR;
+                                Objects.requireNonNull(no_CREATIVE_OR_SPECTATOR);
+                                super(ocelot, class_, f, d, e, (Predicate<LivingEntity>)no_CREATIVE_OR_SPECTATOR::test);
+                    """;
+            String to = """
+                                super(ocelot, class_, f, d, e, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
                     """;
             source = source.replace(from, to);
         }

@@ -181,7 +181,7 @@ public final class AdditionalNbtMethodsVisitor extends VoidVisitorAdapter<Void> 
                     StringLiteralExpr stringLiteralExpr = first.asStringLiteralExpr();
 
                     String propertyName = stringLiteralExpr.getValue();
-                    TagMap propertyType = TagMap.getByMethodGet(methodName);
+                    TagMap propertyType = TagMap.getByGetter(methodName);
                     TagMap propertyTypeOld = getPropertyClazzElements(propertyName).getFieldTag();
                     if (propertyTypeOld == null) getPropertyClazzElements(propertyName).setFieldTag(propertyType);
                     else if (propertyTypeOld != propertyType) {

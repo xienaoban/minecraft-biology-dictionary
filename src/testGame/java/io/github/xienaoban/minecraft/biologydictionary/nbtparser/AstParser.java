@@ -12,7 +12,8 @@ import java.util.Optional;
 public final class AstParser {
 
     public static CompilationUnit generateAst(Class<?> clazz) {
-        String source = Decompiler.decompile(clazz);
+        String source = BytecodeDecompiler.decompile(clazz);
+        System.out.println(BytecodeDecompiler.addLineNumber(source));
         return generateAst(source);
     }
 

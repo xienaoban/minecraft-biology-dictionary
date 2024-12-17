@@ -28,7 +28,8 @@ public enum TagMap {
     ANY           (/* value */ -1      , null              , "get"          , "put"          );
 
     private static final Map<Integer, TagMap> byValue = createMapByValue();
-    private static final Map<String, TagMap> byMethodGet = createMapByMethodGet();
+    private static final Map<String, TagMap> byGetter = createMapByGetter();
+    private static final Map<String, TagMap> byPutter = createMapByPutter();
 
     public static TagMap getByValue(int v) {
         TagMap res = byValue.get(v);
@@ -36,8 +37,16 @@ public enum TagMap {
         return res;
     }
 
-    public static TagMap getByMethodGet(String methodName) {
-        TagMap res = byMethodGet.get(methodName);
+    public static TagMap getByGetter(String methodName) {
+        if (methodName == null) return null;
+        TagMap res = byGetter.get(methodName);
+        if (res == null) throw new AssertionError(methodName);
+        return res;
+    }
+
+    public static TagMap getByPutter(String methodName) {
+        if (methodName == null) return null;
+        TagMap res = byPutter.get(methodName);
         if (res == null) throw new AssertionError(methodName);
         return res;
     }
@@ -50,37 +59,45 @@ public enum TagMap {
         return res;
     }
 
-    private static Map<String, TagMap> createMapByMethodGet() {
+    private static Map<String, TagMap> createMapByGetter() {
         HashMap<String, TagMap> res = new HashMap<>();
         for (TagMap e : values()) {
-            if (e.methodGet != null) res.put(e.methodGet, e);
+            if (e.getter != null) res.put(e.getter, e);
+        }
+        return res;
+    }
+
+    private static Map<String, TagMap> createMapByPutter() {
+        HashMap<String, TagMap> res = new HashMap<>();
+        for (TagMap e : values()) {
+            if (e.putter != null) res.put(e.putter, e);
         }
         return res;
     }
 
     private final int value;
     private final String field;
-    private final String methodGet;
-    private final String methodPut;
+    private final String getter;
+    private final String putter;
     private final Class<?> type;
 
-    TagMap(int value, String field, String methodGet, String methodPut) {
+    TagMap(int value, String field, String getter, String putter) {
         this.value = value;
         this.field = field;
-        this.methodGet = methodGet;
-        this.methodPut = methodPut;
+        this.getter = getter;
+        this.putter = putter;
         try {
-            if (methodGet == null) {
+            if (getter == null) {
                 type = null;
             } else if (value == Tag.TAG_LIST) {
-                Method m = CompoundTag.class.getMethod(methodGet, String.class, int.class);
+                Method m = CompoundTag.class.getMethod(getter, String.class, int.class);
                 type = m.getReturnType();
             } else {
-                Method m = CompoundTag.class.getMethod(methodGet, String.class);
+                Method m = CompoundTag.class.getMethod(getter, String.class);
                 type = m.getReturnType();
             }
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException(methodGet, e);
+            throw new RuntimeException(getter, e);
         }
     }
 
@@ -92,15 +109,36 @@ public enum TagMap {
         return field;
     }
 
-    public String getMethodGet() {
-        return methodGet;
+    public String getGetter() {
+        return getter;
     }
 
-    public String getMethodPut() {
-        return methodPut;
+    public String getPutter() {
+        return putter;
     }
 
     public Class<?> getType() {
         return type;
+    }
+
+    public boolean isNumeric() {
+        return switch (this) {
+            case BOOLEAN, BYTE, SHORT, INT, LONG, FLOAT, DOUBLE -> true;
+            default -> false;
+        };
+    }
+
+    public boolean isList() {
+        return this != removeList();
+    }
+
+    public TagMap removeList() {
+        return switch (this) {
+            case LIST        -> ANY;
+            case LONG_ARRAY  -> LONG;
+            case INT_ARRAY   -> INT;
+            case BYTE_ARRAY  -> BYTE;
+            default -> this;
+        };
     }
 }
