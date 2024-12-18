@@ -141,27 +141,39 @@ public final class BytecodeDecompiler {
      * Do some tricky processing on the source code to avoid Java Parser parsing failures.
      */
     private static String preprocess(Class<?> clazz, String source) {
-        if (clazz == net.minecraft.world.entity.animal.Cat.class) {
-            String from = """
-                                final Predicate<Entity> no_CREATIVE_OR_SPECTATOR = EntitySelector.NO_CREATIVE_OR_SPECTATOR;
-                                Objects.requireNonNull(no_CREATIVE_OR_SPECTATOR);
-                                super(cat, class_, f, d, e, (Predicate<LivingEntity>)no_CREATIVE_OR_SPECTATOR::test);
-                    """;
-            String to = """
-                                super(cat, class_, f, d, e, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
-                    """;
-            source = source.replace(from, to);
-        } else if (clazz == net.minecraft.world.entity.animal.Ocelot.class) {
-            String from = """
-                                final Predicate<Entity> no_CREATIVE_OR_SPECTATOR = EntitySelector.NO_CREATIVE_OR_SPECTATOR;
-                                Objects.requireNonNull(no_CREATIVE_OR_SPECTATOR);
-                                super(ocelot, class_, f, d, e, (Predicate<LivingEntity>)no_CREATIVE_OR_SPECTATOR::test);
-                    """;
-            String to = """
-                                super(ocelot, class_, f, d, e, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
-                    """;
-            source = source.replace(from, to);
-        }
+        /*
+        ```java
+        final Predicate<Entity> no_CREATIVE_OR_SPECTATOR = EntitySelector.NO_CREATIVE_OR_SPECTATOR;
+        Objects.requireNonNull(no_CREATIVE_OR_SPECTATOR);
+        super(cat, class_, f, d, e, (Predicate<LivingEntity>)no_CREATIVE_OR_SPECTATOR::test);
+        ```
+        to
+        ```java
+        super(cat, class_, f, d, e, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
+        ```
+         */
+        source = source.replaceAll(
+                "final Predicate<Entity>.+\n +Objects.requireNonNull.+\n +super",
+                "super"
+        );
+        source = source.replaceAll(
+                ", class_, f, d, e, \\(Predicate<LivingEntity>\\).+::test\\);",
+                ", class_, f, d, e, EntitySelector.PLACEHOLDER::test);"
+        );
+
+        /*
+        ```java
+        public enum ArmadilloState implements StringRepresentable permits Armadillo$ArmadilloState$1, Armadillo$ArmadilloState$2, Armadillo$ArmadilloState$3, Armadillo$ArmadilloState$4
+        ```
+        to
+        ```java
+        public enum ArmadilloState implements StringRepresentable
+        ```
+         */
+        source = source.replaceAll(
+                " permits [^{]+",
+                " "
+        );
         return source;
     }
 }

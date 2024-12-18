@@ -26,13 +26,13 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         collector.visit(source, null);
 
         LOGGER.info("NBT tags of entity " + entityClazz + ":");
-        for (var e : collector.propertyElements.entrySet()) {
-            PropertyInfo pi = e.getValue();
+        for (var e : collector.nbtTags.entrySet()) {
+            NbtTagInfo pi = e.getValue();
             LOGGER.info(" - \"" + e.getKey() + "\": " + pi);
         }
         for (var e : collector.conflicts.entrySet()) {
-            Set<PropertyInfo> pis = e.getValue();
-            LOGGER.info(" - !\"" + e.getKey() + "\": " + pis.stream().map(PropertyInfo::getTypeString).toList());
+            Set<NbtTagInfo> pis = e.getValue();
+            LOGGER.info(" - !\"" + e.getKey() + "\": " + pis.stream().map(NbtTagInfo::getTypeString).toList());
         }
         LOGGER.info("");
 
@@ -52,8 +52,8 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     }
 
     private final Class<? extends Entity> entityClazz;
-    private final Map<String, PropertyInfo> propertyElements = new HashMap<>();
-    private final Map<String, Set<PropertyInfo>> conflicts = new HashMap<>();
+    private final Map<String, NbtTagInfo> nbtTags = new HashMap<>();
+    private final Map<String, Set<NbtTagInfo>> conflicts = new HashMap<>();
 
     private MethodDeclaration currentMethod;
 
@@ -77,13 +77,13 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                 try {
                     LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
                     NodeList<Expression> arguments = n.getArguments();
-                    String propertyName = arguments.get(0).asStringLiteralExpr().getValue();
+                    String nbtTagName = arguments.get(0).asStringLiteralExpr().getValue();
                     if (methodName.startsWith("get")) {
-                        parseGetter(propertyName, methodName, arguments);
+                        parseGetter(nbtTagName, methodName, arguments);
                     } else if (methodName.startsWith("put")) {
-                        parsePutter(propertyName, methodName, arguments);
+                        parsePutter(nbtTagName, methodName, arguments);
                     } else if (methodName.equals("contains") || methodName.equals("remove") || methodName.startsWith("has")) {
-                        parseContainer(propertyName, methodName, arguments);
+                        parseContainer(nbtTagName, methodName, arguments);
                     } else {
                         throw new AssertionError("Handle it");
                     }
@@ -95,7 +95,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         super.visit(n, arg);
     }
 
-    private void parseGetter(String propertyName, String methodName, NodeList<Expression> arguments) {
+    private void parseGetter(String nbtTagName, String methodName, NodeList<Expression> arguments) {
         TagMap type;
         boolean list;
         if (methodName.equals("getList")) {
@@ -110,10 +110,10 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             list = false;
         }
 
-        mergePropertyInfo(propertyName, new PropertyInfo(type, list, true, false));
+        mergeNbtTagInfo(nbtTagName, new NbtTagInfo(type, list, true, false));
     }
 
-    private void parsePutter(String propertyName, String methodName, NodeList<Expression> arguments) {
+    private void parsePutter(String nbtTagName, String methodName, NodeList<Expression> arguments) {
         TagMap type;
         if (methodName.equals("putList")) {
             throw new AssertionError("Handle it");
@@ -122,10 +122,10 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             type = TagMap.getByPutter(methodName);
         }
 
-        mergePropertyInfo(propertyName, new PropertyInfo(type, false, false, true));
+        mergeNbtTagInfo(nbtTagName, new NbtTagInfo(type, false, false, true));
     }
 
-    private void parseContainer(String propertyName, String methodName, NodeList<Expression> arguments) {
+    private void parseContainer(String nbtTagName, String methodName, NodeList<Expression> arguments) {
         TagMap type = switch (methodName) {
             case "contains" -> {
                 if (arguments.size() == 1) {
@@ -145,44 +145,44 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             default -> throw new AssertionError("Handle it");
         };
 
-        mergePropertyInfo(propertyName, new PropertyInfo(type, false, false, false));
+        mergeNbtTagInfo(nbtTagName, new NbtTagInfo(type, false, false, false));
     }
 
-    private void mergePropertyInfo(String propertyName, PropertyInfo pi) {
-        if (conflicts.containsKey(propertyName)) {
-            conflicts.get(propertyName).add(pi);
+    private void mergeNbtTagInfo(String nbtTagName, NbtTagInfo pi) {
+        if (conflicts.containsKey(nbtTagName)) {
+            conflicts.get(nbtTagName).add(pi);
             return;
         }
 
-        if (!propertyElements.containsKey(propertyName)) {
-            propertyElements.put(propertyName, pi);
+        if (!nbtTags.containsKey(nbtTagName)) {
+            nbtTags.put(nbtTagName, pi);
         } else {
-            PropertyInfo pj = propertyElements.get(propertyName);
-            PropertyInfo pk;
+            NbtTagInfo pj = nbtTags.get(nbtTagName);
+            NbtTagInfo pk;
 
             boolean hasGetter = pi.hasGetter || pj.hasGetter;
             boolean hasPutter = pi.hasPutter || pj.hasPutter;
 
             if (Objects.equals(pi, pj)) {
-                pk = new PropertyInfo(pi.type, pj.list, hasGetter, hasPutter);
+                pk = new NbtTagInfo(pi.type, pj.list, hasGetter, hasPutter);
             } else if (pi.isMorePreciseThan(pj)) {
-                pk = new PropertyInfo(pi.type, pi.list, hasGetter, hasPutter);
+                pk = new NbtTagInfo(pi.type, pi.list, hasGetter, hasPutter);
             } else if (pj.isMorePreciseThan(pi)) {
-                pk = new PropertyInfo(pj.type, pj.list, hasGetter, hasPutter);
+                pk = new NbtTagInfo(pj.type, pj.list, hasGetter, hasPutter);
             } else {
-                LOGGER.warn("Conflict of \"" + propertyName + "\": " + pi + " vs " + pj);
-                Set<PropertyInfo> c = conflicts.computeIfAbsent(propertyName, k -> new HashSet<>());
+                LOGGER.warn("Conflict of \"" + nbtTagName + "\": " + pi + " vs " + pj);
+                Set<NbtTagInfo> c = conflicts.computeIfAbsent(nbtTagName, k -> new HashSet<>());
                 c.add(pi);
                 c.add(pj);
-                propertyElements.remove(propertyName);
+                nbtTags.remove(nbtTagName);
                 return;
             }
-            propertyElements.put(propertyName, pk);
+            nbtTags.put(nbtTagName, pk);
         }
     }
 
-    public record PropertyInfo(TagMap type, boolean list, boolean hasGetter, boolean hasPutter) {
-        public PropertyInfo {
+    public record NbtTagInfo(TagMap type, boolean list, boolean hasGetter, boolean hasPutter) {
+        public NbtTagInfo {
             if (type.isList()) {
                 type = type.removeList();
                 if (!list) list = true;
@@ -190,7 +190,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             }
         }
 
-        public boolean isMorePreciseThan(PropertyInfo that) {
+        public boolean isMorePreciseThan(NbtTagInfo that) {
             if (this.list == that.list) {
                 if (this.type == that.type) return false;
                 return switch (that.type) {
@@ -210,7 +210,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
 
         @Override
         public String toString() {
-            return "PropertyInfo{" +
+            return "NbtTagInfo{" +
                     "type=" + getTypeString() +
                     ", hasGetter=" + hasGetter +
                     ", hasPutter=" + hasPutter +
@@ -221,7 +221,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            PropertyInfo that = (PropertyInfo) o;
+            NbtTagInfo that = (NbtTagInfo) o;
             return list == that.list && type == that.type;
         }
 
