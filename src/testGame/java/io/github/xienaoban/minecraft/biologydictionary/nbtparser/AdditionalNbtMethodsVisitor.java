@@ -76,7 +76,7 @@ public final class AdditionalNbtMethodsVisitor extends VoidVisitorAdapter<Void> 
             clazzComment.append("Properties of this entity:\n");
             for (var entry : propertyElements.entrySet()) {
                 TagMap tag = entry.getValue().getFieldTag();
-                clazzComment.append(" - \"").append(entry.getKey()).append("\": ").append(tag == null ? null : tag.getType().getCanonicalName()).append('\n');
+                clazzComment.append(" - \"").append(entry.getKey()).append("\": ").append(tag == null ? null : tag.getDataType().getCanonicalName()).append('\n');
             }
             if (!good) {
                 clazzComment.append("Something bad happened. Not only these properties...\n");

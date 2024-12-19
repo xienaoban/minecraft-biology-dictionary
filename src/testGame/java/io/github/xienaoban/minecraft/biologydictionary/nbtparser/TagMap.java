@@ -1,31 +1,30 @@
 package io.github.xienaoban.minecraft.biologydictionary.nbtparser;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 public enum TagMap {
-    END           (Tag.TAG_END         , "TAG_END"         , null           , null           ),
-    BOOLEAN       (Tag.TAG_BYTE        , "TAG_BYTE"        , "getBoolean"   , "putBoolean"   ),
-    BYTE          (Tag.TAG_BYTE        , "TAG_BYTE"        , "getByte"      , "putByte"      ),
-    SHORT         (Tag.TAG_SHORT       , "TAG_SHORT"       , "getShort"     , "putShort"     ),
-    INT           (Tag.TAG_INT         , "TAG_INT"         , "getInt"       , "putInt"       ),
-    LONG          (Tag.TAG_LONG        , "TAG_LONG"        , "getLong"      , "putLong"      ),
-    FLOAT         (Tag.TAG_FLOAT       , "TAG_FLOAT"       , "getFloat"     , "putFloat"     ),
-    DOUBLE        (Tag.TAG_DOUBLE      , "TAG_DOUBLE"      , "getDouble"    , "putDouble"    ),
-    STRING        (Tag.TAG_STRING      , "TAG_STRING"      , "getString"    , "putString"    ),
-    UUID          (Tag.TAG_INT_ARRAY   , "TAG_STRING"      , "getUUID"      , "putUUID"      ),
-    COMPOUND      (Tag.TAG_COMPOUND    , "TAG_COMPOUND"    , "getCompound"  , null           ),
-    BYTE_ARRAY    (Tag.TAG_BYTE_ARRAY  , "TAG_BYTE_ARRAY"  , "getByteArray" , "putByteArray" ),
-    INT_ARRAY     (Tag.TAG_INT_ARRAY   , "TAG_INT_ARRAY"   , "getIntArray"  , "putIntArray"  ),
-    LONG_ARRAY    (Tag.TAG_LONG_ARRAY  , "TAG_LONG_ARRAY"  , "getLongArray" , "putLongArray" ),
-    LIST          (Tag.TAG_LIST        , "TAG_LIST"        , "getList"      , null           ),
-    ANY_NUMERIC   (Tag.TAG_ANY_NUMERIC , "TAG_ANY_NUMERIC" , null           , null           ),
+    END           (Tag.TAG_END         , "TAG_END"         , EndTag.class       , null           , null           ),
+    BOOLEAN       (Tag.TAG_BYTE        , "TAG_BYTE"        , ByteTag.class      , "getBoolean"   , "putBoolean"   ),
+    BYTE          (Tag.TAG_BYTE        , "TAG_BYTE"        , ByteTag.class      , "getByte"      , "putByte"      ),
+    SHORT         (Tag.TAG_SHORT       , "TAG_SHORT"       , ShortTag.class     , "getShort"     , "putShort"     ),
+    INT           (Tag.TAG_INT         , "TAG_INT"         , IntTag.class       , "getInt"       , "putInt"       ),
+    LONG          (Tag.TAG_LONG        , "TAG_LONG"        , LongTag.class      , "getLong"      , "putLong"      ),
+    FLOAT         (Tag.TAG_FLOAT       , "TAG_FLOAT"       , FloatTag.class     , "getFloat"     , "putFloat"     ),
+    DOUBLE        (Tag.TAG_DOUBLE      , "TAG_DOUBLE"      , DoubleTag.class    , "getDouble"    , "putDouble"    ),
+    STRING        (Tag.TAG_STRING      , "TAG_STRING"      , StringTag.class    , "getString"    , "putString"    ),
+    UUID          (Tag.TAG_INT_ARRAY   , "TAG_STRING"      , IntArrayTag.class  , "getUUID"      , "putUUID"      ),
+    COMPOUND      (Tag.TAG_COMPOUND    , "TAG_COMPOUND"    , CompoundTag.class  , "getCompound"  , "put"          ),
+    BYTE_ARRAY    (Tag.TAG_BYTE_ARRAY  , "TAG_BYTE_ARRAY"  , ByteArrayTag.class , "getByteArray" , "putByteArray" ),
+    INT_ARRAY     (Tag.TAG_INT_ARRAY   , "TAG_INT_ARRAY"   , IntArrayTag.class  , "getIntArray"  , "putIntArray"  ),
+    LONG_ARRAY    (Tag.TAG_LONG_ARRAY  , "TAG_LONG_ARRAY"  , LongArrayTag.class , "getLongArray" , "putLongArray" ),
+    LIST          (Tag.TAG_LIST        , "TAG_LIST"        , ListTag.class      , "getList"      , "put"          ),
+    ANY_NUMERIC   (Tag.TAG_ANY_NUMERIC , "TAG_ANY_NUMERIC" , NumericTag.class   , null           , null           ),
 
-    ANY           (/* value */ -1      , null              , "get"          , "put"          );
+    ANY           (/* value */ -1      , null              , Tag.class          , "get"          , "put"          );
 
     private static final Map<Integer, TagMap> byValue = createMapByValue();
     private static final Map<String, TagMap> byGetter = createMapByGetter();
@@ -54,7 +53,7 @@ public enum TagMap {
     private static Map<Integer, TagMap> createMapByValue() {
         HashMap<Integer, TagMap> res = new HashMap<>();
         for (TagMap e : values()) {
-            res.put(e.value, e);
+            res.put(e.id, e);
         }
         return res;
     }
@@ -75,38 +74,44 @@ public enum TagMap {
         return res;
     }
 
-    private final int value;
-    private final String field;
+    private final int id;
+    private final String idName;
+    private final Class<?> tagClazz;
     private final String getter;
     private final String putter;
-    private final Class<?> type;
+    private final Class<?> dataType;
 
-    TagMap(int value, String field, String getter, String putter) {
-        this.value = value;
-        this.field = field;
+    TagMap(int value, String idName, Class<?> tagClazz, String getter, String putter) {
+        this.id = value;
+        this.idName = idName;
+        this.tagClazz = tagClazz;
         this.getter = getter;
         this.putter = putter;
         try {
             if (getter == null) {
-                type = null;
+                dataType = null;
             } else if (value == Tag.TAG_LIST) {
                 Method m = CompoundTag.class.getMethod(getter, String.class, int.class);
-                type = m.getReturnType();
+                dataType = m.getReturnType();
             } else {
                 Method m = CompoundTag.class.getMethod(getter, String.class);
-                type = m.getReturnType();
+                dataType = m.getReturnType();
             }
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(getter, e);
         }
     }
 
-    public int getValue() {
-        return value;
+    public int getId() {
+        return id;
     }
 
-    public String getField() {
-        return field;
+    public String getIdName() {
+        return idName;
+    }
+
+    public Class<?> getTagClazz() {
+        return tagClazz;
     }
 
     public String getGetter() {
@@ -117,8 +122,8 @@ public enum TagMap {
         return putter;
     }
 
-    public Class<?> getType() {
-        return type;
+    public Class<?> getDataType() {
+        return dataType;
     }
 
     public boolean isNumeric() {
@@ -135,9 +140,6 @@ public enum TagMap {
     public TagMap removeList() {
         return switch (this) {
             case LIST        -> ANY;
-            case LONG_ARRAY  -> LONG;
-            case INT_ARRAY   -> INT;
-            case BYTE_ARRAY  -> BYTE;
             default -> this;
         };
     }

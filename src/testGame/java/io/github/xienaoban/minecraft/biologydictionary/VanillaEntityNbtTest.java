@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
-import io.github.xienaoban.minecraft.biologydictionary.nbtparser.NbtTagCollector;
+import io.github.xienaoban.minecraft.biologydictionary.nbtparser.PropertyClazzGenerator;
 import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -23,7 +23,7 @@ public class VanillaEntityNbtTest implements FabricGameTest {
         EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
             // if (cur.getClazz() != net.minecraft.world.entity.animal.armadillo.Armadillo.class) return true;
             LOGGER.info("Testing " + cur.getClazz());
-            NbtTagCollector.collect(cur.getClazz());
+            PropertyClazzGenerator.generate(cur.getClazz());
             return true;
         });
         helper.succeed();

@@ -21,9 +21,9 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     private static final String TAG_ARG_NAME = "compoundTag";
 
     public static NbtTagCollector collect(Class<? extends Entity> entityClazz) {
-        CompilationUnit source = AstParser.generateAst(entityClazz);
+        CompilationUnit ast = AstParser.generateAst(entityClazz);
         NbtTagCollector collector = new NbtTagCollector(entityClazz);
-        collector.visit(source, null);
+        collector.visit(ast, null);
 
         LOGGER.info("NBT tags of entity " + entityClazz + ":");
         for (var e : collector.nbtTags.entrySet()) {
@@ -59,6 +59,14 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
 
     private NbtTagCollector(Class<? extends Entity> entityClazz) {
         this.entityClazz = entityClazz;
+    }
+
+    public Map<String, NbtTagInfo> getNbtTags() {
+        return nbtTags;
+    }
+
+    public Map<String, Set<NbtTagInfo>> getConflicts() {
+        return conflicts;
     }
 
     @Override
