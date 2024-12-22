@@ -13,8 +13,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.appender.FileAppender;
 
-import java.util.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
+/**
+ * TODO: NbtUtils.readBlockPos in net.minecraft.world.entity.animal.Bee
+ */
 public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     private static final Logger LOGGER = createLogger();
 
@@ -25,14 +33,23 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         NbtTagCollector collector = new NbtTagCollector(entityClazz);
         collector.visit(ast, null);
 
+        for (var it = collector.nbtTags.entrySet().iterator(); it.hasNext();) {
+            var e = it.next();
+            var k = e.getKey();
+            var v = e.getValue();
+            if (v.type == TagMap.ANY || !(v.hasGetter && v.hasPutter)) {
+                it.remove();
+                collector.addConflict(k, v);
+            }
+        }
         LOGGER.info("NBT tags of entity " + entityClazz + ":");
-        for (var e : collector.nbtTags.entrySet()) {
+        for (var e : collector.nbtTags.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
             NbtTagInfo pi = e.getValue();
             LOGGER.info(" - \"" + e.getKey() + "\": " + pi);
         }
-        for (var e : collector.conflicts.entrySet()) {
-            Set<NbtTagInfo> pis = e.getValue();
-            LOGGER.info(" - !\"" + e.getKey() + "\": " + pis.stream().map(NbtTagInfo::getTypeString).toList());
+        for (var e : collector.conflicts.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
+            Map<NbtTagInfo, NbtTagInfo> pis = e.getValue();
+            LOGGER.info(" - !\"" + e.getKey() + "\": " + pis.values().stream().sorted().toList());
         }
         LOGGER.info("");
 
@@ -40,9 +57,15 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     }
 
     private static Logger createLogger() {
+        Path filePath = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_PATH.toString(), "a-nbt-tag-list.log");
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         FileAppender fileAppender = FileAppender.newBuilder()
                 .setName("nbt-tag-collector")
-                .withFileName("logs/nbt-tag-collector.log")
+                .withFileName(filePath.toString())
                 .build();
         fileAppender.start();
         Logger logger = (Logger) LogManager.getLogger();
@@ -53,7 +76,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
 
     private final Class<? extends Entity> entityClazz;
     private final Map<String, NbtTagInfo> nbtTags = new HashMap<>();
-    private final Map<String, Set<NbtTagInfo>> conflicts = new HashMap<>();
+    private final Map<String, Map<NbtTagInfo, NbtTagInfo>> conflicts = new HashMap<>();
 
     private MethodDeclaration currentMethod;
 
@@ -65,7 +88,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         return nbtTags;
     }
 
-    public Map<String, Set<NbtTagInfo>> getConflicts() {
+    public Map<String, Map<NbtTagInfo, NbtTagInfo>> getConflicts() {
         return conflicts;
     }
 
@@ -90,8 +113,10 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                         parseGetter(nbtTagName, methodName, arguments);
                     } else if (methodName.startsWith("put")) {
                         parsePutter(nbtTagName, methodName, arguments);
-                    } else if (methodName.equals("contains") || methodName.equals("remove") || methodName.startsWith("has")) {
+                    } else if (methodName.equals("contains") || methodName.startsWith("has")) {
                         parseContainer(nbtTagName, methodName, arguments);
+                    } else if (methodName.equals("remove")) {
+                        // ignore
                     } else {
                         throw new AssertionError("Handle it");
                     }
@@ -149,7 +174,6 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                 if (arguments.size() != 1) throw new AssertionError(arguments.size());
                 yield TagMap.UUID;
             }
-            case "remove" -> TagMap.ANY;
             default -> throw new AssertionError("Handle it");
         };
 
@@ -158,7 +182,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
 
     private void mergeNbtTagInfo(String nbtTagName, NbtTagInfo pi) {
         if (conflicts.containsKey(nbtTagName)) {
-            conflicts.get(nbtTagName).add(pi);
+            addConflict(nbtTagName, pi);
             return;
         }
 
@@ -178,10 +202,9 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             } else if (pj.isMorePreciseThan(pi)) {
                 pk = new NbtTagInfo(pj.type, pj.list, hasGetter, hasPutter);
             } else {
-                LOGGER.warn("Conflict of \"" + nbtTagName + "\": " + pi + " vs " + pj);
-                Set<NbtTagInfo> c = conflicts.computeIfAbsent(nbtTagName, k -> new HashSet<>());
-                c.add(pi);
-                c.add(pj);
+                LOGGER.debug("Conflict of \"" + nbtTagName + "\": " + pi + " vs " + pj);
+                addConflict(nbtTagName, pi);
+                addConflict(nbtTagName, pj);
                 nbtTags.remove(nbtTagName);
                 return;
             }
@@ -189,7 +212,20 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         }
     }
 
-    public record NbtTagInfo(TagMap type, boolean list, boolean hasGetter, boolean hasPutter) {
+    private void addConflict(String nbtTagName, NbtTagInfo pi) {
+        Map<NbtTagInfo, NbtTagInfo> map = conflicts.computeIfAbsent(nbtTagName, s -> new HashMap<>());
+        NbtTagInfo key = new NbtTagInfo(pi.type, pi.list, false, false);
+        if (!map.containsKey(pi)) {
+            map.put(key, pi);
+        } else {
+            NbtTagInfo pj = map.get(key);
+            boolean hasGetter = pi.hasGetter || pj.hasGetter;
+            boolean hasPutter = pi.hasPutter || pj.hasPutter;
+            map.put(key, new NbtTagInfo(key.type, key.list, hasGetter, hasPutter));
+        }
+    }
+
+    public record NbtTagInfo(TagMap type, boolean list, boolean hasGetter, boolean hasPutter) implements Comparable<NbtTagInfo> {
         public NbtTagInfo {
             if (type.isList()) {
                 type = type.removeList();
@@ -206,6 +242,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                     case TagMap.ANY_NUMERIC -> this.type.isNumeric();
                     case TagMap.BYTE -> this.type == TagMap.BOOLEAN;
                     case TagMap.INT -> this.type == TagMap.BYTE;
+                    case TagMap.LONG -> this.type == TagMap.INT;
                     default -> false;
                 };
             }
@@ -236,6 +273,18 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         @Override
         public int hashCode() {
             return Objects.hash(type, list);
+        }
+
+        @Override
+        public int compareTo(NbtTagCollector.NbtTagInfo that) {
+            int c = Integer.compare(this.type.getId(), that.type.getId());
+            if (c == 0) {
+                if (this.list == that.list) {
+                    return 0;
+                }
+                return this.list ? 1 : -1;
+            }
+            return c;
         }
     }
 }
