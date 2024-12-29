@@ -16,10 +16,10 @@ import java.util.Map;
 public final class EntityProperties<E extends Entity> {
     private final E entity;
 
-    private final Map<Class<? extends EntityVanillaProperty<? super E>>, EntityVanillaProperty<? super E>> vanillaProperties;
+    private final Map<Class<? extends EntityVanillaProperty>, EntityVanillaProperty> vanillaProperties;
 
     public EntityProperties(E entity) {
-        HashMap<Class<? extends EntityVanillaProperty<? super E>>, EntityVanillaProperty<? super E>> map = new HashMap<>();
+        HashMap<Class<? extends EntityVanillaProperty>, EntityVanillaProperty> map = new HashMap<>();
         for (var clazz : EntityUtils.bottomUp(entity)) {
 
         }
@@ -29,12 +29,12 @@ public final class EntityProperties<E extends Entity> {
 
     public E entity() { return entity; }
 
-    public <EP extends EntityVanillaProperty<? super E>> EP p(Class<EP> clazz) {
+    public <EP extends EntityVanillaProperty> EP p(Class<EP> clazz) {
         return Misc.cast(vanillaProperties.get(clazz));
     }
 
     public void update(CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        for (EntityVanillaProperty<? super E> property : vanillaProperties.values()) {
+        for (EntityVanillaProperty property : vanillaProperties.values()) {
             property.readFrom(vanillaNbt);
         }
     }

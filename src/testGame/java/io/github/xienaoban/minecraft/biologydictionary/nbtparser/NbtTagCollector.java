@@ -7,6 +7,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -27,6 +28,9 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     private static final Logger LOGGER = createLogger();
 
     private static final String TAG_ARG_NAME = "compoundTag";
+    private static final String NBT_UTILS_CLASS_NAME = NbtUtils.class.getSimpleName();
+    private static final String READ_BLOCK_POS_METHOD_NAME = "readBlockPos";
+    private static final String WRITE_BLOCK_POS_METHOD_NAME = "writeBlockPos";
 
     public static NbtTagCollector collect(Class<? extends Entity> entityClazz) {
         CompilationUnit ast = AstParser.generateAst(entityClazz);
@@ -103,9 +107,9 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         String methodName = n.getName().getIdentifier();
         n.getScope().ifPresent(expression -> expression.ifNameExpr(nameExpr -> {
             String methodScope = nameExpr.getName().getIdentifier();
-            if (TAG_ARG_NAME.equals(methodScope)) {
-                // Probably be `compoundTag.getXXX()` or `compoundTag.putXXX()`.
-                try {
+            try {
+                if (TAG_ARG_NAME.equals(methodScope)) {
+                    // Probably be `compoundTag.getXXX()` or `compoundTag.putXXX()`.
                     LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
                     NodeList<Expression> arguments = n.getArguments();
                     String nbtTagName = arguments.get(0).asStringLiteralExpr().getValue();
@@ -120,9 +124,21 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                     } else {
                         throw new AssertionError("Handle it");
                     }
-                } catch (Throwable e) {
-                    throw new AssertionError("Failed to parse method: `" + n + "` in `" + currentMethod.getDeclarationAsString() + "`", e);
+                } else if (NBT_UTILS_CLASS_NAME.equals(methodScope)) {
+                    // Probably be `NbtUtils.readBlockPos()` or `NbtUtils.writeBlockPos()`.
+                    LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
+                    NodeList<Expression> arguments = n.getArguments();
+
+                    if (methodName.equals(READ_BLOCK_POS_METHOD_NAME)) {
+                        String tagArgName = arguments.get(0).asNameExpr().getNameAsString();
+                        String nbtTagName = arguments.get(1).asStringLiteralExpr().getValue();
+                        if (TAG_ARG_NAME.equals(tagArgName)) {
+                            mergeNbtTagInfo(nbtTagName, new NbtTagInfo(TagMap.BLOCK_POS, false, true, false));
+                        }
+                    }
                 }
+            } catch (Throwable e) {
+                throw new AssertionError("Failed to parse method: `" + n + "` in `" + currentMethod.getDeclarationAsString() + "`", e);
             }
         }));
         super.visit(n, arg);
@@ -153,6 +169,16 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         } else {
             if (arguments.size() != 2) throw new AssertionError(arguments.size());
             type = TagMap.getByPutter(methodName);
+            if (type == TagMap.ANY && arguments.get(1).isMethodCallExpr()) {
+                MethodCallExpr call = arguments.get(1).asMethodCallExpr();
+                try {
+                    String methodScope2 = call.getScope().orElseThrow().asNameExpr().getName().getIdentifier();
+                    String methodName2 = call.getName().getIdentifier();
+                    if (NBT_UTILS_CLASS_NAME.equals(methodScope2) && WRITE_BLOCK_POS_METHOD_NAME.equals(methodName2)) {
+                        type = TagMap.BLOCK_POS;
+                    }
+                } catch (Exception ignored) {}
+            }
         }
 
         mergeNbtTagInfo(nbtTagName, new NbtTagInfo(type, false, false, true));
@@ -236,15 +262,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
 
         public boolean isMorePreciseThan(NbtTagInfo that) {
             if (this.list == that.list) {
-                if (this.type == that.type) return false;
-                return switch (that.type) {
-                    case TagMap.ANY -> true;
-                    case TagMap.ANY_NUMERIC -> this.type.isNumeric();
-                    case TagMap.BYTE -> this.type == TagMap.BOOLEAN;
-                    case TagMap.INT -> this.type == TagMap.BYTE;
-                    case TagMap.LONG -> this.type == TagMap.INT;
-                    default -> false;
-                };
+                return this.type.isMorePreciseThan(that.type);
             }
             return !that.list && that.type == TagMap.ANY;
         }
