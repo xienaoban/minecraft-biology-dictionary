@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.property.template;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -6,15 +6,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 @Environment(EnvType.CLIENT)
-public final class BooleanProperty extends AbstractProperty<Boolean> {
-    public BooleanProperty(String propertyName) {
+public final class StringProperty extends AbstractProperty<String> {
+    public StringProperty(String propertyName) {
         super(propertyName);
     }
 
     @Override
     public void readFrom(CompoundTag vanillaNbt) {
-        if (vanillaNbt.contains(name(), Tag.TAG_BYTE)) {
-            set(vanillaNbt.getBoolean(name()));
+        if (vanillaNbt.contains(name(), Tag.TAG_STRING)) {
+            set(vanillaNbt.getString(name()));
         } else {
             set(null);
         }
@@ -23,7 +23,9 @@ public final class BooleanProperty extends AbstractProperty<Boolean> {
     @Override
     public void writeTo(CompoundTag vanillaNbt) {
         if (get() != null) {
-            vanillaNbt.putBoolean(name(), get());
+            vanillaNbt.putString(name(), get());
+        } else {
+            vanillaNbt.remove(name());
         }
     }
 }

@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.property.template;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -31,10 +31,14 @@ public final class DoubleListProperty extends AbstractProperty<ArrayList<Double>
 
     @Override
     public void writeTo(CompoundTag vanillaNbt) {
-        ListTag listTag = new ListTag();
-        for (var e : get()) {
-            listTag.add(DoubleTag.valueOf(e));
+        if (get() != null) {
+            ListTag listTag = new ListTag();
+            for (var e : get()) {
+                listTag.add(DoubleTag.valueOf(e));
+            }
+            vanillaNbt.put(name(), listTag);
+        } else {
+            vanillaNbt.remove(name());
         }
-        vanillaNbt.put(name(), listTag);
     }
 }

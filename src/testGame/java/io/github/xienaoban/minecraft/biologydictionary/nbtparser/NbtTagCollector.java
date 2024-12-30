@@ -41,7 +41,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             var e = it.next();
             var k = e.getKey();
             var v = e.getValue();
-            if (v.type == TagMap.ANY || !(v.hasGetter && v.hasPutter)) {
+            if (!(v.hasGetter && v.hasPutter) || v.type == TagMap.ANY || v.type == TagMap.COMPOUND) {
                 it.remove();
                 collector.addConflict(k, v);
             }
@@ -61,7 +61,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     }
 
     private static Logger createLogger() {
-        Path filePath = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_PATH.toString(), "a-nbt-tag-list.log");
+        Path filePath = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_PATH.toString(), ".nbt-tag-list.log");
         try {
             Files.deleteIfExists(filePath);
         } catch (IOException e) {
@@ -268,7 +268,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         }
 
         public String getTypeString() {
-            return (list ? "[" : "") + type;
+            return (list ? ("[" + type.name() + "]") : type.name());
         }
 
         @Override

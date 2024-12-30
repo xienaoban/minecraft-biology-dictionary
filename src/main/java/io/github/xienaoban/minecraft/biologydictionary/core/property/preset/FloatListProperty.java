@@ -1,11 +1,8 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.property.template;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.FloatTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 
 import java.util.ArrayList;
 
@@ -31,10 +28,14 @@ public final class FloatListProperty extends AbstractProperty<ArrayList<Float>> 
 
     @Override
     public void writeTo(CompoundTag vanillaNbt) {
-        ListTag listTag = new ListTag();
-        for (var e : get()) {
-            listTag.add(FloatTag.valueOf(e));
+        if (get() != null) {
+            ListTag listTag = new ListTag();
+            for (var e : get()) {
+                listTag.add(FloatTag.valueOf(e));
+            }
+            vanillaNbt.put(name(), listTag);
+        } else {
+            vanillaNbt.remove(name());
         }
-        vanillaNbt.put(name(), listTag);
     }
 }

@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.property.template;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -6,15 +6,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 @Environment(EnvType.CLIENT)
-public final class ByteProperty extends AbstractProperty<Byte> {
-    public ByteProperty(String propertyName) {
+public final class ShortProperty extends AbstractProperty<Short> {
+    public ShortProperty(String propertyName) {
         super(propertyName);
     }
 
     @Override
     public void readFrom(CompoundTag vanillaNbt) {
-        if (vanillaNbt.contains(name(), Tag.TAG_BYTE)) {
-            set(vanillaNbt.getByte(name()));
+        if (vanillaNbt.contains(name(), Tag.TAG_SHORT)) {
+            set(vanillaNbt.getShort(name()));
         } else {
             set(null);
         }
@@ -23,7 +23,9 @@ public final class ByteProperty extends AbstractProperty<Byte> {
     @Override
     public void writeTo(CompoundTag vanillaNbt) {
         if (get() != null) {
-            vanillaNbt.putByte(name(), get());
+            vanillaNbt.putShort(name(), get());
+        } else {
+            vanillaNbt.remove(name());
         }
     }
 }

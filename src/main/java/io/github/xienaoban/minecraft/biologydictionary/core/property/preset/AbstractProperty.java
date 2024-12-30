@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.property.template;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityVanillaProperty;
 import net.fabricmc.api.EnvType;

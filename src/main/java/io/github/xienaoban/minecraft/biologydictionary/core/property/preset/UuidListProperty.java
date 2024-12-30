@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.property.template;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -32,10 +32,14 @@ public final class UuidListProperty extends AbstractProperty<ArrayList<UUID>> {
 
     @Override
     public void writeTo(CompoundTag vanillaNbt) {
-        ListTag listTag = new ListTag();
-        for (var e : get()) {
-            listTag.add(NbtUtils.createUUID(e));
+        if (get() != null) {
+            ListTag listTag = new ListTag();
+            for (var e : get()) {
+                listTag.add(NbtUtils.createUUID(e));
+            }
+            vanillaNbt.put(name(), listTag);
+        } else {
+            vanillaNbt.remove(name());
         }
-        vanillaNbt.put(name(), listTag);
     }
 }

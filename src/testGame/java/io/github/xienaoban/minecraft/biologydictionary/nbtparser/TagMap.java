@@ -17,7 +17,7 @@ public enum TagMap {
     FLOAT         (Tag.TAG_FLOAT       , "TAG_FLOAT"       , FloatTag.class     , "getFloat"              , "putFloat"               ),
     DOUBLE        (Tag.TAG_DOUBLE      , "TAG_DOUBLE"      , DoubleTag.class    , "getDouble"             , "putDouble"              ),
     STRING        (Tag.TAG_STRING      , "TAG_STRING"      , StringTag.class    , "getString"             , "putString"              ),
-    UUID          (Tag.TAG_INT_ARRAY   , "TAG_STRING"      , IntArrayTag.class  , "getUUID"               , "putUUID"                ),
+    UUID          (Tag.TAG_INT_ARRAY   , "TAG_INT_ARRAY"   , IntArrayTag.class  , "getUUID"               , "putUUID"                ),
     COMPOUND      (Tag.TAG_COMPOUND    , "TAG_COMPOUND"    , CompoundTag.class  , "getCompound"           , "put"                    ),
     BYTE_ARRAY    (Tag.TAG_BYTE_ARRAY  , "TAG_BYTE_ARRAY"  , ByteArrayTag.class , "getByteArray"          , "putByteArray"           ),
     INT_ARRAY     (Tag.TAG_INT_ARRAY   , "TAG_INT_ARRAY"   , IntArrayTag.class  , "getIntArray"           , "putIntArray"            ),
