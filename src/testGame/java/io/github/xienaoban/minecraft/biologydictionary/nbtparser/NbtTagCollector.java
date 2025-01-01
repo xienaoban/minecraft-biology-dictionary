@@ -148,9 +148,13 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                     LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
                     NodeList<Expression> arguments = n.getArguments();
 
-                    arguments.get(1).ifMethodCallExpr(methodCallExpr -> {
-                        super.visit(methodCallExpr, arg);
-                    });
+                    // For `this.bodyArmorItem = (ItemStack)ItemStack.parse(this.registryAccess(), compoundTag.getCompound("body_armor_item")).orElse(ItemStack.EMPTY);`
+                    arguments.get(1).ifMethodCallExpr(methodCallExpr1 -> methodCallExpr1.getScope().ifPresent(expression1 -> expression1.ifNameExpr(nameExpr1 -> {
+                        String methodScope1 = nameExpr1.getName().getIdentifier();
+                        if (TAG_ARG_NAME.equals(methodScope1)) {
+                            super.visit(methodCallExpr1, arg);
+                        }
+                    })));
 
                     if (methodName.equals(READ_ITEM_STACK_METHOD_NAME) || methodName.equals(READ_OR_NULL_ITEM_STACK_METHOD_NAME)) {
                         if (currentPropertyName != null && nbtTags.containsKey(currentPropertyName)) {

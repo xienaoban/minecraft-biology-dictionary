@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum TagMap {
-    ANY           (/* value */ -1      , null              , Tag.class            , "get"                   , "put"                    ),
     END           (Tag.TAG_END         , "TAG_END"         , EndTag.class         , null                    , null                     ),
     BOOLEAN       (Tag.TAG_BYTE        , "TAG_BYTE"        , ByteTag.class        , "getBoolean"            , "putBoolean"             ),
     BYTE          (Tag.TAG_BYTE        , "TAG_BYTE"        , ByteTag.class        , "getByte"               , "putByte"                ),
@@ -29,7 +28,9 @@ public enum TagMap {
 
     // Special
     BLOCK_POS     (/* value */ 1000    , BlockPos.class  , "NbtUtils.readBlockPos" , "NbtUtils.writeBlockPos" ),
-    ITEM_STACK    (/* value */ 1001    , ItemStack.class , "ItemStack.parse"       , "itemStack.save"         );
+    ITEM_STACK    (/* value */ 1001    , ItemStack.class , "ItemStack.parse"       , "itemStack.save"         ),
+
+    ANY           (/* value */ -1      , null              , Tag.class            , "get"                   , "put"                    );
 
     private static final Map<Integer, TagMap> byValue = createMapByValue();
     private static final Map<String, TagMap> byGetter = createMapByGetter();

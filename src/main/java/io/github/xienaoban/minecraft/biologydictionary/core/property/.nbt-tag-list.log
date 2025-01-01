@@ -37,17 +37,17 @@ NBT tags of entity class net.minecraft.world.entity.LivingEntity:
 
 NBT tags of entity class net.minecraft.world.entity.Mob:
  - "ArmorDropChances": NbtTagInfo{type=[FLOAT], hasGetter=true, hasPutter=true}
+ - "ArmorItems": NbtTagInfo{type=[ITEM_STACK], hasGetter=true, hasPutter=true}
  - "CanPickUpLoot": NbtTagInfo{type=BOOLEAN, hasGetter=true, hasPutter=true}
  - "DeathLootTable": NbtTagInfo{type=STRING, hasGetter=true, hasPutter=true}
  - "DeathLootTableSeed": NbtTagInfo{type=LONG, hasGetter=true, hasPutter=true}
  - "HandDropChances": NbtTagInfo{type=[FLOAT], hasGetter=true, hasPutter=true}
+ - "HandItems": NbtTagInfo{type=[ITEM_STACK], hasGetter=true, hasPutter=true}
  - "LeftHanded": NbtTagInfo{type=BOOLEAN, hasGetter=true, hasPutter=true}
  - "NoAI": NbtTagInfo{type=BOOLEAN, hasGetter=true, hasPutter=true}
  - "PersistenceRequired": NbtTagInfo{type=BOOLEAN, hasGetter=true, hasPutter=true}
  - "body_armor_drop_chance": NbtTagInfo{type=FLOAT, hasGetter=true, hasPutter=true}
- - !"ArmorItems": [NbtTagInfo{type=[COMPOUND], hasGetter=true, hasPutter=true}]
- - !"HandItems": [NbtTagInfo{type=[COMPOUND], hasGetter=true, hasPutter=true}]
- - !"body_armor_item": [NbtTagInfo{type=COMPOUND, hasGetter=true, hasPutter=true}]
+ - "body_armor_item": NbtTagInfo{type=ITEM_STACK, hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.FlyingMob:
 
@@ -177,17 +177,17 @@ NBT tags of entity class net.minecraft.world.entity.animal.goat.Goat:
 NBT tags of entity class net.minecraft.world.entity.animal.horse.AbstractHorse:
  - "Bred": NbtTagInfo{type=BOOLEAN, hasGetter=true, hasPutter=true}
  - "EatingHaystack": NbtTagInfo{type=BOOLEAN, hasGetter=true, hasPutter=true}
+ - "SaddleItem": NbtTagInfo{type=ITEM_STACK, hasGetter=true, hasPutter=true}
  - "Tame": NbtTagInfo{type=BOOLEAN, hasGetter=true, hasPutter=true}
  - "Temper": NbtTagInfo{type=INT, hasGetter=true, hasPutter=true}
  - !"Owner": [NbtTagInfo{type=STRING, hasGetter=true, hasPutter=false}, NbtTagInfo{type=UUID, hasGetter=true, hasPutter=true}]
- - !"SaddleItem": [NbtTagInfo{type=COMPOUND, hasGetter=true, hasPutter=true}]
 
 NBT tags of entity class net.minecraft.world.entity.animal.camel.Camel:
  - "LastPoseTick": NbtTagInfo{type=LONG, hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.animal.horse.AbstractChestedHorse:
  - "ChestedHorse": NbtTagInfo{type=BOOLEAN, hasGetter=true, hasPutter=true}
- - !"Items": [NbtTagInfo{type=[COMPOUND], hasGetter=true, hasPutter=true}]
+ - "Items": NbtTagInfo{type=[ITEM_STACK], hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.animal.horse.Donkey:
 
@@ -413,8 +413,10 @@ NBT tags of entity class net.minecraft.world.entity.monster.Slime:
 NBT tags of entity class net.minecraft.world.entity.monster.MagmaCube:
 
 NBT tags of entity class net.minecraft.world.entity.decoration.ArmorStand:
+ - "ArmorItems": NbtTagInfo{type=[ITEM_STACK], hasGetter=true, hasPutter=true}
  - "Body": NbtTagInfo{type=[FLOAT], hasGetter=true, hasPutter=true}
  - "DisabledSlots": NbtTagInfo{type=INT, hasGetter=true, hasPutter=true}
+ - "HandItems": NbtTagInfo{type=[ITEM_STACK], hasGetter=true, hasPutter=true}
  - "Head": NbtTagInfo{type=[FLOAT], hasGetter=true, hasPutter=true}
  - "Invisible": NbtTagInfo{type=BOOLEAN, hasGetter=true, hasPutter=true}
  - "LeftArm": NbtTagInfo{type=[FLOAT], hasGetter=true, hasPutter=true}
@@ -425,7 +427,5 @@ NBT tags of entity class net.minecraft.world.entity.decoration.ArmorStand:
  - "RightLeg": NbtTagInfo{type=[FLOAT], hasGetter=true, hasPutter=true}
  - "ShowArms": NbtTagInfo{type=BOOLEAN, hasGetter=true, hasPutter=true}
  - "Small": NbtTagInfo{type=BOOLEAN, hasGetter=true, hasPutter=true}
- - !"ArmorItems": [NbtTagInfo{type=[COMPOUND], hasGetter=true, hasPutter=true}]
- - !"HandItems": [NbtTagInfo{type=[COMPOUND], hasGetter=true, hasPutter=true}]
  - !"Pose": [NbtTagInfo{type=COMPOUND, hasGetter=true, hasPutter=true}]
 
