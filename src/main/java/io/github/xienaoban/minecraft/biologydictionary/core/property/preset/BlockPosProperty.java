@@ -22,7 +22,7 @@ public final class BlockPosProperty extends AbstractProperty<BlockPos> {
         if (get() != null) {
             vanillaNbt.put(name(), NbtUtils.writeBlockPos(get()));
         } else {
-            vanillaNbt.remove(name());
+            vanillaNbt.put(name(), new CompoundTag());
         }
     }
 }

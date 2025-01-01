@@ -25,7 +25,7 @@ public final class ShortProperty extends AbstractProperty<Short> {
         if (get() != null) {
             vanillaNbt.putShort(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("primitive type must not be null");
         }
     }
 }

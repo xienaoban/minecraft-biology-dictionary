@@ -27,7 +27,7 @@ public final class UuidProperty extends AbstractProperty<UUID> {
         if (get() != null) {
             vanillaNbt.putUUID(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            vanillaNbt.put(name(), new CompoundTag());
         }
     }
 }

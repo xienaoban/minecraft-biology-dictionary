@@ -25,7 +25,7 @@ public final class LongProperty extends AbstractProperty<Long> {
         if (get() != null) {
             vanillaNbt.putLong(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("primitive type must not be null");
         }
     }
 }

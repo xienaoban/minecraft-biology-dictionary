@@ -35,7 +35,7 @@ public final class IntListProperty extends AbstractProperty<ArrayList<Integer>> 
             }
             vanillaNbt.put(name(), listTag);
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("list type must not be null");
         }
     }
 }

@@ -25,7 +25,7 @@ public final class ByteArrayProperty extends AbstractProperty<byte[]> {
         if (get() != null) {
             vanillaNbt.putByteArray(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("array type must not be null");
         }
     }
 }

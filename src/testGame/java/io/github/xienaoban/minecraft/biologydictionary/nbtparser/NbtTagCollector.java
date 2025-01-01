@@ -9,6 +9,7 @@ import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -28,9 +29,14 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     private static final Logger LOGGER = createLogger();
 
     private static final String TAG_ARG_NAME = "compoundTag";
+
     private static final String NBT_UTILS_CLASS_NAME = NbtUtils.class.getSimpleName();
     private static final String READ_BLOCK_POS_METHOD_NAME = "readBlockPos";
     private static final String WRITE_BLOCK_POS_METHOD_NAME = "writeBlockPos";
+
+    private static final String ITEM_STACK_CLASS_NAME = ItemStack.class.getSimpleName();
+    private static final String READ_ITEM_STACK_METHOD_NAME = "parse";
+    private static final String READ_OR_NULL_ITEM_STACK_METHOD_NAME = "parseOptional";
 
     public static NbtTagCollector collect(Class<? extends Entity> entityClazz) {
         CompilationUnit ast = AstParser.generateAst(entityClazz);
@@ -83,6 +89,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     private final Map<String, Map<NbtTagInfo, NbtTagInfo>> conflicts = new HashMap<>();
 
     private MethodDeclaration currentMethod;
+    private String currentPropertyName;
 
     private NbtTagCollector(Class<? extends Entity> entityClazz) {
         this.entityClazz = entityClazz;
@@ -134,6 +141,21 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                         String nbtTagName = arguments.get(1).asStringLiteralExpr().getValue();
                         if (TAG_ARG_NAME.equals(tagArgName)) {
                             mergeNbtTagInfo(nbtTagName, new NbtTagInfo(TagMap.BLOCK_POS, false, true, false));
+                        }
+                    }
+                } else if (ITEM_STACK_CLASS_NAME.equals(methodScope)) {
+                    // Probably be `ItemStack.parse()` or `ItemStack.parseOptional()`.
+                    LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
+                    NodeList<Expression> arguments = n.getArguments();
+
+                    arguments.get(1).ifMethodCallExpr(methodCallExpr -> {
+                        super.visit(methodCallExpr, arg);
+                    });
+
+                    if (methodName.equals(READ_ITEM_STACK_METHOD_NAME) || methodName.equals(READ_OR_NULL_ITEM_STACK_METHOD_NAME)) {
+                        if (currentPropertyName != null && nbtTags.containsKey(currentPropertyName)) {
+                            boolean isList = nbtTags.get(currentPropertyName).list();
+                            mergeNbtTagInfo(currentPropertyName, new NbtTagInfo(TagMap.ITEM_STACK, isList, true, false));
                         }
                     }
                 }
@@ -207,6 +229,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     }
 
     private void mergeNbtTagInfo(String nbtTagName, NbtTagInfo pi) {
+        currentPropertyName = nbtTagName;
         if (conflicts.containsKey(nbtTagName)) {
             addConflict(nbtTagName, pi);
             return;

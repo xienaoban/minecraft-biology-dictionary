@@ -25,7 +25,7 @@ public final class LongArrayProperty extends AbstractProperty<long[]> {
         if (get() != null) {
             vanillaNbt.putLongArray(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("array type must not be null");
         }
     }
 }

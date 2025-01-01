@@ -29,4 +29,10 @@ public abstract class AbstractProperty<T> implements EntityVanillaProperty {
         Unsafe.getUnsafe().storeFence();
         value = newValue;
     }
+
+    public static final class IllegalPropertyStateException extends RuntimeException {
+        public IllegalPropertyStateException(String message) {
+            super(message);
+        }
+    }
 }

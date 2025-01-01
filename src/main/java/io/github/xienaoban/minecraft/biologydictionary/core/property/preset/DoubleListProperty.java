@@ -38,7 +38,7 @@ public final class DoubleListProperty extends AbstractProperty<ArrayList<Double>
             }
             vanillaNbt.put(name(), listTag);
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("list type must not be null");
         }
     }
 }

@@ -25,7 +25,7 @@ public final class DoubleProperty extends AbstractProperty<Double> {
         if (get() != null) {
             vanillaNbt.putDouble(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("primitive type must not be null");
         }
     }
 }

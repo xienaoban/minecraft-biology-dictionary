@@ -39,7 +39,7 @@ public final class UuidListProperty extends AbstractProperty<ArrayList<UUID>> {
             }
             vanillaNbt.put(name(), listTag);
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("list type must not be null");
         }
     }
 }

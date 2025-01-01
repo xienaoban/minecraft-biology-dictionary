@@ -25,7 +25,7 @@ public final class BooleanProperty extends AbstractProperty<Boolean> {
         if (get() != null) {
             vanillaNbt.putBoolean(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("primitive type must not be null");
         }
     }
 }

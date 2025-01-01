@@ -25,7 +25,7 @@ public final class ByteProperty extends AbstractProperty<Byte> {
         if (get() != null) {
             vanillaNbt.putByte(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("primitive type must not be null");
         }
     }
 }

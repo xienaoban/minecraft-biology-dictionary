@@ -25,7 +25,7 @@ public final class StringProperty extends AbstractProperty<String> {
         if (get() != null) {
             vanillaNbt.putString(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            vanillaNbt.put(name(), new CompoundTag());
         }
     }
 }

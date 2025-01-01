@@ -35,7 +35,7 @@ public final class FloatListProperty extends AbstractProperty<ArrayList<Float>> 
             }
             vanillaNbt.put(name(), listTag);
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("list type must not be null");
         }
     }
 }

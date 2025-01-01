@@ -25,7 +25,7 @@ public final class FloatProperty extends AbstractProperty<Float> {
         if (get() != null) {
             vanillaNbt.putFloat(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("primitive type must not be null");
         }
     }
 }

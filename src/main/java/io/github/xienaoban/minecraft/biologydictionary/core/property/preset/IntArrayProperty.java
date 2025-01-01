@@ -25,7 +25,7 @@ public final class IntArrayProperty extends AbstractProperty<int[]> {
         if (get() != null) {
             vanillaNbt.putIntArray(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("array type must not be null");
         }
     }
 }

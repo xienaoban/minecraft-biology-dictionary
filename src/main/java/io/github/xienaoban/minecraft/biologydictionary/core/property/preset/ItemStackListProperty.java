@@ -1,27 +1,29 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-@Environment(EnvType.CLIENT)
-public final class StringListProperty extends AbstractProperty<ArrayList<String>> {
-    public StringListProperty(String propertyName) {
+public class ItemStackListProperty extends AbstractProperty<ArrayList<ItemStack>> {
+    private final RegistryAccess registryAccess = Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
+
+    public ItemStackListProperty(String propertyName) {
         super(propertyName);
     }
 
     @Override
     public void readFrom(CompoundTag vanillaNbt) {
         if (vanillaNbt.contains(name(), Tag.TAG_LIST)) {
-            ListTag listTag = vanillaNbt.getList(name(), Tag.TAG_STRING);
-            ArrayList<String> list = new ArrayList<>();
+            ListTag listTag = vanillaNbt.getList(name(), Tag.TAG_COMPOUND);
+            ArrayList<ItemStack> list = new ArrayList<>();
             for (int i = 0; i < listTag.size(); i++) {
-                list.add(listTag.getString(i));
+                list.add(ItemStack.parseOptional(registryAccess, listTag.getCompound(i)));
             }
             set(list);
         } else {
@@ -34,7 +36,11 @@ public final class StringListProperty extends AbstractProperty<ArrayList<String>
         if (get() != null) {
             ListTag listTag = new ListTag();
             for (var e : get()) {
-                listTag.add(StringTag.valueOf(e));
+                if (e != null && !e.isEmpty()) {
+                    listTag.add(e.save(registryAccess));
+                } else {
+                    listTag.add(new CompoundTag());
+                }
             }
             vanillaNbt.put(name(), listTag);
         } else {

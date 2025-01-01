@@ -25,7 +25,7 @@ public final class IntProperty extends AbstractProperty<Integer> {
         if (get() != null) {
             vanillaNbt.putInt(name(), get());
         } else {
-            vanillaNbt.remove(name());
+            throw new IllegalPropertyStateException("primitive type must not be null");
         }
     }
 }
