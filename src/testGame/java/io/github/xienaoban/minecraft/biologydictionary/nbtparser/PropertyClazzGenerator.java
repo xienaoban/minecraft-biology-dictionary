@@ -15,8 +15,6 @@ import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +25,7 @@ import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * TODO: getter and setter and not contains exception
@@ -37,12 +36,12 @@ public class PropertyClazzGenerator {
     public static final String OUTPUT_CLAZZ_PACKAGE = TranslationKeys.PACKAGE + ".core.property";
     public static final File OUTPUT_CLAZZ_PATH = new File(TestUtils.MAIN_JAVA_ROOT.toString(), OUTPUT_CLAZZ_PACKAGE.replaceAll("\\.", "/"));
 
-    private static final String PROPERTY_CLAZZ_NAME = "EntityVanillaProperties";
+    private static final String PROPERTY_WRAPPER_CLAZZ_NAME = "VanillaProperties";
 
     public static void generateAll() {
-        File outputClassPath = Paths.get(OUTPUT_CLAZZ_PATH.toString(), PROPERTY_CLAZZ_NAME + ".java").toFile();
+        File outputClassPath = Paths.get(OUTPUT_CLAZZ_PATH.toString(), PROPERTY_WRAPPER_CLAZZ_NAME + ".java").toFile();
         CompilationUnit cu = new CompilationUnit(OUTPUT_CLAZZ_PACKAGE);
-        ClassOrInterfaceDeclaration wrapperClazz = cu.addClass(PROPERTY_CLAZZ_NAME, Modifier.Keyword.PUBLIC, Modifier.Keyword.FINAL);
+        ClassOrInterfaceDeclaration wrapperClazz = cu.addClass(PROPERTY_WRAPPER_CLAZZ_NAME, Modifier.Keyword.PUBLIC, Modifier.Keyword.FINAL);
         addGeneralImports(cu);
         addGeneralAnnotations(wrapperClazz);
 
@@ -60,13 +59,9 @@ public class PropertyClazzGenerator {
     }
 
     private static void addGeneralImports(CompilationUnit cu) {
-        cu.addImport("io.github.xienaoban.minecraft.biologydictionary.api.EntityVanillaProperty");
         cu.addImport("io.github.xienaoban.minecraft.biologydictionary.core.property.preset", false, true);
-        cu.addImport(Environment.class);
         cu.addImport(EnvType.class);
-        cu.addImport(Override.class);
-        cu.addImport(CompoundTag.class);
-        cu.addImport(Tag.class);
+        cu.addImport(Environment.class);
     }
 
     private static void addGeneralAnnotations(ClassOrInterfaceDeclaration wrapperClazz) {
@@ -100,11 +95,15 @@ public class PropertyClazzGenerator {
     }
 
     private void generate() {
-        cu.addImport(entityClazz);
+        // cu.addImport(entityClazz); // not used
         addClazzComments();
 
-        for (var e : nbts.getNbtTags().entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
-            addPropertyMethod(e.getKey(), e.getValue());
+        for (String propertyName : Stream.concat(nbts.getNbtTags().keySet().stream(), nbts.getConflicts().keySet().stream()).sorted().toList()) {
+            if (nbts.getNbtTags().containsKey(propertyName)) {
+                addPropertyMethod(propertyName, nbts.getNbtTags().get(propertyName));
+            } else {
+                addUnsupportedPropertyMethod(propertyName);
+            }
         }
     }
 
@@ -131,6 +130,16 @@ public class PropertyClazzGenerator {
     private void addPropertyMethod(String propertyName, NbtTagCollector.NbtTagInfo propertyInfo) {
         String uc = toUpperCamelCase(propertyName);
         String returnType = toUpperCamelCase(propertyInfo.type().name()) + (propertyInfo.list() ? "List" : "") + "Property";
+
+        String methodName = "create" + uc + "Property";
+        MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
+        method.setType(returnType);
+        method.setBody(new BlockStmt().addStatement("return new " + returnType + "(\"" + propertyName + "\");"));
+    }
+
+    private void addUnsupportedPropertyMethod(String propertyName) {
+        String uc = toUpperCamelCase(propertyName);
+        String returnType = "UnsupportedProperty";
 
         String methodName = "create" + uc + "Property";
         MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
