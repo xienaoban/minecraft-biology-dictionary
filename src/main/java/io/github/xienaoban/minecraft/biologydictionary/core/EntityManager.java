@@ -204,7 +204,7 @@ public final class EntityManager {
 
     public static class EntityClassInfo implements Comparable<EntityClassInfo> {
         public static Optional<EntityClassInfo> create(EntityType<?> entityType, Level level) {
-            Entity entity = entityType.create(level, null);
+            Entity entity = EntityUtils.create(entityType, level);
             if (entity == null) {
                 if (entityType == EntityType.PLAYER) return Optional.empty();
                 if (!entityType.isEnabled(level.enabledFeatures())) return Optional.empty();

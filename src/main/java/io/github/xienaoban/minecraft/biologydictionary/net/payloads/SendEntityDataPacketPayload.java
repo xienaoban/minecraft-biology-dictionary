@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionaryClient.BDC;
 
 public record SendEntityDataPacketPayload(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt) implements PacketPayload {
-    public static final PacketPayloadMeta<SendEntityDataPacketPayload> META = PacketPayloadMeta.create(SendEntityDataPacketPayload.class);
+    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
 
     @Override
     public @NotNull Type<? extends PacketPayload> type() { return META.type(); }

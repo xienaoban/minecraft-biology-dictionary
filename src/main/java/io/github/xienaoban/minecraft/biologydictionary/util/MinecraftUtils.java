@@ -6,6 +6,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 
@@ -16,8 +17,13 @@ public final class MinecraftUtils {
     }
 
     @Environment(EnvType.CLIENT)
-    public static LocalPlayer getPlayer() {
+    public static LocalPlayer getLocalPlayer() {
         return Minecraft.getInstance().player;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static Level getLocalLevel() {
+        return Minecraft.getInstance().level;
     }
 
     @Environment(EnvType.CLIENT)

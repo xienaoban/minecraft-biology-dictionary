@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 public record RequestHandbookItemPacketPayload() implements PacketPayload {
-    public static final PacketPayloadMeta<RequestHandbookItemPacketPayload> META = PacketPayloadMeta.create(RequestHandbookItemPacketPayload.class);
+    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
 
     @Override
     public @NotNull Type<? extends PacketPayload> type() { return META.type(); }

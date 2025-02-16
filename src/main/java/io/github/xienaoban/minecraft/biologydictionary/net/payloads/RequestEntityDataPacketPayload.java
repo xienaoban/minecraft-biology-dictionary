@@ -10,7 +10,7 @@ import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 public record RequestEntityDataPacketPayload(int entityId) implements PacketPayload {
-    public static final PacketPayloadMeta<RequestEntityDataPacketPayload> META = PacketPayloadMeta.create(RequestEntityDataPacketPayload.class);
+    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
 
     @Override
     public @NotNull Type<? extends PacketPayload> type() { return META.type(); }

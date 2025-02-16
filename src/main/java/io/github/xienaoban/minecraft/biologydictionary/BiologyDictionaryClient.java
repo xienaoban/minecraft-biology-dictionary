@@ -42,6 +42,6 @@ public class BiologyDictionaryClient {
     public void setHitBlock(BlockPos hitBlock) { this.hitBlock = hitBlock; }
 
 
-    public EntityProperties<?> getHitEntityProperties() { return hitEntityProperties; }
+    public EntityProperties<? extends Entity> getHitEntityProperties() { return hitEntityProperties; }
     public void setHitEntityProperties(EntityProperties<?> hitEntityProperties) { this.hitEntityProperties = hitEntityProperties; }
 }

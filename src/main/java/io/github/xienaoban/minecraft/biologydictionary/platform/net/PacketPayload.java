@@ -10,10 +10,10 @@ public interface PacketPayload extends CustomPacketPayload {
 
     @Environment(EnvType.CLIENT)
     default void clientReceive(ClientNetApi.Context ctx) {
-        throw new AssertionError();
+        throw new AssertionError("Not implemented!");
     }
 
     default void serverReceive(ServerNetApi.Context ctx) {
-        throw new AssertionError();
+        throw new AssertionError("Not implemented!");
     }
 }

@@ -10,6 +10,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -26,7 +27,7 @@ import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public final class ScreenRenderingContext {
-    private final CommonScreen screen;
+    private final Screen screen;
 
     Minecraft minecraft;
     GuiGraphics guiGraphics;
@@ -34,7 +35,7 @@ public final class ScreenRenderingContext {
     private float tickDelta;
     private boolean debug;
 
-    public ScreenRenderingContext(CommonScreen screen) {
+    public ScreenRenderingContext(Screen screen) {
         this.minecraft = Minecraft.getInstance();
         this.screen = screen;
         this.debug = false;
@@ -57,13 +58,13 @@ public final class ScreenRenderingContext {
     }
 
     public Minecraft getMinecraft()     { return minecraft; }
-    public CommonScreen getScreen()     { return screen; }
+    public Screen getScreen()           { return screen; }
     public GuiGraphics getGuiGraphics() { return guiGraphics; }
     public float getMouseX()            { return mouseX; }
     public float getMouseY()            { return mouseY; }
     public float getTickDelta()         { return tickDelta; }
     public Font getFont()               { return screen.getFont(); }
-    public float getZ()                 { return screen.getZ(); }
+    public float getZ()                 { return ((CommonScreen) screen).getZ(); }
     public boolean isDebug()            { return debug; }
     public void setDebug(boolean debug) { this.debug = debug; }
 
@@ -73,6 +74,10 @@ public final class ScreenRenderingContext {
 
     public ScaleRAII scaleOnce(float size) {
         return new ScaleRAII(this, size);
+    }
+
+    public int calcTextWidth(Component component) {
+        return getFont().width(component);
     }
 
     /**
@@ -89,7 +94,7 @@ public final class ScreenRenderingContext {
     }
 
     public void renderCenteredText(Component component, int color, float x, float y) {
-        renderText(component, color, x - getFont().width(component) / 2.0F, y);
+        renderText(component, color, x - calcTextWidth(component) / 2.0F, y);
     }
 
     public void renderCenteredText(Component component, int color, float size, float x, float y) {

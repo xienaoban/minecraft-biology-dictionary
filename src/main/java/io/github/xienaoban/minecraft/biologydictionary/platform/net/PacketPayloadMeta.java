@@ -20,6 +20,14 @@ public record PacketPayloadMeta<T extends PacketPayload>(CustomPacketPayload.Typ
                                                                ClientReceiver<T> clientReceiver,
                                                                ServerReceiver<T> serverReceiver) {
 
+    public static <T extends PacketPayload> PacketPayloadMeta<T> create() {
+        Class<? extends PacketPayload> caller = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+                .getCallerClass().asSubclass(PacketPayload.class);
+        @SuppressWarnings("unchecked")
+        Class<T> c = (Class<T>) caller;
+        return create(c);
+    }
+
     public static <T extends PacketPayload> PacketPayloadMeta<T> create(Class<T> clazz) {
         try {
             MethodHandles.Lookup lookup = MethodHandles.lookup();

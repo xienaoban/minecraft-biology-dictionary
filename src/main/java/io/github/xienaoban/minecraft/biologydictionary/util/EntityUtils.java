@@ -2,6 +2,8 @@ package io.github.xienaoban.minecraft.biologydictionary.util;
 
 import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.EntityIMixin;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +12,14 @@ import java.util.List;
 public final class EntityUtils {
     public static void init() {
         AutoGenEntityDeobfuscation.map.get(null);
+    }
+
+    public static <E extends Entity> E create(EntityType<E> entityType) {
+        return create(entityType, MinecraftUtils.getLocalLevel());
+    }
+
+    public static <E extends Entity> E create(EntityType<E> entityType, Level level) {
+        return entityType.create(level, null);
     }
 
     public static void setInWater(Entity entity, boolean inWater) {

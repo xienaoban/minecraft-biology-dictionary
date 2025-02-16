@@ -16,16 +16,18 @@ public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
     private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT = (int) (MinecraftUtils.getClientTickCountPerSecond() * 1.5);
 
     private final Entity entity;
-    private final EntityProperties<Entity> properties;
+    private final EntityProperties<? extends Entity> properties;
 
     // Always 20 ticks per second. Not affected by "/tick rate" or "/gamerule randomTickSpeed".
     private int passedClientTickCount = 0;
 
-    public EntityDetailScreen(EntityProperties<Entity> properties) {
+    public EntityDetailScreen(EntityProperties<? extends Entity> properties) {
         super(properties.entity().getType().getDescription());
         this.entity = properties.entity();
         this.properties = properties;
         initEntityPropertyWidgets();
+
+        syncEntityProperties();
     }
 
     private void initEntityPropertyWidgets() {

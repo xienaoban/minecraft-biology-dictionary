@@ -3,6 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary.client;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.EntityDetailScreen;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.HomeScreen;
+import io.github.xienaoban.minecraft.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
@@ -45,7 +46,9 @@ public final class BiologyDictionaryEvent {
                 BDC.setHitBlock(pos);
                 BlockState blockState = player.level().getBlockState(pos);
                 if (blockState.getBlock() instanceof BeehiveBlock) {
-                    // todo
+                    ClientNetManager.requestBeehiveInfo(pos);
+                    minecraft.setScreen(new BeehiveScreen(pos));
+                    new ScreenRenderingContext(null).playScreenSound(SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
                     return;
                 }
             }
@@ -55,8 +58,8 @@ public final class BiologyDictionaryEvent {
         if (target == null) {
             minecraft.setScreen(new HomeScreen());
         } else {
-            BDC.setHitEntity(target);
             EntityProperties<Entity> properties = new EntityProperties<>(target);
+            BDC.setHitEntity(target);
             BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target);
             minecraft.setScreen(new EntityDetailScreen(properties));
