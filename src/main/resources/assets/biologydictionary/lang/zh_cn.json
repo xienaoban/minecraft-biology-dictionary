@@ -10,7 +10,9 @@
   "text.biologydictionary.click_me_to_download": "点我点我点我！（≧.≦）",
   "text.biologydictionary.empty_with_brackets": "（空）",
   "text.biologydictionary.honey":"蜂蜜",
-  "text.biologydictionary.has_nectar": "沾染花蜜：%s",
+  "text.biologydictionary.bee_state_in_beehive": "状态：%s",
+  "text.biologydictionary.bee_producing_nectar": "产蜜中",
+  "text.biologydictionary.bee_resting": "休息中",
   "text.biologydictionary.time_in_beehive": "逗留时间：%s",
   "": ""
 }

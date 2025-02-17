@@ -10,6 +10,7 @@ import io.github.xienaoban.minecraft.biologydictionary.util.MinecraftUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Bee;
@@ -117,15 +118,16 @@ public class BeehiveScreen extends ElementScreen {
             ctx.renderHorizontalLine(bee.entity.hasNectar() ? 0xFFFFBB00 : 0x64FFBB00, 1.2F, ctx.getZ(), y - 1, x - 7, x - 7 + t);
             ctx.renderEntity(bee.entity, x, y, beeSize, (float) Math.atan(action.mouseX / 80), (float) Math.atan(action.mouseY / 80), true);
             Component customName = bee.entity.getCustomName();
+            int beeTop = y - (bee.entity.isBaby() ? 20 : 25);
             if (customName != null) {
-                int wHalf = (ctx.calcTextWidth(customName) >> 2) + 1, yyy = y - (bee.entity.isBaby() ? 20 : 25);
-                ctx.renderHorizontalLine(0x55777777, 3, ctx.getZ(), yyy, x - wHalf, x + wHalf);
-                ctx.renderCenteredText(bee.entity.getCustomName(), color, 0.5F, x, yyy - 2);
+                int wHalf = (ctx.calcTextWidth(customName) >> 2) + 1;
+                ctx.renderHorizontalLine(0x55777777, 6, ctx.getZ(), beeTop, x - wHalf, x + wHalf);
+                ctx.renderCenteredText(bee.entity.getCustomName(), color, 0.5F, x, beeTop - 2);
             }
-            if (ctx.getMouseX() > x - 10 && ctx.getMouseX() < x + 10 && ctx.getMouseX() > y - 20 && ctx.getMouseY() < y) {
+            if (ctx.getMouseX() > x - 10 && ctx.getMouseX() < x + 10 && ctx.getMouseY() > beeTop && ctx.getMouseY() < y) {
                 List<Component> texts = List.of(
                         bee.entity.getName(),
-                        Component.translatable(TranslationKeys.TEXT_HAS_NECTAR, Component.translatable(bee.entity.hasNectar() ? TranslationKeys.GUI_YES : TranslationKeys.GUI_NO)).withStyle(ChatFormatting.GRAY),
+                        Component.translatable(TranslationKeys.TEXT_BEE_STATE_IN_BEEHIVE, Component.translatable(bee.entity.hasNectar() ? TranslationKeys.TEXT_BEE_PRODUCING_NECTAR : TranslationKeys.TEXT_BEE_RESTING)).withStyle(ChatFormatting.GRAY),
                         Component.translatable(TranslationKeys.TEXT_TIME_IN_BEEHIVE, (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s").withStyle(ChatFormatting.GRAY)
                 );
                 int maxLength = texts.stream().mapToInt(ctx::calcTextWidth).max().getAsInt();
@@ -177,15 +179,18 @@ public class BeehiveScreen extends ElementScreen {
         for (int i = 0; i < occupants.size(); ++i) {
             BeehiveBlockEntity.Occupant occupant = occupants.get(i);
             BeeInfo beeInfo = bees[i];
+
+            // @see net.minecraft.server.commands.data.DataCommands.register
             beeInfo.entity.setCustomName(null);
-            System.out.println("000000 " + beeInfo.entity.hasNectar());
-            beeInfo.entity.saveWithoutId(occupant.entityData().copyTag());
-            System.out.println("111111 " + occupant.entityData().copyTag().getBoolean("HasNectar"));
-            System.out.println("222222 " + beeInfo.entity.hasNectar());
+            CompoundTag newTag = new CompoundTag();
+            beeInfo.entity.saveWithoutId(newTag);
+            beeInfo.entity.load(newTag.merge(occupant.entityData().copyTag()));
+
             beeInfo.ticksInHive = occupant.ticksInHive();
             beeInfo.minTicksInHive = occupant.minTicksInHive();
         }
         blockBeeCnt = occupants.size();
+        blockHoneyCnt = BeehiveBlockEntity.getHoneyLevel(entity.getBlockState());
     }
 
     private static class BeeInfo {

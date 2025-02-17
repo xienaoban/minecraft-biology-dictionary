@@ -9,6 +9,11 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
+
 public final class ServerNetApi {
     public static <T extends PacketPayload> void register(Class<T> clazz) {
         try {
@@ -25,9 +30,16 @@ public final class ServerNetApi {
 
             if (serverReceiver != null) {
                 PayloadTypeRegistry.playC2S().register(type, codec);
-                ServerPlayNetworking.registerGlobalReceiver(type, (payload, context) ->
-                        serverReceiver.receive(payload, new ServerNetApi.Context(context.server(), context.player(), context.responseSender()))
-                );
+                ServerPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
+                    try {
+                        serverReceiver.receive(payload, new ServerNetApi.Context(context.server(), context.player(), context.responseSender()));
+                    } catch (Throwable e) {
+                        StringWriter sw = new StringWriter();
+                        PrintWriter pw = new PrintWriter(sw);
+                        e.printStackTrace(pw);
+                        LOGGER.error(sw.toString());
+                    }
+                });
             }
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException(e);

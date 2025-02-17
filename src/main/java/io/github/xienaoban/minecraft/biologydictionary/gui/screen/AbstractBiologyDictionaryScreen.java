@@ -51,7 +51,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     protected void render(ScreenRenderingContext ctx) {
-        renderTransparentBackground(ctx);
+        renderBlurredBackground(ctx);
         ctx.renderTexture(Textures.BOOK,
                 BOOK_LEFT, BOOK_TOP, BOOK_RIGHT, BOOK_BOTTOM,
                 getZ(),
@@ -88,6 +88,11 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
             curRightPage.getBox().setPosition(width / 2F + PAGE_MID_MARGIN,
                                               (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN);
         }
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 
     @Override

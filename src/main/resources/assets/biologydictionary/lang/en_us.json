@@ -10,7 +10,9 @@
   "text.biologydictionary.click_me_to_download": "Click me to download!",
   "text.biologydictionary.empty_with_brackets": "(Empty)",
   "text.biologydictionary.honey":"Honey",
-  "text.biologydictionary.has_nectar": "Nectar: %s",
+  "text.biologydictionary.bee_state_in_beehive": "State: %s",
+  "text.biologydictionary.bee_producing_nectar": "Producing nectar",
+  "text.biologydictionary.bee_resting": "Resting",
   "text.biologydictionary.time_in_beehive": "Time in hive: %s",
   "": ""
 }

@@ -8,6 +8,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
+
 @Environment(EnvType.CLIENT)
 public final class ClientNetApi {
 
@@ -19,9 +24,16 @@ public final class ClientNetApi {
             PacketPayloadMeta.ClientReceiver<T> clientReceiver = meta.clientReceiver();
 
             if (clientReceiver != null) {
-                ClientPlayNetworking.registerGlobalReceiver(type, (payload, context) ->
-                        clientReceiver.receive(payload, new Context(context.client(), context.player(), context.responseSender()))
-                );
+                ClientPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
+                    try {
+                        clientReceiver.receive(payload, new Context(context.client(), context.player(), context.responseSender()));
+                    } catch (Throwable e) {
+                        StringWriter sw = new StringWriter();
+                        PrintWriter pw = new PrintWriter(sw);
+                        e.printStackTrace(pw);
+                        LOGGER.error(sw.toString());
+                    }
+                });
             }
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException(e);

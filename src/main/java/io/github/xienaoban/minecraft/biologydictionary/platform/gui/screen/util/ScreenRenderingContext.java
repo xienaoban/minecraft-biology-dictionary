@@ -201,7 +201,7 @@ public final class ScreenRenderingContext {
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         entityRenderDispatcher.setRenderShadow(false);
         guiGraphics.drawSpecial(
-                multiBufferSource -> entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 1.0F, guiGraphics.pose(), multiBufferSource, 15728880)
+                multiBufferSource -> entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 1.0F, guiGraphics.pose(), multiBufferSource, 0xF000F0)
         );
         guiGraphics.flush();
         entityRenderDispatcher.setRenderShadow(true);
