@@ -106,6 +106,7 @@ public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRe
         register(LivingEntityHealthWidget.class);
         register(EntityAirWidget.class);
         register(AnimalFoodWidget.class);
+        register(EntityLeashableWidget.class);
         register(EntityBoundingBoxWidget.class);
     }
 

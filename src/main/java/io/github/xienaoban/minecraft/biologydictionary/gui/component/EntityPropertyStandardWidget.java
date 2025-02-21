@@ -42,14 +42,14 @@ public class EntityPropertyStandardWidget<E extends Entity> extends EntityProper
             int buttonSize = buttons == null ? 0 : buttons.size();
             float left = getBox().getLeft() + Widget.WIDGET_WIDTH + 1;
             float top = getBox().getTop() + 1;
-            float right = getBox().getRight() - (Widget.WIDGET_WIDTH - 2 + 1) * buttonSize;
+            float right = getBox().getRight() - (Widget.WIDGET_WIDTH - 2 + 1) * buttonSize - 1;
             float bottom = top + bar.getBox().getHeight();
             bar.getBox().set(left, top, right, bottom);
         }
         if (buttons != null) {
             int index = 0;
             for (ScreenElement button : buttons) {
-                button.getBox().setPosition(getBox().getRight() - (Widget.WIDGET_WIDTH - 2 + 1) * index - (Widget.WIDGET_WIDTH - 2), getBox().getTop() + 1);
+                button.getBox().setPosition(getBox().getRight() - (Widget.WIDGET_WIDTH - 2 + 1) * index - (Widget.WIDGET_WIDTH - 2) - 1, getBox().getTop() + 1);
                 ++index;
             }
         }

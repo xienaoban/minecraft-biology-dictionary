@@ -46,7 +46,7 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
                 return;
             }
             for (int i = foods.length - 1; i >= 0; --i) {
-                ctx.renderTexture(Textures.ICONS, 24 * 10.0F, 0, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
+                ctx.renderTexture(Textures.ICONS, 24 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
             for (int i = foods.length - 1; i >= 0; --i) {
                 ctx.renderItem(foods[i], 0.5F, getBox().getLeft() + i * gap, getBox().getTop());
