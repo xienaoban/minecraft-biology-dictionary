@@ -17,7 +17,7 @@ import net.minecraft.world.phys.AABB;
 public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<Entity> {
     public EntityBoundingBoxWidget(EntityProperties<Entity> properties) {
         super(properties);
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, 5 * Widget.WIDGET_WIDTH, 0));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, 11 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT));
         setElementBar(new BoxBar());
     }
 
@@ -26,7 +26,7 @@ public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<
         private Component textX, textY, textZ;
 
         public BoxBar() {
-            super(Textures.ICONS, 6 * Widget.WIDGET_WIDTH, 0);
+            super(Textures.ICONS, 12 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
             updateTexts();
         }
 

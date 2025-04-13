@@ -26,7 +26,7 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
         super(properties);
         foods = getFoodItems();
 
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, 5 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, 11 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT));
         setElementBar(new FoodBar());
     }
 
@@ -34,19 +34,18 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
         private float gap;
 
         public FoodBar() {
-            super(Textures.ICONS, 6 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+            super(Textures.ICONS, 12 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT);
         }
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
+            renderFullBar(ctx);
             if (foods.length == 0) {
-                renderFullBar(ctx);
                 renderInnerText(ctx, Component.translatable(TranslationKeys.TEXT_EMPTY_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
-                return;
             }
             for (int i = foods.length - 1; i >= 0; --i) {
-                ctx.renderTexture(Textures.ICONS, 24 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
+                ctx.renderTexture(Textures.ICONS, 22 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
             for (int i = foods.length - 1; i >= 0; --i) {
                 ctx.renderItem(foods[i], 0.5F, getBox().getLeft() + i * gap, getBox().getTop());

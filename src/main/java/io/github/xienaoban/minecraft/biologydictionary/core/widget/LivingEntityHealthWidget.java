@@ -16,13 +16,13 @@ import net.minecraft.world.entity.LivingEntity;
 public final class LivingEntityHealthWidget extends EntityPropertyStandardWidget<LivingEntity> {
     public LivingEntityHealthWidget(EntityProperties<LivingEntity> properties) {
         super(properties, 4);
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, 0, 0));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT));
         setElementBar(new HealthBar());
     }
 
     private final class HealthBar extends EntityPropertyProgressBar {
         public HealthBar() {
-            super(Textures.ICONS, Widget.WIDGET_WIDTH, 0);
+            super(Textures.ICONS, 2 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
         }
 
         @Override

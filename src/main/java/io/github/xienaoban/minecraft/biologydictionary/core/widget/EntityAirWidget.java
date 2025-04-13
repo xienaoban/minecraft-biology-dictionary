@@ -17,13 +17,13 @@ import net.minecraft.world.entity.Entity;
 public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> {
     public EntityAirWidget(EntityProperties<Entity> properties) {
         super(properties);
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, 0, Widget.WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, 6 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT));
         setElementBar(new AirBar());
     }
 
     private final class AirBar extends EntityPropertyProgressBar {
         public AirBar() {
-            super(Textures.ICONS, Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+            super(Textures.ICONS, 7 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
         }
 
         @Override
