@@ -1,9 +1,12 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.component;
 
+import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
+
+import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 public abstract class EntityPropertyWidget<E extends Entity> extends Widget {
@@ -21,9 +24,11 @@ public abstract class EntityPropertyWidget<E extends Entity> extends Widget {
     /**
      * This getter will be called frequently, so use an abbreviation for it.
      */
-    public E e() {
+    public final E e() {
         return properties.entity();
     }
+
+    protected final Map<String, EntityProperty> m() { return properties.m(); }
 
     public record RC(int rows, int columns) {}
 }

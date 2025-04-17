@@ -1,12 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.nbt.*;
 
 import java.util.ArrayList;
 
-@Environment(EnvType.CLIENT)
 public final class FloatListProperty extends AbstractProperty<ArrayList<Float>> {
     public FloatListProperty(String propertyName) {
         super(propertyName);

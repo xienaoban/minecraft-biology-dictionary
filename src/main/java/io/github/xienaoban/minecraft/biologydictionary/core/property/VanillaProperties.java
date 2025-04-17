@@ -1,8 +1,12 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
+import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.preset.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import java.util.Map;
+import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 public final class VanillaProperties {
@@ -36,84 +40,187 @@ public final class VanillaProperties {
      */
     public static final class OfEntity {
 
-        public static ShortProperty createAirProperty() {
+        private static ShortProperty createAirProperty() {
             return new ShortProperty("Air");
         }
 
-        public static StringProperty createCustomNameProperty() {
+        public static ShortProperty getAirProperty(Map<String, EntityProperty> map) {
+            return g(map, "Air");
+        }
+
+        private static StringProperty createCustomNameProperty() {
             return new StringProperty("CustomName");
         }
 
-        public static BooleanProperty createCustomNameVisibleProperty() {
+        public static StringProperty getCustomNameProperty(Map<String, EntityProperty> map) {
+            return g(map, "CustomName");
+        }
+
+        private static BooleanProperty createCustomNameVisibleProperty() {
             return new BooleanProperty("CustomNameVisible");
         }
 
-        public static FloatProperty createFallDistanceProperty() {
+        public static BooleanProperty getCustomNameVisibleProperty(Map<String, EntityProperty> map) {
+            return g(map, "CustomNameVisible");
+        }
+
+        private static FloatProperty createFallDistanceProperty() {
             return new FloatProperty("FallDistance");
         }
 
-        public static ShortProperty createFireProperty() {
+        public static FloatProperty getFallDistanceProperty(Map<String, EntityProperty> map) {
+            return g(map, "FallDistance");
+        }
+
+        private static ShortProperty createFireProperty() {
             return new ShortProperty("Fire");
         }
 
-        public static BooleanProperty createGlowingProperty() {
+        public static ShortProperty getFireProperty(Map<String, EntityProperty> map) {
+            return g(map, "Fire");
+        }
+
+        private static BooleanProperty createGlowingProperty() {
             return new BooleanProperty("Glowing");
         }
 
-        public static BooleanProperty createHasVisualFireProperty() {
+        public static BooleanProperty getGlowingProperty(Map<String, EntityProperty> map) {
+            return g(map, "Glowing");
+        }
+
+        private static BooleanProperty createHasVisualFireProperty() {
             return new BooleanProperty("HasVisualFire");
         }
 
-        public static BooleanProperty createInvulnerableProperty() {
+        public static BooleanProperty getHasVisualFireProperty(Map<String, EntityProperty> map) {
+            return g(map, "HasVisualFire");
+        }
+
+        private static BooleanProperty createInvulnerableProperty() {
             return new BooleanProperty("Invulnerable");
         }
 
-        public static DoubleListProperty createMotionProperty() {
+        public static BooleanProperty getInvulnerableProperty(Map<String, EntityProperty> map) {
+            return g(map, "Invulnerable");
+        }
+
+        private static DoubleListProperty createMotionProperty() {
             return new DoubleListProperty("Motion");
         }
 
-        public static BooleanProperty createNoGravityProperty() {
+        public static DoubleListProperty getMotionProperty(Map<String, EntityProperty> map) {
+            return g(map, "Motion");
+        }
+
+        private static BooleanProperty createNoGravityProperty() {
             return new BooleanProperty("NoGravity");
         }
 
-        public static BooleanProperty createOnGroundProperty() {
+        public static BooleanProperty getNoGravityProperty(Map<String, EntityProperty> map) {
+            return g(map, "NoGravity");
+        }
+
+        private static BooleanProperty createOnGroundProperty() {
             return new BooleanProperty("OnGround");
         }
 
-        public static UnsupportedProperty createPassengersProperty() {
+        public static BooleanProperty getOnGroundProperty(Map<String, EntityProperty> map) {
+            return g(map, "OnGround");
+        }
+
+        private static UnsupportedProperty createPassengersProperty() {
             return new UnsupportedProperty("Passengers");
         }
 
-        public static IntProperty createPortalCooldownProperty() {
+        public static UnsupportedProperty getPassengersProperty(Map<String, EntityProperty> map) {
+            return g(map, "Passengers");
+        }
+
+        private static IntProperty createPortalCooldownProperty() {
             return new IntProperty("PortalCooldown");
         }
 
-        public static DoubleListProperty createPosProperty() {
+        public static IntProperty getPortalCooldownProperty(Map<String, EntityProperty> map) {
+            return g(map, "PortalCooldown");
+        }
+
+        private static DoubleListProperty createPosProperty() {
             return new DoubleListProperty("Pos");
         }
 
-        public static FloatListProperty createRotationProperty() {
+        public static DoubleListProperty getPosProperty(Map<String, EntityProperty> map) {
+            return g(map, "Pos");
+        }
+
+        private static FloatListProperty createRotationProperty() {
             return new FloatListProperty("Rotation");
         }
 
-        public static BooleanProperty createSilentProperty() {
+        public static FloatListProperty getRotationProperty(Map<String, EntityProperty> map) {
+            return g(map, "Rotation");
+        }
+
+        private static BooleanProperty createSilentProperty() {
             return new BooleanProperty("Silent");
         }
 
-        public static StringListProperty createTagsProperty() {
+        public static BooleanProperty getSilentProperty(Map<String, EntityProperty> map) {
+            return g(map, "Silent");
+        }
+
+        private static StringListProperty createTagsProperty() {
             return new StringListProperty("Tags");
         }
 
-        public static IntProperty createTicksFrozenProperty() {
+        public static StringListProperty getTagsProperty(Map<String, EntityProperty> map) {
+            return g(map, "Tags");
+        }
+
+        private static IntProperty createTicksFrozenProperty() {
             return new IntProperty("TicksFrozen");
         }
 
-        public static UuidProperty createUuidProperty() {
+        public static IntProperty getTicksFrozenProperty(Map<String, EntityProperty> map) {
+            return g(map, "TicksFrozen");
+        }
+
+        private static UuidProperty createUuidProperty() {
             return new UuidProperty("UUID");
         }
 
-        public static UnsupportedProperty createIdProperty() {
+        public static UuidProperty getUuidProperty(Map<String, EntityProperty> map) {
+            return g(map, "UUID");
+        }
+
+        private static UnsupportedProperty createIdProperty() {
             return new UnsupportedProperty("id");
+        }
+
+        public static UnsupportedProperty getIdProperty(Map<String, EntityProperty> map) {
+            return g(map, "id");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Air", createAirProperty());
+            map.put("CustomName", createCustomNameProperty());
+            map.put("CustomNameVisible", createCustomNameVisibleProperty());
+            map.put("FallDistance", createFallDistanceProperty());
+            map.put("Fire", createFireProperty());
+            map.put("Glowing", createGlowingProperty());
+            map.put("HasVisualFire", createHasVisualFireProperty());
+            map.put("Invulnerable", createInvulnerableProperty());
+            map.put("Motion", createMotionProperty());
+            map.put("NoGravity", createNoGravityProperty());
+            map.put("OnGround", createOnGroundProperty());
+            map.put("Passengers", createPassengersProperty());
+            map.put("PortalCooldown", createPortalCooldownProperty());
+            map.put("Pos", createPosProperty());
+            map.put("Rotation", createRotationProperty());
+            map.put("Silent", createSilentProperty());
+            map.put("Tags", createTagsProperty());
+            map.put("TicksFrozen", createTicksFrozenProperty());
+            map.put("UUID", createUuidProperty());
+            map.put("id", createIdProperty());
         }
     }
 
@@ -139,56 +246,124 @@ public final class VanillaProperties {
      */
     public static final class OfLivingEntity {
 
-        public static FloatProperty createAbsorptionAmountProperty() {
+        private static FloatProperty createAbsorptionAmountProperty() {
             return new FloatProperty("AbsorptionAmount");
         }
 
-        public static UnsupportedProperty createBrainProperty() {
+        public static FloatProperty getAbsorptionAmountProperty(Map<String, EntityProperty> map) {
+            return g(map, "AbsorptionAmount");
+        }
+
+        private static UnsupportedProperty createBrainProperty() {
             return new UnsupportedProperty("Brain");
         }
 
-        public static ShortProperty createDeathTimeProperty() {
+        public static UnsupportedProperty getBrainProperty(Map<String, EntityProperty> map) {
+            return g(map, "Brain");
+        }
+
+        private static ShortProperty createDeathTimeProperty() {
             return new ShortProperty("DeathTime");
         }
 
-        public static BooleanProperty createFallFlyingProperty() {
+        public static ShortProperty getDeathTimeProperty(Map<String, EntityProperty> map) {
+            return g(map, "DeathTime");
+        }
+
+        private static BooleanProperty createFallFlyingProperty() {
             return new BooleanProperty("FallFlying");
         }
 
-        public static FloatProperty createHealthProperty() {
+        public static BooleanProperty getFallFlyingProperty(Map<String, EntityProperty> map) {
+            return g(map, "FallFlying");
+        }
+
+        private static FloatProperty createHealthProperty() {
             return new FloatProperty("Health");
         }
 
-        public static IntProperty createHurtByTimestampProperty() {
+        public static FloatProperty getHealthProperty(Map<String, EntityProperty> map) {
+            return g(map, "Health");
+        }
+
+        private static IntProperty createHurtByTimestampProperty() {
             return new IntProperty("HurtByTimestamp");
         }
 
-        public static ShortProperty createHurtTimeProperty() {
+        public static IntProperty getHurtByTimestampProperty(Map<String, EntityProperty> map) {
+            return g(map, "HurtByTimestamp");
+        }
+
+        private static ShortProperty createHurtTimeProperty() {
             return new ShortProperty("HurtTime");
         }
 
-        public static IntProperty createSleepingXProperty() {
+        public static ShortProperty getHurtTimeProperty(Map<String, EntityProperty> map) {
+            return g(map, "HurtTime");
+        }
+
+        private static IntProperty createSleepingXProperty() {
             return new IntProperty("SleepingX");
         }
 
-        public static IntProperty createSleepingYProperty() {
+        public static IntProperty getSleepingXProperty(Map<String, EntityProperty> map) {
+            return g(map, "SleepingX");
+        }
+
+        private static IntProperty createSleepingYProperty() {
             return new IntProperty("SleepingY");
         }
 
-        public static IntProperty createSleepingZProperty() {
+        public static IntProperty getSleepingYProperty(Map<String, EntityProperty> map) {
+            return g(map, "SleepingY");
+        }
+
+        private static IntProperty createSleepingZProperty() {
             return new IntProperty("SleepingZ");
         }
 
-        public static UnsupportedProperty createTeamProperty() {
+        public static IntProperty getSleepingZProperty(Map<String, EntityProperty> map) {
+            return g(map, "SleepingZ");
+        }
+
+        private static UnsupportedProperty createTeamProperty() {
             return new UnsupportedProperty("Team");
         }
 
-        public static UnsupportedProperty createActiveEffectsProperty() {
+        public static UnsupportedProperty getTeamProperty(Map<String, EntityProperty> map) {
+            return g(map, "Team");
+        }
+
+        private static UnsupportedProperty createActiveEffectsProperty() {
             return new UnsupportedProperty("active_effects");
         }
 
-        public static UnsupportedProperty createAttributesProperty() {
+        public static UnsupportedProperty getActiveEffectsProperty(Map<String, EntityProperty> map) {
+            return g(map, "active_effects");
+        }
+
+        private static UnsupportedProperty createAttributesProperty() {
             return new UnsupportedProperty("attributes");
+        }
+
+        public static UnsupportedProperty getAttributesProperty(Map<String, EntityProperty> map) {
+            return g(map, "attributes");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("AbsorptionAmount", createAbsorptionAmountProperty());
+            map.put("Brain", createBrainProperty());
+            map.put("DeathTime", createDeathTimeProperty());
+            map.put("FallFlying", createFallFlyingProperty());
+            map.put("Health", createHealthProperty());
+            map.put("HurtByTimestamp", createHurtByTimestampProperty());
+            map.put("HurtTime", createHurtTimeProperty());
+            map.put("SleepingX", createSleepingXProperty());
+            map.put("SleepingY", createSleepingYProperty());
+            map.put("SleepingZ", createSleepingZProperty());
+            map.put("Team", createTeamProperty());
+            map.put("active_effects", createActiveEffectsProperty());
+            map.put("attributes", createAttributesProperty());
         }
     }
 
@@ -212,52 +387,115 @@ public final class VanillaProperties {
      */
     public static final class OfMob {
 
-        public static FloatListProperty createArmorDropChancesProperty() {
+        private static FloatListProperty createArmorDropChancesProperty() {
             return new FloatListProperty("ArmorDropChances");
         }
 
-        public static ItemStackListProperty createArmorItemsProperty() {
+        public static FloatListProperty getArmorDropChancesProperty(Map<String, EntityProperty> map) {
+            return g(map, "ArmorDropChances");
+        }
+
+        private static ItemStackListProperty createArmorItemsProperty() {
             return new ItemStackListProperty("ArmorItems");
         }
 
-        public static BooleanProperty createCanPickUpLootProperty() {
+        public static ItemStackListProperty getArmorItemsProperty(Map<String, EntityProperty> map) {
+            return g(map, "ArmorItems");
+        }
+
+        private static BooleanProperty createCanPickUpLootProperty() {
             return new BooleanProperty("CanPickUpLoot");
         }
 
-        public static StringProperty createDeathLootTableProperty() {
+        public static BooleanProperty getCanPickUpLootProperty(Map<String, EntityProperty> map) {
+            return g(map, "CanPickUpLoot");
+        }
+
+        private static StringProperty createDeathLootTableProperty() {
             return new StringProperty("DeathLootTable");
         }
 
-        public static LongProperty createDeathLootTableSeedProperty() {
+        public static StringProperty getDeathLootTableProperty(Map<String, EntityProperty> map) {
+            return g(map, "DeathLootTable");
+        }
+
+        private static LongProperty createDeathLootTableSeedProperty() {
             return new LongProperty("DeathLootTableSeed");
         }
 
-        public static FloatListProperty createHandDropChancesProperty() {
+        public static LongProperty getDeathLootTableSeedProperty(Map<String, EntityProperty> map) {
+            return g(map, "DeathLootTableSeed");
+        }
+
+        private static FloatListProperty createHandDropChancesProperty() {
             return new FloatListProperty("HandDropChances");
         }
 
-        public static ItemStackListProperty createHandItemsProperty() {
+        public static FloatListProperty getHandDropChancesProperty(Map<String, EntityProperty> map) {
+            return g(map, "HandDropChances");
+        }
+
+        private static ItemStackListProperty createHandItemsProperty() {
             return new ItemStackListProperty("HandItems");
         }
 
-        public static BooleanProperty createLeftHandedProperty() {
+        public static ItemStackListProperty getHandItemsProperty(Map<String, EntityProperty> map) {
+            return g(map, "HandItems");
+        }
+
+        private static BooleanProperty createLeftHandedProperty() {
             return new BooleanProperty("LeftHanded");
         }
 
-        public static BooleanProperty createNoAiProperty() {
+        public static BooleanProperty getLeftHandedProperty(Map<String, EntityProperty> map) {
+            return g(map, "LeftHanded");
+        }
+
+        private static BooleanProperty createNoAiProperty() {
             return new BooleanProperty("NoAI");
         }
 
-        public static BooleanProperty createPersistenceRequiredProperty() {
+        public static BooleanProperty getNoAiProperty(Map<String, EntityProperty> map) {
+            return g(map, "NoAI");
+        }
+
+        private static BooleanProperty createPersistenceRequiredProperty() {
             return new BooleanProperty("PersistenceRequired");
         }
 
-        public static FloatProperty createBodyArmorDropChanceProperty() {
+        public static BooleanProperty getPersistenceRequiredProperty(Map<String, EntityProperty> map) {
+            return g(map, "PersistenceRequired");
+        }
+
+        private static FloatProperty createBodyArmorDropChanceProperty() {
             return new FloatProperty("body_armor_drop_chance");
         }
 
-        public static ItemStackProperty createBodyArmorItemProperty() {
+        public static FloatProperty getBodyArmorDropChanceProperty(Map<String, EntityProperty> map) {
+            return g(map, "body_armor_drop_chance");
+        }
+
+        private static ItemStackProperty createBodyArmorItemProperty() {
             return new ItemStackProperty("body_armor_item");
+        }
+
+        public static ItemStackProperty getBodyArmorItemProperty(Map<String, EntityProperty> map) {
+            return g(map, "body_armor_item");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("ArmorDropChances", createArmorDropChancesProperty());
+            map.put("ArmorItems", createArmorItemsProperty());
+            map.put("CanPickUpLoot", createCanPickUpLootProperty());
+            map.put("DeathLootTable", createDeathLootTableProperty());
+            map.put("DeathLootTableSeed", createDeathLootTableSeedProperty());
+            map.put("HandDropChances", createHandDropChancesProperty());
+            map.put("HandItems", createHandItemsProperty());
+            map.put("LeftHanded", createLeftHandedProperty());
+            map.put("NoAI", createNoAiProperty());
+            map.put("PersistenceRequired", createPersistenceRequiredProperty());
+            map.put("body_armor_drop_chance", createBodyArmorDropChanceProperty());
+            map.put("body_armor_item", createBodyArmorItemProperty());
         }
     }
 
@@ -268,6 +506,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.FlyingMob
      */
     public static final class OfFlyingMob {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -279,8 +520,16 @@ public final class VanillaProperties {
      */
     public static final class OfGhast {
 
-        public static ByteProperty createExplosionPowerProperty() {
+        private static ByteProperty createExplosionPowerProperty() {
             return new ByteProperty("ExplosionPower");
+        }
+
+        public static ByteProperty getExplosionPowerProperty(Map<String, EntityProperty> map) {
+            return g(map, "ExplosionPower");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("ExplosionPower", createExplosionPowerProperty());
         }
     }
 
@@ -296,20 +545,43 @@ public final class VanillaProperties {
      */
     public static final class OfPhantom {
 
-        public static IntProperty createAxProperty() {
+        private static IntProperty createAxProperty() {
             return new IntProperty("AX");
         }
 
-        public static IntProperty createAyProperty() {
+        public static IntProperty getAxProperty(Map<String, EntityProperty> map) {
+            return g(map, "AX");
+        }
+
+        private static IntProperty createAyProperty() {
             return new IntProperty("AY");
         }
 
-        public static IntProperty createAzProperty() {
+        public static IntProperty getAyProperty(Map<String, EntityProperty> map) {
+            return g(map, "AY");
+        }
+
+        private static IntProperty createAzProperty() {
             return new IntProperty("AZ");
         }
 
-        public static IntProperty createSizeProperty() {
+        public static IntProperty getAzProperty(Map<String, EntityProperty> map) {
+            return g(map, "AZ");
+        }
+
+        private static IntProperty createSizeProperty() {
             return new IntProperty("Size");
+        }
+
+        public static IntProperty getSizeProperty(Map<String, EntityProperty> map) {
+            return g(map, "Size");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("AX", createAxProperty());
+            map.put("AY", createAyProperty());
+            map.put("AZ", createAzProperty());
+            map.put("Size", createSizeProperty());
         }
     }
 
@@ -320,6 +592,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.PathfinderMob
      */
     public static final class OfPathfinderMob {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -332,12 +607,25 @@ public final class VanillaProperties {
      */
     public static final class OfAgeableMob {
 
-        public static IntProperty createAgeProperty() {
+        private static IntProperty createAgeProperty() {
             return new IntProperty("Age");
         }
 
-        public static IntProperty createForcedAgeProperty() {
+        public static IntProperty getAgeProperty(Map<String, EntityProperty> map) {
+            return g(map, "Age");
+        }
+
+        private static IntProperty createForcedAgeProperty() {
             return new IntProperty("ForcedAge");
+        }
+
+        public static IntProperty getForcedAgeProperty(Map<String, EntityProperty> map) {
+            return g(map, "ForcedAge");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Age", createAgeProperty());
+            map.put("ForcedAge", createForcedAgeProperty());
         }
     }
 
@@ -348,6 +636,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.AgeableWaterCreature
      */
     public static final class OfAgeableWaterCreature {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -363,24 +654,52 @@ public final class VanillaProperties {
      */
     public static final class OfDolphin {
 
-        public static BooleanProperty createGotFishProperty() {
+        private static BooleanProperty createGotFishProperty() {
             return new BooleanProperty("GotFish");
         }
 
-        public static IntProperty createMoistnessProperty() {
+        public static BooleanProperty getGotFishProperty(Map<String, EntityProperty> map) {
+            return g(map, "GotFish");
+        }
+
+        private static IntProperty createMoistnessProperty() {
             return new IntProperty("Moistness");
         }
 
-        public static IntProperty createTreasurePosXProperty() {
+        public static IntProperty getMoistnessProperty(Map<String, EntityProperty> map) {
+            return g(map, "Moistness");
+        }
+
+        private static IntProperty createTreasurePosXProperty() {
             return new IntProperty("TreasurePosX");
         }
 
-        public static IntProperty createTreasurePosYProperty() {
+        public static IntProperty getTreasurePosXProperty(Map<String, EntityProperty> map) {
+            return g(map, "TreasurePosX");
+        }
+
+        private static IntProperty createTreasurePosYProperty() {
             return new IntProperty("TreasurePosY");
         }
 
-        public static IntProperty createTreasurePosZProperty() {
+        public static IntProperty getTreasurePosYProperty(Map<String, EntityProperty> map) {
+            return g(map, "TreasurePosY");
+        }
+
+        private static IntProperty createTreasurePosZProperty() {
             return new IntProperty("TreasurePosZ");
+        }
+
+        public static IntProperty getTreasurePosZProperty(Map<String, EntityProperty> map) {
+            return g(map, "TreasurePosZ");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("GotFish", createGotFishProperty());
+            map.put("Moistness", createMoistnessProperty());
+            map.put("TreasurePosX", createTreasurePosXProperty());
+            map.put("TreasurePosY", createTreasurePosYProperty());
+            map.put("TreasurePosZ", createTreasurePosZProperty());
         }
     }
 
@@ -391,6 +710,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.Squid
      */
     public static final class OfSquid {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -402,8 +724,16 @@ public final class VanillaProperties {
      */
     public static final class OfGlowSquid {
 
-        public static IntProperty createDarkTicksRemainingProperty() {
+        private static IntProperty createDarkTicksRemainingProperty() {
             return new IntProperty("DarkTicksRemaining");
+        }
+
+        public static IntProperty getDarkTicksRemainingProperty(Map<String, EntityProperty> map) {
+            return g(map, "DarkTicksRemaining");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("DarkTicksRemaining", createDarkTicksRemainingProperty());
         }
     }
 
@@ -417,12 +747,25 @@ public final class VanillaProperties {
      */
     public static final class OfAnimal {
 
-        public static IntProperty createInLoveProperty() {
+        private static IntProperty createInLoveProperty() {
             return new IntProperty("InLove");
         }
 
-        public static UuidProperty createLoveCauseProperty() {
+        public static IntProperty getInLoveProperty(Map<String, EntityProperty> map) {
+            return g(map, "InLove");
+        }
+
+        private static UuidProperty createLoveCauseProperty() {
             return new UuidProperty("LoveCause");
+        }
+
+        public static UuidProperty getLoveCauseProperty(Map<String, EntityProperty> map) {
+            return g(map, "LoveCause");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("InLove", createInLoveProperty());
+            map.put("LoveCause", createLoveCauseProperty());
         }
     }
 
@@ -437,12 +780,25 @@ public final class VanillaProperties {
      */
     public static final class OfTamableAnimal {
 
-        public static UnsupportedProperty createOwnerProperty() {
+        private static UnsupportedProperty createOwnerProperty() {
             return new UnsupportedProperty("Owner");
         }
 
-        public static BooleanProperty createSittingProperty() {
+        public static UnsupportedProperty getOwnerProperty(Map<String, EntityProperty> map) {
+            return g(map, "Owner");
+        }
+
+        private static BooleanProperty createSittingProperty() {
             return new BooleanProperty("Sitting");
+        }
+
+        public static BooleanProperty getSittingProperty(Map<String, EntityProperty> map) {
+            return g(map, "Sitting");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Owner", createOwnerProperty());
+            map.put("Sitting", createSittingProperty());
         }
     }
 
@@ -456,12 +812,25 @@ public final class VanillaProperties {
      */
     public static final class OfCat {
 
-        public static ByteProperty createCollarColorProperty() {
+        private static ByteProperty createCollarColorProperty() {
             return new ByteProperty("CollarColor");
         }
 
-        public static StringProperty createVariantProperty() {
+        public static ByteProperty getCollarColorProperty(Map<String, EntityProperty> map) {
+            return g(map, "CollarColor");
+        }
+
+        private static StringProperty createVariantProperty() {
             return new StringProperty("variant");
+        }
+
+        public static StringProperty getVariantProperty(Map<String, EntityProperty> map) {
+            return g(map, "variant");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("CollarColor", createCollarColorProperty());
+            map.put("variant", createVariantProperty());
         }
     }
 
@@ -475,8 +844,16 @@ public final class VanillaProperties {
      */
     public static final class OfShoulderRidingEntity {
 
-        public static UnsupportedProperty createIdProperty() {
+        private static UnsupportedProperty createIdProperty() {
             return new UnsupportedProperty("id");
+        }
+
+        public static UnsupportedProperty getIdProperty(Map<String, EntityProperty> map) {
+            return g(map, "id");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("id", createIdProperty());
         }
     }
 
@@ -489,8 +866,16 @@ public final class VanillaProperties {
      */
     public static final class OfParrot {
 
-        public static IntProperty createVariantProperty() {
+        private static IntProperty createVariantProperty() {
             return new IntProperty("Variant");
+        }
+
+        public static IntProperty getVariantProperty(Map<String, EntityProperty> map) {
+            return g(map, "Variant");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Variant", createVariantProperty());
         }
     }
 
@@ -504,12 +889,25 @@ public final class VanillaProperties {
      */
     public static final class OfWolf {
 
-        public static ByteProperty createCollarColorProperty() {
+        private static ByteProperty createCollarColorProperty() {
             return new ByteProperty("CollarColor");
         }
 
-        public static StringProperty createVariantProperty() {
+        public static ByteProperty getCollarColorProperty(Map<String, EntityProperty> map) {
+            return g(map, "CollarColor");
+        }
+
+        private static StringProperty createVariantProperty() {
             return new StringProperty("variant");
+        }
+
+        public static StringProperty getVariantProperty(Map<String, EntityProperty> map) {
+            return g(map, "variant");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("CollarColor", createCollarColorProperty());
+            map.put("variant", createVariantProperty());
         }
     }
 
@@ -528,32 +926,70 @@ public final class VanillaProperties {
      */
     public static final class OfBee {
 
-        public static IntProperty createCannotEnterHiveTicksProperty() {
+        private static IntProperty createCannotEnterHiveTicksProperty() {
             return new IntProperty("CannotEnterHiveTicks");
         }
 
-        public static IntProperty createCropsGrownSincePollinationProperty() {
+        public static IntProperty getCannotEnterHiveTicksProperty(Map<String, EntityProperty> map) {
+            return g(map, "CannotEnterHiveTicks");
+        }
+
+        private static IntProperty createCropsGrownSincePollinationProperty() {
             return new IntProperty("CropsGrownSincePollination");
         }
 
-        public static BooleanProperty createHasNectarProperty() {
+        public static IntProperty getCropsGrownSincePollinationProperty(Map<String, EntityProperty> map) {
+            return g(map, "CropsGrownSincePollination");
+        }
+
+        private static BooleanProperty createHasNectarProperty() {
             return new BooleanProperty("HasNectar");
         }
 
-        public static BooleanProperty createHasStungProperty() {
+        public static BooleanProperty getHasNectarProperty(Map<String, EntityProperty> map) {
+            return g(map, "HasNectar");
+        }
+
+        private static BooleanProperty createHasStungProperty() {
             return new BooleanProperty("HasStung");
         }
 
-        public static IntProperty createTicksSincePollinationProperty() {
+        public static BooleanProperty getHasStungProperty(Map<String, EntityProperty> map) {
+            return g(map, "HasStung");
+        }
+
+        private static IntProperty createTicksSincePollinationProperty() {
             return new IntProperty("TicksSincePollination");
         }
 
-        public static BlockPosProperty createFlowerPosProperty() {
+        public static IntProperty getTicksSincePollinationProperty(Map<String, EntityProperty> map) {
+            return g(map, "TicksSincePollination");
+        }
+
+        private static BlockPosProperty createFlowerPosProperty() {
             return new BlockPosProperty("flower_pos");
         }
 
-        public static BlockPosProperty createHivePosProperty() {
+        public static BlockPosProperty getFlowerPosProperty(Map<String, EntityProperty> map) {
+            return g(map, "flower_pos");
+        }
+
+        private static BlockPosProperty createHivePosProperty() {
             return new BlockPosProperty("hive_pos");
+        }
+
+        public static BlockPosProperty getHivePosProperty(Map<String, EntityProperty> map) {
+            return g(map, "hive_pos");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("CannotEnterHiveTicks", createCannotEnterHiveTicksProperty());
+            map.put("CropsGrownSincePollination", createCropsGrownSincePollinationProperty());
+            map.put("HasNectar", createHasNectarProperty());
+            map.put("HasStung", createHasStungProperty());
+            map.put("TicksSincePollination", createTicksSincePollinationProperty());
+            map.put("flower_pos", createFlowerPosProperty());
+            map.put("hive_pos", createHivePosProperty());
         }
     }
 
@@ -567,12 +1003,25 @@ public final class VanillaProperties {
      */
     public static final class OfChicken {
 
-        public static IntProperty createEggLayTimeProperty() {
+        private static IntProperty createEggLayTimeProperty() {
             return new IntProperty("EggLayTime");
         }
 
-        public static BooleanProperty createIsChickenJockeyProperty() {
+        public static IntProperty getEggLayTimeProperty(Map<String, EntityProperty> map) {
+            return g(map, "EggLayTime");
+        }
+
+        private static BooleanProperty createIsChickenJockeyProperty() {
             return new BooleanProperty("IsChickenJockey");
+        }
+
+        public static BooleanProperty getIsChickenJockeyProperty(Map<String, EntityProperty> map) {
+            return g(map, "IsChickenJockey");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("EggLayTime", createEggLayTimeProperty());
+            map.put("IsChickenJockey", createIsChickenJockeyProperty());
         }
     }
 
@@ -583,6 +1032,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.Cow
      */
     public static final class OfCow {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -596,12 +1048,25 @@ public final class VanillaProperties {
      */
     public static final class OfMushroomCow {
 
-        public static StringProperty createTypeProperty() {
+        private static StringProperty createTypeProperty() {
             return new StringProperty("Type");
         }
 
-        public static UnsupportedProperty createStewEffectsProperty() {
+        public static StringProperty getTypeProperty(Map<String, EntityProperty> map) {
+            return g(map, "Type");
+        }
+
+        private static UnsupportedProperty createStewEffectsProperty() {
             return new UnsupportedProperty("stew_effects");
+        }
+
+        public static UnsupportedProperty getStewEffectsProperty(Map<String, EntityProperty> map) {
+            return g(map, "stew_effects");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Type", createTypeProperty());
+            map.put("stew_effects", createStewEffectsProperty());
         }
     }
 
@@ -618,24 +1083,52 @@ public final class VanillaProperties {
      */
     public static final class OfFox {
 
-        public static BooleanProperty createCrouchingProperty() {
+        private static BooleanProperty createCrouchingProperty() {
             return new BooleanProperty("Crouching");
         }
 
-        public static BooleanProperty createSittingProperty() {
+        public static BooleanProperty getCrouchingProperty(Map<String, EntityProperty> map) {
+            return g(map, "Crouching");
+        }
+
+        private static BooleanProperty createSittingProperty() {
             return new BooleanProperty("Sitting");
         }
 
-        public static BooleanProperty createSleepingProperty() {
+        public static BooleanProperty getSittingProperty(Map<String, EntityProperty> map) {
+            return g(map, "Sitting");
+        }
+
+        private static BooleanProperty createSleepingProperty() {
             return new BooleanProperty("Sleeping");
         }
 
-        public static UuidListProperty createTrustedProperty() {
+        public static BooleanProperty getSleepingProperty(Map<String, EntityProperty> map) {
+            return g(map, "Sleeping");
+        }
+
+        private static UuidListProperty createTrustedProperty() {
             return new UuidListProperty("Trusted");
         }
 
-        public static StringProperty createTypeProperty() {
+        public static UuidListProperty getTrustedProperty(Map<String, EntityProperty> map) {
+            return g(map, "Trusted");
+        }
+
+        private static StringProperty createTypeProperty() {
             return new StringProperty("Type");
+        }
+
+        public static StringProperty getTypeProperty(Map<String, EntityProperty> map) {
+            return g(map, "Type");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Crouching", createCrouchingProperty());
+            map.put("Sitting", createSittingProperty());
+            map.put("Sleeping", createSleepingProperty());
+            map.put("Trusted", createTrustedProperty());
+            map.put("Type", createTypeProperty());
         }
     }
 
@@ -648,8 +1141,16 @@ public final class VanillaProperties {
      */
     public static final class OfOcelot {
 
-        public static BooleanProperty createTrustingProperty() {
+        private static BooleanProperty createTrustingProperty() {
             return new BooleanProperty("Trusting");
+        }
+
+        public static BooleanProperty getTrustingProperty(Map<String, EntityProperty> map) {
+            return g(map, "Trusting");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Trusting", createTrustingProperty());
         }
     }
 
@@ -663,12 +1164,25 @@ public final class VanillaProperties {
      */
     public static final class OfPanda {
 
-        public static StringProperty createHiddenGeneProperty() {
+        private static StringProperty createHiddenGeneProperty() {
             return new StringProperty("HiddenGene");
         }
 
-        public static StringProperty createMainGeneProperty() {
+        public static StringProperty getHiddenGeneProperty(Map<String, EntityProperty> map) {
+            return g(map, "HiddenGene");
+        }
+
+        private static StringProperty createMainGeneProperty() {
             return new StringProperty("MainGene");
+        }
+
+        public static StringProperty getMainGeneProperty(Map<String, EntityProperty> map) {
+            return g(map, "MainGene");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("HiddenGene", createHiddenGeneProperty());
+            map.put("MainGene", createMainGeneProperty());
         }
     }
 
@@ -679,6 +1193,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.Pig
      */
     public static final class OfPig {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -688,6 +1205,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.PolarBear
      */
     public static final class OfPolarBear {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -700,12 +1220,25 @@ public final class VanillaProperties {
      */
     public static final class OfRabbit {
 
-        public static IntProperty createMoreCarrotTicksProperty() {
+        private static IntProperty createMoreCarrotTicksProperty() {
             return new IntProperty("MoreCarrotTicks");
         }
 
-        public static IntProperty createRabbitTypeProperty() {
+        public static IntProperty getMoreCarrotTicksProperty(Map<String, EntityProperty> map) {
+            return g(map, "MoreCarrotTicks");
+        }
+
+        private static IntProperty createRabbitTypeProperty() {
             return new IntProperty("RabbitType");
+        }
+
+        public static IntProperty getRabbitTypeProperty(Map<String, EntityProperty> map) {
+            return g(map, "RabbitType");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("MoreCarrotTicks", createMoreCarrotTicksProperty());
+            map.put("RabbitType", createRabbitTypeProperty());
         }
     }
 
@@ -719,12 +1252,25 @@ public final class VanillaProperties {
      */
     public static final class OfSheep {
 
-        public static ByteProperty createColorProperty() {
+        private static ByteProperty createColorProperty() {
             return new ByteProperty("Color");
         }
 
-        public static BooleanProperty createShearedProperty() {
+        public static ByteProperty getColorProperty(Map<String, EntityProperty> map) {
+            return g(map, "Color");
+        }
+
+        private static BooleanProperty createShearedProperty() {
             return new BooleanProperty("Sheared");
+        }
+
+        public static BooleanProperty getShearedProperty(Map<String, EntityProperty> map) {
+            return g(map, "Sheared");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Color", createColorProperty());
+            map.put("Sheared", createShearedProperty());
         }
     }
 
@@ -743,32 +1289,70 @@ public final class VanillaProperties {
      */
     public static final class OfTurtle {
 
-        public static BooleanProperty createHasEggProperty() {
+        private static BooleanProperty createHasEggProperty() {
             return new BooleanProperty("HasEgg");
         }
 
-        public static IntProperty createHomePosXProperty() {
+        public static BooleanProperty getHasEggProperty(Map<String, EntityProperty> map) {
+            return g(map, "HasEgg");
+        }
+
+        private static IntProperty createHomePosXProperty() {
             return new IntProperty("HomePosX");
         }
 
-        public static IntProperty createHomePosYProperty() {
+        public static IntProperty getHomePosXProperty(Map<String, EntityProperty> map) {
+            return g(map, "HomePosX");
+        }
+
+        private static IntProperty createHomePosYProperty() {
             return new IntProperty("HomePosY");
         }
 
-        public static IntProperty createHomePosZProperty() {
+        public static IntProperty getHomePosYProperty(Map<String, EntityProperty> map) {
+            return g(map, "HomePosY");
+        }
+
+        private static IntProperty createHomePosZProperty() {
             return new IntProperty("HomePosZ");
         }
 
-        public static IntProperty createTravelPosXProperty() {
+        public static IntProperty getHomePosZProperty(Map<String, EntityProperty> map) {
+            return g(map, "HomePosZ");
+        }
+
+        private static IntProperty createTravelPosXProperty() {
             return new IntProperty("TravelPosX");
         }
 
-        public static IntProperty createTravelPosYProperty() {
+        public static IntProperty getTravelPosXProperty(Map<String, EntityProperty> map) {
+            return g(map, "TravelPosX");
+        }
+
+        private static IntProperty createTravelPosYProperty() {
             return new IntProperty("TravelPosY");
         }
 
-        public static IntProperty createTravelPosZProperty() {
+        public static IntProperty getTravelPosYProperty(Map<String, EntityProperty> map) {
+            return g(map, "TravelPosY");
+        }
+
+        private static IntProperty createTravelPosZProperty() {
             return new IntProperty("TravelPosZ");
+        }
+
+        public static IntProperty getTravelPosZProperty(Map<String, EntityProperty> map) {
+            return g(map, "TravelPosZ");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("HasEgg", createHasEggProperty());
+            map.put("HomePosX", createHomePosXProperty());
+            map.put("HomePosY", createHomePosYProperty());
+            map.put("HomePosZ", createHomePosZProperty());
+            map.put("TravelPosX", createTravelPosXProperty());
+            map.put("TravelPosY", createTravelPosYProperty());
+            map.put("TravelPosZ", createTravelPosZProperty());
         }
     }
 
@@ -782,12 +1366,25 @@ public final class VanillaProperties {
      */
     public static final class OfArmadillo {
 
-        public static IntProperty createScuteTimeProperty() {
+        private static IntProperty createScuteTimeProperty() {
             return new IntProperty("scute_time");
         }
 
-        public static StringProperty createStateProperty() {
+        public static IntProperty getScuteTimeProperty(Map<String, EntityProperty> map) {
+            return g(map, "scute_time");
+        }
+
+        private static StringProperty createStateProperty() {
             return new StringProperty("state");
+        }
+
+        public static StringProperty getStateProperty(Map<String, EntityProperty> map) {
+            return g(map, "state");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("scute_time", createScuteTimeProperty());
+            map.put("state", createStateProperty());
         }
     }
 
@@ -803,20 +1400,43 @@ public final class VanillaProperties {
      */
     public static final class OfAxolotl {
 
-        public static IntProperty createAgeProperty() {
+        private static IntProperty createAgeProperty() {
             return new IntProperty("Age");
         }
 
-        public static BooleanProperty createFromBucketProperty() {
+        public static IntProperty getAgeProperty(Map<String, EntityProperty> map) {
+            return g(map, "Age");
+        }
+
+        private static BooleanProperty createFromBucketProperty() {
             return new BooleanProperty("FromBucket");
         }
 
-        public static LongProperty createHuntingCooldownProperty() {
+        public static BooleanProperty getFromBucketProperty(Map<String, EntityProperty> map) {
+            return g(map, "FromBucket");
+        }
+
+        private static LongProperty createHuntingCooldownProperty() {
             return new LongProperty("HuntingCooldown");
         }
 
-        public static IntProperty createVariantProperty() {
+        public static LongProperty getHuntingCooldownProperty(Map<String, EntityProperty> map) {
+            return g(map, "HuntingCooldown");
+        }
+
+        private static IntProperty createVariantProperty() {
             return new IntProperty("Variant");
+        }
+
+        public static IntProperty getVariantProperty(Map<String, EntityProperty> map) {
+            return g(map, "Variant");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Age", createAgeProperty());
+            map.put("FromBucket", createFromBucketProperty());
+            map.put("HuntingCooldown", createHuntingCooldownProperty());
+            map.put("Variant", createVariantProperty());
         }
     }
 
@@ -829,8 +1449,16 @@ public final class VanillaProperties {
      */
     public static final class OfFrog {
 
-        public static StringProperty createVariantProperty() {
+        private static StringProperty createVariantProperty() {
             return new StringProperty("variant");
+        }
+
+        public static StringProperty getVariantProperty(Map<String, EntityProperty> map) {
+            return g(map, "variant");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("variant", createVariantProperty());
         }
     }
 
@@ -845,16 +1473,34 @@ public final class VanillaProperties {
      */
     public static final class OfGoat {
 
-        public static BooleanProperty createHasLeftHornProperty() {
+        private static BooleanProperty createHasLeftHornProperty() {
             return new BooleanProperty("HasLeftHorn");
         }
 
-        public static BooleanProperty createHasRightHornProperty() {
+        public static BooleanProperty getHasLeftHornProperty(Map<String, EntityProperty> map) {
+            return g(map, "HasLeftHorn");
+        }
+
+        private static BooleanProperty createHasRightHornProperty() {
             return new BooleanProperty("HasRightHorn");
         }
 
-        public static BooleanProperty createIsScreamingGoatProperty() {
+        public static BooleanProperty getHasRightHornProperty(Map<String, EntityProperty> map) {
+            return g(map, "HasRightHorn");
+        }
+
+        private static BooleanProperty createIsScreamingGoatProperty() {
             return new BooleanProperty("IsScreamingGoat");
+        }
+
+        public static BooleanProperty getIsScreamingGoatProperty(Map<String, EntityProperty> map) {
+            return g(map, "IsScreamingGoat");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("HasLeftHorn", createHasLeftHornProperty());
+            map.put("HasRightHorn", createHasRightHornProperty());
+            map.put("IsScreamingGoat", createIsScreamingGoatProperty());
         }
     }
 
@@ -873,28 +1519,61 @@ public final class VanillaProperties {
      */
     public static final class OfAbstractHorse {
 
-        public static BooleanProperty createBredProperty() {
+        private static BooleanProperty createBredProperty() {
             return new BooleanProperty("Bred");
         }
 
-        public static BooleanProperty createEatingHaystackProperty() {
+        public static BooleanProperty getBredProperty(Map<String, EntityProperty> map) {
+            return g(map, "Bred");
+        }
+
+        private static BooleanProperty createEatingHaystackProperty() {
             return new BooleanProperty("EatingHaystack");
         }
 
-        public static UnsupportedProperty createOwnerProperty() {
+        public static BooleanProperty getEatingHaystackProperty(Map<String, EntityProperty> map) {
+            return g(map, "EatingHaystack");
+        }
+
+        private static UnsupportedProperty createOwnerProperty() {
             return new UnsupportedProperty("Owner");
         }
 
-        public static ItemStackProperty createSaddleItemProperty() {
+        public static UnsupportedProperty getOwnerProperty(Map<String, EntityProperty> map) {
+            return g(map, "Owner");
+        }
+
+        private static ItemStackProperty createSaddleItemProperty() {
             return new ItemStackProperty("SaddleItem");
         }
 
-        public static BooleanProperty createTameProperty() {
+        public static ItemStackProperty getSaddleItemProperty(Map<String, EntityProperty> map) {
+            return g(map, "SaddleItem");
+        }
+
+        private static BooleanProperty createTameProperty() {
             return new BooleanProperty("Tame");
         }
 
-        public static IntProperty createTemperProperty() {
+        public static BooleanProperty getTameProperty(Map<String, EntityProperty> map) {
+            return g(map, "Tame");
+        }
+
+        private static IntProperty createTemperProperty() {
             return new IntProperty("Temper");
+        }
+
+        public static IntProperty getTemperProperty(Map<String, EntityProperty> map) {
+            return g(map, "Temper");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Bred", createBredProperty());
+            map.put("EatingHaystack", createEatingHaystackProperty());
+            map.put("Owner", createOwnerProperty());
+            map.put("SaddleItem", createSaddleItemProperty());
+            map.put("Tame", createTameProperty());
+            map.put("Temper", createTemperProperty());
         }
     }
 
@@ -907,8 +1586,16 @@ public final class VanillaProperties {
      */
     public static final class OfCamel {
 
-        public static LongProperty createLastPoseTickProperty() {
+        private static LongProperty createLastPoseTickProperty() {
             return new LongProperty("LastPoseTick");
+        }
+
+        public static LongProperty getLastPoseTickProperty(Map<String, EntityProperty> map) {
+            return g(map, "LastPoseTick");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("LastPoseTick", createLastPoseTickProperty());
         }
     }
 
@@ -922,12 +1609,25 @@ public final class VanillaProperties {
      */
     public static final class OfAbstractChestedHorse {
 
-        public static BooleanProperty createChestedHorseProperty() {
+        private static BooleanProperty createChestedHorseProperty() {
             return new BooleanProperty("ChestedHorse");
         }
 
-        public static ItemStackListProperty createItemsProperty() {
+        public static BooleanProperty getChestedHorseProperty(Map<String, EntityProperty> map) {
+            return g(map, "ChestedHorse");
+        }
+
+        private static ItemStackListProperty createItemsProperty() {
             return new ItemStackListProperty("Items");
+        }
+
+        public static ItemStackListProperty getItemsProperty(Map<String, EntityProperty> map) {
+            return g(map, "Items");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("ChestedHorse", createChestedHorseProperty());
+            map.put("Items", createItemsProperty());
         }
     }
 
@@ -938,6 +1638,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.horse.Donkey
      */
     public static final class OfDonkey {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -950,12 +1653,25 @@ public final class VanillaProperties {
      */
     public static final class OfLlama {
 
-        public static IntProperty createStrengthProperty() {
+        private static IntProperty createStrengthProperty() {
             return new IntProperty("Strength");
         }
 
-        public static IntProperty createVariantProperty() {
+        public static IntProperty getStrengthProperty(Map<String, EntityProperty> map) {
+            return g(map, "Strength");
+        }
+
+        private static IntProperty createVariantProperty() {
             return new IntProperty("Variant");
+        }
+
+        public static IntProperty getVariantProperty(Map<String, EntityProperty> map) {
+            return g(map, "Variant");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Strength", createStrengthProperty());
+            map.put("Variant", createVariantProperty());
         }
     }
 
@@ -968,8 +1684,16 @@ public final class VanillaProperties {
      */
     public static final class OfTraderLlama {
 
-        public static IntProperty createDespawnDelayProperty() {
+        private static IntProperty createDespawnDelayProperty() {
             return new IntProperty("DespawnDelay");
+        }
+
+        public static IntProperty getDespawnDelayProperty(Map<String, EntityProperty> map) {
+            return g(map, "DespawnDelay");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("DespawnDelay", createDespawnDelayProperty());
         }
     }
 
@@ -980,6 +1704,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.horse.Mule
      */
     public static final class OfMule {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -991,8 +1718,16 @@ public final class VanillaProperties {
      */
     public static final class OfHorse {
 
-        public static IntProperty createVariantProperty() {
+        private static IntProperty createVariantProperty() {
             return new IntProperty("Variant");
+        }
+
+        public static IntProperty getVariantProperty(Map<String, EntityProperty> map) {
+            return g(map, "Variant");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Variant", createVariantProperty());
         }
     }
 
@@ -1006,12 +1741,25 @@ public final class VanillaProperties {
      */
     public static final class OfSkeletonHorse {
 
-        public static BooleanProperty createSkeletonTrapProperty() {
+        private static BooleanProperty createSkeletonTrapProperty() {
             return new BooleanProperty("SkeletonTrap");
         }
 
-        public static IntProperty createSkeletonTrapTimeProperty() {
+        public static BooleanProperty getSkeletonTrapProperty(Map<String, EntityProperty> map) {
+            return g(map, "SkeletonTrap");
+        }
+
+        private static IntProperty createSkeletonTrapTimeProperty() {
             return new IntProperty("SkeletonTrapTime");
+        }
+
+        public static IntProperty getSkeletonTrapTimeProperty(Map<String, EntityProperty> map) {
+            return g(map, "SkeletonTrapTime");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("SkeletonTrap", createSkeletonTrapProperty());
+            map.put("SkeletonTrapTime", createSkeletonTrapTimeProperty());
         }
     }
 
@@ -1022,6 +1770,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.horse.ZombieHorse
      */
     public static final class OfZombieHorse {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1031,6 +1782,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.sniffer.Sniffer
      */
     public static final class OfSniffer {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1040,6 +1794,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Strider
      */
     public static final class OfStrider {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1053,16 +1810,34 @@ public final class VanillaProperties {
      */
     public static final class OfHoglin {
 
-        public static BooleanProperty createCannotBeHuntedProperty() {
+        private static BooleanProperty createCannotBeHuntedProperty() {
             return new BooleanProperty("CannotBeHunted");
         }
 
-        public static BooleanProperty createIsImmuneToZombificationProperty() {
+        public static BooleanProperty getCannotBeHuntedProperty(Map<String, EntityProperty> map) {
+            return g(map, "CannotBeHunted");
+        }
+
+        private static BooleanProperty createIsImmuneToZombificationProperty() {
             return new BooleanProperty("IsImmuneToZombification");
         }
 
-        public static IntProperty createTimeInOverworldProperty() {
+        public static BooleanProperty getIsImmuneToZombificationProperty(Map<String, EntityProperty> map) {
+            return g(map, "IsImmuneToZombification");
+        }
+
+        private static IntProperty createTimeInOverworldProperty() {
             return new IntProperty("TimeInOverworld");
+        }
+
+        public static IntProperty getTimeInOverworldProperty(Map<String, EntityProperty> map) {
+            return g(map, "TimeInOverworld");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("CannotBeHunted", createCannotBeHuntedProperty());
+            map.put("IsImmuneToZombification", createIsImmuneToZombificationProperty());
+            map.put("TimeInOverworld", createTimeInOverworldProperty());
         }
     }
 
@@ -1076,8 +1851,16 @@ public final class VanillaProperties {
      */
     public static final class OfAbstractVillager {
 
-        public static UnsupportedProperty createOffersProperty() {
+        private static UnsupportedProperty createOffersProperty() {
             return new UnsupportedProperty("Offers");
+        }
+
+        public static UnsupportedProperty getOffersProperty(Map<String, EntityProperty> map) {
+            return g(map, "Offers");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Offers", createOffersProperty());
         }
     }
 
@@ -1098,36 +1881,79 @@ public final class VanillaProperties {
      */
     public static final class OfVillager {
 
-        public static BooleanProperty createAssignProfessionWhenSpawnedProperty() {
+        private static BooleanProperty createAssignProfessionWhenSpawnedProperty() {
             return new BooleanProperty("AssignProfessionWhenSpawned");
         }
 
-        public static ByteProperty createFoodLevelProperty() {
+        public static BooleanProperty getAssignProfessionWhenSpawnedProperty(Map<String, EntityProperty> map) {
+            return g(map, "AssignProfessionWhenSpawned");
+        }
+
+        private static ByteProperty createFoodLevelProperty() {
             return new ByteProperty("FoodLevel");
         }
 
-        public static UnsupportedProperty createGossipsProperty() {
+        public static ByteProperty getFoodLevelProperty(Map<String, EntityProperty> map) {
+            return g(map, "FoodLevel");
+        }
+
+        private static UnsupportedProperty createGossipsProperty() {
             return new UnsupportedProperty("Gossips");
         }
 
-        public static LongProperty createLastGossipDecayProperty() {
+        public static UnsupportedProperty getGossipsProperty(Map<String, EntityProperty> map) {
+            return g(map, "Gossips");
+        }
+
+        private static LongProperty createLastGossipDecayProperty() {
             return new LongProperty("LastGossipDecay");
         }
 
-        public static LongProperty createLastRestockProperty() {
+        public static LongProperty getLastGossipDecayProperty(Map<String, EntityProperty> map) {
+            return g(map, "LastGossipDecay");
+        }
+
+        private static LongProperty createLastRestockProperty() {
             return new LongProperty("LastRestock");
         }
 
-        public static IntProperty createRestocksTodayProperty() {
+        public static LongProperty getLastRestockProperty(Map<String, EntityProperty> map) {
+            return g(map, "LastRestock");
+        }
+
+        private static IntProperty createRestocksTodayProperty() {
             return new IntProperty("RestocksToday");
         }
 
-        public static UnsupportedProperty createVillagerDataProperty() {
+        public static IntProperty getRestocksTodayProperty(Map<String, EntityProperty> map) {
+            return g(map, "RestocksToday");
+        }
+
+        private static UnsupportedProperty createVillagerDataProperty() {
             return new UnsupportedProperty("VillagerData");
         }
 
-        public static IntProperty createXpProperty() {
+        public static UnsupportedProperty getVillagerDataProperty(Map<String, EntityProperty> map) {
+            return g(map, "VillagerData");
+        }
+
+        private static IntProperty createXpProperty() {
             return new IntProperty("Xp");
+        }
+
+        public static IntProperty getXpProperty(Map<String, EntityProperty> map) {
+            return g(map, "Xp");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("AssignProfessionWhenSpawned", createAssignProfessionWhenSpawnedProperty());
+            map.put("FoodLevel", createFoodLevelProperty());
+            map.put("Gossips", createGossipsProperty());
+            map.put("LastGossipDecay", createLastGossipDecayProperty());
+            map.put("LastRestock", createLastRestockProperty());
+            map.put("RestocksToday", createRestocksTodayProperty());
+            map.put("VillagerData", createVillagerDataProperty());
+            map.put("Xp", createXpProperty());
         }
     }
 
@@ -1141,12 +1967,25 @@ public final class VanillaProperties {
      */
     public static final class OfWanderingTrader {
 
-        public static IntProperty createDespawnDelayProperty() {
+        private static IntProperty createDespawnDelayProperty() {
             return new IntProperty("DespawnDelay");
         }
 
-        public static BlockPosProperty createWanderTargetProperty() {
+        public static IntProperty getDespawnDelayProperty(Map<String, EntityProperty> map) {
+            return g(map, "DespawnDelay");
+        }
+
+        private static BlockPosProperty createWanderTargetProperty() {
             return new BlockPosProperty("wander_target");
+        }
+
+        public static BlockPosProperty getWanderTargetProperty(Map<String, EntityProperty> map) {
+            return g(map, "wander_target");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("DespawnDelay", createDespawnDelayProperty());
+            map.put("wander_target", createWanderTargetProperty());
         }
     }
 
@@ -1157,6 +1996,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.AbstractGolem
      */
     public static final class OfAbstractGolem {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1168,8 +2010,16 @@ public final class VanillaProperties {
      */
     public static final class OfIronGolem {
 
-        public static BooleanProperty createPlayerCreatedProperty() {
+        private static BooleanProperty createPlayerCreatedProperty() {
             return new BooleanProperty("PlayerCreated");
+        }
+
+        public static BooleanProperty getPlayerCreatedProperty(Map<String, EntityProperty> map) {
+            return g(map, "PlayerCreated");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("PlayerCreated", createPlayerCreatedProperty());
         }
     }
 
@@ -1182,8 +2032,16 @@ public final class VanillaProperties {
      */
     public static final class OfSnowGolem {
 
-        public static BooleanProperty createPumpkinProperty() {
+        private static BooleanProperty createPumpkinProperty() {
             return new BooleanProperty("Pumpkin");
+        }
+
+        public static BooleanProperty getPumpkinProperty(Map<String, EntityProperty> map) {
+            return g(map, "Pumpkin");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Pumpkin", createPumpkinProperty());
         }
     }
 
@@ -1198,16 +2056,34 @@ public final class VanillaProperties {
      */
     public static final class OfShulker {
 
-        public static ByteProperty createAttachFaceProperty() {
+        private static ByteProperty createAttachFaceProperty() {
             return new ByteProperty("AttachFace");
         }
 
-        public static ByteProperty createColorProperty() {
+        public static ByteProperty getAttachFaceProperty(Map<String, EntityProperty> map) {
+            return g(map, "AttachFace");
+        }
+
+        private static ByteProperty createColorProperty() {
             return new ByteProperty("Color");
         }
 
-        public static ByteProperty createPeekProperty() {
+        public static ByteProperty getColorProperty(Map<String, EntityProperty> map) {
+            return g(map, "Color");
+        }
+
+        private static ByteProperty createPeekProperty() {
             return new ByteProperty("Peek");
+        }
+
+        public static ByteProperty getPeekProperty(Map<String, EntityProperty> map) {
+            return g(map, "Peek");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("AttachFace", createAttachFaceProperty());
+            map.put("Color", createColorProperty());
+            map.put("Peek", createPeekProperty());
         }
     }
 
@@ -1218,6 +2094,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.WaterAnimal
      */
     public static final class OfWaterAnimal {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1229,8 +2108,16 @@ public final class VanillaProperties {
      */
     public static final class OfAbstractFish {
 
-        public static BooleanProperty createFromBucketProperty() {
+        private static BooleanProperty createFromBucketProperty() {
             return new BooleanProperty("FromBucket");
+        }
+
+        public static BooleanProperty getFromBucketProperty(Map<String, EntityProperty> map) {
+            return g(map, "FromBucket");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("FromBucket", createFromBucketProperty());
         }
     }
 
@@ -1241,6 +2128,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.AbstractSchoolingFish
      */
     public static final class OfAbstractSchoolingFish {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1250,6 +2140,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.animal.Cod
      */
     public static final class OfCod {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1261,8 +2154,16 @@ public final class VanillaProperties {
      */
     public static final class OfSalmon {
 
-        public static StringProperty createTypeProperty() {
+        private static StringProperty createTypeProperty() {
             return new StringProperty("type");
+        }
+
+        public static StringProperty getTypeProperty(Map<String, EntityProperty> map) {
+            return g(map, "type");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("type", createTypeProperty());
         }
     }
 
@@ -1276,12 +2177,25 @@ public final class VanillaProperties {
      */
     public static final class OfTropicalFish {
 
-        public static IntProperty createBucketVariantTagProperty() {
+        private static IntProperty createBucketVariantTagProperty() {
             return new IntProperty("BucketVariantTag");
         }
 
-        public static IntProperty createVariantProperty() {
+        public static IntProperty getBucketVariantTagProperty(Map<String, EntityProperty> map) {
+            return g(map, "BucketVariantTag");
+        }
+
+        private static IntProperty createVariantProperty() {
             return new IntProperty("Variant");
+        }
+
+        public static IntProperty getVariantProperty(Map<String, EntityProperty> map) {
+            return g(map, "Variant");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("BucketVariantTag", createBucketVariantTagProperty());
+            map.put("Variant", createVariantProperty());
         }
     }
 
@@ -1294,8 +2208,16 @@ public final class VanillaProperties {
      */
     public static final class OfPufferfish {
 
-        public static IntProperty createPuffStateProperty() {
+        private static IntProperty createPuffStateProperty() {
             return new IntProperty("PuffState");
+        }
+
+        public static IntProperty getPuffStateProperty(Map<String, EntityProperty> map) {
+            return g(map, "PuffState");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("PuffState", createPuffStateProperty());
         }
     }
 
@@ -1308,8 +2230,16 @@ public final class VanillaProperties {
      */
     public static final class OfTadpole {
 
-        public static IntProperty createAgeProperty() {
+        private static IntProperty createAgeProperty() {
             return new IntProperty("Age");
+        }
+
+        public static IntProperty getAgeProperty(Map<String, EntityProperty> map) {
+            return g(map, "Age");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Age", createAgeProperty());
         }
     }
 
@@ -1325,16 +2255,34 @@ public final class VanillaProperties {
      */
     public static final class OfAllay {
 
-        public static BooleanProperty createCanDuplicateProperty() {
+        private static BooleanProperty createCanDuplicateProperty() {
             return new BooleanProperty("CanDuplicate");
         }
 
-        public static IntProperty createDuplicationCooldownProperty() {
+        public static BooleanProperty getCanDuplicateProperty(Map<String, EntityProperty> map) {
+            return g(map, "CanDuplicate");
+        }
+
+        private static IntProperty createDuplicationCooldownProperty() {
             return new IntProperty("DuplicationCooldown");
         }
 
-        public static UnsupportedProperty createListenerProperty() {
+        public static IntProperty getDuplicationCooldownProperty(Map<String, EntityProperty> map) {
+            return g(map, "DuplicationCooldown");
+        }
+
+        private static UnsupportedProperty createListenerProperty() {
             return new UnsupportedProperty("listener");
+        }
+
+        public static UnsupportedProperty getListenerProperty(Map<String, EntityProperty> map) {
+            return g(map, "listener");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("CanDuplicate", createCanDuplicateProperty());
+            map.put("DuplicationCooldown", createDuplicationCooldownProperty());
+            map.put("listener", createListenerProperty());
         }
     }
 
@@ -1345,6 +2293,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Monster
      */
     public static final class OfMonster {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1356,8 +2307,16 @@ public final class VanillaProperties {
      */
     public static final class OfWitherBoss {
 
-        public static IntProperty createInvulProperty() {
+        private static IntProperty createInvulProperty() {
             return new IntProperty("Invul");
+        }
+
+        public static IntProperty getInvulProperty(Map<String, EntityProperty> map) {
+            return g(map, "Invul");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Invul", createInvulProperty());
         }
     }
 
@@ -1368,6 +2327,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.AbstractSkeleton
      */
     public static final class OfAbstractSkeleton {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1379,8 +2341,16 @@ public final class VanillaProperties {
      */
     public static final class OfBogged {
 
-        public static BooleanProperty createShearedProperty() {
+        private static BooleanProperty createShearedProperty() {
             return new BooleanProperty("sheared");
+        }
+
+        public static BooleanProperty getShearedProperty(Map<String, EntityProperty> map) {
+            return g(map, "sheared");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("sheared", createShearedProperty());
         }
     }
 
@@ -1393,8 +2363,16 @@ public final class VanillaProperties {
      */
     public static final class OfSkeleton {
 
-        public static IntProperty createStrayConversionTimeProperty() {
+        private static IntProperty createStrayConversionTimeProperty() {
             return new IntProperty("StrayConversionTime");
+        }
+
+        public static IntProperty getStrayConversionTimeProperty(Map<String, EntityProperty> map) {
+            return g(map, "StrayConversionTime");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("StrayConversionTime", createStrayConversionTimeProperty());
         }
     }
 
@@ -1405,6 +2383,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Stray
      */
     public static final class OfStray {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1414,6 +2395,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.WitherSkeleton
      */
     public static final class OfWitherSkeleton {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1423,6 +2407,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Blaze
      */
     public static final class OfBlaze {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1437,20 +2424,43 @@ public final class VanillaProperties {
      */
     public static final class OfCreeper {
 
-        public static ByteProperty createExplosionRadiusProperty() {
+        private static ByteProperty createExplosionRadiusProperty() {
             return new ByteProperty("ExplosionRadius");
         }
 
-        public static ShortProperty createFuseProperty() {
+        public static ByteProperty getExplosionRadiusProperty(Map<String, EntityProperty> map) {
+            return g(map, "ExplosionRadius");
+        }
+
+        private static ShortProperty createFuseProperty() {
             return new ShortProperty("Fuse");
         }
 
-        public static BooleanProperty createIgnitedProperty() {
+        public static ShortProperty getFuseProperty(Map<String, EntityProperty> map) {
+            return g(map, "Fuse");
+        }
+
+        private static BooleanProperty createIgnitedProperty() {
             return new BooleanProperty("ignited");
         }
 
-        public static BooleanProperty createPoweredProperty() {
+        public static BooleanProperty getIgnitedProperty(Map<String, EntityProperty> map) {
+            return g(map, "ignited");
+        }
+
+        private static BooleanProperty createPoweredProperty() {
             return new BooleanProperty("powered");
+        }
+
+        public static BooleanProperty getPoweredProperty(Map<String, EntityProperty> map) {
+            return g(map, "powered");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("ExplosionRadius", createExplosionRadiusProperty());
+            map.put("Fuse", createFuseProperty());
+            map.put("ignited", createIgnitedProperty());
+            map.put("powered", createPoweredProperty());
         }
     }
 
@@ -1464,8 +2474,16 @@ public final class VanillaProperties {
      */
     public static final class OfEnderMan {
 
-        public static UnsupportedProperty createCarriedBlockStateProperty() {
+        private static UnsupportedProperty createCarriedBlockStateProperty() {
             return new UnsupportedProperty("carriedBlockState");
+        }
+
+        public static UnsupportedProperty getCarriedBlockStateProperty(Map<String, EntityProperty> map) {
+            return g(map, "carriedBlockState");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("carriedBlockState", createCarriedBlockStateProperty());
         }
     }
 
@@ -1478,8 +2496,16 @@ public final class VanillaProperties {
      */
     public static final class OfEndermite {
 
-        public static IntProperty createLifetimeProperty() {
+        private static IntProperty createLifetimeProperty() {
             return new IntProperty("Lifetime");
+        }
+
+        public static IntProperty getLifetimeProperty(Map<String, EntityProperty> map) {
+            return g(map, "Lifetime");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Lifetime", createLifetimeProperty());
         }
     }
 
@@ -1490,6 +2516,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Giant
      */
     public static final class OfGiant {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1499,6 +2528,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Guardian
      */
     public static final class OfGuardian {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1508,6 +2540,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.ElderGuardian
      */
     public static final class OfElderGuardian {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1521,16 +2556,34 @@ public final class VanillaProperties {
      */
     public static final class OfPatrollingMonster {
 
-        public static BooleanProperty createPatrolLeaderProperty() {
+        private static BooleanProperty createPatrolLeaderProperty() {
             return new BooleanProperty("PatrolLeader");
         }
 
-        public static BooleanProperty createPatrollingProperty() {
+        public static BooleanProperty getPatrolLeaderProperty(Map<String, EntityProperty> map) {
+            return g(map, "PatrolLeader");
+        }
+
+        private static BooleanProperty createPatrollingProperty() {
             return new BooleanProperty("Patrolling");
         }
 
-        public static BlockPosProperty createPatrolTargetProperty() {
+        public static BooleanProperty getPatrollingProperty(Map<String, EntityProperty> map) {
+            return g(map, "Patrolling");
+        }
+
+        private static BlockPosProperty createPatrolTargetProperty() {
             return new BlockPosProperty("patrol_target");
+        }
+
+        public static BlockPosProperty getPatrolTargetProperty(Map<String, EntityProperty> map) {
+            return g(map, "patrol_target");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("PatrolLeader", createPatrolLeaderProperty());
+            map.put("Patrolling", createPatrollingProperty());
+            map.put("patrol_target", createPatrolTargetProperty());
         }
     }
 
@@ -1545,16 +2598,34 @@ public final class VanillaProperties {
      */
     public static final class OfRaider {
 
-        public static BooleanProperty createCanJoinRaidProperty() {
+        private static BooleanProperty createCanJoinRaidProperty() {
             return new BooleanProperty("CanJoinRaid");
         }
 
-        public static IntProperty createRaidIdProperty() {
+        public static BooleanProperty getCanJoinRaidProperty(Map<String, EntityProperty> map) {
+            return g(map, "CanJoinRaid");
+        }
+
+        private static IntProperty createRaidIdProperty() {
             return new IntProperty("RaidId");
         }
 
-        public static IntProperty createWaveProperty() {
+        public static IntProperty getRaidIdProperty(Map<String, EntityProperty> map) {
+            return g(map, "RaidId");
+        }
+
+        private static IntProperty createWaveProperty() {
             return new IntProperty("Wave");
+        }
+
+        public static IntProperty getWaveProperty(Map<String, EntityProperty> map) {
+            return g(map, "Wave");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("CanJoinRaid", createCanJoinRaidProperty());
+            map.put("RaidId", createRaidIdProperty());
+            map.put("Wave", createWaveProperty());
         }
     }
 
@@ -1565,6 +2636,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.AbstractIllager
      */
     public static final class OfAbstractIllager {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1574,6 +2648,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Pillager
      */
     public static final class OfPillager {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1585,8 +2662,16 @@ public final class VanillaProperties {
      */
     public static final class OfSpellcasterIllager {
 
-        public static IntProperty createSpellTicksProperty() {
+        private static IntProperty createSpellTicksProperty() {
             return new IntProperty("SpellTicks");
+        }
+
+        public static IntProperty getSpellTicksProperty(Map<String, EntityProperty> map) {
+            return g(map, "SpellTicks");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("SpellTicks", createSpellTicksProperty());
         }
     }
 
@@ -1597,6 +2682,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Evoker
      */
     public static final class OfEvoker {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1606,6 +2694,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Illusioner
      */
     public static final class OfIllusioner {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1617,8 +2708,16 @@ public final class VanillaProperties {
      */
     public static final class OfVindicator {
 
-        public static BooleanProperty createJohnnyProperty() {
+        private static BooleanProperty createJohnnyProperty() {
             return new BooleanProperty("Johnny");
+        }
+
+        public static BooleanProperty getJohnnyProperty(Map<String, EntityProperty> map) {
+            return g(map, "Johnny");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Johnny", createJohnnyProperty());
         }
     }
 
@@ -1633,16 +2732,34 @@ public final class VanillaProperties {
      */
     public static final class OfRavager {
 
-        public static IntProperty createAttackTickProperty() {
+        private static IntProperty createAttackTickProperty() {
             return new IntProperty("AttackTick");
         }
 
-        public static IntProperty createRoarTickProperty() {
+        public static IntProperty getAttackTickProperty(Map<String, EntityProperty> map) {
+            return g(map, "AttackTick");
+        }
+
+        private static IntProperty createRoarTickProperty() {
             return new IntProperty("RoarTick");
         }
 
-        public static IntProperty createStunTickProperty() {
+        public static IntProperty getRoarTickProperty(Map<String, EntityProperty> map) {
+            return g(map, "RoarTick");
+        }
+
+        private static IntProperty createStunTickProperty() {
             return new IntProperty("StunTick");
+        }
+
+        public static IntProperty getStunTickProperty(Map<String, EntityProperty> map) {
+            return g(map, "StunTick");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("AttackTick", createAttackTickProperty());
+            map.put("RoarTick", createRoarTickProperty());
+            map.put("StunTick", createStunTickProperty());
         }
     }
 
@@ -1653,6 +2770,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Witch
      */
     public static final class OfWitch {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1662,6 +2782,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Silverfish
      */
     public static final class OfSilverfish {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1671,6 +2794,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Spider
      */
     public static final class OfSpider {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1680,6 +2806,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.CaveSpider
      */
     public static final class OfCaveSpider {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1694,20 +2823,43 @@ public final class VanillaProperties {
      */
     public static final class OfVex {
 
-        public static IntProperty createBoundXProperty() {
+        private static IntProperty createBoundXProperty() {
             return new IntProperty("BoundX");
         }
 
-        public static IntProperty createBoundYProperty() {
+        public static IntProperty getBoundXProperty(Map<String, EntityProperty> map) {
+            return g(map, "BoundX");
+        }
+
+        private static IntProperty createBoundYProperty() {
             return new IntProperty("BoundY");
         }
 
-        public static IntProperty createBoundZProperty() {
+        public static IntProperty getBoundYProperty(Map<String, EntityProperty> map) {
+            return g(map, "BoundY");
+        }
+
+        private static IntProperty createBoundZProperty() {
             return new IntProperty("BoundZ");
         }
 
-        public static IntProperty createLifeTicksProperty() {
+        public static IntProperty getBoundZProperty(Map<String, EntityProperty> map) {
+            return g(map, "BoundZ");
+        }
+
+        private static IntProperty createLifeTicksProperty() {
             return new IntProperty("LifeTicks");
+        }
+
+        public static IntProperty getLifeTicksProperty(Map<String, EntityProperty> map) {
+            return g(map, "LifeTicks");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("BoundX", createBoundXProperty());
+            map.put("BoundY", createBoundYProperty());
+            map.put("BoundZ", createBoundZProperty());
+            map.put("LifeTicks", createLifeTicksProperty());
         }
     }
 
@@ -1720,8 +2872,16 @@ public final class VanillaProperties {
      */
     public static final class OfZoglin {
 
-        public static BooleanProperty createIsBabyProperty() {
+        private static BooleanProperty createIsBabyProperty() {
             return new BooleanProperty("IsBaby");
+        }
+
+        public static BooleanProperty getIsBabyProperty(Map<String, EntityProperty> map) {
+            return g(map, "IsBaby");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("IsBaby", createIsBabyProperty());
         }
     }
 
@@ -1737,20 +2897,43 @@ public final class VanillaProperties {
      */
     public static final class OfZombie {
 
-        public static BooleanProperty createCanBreakDoorsProperty() {
+        private static BooleanProperty createCanBreakDoorsProperty() {
             return new BooleanProperty("CanBreakDoors");
         }
 
-        public static IntProperty createDrownedConversionTimeProperty() {
+        public static BooleanProperty getCanBreakDoorsProperty(Map<String, EntityProperty> map) {
+            return g(map, "CanBreakDoors");
+        }
+
+        private static IntProperty createDrownedConversionTimeProperty() {
             return new IntProperty("DrownedConversionTime");
         }
 
-        public static IntProperty createInWaterTimeProperty() {
+        public static IntProperty getDrownedConversionTimeProperty(Map<String, EntityProperty> map) {
+            return g(map, "DrownedConversionTime");
+        }
+
+        private static IntProperty createInWaterTimeProperty() {
             return new IntProperty("InWaterTime");
         }
 
-        public static BooleanProperty createIsBabyProperty() {
+        public static IntProperty getInWaterTimeProperty(Map<String, EntityProperty> map) {
+            return g(map, "InWaterTime");
+        }
+
+        private static BooleanProperty createIsBabyProperty() {
             return new BooleanProperty("IsBaby");
+        }
+
+        public static BooleanProperty getIsBabyProperty(Map<String, EntityProperty> map) {
+            return g(map, "IsBaby");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("CanBreakDoors", createCanBreakDoorsProperty());
+            map.put("DrownedConversionTime", createDrownedConversionTimeProperty());
+            map.put("InWaterTime", createInWaterTimeProperty());
+            map.put("IsBaby", createIsBabyProperty());
         }
     }
 
@@ -1761,6 +2944,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Drowned
      */
     public static final class OfDrowned {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1770,6 +2956,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.Husk
      */
     public static final class OfHusk {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1787,28 +2976,61 @@ public final class VanillaProperties {
      */
     public static final class OfZombieVillager {
 
-        public static UuidProperty createConversionPlayerProperty() {
+        private static UuidProperty createConversionPlayerProperty() {
             return new UuidProperty("ConversionPlayer");
         }
 
-        public static IntProperty createConversionTimeProperty() {
+        public static UuidProperty getConversionPlayerProperty(Map<String, EntityProperty> map) {
+            return g(map, "ConversionPlayer");
+        }
+
+        private static IntProperty createConversionTimeProperty() {
             return new IntProperty("ConversionTime");
         }
 
-        public static UnsupportedProperty createGossipsProperty() {
+        public static IntProperty getConversionTimeProperty(Map<String, EntityProperty> map) {
+            return g(map, "ConversionTime");
+        }
+
+        private static UnsupportedProperty createGossipsProperty() {
             return new UnsupportedProperty("Gossips");
         }
 
-        public static UnsupportedProperty createOffersProperty() {
+        public static UnsupportedProperty getGossipsProperty(Map<String, EntityProperty> map) {
+            return g(map, "Gossips");
+        }
+
+        private static UnsupportedProperty createOffersProperty() {
             return new UnsupportedProperty("Offers");
         }
 
-        public static UnsupportedProperty createVillagerDataProperty() {
+        public static UnsupportedProperty getOffersProperty(Map<String, EntityProperty> map) {
+            return g(map, "Offers");
+        }
+
+        private static UnsupportedProperty createVillagerDataProperty() {
             return new UnsupportedProperty("VillagerData");
         }
 
-        public static IntProperty createXpProperty() {
+        public static UnsupportedProperty getVillagerDataProperty(Map<String, EntityProperty> map) {
+            return g(map, "VillagerData");
+        }
+
+        private static IntProperty createXpProperty() {
             return new IntProperty("Xp");
+        }
+
+        public static IntProperty getXpProperty(Map<String, EntityProperty> map) {
+            return g(map, "Xp");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("ConversionPlayer", createConversionPlayerProperty());
+            map.put("ConversionTime", createConversionTimeProperty());
+            map.put("Gossips", createGossipsProperty());
+            map.put("Offers", createOffersProperty());
+            map.put("VillagerData", createVillagerDataProperty());
+            map.put("Xp", createXpProperty());
         }
     }
 
@@ -1819,6 +3041,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.ZombifiedPiglin
      */
     public static final class OfZombifiedPiglin {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1828,6 +3053,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.breeze.Breeze
      */
     public static final class OfBreeze {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1839,8 +3067,16 @@ public final class VanillaProperties {
      */
     public static final class OfCreaking {
 
-        public static BlockPosProperty createHomePosProperty() {
+        private static BlockPosProperty createHomePosProperty() {
             return new BlockPosProperty("home_pos");
+        }
+
+        public static BlockPosProperty getHomePosProperty(Map<String, EntityProperty> map) {
+            return g(map, "home_pos");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("home_pos", createHomePosProperty());
         }
     }
 
@@ -1854,12 +3090,25 @@ public final class VanillaProperties {
      */
     public static final class OfAbstractPiglin {
 
-        public static BooleanProperty createIsImmuneToZombificationProperty() {
+        private static BooleanProperty createIsImmuneToZombificationProperty() {
             return new BooleanProperty("IsImmuneToZombification");
         }
 
-        public static IntProperty createTimeInOverworldProperty() {
+        public static BooleanProperty getIsImmuneToZombificationProperty(Map<String, EntityProperty> map) {
+            return g(map, "IsImmuneToZombification");
+        }
+
+        private static IntProperty createTimeInOverworldProperty() {
             return new IntProperty("TimeInOverworld");
+        }
+
+        public static IntProperty getTimeInOverworldProperty(Map<String, EntityProperty> map) {
+            return g(map, "TimeInOverworld");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("IsImmuneToZombification", createIsImmuneToZombificationProperty());
+            map.put("TimeInOverworld", createTimeInOverworldProperty());
         }
     }
 
@@ -1873,12 +3122,25 @@ public final class VanillaProperties {
      */
     public static final class OfPiglin {
 
-        public static BooleanProperty createCannotHuntProperty() {
+        private static BooleanProperty createCannotHuntProperty() {
             return new BooleanProperty("CannotHunt");
         }
 
-        public static BooleanProperty createIsBabyProperty() {
+        public static BooleanProperty getCannotHuntProperty(Map<String, EntityProperty> map) {
+            return g(map, "CannotHunt");
+        }
+
+        private static BooleanProperty createIsBabyProperty() {
             return new BooleanProperty("IsBaby");
+        }
+
+        public static BooleanProperty getIsBabyProperty(Map<String, EntityProperty> map) {
+            return g(map, "IsBaby");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("CannotHunt", createCannotHuntProperty());
+            map.put("IsBaby", createIsBabyProperty());
         }
     }
 
@@ -1889,6 +3151,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.piglin.PiglinBrute
      */
     public static final class OfPiglinBrute {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1902,12 +3167,25 @@ public final class VanillaProperties {
      */
     public static final class OfWarden {
 
-        public static UnsupportedProperty createAngerProperty() {
+        private static UnsupportedProperty createAngerProperty() {
             return new UnsupportedProperty("anger");
         }
 
-        public static UnsupportedProperty createListenerProperty() {
+        public static UnsupportedProperty getAngerProperty(Map<String, EntityProperty> map) {
+            return g(map, "anger");
+        }
+
+        private static UnsupportedProperty createListenerProperty() {
             return new UnsupportedProperty("listener");
+        }
+
+        public static UnsupportedProperty getListenerProperty(Map<String, EntityProperty> map) {
+            return g(map, "listener");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("anger", createAngerProperty());
+            map.put("listener", createListenerProperty());
         }
     }
 
@@ -1918,6 +3196,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.ambient.AmbientCreature
      */
     public static final class OfAmbientCreature {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -1929,8 +3210,16 @@ public final class VanillaProperties {
      */
     public static final class OfBat {
 
-        public static ByteProperty createBatFlagsProperty() {
+        private static ByteProperty createBatFlagsProperty() {
             return new ByteProperty("BatFlags");
+        }
+
+        public static ByteProperty getBatFlagsProperty(Map<String, EntityProperty> map) {
+            return g(map, "BatFlags");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("BatFlags", createBatFlagsProperty());
         }
     }
 
@@ -1944,12 +3233,25 @@ public final class VanillaProperties {
      */
     public static final class OfEnderDragon {
 
-        public static IntProperty createDragonDeathTimeProperty() {
+        private static IntProperty createDragonDeathTimeProperty() {
             return new IntProperty("DragonDeathTime");
         }
 
-        public static IntProperty createDragonPhaseProperty() {
+        public static IntProperty getDragonDeathTimeProperty(Map<String, EntityProperty> map) {
+            return g(map, "DragonDeathTime");
+        }
+
+        private static IntProperty createDragonPhaseProperty() {
             return new IntProperty("DragonPhase");
+        }
+
+        public static IntProperty getDragonPhaseProperty(Map<String, EntityProperty> map) {
+            return g(map, "DragonPhase");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("DragonDeathTime", createDragonDeathTimeProperty());
+            map.put("DragonPhase", createDragonPhaseProperty());
         }
     }
 
@@ -1963,12 +3265,25 @@ public final class VanillaProperties {
      */
     public static final class OfSlime {
 
-        public static IntProperty createSizeProperty() {
+        private static IntProperty createSizeProperty() {
             return new IntProperty("Size");
         }
 
-        public static BooleanProperty createWasOnGroundProperty() {
+        public static IntProperty getSizeProperty(Map<String, EntityProperty> map) {
+            return g(map, "Size");
+        }
+
+        private static BooleanProperty createWasOnGroundProperty() {
             return new BooleanProperty("wasOnGround");
+        }
+
+        public static BooleanProperty getWasOnGroundProperty(Map<String, EntityProperty> map) {
+            return g(map, "wasOnGround");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("Size", createSizeProperty());
+            map.put("wasOnGround", createWasOnGroundProperty());
         }
     }
 
@@ -1979,6 +3294,9 @@ public final class VanillaProperties {
      * @see net.minecraft.world.entity.monster.MagmaCube
      */
     public static final class OfMagmaCube {
+
+        private static void register(Map<String, EntityProperty> map) {
+        }
     }
 
     /**
@@ -2005,64 +3323,147 @@ public final class VanillaProperties {
      */
     public static final class OfArmorStand {
 
-        public static ItemStackListProperty createArmorItemsProperty() {
+        private static ItemStackListProperty createArmorItemsProperty() {
             return new ItemStackListProperty("ArmorItems");
         }
 
-        public static FloatListProperty createBodyProperty() {
+        public static ItemStackListProperty getArmorItemsProperty(Map<String, EntityProperty> map) {
+            return g(map, "ArmorItems");
+        }
+
+        private static FloatListProperty createBodyProperty() {
             return new FloatListProperty("Body");
         }
 
-        public static IntProperty createDisabledSlotsProperty() {
+        public static FloatListProperty getBodyProperty(Map<String, EntityProperty> map) {
+            return g(map, "Body");
+        }
+
+        private static IntProperty createDisabledSlotsProperty() {
             return new IntProperty("DisabledSlots");
         }
 
-        public static ItemStackListProperty createHandItemsProperty() {
+        public static IntProperty getDisabledSlotsProperty(Map<String, EntityProperty> map) {
+            return g(map, "DisabledSlots");
+        }
+
+        private static ItemStackListProperty createHandItemsProperty() {
             return new ItemStackListProperty("HandItems");
         }
 
-        public static FloatListProperty createHeadProperty() {
+        public static ItemStackListProperty getHandItemsProperty(Map<String, EntityProperty> map) {
+            return g(map, "HandItems");
+        }
+
+        private static FloatListProperty createHeadProperty() {
             return new FloatListProperty("Head");
         }
 
-        public static BooleanProperty createInvisibleProperty() {
+        public static FloatListProperty getHeadProperty(Map<String, EntityProperty> map) {
+            return g(map, "Head");
+        }
+
+        private static BooleanProperty createInvisibleProperty() {
             return new BooleanProperty("Invisible");
         }
 
-        public static FloatListProperty createLeftArmProperty() {
+        public static BooleanProperty getInvisibleProperty(Map<String, EntityProperty> map) {
+            return g(map, "Invisible");
+        }
+
+        private static FloatListProperty createLeftArmProperty() {
             return new FloatListProperty("LeftArm");
         }
 
-        public static FloatListProperty createLeftLegProperty() {
+        public static FloatListProperty getLeftArmProperty(Map<String, EntityProperty> map) {
+            return g(map, "LeftArm");
+        }
+
+        private static FloatListProperty createLeftLegProperty() {
             return new FloatListProperty("LeftLeg");
         }
 
-        public static BooleanProperty createMarkerProperty() {
+        public static FloatListProperty getLeftLegProperty(Map<String, EntityProperty> map) {
+            return g(map, "LeftLeg");
+        }
+
+        private static BooleanProperty createMarkerProperty() {
             return new BooleanProperty("Marker");
         }
 
-        public static BooleanProperty createNoBasePlateProperty() {
+        public static BooleanProperty getMarkerProperty(Map<String, EntityProperty> map) {
+            return g(map, "Marker");
+        }
+
+        private static BooleanProperty createNoBasePlateProperty() {
             return new BooleanProperty("NoBasePlate");
         }
 
-        public static UnsupportedProperty createPoseProperty() {
+        public static BooleanProperty getNoBasePlateProperty(Map<String, EntityProperty> map) {
+            return g(map, "NoBasePlate");
+        }
+
+        private static UnsupportedProperty createPoseProperty() {
             return new UnsupportedProperty("Pose");
         }
 
-        public static FloatListProperty createRightArmProperty() {
+        public static UnsupportedProperty getPoseProperty(Map<String, EntityProperty> map) {
+            return g(map, "Pose");
+        }
+
+        private static FloatListProperty createRightArmProperty() {
             return new FloatListProperty("RightArm");
         }
 
-        public static FloatListProperty createRightLegProperty() {
+        public static FloatListProperty getRightArmProperty(Map<String, EntityProperty> map) {
+            return g(map, "RightArm");
+        }
+
+        private static FloatListProperty createRightLegProperty() {
             return new FloatListProperty("RightLeg");
         }
 
-        public static BooleanProperty createShowArmsProperty() {
+        public static FloatListProperty getRightLegProperty(Map<String, EntityProperty> map) {
+            return g(map, "RightLeg");
+        }
+
+        private static BooleanProperty createShowArmsProperty() {
             return new BooleanProperty("ShowArms");
         }
 
-        public static BooleanProperty createSmallProperty() {
+        public static BooleanProperty getShowArmsProperty(Map<String, EntityProperty> map) {
+            return g(map, "ShowArms");
+        }
+
+        private static BooleanProperty createSmallProperty() {
             return new BooleanProperty("Small");
         }
+
+        public static BooleanProperty getSmallProperty(Map<String, EntityProperty> map) {
+            return g(map, "Small");
+        }
+
+        private static void register(Map<String, EntityProperty> map) {
+            map.put("ArmorItems", createArmorItemsProperty());
+            map.put("Body", createBodyProperty());
+            map.put("DisabledSlots", createDisabledSlotsProperty());
+            map.put("HandItems", createHandItemsProperty());
+            map.put("Head", createHeadProperty());
+            map.put("Invisible", createInvisibleProperty());
+            map.put("LeftArm", createLeftArmProperty());
+            map.put("LeftLeg", createLeftLegProperty());
+            map.put("Marker", createMarkerProperty());
+            map.put("NoBasePlate", createNoBasePlateProperty());
+            map.put("Pose", createPoseProperty());
+            map.put("RightArm", createRightArmProperty());
+            map.put("RightLeg", createRightLegProperty());
+            map.put("ShowArms", createShowArmsProperty());
+            map.put("Small", createSmallProperty());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T g(Map<String, EntityProperty> map, String key) {
+        return (T) Optional.ofNullable(map.get(key)).orElseThrow(() -> new RuntimeException("Vanilla entity property \"" + key + "\" not found!"));
     }
 }

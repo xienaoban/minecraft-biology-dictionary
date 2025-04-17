@@ -1,12 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
-import io.github.xienaoban.minecraft.biologydictionary.api.EntityVanillaProperty;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import sun.misc.Unsafe;
 
-@Environment(EnvType.CLIENT)
-public abstract class AbstractProperty<T> implements EntityVanillaProperty {
+public abstract class AbstractProperty<T> implements EntityProperty {
     private final String propertyName;
     private T value;
 

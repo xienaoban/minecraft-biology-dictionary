@@ -1,7 +1,5 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -10,7 +8,6 @@ import net.minecraft.nbt.Tag;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Environment(EnvType.CLIENT)
 public final class UuidListProperty extends AbstractProperty<ArrayList<UUID>> {
     public UuidListProperty(String propertyName) {
         super(propertyName);

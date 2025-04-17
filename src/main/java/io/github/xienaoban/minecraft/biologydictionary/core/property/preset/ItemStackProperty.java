@@ -1,7 +1,5 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -9,7 +7,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
-@Environment(EnvType.CLIENT)
 public class ItemStackProperty extends AbstractProperty<ItemStack> {
     private final RegistryAccess registryAccess = Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
 

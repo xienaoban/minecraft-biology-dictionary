@@ -1,11 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
-@Environment(EnvType.CLIENT)
 public final class ShortProperty extends AbstractProperty<Short> {
     public ShortProperty(String propertyName) {
         super(propertyName);

@@ -1,12 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.nbt.*;
 
 import java.util.ArrayList;
 
-@Environment(EnvType.CLIENT)
 public final class IntListProperty extends AbstractProperty<ArrayList<Integer>> {
     public IntListProperty(String propertyName) {
         super(propertyName);

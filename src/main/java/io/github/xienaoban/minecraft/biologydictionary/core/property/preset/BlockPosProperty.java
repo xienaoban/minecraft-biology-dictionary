@@ -1,12 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 
-@Environment(EnvType.CLIENT)
 public final class BlockPosProperty extends AbstractProperty<BlockPos> {
     public BlockPosProperty(String propertyName) {
         super(propertyName);

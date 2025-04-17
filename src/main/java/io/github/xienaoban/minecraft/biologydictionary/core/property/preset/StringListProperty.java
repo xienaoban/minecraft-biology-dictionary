@@ -1,7 +1,5 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.ListTag;
@@ -9,7 +7,6 @@ import net.minecraft.nbt.Tag;
 
 import java.util.ArrayList;
 
-@Environment(EnvType.CLIENT)
 public final class StringListProperty extends AbstractProperty<ArrayList<String>> {
     public StringListProperty(String propertyName) {
         super(propertyName);
