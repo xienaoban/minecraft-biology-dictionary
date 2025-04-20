@@ -7,26 +7,30 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
+import io.github.xienaoban.minecraft.biologydictionary.util.Misc;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * TODO: NbtUtils.readBlockPos in net.minecraft.world.entity.animal.Bee
  */
 public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
-    private static final Logger LOGGER = createLogger();
+    private static final Path LOGGER_PATH = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_PATH.toString(), ".nbt-tag-list.log");
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String TAG_ARG_NAME = "compoundTag";
 
@@ -38,7 +42,96 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     private static final String READ_ITEM_STACK_METHOD_NAME = "parse";
     private static final String READ_OR_NULL_ITEM_STACK_METHOD_NAME = "parseOptional";
 
-    public static NbtTagCollector collect(Class<? extends Entity> entityClazz) {
+    private static Map<Class<? extends Entity>, NbtTagCollector> allNbts = null;
+
+    private static BufferedWriter nbtFileWriter = null;
+
+    public static NbtTagCollector get(Class<? extends Entity> entityClazz) {
+        Objects.requireNonNull(allNbts);
+        return Objects.requireNonNull(allNbts.get(entityClazz));
+    }
+
+    public static void collectAll() {
+        allNbts = new HashMap<>();
+        try {
+            Files.deleteIfExists(LOGGER_PATH);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try (BufferedWriter writer = Files.newBufferedWriter(LOGGER_PATH)) {
+            nbtFileWriter = writer;
+            EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
+                Class<? extends Entity> entityClazz = cur.getClazz();
+                LOGGER.info("Testing {}", entityClazz);
+                NbtTagCollector collector = collect(entityClazz);
+                allNbts.put(entityClazz, collector);
+                return true;
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            nbtFileWriter = null;
+        }
+    }
+
+    public static void loadAll() {
+        allNbts = new HashMap<>();
+
+        String regexGood = """
+                ^ - "([^"]+)": (.+)$
+                """.replaceAll("[\r\n]", "");
+        Pattern patternGood = Pattern.compile(regexGood);
+
+        String regexBad = """
+                ^ - !"([^"]+)": \\[(.+)\\]$
+                """.replaceAll("[\r\n]", "");
+        Pattern patternBad = Pattern.compile(regexBad);
+
+        int lineNumber = 0;
+        try {
+            NbtTagCollector collector = null;
+            for (String line : Files.readAllLines(LOGGER_PATH)) {
+                ++lineNumber;
+                if (line.startsWith("NBT tags of entity class ")) {
+                    String clazzName = line.substring(line.lastIndexOf(' ') + 1, line.length() - 1);
+                    Class<? extends Entity> entityClazz = Misc.cast(Class.forName(clazzName));
+                    logAndWrite("NBT tags of entity " + entityClazz + ":");
+                    collector = new NbtTagCollector(entityClazz);
+                    allNbts.put(entityClazz, collector);
+                } else if (line.startsWith(" - !")) {
+                    Matcher matcher = patternBad.matcher(line);
+                    if (!matcher.find()) {
+                        throw new RuntimeException("Matcher not found!");
+                    }
+                    String nbtName = matcher.group(1);
+                    Map<NbtTagInfo, NbtTagInfo> map = new HashMap<>();
+                    Matcher matcher2 = NbtTagInfo.DE_PATTERN.matcher(matcher.group(2));
+                    NbtTagInfo tag;
+                    while ((tag = NbtTagInfo.deserialize(matcher2)) != null) {
+                        map.put(tag, tag);
+                    }
+                    Objects.requireNonNull(collector).conflicts.put(nbtName, map);
+                } else if (line.startsWith(" - ")) {
+                    Matcher matcher = patternGood.matcher(line);
+                    if (!matcher.find()) {
+                        throw new RuntimeException("Matcher not found!");
+                    }
+                    String nbtName = matcher.group(1);
+                    Matcher matcher2 = NbtTagInfo.DE_PATTERN.matcher(matcher.group(2));
+                    Objects.requireNonNull(collector).nbtTags.put(nbtName, NbtTagInfo.deserialize(matcher2));
+                } else if (line.isEmpty()) {
+                    collector = null;
+                } else {
+                    throw new RuntimeException("Unknown line!");
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Pars line " + lineNumber + " error!", e);
+        }
+    }
+
+
+    private static NbtTagCollector collect(Class<? extends Entity> entityClazz) {
         CompilationUnit ast = AstParser.generateAst(entityClazz);
         NbtTagCollector collector = new NbtTagCollector(entityClazz);
         collector.visit(ast, null);
@@ -52,36 +145,30 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                 collector.addConflict(k, v);
             }
         }
-        LOGGER.info("NBT tags of entity " + entityClazz + ":");
+        logAndWrite("NBT tags of entity " + entityClazz + ":");
         for (var e : collector.nbtTags.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
             NbtTagInfo pi = e.getValue();
-            LOGGER.info(" - \"" + e.getKey() + "\": " + pi);
+            logAndWrite(" - \"" + e.getKey() + "\": " + pi);
         }
         for (var e : collector.conflicts.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
             Map<NbtTagInfo, NbtTagInfo> pis = e.getValue();
-            LOGGER.info(" - !\"" + e.getKey() + "\": " + pis.values().stream().sorted().toList());
+            logAndWrite(" - !\"" + e.getKey() + "\": " + pis.values().stream().sorted().toList());
         }
-        LOGGER.info("");
+        logAndWrite("");
 
         return collector;
     }
 
-    private static Logger createLogger() {
-        Path filePath = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_PATH.toString(), ".nbt-tag-list.log");
-        try {
-            Files.deleteIfExists(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private static void logAndWrite(String line) {
+        LOGGER.info(line);
+        if (nbtFileWriter != null) {
+            try {
+                nbtFileWriter.write(line);
+                nbtFileWriter.newLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        FileAppender fileAppender = FileAppender.newBuilder()
-                .setName("nbt-tag-collector")
-                .withFileName(filePath.toString())
-                .build();
-        fileAppender.start();
-        Logger logger = (Logger) LogManager.getLogger();
-        logger.addAppender(fileAppender);
-        logger.setLevel(Level.INFO);
-        return logger;
     }
 
     private final Class<? extends Entity> entityClazz;
@@ -279,6 +366,24 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     }
 
     public record NbtTagInfo(TagMap type, boolean list, boolean hasGetter, boolean hasPutter) implements Comparable<NbtTagInfo> {
+
+        private static final String DE_REGEX = """
+                NbtTagInfo\\{type=([^,]+), hasGetter=(true|false), hasPutter=(true|false)\\}
+                """.replaceAll("[\r\n]", "");
+        private static final Pattern DE_PATTERN = Pattern.compile(DE_REGEX);
+
+        private static NbtTagInfo deserialize(Matcher matcher) {
+            if (!matcher.find()) {
+                return null;
+            }
+            String t = matcher.group(1);
+            boolean isList = t.startsWith("[") && t.endsWith("]");
+            TagMap type = TagMap.valueOf(isList ? t.substring(1, t.length() - 1) : t);
+            boolean hasGetter = Boolean.getBoolean(matcher.group(2));
+            boolean hasPutter = Boolean.getBoolean(matcher.group(3));
+            return new NbtTagInfo(type, isList, hasGetter, hasPutter);
+        }
+
         public NbtTagInfo {
             if (type.isList()) {
                 type = type.removeList();

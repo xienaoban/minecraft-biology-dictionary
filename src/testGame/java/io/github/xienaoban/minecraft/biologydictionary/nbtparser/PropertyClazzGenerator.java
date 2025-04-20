@@ -25,21 +25,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
-/**
- * TODO: getter and setter and not contains exception
- */
 public class PropertyClazzGenerator {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String OUTPUT_CLAZZ_PACKAGE = TranslationKeys.PACKAGE + ".core.property";
     public static final File OUTPUT_CLAZZ_PATH = new File(TestUtils.MAIN_JAVA_ROOT.toString(), OUTPUT_CLAZZ_PACKAGE.replaceAll("\\.", "/"));
 
-    private static final String PROPERTY_WRAPPER_CLAZZ_NAME = "VanillaProperties";
+    private static final String PROPERTY_WRAPPER_CLAZZ_NAME = "AutoGenVanillaProperties";
 
     private static final Type STRING_TYPE = new ClassOrInterfaceType(null, String.class.getSimpleName());
     private static final Type ENTITY_PROPERTY_TYPE = new ClassOrInterfaceType(null, EntityProperty.class.getSimpleName());
@@ -53,17 +48,18 @@ public class PropertyClazzGenerator {
         addGeneralImports(cu);
         addGeneralAnnotations(wrapperClazz);
 
+        NbtTagCollector.loadAll();
         EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
             Class<? extends Entity> entityClazz = cur.getClazz();
-            // if (entityClazz != net.minecraft.world.entity.animal.armadillo.Armadillo.class) return true;
             LOGGER.info("Testing {}", entityClazz);
-            NbtTagCollector nbts = NbtTagCollector.collect(entityClazz);
+            NbtTagCollector nbts = NbtTagCollector.get(entityClazz);
             PropertyClazzGenerator generator = new PropertyClazzGenerator(entityClazz, nbts, wrapperClazz);
             generator.generate();
             return true;
         });
 
         addGetAndCastOrThrowMethod(wrapperClazz);
+        addPutMethod(wrapperClazz);
         writeClassToFile(cu, outputClassPath);
     }
 
@@ -90,6 +86,13 @@ public class PropertyClazzGenerator {
         method.setBody(new BlockStmt().addStatement("return (T) Optional.ofNullable(map.get(key)).orElseThrow(() -> new RuntimeException(\"Vanilla entity property \\\"\" + key + \"\\\" not found!\"));"));
     }
 
+    public static void addPutMethod(ClassOrInterfaceDeclaration wrapperClazz) {
+        MethodDeclaration method = wrapperClazz.addMethod("p", Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
+        method.addParameter(MAP_STR_PROPERTY_PARAM);
+        method.addParameter(new Parameter(ENTITY_PROPERTY_TYPE, "properties").setVarArgs(true));
+        method.setBody(new BlockStmt().addStatement("for (EntityProperty property : properties) { map.put(property.name(), property); }"));
+    }
+
     private static void writeClassToFile(CompilationUnit cu, File outputClassPath) {
         // if (Files.isRegularFile(path)) return; // do not overwrite
         try (PrintWriter out = new PrintWriter(outputClassPath)) {
@@ -105,7 +108,7 @@ public class PropertyClazzGenerator {
     private final CompilationUnit cu;
     private final ClassOrInterfaceDeclaration clazzAst;
 
-    private final BlockStmt registerMethodBody = new BlockStmt();
+    private final NodeList<Expression> registerMethodBody = new NodeList<>(new NameExpr("map"));
 
     private PropertyClazzGenerator(Class<? extends Entity> entityClazz, NbtTagCollector nbts, ClassOrInterfaceDeclaration wrapperClazz) {
         String targetClazzSimpleName = "Of" + entityClazz.getSimpleName();
@@ -123,7 +126,7 @@ public class PropertyClazzGenerator {
         addClazzComments();
 
         for (String propertyName : Stream.concat(nbts.getNbtTags().keySet().stream(), nbts.getConflicts().keySet().stream()).sorted().toList()) {
-            addPropertyMethod(propertyName, nbts.getNbtTags().getOrDefault(propertyName, null));
+            addPropertyCreateAndGetMethods(propertyName, nbts.getNbtTags().getOrDefault(propertyName, null));
         }
 
         addRegisterMethod();
@@ -149,7 +152,7 @@ public class PropertyClazzGenerator {
         clazzAst.setJavadocComment(comment.toString());
     }
 
-    private void addPropertyMethod(String propertyName, NbtTagCollector.NbtTagInfo propertyInfo) {
+    private void addPropertyCreateAndGetMethods(String propertyName, NbtTagCollector.NbtTagInfo propertyInfo) {
         String uc = toUpperCamelCase(propertyName);
         String returnType = propertyInfo == null
                 ? "UnsupportedProperty"
@@ -170,15 +173,14 @@ public class PropertyClazzGenerator {
             method.setBody(new BlockStmt().addStatement("return g(map, \"" + propertyName + "\");"));
         }
 
-        registerMethodBody.addStatement(new ExpressionStmt(new MethodCallExpr(new NameExpr("map"), "put",
-                new NodeList<>(new StringLiteralExpr(propertyName), new MethodCallExpr(null, "create" + uc + "Property")))));
+        registerMethodBody.add(new MethodCallExpr("create" + uc + "Property"));
     }
 
     private void addRegisterMethod() {
         String methodName = "register";
         MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
         method.addParameter(MAP_STR_PROPERTY_PARAM);
-        method.setBody(registerMethodBody);
+        method.setBody(new BlockStmt().addStatement(new ExpressionStmt(new MethodCallExpr(null, "p", registerMethodBody))));
     }
 
     private static String toUpperCamelCase(String s) {
