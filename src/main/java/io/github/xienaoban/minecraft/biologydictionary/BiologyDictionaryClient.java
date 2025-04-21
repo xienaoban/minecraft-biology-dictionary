@@ -19,7 +19,7 @@ public class BiologyDictionaryClient {
     private Entity hitEntity;
     private BlockPos hitBlock;
 
-    private EntityProperties<?> hitEntityProperties;
+    private EntityProperties<? extends Entity> hitEntityProperties;
 
     private BiologyDictionaryClient() {
         hitEntity = null;
@@ -43,5 +43,5 @@ public class BiologyDictionaryClient {
 
 
     public EntityProperties<? extends Entity> getHitEntityProperties() { return hitEntityProperties; }
-    public void setHitEntityProperties(EntityProperties<?> hitEntityProperties) { this.hitEntityProperties = hitEntityProperties; }
+    public void setHitEntityProperties(EntityProperties<? extends Entity> hitEntityProperties) { this.hitEntityProperties = hitEntityProperties; }
 }

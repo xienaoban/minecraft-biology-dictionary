@@ -1,7 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
-import sun.misc.Unsafe;
+
+import java.lang.invoke.VarHandle;
 
 public abstract class AbstractProperty<T> implements EntityProperty {
     private final String propertyName;
@@ -23,8 +24,8 @@ public abstract class AbstractProperty<T> implements EntityProperty {
     }
 
     public final void set(T newValue) {
-        Unsafe.getUnsafe().storeFence();
         value = newValue;
+        VarHandle.releaseFence();
     }
 
     public static final class IllegalPropertyStateException extends RuntimeException {

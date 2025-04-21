@@ -8,7 +8,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
@@ -25,7 +24,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class PropertyClazzGenerator {
@@ -34,7 +35,7 @@ public class PropertyClazzGenerator {
     public static final String OUTPUT_CLAZZ_PACKAGE = TranslationKeys.PACKAGE + ".core.property";
     public static final File OUTPUT_CLAZZ_PATH = new File(TestUtils.MAIN_JAVA_ROOT.toString(), OUTPUT_CLAZZ_PACKAGE.replaceAll("\\.", "/"));
 
-    private static final String PROPERTY_WRAPPER_CLAZZ_NAME = "AutoGenVanillaProperties";
+    private static final String PROPERTY_WRAPPER_CLAZZ_NAME = "VanillaProperties";
 
     private static final Type STRING_TYPE = new ClassOrInterfaceType(null, String.class.getSimpleName());
     private static final Type ENTITY_PROPERTY_TYPE = new ClassOrInterfaceType(null, EntityProperty.class.getSimpleName());
@@ -108,8 +109,6 @@ public class PropertyClazzGenerator {
     private final CompilationUnit cu;
     private final ClassOrInterfaceDeclaration clazzAst;
 
-    private final NodeList<Expression> registerMethodBody = new NodeList<>(new NameExpr("map"));
-
     private PropertyClazzGenerator(Class<? extends Entity> entityClazz, NbtTagCollector nbts, ClassOrInterfaceDeclaration wrapperClazz) {
         String targetClazzSimpleName = "Of" + entityClazz.getSimpleName();
         this.entityClazz = entityClazz;
@@ -128,8 +127,6 @@ public class PropertyClazzGenerator {
         for (String propertyName : Stream.concat(nbts.getNbtTags().keySet().stream(), nbts.getConflicts().keySet().stream()).sorted().toList()) {
             addPropertyCreateAndGetMethods(propertyName, nbts.getNbtTags().getOrDefault(propertyName, null));
         }
-
-        addRegisterMethod();
     }
 
     private void addClazzComments() {
@@ -160,7 +157,7 @@ public class PropertyClazzGenerator {
 
         {
             String methodName = "create" + uc + "Property";
-            MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
+            MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
             method.setType(returnType);
             method.setBody(new BlockStmt().addStatement("return new " + returnType + "(\"" + propertyName + "\");"));
         }
@@ -172,15 +169,6 @@ public class PropertyClazzGenerator {
             method.setType(returnType);
             method.setBody(new BlockStmt().addStatement("return g(map, \"" + propertyName + "\");"));
         }
-
-        registerMethodBody.add(new MethodCallExpr("create" + uc + "Property"));
-    }
-
-    private void addRegisterMethod() {
-        String methodName = "register";
-        MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
-        method.addParameter(MAP_STR_PROPERTY_PARAM);
-        method.setBody(new BlockStmt().addStatement(new ExpressionStmt(new MethodCallExpr(null, "p", registerMethodBody))));
     }
 
     private static String toUpperCamelCase(String s) {
