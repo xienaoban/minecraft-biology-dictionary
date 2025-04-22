@@ -12,16 +12,26 @@ public abstract class ElementScreen extends CommonScreen {
     private ScreenElement focusedElement;
     private ScreenElement selectedElement;
 
+    private int ticks;
+
     protected ElementScreen(Component component) {
         super(component);
         this.rootScreenElement = new RootScreenElement();
         this.focusedElement = null;
+
+        this.ticks = 0;
     }
 
     @Override
     protected void init() {
         super.init();
         rootScreenElement.resize(width, height);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        rootScreenElement.tick(ticks++);
     }
 
     @Override
@@ -72,6 +82,10 @@ public abstract class ElementScreen extends CommonScreen {
 
     public final ScreenElement getRootScreenElement() {
         return rootScreenElement;
+    }
+
+    public final int getTicks() {
+        return ticks;
     }
 
     /**

@@ -32,7 +32,38 @@ public abstract class ScreenElement {
         this.selectable = selectable;
     }
 
-    @Nullable public final ScreenElement getParent() { return parent; }
+    /**
+     * Invoked every tick.
+     */
+    protected void onTick(int ticks) {}
+
+    /**
+     * Render the content of the current element.
+     * @param ctx the context of the screen
+     */
+    protected void onRender(ScreenRenderingContext ctx) {}
+
+    /**
+     * Resize the width and height of the current element.
+     * And also relocate the sub elements.
+     * @param width the new width of the screen, same with this.width
+     * @param height the new height of the screen, same with this.height
+     */
+    protected void onResize(int width, int height) {}
+
+    /**
+     * MouseDown event.
+     * @param x the x of mouse
+     * @param y the y of mouse
+     * @param code the mouse code
+     * @return whether to consume the event (return false to pass the event to the parent element)
+     */
+    protected boolean onMouseDown(float x, float y, int code) { return false; }
+
+    @Nullable public final ScreenElement getParent() {
+        return parent;
+    }
+
     public final void setParent(ScreenElement newParent) {
         if (parent != null) {
             parent.unregisterSubScreenElement(this);
@@ -40,6 +71,13 @@ public abstract class ScreenElement {
         parent = newParent;
         if (parent != null) {
             parent.registerSubScreenElement(this);
+        }
+    }
+
+    public final void tick(int ticks) {
+        onTick(ticks);
+        for (ScreenElement subEle : subScreenElements) {
+            subEle.tick(ticks);
         }
     }
 
@@ -88,29 +126,6 @@ public abstract class ScreenElement {
     public final boolean mouseDown(float x, float y, int code) {
         return !onMouseDown(x, y, code) && getParent() != null && getParent().mouseDown(x, y , code);
     }
-
-    /**
-     * Render the content of the current element.
-     * @param ctx the context of the screen
-     */
-    protected void onRender(ScreenRenderingContext ctx) {}
-
-    /**
-     * Resize the width and height of the current element.
-     * And also relocate the sub elements.
-     * @param width the new width of the screen, same with this.width
-     * @param height the new height of the screen, same with this.height
-     */
-    protected void onResize(int width, int height) {}
-
-    /**
-     * MouseDown event.
-     * @param x the x of mouse
-     * @param y the y of mouse
-     * @param code the mouse code
-     * @return whether to consume the event (return false to pass the event to the parent element)
-     */
-    protected boolean onMouseDown(float x, float y, int code) { return false; }
 
     public final ScreenElementBox getBox() { return box; }
 

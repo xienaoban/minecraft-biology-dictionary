@@ -11,16 +11,63 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.util.MinecraftUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
     private final IntProperty portalCooldownProperty = VanillaProperties.OfEntity.getPortalCooldownProperty(m());
+
+    private int inPortalRecheck = 0;
 
     public EntityPortalCooldownWidget(EntityProperties<Entity> properties) {
         super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT));
         setElementBar(new PortalCooldownBar());
+    }
+
+    @Override
+    protected void onTick(int ticks) {
+        super.onTick(ticks);
+        Integer i = portalCooldownProperty.get();
+        if (i != null) {
+            if (isClientEntityInNetherPortal()) {
+                portalCooldownProperty.set(e().getDimensionChangingDelay());
+            } else {
+                portalCooldownProperty.set(Math.max(0, i - 1));
+            }
+        }
+    }
+
+    private boolean isClientEntityInNetherPortal() {
+        Entity entity = e();
+        Level level = entity.level();
+        BlockPos pos = entity.blockPosition();
+        AABB box = entity.getBoundingBox();
+        final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
+        final BlockPos[] blockPoses = {
+                pos,
+                new BlockPos(x + 1, y, z),
+                new BlockPos(x - 1, y, z),
+                new BlockPos(x, y, z + 1),
+                new BlockPos(x, y, z - 1)
+        };
+        for (BlockPos bp : blockPoses) {
+            BlockState bs = level.getBlockState(bp);
+            if (!bs.isAir() && bs.getBlock() == Blocks.NETHER_PORTAL
+                    && box.collidedAlongVector(Vec3.ZERO, List.of(new AABB(bp).deflate(0.01)))) {
+                return (++inPortalRecheck) >= 2;
+            }
+        }
+        inPortalRecheck = 0;
+        return false;
     }
 
     private final class PortalCooldownBar extends EntityPropertyProgressBar {

@@ -40,8 +40,8 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
-            renderFullBar(ctx);
             if (foods.length == 0) {
+                renderFullBar(ctx);
                 renderInnerText(ctx, Component.translatable(TranslationKeys.TEXT_EMPTY_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
             }
             for (int i = foods.length - 1; i >= 0; --i) {
