@@ -23,8 +23,6 @@ public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
         this.entity = properties.entity();
         this.properties = properties;
         initEntityPropertyWidgets();
-
-        syncEntityProperties();
     }
 
     private void initEntityPropertyWidgets() {

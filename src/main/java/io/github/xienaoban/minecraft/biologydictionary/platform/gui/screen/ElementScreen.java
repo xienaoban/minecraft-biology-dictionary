@@ -31,7 +31,8 @@ public abstract class ElementScreen extends CommonScreen {
     @Override
     public void tick() {
         super.tick();
-        rootScreenElement.tick(ticks++);
+        ++ticks; // yes the first `ticks` will be 1 instead of 0
+        rootScreenElement.tick(ticks);
     }
 
     @Override

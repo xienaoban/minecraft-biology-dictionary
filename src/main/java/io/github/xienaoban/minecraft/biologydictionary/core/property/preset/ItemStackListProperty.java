@@ -5,12 +5,13 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ItemStackListProperty extends AbstractProperty<ArrayList<ItemStack>> {
+public class ItemStackListProperty<E extends Entity> extends AbstractProperty<E, ArrayList<ItemStack>> {
     private final RegistryAccess registryAccess = Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
 
     public ItemStackListProperty(String propertyName) {
@@ -18,9 +19,9 @@ public class ItemStackListProperty extends AbstractProperty<ArrayList<ItemStack>
     }
 
     @Override
-    public void readFrom(CompoundTag vanillaNbt) {
-        if (vanillaNbt.contains(name(), Tag.TAG_LIST)) {
-            ListTag listTag = vanillaNbt.getList(name(), Tag.TAG_COMPOUND);
+    public void readFrom(CompoundTag nbt) {
+        if (nbt.contains(name(), Tag.TAG_LIST)) {
+            ListTag listTag = nbt.getList(name(), Tag.TAG_COMPOUND);
             ArrayList<ItemStack> list = new ArrayList<>();
             for (int i = 0; i < listTag.size(); i++) {
                 list.add(ItemStack.parseOptional(registryAccess, listTag.getCompound(i)));
@@ -32,7 +33,7 @@ public class ItemStackListProperty extends AbstractProperty<ArrayList<ItemStack>
     }
 
     @Override
-    public void writeTo(CompoundTag vanillaNbt) {
+    public void writeTo(CompoundTag nbt) {
         if (get() != null) {
             ListTag listTag = new ListTag();
             for (var e : get()) {
@@ -42,7 +43,7 @@ public class ItemStackListProperty extends AbstractProperty<ArrayList<ItemStack>
                     listTag.add(new CompoundTag());
                 }
             }
-            vanillaNbt.put(name(), listTag);
+            nbt.put(name(), listTag);
         } else {
             throw new IllegalPropertyStateException("list type must not be null");
         }

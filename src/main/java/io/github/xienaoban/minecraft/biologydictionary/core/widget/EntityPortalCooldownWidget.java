@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
-    private final IntProperty portalCooldownProperty = VanillaProperties.OfEntity.getPortalCooldownProperty(m());
+    private final IntProperty<Entity> portalCooldownProperty = VanillaProperties.OfEntity.getPortalCooldownProperty(m());
 
     private int inPortalRecheck = 0;
 
@@ -63,10 +63,10 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
             BlockState bs = level.getBlockState(bp);
             if (!bs.isAir() && bs.getBlock() == Blocks.NETHER_PORTAL
                     && box.collidedAlongVector(Vec3.ZERO, List.of(new AABB(bp).deflate(0.01)))) {
-                return (++inPortalRecheck) >= 2;
+                return (--inPortalRecheck) <= 0;
             }
         }
-        inPortalRecheck = 0;
+        inPortalRecheck = 2;
         return false;
     }
 

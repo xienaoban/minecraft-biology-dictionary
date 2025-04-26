@@ -4,9 +4,32 @@ import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.preset.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.animal.*;
+import net.minecraft.world.entity.animal.allay.Allay;
+import net.minecraft.world.entity.animal.armadillo.Armadillo;
+import net.minecraft.world.entity.animal.axolotl.Axolotl;
+import net.minecraft.world.entity.animal.camel.Camel;
+import net.minecraft.world.entity.animal.frog.Frog;
+import net.minecraft.world.entity.animal.frog.Tadpole;
+import net.minecraft.world.entity.animal.goat.Goat;
+import net.minecraft.world.entity.animal.horse.*;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.entity.monster.creaking.Creaking;
+import net.minecraft.world.entity.monster.hoglin.Hoglin;
+import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
+import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.raid.Raider;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 public final class VanillaProperties {
@@ -38,166 +61,171 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.Entity
      */
-    public static final class OfEntity {
+    public static final class OfEntity implements VanillaPropertiesUtils {
 
-        public static ShortProperty createAirProperty() {
-            return new ShortProperty("Air");
+        public static ShortProperty<Entity> createAirProperty() {
+            return new ShortProperty<>("Air");
         }
 
-        public static ShortProperty getAirProperty(Map<String, EntityProperty> map) {
+        public static ShortProperty<Entity> getAirProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Air");
         }
 
-        public static StringProperty createCustomNameProperty() {
-            return new StringProperty("CustomName");
+        public static StringProperty<Entity> createCustomNameProperty() {
+            return new StringProperty<>("CustomName");
         }
 
-        public static StringProperty getCustomNameProperty(Map<String, EntityProperty> map) {
+        public static StringProperty<Entity> getCustomNameProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CustomName");
         }
 
-        public static BooleanProperty createCustomNameVisibleProperty() {
-            return new BooleanProperty("CustomNameVisible");
+        public static BooleanProperty<Entity> createCustomNameVisibleProperty() {
+            return new BooleanProperty<>("CustomNameVisible");
         }
 
-        public static BooleanProperty getCustomNameVisibleProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Entity> getCustomNameVisibleProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CustomNameVisible");
         }
 
-        public static FloatProperty createFallDistanceProperty() {
-            return new FloatProperty("FallDistance");
+        public static FloatProperty<Entity> createFallDistanceProperty() {
+            return new FloatProperty<>("FallDistance");
         }
 
-        public static FloatProperty getFallDistanceProperty(Map<String, EntityProperty> map) {
+        public static FloatProperty<Entity> getFallDistanceProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "FallDistance");
         }
 
-        public static ShortProperty createFireProperty() {
-            return new ShortProperty("Fire");
+        public static ShortProperty<Entity> createFireProperty() {
+            return new ShortProperty<>("Fire");
         }
 
-        public static ShortProperty getFireProperty(Map<String, EntityProperty> map) {
+        public static ShortProperty<Entity> getFireProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Fire");
         }
 
-        public static BooleanProperty createGlowingProperty() {
-            return new BooleanProperty("Glowing");
+        public static BooleanProperty<Entity> createGlowingProperty() {
+            return new BooleanProperty<>("Glowing");
         }
 
-        public static BooleanProperty getGlowingProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Entity> getGlowingProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Glowing");
         }
 
-        public static BooleanProperty createHasVisualFireProperty() {
-            return new BooleanProperty("HasVisualFire");
+        public static BooleanProperty<Entity> createHasVisualFireProperty() {
+            return new BooleanProperty<>("HasVisualFire");
         }
 
-        public static BooleanProperty getHasVisualFireProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Entity> getHasVisualFireProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HasVisualFire");
         }
 
-        public static BooleanProperty createInvulnerableProperty() {
-            return new BooleanProperty("Invulnerable");
+        public static BooleanProperty<Entity> createInvulnerableProperty() {
+            return new BooleanProperty<>("Invulnerable");
         }
 
-        public static BooleanProperty getInvulnerableProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Entity> getInvulnerableProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Invulnerable");
         }
 
-        public static DoubleListProperty createMotionProperty() {
-            return new DoubleListProperty("Motion");
+        public static DoubleListProperty<Entity> createMotionProperty() {
+            return new DoubleListProperty<>("Motion");
         }
 
-        public static DoubleListProperty getMotionProperty(Map<String, EntityProperty> map) {
+        public static DoubleListProperty<Entity> getMotionProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Motion");
         }
 
-        public static BooleanProperty createNoGravityProperty() {
-            return new BooleanProperty("NoGravity");
+        public static BooleanProperty<Entity> createNoGravityProperty() {
+            return new BooleanProperty<>("NoGravity");
         }
 
-        public static BooleanProperty getNoGravityProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Entity> getNoGravityProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "NoGravity");
         }
 
-        public static BooleanProperty createOnGroundProperty() {
-            return new BooleanProperty("OnGround");
+        public static BooleanProperty<Entity> createOnGroundProperty() {
+            return new BooleanProperty<>("OnGround");
         }
 
-        public static BooleanProperty getOnGroundProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Entity> getOnGroundProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "OnGround");
         }
 
-        public static UnsupportedProperty createPassengersProperty() {
-            return new UnsupportedProperty("Passengers");
+        public static UnsupportedProperty<Entity> createPassengersProperty() {
+            return new UnsupportedProperty<>("Passengers");
         }
 
-        public static UnsupportedProperty getPassengersProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<Entity> getPassengersProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Passengers");
         }
 
-        public static IntProperty createPortalCooldownProperty() {
-            return new IntProperty("PortalCooldown");
+        public static IntProperty<Entity> createPortalCooldownProperty() {
+            return new IntProperty<>("PortalCooldown");
         }
 
-        public static IntProperty getPortalCooldownProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Entity> getPortalCooldownProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "PortalCooldown");
         }
 
-        public static DoubleListProperty createPosProperty() {
-            return new DoubleListProperty("Pos");
+        public static DoubleListProperty<Entity> createPosProperty() {
+            return new DoubleListProperty<>("Pos");
         }
 
-        public static DoubleListProperty getPosProperty(Map<String, EntityProperty> map) {
+        public static DoubleListProperty<Entity> getPosProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Pos");
         }
 
-        public static FloatListProperty createRotationProperty() {
-            return new FloatListProperty("Rotation");
+        public static FloatListProperty<Entity> createRotationProperty() {
+            return new FloatListProperty<>("Rotation");
         }
 
-        public static FloatListProperty getRotationProperty(Map<String, EntityProperty> map) {
+        public static FloatListProperty<Entity> getRotationProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Rotation");
         }
 
-        public static BooleanProperty createSilentProperty() {
-            return new BooleanProperty("Silent");
+        public static BooleanProperty<Entity> createSilentProperty() {
+            return new BooleanProperty<>("Silent");
         }
 
-        public static BooleanProperty getSilentProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Entity> getSilentProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Silent");
         }
 
-        public static StringListProperty createTagsProperty() {
-            return new StringListProperty("Tags");
+        public static StringListProperty<Entity> createTagsProperty() {
+            return new StringListProperty<>("Tags");
         }
 
-        public static StringListProperty getTagsProperty(Map<String, EntityProperty> map) {
+        public static StringListProperty<Entity> getTagsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Tags");
         }
 
-        public static IntProperty createTicksFrozenProperty() {
-            return new IntProperty("TicksFrozen");
+        public static IntProperty<Entity> createTicksFrozenProperty() {
+            return new IntProperty<>("TicksFrozen");
         }
 
-        public static IntProperty getTicksFrozenProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Entity> getTicksFrozenProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "TicksFrozen");
         }
 
-        public static UuidProperty createUuidProperty() {
-            return new UuidProperty("UUID");
+        public static UuidProperty<Entity> createUuidProperty() {
+            return new UuidProperty<>("UUID");
         }
 
-        public static UuidProperty getUuidProperty(Map<String, EntityProperty> map) {
+        public static UuidProperty<Entity> getUuidProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "UUID");
         }
 
-        public static UnsupportedProperty createIdProperty() {
-            return new UnsupportedProperty("id");
+        public static UnsupportedProperty<Entity> createIdProperty() {
+            return new UnsupportedProperty<>("id");
         }
 
-        public static UnsupportedProperty getIdProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<Entity> getIdProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "id");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createAirProperty(), createCustomNameProperty(), createCustomNameVisibleProperty(), createFallDistanceProperty(), createFireProperty(), createGlowingProperty(), createHasVisualFireProperty(), createInvulnerableProperty(), createMotionProperty(), createNoGravityProperty(), createOnGroundProperty(), createPassengersProperty(), createPortalCooldownProperty(), createPosProperty(), createRotationProperty(), createSilentProperty(), createTagsProperty(), createTicksFrozenProperty(), createUuidProperty(), createIdProperty());
         }
     }
 
@@ -221,110 +249,115 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.LivingEntity
      */
-    public static final class OfLivingEntity {
+    public static final class OfLivingEntity implements VanillaPropertiesUtils {
 
-        public static FloatProperty createAbsorptionAmountProperty() {
-            return new FloatProperty("AbsorptionAmount");
+        public static FloatProperty<LivingEntity> createAbsorptionAmountProperty() {
+            return new FloatProperty<>("AbsorptionAmount");
         }
 
-        public static FloatProperty getAbsorptionAmountProperty(Map<String, EntityProperty> map) {
+        public static FloatProperty<LivingEntity> getAbsorptionAmountProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "AbsorptionAmount");
         }
 
-        public static UnsupportedProperty createBrainProperty() {
-            return new UnsupportedProperty("Brain");
+        public static UnsupportedProperty<LivingEntity> createBrainProperty() {
+            return new UnsupportedProperty<>("Brain");
         }
 
-        public static UnsupportedProperty getBrainProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<LivingEntity> getBrainProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Brain");
         }
 
-        public static ShortProperty createDeathTimeProperty() {
-            return new ShortProperty("DeathTime");
+        public static ShortProperty<LivingEntity> createDeathTimeProperty() {
+            return new ShortProperty<>("DeathTime");
         }
 
-        public static ShortProperty getDeathTimeProperty(Map<String, EntityProperty> map) {
+        public static ShortProperty<LivingEntity> getDeathTimeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "DeathTime");
         }
 
-        public static BooleanProperty createFallFlyingProperty() {
-            return new BooleanProperty("FallFlying");
+        public static BooleanProperty<LivingEntity> createFallFlyingProperty() {
+            return new BooleanProperty<>("FallFlying");
         }
 
-        public static BooleanProperty getFallFlyingProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<LivingEntity> getFallFlyingProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "FallFlying");
         }
 
-        public static FloatProperty createHealthProperty() {
-            return new FloatProperty("Health");
+        public static FloatProperty<LivingEntity> createHealthProperty() {
+            return new FloatProperty<>("Health");
         }
 
-        public static FloatProperty getHealthProperty(Map<String, EntityProperty> map) {
+        public static FloatProperty<LivingEntity> getHealthProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Health");
         }
 
-        public static IntProperty createHurtByTimestampProperty() {
-            return new IntProperty("HurtByTimestamp");
+        public static IntProperty<LivingEntity> createHurtByTimestampProperty() {
+            return new IntProperty<>("HurtByTimestamp");
         }
 
-        public static IntProperty getHurtByTimestampProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<LivingEntity> getHurtByTimestampProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HurtByTimestamp");
         }
 
-        public static ShortProperty createHurtTimeProperty() {
-            return new ShortProperty("HurtTime");
+        public static ShortProperty<LivingEntity> createHurtTimeProperty() {
+            return new ShortProperty<>("HurtTime");
         }
 
-        public static ShortProperty getHurtTimeProperty(Map<String, EntityProperty> map) {
+        public static ShortProperty<LivingEntity> getHurtTimeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HurtTime");
         }
 
-        public static IntProperty createSleepingXProperty() {
-            return new IntProperty("SleepingX");
+        public static IntProperty<LivingEntity> createSleepingXProperty() {
+            return new IntProperty<>("SleepingX");
         }
 
-        public static IntProperty getSleepingXProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<LivingEntity> getSleepingXProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "SleepingX");
         }
 
-        public static IntProperty createSleepingYProperty() {
-            return new IntProperty("SleepingY");
+        public static IntProperty<LivingEntity> createSleepingYProperty() {
+            return new IntProperty<>("SleepingY");
         }
 
-        public static IntProperty getSleepingYProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<LivingEntity> getSleepingYProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "SleepingY");
         }
 
-        public static IntProperty createSleepingZProperty() {
-            return new IntProperty("SleepingZ");
+        public static IntProperty<LivingEntity> createSleepingZProperty() {
+            return new IntProperty<>("SleepingZ");
         }
 
-        public static IntProperty getSleepingZProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<LivingEntity> getSleepingZProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "SleepingZ");
         }
 
-        public static UnsupportedProperty createTeamProperty() {
-            return new UnsupportedProperty("Team");
+        public static UnsupportedProperty<LivingEntity> createTeamProperty() {
+            return new UnsupportedProperty<>("Team");
         }
 
-        public static UnsupportedProperty getTeamProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<LivingEntity> getTeamProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Team");
         }
 
-        public static UnsupportedProperty createActiveEffectsProperty() {
-            return new UnsupportedProperty("active_effects");
+        public static UnsupportedProperty<LivingEntity> createActiveEffectsProperty() {
+            return new UnsupportedProperty<>("active_effects");
         }
 
-        public static UnsupportedProperty getActiveEffectsProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<LivingEntity> getActiveEffectsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "active_effects");
         }
 
-        public static UnsupportedProperty createAttributesProperty() {
-            return new UnsupportedProperty("attributes");
+        public static UnsupportedProperty<LivingEntity> createAttributesProperty() {
+            return new UnsupportedProperty<>("attributes");
         }
 
-        public static UnsupportedProperty getAttributesProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<LivingEntity> getAttributesProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "attributes");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createAbsorptionAmountProperty(), createBrainProperty(), createDeathTimeProperty(), createFallFlyingProperty(), createHealthProperty(), createHurtByTimestampProperty(), createHurtTimeProperty(), createSleepingXProperty(), createSleepingYProperty(), createSleepingZProperty(), createTeamProperty(), createActiveEffectsProperty(), createAttributesProperty());
         }
     }
 
@@ -346,102 +379,107 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.Mob
      */
-    public static final class OfMob {
+    public static final class OfMob implements VanillaPropertiesUtils {
 
-        public static FloatListProperty createArmorDropChancesProperty() {
-            return new FloatListProperty("ArmorDropChances");
+        public static FloatListProperty<Mob> createArmorDropChancesProperty() {
+            return new FloatListProperty<>("ArmorDropChances");
         }
 
-        public static FloatListProperty getArmorDropChancesProperty(Map<String, EntityProperty> map) {
+        public static FloatListProperty<Mob> getArmorDropChancesProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "ArmorDropChances");
         }
 
-        public static ItemStackListProperty createArmorItemsProperty() {
-            return new ItemStackListProperty("ArmorItems");
+        public static ItemStackListProperty<Mob> createArmorItemsProperty() {
+            return new ItemStackListProperty<>("ArmorItems");
         }
 
-        public static ItemStackListProperty getArmorItemsProperty(Map<String, EntityProperty> map) {
+        public static ItemStackListProperty<Mob> getArmorItemsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "ArmorItems");
         }
 
-        public static BooleanProperty createCanPickUpLootProperty() {
-            return new BooleanProperty("CanPickUpLoot");
+        public static BooleanProperty<Mob> createCanPickUpLootProperty() {
+            return new BooleanProperty<>("CanPickUpLoot");
         }
 
-        public static BooleanProperty getCanPickUpLootProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Mob> getCanPickUpLootProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CanPickUpLoot");
         }
 
-        public static StringProperty createDeathLootTableProperty() {
-            return new StringProperty("DeathLootTable");
+        public static StringProperty<Mob> createDeathLootTableProperty() {
+            return new StringProperty<>("DeathLootTable");
         }
 
-        public static StringProperty getDeathLootTableProperty(Map<String, EntityProperty> map) {
+        public static StringProperty<Mob> getDeathLootTableProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "DeathLootTable");
         }
 
-        public static LongProperty createDeathLootTableSeedProperty() {
-            return new LongProperty("DeathLootTableSeed");
+        public static LongProperty<Mob> createDeathLootTableSeedProperty() {
+            return new LongProperty<>("DeathLootTableSeed");
         }
 
-        public static LongProperty getDeathLootTableSeedProperty(Map<String, EntityProperty> map) {
+        public static LongProperty<Mob> getDeathLootTableSeedProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "DeathLootTableSeed");
         }
 
-        public static FloatListProperty createHandDropChancesProperty() {
-            return new FloatListProperty("HandDropChances");
+        public static FloatListProperty<Mob> createHandDropChancesProperty() {
+            return new FloatListProperty<>("HandDropChances");
         }
 
-        public static FloatListProperty getHandDropChancesProperty(Map<String, EntityProperty> map) {
+        public static FloatListProperty<Mob> getHandDropChancesProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HandDropChances");
         }
 
-        public static ItemStackListProperty createHandItemsProperty() {
-            return new ItemStackListProperty("HandItems");
+        public static ItemStackListProperty<Mob> createHandItemsProperty() {
+            return new ItemStackListProperty<>("HandItems");
         }
 
-        public static ItemStackListProperty getHandItemsProperty(Map<String, EntityProperty> map) {
+        public static ItemStackListProperty<Mob> getHandItemsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HandItems");
         }
 
-        public static BooleanProperty createLeftHandedProperty() {
-            return new BooleanProperty("LeftHanded");
+        public static BooleanProperty<Mob> createLeftHandedProperty() {
+            return new BooleanProperty<>("LeftHanded");
         }
 
-        public static BooleanProperty getLeftHandedProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Mob> getLeftHandedProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "LeftHanded");
         }
 
-        public static BooleanProperty createNoAiProperty() {
-            return new BooleanProperty("NoAI");
+        public static BooleanProperty<Mob> createNoAiProperty() {
+            return new BooleanProperty<>("NoAI");
         }
 
-        public static BooleanProperty getNoAiProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Mob> getNoAiProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "NoAI");
         }
 
-        public static BooleanProperty createPersistenceRequiredProperty() {
-            return new BooleanProperty("PersistenceRequired");
+        public static BooleanProperty<Mob> createPersistenceRequiredProperty() {
+            return new BooleanProperty<>("PersistenceRequired");
         }
 
-        public static BooleanProperty getPersistenceRequiredProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Mob> getPersistenceRequiredProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "PersistenceRequired");
         }
 
-        public static FloatProperty createBodyArmorDropChanceProperty() {
-            return new FloatProperty("body_armor_drop_chance");
+        public static FloatProperty<Mob> createBodyArmorDropChanceProperty() {
+            return new FloatProperty<>("body_armor_drop_chance");
         }
 
-        public static FloatProperty getBodyArmorDropChanceProperty(Map<String, EntityProperty> map) {
+        public static FloatProperty<Mob> getBodyArmorDropChanceProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "body_armor_drop_chance");
         }
 
-        public static ItemStackProperty createBodyArmorItemProperty() {
-            return new ItemStackProperty("body_armor_item");
+        public static ItemStackProperty<Mob> createBodyArmorItemProperty() {
+            return new ItemStackProperty<>("body_armor_item");
         }
 
-        public static ItemStackProperty getBodyArmorItemProperty(Map<String, EntityProperty> map) {
+        public static ItemStackProperty<Mob> getBodyArmorItemProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "body_armor_item");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createArmorDropChancesProperty(), createArmorItemsProperty(), createCanPickUpLootProperty(), createDeathLootTableProperty(), createDeathLootTableSeedProperty(), createHandDropChancesProperty(), createHandItemsProperty(), createLeftHandedProperty(), createNoAiProperty(), createPersistenceRequiredProperty(), createBodyArmorDropChanceProperty(), createBodyArmorItemProperty());
         }
     }
 
@@ -451,7 +489,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.FlyingMob
      */
-    public static final class OfFlyingMob {
+    public static final class OfFlyingMob implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -461,14 +504,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Ghast
      */
-    public static final class OfGhast {
+    public static final class OfGhast implements VanillaPropertiesUtils {
 
-        public static ByteProperty createExplosionPowerProperty() {
-            return new ByteProperty("ExplosionPower");
+        public static ByteProperty<Ghast> createExplosionPowerProperty() {
+            return new ByteProperty<>("ExplosionPower");
         }
 
-        public static ByteProperty getExplosionPowerProperty(Map<String, EntityProperty> map) {
+        public static ByteProperty<Ghast> getExplosionPowerProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "ExplosionPower");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createExplosionPowerProperty());
         }
     }
 
@@ -482,38 +530,43 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Phantom
      */
-    public static final class OfPhantom {
+    public static final class OfPhantom implements VanillaPropertiesUtils {
 
-        public static IntProperty createAxProperty() {
-            return new IntProperty("AX");
+        public static IntProperty<Phantom> createAxProperty() {
+            return new IntProperty<>("AX");
         }
 
-        public static IntProperty getAxProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Phantom> getAxProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "AX");
         }
 
-        public static IntProperty createAyProperty() {
-            return new IntProperty("AY");
+        public static IntProperty<Phantom> createAyProperty() {
+            return new IntProperty<>("AY");
         }
 
-        public static IntProperty getAyProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Phantom> getAyProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "AY");
         }
 
-        public static IntProperty createAzProperty() {
-            return new IntProperty("AZ");
+        public static IntProperty<Phantom> createAzProperty() {
+            return new IntProperty<>("AZ");
         }
 
-        public static IntProperty getAzProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Phantom> getAzProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "AZ");
         }
 
-        public static IntProperty createSizeProperty() {
-            return new IntProperty("Size");
+        public static IntProperty<Phantom> createSizeProperty() {
+            return new IntProperty<>("Size");
         }
 
-        public static IntProperty getSizeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Phantom> getSizeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Size");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createAxProperty(), createAyProperty(), createAzProperty(), createSizeProperty());
         }
     }
 
@@ -523,7 +576,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.PathfinderMob
      */
-    public static final class OfPathfinderMob {
+    public static final class OfPathfinderMob implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -534,22 +592,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.AgeableMob
      */
-    public static final class OfAgeableMob {
+    public static final class OfAgeableMob implements VanillaPropertiesUtils {
 
-        public static IntProperty createAgeProperty() {
-            return new IntProperty("Age");
+        public static IntProperty<AgeableMob> createAgeProperty() {
+            return new IntProperty<>("Age");
         }
 
-        public static IntProperty getAgeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<AgeableMob> getAgeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Age");
         }
 
-        public static IntProperty createForcedAgeProperty() {
-            return new IntProperty("ForcedAge");
+        public static IntProperty<AgeableMob> createForcedAgeProperty() {
+            return new IntProperty<>("ForcedAge");
         }
 
-        public static IntProperty getForcedAgeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<AgeableMob> getForcedAgeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "ForcedAge");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createAgeProperty(), createForcedAgeProperty());
         }
     }
 
@@ -559,7 +622,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.AgeableWaterCreature
      */
-    public static final class OfAgeableWaterCreature {
+    public static final class OfAgeableWaterCreature implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -573,46 +641,51 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Dolphin
      */
-    public static final class OfDolphin {
+    public static final class OfDolphin implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createGotFishProperty() {
-            return new BooleanProperty("GotFish");
+        public static BooleanProperty<Dolphin> createGotFishProperty() {
+            return new BooleanProperty<>("GotFish");
         }
 
-        public static BooleanProperty getGotFishProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Dolphin> getGotFishProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "GotFish");
         }
 
-        public static IntProperty createMoistnessProperty() {
-            return new IntProperty("Moistness");
+        public static IntProperty<Dolphin> createMoistnessProperty() {
+            return new IntProperty<>("Moistness");
         }
 
-        public static IntProperty getMoistnessProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Dolphin> getMoistnessProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Moistness");
         }
 
-        public static IntProperty createTreasurePosXProperty() {
-            return new IntProperty("TreasurePosX");
+        public static IntProperty<Dolphin> createTreasurePosXProperty() {
+            return new IntProperty<>("TreasurePosX");
         }
 
-        public static IntProperty getTreasurePosXProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Dolphin> getTreasurePosXProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "TreasurePosX");
         }
 
-        public static IntProperty createTreasurePosYProperty() {
-            return new IntProperty("TreasurePosY");
+        public static IntProperty<Dolphin> createTreasurePosYProperty() {
+            return new IntProperty<>("TreasurePosY");
         }
 
-        public static IntProperty getTreasurePosYProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Dolphin> getTreasurePosYProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "TreasurePosY");
         }
 
-        public static IntProperty createTreasurePosZProperty() {
-            return new IntProperty("TreasurePosZ");
+        public static IntProperty<Dolphin> createTreasurePosZProperty() {
+            return new IntProperty<>("TreasurePosZ");
         }
 
-        public static IntProperty getTreasurePosZProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Dolphin> getTreasurePosZProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "TreasurePosZ");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createGotFishProperty(), createMoistnessProperty(), createTreasurePosXProperty(), createTreasurePosYProperty(), createTreasurePosZProperty());
         }
     }
 
@@ -622,7 +695,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Squid
      */
-    public static final class OfSquid {
+    public static final class OfSquid implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -632,14 +710,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.GlowSquid
      */
-    public static final class OfGlowSquid {
+    public static final class OfGlowSquid implements VanillaPropertiesUtils {
 
-        public static IntProperty createDarkTicksRemainingProperty() {
-            return new IntProperty("DarkTicksRemaining");
+        public static IntProperty<GlowSquid> createDarkTicksRemainingProperty() {
+            return new IntProperty<>("DarkTicksRemaining");
         }
 
-        public static IntProperty getDarkTicksRemainingProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<GlowSquid> getDarkTicksRemainingProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "DarkTicksRemaining");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createDarkTicksRemainingProperty());
         }
     }
 
@@ -651,22 +734,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Animal
      */
-    public static final class OfAnimal {
+    public static final class OfAnimal implements VanillaPropertiesUtils {
 
-        public static IntProperty createInLoveProperty() {
-            return new IntProperty("InLove");
+        public static IntProperty<Animal> createInLoveProperty() {
+            return new IntProperty<>("InLove");
         }
 
-        public static IntProperty getInLoveProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Animal> getInLoveProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "InLove");
         }
 
-        public static UuidProperty createLoveCauseProperty() {
-            return new UuidProperty("LoveCause");
+        public static UuidProperty<Animal> createLoveCauseProperty() {
+            return new UuidProperty<>("LoveCause");
         }
 
-        public static UuidProperty getLoveCauseProperty(Map<String, EntityProperty> map) {
+        public static UuidProperty<Animal> getLoveCauseProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "LoveCause");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createInLoveProperty(), createLoveCauseProperty());
         }
     }
 
@@ -679,22 +767,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.TamableAnimal
      */
-    public static final class OfTamableAnimal {
+    public static final class OfTamableAnimal implements VanillaPropertiesUtils {
 
-        public static UnsupportedProperty createOwnerProperty() {
-            return new UnsupportedProperty("Owner");
+        public static UnsupportedProperty<TamableAnimal> createOwnerProperty() {
+            return new UnsupportedProperty<>("Owner");
         }
 
-        public static UnsupportedProperty getOwnerProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<TamableAnimal> getOwnerProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Owner");
         }
 
-        public static BooleanProperty createSittingProperty() {
-            return new BooleanProperty("Sitting");
+        public static BooleanProperty<TamableAnimal> createSittingProperty() {
+            return new BooleanProperty<>("Sitting");
         }
 
-        public static BooleanProperty getSittingProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<TamableAnimal> getSittingProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Sitting");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createOwnerProperty(), createSittingProperty());
         }
     }
 
@@ -706,22 +799,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Cat
      */
-    public static final class OfCat {
+    public static final class OfCat implements VanillaPropertiesUtils {
 
-        public static ByteProperty createCollarColorProperty() {
-            return new ByteProperty("CollarColor");
+        public static ByteProperty<Cat> createCollarColorProperty() {
+            return new ByteProperty<>("CollarColor");
         }
 
-        public static ByteProperty getCollarColorProperty(Map<String, EntityProperty> map) {
+        public static ByteProperty<Cat> getCollarColorProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CollarColor");
         }
 
-        public static StringProperty createVariantProperty() {
-            return new StringProperty("variant");
+        public static StringProperty<Cat> createVariantProperty() {
+            return new StringProperty<>("variant");
         }
 
-        public static StringProperty getVariantProperty(Map<String, EntityProperty> map) {
+        public static StringProperty<Cat> getVariantProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "variant");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createCollarColorProperty(), createVariantProperty());
         }
     }
 
@@ -733,14 +831,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.ShoulderRidingEntity
      */
-    public static final class OfShoulderRidingEntity {
+    public static final class OfShoulderRidingEntity implements VanillaPropertiesUtils {
 
-        public static UnsupportedProperty createIdProperty() {
-            return new UnsupportedProperty("id");
+        public static UnsupportedProperty<ShoulderRidingEntity> createIdProperty() {
+            return new UnsupportedProperty<>("id");
         }
 
-        public static UnsupportedProperty getIdProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<ShoulderRidingEntity> getIdProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "id");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createIdProperty());
         }
     }
 
@@ -751,14 +854,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Parrot
      */
-    public static final class OfParrot {
+    public static final class OfParrot implements VanillaPropertiesUtils {
 
-        public static IntProperty createVariantProperty() {
-            return new IntProperty("Variant");
+        public static IntProperty<Parrot> createVariantProperty() {
+            return new IntProperty<>("Variant");
         }
 
-        public static IntProperty getVariantProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Parrot> getVariantProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Variant");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createVariantProperty());
         }
     }
 
@@ -770,22 +878,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Wolf
      */
-    public static final class OfWolf {
+    public static final class OfWolf implements VanillaPropertiesUtils {
 
-        public static ByteProperty createCollarColorProperty() {
-            return new ByteProperty("CollarColor");
+        public static ByteProperty<Wolf> createCollarColorProperty() {
+            return new ByteProperty<>("CollarColor");
         }
 
-        public static ByteProperty getCollarColorProperty(Map<String, EntityProperty> map) {
+        public static ByteProperty<Wolf> getCollarColorProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CollarColor");
         }
 
-        public static StringProperty createVariantProperty() {
-            return new StringProperty("variant");
+        public static StringProperty<Wolf> createVariantProperty() {
+            return new StringProperty<>("variant");
         }
 
-        public static StringProperty getVariantProperty(Map<String, EntityProperty> map) {
+        public static StringProperty<Wolf> getVariantProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "variant");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createCollarColorProperty(), createVariantProperty());
         }
     }
 
@@ -802,62 +915,67 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Bee
      */
-    public static final class OfBee {
+    public static final class OfBee implements VanillaPropertiesUtils {
 
-        public static IntProperty createCannotEnterHiveTicksProperty() {
-            return new IntProperty("CannotEnterHiveTicks");
+        public static IntProperty<Bee> createCannotEnterHiveTicksProperty() {
+            return new IntProperty<>("CannotEnterHiveTicks");
         }
 
-        public static IntProperty getCannotEnterHiveTicksProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Bee> getCannotEnterHiveTicksProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CannotEnterHiveTicks");
         }
 
-        public static IntProperty createCropsGrownSincePollinationProperty() {
-            return new IntProperty("CropsGrownSincePollination");
+        public static IntProperty<Bee> createCropsGrownSincePollinationProperty() {
+            return new IntProperty<>("CropsGrownSincePollination");
         }
 
-        public static IntProperty getCropsGrownSincePollinationProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Bee> getCropsGrownSincePollinationProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CropsGrownSincePollination");
         }
 
-        public static BooleanProperty createHasNectarProperty() {
-            return new BooleanProperty("HasNectar");
+        public static BooleanProperty<Bee> createHasNectarProperty() {
+            return new BooleanProperty<>("HasNectar");
         }
 
-        public static BooleanProperty getHasNectarProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Bee> getHasNectarProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HasNectar");
         }
 
-        public static BooleanProperty createHasStungProperty() {
-            return new BooleanProperty("HasStung");
+        public static BooleanProperty<Bee> createHasStungProperty() {
+            return new BooleanProperty<>("HasStung");
         }
 
-        public static BooleanProperty getHasStungProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Bee> getHasStungProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HasStung");
         }
 
-        public static IntProperty createTicksSincePollinationProperty() {
-            return new IntProperty("TicksSincePollination");
+        public static IntProperty<Bee> createTicksSincePollinationProperty() {
+            return new IntProperty<>("TicksSincePollination");
         }
 
-        public static IntProperty getTicksSincePollinationProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Bee> getTicksSincePollinationProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "TicksSincePollination");
         }
 
-        public static BlockPosProperty createFlowerPosProperty() {
-            return new BlockPosProperty("flower_pos");
+        public static BlockPosProperty<Bee> createFlowerPosProperty() {
+            return new BlockPosProperty<>("flower_pos");
         }
 
-        public static BlockPosProperty getFlowerPosProperty(Map<String, EntityProperty> map) {
+        public static BlockPosProperty<Bee> getFlowerPosProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "flower_pos");
         }
 
-        public static BlockPosProperty createHivePosProperty() {
-            return new BlockPosProperty("hive_pos");
+        public static BlockPosProperty<Bee> createHivePosProperty() {
+            return new BlockPosProperty<>("hive_pos");
         }
 
-        public static BlockPosProperty getHivePosProperty(Map<String, EntityProperty> map) {
+        public static BlockPosProperty<Bee> getHivePosProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "hive_pos");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createCannotEnterHiveTicksProperty(), createCropsGrownSincePollinationProperty(), createHasNectarProperty(), createHasStungProperty(), createTicksSincePollinationProperty(), createFlowerPosProperty(), createHivePosProperty());
         }
     }
 
@@ -869,22 +987,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Chicken
      */
-    public static final class OfChicken {
+    public static final class OfChicken implements VanillaPropertiesUtils {
 
-        public static IntProperty createEggLayTimeProperty() {
-            return new IntProperty("EggLayTime");
+        public static IntProperty<Chicken> createEggLayTimeProperty() {
+            return new IntProperty<>("EggLayTime");
         }
 
-        public static IntProperty getEggLayTimeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Chicken> getEggLayTimeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "EggLayTime");
         }
 
-        public static BooleanProperty createIsChickenJockeyProperty() {
-            return new BooleanProperty("IsChickenJockey");
+        public static BooleanProperty<Chicken> createIsChickenJockeyProperty() {
+            return new BooleanProperty<>("IsChickenJockey");
         }
 
-        public static BooleanProperty getIsChickenJockeyProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Chicken> getIsChickenJockeyProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "IsChickenJockey");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createEggLayTimeProperty(), createIsChickenJockeyProperty());
         }
     }
 
@@ -894,7 +1017,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Cow
      */
-    public static final class OfCow {
+    public static final class OfCow implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -906,22 +1034,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.MushroomCow
      */
-    public static final class OfMushroomCow {
+    public static final class OfMushroomCow implements VanillaPropertiesUtils {
 
-        public static StringProperty createTypeProperty() {
-            return new StringProperty("Type");
+        public static StringProperty<MushroomCow> createTypeProperty() {
+            return new StringProperty<>("Type");
         }
 
-        public static StringProperty getTypeProperty(Map<String, EntityProperty> map) {
+        public static StringProperty<MushroomCow> getTypeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Type");
         }
 
-        public static UnsupportedProperty createStewEffectsProperty() {
-            return new UnsupportedProperty("stew_effects");
+        public static UnsupportedProperty<MushroomCow> createStewEffectsProperty() {
+            return new UnsupportedProperty<>("stew_effects");
         }
 
-        public static UnsupportedProperty getStewEffectsProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<MushroomCow> getStewEffectsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "stew_effects");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createTypeProperty(), createStewEffectsProperty());
         }
     }
 
@@ -936,46 +1069,51 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Fox
      */
-    public static final class OfFox {
+    public static final class OfFox implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createCrouchingProperty() {
-            return new BooleanProperty("Crouching");
+        public static BooleanProperty<Fox> createCrouchingProperty() {
+            return new BooleanProperty<>("Crouching");
         }
 
-        public static BooleanProperty getCrouchingProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Fox> getCrouchingProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Crouching");
         }
 
-        public static BooleanProperty createSittingProperty() {
-            return new BooleanProperty("Sitting");
+        public static BooleanProperty<Fox> createSittingProperty() {
+            return new BooleanProperty<>("Sitting");
         }
 
-        public static BooleanProperty getSittingProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Fox> getSittingProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Sitting");
         }
 
-        public static BooleanProperty createSleepingProperty() {
-            return new BooleanProperty("Sleeping");
+        public static BooleanProperty<Fox> createSleepingProperty() {
+            return new BooleanProperty<>("Sleeping");
         }
 
-        public static BooleanProperty getSleepingProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Fox> getSleepingProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Sleeping");
         }
 
-        public static UuidListProperty createTrustedProperty() {
-            return new UuidListProperty("Trusted");
+        public static UuidListProperty<Fox> createTrustedProperty() {
+            return new UuidListProperty<>("Trusted");
         }
 
-        public static UuidListProperty getTrustedProperty(Map<String, EntityProperty> map) {
+        public static UuidListProperty<Fox> getTrustedProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Trusted");
         }
 
-        public static StringProperty createTypeProperty() {
-            return new StringProperty("Type");
+        public static StringProperty<Fox> createTypeProperty() {
+            return new StringProperty<>("Type");
         }
 
-        public static StringProperty getTypeProperty(Map<String, EntityProperty> map) {
+        public static StringProperty<Fox> getTypeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Type");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createCrouchingProperty(), createSittingProperty(), createSleepingProperty(), createTrustedProperty(), createTypeProperty());
         }
     }
 
@@ -986,14 +1124,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Ocelot
      */
-    public static final class OfOcelot {
+    public static final class OfOcelot implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createTrustingProperty() {
-            return new BooleanProperty("Trusting");
+        public static BooleanProperty<Ocelot> createTrustingProperty() {
+            return new BooleanProperty<>("Trusting");
         }
 
-        public static BooleanProperty getTrustingProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Ocelot> getTrustingProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Trusting");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createTrustingProperty());
         }
     }
 
@@ -1005,22 +1148,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Panda
      */
-    public static final class OfPanda {
+    public static final class OfPanda implements VanillaPropertiesUtils {
 
-        public static StringProperty createHiddenGeneProperty() {
-            return new StringProperty("HiddenGene");
+        public static StringProperty<Panda> createHiddenGeneProperty() {
+            return new StringProperty<>("HiddenGene");
         }
 
-        public static StringProperty getHiddenGeneProperty(Map<String, EntityProperty> map) {
+        public static StringProperty<Panda> getHiddenGeneProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HiddenGene");
         }
 
-        public static StringProperty createMainGeneProperty() {
-            return new StringProperty("MainGene");
+        public static StringProperty<Panda> createMainGeneProperty() {
+            return new StringProperty<>("MainGene");
         }
 
-        public static StringProperty getMainGeneProperty(Map<String, EntityProperty> map) {
+        public static StringProperty<Panda> getMainGeneProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "MainGene");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createHiddenGeneProperty(), createMainGeneProperty());
         }
     }
 
@@ -1030,7 +1178,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Pig
      */
-    public static final class OfPig {
+    public static final class OfPig implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1039,7 +1192,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.PolarBear
      */
-    public static final class OfPolarBear {
+    public static final class OfPolarBear implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1050,22 +1208,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Rabbit
      */
-    public static final class OfRabbit {
+    public static final class OfRabbit implements VanillaPropertiesUtils {
 
-        public static IntProperty createMoreCarrotTicksProperty() {
-            return new IntProperty("MoreCarrotTicks");
+        public static IntProperty<Rabbit> createMoreCarrotTicksProperty() {
+            return new IntProperty<>("MoreCarrotTicks");
         }
 
-        public static IntProperty getMoreCarrotTicksProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Rabbit> getMoreCarrotTicksProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "MoreCarrotTicks");
         }
 
-        public static IntProperty createRabbitTypeProperty() {
-            return new IntProperty("RabbitType");
+        public static IntProperty<Rabbit> createRabbitTypeProperty() {
+            return new IntProperty<>("RabbitType");
         }
 
-        public static IntProperty getRabbitTypeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Rabbit> getRabbitTypeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "RabbitType");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createMoreCarrotTicksProperty(), createRabbitTypeProperty());
         }
     }
 
@@ -1077,22 +1240,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Sheep
      */
-    public static final class OfSheep {
+    public static final class OfSheep implements VanillaPropertiesUtils {
 
-        public static ByteProperty createColorProperty() {
-            return new ByteProperty("Color");
+        public static ByteProperty<Sheep> createColorProperty() {
+            return new ByteProperty<>("Color");
         }
 
-        public static ByteProperty getColorProperty(Map<String, EntityProperty> map) {
+        public static ByteProperty<Sheep> getColorProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Color");
         }
 
-        public static BooleanProperty createShearedProperty() {
-            return new BooleanProperty("Sheared");
+        public static BooleanProperty<Sheep> createShearedProperty() {
+            return new BooleanProperty<>("Sheared");
         }
 
-        public static BooleanProperty getShearedProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Sheep> getShearedProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Sheared");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createColorProperty(), createShearedProperty());
         }
     }
 
@@ -1109,62 +1277,67 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Turtle
      */
-    public static final class OfTurtle {
+    public static final class OfTurtle implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createHasEggProperty() {
-            return new BooleanProperty("HasEgg");
+        public static BooleanProperty<Turtle> createHasEggProperty() {
+            return new BooleanProperty<>("HasEgg");
         }
 
-        public static BooleanProperty getHasEggProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Turtle> getHasEggProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HasEgg");
         }
 
-        public static IntProperty createHomePosXProperty() {
-            return new IntProperty("HomePosX");
+        public static IntProperty<Turtle> createHomePosXProperty() {
+            return new IntProperty<>("HomePosX");
         }
 
-        public static IntProperty getHomePosXProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Turtle> getHomePosXProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HomePosX");
         }
 
-        public static IntProperty createHomePosYProperty() {
-            return new IntProperty("HomePosY");
+        public static IntProperty<Turtle> createHomePosYProperty() {
+            return new IntProperty<>("HomePosY");
         }
 
-        public static IntProperty getHomePosYProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Turtle> getHomePosYProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HomePosY");
         }
 
-        public static IntProperty createHomePosZProperty() {
-            return new IntProperty("HomePosZ");
+        public static IntProperty<Turtle> createHomePosZProperty() {
+            return new IntProperty<>("HomePosZ");
         }
 
-        public static IntProperty getHomePosZProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Turtle> getHomePosZProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HomePosZ");
         }
 
-        public static IntProperty createTravelPosXProperty() {
-            return new IntProperty("TravelPosX");
+        public static IntProperty<Turtle> createTravelPosXProperty() {
+            return new IntProperty<>("TravelPosX");
         }
 
-        public static IntProperty getTravelPosXProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Turtle> getTravelPosXProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "TravelPosX");
         }
 
-        public static IntProperty createTravelPosYProperty() {
-            return new IntProperty("TravelPosY");
+        public static IntProperty<Turtle> createTravelPosYProperty() {
+            return new IntProperty<>("TravelPosY");
         }
 
-        public static IntProperty getTravelPosYProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Turtle> getTravelPosYProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "TravelPosY");
         }
 
-        public static IntProperty createTravelPosZProperty() {
-            return new IntProperty("TravelPosZ");
+        public static IntProperty<Turtle> createTravelPosZProperty() {
+            return new IntProperty<>("TravelPosZ");
         }
 
-        public static IntProperty getTravelPosZProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Turtle> getTravelPosZProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "TravelPosZ");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createHasEggProperty(), createHomePosXProperty(), createHomePosYProperty(), createHomePosZProperty(), createTravelPosXProperty(), createTravelPosYProperty(), createTravelPosZProperty());
         }
     }
 
@@ -1176,22 +1349,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.armadillo.Armadillo
      */
-    public static final class OfArmadillo {
+    public static final class OfArmadillo implements VanillaPropertiesUtils {
 
-        public static IntProperty createScuteTimeProperty() {
-            return new IntProperty("scute_time");
+        public static IntProperty<Armadillo> createScuteTimeProperty() {
+            return new IntProperty<>("scute_time");
         }
 
-        public static IntProperty getScuteTimeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Armadillo> getScuteTimeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "scute_time");
         }
 
-        public static StringProperty createStateProperty() {
-            return new StringProperty("state");
+        public static StringProperty<Armadillo> createStateProperty() {
+            return new StringProperty<>("state");
         }
 
-        public static StringProperty getStateProperty(Map<String, EntityProperty> map) {
+        public static StringProperty<Armadillo> getStateProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "state");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createScuteTimeProperty(), createStateProperty());
         }
     }
 
@@ -1205,38 +1383,43 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.axolotl.Axolotl
      */
-    public static final class OfAxolotl {
+    public static final class OfAxolotl implements VanillaPropertiesUtils {
 
-        public static IntProperty createAgeProperty() {
-            return new IntProperty("Age");
+        public static IntProperty<Axolotl> createAgeProperty() {
+            return new IntProperty<>("Age");
         }
 
-        public static IntProperty getAgeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Axolotl> getAgeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Age");
         }
 
-        public static BooleanProperty createFromBucketProperty() {
-            return new BooleanProperty("FromBucket");
+        public static BooleanProperty<Axolotl> createFromBucketProperty() {
+            return new BooleanProperty<>("FromBucket");
         }
 
-        public static BooleanProperty getFromBucketProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Axolotl> getFromBucketProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "FromBucket");
         }
 
-        public static LongProperty createHuntingCooldownProperty() {
-            return new LongProperty("HuntingCooldown");
+        public static LongProperty<Axolotl> createHuntingCooldownProperty() {
+            return new LongProperty<>("HuntingCooldown");
         }
 
-        public static LongProperty getHuntingCooldownProperty(Map<String, EntityProperty> map) {
+        public static LongProperty<Axolotl> getHuntingCooldownProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HuntingCooldown");
         }
 
-        public static IntProperty createVariantProperty() {
-            return new IntProperty("Variant");
+        public static IntProperty<Axolotl> createVariantProperty() {
+            return new IntProperty<>("Variant");
         }
 
-        public static IntProperty getVariantProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Axolotl> getVariantProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Variant");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createAgeProperty(), createFromBucketProperty(), createHuntingCooldownProperty(), createVariantProperty());
         }
     }
 
@@ -1247,14 +1430,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.frog.Frog
      */
-    public static final class OfFrog {
+    public static final class OfFrog implements VanillaPropertiesUtils {
 
-        public static StringProperty createVariantProperty() {
-            return new StringProperty("variant");
+        public static StringProperty<Frog> createVariantProperty() {
+            return new StringProperty<>("variant");
         }
 
-        public static StringProperty getVariantProperty(Map<String, EntityProperty> map) {
+        public static StringProperty<Frog> getVariantProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "variant");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createVariantProperty());
         }
     }
 
@@ -1267,30 +1455,35 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.goat.Goat
      */
-    public static final class OfGoat {
+    public static final class OfGoat implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createHasLeftHornProperty() {
-            return new BooleanProperty("HasLeftHorn");
+        public static BooleanProperty<Goat> createHasLeftHornProperty() {
+            return new BooleanProperty<>("HasLeftHorn");
         }
 
-        public static BooleanProperty getHasLeftHornProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Goat> getHasLeftHornProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HasLeftHorn");
         }
 
-        public static BooleanProperty createHasRightHornProperty() {
-            return new BooleanProperty("HasRightHorn");
+        public static BooleanProperty<Goat> createHasRightHornProperty() {
+            return new BooleanProperty<>("HasRightHorn");
         }
 
-        public static BooleanProperty getHasRightHornProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Goat> getHasRightHornProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HasRightHorn");
         }
 
-        public static BooleanProperty createIsScreamingGoatProperty() {
-            return new BooleanProperty("IsScreamingGoat");
+        public static BooleanProperty<Goat> createIsScreamingGoatProperty() {
+            return new BooleanProperty<>("IsScreamingGoat");
         }
 
-        public static BooleanProperty getIsScreamingGoatProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Goat> getIsScreamingGoatProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "IsScreamingGoat");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createHasLeftHornProperty(), createHasRightHornProperty(), createIsScreamingGoatProperty());
         }
     }
 
@@ -1307,54 +1500,59 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.AbstractHorse
      */
-    public static final class OfAbstractHorse {
+    public static final class OfAbstractHorse implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createBredProperty() {
-            return new BooleanProperty("Bred");
+        public static BooleanProperty<AbstractHorse> createBredProperty() {
+            return new BooleanProperty<>("Bred");
         }
 
-        public static BooleanProperty getBredProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<AbstractHorse> getBredProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Bred");
         }
 
-        public static BooleanProperty createEatingHaystackProperty() {
-            return new BooleanProperty("EatingHaystack");
+        public static BooleanProperty<AbstractHorse> createEatingHaystackProperty() {
+            return new BooleanProperty<>("EatingHaystack");
         }
 
-        public static BooleanProperty getEatingHaystackProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<AbstractHorse> getEatingHaystackProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "EatingHaystack");
         }
 
-        public static UnsupportedProperty createOwnerProperty() {
-            return new UnsupportedProperty("Owner");
+        public static UnsupportedProperty<AbstractHorse> createOwnerProperty() {
+            return new UnsupportedProperty<>("Owner");
         }
 
-        public static UnsupportedProperty getOwnerProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<AbstractHorse> getOwnerProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Owner");
         }
 
-        public static ItemStackProperty createSaddleItemProperty() {
-            return new ItemStackProperty("SaddleItem");
+        public static ItemStackProperty<AbstractHorse> createSaddleItemProperty() {
+            return new ItemStackProperty<>("SaddleItem");
         }
 
-        public static ItemStackProperty getSaddleItemProperty(Map<String, EntityProperty> map) {
+        public static ItemStackProperty<AbstractHorse> getSaddleItemProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "SaddleItem");
         }
 
-        public static BooleanProperty createTameProperty() {
-            return new BooleanProperty("Tame");
+        public static BooleanProperty<AbstractHorse> createTameProperty() {
+            return new BooleanProperty<>("Tame");
         }
 
-        public static BooleanProperty getTameProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<AbstractHorse> getTameProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Tame");
         }
 
-        public static IntProperty createTemperProperty() {
-            return new IntProperty("Temper");
+        public static IntProperty<AbstractHorse> createTemperProperty() {
+            return new IntProperty<>("Temper");
         }
 
-        public static IntProperty getTemperProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<AbstractHorse> getTemperProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Temper");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createBredProperty(), createEatingHaystackProperty(), createOwnerProperty(), createSaddleItemProperty(), createTameProperty(), createTemperProperty());
         }
     }
 
@@ -1365,14 +1563,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.camel.Camel
      */
-    public static final class OfCamel {
+    public static final class OfCamel implements VanillaPropertiesUtils {
 
-        public static LongProperty createLastPoseTickProperty() {
-            return new LongProperty("LastPoseTick");
+        public static LongProperty<Camel> createLastPoseTickProperty() {
+            return new LongProperty<>("LastPoseTick");
         }
 
-        public static LongProperty getLastPoseTickProperty(Map<String, EntityProperty> map) {
+        public static LongProperty<Camel> getLastPoseTickProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "LastPoseTick");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createLastPoseTickProperty());
         }
     }
 
@@ -1384,22 +1587,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.AbstractChestedHorse
      */
-    public static final class OfAbstractChestedHorse {
+    public static final class OfAbstractChestedHorse implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createChestedHorseProperty() {
-            return new BooleanProperty("ChestedHorse");
+        public static BooleanProperty<AbstractChestedHorse> createChestedHorseProperty() {
+            return new BooleanProperty<>("ChestedHorse");
         }
 
-        public static BooleanProperty getChestedHorseProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<AbstractChestedHorse> getChestedHorseProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "ChestedHorse");
         }
 
-        public static ItemStackListProperty createItemsProperty() {
-            return new ItemStackListProperty("Items");
+        public static ItemStackListProperty<AbstractChestedHorse> createItemsProperty() {
+            return new ItemStackListProperty<>("Items");
         }
 
-        public static ItemStackListProperty getItemsProperty(Map<String, EntityProperty> map) {
+        public static ItemStackListProperty<AbstractChestedHorse> getItemsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Items");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createChestedHorseProperty(), createItemsProperty());
         }
     }
 
@@ -1409,7 +1617,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.Donkey
      */
-    public static final class OfDonkey {
+    public static final class OfDonkey implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1420,22 +1633,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.Llama
      */
-    public static final class OfLlama {
+    public static final class OfLlama implements VanillaPropertiesUtils {
 
-        public static IntProperty createStrengthProperty() {
-            return new IntProperty("Strength");
+        public static IntProperty<Llama> createStrengthProperty() {
+            return new IntProperty<>("Strength");
         }
 
-        public static IntProperty getStrengthProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Llama> getStrengthProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Strength");
         }
 
-        public static IntProperty createVariantProperty() {
-            return new IntProperty("Variant");
+        public static IntProperty<Llama> createVariantProperty() {
+            return new IntProperty<>("Variant");
         }
 
-        public static IntProperty getVariantProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Llama> getVariantProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Variant");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createStrengthProperty(), createVariantProperty());
         }
     }
 
@@ -1446,14 +1664,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.TraderLlama
      */
-    public static final class OfTraderLlama {
+    public static final class OfTraderLlama implements VanillaPropertiesUtils {
 
-        public static IntProperty createDespawnDelayProperty() {
-            return new IntProperty("DespawnDelay");
+        public static IntProperty<TraderLlama> createDespawnDelayProperty() {
+            return new IntProperty<>("DespawnDelay");
         }
 
-        public static IntProperty getDespawnDelayProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<TraderLlama> getDespawnDelayProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "DespawnDelay");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createDespawnDelayProperty());
         }
     }
 
@@ -1463,7 +1686,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.Mule
      */
-    public static final class OfMule {
+    public static final class OfMule implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1473,14 +1701,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.Horse
      */
-    public static final class OfHorse {
+    public static final class OfHorse implements VanillaPropertiesUtils {
 
-        public static IntProperty createVariantProperty() {
-            return new IntProperty("Variant");
+        public static IntProperty<Horse> createVariantProperty() {
+            return new IntProperty<>("Variant");
         }
 
-        public static IntProperty getVariantProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Horse> getVariantProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Variant");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createVariantProperty());
         }
     }
 
@@ -1492,22 +1725,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.SkeletonHorse
      */
-    public static final class OfSkeletonHorse {
+    public static final class OfSkeletonHorse implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createSkeletonTrapProperty() {
-            return new BooleanProperty("SkeletonTrap");
+        public static BooleanProperty<SkeletonHorse> createSkeletonTrapProperty() {
+            return new BooleanProperty<>("SkeletonTrap");
         }
 
-        public static BooleanProperty getSkeletonTrapProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<SkeletonHorse> getSkeletonTrapProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "SkeletonTrap");
         }
 
-        public static IntProperty createSkeletonTrapTimeProperty() {
-            return new IntProperty("SkeletonTrapTime");
+        public static IntProperty<SkeletonHorse> createSkeletonTrapTimeProperty() {
+            return new IntProperty<>("SkeletonTrapTime");
         }
 
-        public static IntProperty getSkeletonTrapTimeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<SkeletonHorse> getSkeletonTrapTimeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "SkeletonTrapTime");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createSkeletonTrapProperty(), createSkeletonTrapTimeProperty());
         }
     }
 
@@ -1517,7 +1755,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.ZombieHorse
      */
-    public static final class OfZombieHorse {
+    public static final class OfZombieHorse implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1526,7 +1769,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.sniffer.Sniffer
      */
-    public static final class OfSniffer {
+    public static final class OfSniffer implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1535,7 +1783,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Strider
      */
-    public static final class OfStrider {
+    public static final class OfStrider implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1547,30 +1800,35 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.hoglin.Hoglin
      */
-    public static final class OfHoglin {
+    public static final class OfHoglin implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createCannotBeHuntedProperty() {
-            return new BooleanProperty("CannotBeHunted");
+        public static BooleanProperty<Hoglin> createCannotBeHuntedProperty() {
+            return new BooleanProperty<>("CannotBeHunted");
         }
 
-        public static BooleanProperty getCannotBeHuntedProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Hoglin> getCannotBeHuntedProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CannotBeHunted");
         }
 
-        public static BooleanProperty createIsImmuneToZombificationProperty() {
-            return new BooleanProperty("IsImmuneToZombification");
+        public static BooleanProperty<Hoglin> createIsImmuneToZombificationProperty() {
+            return new BooleanProperty<>("IsImmuneToZombification");
         }
 
-        public static BooleanProperty getIsImmuneToZombificationProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Hoglin> getIsImmuneToZombificationProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "IsImmuneToZombification");
         }
 
-        public static IntProperty createTimeInOverworldProperty() {
-            return new IntProperty("TimeInOverworld");
+        public static IntProperty<Hoglin> createTimeInOverworldProperty() {
+            return new IntProperty<>("TimeInOverworld");
         }
 
-        public static IntProperty getTimeInOverworldProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Hoglin> getTimeInOverworldProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "TimeInOverworld");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createCannotBeHuntedProperty(), createIsImmuneToZombificationProperty(), createTimeInOverworldProperty());
         }
     }
 
@@ -1582,14 +1840,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.npc.AbstractVillager
      */
-    public static final class OfAbstractVillager {
+    public static final class OfAbstractVillager implements VanillaPropertiesUtils {
 
-        public static UnsupportedProperty createOffersProperty() {
-            return new UnsupportedProperty("Offers");
+        public static UnsupportedProperty<AbstractVillager> createOffersProperty() {
+            return new UnsupportedProperty<>("Offers");
         }
 
-        public static UnsupportedProperty getOffersProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<AbstractVillager> getOffersProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Offers");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createOffersProperty());
         }
     }
 
@@ -1608,70 +1871,75 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.npc.Villager
      */
-    public static final class OfVillager {
+    public static final class OfVillager implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createAssignProfessionWhenSpawnedProperty() {
-            return new BooleanProperty("AssignProfessionWhenSpawned");
+        public static BooleanProperty<Villager> createAssignProfessionWhenSpawnedProperty() {
+            return new BooleanProperty<>("AssignProfessionWhenSpawned");
         }
 
-        public static BooleanProperty getAssignProfessionWhenSpawnedProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Villager> getAssignProfessionWhenSpawnedProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "AssignProfessionWhenSpawned");
         }
 
-        public static ByteProperty createFoodLevelProperty() {
-            return new ByteProperty("FoodLevel");
+        public static ByteProperty<Villager> createFoodLevelProperty() {
+            return new ByteProperty<>("FoodLevel");
         }
 
-        public static ByteProperty getFoodLevelProperty(Map<String, EntityProperty> map) {
+        public static ByteProperty<Villager> getFoodLevelProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "FoodLevel");
         }
 
-        public static UnsupportedProperty createGossipsProperty() {
-            return new UnsupportedProperty("Gossips");
+        public static UnsupportedProperty<Villager> createGossipsProperty() {
+            return new UnsupportedProperty<>("Gossips");
         }
 
-        public static UnsupportedProperty getGossipsProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<Villager> getGossipsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Gossips");
         }
 
-        public static LongProperty createLastGossipDecayProperty() {
-            return new LongProperty("LastGossipDecay");
+        public static LongProperty<Villager> createLastGossipDecayProperty() {
+            return new LongProperty<>("LastGossipDecay");
         }
 
-        public static LongProperty getLastGossipDecayProperty(Map<String, EntityProperty> map) {
+        public static LongProperty<Villager> getLastGossipDecayProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "LastGossipDecay");
         }
 
-        public static LongProperty createLastRestockProperty() {
-            return new LongProperty("LastRestock");
+        public static LongProperty<Villager> createLastRestockProperty() {
+            return new LongProperty<>("LastRestock");
         }
 
-        public static LongProperty getLastRestockProperty(Map<String, EntityProperty> map) {
+        public static LongProperty<Villager> getLastRestockProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "LastRestock");
         }
 
-        public static IntProperty createRestocksTodayProperty() {
-            return new IntProperty("RestocksToday");
+        public static IntProperty<Villager> createRestocksTodayProperty() {
+            return new IntProperty<>("RestocksToday");
         }
 
-        public static IntProperty getRestocksTodayProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Villager> getRestocksTodayProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "RestocksToday");
         }
 
-        public static UnsupportedProperty createVillagerDataProperty() {
-            return new UnsupportedProperty("VillagerData");
+        public static UnsupportedProperty<Villager> createVillagerDataProperty() {
+            return new UnsupportedProperty<>("VillagerData");
         }
 
-        public static UnsupportedProperty getVillagerDataProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<Villager> getVillagerDataProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "VillagerData");
         }
 
-        public static IntProperty createXpProperty() {
-            return new IntProperty("Xp");
+        public static IntProperty<Villager> createXpProperty() {
+            return new IntProperty<>("Xp");
         }
 
-        public static IntProperty getXpProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Villager> getXpProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Xp");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createAssignProfessionWhenSpawnedProperty(), createFoodLevelProperty(), createGossipsProperty(), createLastGossipDecayProperty(), createLastRestockProperty(), createRestocksTodayProperty(), createVillagerDataProperty(), createXpProperty());
         }
     }
 
@@ -1683,22 +1951,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.npc.WanderingTrader
      */
-    public static final class OfWanderingTrader {
+    public static final class OfWanderingTrader implements VanillaPropertiesUtils {
 
-        public static IntProperty createDespawnDelayProperty() {
-            return new IntProperty("DespawnDelay");
+        public static IntProperty<WanderingTrader> createDespawnDelayProperty() {
+            return new IntProperty<>("DespawnDelay");
         }
 
-        public static IntProperty getDespawnDelayProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<WanderingTrader> getDespawnDelayProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "DespawnDelay");
         }
 
-        public static BlockPosProperty createWanderTargetProperty() {
-            return new BlockPosProperty("wander_target");
+        public static BlockPosProperty<WanderingTrader> createWanderTargetProperty() {
+            return new BlockPosProperty<>("wander_target");
         }
 
-        public static BlockPosProperty getWanderTargetProperty(Map<String, EntityProperty> map) {
+        public static BlockPosProperty<WanderingTrader> getWanderTargetProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "wander_target");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createDespawnDelayProperty(), createWanderTargetProperty());
         }
     }
 
@@ -1708,7 +1981,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.AbstractGolem
      */
-    public static final class OfAbstractGolem {
+    public static final class OfAbstractGolem implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1718,14 +1996,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.IronGolem
      */
-    public static final class OfIronGolem {
+    public static final class OfIronGolem implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createPlayerCreatedProperty() {
-            return new BooleanProperty("PlayerCreated");
+        public static BooleanProperty<IronGolem> createPlayerCreatedProperty() {
+            return new BooleanProperty<>("PlayerCreated");
         }
 
-        public static BooleanProperty getPlayerCreatedProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<IronGolem> getPlayerCreatedProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "PlayerCreated");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createPlayerCreatedProperty());
         }
     }
 
@@ -1736,14 +2019,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.SnowGolem
      */
-    public static final class OfSnowGolem {
+    public static final class OfSnowGolem implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createPumpkinProperty() {
-            return new BooleanProperty("Pumpkin");
+        public static BooleanProperty<SnowGolem> createPumpkinProperty() {
+            return new BooleanProperty<>("Pumpkin");
         }
 
-        public static BooleanProperty getPumpkinProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<SnowGolem> getPumpkinProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Pumpkin");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createPumpkinProperty());
         }
     }
 
@@ -1756,30 +2044,35 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Shulker
      */
-    public static final class OfShulker {
+    public static final class OfShulker implements VanillaPropertiesUtils {
 
-        public static ByteProperty createAttachFaceProperty() {
-            return new ByteProperty("AttachFace");
+        public static ByteProperty<Shulker> createAttachFaceProperty() {
+            return new ByteProperty<>("AttachFace");
         }
 
-        public static ByteProperty getAttachFaceProperty(Map<String, EntityProperty> map) {
+        public static ByteProperty<Shulker> getAttachFaceProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "AttachFace");
         }
 
-        public static ByteProperty createColorProperty() {
-            return new ByteProperty("Color");
+        public static ByteProperty<Shulker> createColorProperty() {
+            return new ByteProperty<>("Color");
         }
 
-        public static ByteProperty getColorProperty(Map<String, EntityProperty> map) {
+        public static ByteProperty<Shulker> getColorProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Color");
         }
 
-        public static ByteProperty createPeekProperty() {
-            return new ByteProperty("Peek");
+        public static ByteProperty<Shulker> createPeekProperty() {
+            return new ByteProperty<>("Peek");
         }
 
-        public static ByteProperty getPeekProperty(Map<String, EntityProperty> map) {
+        public static ByteProperty<Shulker> getPeekProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Peek");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createAttachFaceProperty(), createColorProperty(), createPeekProperty());
         }
     }
 
@@ -1789,7 +2082,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.WaterAnimal
      */
-    public static final class OfWaterAnimal {
+    public static final class OfWaterAnimal implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1799,14 +2097,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.AbstractFish
      */
-    public static final class OfAbstractFish {
+    public static final class OfAbstractFish implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createFromBucketProperty() {
-            return new BooleanProperty("FromBucket");
+        public static BooleanProperty<AbstractFish> createFromBucketProperty() {
+            return new BooleanProperty<>("FromBucket");
         }
 
-        public static BooleanProperty getFromBucketProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<AbstractFish> getFromBucketProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "FromBucket");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createFromBucketProperty());
         }
     }
 
@@ -1816,7 +2119,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.AbstractSchoolingFish
      */
-    public static final class OfAbstractSchoolingFish {
+    public static final class OfAbstractSchoolingFish implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1825,7 +2133,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Cod
      */
-    public static final class OfCod {
+    public static final class OfCod implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1835,14 +2148,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Salmon
      */
-    public static final class OfSalmon {
+    public static final class OfSalmon implements VanillaPropertiesUtils {
 
-        public static StringProperty createTypeProperty() {
-            return new StringProperty("type");
+        public static StringProperty<Salmon> createTypeProperty() {
+            return new StringProperty<>("type");
         }
 
-        public static StringProperty getTypeProperty(Map<String, EntityProperty> map) {
+        public static StringProperty<Salmon> getTypeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "type");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createTypeProperty());
         }
     }
 
@@ -1854,22 +2172,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.TropicalFish
      */
-    public static final class OfTropicalFish {
+    public static final class OfTropicalFish implements VanillaPropertiesUtils {
 
-        public static IntProperty createBucketVariantTagProperty() {
-            return new IntProperty("BucketVariantTag");
+        public static IntProperty<TropicalFish> createBucketVariantTagProperty() {
+            return new IntProperty<>("BucketVariantTag");
         }
 
-        public static IntProperty getBucketVariantTagProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<TropicalFish> getBucketVariantTagProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "BucketVariantTag");
         }
 
-        public static IntProperty createVariantProperty() {
-            return new IntProperty("Variant");
+        public static IntProperty<TropicalFish> createVariantProperty() {
+            return new IntProperty<>("Variant");
         }
 
-        public static IntProperty getVariantProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<TropicalFish> getVariantProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Variant");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createBucketVariantTagProperty(), createVariantProperty());
         }
     }
 
@@ -1880,14 +2203,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Pufferfish
      */
-    public static final class OfPufferfish {
+    public static final class OfPufferfish implements VanillaPropertiesUtils {
 
-        public static IntProperty createPuffStateProperty() {
-            return new IntProperty("PuffState");
+        public static IntProperty<Pufferfish> createPuffStateProperty() {
+            return new IntProperty<>("PuffState");
         }
 
-        public static IntProperty getPuffStateProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Pufferfish> getPuffStateProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "PuffState");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createPuffStateProperty());
         }
     }
 
@@ -1898,14 +2226,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.frog.Tadpole
      */
-    public static final class OfTadpole {
+    public static final class OfTadpole implements VanillaPropertiesUtils {
 
-        public static IntProperty createAgeProperty() {
-            return new IntProperty("Age");
+        public static IntProperty<Tadpole> createAgeProperty() {
+            return new IntProperty<>("Age");
         }
 
-        public static IntProperty getAgeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Tadpole> getAgeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Age");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createAgeProperty());
         }
     }
 
@@ -1919,30 +2252,35 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.allay.Allay
      */
-    public static final class OfAllay {
+    public static final class OfAllay implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createCanDuplicateProperty() {
-            return new BooleanProperty("CanDuplicate");
+        public static BooleanProperty<Allay> createCanDuplicateProperty() {
+            return new BooleanProperty<>("CanDuplicate");
         }
 
-        public static BooleanProperty getCanDuplicateProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Allay> getCanDuplicateProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CanDuplicate");
         }
 
-        public static IntProperty createDuplicationCooldownProperty() {
-            return new IntProperty("DuplicationCooldown");
+        public static IntProperty<Allay> createDuplicationCooldownProperty() {
+            return new IntProperty<>("DuplicationCooldown");
         }
 
-        public static IntProperty getDuplicationCooldownProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Allay> getDuplicationCooldownProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "DuplicationCooldown");
         }
 
-        public static UnsupportedProperty createListenerProperty() {
-            return new UnsupportedProperty("listener");
+        public static UnsupportedProperty<Allay> createListenerProperty() {
+            return new UnsupportedProperty<>("listener");
         }
 
-        public static UnsupportedProperty getListenerProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<Allay> getListenerProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "listener");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createCanDuplicateProperty(), createDuplicationCooldownProperty(), createListenerProperty());
         }
     }
 
@@ -1952,7 +2290,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Monster
      */
-    public static final class OfMonster {
+    public static final class OfMonster implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1962,14 +2305,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.boss.wither.WitherBoss
      */
-    public static final class OfWitherBoss {
+    public static final class OfWitherBoss implements VanillaPropertiesUtils {
 
-        public static IntProperty createInvulProperty() {
-            return new IntProperty("Invul");
+        public static IntProperty<WitherBoss> createInvulProperty() {
+            return new IntProperty<>("Invul");
         }
 
-        public static IntProperty getInvulProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<WitherBoss> getInvulProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Invul");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createInvulProperty());
         }
     }
 
@@ -1979,7 +2327,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.AbstractSkeleton
      */
-    public static final class OfAbstractSkeleton {
+    public static final class OfAbstractSkeleton implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -1989,14 +2342,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Bogged
      */
-    public static final class OfBogged {
+    public static final class OfBogged implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createShearedProperty() {
-            return new BooleanProperty("sheared");
+        public static BooleanProperty<Bogged> createShearedProperty() {
+            return new BooleanProperty<>("sheared");
         }
 
-        public static BooleanProperty getShearedProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Bogged> getShearedProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "sheared");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createShearedProperty());
         }
     }
 
@@ -2007,14 +2365,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Skeleton
      */
-    public static final class OfSkeleton {
+    public static final class OfSkeleton implements VanillaPropertiesUtils {
 
-        public static IntProperty createStrayConversionTimeProperty() {
-            return new IntProperty("StrayConversionTime");
+        public static IntProperty<Skeleton> createStrayConversionTimeProperty() {
+            return new IntProperty<>("StrayConversionTime");
         }
 
-        public static IntProperty getStrayConversionTimeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Skeleton> getStrayConversionTimeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "StrayConversionTime");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createStrayConversionTimeProperty());
         }
     }
 
@@ -2024,7 +2387,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Stray
      */
-    public static final class OfStray {
+    public static final class OfStray implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2033,7 +2401,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.WitherSkeleton
      */
-    public static final class OfWitherSkeleton {
+    public static final class OfWitherSkeleton implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2042,7 +2415,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Blaze
      */
-    public static final class OfBlaze {
+    public static final class OfBlaze implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2055,38 +2433,43 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Creeper
      */
-    public static final class OfCreeper {
+    public static final class OfCreeper implements VanillaPropertiesUtils {
 
-        public static ByteProperty createExplosionRadiusProperty() {
-            return new ByteProperty("ExplosionRadius");
+        public static ByteProperty<Creeper> createExplosionRadiusProperty() {
+            return new ByteProperty<>("ExplosionRadius");
         }
 
-        public static ByteProperty getExplosionRadiusProperty(Map<String, EntityProperty> map) {
+        public static ByteProperty<Creeper> getExplosionRadiusProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "ExplosionRadius");
         }
 
-        public static ShortProperty createFuseProperty() {
-            return new ShortProperty("Fuse");
+        public static ShortProperty<Creeper> createFuseProperty() {
+            return new ShortProperty<>("Fuse");
         }
 
-        public static ShortProperty getFuseProperty(Map<String, EntityProperty> map) {
+        public static ShortProperty<Creeper> getFuseProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Fuse");
         }
 
-        public static BooleanProperty createIgnitedProperty() {
-            return new BooleanProperty("ignited");
+        public static BooleanProperty<Creeper> createIgnitedProperty() {
+            return new BooleanProperty<>("ignited");
         }
 
-        public static BooleanProperty getIgnitedProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Creeper> getIgnitedProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "ignited");
         }
 
-        public static BooleanProperty createPoweredProperty() {
-            return new BooleanProperty("powered");
+        public static BooleanProperty<Creeper> createPoweredProperty() {
+            return new BooleanProperty<>("powered");
         }
 
-        public static BooleanProperty getPoweredProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Creeper> getPoweredProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "powered");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createExplosionRadiusProperty(), createFuseProperty(), createIgnitedProperty(), createPoweredProperty());
         }
     }
 
@@ -2098,14 +2481,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.EnderMan
      */
-    public static final class OfEnderMan {
+    public static final class OfEnderMan implements VanillaPropertiesUtils {
 
-        public static UnsupportedProperty createCarriedBlockStateProperty() {
-            return new UnsupportedProperty("carriedBlockState");
+        public static UnsupportedProperty<EnderMan> createCarriedBlockStateProperty() {
+            return new UnsupportedProperty<>("carriedBlockState");
         }
 
-        public static UnsupportedProperty getCarriedBlockStateProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<EnderMan> getCarriedBlockStateProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "carriedBlockState");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createCarriedBlockStateProperty());
         }
     }
 
@@ -2116,14 +2504,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Endermite
      */
-    public static final class OfEndermite {
+    public static final class OfEndermite implements VanillaPropertiesUtils {
 
-        public static IntProperty createLifetimeProperty() {
-            return new IntProperty("Lifetime");
+        public static IntProperty<Endermite> createLifetimeProperty() {
+            return new IntProperty<>("Lifetime");
         }
 
-        public static IntProperty getLifetimeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Endermite> getLifetimeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Lifetime");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createLifetimeProperty());
         }
     }
 
@@ -2133,7 +2526,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Giant
      */
-    public static final class OfGiant {
+    public static final class OfGiant implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2142,7 +2540,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Guardian
      */
-    public static final class OfGuardian {
+    public static final class OfGuardian implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2151,7 +2554,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.ElderGuardian
      */
-    public static final class OfElderGuardian {
+    public static final class OfElderGuardian implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2163,30 +2571,35 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.PatrollingMonster
      */
-    public static final class OfPatrollingMonster {
+    public static final class OfPatrollingMonster implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createPatrolLeaderProperty() {
-            return new BooleanProperty("PatrolLeader");
+        public static BooleanProperty<PatrollingMonster> createPatrolLeaderProperty() {
+            return new BooleanProperty<>("PatrolLeader");
         }
 
-        public static BooleanProperty getPatrolLeaderProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<PatrollingMonster> getPatrolLeaderProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "PatrolLeader");
         }
 
-        public static BooleanProperty createPatrollingProperty() {
-            return new BooleanProperty("Patrolling");
+        public static BooleanProperty<PatrollingMonster> createPatrollingProperty() {
+            return new BooleanProperty<>("Patrolling");
         }
 
-        public static BooleanProperty getPatrollingProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<PatrollingMonster> getPatrollingProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Patrolling");
         }
 
-        public static BlockPosProperty createPatrolTargetProperty() {
-            return new BlockPosProperty("patrol_target");
+        public static BlockPosProperty<PatrollingMonster> createPatrolTargetProperty() {
+            return new BlockPosProperty<>("patrol_target");
         }
 
-        public static BlockPosProperty getPatrolTargetProperty(Map<String, EntityProperty> map) {
+        public static BlockPosProperty<PatrollingMonster> getPatrolTargetProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "patrol_target");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createPatrolLeaderProperty(), createPatrollingProperty(), createPatrolTargetProperty());
         }
     }
 
@@ -2199,30 +2612,35 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.raid.Raider
      */
-    public static final class OfRaider {
+    public static final class OfRaider implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createCanJoinRaidProperty() {
-            return new BooleanProperty("CanJoinRaid");
+        public static BooleanProperty<Raider> createCanJoinRaidProperty() {
+            return new BooleanProperty<>("CanJoinRaid");
         }
 
-        public static BooleanProperty getCanJoinRaidProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Raider> getCanJoinRaidProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CanJoinRaid");
         }
 
-        public static IntProperty createRaidIdProperty() {
-            return new IntProperty("RaidId");
+        public static IntProperty<Raider> createRaidIdProperty() {
+            return new IntProperty<>("RaidId");
         }
 
-        public static IntProperty getRaidIdProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Raider> getRaidIdProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "RaidId");
         }
 
-        public static IntProperty createWaveProperty() {
-            return new IntProperty("Wave");
+        public static IntProperty<Raider> createWaveProperty() {
+            return new IntProperty<>("Wave");
         }
 
-        public static IntProperty getWaveProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Raider> getWaveProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Wave");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createCanJoinRaidProperty(), createRaidIdProperty(), createWaveProperty());
         }
     }
 
@@ -2232,7 +2650,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.AbstractIllager
      */
-    public static final class OfAbstractIllager {
+    public static final class OfAbstractIllager implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2241,7 +2664,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Pillager
      */
-    public static final class OfPillager {
+    public static final class OfPillager implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2251,14 +2679,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.SpellcasterIllager
      */
-    public static final class OfSpellcasterIllager {
+    public static final class OfSpellcasterIllager implements VanillaPropertiesUtils {
 
-        public static IntProperty createSpellTicksProperty() {
-            return new IntProperty("SpellTicks");
+        public static IntProperty<SpellcasterIllager> createSpellTicksProperty() {
+            return new IntProperty<>("SpellTicks");
         }
 
-        public static IntProperty getSpellTicksProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<SpellcasterIllager> getSpellTicksProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "SpellTicks");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createSpellTicksProperty());
         }
     }
 
@@ -2268,7 +2701,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Evoker
      */
-    public static final class OfEvoker {
+    public static final class OfEvoker implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2277,7 +2715,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Illusioner
      */
-    public static final class OfIllusioner {
+    public static final class OfIllusioner implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2287,14 +2730,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Vindicator
      */
-    public static final class OfVindicator {
+    public static final class OfVindicator implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createJohnnyProperty() {
-            return new BooleanProperty("Johnny");
+        public static BooleanProperty<Vindicator> createJohnnyProperty() {
+            return new BooleanProperty<>("Johnny");
         }
 
-        public static BooleanProperty getJohnnyProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Vindicator> getJohnnyProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Johnny");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createJohnnyProperty());
         }
     }
 
@@ -2307,30 +2755,35 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Ravager
      */
-    public static final class OfRavager {
+    public static final class OfRavager implements VanillaPropertiesUtils {
 
-        public static IntProperty createAttackTickProperty() {
-            return new IntProperty("AttackTick");
+        public static IntProperty<Ravager> createAttackTickProperty() {
+            return new IntProperty<>("AttackTick");
         }
 
-        public static IntProperty getAttackTickProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Ravager> getAttackTickProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "AttackTick");
         }
 
-        public static IntProperty createRoarTickProperty() {
-            return new IntProperty("RoarTick");
+        public static IntProperty<Ravager> createRoarTickProperty() {
+            return new IntProperty<>("RoarTick");
         }
 
-        public static IntProperty getRoarTickProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Ravager> getRoarTickProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "RoarTick");
         }
 
-        public static IntProperty createStunTickProperty() {
-            return new IntProperty("StunTick");
+        public static IntProperty<Ravager> createStunTickProperty() {
+            return new IntProperty<>("StunTick");
         }
 
-        public static IntProperty getStunTickProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Ravager> getStunTickProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "StunTick");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createAttackTickProperty(), createRoarTickProperty(), createStunTickProperty());
         }
     }
 
@@ -2340,7 +2793,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Witch
      */
-    public static final class OfWitch {
+    public static final class OfWitch implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2349,7 +2807,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Silverfish
      */
-    public static final class OfSilverfish {
+    public static final class OfSilverfish implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2358,7 +2821,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Spider
      */
-    public static final class OfSpider {
+    public static final class OfSpider implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2367,7 +2835,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.CaveSpider
      */
-    public static final class OfCaveSpider {
+    public static final class OfCaveSpider implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2380,38 +2853,43 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Vex
      */
-    public static final class OfVex {
+    public static final class OfVex implements VanillaPropertiesUtils {
 
-        public static IntProperty createBoundXProperty() {
-            return new IntProperty("BoundX");
+        public static IntProperty<Vex> createBoundXProperty() {
+            return new IntProperty<>("BoundX");
         }
 
-        public static IntProperty getBoundXProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Vex> getBoundXProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "BoundX");
         }
 
-        public static IntProperty createBoundYProperty() {
-            return new IntProperty("BoundY");
+        public static IntProperty<Vex> createBoundYProperty() {
+            return new IntProperty<>("BoundY");
         }
 
-        public static IntProperty getBoundYProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Vex> getBoundYProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "BoundY");
         }
 
-        public static IntProperty createBoundZProperty() {
-            return new IntProperty("BoundZ");
+        public static IntProperty<Vex> createBoundZProperty() {
+            return new IntProperty<>("BoundZ");
         }
 
-        public static IntProperty getBoundZProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Vex> getBoundZProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "BoundZ");
         }
 
-        public static IntProperty createLifeTicksProperty() {
-            return new IntProperty("LifeTicks");
+        public static IntProperty<Vex> createLifeTicksProperty() {
+            return new IntProperty<>("LifeTicks");
         }
 
-        public static IntProperty getLifeTicksProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Vex> getLifeTicksProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "LifeTicks");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createBoundXProperty(), createBoundYProperty(), createBoundZProperty(), createLifeTicksProperty());
         }
     }
 
@@ -2422,14 +2900,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Zoglin
      */
-    public static final class OfZoglin {
+    public static final class OfZoglin implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createIsBabyProperty() {
-            return new BooleanProperty("IsBaby");
+        public static BooleanProperty<Zoglin> createIsBabyProperty() {
+            return new BooleanProperty<>("IsBaby");
         }
 
-        public static BooleanProperty getIsBabyProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Zoglin> getIsBabyProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "IsBaby");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createIsBabyProperty());
         }
     }
 
@@ -2443,38 +2926,43 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Zombie
      */
-    public static final class OfZombie {
+    public static final class OfZombie implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createCanBreakDoorsProperty() {
-            return new BooleanProperty("CanBreakDoors");
+        public static BooleanProperty<Zombie> createCanBreakDoorsProperty() {
+            return new BooleanProperty<>("CanBreakDoors");
         }
 
-        public static BooleanProperty getCanBreakDoorsProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Zombie> getCanBreakDoorsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CanBreakDoors");
         }
 
-        public static IntProperty createDrownedConversionTimeProperty() {
-            return new IntProperty("DrownedConversionTime");
+        public static IntProperty<Zombie> createDrownedConversionTimeProperty() {
+            return new IntProperty<>("DrownedConversionTime");
         }
 
-        public static IntProperty getDrownedConversionTimeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Zombie> getDrownedConversionTimeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "DrownedConversionTime");
         }
 
-        public static IntProperty createInWaterTimeProperty() {
-            return new IntProperty("InWaterTime");
+        public static IntProperty<Zombie> createInWaterTimeProperty() {
+            return new IntProperty<>("InWaterTime");
         }
 
-        public static IntProperty getInWaterTimeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Zombie> getInWaterTimeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "InWaterTime");
         }
 
-        public static BooleanProperty createIsBabyProperty() {
-            return new BooleanProperty("IsBaby");
+        public static BooleanProperty<Zombie> createIsBabyProperty() {
+            return new BooleanProperty<>("IsBaby");
         }
 
-        public static BooleanProperty getIsBabyProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Zombie> getIsBabyProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "IsBaby");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createCanBreakDoorsProperty(), createDrownedConversionTimeProperty(), createInWaterTimeProperty(), createIsBabyProperty());
         }
     }
 
@@ -2484,7 +2972,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Drowned
      */
-    public static final class OfDrowned {
+    public static final class OfDrowned implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2493,7 +2986,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Husk
      */
-    public static final class OfHusk {
+    public static final class OfHusk implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2509,54 +3007,59 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.ZombieVillager
      */
-    public static final class OfZombieVillager {
+    public static final class OfZombieVillager implements VanillaPropertiesUtils {
 
-        public static UuidProperty createConversionPlayerProperty() {
-            return new UuidProperty("ConversionPlayer");
+        public static UuidProperty<ZombieVillager> createConversionPlayerProperty() {
+            return new UuidProperty<>("ConversionPlayer");
         }
 
-        public static UuidProperty getConversionPlayerProperty(Map<String, EntityProperty> map) {
+        public static UuidProperty<ZombieVillager> getConversionPlayerProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "ConversionPlayer");
         }
 
-        public static IntProperty createConversionTimeProperty() {
-            return new IntProperty("ConversionTime");
+        public static IntProperty<ZombieVillager> createConversionTimeProperty() {
+            return new IntProperty<>("ConversionTime");
         }
 
-        public static IntProperty getConversionTimeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<ZombieVillager> getConversionTimeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "ConversionTime");
         }
 
-        public static UnsupportedProperty createGossipsProperty() {
-            return new UnsupportedProperty("Gossips");
+        public static UnsupportedProperty<ZombieVillager> createGossipsProperty() {
+            return new UnsupportedProperty<>("Gossips");
         }
 
-        public static UnsupportedProperty getGossipsProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<ZombieVillager> getGossipsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Gossips");
         }
 
-        public static UnsupportedProperty createOffersProperty() {
-            return new UnsupportedProperty("Offers");
+        public static UnsupportedProperty<ZombieVillager> createOffersProperty() {
+            return new UnsupportedProperty<>("Offers");
         }
 
-        public static UnsupportedProperty getOffersProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<ZombieVillager> getOffersProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Offers");
         }
 
-        public static UnsupportedProperty createVillagerDataProperty() {
-            return new UnsupportedProperty("VillagerData");
+        public static UnsupportedProperty<ZombieVillager> createVillagerDataProperty() {
+            return new UnsupportedProperty<>("VillagerData");
         }
 
-        public static UnsupportedProperty getVillagerDataProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<ZombieVillager> getVillagerDataProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "VillagerData");
         }
 
-        public static IntProperty createXpProperty() {
-            return new IntProperty("Xp");
+        public static IntProperty<ZombieVillager> createXpProperty() {
+            return new IntProperty<>("Xp");
         }
 
-        public static IntProperty getXpProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<ZombieVillager> getXpProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Xp");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createConversionPlayerProperty(), createConversionTimeProperty(), createGossipsProperty(), createOffersProperty(), createVillagerDataProperty(), createXpProperty());
         }
     }
 
@@ -2566,7 +3069,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.ZombifiedPiglin
      */
-    public static final class OfZombifiedPiglin {
+    public static final class OfZombifiedPiglin implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2575,7 +3083,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.breeze.Breeze
      */
-    public static final class OfBreeze {
+    public static final class OfBreeze implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2585,14 +3098,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.creaking.Creaking
      */
-    public static final class OfCreaking {
+    public static final class OfCreaking implements VanillaPropertiesUtils {
 
-        public static BlockPosProperty createHomePosProperty() {
-            return new BlockPosProperty("home_pos");
+        public static BlockPosProperty<Creaking> createHomePosProperty() {
+            return new BlockPosProperty<>("home_pos");
         }
 
-        public static BlockPosProperty getHomePosProperty(Map<String, EntityProperty> map) {
+        public static BlockPosProperty<Creaking> getHomePosProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "home_pos");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createHomePosProperty());
         }
     }
 
@@ -2604,22 +3122,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.piglin.AbstractPiglin
      */
-    public static final class OfAbstractPiglin {
+    public static final class OfAbstractPiglin implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createIsImmuneToZombificationProperty() {
-            return new BooleanProperty("IsImmuneToZombification");
+        public static BooleanProperty<AbstractPiglin> createIsImmuneToZombificationProperty() {
+            return new BooleanProperty<>("IsImmuneToZombification");
         }
 
-        public static BooleanProperty getIsImmuneToZombificationProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<AbstractPiglin> getIsImmuneToZombificationProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "IsImmuneToZombification");
         }
 
-        public static IntProperty createTimeInOverworldProperty() {
-            return new IntProperty("TimeInOverworld");
+        public static IntProperty<AbstractPiglin> createTimeInOverworldProperty() {
+            return new IntProperty<>("TimeInOverworld");
         }
 
-        public static IntProperty getTimeInOverworldProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<AbstractPiglin> getTimeInOverworldProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "TimeInOverworld");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createIsImmuneToZombificationProperty(), createTimeInOverworldProperty());
         }
     }
 
@@ -2631,22 +3154,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.piglin.Piglin
      */
-    public static final class OfPiglin {
+    public static final class OfPiglin implements VanillaPropertiesUtils {
 
-        public static BooleanProperty createCannotHuntProperty() {
-            return new BooleanProperty("CannotHunt");
+        public static BooleanProperty<Piglin> createCannotHuntProperty() {
+            return new BooleanProperty<>("CannotHunt");
         }
 
-        public static BooleanProperty getCannotHuntProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Piglin> getCannotHuntProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "CannotHunt");
         }
 
-        public static BooleanProperty createIsBabyProperty() {
-            return new BooleanProperty("IsBaby");
+        public static BooleanProperty<Piglin> createIsBabyProperty() {
+            return new BooleanProperty<>("IsBaby");
         }
 
-        public static BooleanProperty getIsBabyProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Piglin> getIsBabyProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "IsBaby");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createCannotHuntProperty(), createIsBabyProperty());
         }
     }
 
@@ -2656,7 +3184,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.piglin.PiglinBrute
      */
-    public static final class OfPiglinBrute {
+    public static final class OfPiglinBrute implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2668,22 +3201,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.warden.Warden
      */
-    public static final class OfWarden {
+    public static final class OfWarden implements VanillaPropertiesUtils {
 
-        public static UnsupportedProperty createAngerProperty() {
-            return new UnsupportedProperty("anger");
+        public static UnsupportedProperty<Warden> createAngerProperty() {
+            return new UnsupportedProperty<>("anger");
         }
 
-        public static UnsupportedProperty getAngerProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<Warden> getAngerProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "anger");
         }
 
-        public static UnsupportedProperty createListenerProperty() {
-            return new UnsupportedProperty("listener");
+        public static UnsupportedProperty<Warden> createListenerProperty() {
+            return new UnsupportedProperty<>("listener");
         }
 
-        public static UnsupportedProperty getListenerProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<Warden> getListenerProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "listener");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createAngerProperty(), createListenerProperty());
         }
     }
 
@@ -2693,7 +3231,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.ambient.AmbientCreature
      */
-    public static final class OfAmbientCreature {
+    public static final class OfAmbientCreature implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2703,14 +3246,19 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.ambient.Bat
      */
-    public static final class OfBat {
+    public static final class OfBat implements VanillaPropertiesUtils {
 
-        public static ByteProperty createBatFlagsProperty() {
-            return new ByteProperty("BatFlags");
+        public static ByteProperty<Bat> createBatFlagsProperty() {
+            return new ByteProperty<>("BatFlags");
         }
 
-        public static ByteProperty getBatFlagsProperty(Map<String, EntityProperty> map) {
+        public static ByteProperty<Bat> getBatFlagsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "BatFlags");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createBatFlagsProperty());
         }
     }
 
@@ -2722,22 +3270,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.boss.enderdragon.EnderDragon
      */
-    public static final class OfEnderDragon {
+    public static final class OfEnderDragon implements VanillaPropertiesUtils {
 
-        public static IntProperty createDragonDeathTimeProperty() {
-            return new IntProperty("DragonDeathTime");
+        public static IntProperty<EnderDragon> createDragonDeathTimeProperty() {
+            return new IntProperty<>("DragonDeathTime");
         }
 
-        public static IntProperty getDragonDeathTimeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<EnderDragon> getDragonDeathTimeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "DragonDeathTime");
         }
 
-        public static IntProperty createDragonPhaseProperty() {
-            return new IntProperty("DragonPhase");
+        public static IntProperty<EnderDragon> createDragonPhaseProperty() {
+            return new IntProperty<>("DragonPhase");
         }
 
-        public static IntProperty getDragonPhaseProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<EnderDragon> getDragonPhaseProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "DragonPhase");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createDragonDeathTimeProperty(), createDragonPhaseProperty());
         }
     }
 
@@ -2749,22 +3302,27 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Slime
      */
-    public static final class OfSlime {
+    public static final class OfSlime implements VanillaPropertiesUtils {
 
-        public static IntProperty createSizeProperty() {
-            return new IntProperty("Size");
+        public static IntProperty<Slime> createSizeProperty() {
+            return new IntProperty<>("Size");
         }
 
-        public static IntProperty getSizeProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<Slime> getSizeProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Size");
         }
 
-        public static BooleanProperty createWasOnGroundProperty() {
-            return new BooleanProperty("wasOnGround");
+        public static BooleanProperty<Slime> createWasOnGroundProperty() {
+            return new BooleanProperty<>("wasOnGround");
         }
 
-        public static BooleanProperty getWasOnGroundProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<Slime> getWasOnGroundProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "wasOnGround");
+        }
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createSizeProperty(), createWasOnGroundProperty());
         }
     }
 
@@ -2774,7 +3332,12 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.MagmaCube
      */
-    public static final class OfMagmaCube {
+    public static final class OfMagmaCube implements VanillaPropertiesUtils {
+
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
     }
 
     /**
@@ -2799,137 +3362,139 @@ public final class VanillaProperties {
      *
      * @see net.minecraft.world.entity.decoration.ArmorStand
      */
-    public static final class OfArmorStand {
+    public static final class OfArmorStand implements VanillaPropertiesUtils {
 
-        public static ItemStackListProperty createArmorItemsProperty() {
-            return new ItemStackListProperty("ArmorItems");
+        public static ItemStackListProperty<ArmorStand> createArmorItemsProperty() {
+            return new ItemStackListProperty<>("ArmorItems");
         }
 
-        public static ItemStackListProperty getArmorItemsProperty(Map<String, EntityProperty> map) {
+        public static ItemStackListProperty<ArmorStand> getArmorItemsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "ArmorItems");
         }
 
-        public static FloatListProperty createBodyProperty() {
-            return new FloatListProperty("Body");
+        public static FloatListProperty<ArmorStand> createBodyProperty() {
+            return new FloatListProperty<>("Body");
         }
 
-        public static FloatListProperty getBodyProperty(Map<String, EntityProperty> map) {
+        public static FloatListProperty<ArmorStand> getBodyProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Body");
         }
 
-        public static IntProperty createDisabledSlotsProperty() {
-            return new IntProperty("DisabledSlots");
+        public static IntProperty<ArmorStand> createDisabledSlotsProperty() {
+            return new IntProperty<>("DisabledSlots");
         }
 
-        public static IntProperty getDisabledSlotsProperty(Map<String, EntityProperty> map) {
+        public static IntProperty<ArmorStand> getDisabledSlotsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "DisabledSlots");
         }
 
-        public static ItemStackListProperty createHandItemsProperty() {
-            return new ItemStackListProperty("HandItems");
+        public static ItemStackListProperty<ArmorStand> createHandItemsProperty() {
+            return new ItemStackListProperty<>("HandItems");
         }
 
-        public static ItemStackListProperty getHandItemsProperty(Map<String, EntityProperty> map) {
+        public static ItemStackListProperty<ArmorStand> getHandItemsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "HandItems");
         }
 
-        public static FloatListProperty createHeadProperty() {
-            return new FloatListProperty("Head");
+        public static FloatListProperty<ArmorStand> createHeadProperty() {
+            return new FloatListProperty<>("Head");
         }
 
-        public static FloatListProperty getHeadProperty(Map<String, EntityProperty> map) {
+        public static FloatListProperty<ArmorStand> getHeadProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Head");
         }
 
-        public static BooleanProperty createInvisibleProperty() {
-            return new BooleanProperty("Invisible");
+        public static BooleanProperty<ArmorStand> createInvisibleProperty() {
+            return new BooleanProperty<>("Invisible");
         }
 
-        public static BooleanProperty getInvisibleProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<ArmorStand> getInvisibleProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Invisible");
         }
 
-        public static FloatListProperty createLeftArmProperty() {
-            return new FloatListProperty("LeftArm");
+        public static FloatListProperty<ArmorStand> createLeftArmProperty() {
+            return new FloatListProperty<>("LeftArm");
         }
 
-        public static FloatListProperty getLeftArmProperty(Map<String, EntityProperty> map) {
+        public static FloatListProperty<ArmorStand> getLeftArmProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "LeftArm");
         }
 
-        public static FloatListProperty createLeftLegProperty() {
-            return new FloatListProperty("LeftLeg");
+        public static FloatListProperty<ArmorStand> createLeftLegProperty() {
+            return new FloatListProperty<>("LeftLeg");
         }
 
-        public static FloatListProperty getLeftLegProperty(Map<String, EntityProperty> map) {
+        public static FloatListProperty<ArmorStand> getLeftLegProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "LeftLeg");
         }
 
-        public static BooleanProperty createMarkerProperty() {
-            return new BooleanProperty("Marker");
+        public static BooleanProperty<ArmorStand> createMarkerProperty() {
+            return new BooleanProperty<>("Marker");
         }
 
-        public static BooleanProperty getMarkerProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<ArmorStand> getMarkerProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Marker");
         }
 
-        public static BooleanProperty createNoBasePlateProperty() {
-            return new BooleanProperty("NoBasePlate");
+        public static BooleanProperty<ArmorStand> createNoBasePlateProperty() {
+            return new BooleanProperty<>("NoBasePlate");
         }
 
-        public static BooleanProperty getNoBasePlateProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<ArmorStand> getNoBasePlateProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "NoBasePlate");
         }
 
-        public static UnsupportedProperty createPoseProperty() {
-            return new UnsupportedProperty("Pose");
+        public static UnsupportedProperty<ArmorStand> createPoseProperty() {
+            return new UnsupportedProperty<>("Pose");
         }
 
-        public static UnsupportedProperty getPoseProperty(Map<String, EntityProperty> map) {
+        public static UnsupportedProperty<ArmorStand> getPoseProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Pose");
         }
 
-        public static FloatListProperty createRightArmProperty() {
-            return new FloatListProperty("RightArm");
+        public static FloatListProperty<ArmorStand> createRightArmProperty() {
+            return new FloatListProperty<>("RightArm");
         }
 
-        public static FloatListProperty getRightArmProperty(Map<String, EntityProperty> map) {
+        public static FloatListProperty<ArmorStand> getRightArmProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "RightArm");
         }
 
-        public static FloatListProperty createRightLegProperty() {
-            return new FloatListProperty("RightLeg");
+        public static FloatListProperty<ArmorStand> createRightLegProperty() {
+            return new FloatListProperty<>("RightLeg");
         }
 
-        public static FloatListProperty getRightLegProperty(Map<String, EntityProperty> map) {
+        public static FloatListProperty<ArmorStand> getRightLegProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "RightLeg");
         }
 
-        public static BooleanProperty createShowArmsProperty() {
-            return new BooleanProperty("ShowArms");
+        public static BooleanProperty<ArmorStand> createShowArmsProperty() {
+            return new BooleanProperty<>("ShowArms");
         }
 
-        public static BooleanProperty getShowArmsProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<ArmorStand> getShowArmsProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "ShowArms");
         }
 
-        public static BooleanProperty createSmallProperty() {
-            return new BooleanProperty("Small");
+        public static BooleanProperty<ArmorStand> createSmallProperty() {
+            return new BooleanProperty<>("Small");
         }
 
-        public static BooleanProperty getSmallProperty(Map<String, EntityProperty> map) {
+        public static BooleanProperty<ArmorStand> getSmallProperty(Map<String, EntityProperty<?>> map) {
             return g(map, "Small");
         }
-    }
 
-    @SuppressWarnings("unchecked")
-    private static <T> T g(Map<String, EntityProperty> map, String key) {
-        return (T) Optional.ofNullable(map.get(key)).orElseThrow(() -> new RuntimeException("Vanilla entity property \"" + key + "\" not found!"));
-    }
-
-    private static void p(Map<String, EntityProperty> map, EntityProperty... properties) {
-        for (EntityProperty property : properties) {
-            map.put(property.name(), property);
+        @Override
+        public void register(Map<String, EntityProperty<?>> map) {
+            p(map, createArmorItemsProperty(), createBodyProperty(), createDisabledSlotsProperty(), createHandItemsProperty(), createHeadProperty(), createInvisibleProperty(), createLeftArmProperty(), createLeftLegProperty(), createMarkerProperty(), createNoBasePlateProperty(), createPoseProperty(), createRightArmProperty(), createRightLegProperty(), createShowArmsProperty(), createSmallProperty());
         }
+    }
+
+    private static <T> T g(Map<String, EntityProperty<?>> map, String key) {
+        return VanillaPropertiesUtils.get(map, key);
+    }
+
+    private static void p(Map<String, EntityProperty<?>> map, EntityProperty<?>... properties) {
+        VanillaPropertiesUtils.put(map, properties);
     }
 }

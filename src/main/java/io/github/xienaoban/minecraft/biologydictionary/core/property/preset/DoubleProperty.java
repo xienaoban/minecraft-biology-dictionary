@@ -2,25 +2,26 @@ package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.Entity;
 
-public final class DoubleProperty extends AbstractProperty<Double> {
+public final class DoubleProperty<E extends Entity> extends AbstractProperty<E, Double> {
     public DoubleProperty(String propertyName) {
         super(propertyName);
     }
 
     @Override
-    public void readFrom(CompoundTag vanillaNbt) {
-        if (vanillaNbt.contains(name(), Tag.TAG_DOUBLE)) {
-            set(vanillaNbt.getDouble(name()));
+    public void readFrom(CompoundTag nbt) {
+        if (nbt.contains(name(), Tag.TAG_DOUBLE)) {
+            set(nbt.getDouble(name()));
         } else {
             set(null);
         }
     }
 
     @Override
-    public void writeTo(CompoundTag vanillaNbt) {
+    public void writeTo(CompoundTag nbt) {
         if (get() != null) {
-            vanillaNbt.putDouble(name(), get());
+            nbt.putDouble(name(), get());
         } else {
             throw new IllegalPropertyStateException("primitive type must not be null");
         }

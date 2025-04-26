@@ -28,7 +28,7 @@ public abstract class EntityPropertyWidget<E extends Entity> extends Widget {
         return properties.entity();
     }
 
-    protected final Map<String, EntityProperty> m() { return properties.m(); }
+    protected final Map<String, EntityProperty<?>> m() { return properties.m(); }
 
     public record RC(int rows, int columns) {}
 }

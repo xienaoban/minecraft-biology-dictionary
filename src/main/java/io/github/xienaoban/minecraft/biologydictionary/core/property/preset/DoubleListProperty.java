@@ -4,18 +4,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
 
-public final class DoubleListProperty extends AbstractProperty<ArrayList<Double>> {
+public final class DoubleListProperty<E extends Entity> extends AbstractProperty<E, ArrayList<Double>> {
     public DoubleListProperty(String propertyName) {
         super(propertyName);
     }
 
     @Override
-    public void readFrom(CompoundTag vanillaNbt) {
-        if (vanillaNbt.contains(name(), Tag.TAG_LIST)) {
-            ListTag listTag = vanillaNbt.getList(name(), Tag.TAG_DOUBLE);
+    public void readFrom(CompoundTag nbt) {
+        if (nbt.contains(name(), Tag.TAG_LIST)) {
+            ListTag listTag = nbt.getList(name(), Tag.TAG_DOUBLE);
             ArrayList<Double> list = new ArrayList<>();
             for (int i = 0; i < listTag.size(); i++) {
                 list.add(listTag.getDouble(i));
@@ -27,13 +28,13 @@ public final class DoubleListProperty extends AbstractProperty<ArrayList<Double>
     }
 
     @Override
-    public void writeTo(CompoundTag vanillaNbt) {
+    public void writeTo(CompoundTag nbt) {
         if (get() != null) {
             ListTag listTag = new ListTag();
             for (var e : get()) {
                 listTag.add(DoubleTag.valueOf(e));
             }
-            vanillaNbt.put(name(), listTag);
+            nbt.put(name(), listTag);
         } else {
             throw new IllegalPropertyStateException("list type must not be null");
         }

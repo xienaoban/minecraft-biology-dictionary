@@ -8,10 +8,13 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.TypeParameter;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.VanillaPropertiesUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
 import net.fabricmc.api.EnvType;
@@ -38,7 +41,7 @@ public class PropertyClazzGenerator {
     private static final String PROPERTY_WRAPPER_CLAZZ_NAME = "VanillaProperties";
 
     private static final Type STRING_TYPE = new ClassOrInterfaceType(null, String.class.getSimpleName());
-    private static final Type ENTITY_PROPERTY_TYPE = new ClassOrInterfaceType(null, EntityProperty.class.getSimpleName());
+    private static final Type ENTITY_PROPERTY_TYPE = new ClassOrInterfaceType(null, new SimpleName(EntityProperty.class.getSimpleName()), new NodeList<>(new TypeParameter("?")));
     private static final Type MAP_STR_PROPERTY_TYPE = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()), new NodeList<>(STRING_TYPE, ENTITY_PROPERTY_TYPE));
     private static final Parameter MAP_STR_PROPERTY_PARAM = new Parameter(MAP_STR_PROPERTY_TYPE, "map");
 
@@ -83,15 +86,14 @@ public class PropertyClazzGenerator {
         method.addParameter(MAP_STR_PROPERTY_PARAM);
         method.addParameter(new Parameter(STRING_TYPE, "key"));
         method.setType("T");
-        method.addAnnotation(new SingleMemberAnnotationExpr(new Name(SuppressWarnings.class.getSimpleName()), new StringLiteralExpr("unchecked")));
-        method.setBody(new BlockStmt().addStatement("return (T) Optional.ofNullable(map.get(key)).orElseThrow(() -> new RuntimeException(\"Vanilla entity property \\\"\" + key + \"\\\" not found!\"));"));
+        method.setBody(new BlockStmt().addStatement("return VanillaPropertiesUtils.get(map, key);"));
     }
 
     public static void addPutMethod(ClassOrInterfaceDeclaration wrapperClazz) {
         MethodDeclaration method = wrapperClazz.addMethod("p", Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
         method.addParameter(MAP_STR_PROPERTY_PARAM);
         method.addParameter(new Parameter(ENTITY_PROPERTY_TYPE, "properties").setVarArgs(true));
-        method.setBody(new BlockStmt().addStatement("for (EntityProperty property : properties) { map.put(property.name(), property); }"));
+        method.setBody(new BlockStmt().addStatement("VanillaPropertiesUtils.put(map, properties);"));
     }
 
     private static void writeClassToFile(CompilationUnit cu, File outputClassPath) {
@@ -109,6 +111,8 @@ public class PropertyClazzGenerator {
     private final CompilationUnit cu;
     private final ClassOrInterfaceDeclaration clazzAst;
 
+    private final NodeList<Expression> registerMethodBody = new NodeList<>(new NameExpr("map"));
+
     private PropertyClazzGenerator(Class<? extends Entity> entityClazz, NbtTagCollector nbts, ClassOrInterfaceDeclaration wrapperClazz) {
         String targetClazzSimpleName = "Of" + entityClazz.getSimpleName();
         this.entityClazz = entityClazz;
@@ -117,16 +121,19 @@ public class PropertyClazzGenerator {
         this.clazzAst = new ClassOrInterfaceDeclaration(
                 NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier(), Modifier.finalModifier()),
                 false, targetClazzSimpleName);
+        this.clazzAst.addImplementedType(VanillaPropertiesUtils.class);
         wrapperClazz.addMember(this.clazzAst);
     }
 
     private void generate() {
-        // cu.addImport(entityClazz); // not used
+        cu.addImport(entityClazz);
         addClazzComments();
 
         for (String propertyName : Stream.concat(nbts.getNbtTags().keySet().stream(), nbts.getConflicts().keySet().stream()).sorted().toList()) {
             addPropertyCreateAndGetMethods(propertyName, nbts.getNbtTags().getOrDefault(propertyName, null));
         }
+
+        addPropertyRegisterMethod();
     }
 
     private void addClazzComments() {
@@ -151,15 +158,16 @@ public class PropertyClazzGenerator {
 
     private void addPropertyCreateAndGetMethods(String propertyName, NbtTagCollector.NbtTagInfo propertyInfo) {
         String uc = toUpperCamelCase(propertyName);
-        String returnType = propertyInfo == null
+        String returnRowType = (propertyInfo == null
                 ? "UnsupportedProperty"
-                : toUpperCamelCase(propertyInfo.type().name()) + (propertyInfo.list() ? "List" : "") + "Property";
+                : toUpperCamelCase(propertyInfo.type().name()) + (propertyInfo.list() ? "List" : "") + "Property");
+        String returnType = returnRowType + "<" + entityClazz.getSimpleName() + ">";
 
         {
             String methodName = "create" + uc + "Property";
             MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
             method.setType(returnType);
-            method.setBody(new BlockStmt().addStatement("return new " + returnType + "(\"" + propertyName + "\");"));
+            method.setBody(new BlockStmt().addStatement("return new " + returnRowType + "<>(\"" + propertyName + "\");"));
         }
 
         {
@@ -169,6 +177,15 @@ public class PropertyClazzGenerator {
             method.setType(returnType);
             method.setBody(new BlockStmt().addStatement("return g(map, \"" + propertyName + "\");"));
         }
+
+        registerMethodBody.add(new MethodCallExpr("create" + uc + "Property"));
+    }
+    private void addPropertyRegisterMethod() {
+        String methodName = "register";
+        MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PUBLIC);
+        method.addParameter(MAP_STR_PROPERTY_PARAM);
+        method.addAnnotation(new MarkerAnnotationExpr("Override"));
+        method.setBody(new BlockStmt().addStatement(new ExpressionStmt(new MethodCallExpr(null, "p", registerMethodBody))));
     }
 
     private static String toUpperCamelCase(String s) {

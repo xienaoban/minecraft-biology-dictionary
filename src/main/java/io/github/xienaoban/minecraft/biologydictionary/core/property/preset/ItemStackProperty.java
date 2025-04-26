@@ -3,11 +3,12 @@ package io.github.xienaoban.minecraft.biologydictionary.core.property.preset;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
-public class ItemStackProperty extends AbstractProperty<ItemStack> {
+public class ItemStackProperty<E extends Entity> extends AbstractProperty<E, ItemStack> {
     private final RegistryAccess registryAccess = Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
 
     public ItemStackProperty(String propertyName) {
@@ -15,16 +16,16 @@ public class ItemStackProperty extends AbstractProperty<ItemStack> {
     }
 
     @Override
-    public void readFrom(CompoundTag vanillaNbt) {
-        set(ItemStack.parseOptional(registryAccess, vanillaNbt.getCompound(name())));
+    public void readFrom(CompoundTag nbt) {
+        set(ItemStack.parseOptional(registryAccess, nbt.getCompound(name())));
     }
 
     @Override
-    public void writeTo(CompoundTag vanillaNbt) {
+    public void writeTo(CompoundTag nbt) {
         if (get() != null && !get().isEmpty()) {
-            vanillaNbt.put(name(), get().save(registryAccess));
+            nbt.put(name(), get().save(registryAccess));
         } else {
-            vanillaNbt.put(name(), new CompoundTag());
+            nbt.put(name(), new CompoundTag());
         }
     }
 }
