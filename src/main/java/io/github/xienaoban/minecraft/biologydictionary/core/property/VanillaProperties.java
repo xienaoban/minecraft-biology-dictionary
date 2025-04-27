@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.preset.*;
+import io.github.xienaoban.minecraft.biologydictionary.common.property.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.*;

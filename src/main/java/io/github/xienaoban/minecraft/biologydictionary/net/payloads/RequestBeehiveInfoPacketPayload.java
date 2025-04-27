@@ -1,8 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary.net.payloads;
 
-import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayload;
-import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayloadMeta;
-import io.github.xienaoban.minecraft.biologydictionary.platform.net.ServerNetApi;
+import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayload;
+import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayloadMeta;
+import io.github.xienaoban.minecraft.biologydictionary.common.net.ServerNetApi;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.component;
 
-import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenElement;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenElement;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

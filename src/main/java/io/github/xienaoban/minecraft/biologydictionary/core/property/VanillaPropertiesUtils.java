@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
-import io.github.xienaoban.minecraft.biologydictionary.util.Misc;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 
 import java.util.Map;
 

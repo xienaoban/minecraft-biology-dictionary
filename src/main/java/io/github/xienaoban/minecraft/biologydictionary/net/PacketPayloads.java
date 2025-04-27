@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.net;
 
 import io.github.xienaoban.minecraft.biologydictionary.net.payloads.*;
-import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayload;
+import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayload;
 
 import java.util.List;
 

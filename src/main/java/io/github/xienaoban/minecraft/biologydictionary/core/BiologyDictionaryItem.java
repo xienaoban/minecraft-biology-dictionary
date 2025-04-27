@@ -1,9 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.core;
 
 import io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.minecraft.biologydictionary.platform.mixin.MinecraftMixin;
-import io.github.xienaoban.minecraft.biologydictionary.platform.util.DevUtils;
-import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
+import io.github.xienaoban.minecraft.biologydictionary.common.mixin.MinecraftMixin;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.DevUtils;
+import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -51,12 +51,12 @@ public class BiologyDictionaryItem {
 
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(ID_TAG));
         stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of("biologydictionary:handbook"), List.of()));
-        stack.set(DataComponents.ITEM_NAME, Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE).withStyle(
+        stack.set(DataComponents.ITEM_NAME, Component.translatable(Lang.BIOLOGY_DICTIONARY_TITLE).withStyle(
                 Style.EMPTY.withColor(TextColor.parseColor("aqua").getOrThrow())
                         .withBold(true).withItalic(false)
         ));
         stack.set(DataComponents.LORE, ItemLore.EMPTY.withLineAdded(
-                Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_DESCRIPTION).withStyle(
+                Component.translatable(Lang.BIOLOGY_DICTIONARY_DESCRIPTION).withStyle(
                         Style.EMPTY.withColor(TextColor.parseColor("dark_aqua").getOrThrow())
                                 .withBold(false).withItalic(false)
                 )
@@ -82,9 +82,9 @@ public class BiologyDictionaryItem {
                 Modrinth: §9§n%s
                 """
                 .formatted(
-                        trans(TranslationKeys.TEXT_MOD_NAME_IS),
-                        trans(TranslationKeys.BIOLOGY_DICTIONARY),
-                        trans(TranslationKeys.TEXT_MOD_NOT_INSTALLED),
+                        trans(Lang.TEXT_MOD_NAME_IS),
+                        trans(Lang.BIOLOGY_DICTIONARY),
+                        trans(Lang.TEXT_MOD_NOT_INSTALLED),
                         BiologyDictionary.MODRINTH_PAGE);
     }
 

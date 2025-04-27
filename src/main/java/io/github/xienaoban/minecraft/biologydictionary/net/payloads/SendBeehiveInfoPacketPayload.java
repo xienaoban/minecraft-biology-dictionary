@@ -1,9 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.net.payloads;
 
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.misc.BeehiveScreen;
-import io.github.xienaoban.minecraft.biologydictionary.platform.net.ClientNetApi;
-import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayload;
-import io.github.xienaoban.minecraft.biologydictionary.platform.net.PacketPayloadMeta;
+import io.github.xienaoban.minecraft.biologydictionary.common.net.ClientNetApi;
+import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayload;
+import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayloadMeta;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;

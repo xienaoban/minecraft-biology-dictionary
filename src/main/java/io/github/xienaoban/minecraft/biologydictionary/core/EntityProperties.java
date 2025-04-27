@@ -3,7 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary.core;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.VanillaProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.VanillaPropertiesUtils;
-import io.github.xienaoban.minecraft.biologydictionary.util.EntityUtils;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;

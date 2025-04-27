@@ -4,7 +4,7 @@ import io.github.xienaoban.minecraft.biologydictionary.client.EntityPropertyWidg
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
-import io.github.xienaoban.minecraft.biologydictionary.util.MinecraftUtils;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;

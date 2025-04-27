@@ -1,0 +1,162 @@
+package io.github.xienaoban.minecraft.biologydictionary.common.util;
+
+import java.util.HashMap;
+
+/**
+ * This class is generated automatically.
+ * The Minecraft classes are obfuscated in regular version with names like "net,minecraft.Class_1".
+ * So we use this deobfuscation map to get the real names of the entity classes.
+ */
+final class EntityDeobfuscation {
+    static final HashMap<Class<?>, String> map = new HashMap<>();
+
+    private static void f(Class<?> c, String s) {
+        map.put(c, s);
+    }
+
+    static {
+        // classes
+        /**/ f(net.minecraft.world.entity.Entity.class, "net.minecraft.world.entity.Entity");
+        /*--*/ f(net.minecraft.world.entity.LivingEntity.class, "net.minecraft.world.entity.LivingEntity");
+        /*----*/ f(net.minecraft.world.entity.Mob.class, "net.minecraft.world.entity.Mob");
+        /*------*/ f(net.minecraft.world.entity.FlyingMob.class, "net.minecraft.world.entity.FlyingMob");
+        /*--------*/ f(net.minecraft.world.entity.monster.Ghast.class, "net.minecraft.world.entity.monster.Ghast");
+        /*--------*/ f(net.minecraft.world.entity.monster.Phantom.class, "net.minecraft.world.entity.monster.Phantom");
+        /*------*/ f(net.minecraft.world.entity.PathfinderMob.class, "net.minecraft.world.entity.PathfinderMob");
+        /*--------*/ f(net.minecraft.world.entity.AgeableMob.class, "net.minecraft.world.entity.AgeableMob");
+        /*----------*/ f(net.minecraft.world.entity.animal.AgeableWaterCreature.class, "net.minecraft.world.entity.animal.AgeableWaterCreature");
+        /*------------*/ f(net.minecraft.world.entity.animal.Dolphin.class, "net.minecraft.world.entity.animal.Dolphin");
+        /*------------*/ f(net.minecraft.world.entity.animal.Squid.class, "net.minecraft.world.entity.animal.Squid");
+        /*--------------*/ f(net.minecraft.world.entity.GlowSquid.class, "net.minecraft.world.entity.GlowSquid");
+        /*----------*/ f(net.minecraft.world.entity.animal.Animal.class, "net.minecraft.world.entity.animal.Animal");
+        /*------------*/ f(net.minecraft.world.entity.TamableAnimal.class, "net.minecraft.world.entity.TamableAnimal");
+        /*--------------*/ f(net.minecraft.world.entity.animal.Cat.class, "net.minecraft.world.entity.animal.Cat");
+        /*--------------*/ f(net.minecraft.world.entity.animal.ShoulderRidingEntity.class, "net.minecraft.world.entity.animal.ShoulderRidingEntity");
+        /*----------------*/ f(net.minecraft.world.entity.animal.Parrot.class, "net.minecraft.world.entity.animal.Parrot");
+        /*--------------*/ f(net.minecraft.world.entity.animal.Wolf.class, "net.minecraft.world.entity.animal.Wolf");
+        /*------------*/ f(net.minecraft.world.entity.animal.Bee.class, "net.minecraft.world.entity.animal.Bee");
+        /*------------*/ f(net.minecraft.world.entity.animal.Chicken.class, "net.minecraft.world.entity.animal.Chicken");
+        /*------------*/ f(net.minecraft.world.entity.animal.Cow.class, "net.minecraft.world.entity.animal.Cow");
+        /*--------------*/ f(net.minecraft.world.entity.animal.MushroomCow.class, "net.minecraft.world.entity.animal.MushroomCow");
+        /*------------*/ f(net.minecraft.world.entity.animal.Fox.class, "net.minecraft.world.entity.animal.Fox");
+        /*------------*/ f(net.minecraft.world.entity.animal.Ocelot.class, "net.minecraft.world.entity.animal.Ocelot");
+        /*------------*/ f(net.minecraft.world.entity.animal.Panda.class, "net.minecraft.world.entity.animal.Panda");
+        /*------------*/ f(net.minecraft.world.entity.animal.Pig.class, "net.minecraft.world.entity.animal.Pig");
+        /*------------*/ f(net.minecraft.world.entity.animal.PolarBear.class, "net.minecraft.world.entity.animal.PolarBear");
+        /*------------*/ f(net.minecraft.world.entity.animal.Rabbit.class, "net.minecraft.world.entity.animal.Rabbit");
+        /*------------*/ f(net.minecraft.world.entity.animal.Sheep.class, "net.minecraft.world.entity.animal.Sheep");
+        /*------------*/ f(net.minecraft.world.entity.animal.Turtle.class, "net.minecraft.world.entity.animal.Turtle");
+        /*------------*/ f(net.minecraft.world.entity.animal.armadillo.Armadillo.class, "net.minecraft.world.entity.animal.armadillo.Armadillo");
+        /*------------*/ f(net.minecraft.world.entity.animal.axolotl.Axolotl.class, "net.minecraft.world.entity.animal.axolotl.Axolotl");
+        /*------------*/ f(net.minecraft.world.entity.animal.frog.Frog.class, "net.minecraft.world.entity.animal.frog.Frog");
+        /*------------*/ f(net.minecraft.world.entity.animal.goat.Goat.class, "net.minecraft.world.entity.animal.goat.Goat");
+        /*------------*/ f(net.minecraft.world.entity.animal.horse.AbstractHorse.class, "net.minecraft.world.entity.animal.horse.AbstractHorse");
+        /*--------------*/ f(net.minecraft.world.entity.animal.camel.Camel.class, "net.minecraft.world.entity.animal.camel.Camel");
+        /*--------------*/ f(net.minecraft.world.entity.animal.horse.AbstractChestedHorse.class, "net.minecraft.world.entity.animal.horse.AbstractChestedHorse");
+        /*----------------*/ f(net.minecraft.world.entity.animal.horse.Donkey.class, "net.minecraft.world.entity.animal.horse.Donkey");
+        /*----------------*/ f(net.minecraft.world.entity.animal.horse.Llama.class, "net.minecraft.world.entity.animal.horse.Llama");
+        /*------------------*/ f(net.minecraft.world.entity.animal.horse.TraderLlama.class, "net.minecraft.world.entity.animal.horse.TraderLlama");
+        /*----------------*/ f(net.minecraft.world.entity.animal.horse.Mule.class, "net.minecraft.world.entity.animal.horse.Mule");
+        /*--------------*/ f(net.minecraft.world.entity.animal.horse.Horse.class, "net.minecraft.world.entity.animal.horse.Horse");
+        /*--------------*/ f(net.minecraft.world.entity.animal.horse.SkeletonHorse.class, "net.minecraft.world.entity.animal.horse.SkeletonHorse");
+        /*--------------*/ f(net.minecraft.world.entity.animal.horse.ZombieHorse.class, "net.minecraft.world.entity.animal.horse.ZombieHorse");
+        /*------------*/ f(net.minecraft.world.entity.animal.sniffer.Sniffer.class, "net.minecraft.world.entity.animal.sniffer.Sniffer");
+        /*------------*/ f(net.minecraft.world.entity.monster.Strider.class, "net.minecraft.world.entity.monster.Strider");
+        /*------------*/ f(net.minecraft.world.entity.monster.hoglin.Hoglin.class, "net.minecraft.world.entity.monster.hoglin.Hoglin");
+        /*----------*/ f(net.minecraft.world.entity.npc.AbstractVillager.class, "net.minecraft.world.entity.npc.AbstractVillager");
+        /*------------*/ f(net.minecraft.world.entity.npc.Villager.class, "net.minecraft.world.entity.npc.Villager");
+        /*------------*/ f(net.minecraft.world.entity.npc.WanderingTrader.class, "net.minecraft.world.entity.npc.WanderingTrader");
+        /*--------*/ f(net.minecraft.world.entity.animal.AbstractGolem.class, "net.minecraft.world.entity.animal.AbstractGolem");
+        /*----------*/ f(net.minecraft.world.entity.animal.IronGolem.class, "net.minecraft.world.entity.animal.IronGolem");
+        /*----------*/ f(net.minecraft.world.entity.animal.SnowGolem.class, "net.minecraft.world.entity.animal.SnowGolem");
+        /*----------*/ f(net.minecraft.world.entity.monster.Shulker.class, "net.minecraft.world.entity.monster.Shulker");
+        /*--------*/ f(net.minecraft.world.entity.animal.WaterAnimal.class, "net.minecraft.world.entity.animal.WaterAnimal");
+        /*----------*/ f(net.minecraft.world.entity.animal.AbstractFish.class, "net.minecraft.world.entity.animal.AbstractFish");
+        /*------------*/ f(net.minecraft.world.entity.animal.AbstractSchoolingFish.class, "net.minecraft.world.entity.animal.AbstractSchoolingFish");
+        /*--------------*/ f(net.minecraft.world.entity.animal.Cod.class, "net.minecraft.world.entity.animal.Cod");
+        /*--------------*/ f(net.minecraft.world.entity.animal.Salmon.class, "net.minecraft.world.entity.animal.Salmon");
+        /*--------------*/ f(net.minecraft.world.entity.animal.TropicalFish.class, "net.minecraft.world.entity.animal.TropicalFish");
+        /*------------*/ f(net.minecraft.world.entity.animal.Pufferfish.class, "net.minecraft.world.entity.animal.Pufferfish");
+        /*------------*/ f(net.minecraft.world.entity.animal.frog.Tadpole.class, "net.minecraft.world.entity.animal.frog.Tadpole");
+        /*--------*/ f(net.minecraft.world.entity.animal.allay.Allay.class, "net.minecraft.world.entity.animal.allay.Allay");
+        /*--------*/ f(net.minecraft.world.entity.monster.Monster.class, "net.minecraft.world.entity.monster.Monster");
+        /*----------*/ f(net.minecraft.world.entity.boss.wither.WitherBoss.class, "net.minecraft.world.entity.boss.wither.WitherBoss");
+        /*----------*/ f(net.minecraft.world.entity.monster.AbstractSkeleton.class, "net.minecraft.world.entity.monster.AbstractSkeleton");
+        /*------------*/ f(net.minecraft.world.entity.monster.Bogged.class, "net.minecraft.world.entity.monster.Bogged");
+        /*------------*/ f(net.minecraft.world.entity.monster.Skeleton.class, "net.minecraft.world.entity.monster.Skeleton");
+        /*------------*/ f(net.minecraft.world.entity.monster.Stray.class, "net.minecraft.world.entity.monster.Stray");
+        /*------------*/ f(net.minecraft.world.entity.monster.WitherSkeleton.class, "net.minecraft.world.entity.monster.WitherSkeleton");
+        /*----------*/ f(net.minecraft.world.entity.monster.Blaze.class, "net.minecraft.world.entity.monster.Blaze");
+        /*----------*/ f(net.minecraft.world.entity.monster.Creeper.class, "net.minecraft.world.entity.monster.Creeper");
+        /*----------*/ f(net.minecraft.world.entity.monster.EnderMan.class, "net.minecraft.world.entity.monster.EnderMan");
+        /*----------*/ f(net.minecraft.world.entity.monster.Endermite.class, "net.minecraft.world.entity.monster.Endermite");
+        /*----------*/ f(net.minecraft.world.entity.monster.Giant.class, "net.minecraft.world.entity.monster.Giant");
+        /*----------*/ f(net.minecraft.world.entity.monster.Guardian.class, "net.minecraft.world.entity.monster.Guardian");
+        /*------------*/ f(net.minecraft.world.entity.monster.ElderGuardian.class, "net.minecraft.world.entity.monster.ElderGuardian");
+        /*----------*/ f(net.minecraft.world.entity.monster.PatrollingMonster.class, "net.minecraft.world.entity.monster.PatrollingMonster");
+        /*------------*/ f(net.minecraft.world.entity.raid.Raider.class, "net.minecraft.world.entity.raid.Raider");
+        /*--------------*/ f(net.minecraft.world.entity.monster.AbstractIllager.class, "net.minecraft.world.entity.monster.AbstractIllager");
+        /*----------------*/ f(net.minecraft.world.entity.monster.Pillager.class, "net.minecraft.world.entity.monster.Pillager");
+        /*----------------*/ f(net.minecraft.world.entity.monster.SpellcasterIllager.class, "net.minecraft.world.entity.monster.SpellcasterIllager");
+        /*------------------*/ f(net.minecraft.world.entity.monster.Evoker.class, "net.minecraft.world.entity.monster.Evoker");
+        /*------------------*/ f(net.minecraft.world.entity.monster.Illusioner.class, "net.minecraft.world.entity.monster.Illusioner");
+        /*----------------*/ f(net.minecraft.world.entity.monster.Vindicator.class, "net.minecraft.world.entity.monster.Vindicator");
+        /*--------------*/ f(net.minecraft.world.entity.monster.Ravager.class, "net.minecraft.world.entity.monster.Ravager");
+        /*--------------*/ f(net.minecraft.world.entity.monster.Witch.class, "net.minecraft.world.entity.monster.Witch");
+        /*----------*/ f(net.minecraft.world.entity.monster.Silverfish.class, "net.minecraft.world.entity.monster.Silverfish");
+        /*----------*/ f(net.minecraft.world.entity.monster.Spider.class, "net.minecraft.world.entity.monster.Spider");
+        /*------------*/ f(net.minecraft.world.entity.monster.CaveSpider.class, "net.minecraft.world.entity.monster.CaveSpider");
+        /*----------*/ f(net.minecraft.world.entity.monster.Vex.class, "net.minecraft.world.entity.monster.Vex");
+        /*----------*/ f(net.minecraft.world.entity.monster.Zoglin.class, "net.minecraft.world.entity.monster.Zoglin");
+        /*----------*/ f(net.minecraft.world.entity.monster.Zombie.class, "net.minecraft.world.entity.monster.Zombie");
+        /*------------*/ f(net.minecraft.world.entity.monster.Drowned.class, "net.minecraft.world.entity.monster.Drowned");
+        /*------------*/ f(net.minecraft.world.entity.monster.Husk.class, "net.minecraft.world.entity.monster.Husk");
+        /*------------*/ f(net.minecraft.world.entity.monster.ZombieVillager.class, "net.minecraft.world.entity.monster.ZombieVillager");
+        /*------------*/ f(net.minecraft.world.entity.monster.ZombifiedPiglin.class, "net.minecraft.world.entity.monster.ZombifiedPiglin");
+        /*----------*/ f(net.minecraft.world.entity.monster.breeze.Breeze.class, "net.minecraft.world.entity.monster.breeze.Breeze");
+        /*----------*/ f(net.minecraft.world.entity.monster.creaking.Creaking.class, "net.minecraft.world.entity.monster.creaking.Creaking");
+        /*----------*/ f(net.minecraft.world.entity.monster.piglin.AbstractPiglin.class, "net.minecraft.world.entity.monster.piglin.AbstractPiglin");
+        /*------------*/ f(net.minecraft.world.entity.monster.piglin.Piglin.class, "net.minecraft.world.entity.monster.piglin.Piglin");
+        /*------------*/ f(net.minecraft.world.entity.monster.piglin.PiglinBrute.class, "net.minecraft.world.entity.monster.piglin.PiglinBrute");
+        /*----------*/ f(net.minecraft.world.entity.monster.warden.Warden.class, "net.minecraft.world.entity.monster.warden.Warden");
+        /*------*/ f(net.minecraft.world.entity.ambient.AmbientCreature.class, "net.minecraft.world.entity.ambient.AmbientCreature");
+        /*--------*/ f(net.minecraft.world.entity.ambient.Bat.class, "net.minecraft.world.entity.ambient.Bat");
+        /*------*/ f(net.minecraft.world.entity.boss.enderdragon.EnderDragon.class, "net.minecraft.world.entity.boss.enderdragon.EnderDragon");
+        /*------*/ f(net.minecraft.world.entity.monster.Slime.class, "net.minecraft.world.entity.monster.Slime");
+        /*--------*/ f(net.minecraft.world.entity.monster.MagmaCube.class, "net.minecraft.world.entity.monster.MagmaCube");
+        /*----*/ f(net.minecraft.world.entity.decoration.ArmorStand.class, "net.minecraft.world.entity.decoration.ArmorStand");
+
+        // interfaces
+        f(net.minecraft.network.syncher.SyncedDataHolder.class, "net.minecraft.network.syncher.SyncedDataHolder");
+        f(net.minecraft.world.ContainerListener.class, "net.minecraft.world.ContainerListener");
+        f(net.minecraft.world.Nameable.class, "net.minecraft.world.Nameable");
+        f(net.minecraft.world.entity.Attackable.class, "net.minecraft.world.entity.Attackable");
+        f(net.minecraft.world.entity.EquipmentUser.class, "net.minecraft.world.entity.EquipmentUser");
+        f(net.minecraft.world.entity.HasCustomInventoryScreen.class, "net.minecraft.world.entity.HasCustomInventoryScreen");
+        f(net.minecraft.world.entity.ItemSteerable.class, "net.minecraft.world.entity.ItemSteerable");
+        f(net.minecraft.world.entity.Leashable.class, "net.minecraft.world.entity.Leashable");
+        f(net.minecraft.world.entity.NeutralMob.class, "net.minecraft.world.entity.NeutralMob");
+        f(net.minecraft.world.entity.OwnableEntity.class, "net.minecraft.world.entity.OwnableEntity");
+        f(net.minecraft.world.entity.PlayerRideableJumping.class, "net.minecraft.world.entity.PlayerRideableJumping");
+        f(net.minecraft.world.entity.ReputationEventHandler.class, "net.minecraft.world.entity.ReputationEventHandler");
+        f(net.minecraft.world.entity.Saddleable.class, "net.minecraft.world.entity.Saddleable");
+        f(net.minecraft.world.entity.Shearable.class, "net.minecraft.world.entity.Shearable");
+        f(net.minecraft.world.entity.Targeting.class, "net.minecraft.world.entity.Targeting");
+        f(net.minecraft.world.entity.TraceableEntity.class, "net.minecraft.world.entity.TraceableEntity");
+        f(net.minecraft.world.entity.VariantHolder.class, "net.minecraft.world.entity.VariantHolder");
+        f(net.minecraft.world.entity.animal.Bucketable.class, "net.minecraft.world.entity.animal.Bucketable");
+        f(net.minecraft.world.entity.animal.FlyingAnimal.class, "net.minecraft.world.entity.animal.FlyingAnimal");
+        f(net.minecraft.world.entity.monster.CrossbowAttackMob.class, "net.minecraft.world.entity.monster.CrossbowAttackMob");
+        f(net.minecraft.world.entity.monster.Enemy.class, "net.minecraft.world.entity.monster.Enemy");
+        f(net.minecraft.world.entity.monster.RangedAttackMob.class, "net.minecraft.world.entity.monster.RangedAttackMob");
+        f(net.minecraft.world.entity.monster.hoglin.HoglinBase.class, "net.minecraft.world.entity.monster.hoglin.HoglinBase");
+        f(net.minecraft.world.entity.npc.InventoryCarrier.class, "net.minecraft.world.entity.npc.InventoryCarrier");
+        f(net.minecraft.world.entity.npc.Npc.class, "net.minecraft.world.entity.npc.Npc");
+        f(net.minecraft.world.entity.npc.VillagerDataHolder.class, "net.minecraft.world.entity.npc.VillagerDataHolder");
+        f(net.minecraft.world.item.component.Consumable.OverrideConsumeSound.class, "net.minecraft.world.item.component.Consumable$OverrideConsumeSound");
+        f(net.minecraft.world.item.trading.Merchant.class, "net.minecraft.world.item.trading.Merchant");
+        f(net.minecraft.world.level.entity.EntityAccess.class, "net.minecraft.world.level.entity.EntityAccess");
+        f(net.minecraft.world.level.gameevent.vibrations.VibrationSystem.class, "net.minecraft.world.level.gameevent.vibrations.VibrationSystem");
+        f(net.minecraft.world.scores.ScoreHolder.class, "net.minecraft.world.scores.ScoreHolder");
+    }
+}

@@ -5,7 +5,7 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.screen.EntityDetailSc
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.HomeScreen;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
-import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

@@ -2,7 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.net.ServerNetManager;
-import io.github.xienaoban.minecraft.biologydictionary.platform.server.ServerEventRegistry;
+import io.github.xienaoban.minecraft.biologydictionary.common.server.ServerEventRegistry;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

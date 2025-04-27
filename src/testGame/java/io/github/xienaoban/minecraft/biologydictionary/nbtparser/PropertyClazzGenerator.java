@@ -16,7 +16,7 @@ import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.VanillaPropertiesUtils;
 import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
-import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
+import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 public class PropertyClazzGenerator {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final String OUTPUT_CLAZZ_PACKAGE = TranslationKeys.PACKAGE + ".core.property";
+    public static final String OUTPUT_CLAZZ_PACKAGE = Lang.PACKAGE + ".core.property";
     public static final File OUTPUT_CLAZZ_PATH = new File(TestUtils.MAIN_JAVA_ROOT.toString(), OUTPUT_CLAZZ_PACKAGE.replaceAll("\\.", "/"));
 
     private static final String PROPERTY_WRAPPER_CLAZZ_NAME = "VanillaProperties";

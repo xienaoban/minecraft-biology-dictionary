@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.extra;
 
-import io.github.xienaoban.minecraft.biologydictionary.core.property.preset.ItemStackListProperty;
+import io.github.xienaoban.minecraft.biologydictionary.common.property.ItemStackListProperty;
 import net.minecraft.world.entity.Mob;
 
 public class MobTemptProperty extends ItemStackListProperty<Mob> {

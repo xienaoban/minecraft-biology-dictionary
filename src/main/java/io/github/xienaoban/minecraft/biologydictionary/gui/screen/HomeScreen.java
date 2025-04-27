@@ -3,8 +3,8 @@ package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
-import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 @Environment(EnvType.CLIENT)
 public class HomeScreen extends AbstractBiologyDictionaryScreen {
     public HomeScreen() {
-        super(Component.translatable(TranslationKeys.BIOLOGY_DICTIONARY_TITLE));
+        super(Component.translatable(Lang.BIOLOGY_DICTIONARY_TITLE));
         for (int i = 0; i < 9; ++i) {
             if (!getOrAddPage(0).addWidget(new Widget(1, 1) {
                 @Override

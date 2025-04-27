@@ -1,8 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
-import io.github.xienaoban.minecraft.biologydictionary.util.EntityUtils;
-import io.github.xienaoban.minecraft.biologydictionary.util.MinecraftUtils;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;

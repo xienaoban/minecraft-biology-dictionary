@@ -3,7 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary.net;
 import io.github.xienaoban.minecraft.biologydictionary.net.payloads.RequestBeehiveInfoPacketPayload;
 import io.github.xienaoban.minecraft.biologydictionary.net.payloads.RequestEntityDataPacketPayload;
 import io.github.xienaoban.minecraft.biologydictionary.net.payloads.RequestHandbookItemPacketPayload;
-import io.github.xienaoban.minecraft.biologydictionary.platform.net.ClientNetApi;
+import io.github.xienaoban.minecraft.biologydictionary.common.net.ClientNetApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;

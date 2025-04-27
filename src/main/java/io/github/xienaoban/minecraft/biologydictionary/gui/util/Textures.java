@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.util;
 
-import io.github.xienaoban.minecraft.biologydictionary.platform.gui.TextureInfo;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.TextureInfo;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;

@@ -4,8 +4,8 @@ import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetR
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.*;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
-import io.github.xienaoban.minecraft.biologydictionary.util.EntityUtils;
-import io.github.xienaoban.minecraft.biologydictionary.util.Misc;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;

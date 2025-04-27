@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core;
 
-import io.github.xienaoban.minecraft.biologydictionary.util.EntityUtils;
-import io.github.xienaoban.minecraft.biologydictionary.util.TranslationKeys;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -64,10 +64,10 @@ public final class EntityManager {
 
     private final List<TagGroup> tagGroups = new ArrayList<>();
 
-    private final TagGroup defaultTags   = new TagGroup(TranslationKeys.TAG_GROUP_DEFAULT);
-    private final TagGroup classTags     = new TagGroup(TranslationKeys.TAG_GROUP_CLASS);
-    private final TagGroup interfaceTags = new TagGroup(TranslationKeys.TAG_GROUP_INTERFACE);
-    private final TagGroup namespaceTags = new TagGroup(TranslationKeys.TAG_GROUP_NAMESPACE);
+    private final TagGroup defaultTags   = new TagGroup(Lang.TAG_GROUP_DEFAULT);
+    private final TagGroup classTags     = new TagGroup(Lang.TAG_GROUP_CLASS);
+    private final TagGroup interfaceTags = new TagGroup(Lang.TAG_GROUP_INTERFACE);
+    private final TagGroup namespaceTags = new TagGroup(Lang.TAG_GROUP_NAMESPACE);
 
     private EntityManager(Level level) {
         EntityUtils.init();

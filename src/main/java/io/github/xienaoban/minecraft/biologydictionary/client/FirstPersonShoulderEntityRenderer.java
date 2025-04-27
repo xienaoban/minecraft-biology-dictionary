@@ -2,8 +2,8 @@ package io.github.xienaoban.minecraft.biologydictionary.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import io.github.xienaoban.minecraft.biologydictionary.util.MinecraftUtils;
-import io.github.xienaoban.minecraft.biologydictionary.platform.client.RenderingRegistry;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.minecraft.biologydictionary.common.client.RenderingRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;

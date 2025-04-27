@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.component.control;
 
-import io.github.xienaoban.minecraft.biologydictionary.platform.gui.TextureInfo;
-import io.github.xienaoban.minecraft.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.TextureInfo;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 
 public class EntityPropertyTextBar extends EntityPropertyBar {
 

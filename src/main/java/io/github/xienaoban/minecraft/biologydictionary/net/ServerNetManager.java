@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.net;
 
-import io.github.xienaoban.minecraft.biologydictionary.platform.net.ServerNetApi;
+import io.github.xienaoban.minecraft.biologydictionary.common.net.ServerNetApi;
 
 public final class ServerNetManager {
     public static void init() {
