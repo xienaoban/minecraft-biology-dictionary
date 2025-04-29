@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 
-import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.VanillaProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
 import io.github.xienaoban.minecraft.biologydictionary.common.property.IntProperty;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
-    private final IntProperty<Entity> portalCooldownProperty = VanillaProperties.OfEntity.getPortalCooldownProperty(m());
+    private final IntProperty<Entity> portalCooldownProperty = EntityVanillaProperties.OfEntity.getPortalCooldownProperty(m());
 
     private int inPortalRecheck = 0;
 

@@ -9,9 +9,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class ItemStackListProperty<E extends Entity> extends AbstractProperty<E, ArrayList<ItemStack>> {
+public class ItemStackListProperty<E extends Entity> extends AbstractProperty<E, List<ItemStack>> {
     private final RegistryAccess registryAccess = Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
 
     public ItemStackListProperty(String propertyName) {

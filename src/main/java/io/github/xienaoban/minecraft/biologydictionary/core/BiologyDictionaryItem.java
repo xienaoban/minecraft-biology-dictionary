@@ -30,7 +30,7 @@ import java.util.Optional;
  *
  * @see MinecraftMixin#useBiologyDictionaryScreen(CallbackInfo)
  */
-public class BiologyDictionaryItem {
+public final class BiologyDictionaryItem {
     // Any writable book with this nbt key will be recognized as a biology dictionary.
     public static final String ID = BiologyDictionary.MOD_ID;
 

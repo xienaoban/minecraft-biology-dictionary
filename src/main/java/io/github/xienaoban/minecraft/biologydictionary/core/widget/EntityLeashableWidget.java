@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 
-import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;

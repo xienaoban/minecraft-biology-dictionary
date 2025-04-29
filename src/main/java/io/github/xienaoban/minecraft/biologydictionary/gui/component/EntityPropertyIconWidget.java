@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.component;
 
-import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

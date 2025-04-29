@@ -1,11 +1,11 @@
 package io.github.xienaoban.minecraft.biologydictionary.client;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityPropertyWidgetRegister;
-import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
-import io.github.xienaoban.minecraft.biologydictionary.core.widget.*;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.widget.*;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -13,7 +13,6 @@ import net.minecraft.world.entity.Entity;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 @Environment(EnvType.CLIENT)
@@ -58,13 +57,7 @@ public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRe
         final Class<E> entityClazz;
         final MethodHandle createWidget;
         try {
-            // Get the entity class (aka E) based on generic super class EntityPropertyWidget.
-            ParameterizedType superWidgetType = (ParameterizedType) widgetClazz.getGenericSuperclass();
-            Class<?> c = (Class<?>) superWidgetType.getActualTypeArguments()[0];
-            if (!Entity.class.isAssignableFrom(c)) {
-                throw new RuntimeException("The first argument of generic super class is not a sub class of Entity.");
-            }
-            entityClazz = Misc.cast(c);
+            entityClazz = Misc.getFirstEntityClazzGeneric(widgetClazz);
 
             // Get the constructor of the widget class.
             Constructor<? extends EntityPropertyWidget<E>> constructor = widgetClazz.getDeclaredConstructor(EntityProperties.class);

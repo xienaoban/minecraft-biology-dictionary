@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 
 import com.mojang.authlib.GameProfile;
-import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;

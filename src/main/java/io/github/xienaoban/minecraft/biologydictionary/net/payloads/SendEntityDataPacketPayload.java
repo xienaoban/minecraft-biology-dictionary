@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.net.payloads;
 
-import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.ClientNetApi;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayload;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayloadMeta;

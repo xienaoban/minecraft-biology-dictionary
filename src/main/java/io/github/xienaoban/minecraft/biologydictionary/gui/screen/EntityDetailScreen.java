@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 
 import io.github.xienaoban.minecraft.biologydictionary.client.EntityPropertyWidgetManager;
-import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;

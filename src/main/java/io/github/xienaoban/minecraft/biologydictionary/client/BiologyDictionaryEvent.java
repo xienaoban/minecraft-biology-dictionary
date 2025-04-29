@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.client;
 
-import io.github.xienaoban.minecraft.biologydictionary.core.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.EntityDetailScreen;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.HomeScreen;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.misc.BeehiveScreen;

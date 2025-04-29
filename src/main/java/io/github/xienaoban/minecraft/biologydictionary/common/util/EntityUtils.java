@@ -11,7 +11,7 @@ import java.util.List;
 
 public final class EntityUtils {
     public static void init() {
-        EntityDeobfuscation.map.get(null);
+        EntityVanillaDeobfuscation.clazzToName.get(null);
     }
 
     public static <E extends Entity> E create(EntityType<E> entityType) {
@@ -43,10 +43,16 @@ public final class EntityUtils {
         return list;
     }
 
+    public static List<Class<? extends Entity>> getVanillaEntityClazzes() {
+        return EntityVanillaDeobfuscation.clazzes;
+    }
+
     /**
      * Get deobfuscated class name of the vanilla entity.
+     * @param clazz Entity class
+     * @return deobfuscated class name or null if not vanilla entity class
      */
-    public static String getDeobfuscatedName(Class<?> clazz) {
-        return EntityDeobfuscation.map.get(clazz);
+    public static String getDeobfuscatedName(Class<? extends Entity> clazz) {
+        return EntityVanillaDeobfuscation.clazzToName.get(clazz);
     }
 }

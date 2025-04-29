@@ -1,12 +1,13 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
-import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +30,7 @@ public class VanillaEntityTest implements FabricGameTest {
         AtomicBoolean success = new AtomicBoolean(true);
 
         EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
-            Class<?> clazz = cur.getClazz();
+            Class<? extends Entity> clazz = cur.getClazz();
 
             // skip non-vanilla classes
             if (!MinecraftUtils.isVanillaClass(clazz)) {

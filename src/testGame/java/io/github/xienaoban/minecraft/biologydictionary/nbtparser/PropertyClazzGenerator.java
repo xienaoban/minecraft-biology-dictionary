@@ -14,7 +14,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.VanillaPropertiesUtils;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaPropertyRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
 import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import net.fabricmc.api.EnvType;
@@ -38,7 +38,7 @@ public class PropertyClazzGenerator {
     public static final String OUTPUT_CLAZZ_PACKAGE = Lang.PACKAGE + ".core.property";
     public static final File OUTPUT_CLAZZ_PATH = new File(TestUtils.MAIN_JAVA_ROOT.toString(), OUTPUT_CLAZZ_PACKAGE.replaceAll("\\.", "/"));
 
-    private static final String PROPERTY_WRAPPER_CLAZZ_NAME = "VanillaProperties";
+    private static final String PROPERTY_WRAPPER_CLAZZ_NAME = "EntityVanillaProperties";
 
     private static final Type STRING_TYPE = new ClassOrInterfaceType(null, String.class.getSimpleName());
     private static final Type ENTITY_PROPERTY_TYPE = new ClassOrInterfaceType(null, new SimpleName(EntityProperty.class.getSimpleName()), new NodeList<>(new TypeParameter("?")));
@@ -86,14 +86,14 @@ public class PropertyClazzGenerator {
         method.addParameter(MAP_STR_PROPERTY_PARAM);
         method.addParameter(new Parameter(STRING_TYPE, "key"));
         method.setType("T");
-        method.setBody(new BlockStmt().addStatement("return VanillaPropertiesUtils.get(map, key);"));
+        method.setBody(new BlockStmt().addStatement("return " + EntityVanillaPropertyRegistry.class.getSimpleName() + ".get(map, key);"));
     }
 
     public static void addPutMethod(ClassOrInterfaceDeclaration wrapperClazz) {
         MethodDeclaration method = wrapperClazz.addMethod("p", Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
         method.addParameter(MAP_STR_PROPERTY_PARAM);
         method.addParameter(new Parameter(ENTITY_PROPERTY_TYPE, "properties").setVarArgs(true));
-        method.setBody(new BlockStmt().addStatement("VanillaPropertiesUtils.put(map, properties);"));
+        method.setBody(new BlockStmt().addStatement(EntityVanillaPropertyRegistry.class.getSimpleName() + ".put(map, properties);"));
     }
 
     private static void writeClassToFile(CompilationUnit cu, File outputClassPath) {
@@ -121,7 +121,7 @@ public class PropertyClazzGenerator {
         this.clazzAst = new ClassOrInterfaceDeclaration(
                 NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier(), Modifier.finalModifier()),
                 false, targetClazzSimpleName);
-        this.clazzAst.addImplementedType(VanillaPropertiesUtils.class);
+        this.clazzAst.addImplementedType(EntityVanillaPropertyRegistry.class);
         wrapperClazz.addMember(this.clazzAst);
     }
 

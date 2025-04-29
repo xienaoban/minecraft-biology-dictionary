@@ -5,7 +5,9 @@ import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 
 import java.util.Map;
 
-public interface VanillaPropertiesUtils {
+public interface EntityVanillaPropertyRegistry {
+    void register(Map<String, EntityProperty<?>> map);
+
     static <T> T get(Map<String, EntityProperty<?>> map, String key) {
         Object val = map.get(key);
         if (val == null) {
@@ -19,6 +21,4 @@ public interface VanillaPropertiesUtils {
             map.put(property.name(), property);
         }
     }
-
-    void register(Map<String, EntityProperty<?>> map);
 }

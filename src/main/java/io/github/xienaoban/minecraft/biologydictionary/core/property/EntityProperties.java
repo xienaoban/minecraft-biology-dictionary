@@ -1,8 +1,6 @@
-package io.github.xienaoban.minecraft.biologydictionary.core;
+package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.VanillaProperties;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.VanillaPropertiesUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -12,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,19 +18,20 @@ import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.
 
 @Environment(EnvType.CLIENT)
 public final class EntityProperties<E extends Entity> {
-    private static final Map<Class<? extends Entity>, VanillaPropertiesUtils> vanillaRegisters = new ConcurrentHashMap<>();
+    private static final Map<Class<? extends Entity>, EntityVanillaPropertyRegistry> vanillaRegisters = new ConcurrentHashMap<>();
+    private static final Map<Class<? extends Entity>, List<EntityExtraPropertyRegistry>> extraRegisters = new ConcurrentHashMap<>();
 
-    private static VanillaPropertiesUtils getRegister(Class<? extends Entity> entityClazz) {
+    private static EntityVanillaPropertyRegistry getRegister(Class<? extends Entity> entityClazz) {
         return vanillaRegisters.computeIfAbsent(entityClazz, cl -> {
             String clazzName = EntityUtils.getDeobfuscatedName(cl);
             if (clazzName == null) {
                 return null;
             }
             String simpleName = clazzName.substring(clazzName.lastIndexOf('.') + 1);
-            String ofName = VanillaProperties.class.getName() + "$Of" + simpleName;
+            String ofName = EntityVanillaProperties.class.getName() + "$Of" + simpleName;
             try {
                 Class<?> ofClazz = Class.forName(ofName);
-                return (VanillaPropertiesUtils) ofClazz.getConstructor().newInstance();
+                return (EntityVanillaPropertyRegistry) ofClazz.getConstructor().newInstance();
 
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
                      InvocationTargetException | InstantiationException e) {
@@ -49,7 +49,7 @@ public final class EntityProperties<E extends Entity> {
         Map<String, EntityProperty<?>> map = new HashMap<>();
         try {
             for (var clazz : EntityUtils.topDown(entity)) {
-                VanillaPropertiesUtils register = getRegister(clazz);
+                EntityVanillaPropertyRegistry register = getRegister(clazz);
                 if (register != null) {
                     register.register(map);
                 }
