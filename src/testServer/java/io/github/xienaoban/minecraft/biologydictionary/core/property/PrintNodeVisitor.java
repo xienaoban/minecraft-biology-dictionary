@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.nbtparser;
+package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;

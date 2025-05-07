@@ -19,14 +19,19 @@ repositories {
 }
 
 sourceSets {
-    testGame {
+    testServer {
+        runtimeClasspath += main.runtimeClasspath + main.output
+        compileClasspath += main.compileClasspath + main.output
+    }
+    testClient {
         runtimeClasspath += main.runtimeClasspath + main.output
         compileClasspath += main.compileClasspath + main.output
     }
 }
 
 configurations {
-    testGameImplementation.extendsFrom implementation
+    testServerImplementation.extendsFrom implementation
+    testClientImplementation.extendsFrom implementation
 }
 
 dependencies {
@@ -38,9 +43,9 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    testGameImplementation "com.github.javaparser:javaparser-symbol-solver-core:${project.javaparser_version}"
-    testGameImplementation "org.bitbucket.mstrobel:procyon-compilertools:${project.procyon_version}"
-    testGameImplementation "org.vineflower:vineflower:${vineflower_version}"
+    testServerImplementation "com.github.javaparser:javaparser-symbol-solver-core:${project.javaparser_version}"
+    testServerImplementation "org.bitbucket.mstrobel:procyon-compilertools:${project.procyon_version}"
+    testServerImplementation "org.vineflower:vineflower:${vineflower_version}"
 }
 
 processResources {
@@ -101,24 +106,18 @@ publishing {
 
 loom {
     runs {
-        testGame {
+        testServer {
             server()
-            source sourceSets.testGame
+            source sourceSets.testServer
             vmArg "-Dfabric-api.gametest"
             vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
-            runDir "build/testGame"
+            runDir "build/testServer"
         }
-        // testClient {
-        //     client()
-        //     source sourceSets.testGame
-        //     ideConfigGenerated project.rootProject == project
-        //     runDir "run/testModClient"
-        // }
-        // testServer {
-        //     server()
-        //     source sourceSets.testGame
-        //     ideConfigGenerated project.rootProject == project
-        //     runDir "run/testModServer"
-        // }
+        testClient {
+            client()
+            source sourceSets.testClient
+            ideConfigGenerated project.rootProject == project
+            runDir "build/testServer"
+        }
     }
 }

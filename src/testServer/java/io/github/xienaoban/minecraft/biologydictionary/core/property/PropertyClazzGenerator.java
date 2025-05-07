@@ -1,8 +1,9 @@
-package io.github.xienaoban.minecraft.biologydictionary.nbtparser;
+package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
@@ -13,10 +14,9 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
+import io.github.xienaoban.minecraft.biologydictionary.common.property.UnsupportedProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaPropertyRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
-import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -25,7 +25,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
@@ -35,40 +37,76 @@ import java.util.stream.Stream;
 public class PropertyClazzGenerator {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final String OUTPUT_CLAZZ_PACKAGE = Lang.PACKAGE + ".core.property";
-    public static final File OUTPUT_CLAZZ_PATH = new File(TestUtils.MAIN_JAVA_ROOT.toString(), OUTPUT_CLAZZ_PACKAGE.replaceAll("\\.", "/"));
+    public static final Class<EntityVanillaProperties> TARGET_CLAZZ = EntityVanillaProperties.class;
 
-    private static final String PROPERTY_WRAPPER_CLAZZ_NAME = "EntityVanillaProperties";
+    public static final String OUTPUT_CLAZZ_PACKAGE = TARGET_CLAZZ.getPackageName();
+    private static final String PROPERTY_WRAPPER_CLAZZ_NAME = TARGET_CLAZZ.getSimpleName();
+
+    public static final File OUTPUT_CLAZZ_DIR_PATH = new File(TestUtils.MAIN_JAVA_ROOT.toString(), OUTPUT_CLAZZ_PACKAGE.replaceAll("\\.", "/"));
+    public static final File OUTPUT_CLAZZ_FILE_PATH = Paths.get(OUTPUT_CLAZZ_DIR_PATH.toString(), PROPERTY_WRAPPER_CLAZZ_NAME + ".java").toFile();
 
     private static final Type STRING_TYPE = new ClassOrInterfaceType(null, String.class.getSimpleName());
     private static final Type ENTITY_PROPERTY_TYPE = new ClassOrInterfaceType(null, new SimpleName(EntityProperty.class.getSimpleName()), new NodeList<>(new TypeParameter("?")));
     private static final Type MAP_STR_PROPERTY_TYPE = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()), new NodeList<>(STRING_TYPE, ENTITY_PROPERTY_TYPE));
     private static final Parameter MAP_STR_PROPERTY_PARAM = new Parameter(MAP_STR_PROPERTY_TYPE, "map");
 
+    private static final BlockStmt initMethodBlock = new BlockStmt();
+
     public static void generateAll() {
-        File outputClassPath = Paths.get(OUTPUT_CLAZZ_PATH.toString(), PROPERTY_WRAPPER_CLAZZ_NAME + ".java").toFile();
-        CompilationUnit cu = new CompilationUnit(OUTPUT_CLAZZ_PACKAGE);
-        ClassOrInterfaceDeclaration wrapperClazz = cu.addClass(PROPERTY_WRAPPER_CLAZZ_NAME, Modifier.Keyword.PUBLIC, Modifier.Keyword.FINAL);
+        CompilationUnit cu = getBaseCu();
+        ClassOrInterfaceDeclaration wrapperClazz = cu.getClassByName(PROPERTY_WRAPPER_CLAZZ_NAME).orElseThrow();
+        clearMembersToUpdate(wrapperClazz);
         addGeneralImports(cu);
-        addGeneralAnnotations(wrapperClazz);
 
         NbtTagCollector.loadAll();
         EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
             Class<? extends Entity> entityClazz = cur.getClazz();
             LOGGER.info("Testing {}", entityClazz);
+
+            String sim = entityClazz.getSimpleName();
+            initMethodBlock.addStatement("r(" + sim + ".class, new Of" + sim + "());");
+
             NbtTagCollector nbts = NbtTagCollector.get(entityClazz);
             PropertyClazzGenerator generator = new PropertyClazzGenerator(entityClazz, nbts, wrapperClazz);
             generator.generate();
             return true;
         });
 
-        addGetAndCastOrThrowMethod(wrapperClazz);
-        addPutMethod(wrapperClazz);
-        writeClassToFile(cu, outputClassPath);
+        writeClassToFile(cu);
+    }
+
+    private static CompilationUnit getBaseCu() {
+        try {
+            String source = Files.readString(OUTPUT_CLAZZ_FILE_PATH.toPath());
+            return AstParser.generateAst(source);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void clearMembersToUpdate(ClassOrInterfaceDeclaration wrapperClazz) {
+        NodeList<BodyDeclaration<?>> list = wrapperClazz.getMembers();
+        for (int i = 0; i < list.size(); ++i) {
+            while (i < list.size()) {
+                BodyDeclaration<?> body = list.get(i);
+                if (body.isClassOrInterfaceDeclaration()) {
+                    if (body.asClassOrInterfaceDeclaration().getNameAsString().startsWith("Of")) {
+                        list.remove(i);
+                        continue;
+                    }
+                } else if (body.isMethodDeclaration()) {
+                    MethodDeclaration m = body.asMethodDeclaration();
+                    if ("init".equals(m.getNameAsString())) {
+                        m.setBody(initMethodBlock);
+                    }
+                }
+                break;
+            }
+        }
     }
 
     private static void addGeneralImports(CompilationUnit cu) {
-        cu.addImport("io.github.xienaoban.minecraft.biologydictionary.core.property.preset", false, true);
+        cu.addImport(UnsupportedProperty.class.getPackageName(), false, true);
         cu.addImport(EnvType.class);
         cu.addImport(Environment.class);
         cu.addImport(Optional.class);
@@ -76,29 +114,9 @@ public class PropertyClazzGenerator {
         cu.addImport(EntityProperty.class);
     }
 
-    private static void addGeneralAnnotations(ClassOrInterfaceDeclaration wrapperClazz) {
-        wrapperClazz.addAnnotation(new SingleMemberAnnotationExpr(new Name(Environment.class.getSimpleName()), new FieldAccessExpr(new NameExpr(EnvType.class.getSimpleName()), "CLIENT")));
-    }
-
-    public static void addGetAndCastOrThrowMethod(ClassOrInterfaceDeclaration wrapperClazz) {
-        MethodDeclaration method = wrapperClazz.addMethod("g", Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
-        method.addTypeParameter("T");
-        method.addParameter(MAP_STR_PROPERTY_PARAM);
-        method.addParameter(new Parameter(STRING_TYPE, "key"));
-        method.setType("T");
-        method.setBody(new BlockStmt().addStatement("return " + EntityVanillaPropertyRegistry.class.getSimpleName() + ".get(map, key);"));
-    }
-
-    public static void addPutMethod(ClassOrInterfaceDeclaration wrapperClazz) {
-        MethodDeclaration method = wrapperClazz.addMethod("p", Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
-        method.addParameter(MAP_STR_PROPERTY_PARAM);
-        method.addParameter(new Parameter(ENTITY_PROPERTY_TYPE, "properties").setVarArgs(true));
-        method.setBody(new BlockStmt().addStatement(EntityVanillaPropertyRegistry.class.getSimpleName() + ".put(map, properties);"));
-    }
-
-    private static void writeClassToFile(CompilationUnit cu, File outputClassPath) {
+    private static void writeClassToFile(CompilationUnit cu) {
         // if (Files.isRegularFile(path)) return; // do not overwrite
-        try (PrintWriter out = new PrintWriter(outputClassPath)) {
+        try (PrintWriter out = new PrintWriter(PropertyClazzGenerator.OUTPUT_CLAZZ_FILE_PATH)) {
             out.print(cu.toString());
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -121,7 +139,7 @@ public class PropertyClazzGenerator {
         this.clazzAst = new ClassOrInterfaceDeclaration(
                 NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier(), Modifier.finalModifier()),
                 false, targetClazzSimpleName);
-        this.clazzAst.addImplementedType(EntityVanillaPropertyRegistry.class);
+        this.clazzAst.addImplementedType(EntityVanillaProperties.Registry.class);
         wrapperClazz.addMember(this.clazzAst);
     }
 
@@ -180,6 +198,7 @@ public class PropertyClazzGenerator {
 
         registerMethodBody.add(new MethodCallExpr("create" + uc + "Property"));
     }
+
     private void addPropertyRegisterMethod() {
         String methodName = "register";
         MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PUBLIC);

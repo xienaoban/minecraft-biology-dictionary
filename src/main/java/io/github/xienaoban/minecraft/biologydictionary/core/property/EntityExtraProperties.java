@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 final class EntityExtraProperties {
-    private static final Map<Class<? extends Entity>, List<EntityExtraPropertyRegistry>> properties = new HashMap<>();
+    private static final Map<Class<? extends Entity>, List<Registry>> registries = new HashMap<>();
     private static MethodHandles.Lookup lookup;
 
     static {
@@ -35,5 +35,9 @@ final class EntityExtraProperties {
 
     private static void init() {
         r(MobTemptProperty.class);
+    }
+
+    interface Registry {
+
     }
 }

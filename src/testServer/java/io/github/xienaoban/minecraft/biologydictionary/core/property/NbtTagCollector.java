@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.nbtparser;
+package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * TODO: NbtUtils.readBlockPos in net.minecraft.world.entity.animal.Bee
  */
 public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
-    private static final Path LOGGER_PATH = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_PATH.toString(), ".nbt-tag-list.log");
+    private static final Path LOGGER_PATH = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_DIR_PATH.toString(), ".nbt-tag-list.log");
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String TAG_ARG_NAME = "compoundTag";

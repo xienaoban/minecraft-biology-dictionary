@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.nbtparser;
+package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;

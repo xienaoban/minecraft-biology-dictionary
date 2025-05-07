@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "biologydictionary-unit-test",
+  "version": "${version}",
+  "name": "Biology Dictionary Unit Test",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
-import io.github.xienaoban.minecraft.biologydictionary.nbtparser.NbtTagCollector;
-import io.github.xienaoban.minecraft.biologydictionary.nbtparser.PropertyClazzGenerator;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.NbtTagCollector;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.PropertyClazzGenerator;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;

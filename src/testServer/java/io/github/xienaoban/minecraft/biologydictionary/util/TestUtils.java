@@ -15,7 +15,7 @@ public class TestUtils {
 
     static {
         GAME_ROOT = Paths.get("").toAbsolutePath();
-        if (!GAME_ROOT.endsWith(Paths.get("build", "testGame"))) {
+        if (!GAME_ROOT.endsWith(Paths.get("build", "testServer"))) {
             throw new AssertionError("GAME_ROOT=" + GAME_ROOT);
         }
         PROJECT_ROOT = GAME_ROOT.getParent().getParent();
@@ -33,7 +33,7 @@ public class TestUtils {
             throw new AssertionError("MAIN_JAVA_ROOT=" + MAIN_JAVA_ROOT);
         }
 
-        TEST_ROOT = Paths.get(SRC_ROOT.toString(), "testGame");
+        TEST_ROOT = Paths.get(SRC_ROOT.toString(), "testServer");
         if (!Files.isDirectory(TEST_ROOT)) {
             throw new AssertionError("TEST_ROOT=" + TEST_ROOT);
         }
