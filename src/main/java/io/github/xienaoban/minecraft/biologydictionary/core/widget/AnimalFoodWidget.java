@@ -43,6 +43,7 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
             if (foods.length == 0) {
                 renderFullBar(ctx);
                 renderInnerText(ctx, Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
+                return;
             }
             for (int i = foods.length - 1; i >= 0; --i) {
                 ctx.renderTexture(Textures.ICONS, 22 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);

@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
-    private final IntProperty<Entity> portalCooldownProperty = EntityVanillaProperties.OfEntity.getPortalCooldownProperty(m());
+    private final IntProperty<Entity> portalCooldownProperty = EntityVanillaProperties.OfEntity.getPortalCooldownProperty(p());
 
     private int inPortalRecheck = 0;
 

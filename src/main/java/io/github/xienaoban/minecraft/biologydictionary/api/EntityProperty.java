@@ -30,7 +30,7 @@ public interface EntityProperty<E extends Entity> {
      *
      * @param entity Minecraft entity
      */
-    default void readFrom(E entity) {}
+    default void loadFrom(E entity) {}
 
     /**
      * Write the property value to the entity.
@@ -39,5 +39,5 @@ public interface EntityProperty<E extends Entity> {
      *
      * @param entity Minecraft entity
      */
-    default void writeTo(E entity) {}
+    default void saveTo(E entity) {}
 }

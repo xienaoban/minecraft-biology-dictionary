@@ -1,9 +1,11 @@
 package io.github.xienaoban.minecraft.biologydictionary.net.payloads;
 
-import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayload;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.ServerNetApi;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -32,12 +34,9 @@ public record RequestEntityDataPacketPayload(int entityId) implements PacketPayl
 
             // Write data that not in vanilla NBT.
             CompoundTag extraNbt = new CompoundTag();
-            for (var clazz : EntityUtils.topDown(entity)) {
-                // for (var registry : EntityPropertyWidgetManager.getInstance().getRegistries(clazz)) {
-                //     for (var handler : registry.getEntityDataBufHandlers().values()) {
-                //         handler.write(extraNbt, Misc.cast(entity));
-                //     }
-                // }
+            for (EntityProperty<?> p : new EntityProperties<>(entity).getExtras()) {
+                p.loadFrom(Misc.cast(entity));
+                p.writeTo(extraNbt);
             }
             toSend = new SendEntityDataPacketPayload(true, entity.getId(), vanillaNbt, extraNbt);
         } else {

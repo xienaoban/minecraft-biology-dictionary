@@ -20,8 +20,8 @@ public class MobTemptProperty extends ItemStackListProperty<Mob> {
     }
 
     @Override
-    public void readFrom(Mob entity) {
-        super.readFrom(entity);
+    public void loadFrom(Mob entity) {
+        super.loadFrom(entity);
         GoalSelector goalSelector = ((MobIMixin) entity).getGoalSelector();
         Set<WrappedGoal> goals = goalSelector.getAvailableGoals();
 

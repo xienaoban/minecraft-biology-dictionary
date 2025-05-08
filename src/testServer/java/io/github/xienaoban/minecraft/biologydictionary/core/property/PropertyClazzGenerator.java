@@ -17,8 +17,6 @@ import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.common.property.UnsupportedProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,7 +29,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class PropertyClazzGenerator {
@@ -49,6 +46,9 @@ public class PropertyClazzGenerator {
     private static final Type ENTITY_PROPERTY_TYPE = new ClassOrInterfaceType(null, new SimpleName(EntityProperty.class.getSimpleName()), new NodeList<>(new TypeParameter("?")));
     private static final Type MAP_STR_PROPERTY_TYPE = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()), new NodeList<>(STRING_TYPE, ENTITY_PROPERTY_TYPE));
     private static final Parameter MAP_STR_PROPERTY_PARAM = new Parameter(MAP_STR_PROPERTY_TYPE, "map");
+
+    private static final Type ENTITY_PROPERTIES_TYPE = new ClassOrInterfaceType(null, new SimpleName(EntityProperties.class.getSimpleName()), new NodeList<>(new TypeParameter("?")));
+    private static final Parameter ENTITY_PROPERTIES_PARAM = new Parameter(ENTITY_PROPERTIES_TYPE, "ep");
 
     private static final BlockStmt initMethodBlock = new BlockStmt();
 
@@ -107,9 +107,6 @@ public class PropertyClazzGenerator {
 
     private static void addGeneralImports(CompilationUnit cu) {
         cu.addImport(UnsupportedProperty.class.getPackageName(), false, true);
-        cu.addImport(EnvType.class);
-        cu.addImport(Environment.class);
-        cu.addImport(Optional.class);
         cu.addImport(Map.class);
         cu.addImport(EntityProperty.class);
     }
@@ -191,9 +188,9 @@ public class PropertyClazzGenerator {
         {
             String methodName = "get" + uc + "Property";
             MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
-            method.addParameter(MAP_STR_PROPERTY_PARAM);
+            method.addParameter(ENTITY_PROPERTIES_PARAM);
             method.setType(returnType);
-            method.setBody(new BlockStmt().addStatement("return g(map, \"" + propertyName + "\");"));
+            method.setBody(new BlockStmt().addStatement("return g(ep, \"" + propertyName + "\");"));
         }
 
         creatorMethodBody.add(new MethodCallExpr("create" + uc + "Property"));

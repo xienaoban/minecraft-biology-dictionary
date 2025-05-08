@@ -2,12 +2,13 @@ package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("rawtypes")
@@ -43,19 +44,29 @@ public final class EntityProperties<E extends Entity> {
 
     public E entity() { return entity; }
 
-    public Map<String, EntityProperty<?>> m() { return vanillaProperties; }
-
-    public EntityProperty<?> getVanilla(String key) {
-        return vanillaProperties.getOrDefault(key, null);
+    public <EP extends EntityProperty<?>> EP getVanilla(String key) {
+        return Misc.cast(vanillaProperties.getOrDefault(key, null));
     }
 
-    public EntityProperty<?> getExtra(Class<? extends EntityProperty> key) {
-        return extraProperties.getOrDefault(key, null);
+    public <EP extends EntityProperty<?>> EP getExtra(Class<? extends EntityProperty> key) {
+        return Misc.cast(extraProperties.getOrDefault(key, null));
+    }
+
+    public Collection<EntityProperty<?>> getVanillas() {
+        return vanillaProperties.values();
+    }
+
+    public Collection<EntityProperty<?>> getExtras() {
+        return extraProperties.values();
     }
 
     public void update(CompoundTag vanillaNbt, CompoundTag extraNbt) {
         for (EntityProperty<?> property : vanillaProperties.values()) {
             property.readFrom(vanillaNbt);
+        }
+
+        for (EntityProperty<?> property : extraProperties.values()) {
+            property.readFrom(extraNbt);
         }
     }
 }
