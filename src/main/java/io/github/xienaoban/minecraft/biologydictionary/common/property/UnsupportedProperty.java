@@ -12,11 +12,11 @@ public class UnsupportedProperty<E extends Entity> extends AbstractProperty<E, O
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        LOGGER.warn("Failed to read from NBT: not supported property: {}", name());
+        LOGGER.debug("Failed to read from NBT: not supported property: {}", name());
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        LOGGER.warn("Failed to write to NBT: not supported property: {}", name());
+        LOGGER.debug("Failed to write to NBT: not supported property: {}", name());
     }
 }

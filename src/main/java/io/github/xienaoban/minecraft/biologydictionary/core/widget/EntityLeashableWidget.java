@@ -13,7 +13,7 @@ public class EntityLeashableWidget extends EntityPropertyStandardWidget<Entity> 
 
     public EntityLeashableWidget(EntityProperties<Entity> properties) {
         super(properties, 2);
-        if (properties.entity() instanceof Leashable entity) {
+        if (e() instanceof Leashable entity) {
             this.leashable = (entity.isLeashed() || entity.canBeLeashed());
         } else {
             this.leashable = false;

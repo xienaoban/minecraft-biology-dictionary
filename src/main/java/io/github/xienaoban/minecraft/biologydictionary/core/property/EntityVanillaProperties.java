@@ -36,13 +36,18 @@ import java.util.Map;
 
 public final class EntityVanillaProperties {
 
-    static final Map<Class<? extends Entity>, Registry> registries = new HashMap<>();
+    static final Map<Class<? extends Entity>, Creator> registries = new HashMap<>();
 
     static {
         init();
     }
 
-    private static void r(Class<? extends Entity> clazz, Registry registry) {
+    @FunctionalInterface
+    interface Creator {
+        void create(Map<String, EntityProperty<?>> map);
+    }
+
+    private static void r(Class<? extends Entity> clazz, Creator registry) {
         registries.put(clazz, registry);
     }
 
@@ -54,15 +59,18 @@ public final class EntityVanillaProperties {
         return Misc.cast(val);
     }
 
+    private static <T> T g(EntityProperties<?> properties, String key) {
+        Object val = properties.getVanilla(key);
+        if (val == null) {
+            throw new RuntimeException("Vanilla entity property \"" + key + "\" not found!");
+        }
+        return Misc.cast(val);
+    }
+
     private static void p(Map<String, EntityProperty<?>> map, EntityProperty<?>... properties) {
         for (EntityProperty<?> property : properties) {
             map.put(property.name(), property);
         }
-    }
-
-    interface Registry {
-
-        void register(Map<String, EntityProperty<?>> map);
     }
 
     private static void init() {
@@ -204,7 +212,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.Entity
      */
-    public static final class OfEntity implements Registry {
+    public static final class OfEntity implements Creator {
 
         public static ShortProperty<Entity> createAirProperty() {
             return new ShortProperty<>("Air");
@@ -367,7 +375,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAirProperty(), createCustomNameProperty(), createCustomNameVisibleProperty(), createFallDistanceProperty(), createFireProperty(), createGlowingProperty(), createHasVisualFireProperty(), createInvulnerableProperty(), createMotionProperty(), createNoGravityProperty(), createOnGroundProperty(), createPassengersProperty(), createPortalCooldownProperty(), createPosProperty(), createRotationProperty(), createSilentProperty(), createTagsProperty(), createTicksFrozenProperty(), createUuidProperty(), createIdProperty());
         }
     }
@@ -392,7 +400,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.LivingEntity
      */
-    public static final class OfLivingEntity implements Registry {
+    public static final class OfLivingEntity implements Creator {
 
         public static FloatProperty<LivingEntity> createAbsorptionAmountProperty() {
             return new FloatProperty<>("AbsorptionAmount");
@@ -499,7 +507,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAbsorptionAmountProperty(), createBrainProperty(), createDeathTimeProperty(), createFallFlyingProperty(), createHealthProperty(), createHurtByTimestampProperty(), createHurtTimeProperty(), createSleepingXProperty(), createSleepingYProperty(), createSleepingZProperty(), createTeamProperty(), createActiveEffectsProperty(), createAttributesProperty());
         }
     }
@@ -522,7 +530,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.Mob
      */
-    public static final class OfMob implements Registry {
+    public static final class OfMob implements Creator {
 
         public static FloatListProperty<Mob> createArmorDropChancesProperty() {
             return new FloatListProperty<>("ArmorDropChances");
@@ -621,7 +629,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createArmorDropChancesProperty(), createArmorItemsProperty(), createCanPickUpLootProperty(), createDeathLootTableProperty(), createDeathLootTableSeedProperty(), createHandDropChancesProperty(), createHandItemsProperty(), createLeftHandedProperty(), createNoAiProperty(), createPersistenceRequiredProperty(), createBodyArmorDropChanceProperty(), createBodyArmorItemProperty());
         }
     }
@@ -632,10 +640,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.FlyingMob
      */
-    public static final class OfFlyingMob implements Registry {
+    public static final class OfFlyingMob implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -647,7 +655,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Ghast
      */
-    public static final class OfGhast implements Registry {
+    public static final class OfGhast implements Creator {
 
         public static ByteProperty<Ghast> createExplosionPowerProperty() {
             return new ByteProperty<>("ExplosionPower");
@@ -658,7 +666,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createExplosionPowerProperty());
         }
     }
@@ -673,7 +681,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Phantom
      */
-    public static final class OfPhantom implements Registry {
+    public static final class OfPhantom implements Creator {
 
         public static IntProperty<Phantom> createAxProperty() {
             return new IntProperty<>("AX");
@@ -708,7 +716,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAxProperty(), createAyProperty(), createAzProperty(), createSizeProperty());
         }
     }
@@ -719,10 +727,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.PathfinderMob
      */
-    public static final class OfPathfinderMob implements Registry {
+    public static final class OfPathfinderMob implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -735,7 +743,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.AgeableMob
      */
-    public static final class OfAgeableMob implements Registry {
+    public static final class OfAgeableMob implements Creator {
 
         public static IntProperty<AgeableMob> createAgeProperty() {
             return new IntProperty<>("Age");
@@ -754,7 +762,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAgeProperty(), createForcedAgeProperty());
         }
     }
@@ -765,10 +773,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.AgeableWaterCreature
      */
-    public static final class OfAgeableWaterCreature implements Registry {
+    public static final class OfAgeableWaterCreature implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -784,7 +792,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Dolphin
      */
-    public static final class OfDolphin implements Registry {
+    public static final class OfDolphin implements Creator {
 
         public static BooleanProperty<Dolphin> createGotFishProperty() {
             return new BooleanProperty<>("GotFish");
@@ -827,7 +835,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createGotFishProperty(), createMoistnessProperty(), createTreasurePosXProperty(), createTreasurePosYProperty(), createTreasurePosZProperty());
         }
     }
@@ -838,10 +846,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Squid
      */
-    public static final class OfSquid implements Registry {
+    public static final class OfSquid implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -853,7 +861,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.GlowSquid
      */
-    public static final class OfGlowSquid implements Registry {
+    public static final class OfGlowSquid implements Creator {
 
         public static IntProperty<GlowSquid> createDarkTicksRemainingProperty() {
             return new IntProperty<>("DarkTicksRemaining");
@@ -864,7 +872,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createDarkTicksRemainingProperty());
         }
     }
@@ -877,7 +885,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Animal
      */
-    public static final class OfAnimal implements Registry {
+    public static final class OfAnimal implements Creator {
 
         public static IntProperty<Animal> createInLoveProperty() {
             return new IntProperty<>("InLove");
@@ -896,7 +904,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createInLoveProperty(), createLoveCauseProperty());
         }
     }
@@ -910,7 +918,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.TamableAnimal
      */
-    public static final class OfTamableAnimal implements Registry {
+    public static final class OfTamableAnimal implements Creator {
 
         public static UnsupportedProperty<TamableAnimal> createOwnerProperty() {
             return new UnsupportedProperty<>("Owner");
@@ -929,7 +937,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createOwnerProperty(), createSittingProperty());
         }
     }
@@ -942,7 +950,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Cat
      */
-    public static final class OfCat implements Registry {
+    public static final class OfCat implements Creator {
 
         public static ByteProperty<Cat> createCollarColorProperty() {
             return new ByteProperty<>("CollarColor");
@@ -961,7 +969,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createCollarColorProperty(), createVariantProperty());
         }
     }
@@ -974,7 +982,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.ShoulderRidingEntity
      */
-    public static final class OfShoulderRidingEntity implements Registry {
+    public static final class OfShoulderRidingEntity implements Creator {
 
         public static UnsupportedProperty<ShoulderRidingEntity> createIdProperty() {
             return new UnsupportedProperty<>("id");
@@ -985,7 +993,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createIdProperty());
         }
     }
@@ -997,7 +1005,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Parrot
      */
-    public static final class OfParrot implements Registry {
+    public static final class OfParrot implements Creator {
 
         public static IntProperty<Parrot> createVariantProperty() {
             return new IntProperty<>("Variant");
@@ -1008,7 +1016,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createVariantProperty());
         }
     }
@@ -1021,7 +1029,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Wolf
      */
-    public static final class OfWolf implements Registry {
+    public static final class OfWolf implements Creator {
 
         public static ByteProperty<Wolf> createCollarColorProperty() {
             return new ByteProperty<>("CollarColor");
@@ -1040,7 +1048,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createCollarColorProperty(), createVariantProperty());
         }
     }
@@ -1058,7 +1066,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Bee
      */
-    public static final class OfBee implements Registry {
+    public static final class OfBee implements Creator {
 
         public static IntProperty<Bee> createCannotEnterHiveTicksProperty() {
             return new IntProperty<>("CannotEnterHiveTicks");
@@ -1117,7 +1125,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createCannotEnterHiveTicksProperty(), createCropsGrownSincePollinationProperty(), createHasNectarProperty(), createHasStungProperty(), createTicksSincePollinationProperty(), createFlowerPosProperty(), createHivePosProperty());
         }
     }
@@ -1130,7 +1138,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Chicken
      */
-    public static final class OfChicken implements Registry {
+    public static final class OfChicken implements Creator {
 
         public static IntProperty<Chicken> createEggLayTimeProperty() {
             return new IntProperty<>("EggLayTime");
@@ -1149,7 +1157,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createEggLayTimeProperty(), createIsChickenJockeyProperty());
         }
     }
@@ -1160,10 +1168,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Cow
      */
-    public static final class OfCow implements Registry {
+    public static final class OfCow implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -1177,7 +1185,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.MushroomCow
      */
-    public static final class OfMushroomCow implements Registry {
+    public static final class OfMushroomCow implements Creator {
 
         public static StringProperty<MushroomCow> createTypeProperty() {
             return new StringProperty<>("Type");
@@ -1196,7 +1204,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createTypeProperty(), createStewEffectsProperty());
         }
     }
@@ -1212,7 +1220,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Fox
      */
-    public static final class OfFox implements Registry {
+    public static final class OfFox implements Creator {
 
         public static BooleanProperty<Fox> createCrouchingProperty() {
             return new BooleanProperty<>("Crouching");
@@ -1255,7 +1263,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createCrouchingProperty(), createSittingProperty(), createSleepingProperty(), createTrustedProperty(), createTypeProperty());
         }
     }
@@ -1267,7 +1275,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Ocelot
      */
-    public static final class OfOcelot implements Registry {
+    public static final class OfOcelot implements Creator {
 
         public static BooleanProperty<Ocelot> createTrustingProperty() {
             return new BooleanProperty<>("Trusting");
@@ -1278,7 +1286,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createTrustingProperty());
         }
     }
@@ -1291,7 +1299,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Panda
      */
-    public static final class OfPanda implements Registry {
+    public static final class OfPanda implements Creator {
 
         public static StringProperty<Panda> createHiddenGeneProperty() {
             return new StringProperty<>("HiddenGene");
@@ -1310,7 +1318,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createHiddenGeneProperty(), createMainGeneProperty());
         }
     }
@@ -1321,10 +1329,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Pig
      */
-    public static final class OfPig implements Registry {
+    public static final class OfPig implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -1335,10 +1343,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.PolarBear
      */
-    public static final class OfPolarBear implements Registry {
+    public static final class OfPolarBear implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -1351,7 +1359,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Rabbit
      */
-    public static final class OfRabbit implements Registry {
+    public static final class OfRabbit implements Creator {
 
         public static IntProperty<Rabbit> createMoreCarrotTicksProperty() {
             return new IntProperty<>("MoreCarrotTicks");
@@ -1370,7 +1378,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createMoreCarrotTicksProperty(), createRabbitTypeProperty());
         }
     }
@@ -1383,7 +1391,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Sheep
      */
-    public static final class OfSheep implements Registry {
+    public static final class OfSheep implements Creator {
 
         public static ByteProperty<Sheep> createColorProperty() {
             return new ByteProperty<>("Color");
@@ -1402,7 +1410,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createColorProperty(), createShearedProperty());
         }
     }
@@ -1420,7 +1428,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Turtle
      */
-    public static final class OfTurtle implements Registry {
+    public static final class OfTurtle implements Creator {
 
         public static BooleanProperty<Turtle> createHasEggProperty() {
             return new BooleanProperty<>("HasEgg");
@@ -1479,7 +1487,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createHasEggProperty(), createHomePosXProperty(), createHomePosYProperty(), createHomePosZProperty(), createTravelPosXProperty(), createTravelPosYProperty(), createTravelPosZProperty());
         }
     }
@@ -1492,7 +1500,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.armadillo.Armadillo
      */
-    public static final class OfArmadillo implements Registry {
+    public static final class OfArmadillo implements Creator {
 
         public static IntProperty<Armadillo> createScuteTimeProperty() {
             return new IntProperty<>("scute_time");
@@ -1511,7 +1519,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createScuteTimeProperty(), createStateProperty());
         }
     }
@@ -1526,7 +1534,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.axolotl.Axolotl
      */
-    public static final class OfAxolotl implements Registry {
+    public static final class OfAxolotl implements Creator {
 
         public static IntProperty<Axolotl> createAgeProperty() {
             return new IntProperty<>("Age");
@@ -1561,7 +1569,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAgeProperty(), createFromBucketProperty(), createHuntingCooldownProperty(), createVariantProperty());
         }
     }
@@ -1573,7 +1581,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.frog.Frog
      */
-    public static final class OfFrog implements Registry {
+    public static final class OfFrog implements Creator {
 
         public static StringProperty<Frog> createVariantProperty() {
             return new StringProperty<>("variant");
@@ -1584,7 +1592,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createVariantProperty());
         }
     }
@@ -1598,7 +1606,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.goat.Goat
      */
-    public static final class OfGoat implements Registry {
+    public static final class OfGoat implements Creator {
 
         public static BooleanProperty<Goat> createHasLeftHornProperty() {
             return new BooleanProperty<>("HasLeftHorn");
@@ -1625,7 +1633,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createHasLeftHornProperty(), createHasRightHornProperty(), createIsScreamingGoatProperty());
         }
     }
@@ -1643,7 +1651,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.AbstractHorse
      */
-    public static final class OfAbstractHorse implements Registry {
+    public static final class OfAbstractHorse implements Creator {
 
         public static BooleanProperty<AbstractHorse> createBredProperty() {
             return new BooleanProperty<>("Bred");
@@ -1694,7 +1702,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createBredProperty(), createEatingHaystackProperty(), createOwnerProperty(), createSaddleItemProperty(), createTameProperty(), createTemperProperty());
         }
     }
@@ -1706,7 +1714,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.camel.Camel
      */
-    public static final class OfCamel implements Registry {
+    public static final class OfCamel implements Creator {
 
         public static LongProperty<Camel> createLastPoseTickProperty() {
             return new LongProperty<>("LastPoseTick");
@@ -1717,7 +1725,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createLastPoseTickProperty());
         }
     }
@@ -1730,7 +1738,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.AbstractChestedHorse
      */
-    public static final class OfAbstractChestedHorse implements Registry {
+    public static final class OfAbstractChestedHorse implements Creator {
 
         public static BooleanProperty<AbstractChestedHorse> createChestedHorseProperty() {
             return new BooleanProperty<>("ChestedHorse");
@@ -1749,7 +1757,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createChestedHorseProperty(), createItemsProperty());
         }
     }
@@ -1760,10 +1768,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.Donkey
      */
-    public static final class OfDonkey implements Registry {
+    public static final class OfDonkey implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -1776,7 +1784,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.Llama
      */
-    public static final class OfLlama implements Registry {
+    public static final class OfLlama implements Creator {
 
         public static IntProperty<Llama> createStrengthProperty() {
             return new IntProperty<>("Strength");
@@ -1795,7 +1803,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createStrengthProperty(), createVariantProperty());
         }
     }
@@ -1807,7 +1815,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.TraderLlama
      */
-    public static final class OfTraderLlama implements Registry {
+    public static final class OfTraderLlama implements Creator {
 
         public static IntProperty<TraderLlama> createDespawnDelayProperty() {
             return new IntProperty<>("DespawnDelay");
@@ -1818,7 +1826,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createDespawnDelayProperty());
         }
     }
@@ -1829,10 +1837,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.Mule
      */
-    public static final class OfMule implements Registry {
+    public static final class OfMule implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -1844,7 +1852,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.Horse
      */
-    public static final class OfHorse implements Registry {
+    public static final class OfHorse implements Creator {
 
         public static IntProperty<Horse> createVariantProperty() {
             return new IntProperty<>("Variant");
@@ -1855,7 +1863,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createVariantProperty());
         }
     }
@@ -1868,7 +1876,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.SkeletonHorse
      */
-    public static final class OfSkeletonHorse implements Registry {
+    public static final class OfSkeletonHorse implements Creator {
 
         public static BooleanProperty<SkeletonHorse> createSkeletonTrapProperty() {
             return new BooleanProperty<>("SkeletonTrap");
@@ -1887,7 +1895,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createSkeletonTrapProperty(), createSkeletonTrapTimeProperty());
         }
     }
@@ -1898,10 +1906,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.horse.ZombieHorse
      */
-    public static final class OfZombieHorse implements Registry {
+    public static final class OfZombieHorse implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -1912,10 +1920,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.sniffer.Sniffer
      */
-    public static final class OfSniffer implements Registry {
+    public static final class OfSniffer implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -1926,10 +1934,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Strider
      */
-    public static final class OfStrider implements Registry {
+    public static final class OfStrider implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -1943,7 +1951,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.hoglin.Hoglin
      */
-    public static final class OfHoglin implements Registry {
+    public static final class OfHoglin implements Creator {
 
         public static BooleanProperty<Hoglin> createCannotBeHuntedProperty() {
             return new BooleanProperty<>("CannotBeHunted");
@@ -1970,7 +1978,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createCannotBeHuntedProperty(), createIsImmuneToZombificationProperty(), createTimeInOverworldProperty());
         }
     }
@@ -1983,7 +1991,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.npc.AbstractVillager
      */
-    public static final class OfAbstractVillager implements Registry {
+    public static final class OfAbstractVillager implements Creator {
 
         public static UnsupportedProperty<AbstractVillager> createOffersProperty() {
             return new UnsupportedProperty<>("Offers");
@@ -1994,7 +2002,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createOffersProperty());
         }
     }
@@ -2014,7 +2022,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.npc.Villager
      */
-    public static final class OfVillager implements Registry {
+    public static final class OfVillager implements Creator {
 
         public static BooleanProperty<Villager> createAssignProfessionWhenSpawnedProperty() {
             return new BooleanProperty<>("AssignProfessionWhenSpawned");
@@ -2081,7 +2089,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAssignProfessionWhenSpawnedProperty(), createFoodLevelProperty(), createGossipsProperty(), createLastGossipDecayProperty(), createLastRestockProperty(), createRestocksTodayProperty(), createVillagerDataProperty(), createXpProperty());
         }
     }
@@ -2094,7 +2102,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.npc.WanderingTrader
      */
-    public static final class OfWanderingTrader implements Registry {
+    public static final class OfWanderingTrader implements Creator {
 
         public static IntProperty<WanderingTrader> createDespawnDelayProperty() {
             return new IntProperty<>("DespawnDelay");
@@ -2113,7 +2121,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createDespawnDelayProperty(), createWanderTargetProperty());
         }
     }
@@ -2124,10 +2132,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.AbstractGolem
      */
-    public static final class OfAbstractGolem implements Registry {
+    public static final class OfAbstractGolem implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2139,7 +2147,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.IronGolem
      */
-    public static final class OfIronGolem implements Registry {
+    public static final class OfIronGolem implements Creator {
 
         public static BooleanProperty<IronGolem> createPlayerCreatedProperty() {
             return new BooleanProperty<>("PlayerCreated");
@@ -2150,7 +2158,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createPlayerCreatedProperty());
         }
     }
@@ -2162,7 +2170,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.SnowGolem
      */
-    public static final class OfSnowGolem implements Registry {
+    public static final class OfSnowGolem implements Creator {
 
         public static BooleanProperty<SnowGolem> createPumpkinProperty() {
             return new BooleanProperty<>("Pumpkin");
@@ -2173,7 +2181,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createPumpkinProperty());
         }
     }
@@ -2187,7 +2195,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Shulker
      */
-    public static final class OfShulker implements Registry {
+    public static final class OfShulker implements Creator {
 
         public static ByteProperty<Shulker> createAttachFaceProperty() {
             return new ByteProperty<>("AttachFace");
@@ -2214,7 +2222,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAttachFaceProperty(), createColorProperty(), createPeekProperty());
         }
     }
@@ -2225,10 +2233,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.WaterAnimal
      */
-    public static final class OfWaterAnimal implements Registry {
+    public static final class OfWaterAnimal implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2240,7 +2248,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.AbstractFish
      */
-    public static final class OfAbstractFish implements Registry {
+    public static final class OfAbstractFish implements Creator {
 
         public static BooleanProperty<AbstractFish> createFromBucketProperty() {
             return new BooleanProperty<>("FromBucket");
@@ -2251,7 +2259,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createFromBucketProperty());
         }
     }
@@ -2262,10 +2270,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.AbstractSchoolingFish
      */
-    public static final class OfAbstractSchoolingFish implements Registry {
+    public static final class OfAbstractSchoolingFish implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2276,10 +2284,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Cod
      */
-    public static final class OfCod implements Registry {
+    public static final class OfCod implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2291,7 +2299,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Salmon
      */
-    public static final class OfSalmon implements Registry {
+    public static final class OfSalmon implements Creator {
 
         public static StringProperty<Salmon> createTypeProperty() {
             return new StringProperty<>("type");
@@ -2302,7 +2310,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createTypeProperty());
         }
     }
@@ -2315,7 +2323,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.TropicalFish
      */
-    public static final class OfTropicalFish implements Registry {
+    public static final class OfTropicalFish implements Creator {
 
         public static IntProperty<TropicalFish> createBucketVariantTagProperty() {
             return new IntProperty<>("BucketVariantTag");
@@ -2334,7 +2342,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createBucketVariantTagProperty(), createVariantProperty());
         }
     }
@@ -2346,7 +2354,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.Pufferfish
      */
-    public static final class OfPufferfish implements Registry {
+    public static final class OfPufferfish implements Creator {
 
         public static IntProperty<Pufferfish> createPuffStateProperty() {
             return new IntProperty<>("PuffState");
@@ -2357,7 +2365,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createPuffStateProperty());
         }
     }
@@ -2369,7 +2377,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.frog.Tadpole
      */
-    public static final class OfTadpole implements Registry {
+    public static final class OfTadpole implements Creator {
 
         public static IntProperty<Tadpole> createAgeProperty() {
             return new IntProperty<>("Age");
@@ -2380,7 +2388,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAgeProperty());
         }
     }
@@ -2395,7 +2403,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.animal.allay.Allay
      */
-    public static final class OfAllay implements Registry {
+    public static final class OfAllay implements Creator {
 
         public static BooleanProperty<Allay> createCanDuplicateProperty() {
             return new BooleanProperty<>("CanDuplicate");
@@ -2422,7 +2430,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createCanDuplicateProperty(), createDuplicationCooldownProperty(), createListenerProperty());
         }
     }
@@ -2433,10 +2441,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Monster
      */
-    public static final class OfMonster implements Registry {
+    public static final class OfMonster implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2448,7 +2456,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.boss.wither.WitherBoss
      */
-    public static final class OfWitherBoss implements Registry {
+    public static final class OfWitherBoss implements Creator {
 
         public static IntProperty<WitherBoss> createInvulProperty() {
             return new IntProperty<>("Invul");
@@ -2459,7 +2467,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createInvulProperty());
         }
     }
@@ -2470,10 +2478,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.AbstractSkeleton
      */
-    public static final class OfAbstractSkeleton implements Registry {
+    public static final class OfAbstractSkeleton implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2485,7 +2493,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Bogged
      */
-    public static final class OfBogged implements Registry {
+    public static final class OfBogged implements Creator {
 
         public static BooleanProperty<Bogged> createShearedProperty() {
             return new BooleanProperty<>("sheared");
@@ -2496,7 +2504,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createShearedProperty());
         }
     }
@@ -2508,7 +2516,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Skeleton
      */
-    public static final class OfSkeleton implements Registry {
+    public static final class OfSkeleton implements Creator {
 
         public static IntProperty<Skeleton> createStrayConversionTimeProperty() {
             return new IntProperty<>("StrayConversionTime");
@@ -2519,7 +2527,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createStrayConversionTimeProperty());
         }
     }
@@ -2530,10 +2538,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Stray
      */
-    public static final class OfStray implements Registry {
+    public static final class OfStray implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2544,10 +2552,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.WitherSkeleton
      */
-    public static final class OfWitherSkeleton implements Registry {
+    public static final class OfWitherSkeleton implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2558,10 +2566,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Blaze
      */
-    public static final class OfBlaze implements Registry {
+    public static final class OfBlaze implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2576,7 +2584,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Creeper
      */
-    public static final class OfCreeper implements Registry {
+    public static final class OfCreeper implements Creator {
 
         public static ByteProperty<Creeper> createExplosionRadiusProperty() {
             return new ByteProperty<>("ExplosionRadius");
@@ -2611,7 +2619,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createExplosionRadiusProperty(), createFuseProperty(), createIgnitedProperty(), createPoweredProperty());
         }
     }
@@ -2624,7 +2632,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.EnderMan
      */
-    public static final class OfEnderMan implements Registry {
+    public static final class OfEnderMan implements Creator {
 
         public static UnsupportedProperty<EnderMan> createCarriedBlockStateProperty() {
             return new UnsupportedProperty<>("carriedBlockState");
@@ -2635,7 +2643,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createCarriedBlockStateProperty());
         }
     }
@@ -2647,7 +2655,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Endermite
      */
-    public static final class OfEndermite implements Registry {
+    public static final class OfEndermite implements Creator {
 
         public static IntProperty<Endermite> createLifetimeProperty() {
             return new IntProperty<>("Lifetime");
@@ -2658,7 +2666,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createLifetimeProperty());
         }
     }
@@ -2669,10 +2677,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Giant
      */
-    public static final class OfGiant implements Registry {
+    public static final class OfGiant implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2683,10 +2691,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Guardian
      */
-    public static final class OfGuardian implements Registry {
+    public static final class OfGuardian implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2697,10 +2705,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.ElderGuardian
      */
-    public static final class OfElderGuardian implements Registry {
+    public static final class OfElderGuardian implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2714,7 +2722,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.PatrollingMonster
      */
-    public static final class OfPatrollingMonster implements Registry {
+    public static final class OfPatrollingMonster implements Creator {
 
         public static BooleanProperty<PatrollingMonster> createPatrolLeaderProperty() {
             return new BooleanProperty<>("PatrolLeader");
@@ -2741,7 +2749,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createPatrolLeaderProperty(), createPatrollingProperty(), createPatrolTargetProperty());
         }
     }
@@ -2755,7 +2763,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.raid.Raider
      */
-    public static final class OfRaider implements Registry {
+    public static final class OfRaider implements Creator {
 
         public static BooleanProperty<Raider> createCanJoinRaidProperty() {
             return new BooleanProperty<>("CanJoinRaid");
@@ -2782,7 +2790,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createCanJoinRaidProperty(), createRaidIdProperty(), createWaveProperty());
         }
     }
@@ -2793,10 +2801,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.AbstractIllager
      */
-    public static final class OfAbstractIllager implements Registry {
+    public static final class OfAbstractIllager implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2807,10 +2815,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Pillager
      */
-    public static final class OfPillager implements Registry {
+    public static final class OfPillager implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2822,7 +2830,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.SpellcasterIllager
      */
-    public static final class OfSpellcasterIllager implements Registry {
+    public static final class OfSpellcasterIllager implements Creator {
 
         public static IntProperty<SpellcasterIllager> createSpellTicksProperty() {
             return new IntProperty<>("SpellTicks");
@@ -2833,7 +2841,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createSpellTicksProperty());
         }
     }
@@ -2844,10 +2852,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Evoker
      */
-    public static final class OfEvoker implements Registry {
+    public static final class OfEvoker implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2858,10 +2866,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Illusioner
      */
-    public static final class OfIllusioner implements Registry {
+    public static final class OfIllusioner implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2873,7 +2881,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Vindicator
      */
-    public static final class OfVindicator implements Registry {
+    public static final class OfVindicator implements Creator {
 
         public static BooleanProperty<Vindicator> createJohnnyProperty() {
             return new BooleanProperty<>("Johnny");
@@ -2884,7 +2892,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createJohnnyProperty());
         }
     }
@@ -2898,7 +2906,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Ravager
      */
-    public static final class OfRavager implements Registry {
+    public static final class OfRavager implements Creator {
 
         public static IntProperty<Ravager> createAttackTickProperty() {
             return new IntProperty<>("AttackTick");
@@ -2925,7 +2933,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAttackTickProperty(), createRoarTickProperty(), createStunTickProperty());
         }
     }
@@ -2936,10 +2944,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Witch
      */
-    public static final class OfWitch implements Registry {
+    public static final class OfWitch implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2950,10 +2958,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Silverfish
      */
-    public static final class OfSilverfish implements Registry {
+    public static final class OfSilverfish implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2964,10 +2972,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Spider
      */
-    public static final class OfSpider implements Registry {
+    public static final class OfSpider implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2978,10 +2986,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.CaveSpider
      */
-    public static final class OfCaveSpider implements Registry {
+    public static final class OfCaveSpider implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -2996,7 +3004,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Vex
      */
-    public static final class OfVex implements Registry {
+    public static final class OfVex implements Creator {
 
         public static IntProperty<Vex> createBoundXProperty() {
             return new IntProperty<>("BoundX");
@@ -3031,7 +3039,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createBoundXProperty(), createBoundYProperty(), createBoundZProperty(), createLifeTicksProperty());
         }
     }
@@ -3043,7 +3051,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Zoglin
      */
-    public static final class OfZoglin implements Registry {
+    public static final class OfZoglin implements Creator {
 
         public static BooleanProperty<Zoglin> createIsBabyProperty() {
             return new BooleanProperty<>("IsBaby");
@@ -3054,7 +3062,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createIsBabyProperty());
         }
     }
@@ -3069,7 +3077,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Zombie
      */
-    public static final class OfZombie implements Registry {
+    public static final class OfZombie implements Creator {
 
         public static BooleanProperty<Zombie> createCanBreakDoorsProperty() {
             return new BooleanProperty<>("CanBreakDoors");
@@ -3104,7 +3112,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createCanBreakDoorsProperty(), createDrownedConversionTimeProperty(), createInWaterTimeProperty(), createIsBabyProperty());
         }
     }
@@ -3115,10 +3123,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Drowned
      */
-    public static final class OfDrowned implements Registry {
+    public static final class OfDrowned implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -3129,10 +3137,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Husk
      */
-    public static final class OfHusk implements Registry {
+    public static final class OfHusk implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -3150,7 +3158,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.ZombieVillager
      */
-    public static final class OfZombieVillager implements Registry {
+    public static final class OfZombieVillager implements Creator {
 
         public static UuidProperty<ZombieVillager> createConversionPlayerProperty() {
             return new UuidProperty<>("ConversionPlayer");
@@ -3201,7 +3209,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createConversionPlayerProperty(), createConversionTimeProperty(), createGossipsProperty(), createOffersProperty(), createVillagerDataProperty(), createXpProperty());
         }
     }
@@ -3212,10 +3220,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.ZombifiedPiglin
      */
-    public static final class OfZombifiedPiglin implements Registry {
+    public static final class OfZombifiedPiglin implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -3226,10 +3234,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.breeze.Breeze
      */
-    public static final class OfBreeze implements Registry {
+    public static final class OfBreeze implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -3241,7 +3249,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.creaking.Creaking
      */
-    public static final class OfCreaking implements Registry {
+    public static final class OfCreaking implements Creator {
 
         public static BlockPosProperty<Creaking> createHomePosProperty() {
             return new BlockPosProperty<>("home_pos");
@@ -3252,7 +3260,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createHomePosProperty());
         }
     }
@@ -3265,7 +3273,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.piglin.AbstractPiglin
      */
-    public static final class OfAbstractPiglin implements Registry {
+    public static final class OfAbstractPiglin implements Creator {
 
         public static BooleanProperty<AbstractPiglin> createIsImmuneToZombificationProperty() {
             return new BooleanProperty<>("IsImmuneToZombification");
@@ -3284,7 +3292,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createIsImmuneToZombificationProperty(), createTimeInOverworldProperty());
         }
     }
@@ -3297,7 +3305,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.piglin.Piglin
      */
-    public static final class OfPiglin implements Registry {
+    public static final class OfPiglin implements Creator {
 
         public static BooleanProperty<Piglin> createCannotHuntProperty() {
             return new BooleanProperty<>("CannotHunt");
@@ -3316,7 +3324,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createCannotHuntProperty(), createIsBabyProperty());
         }
     }
@@ -3327,10 +3335,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.piglin.PiglinBrute
      */
-    public static final class OfPiglinBrute implements Registry {
+    public static final class OfPiglinBrute implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -3344,7 +3352,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.warden.Warden
      */
-    public static final class OfWarden implements Registry {
+    public static final class OfWarden implements Creator {
 
         public static UnsupportedProperty<Warden> createAngerProperty() {
             return new UnsupportedProperty<>("anger");
@@ -3363,7 +3371,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAngerProperty(), createListenerProperty());
         }
     }
@@ -3374,10 +3382,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.ambient.AmbientCreature
      */
-    public static final class OfAmbientCreature implements Registry {
+    public static final class OfAmbientCreature implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -3389,7 +3397,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.ambient.Bat
      */
-    public static final class OfBat implements Registry {
+    public static final class OfBat implements Creator {
 
         public static ByteProperty<Bat> createBatFlagsProperty() {
             return new ByteProperty<>("BatFlags");
@@ -3400,7 +3408,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createBatFlagsProperty());
         }
     }
@@ -3413,7 +3421,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.boss.enderdragon.EnderDragon
      */
-    public static final class OfEnderDragon implements Registry {
+    public static final class OfEnderDragon implements Creator {
 
         public static IntProperty<EnderDragon> createDragonDeathTimeProperty() {
             return new IntProperty<>("DragonDeathTime");
@@ -3432,7 +3440,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createDragonDeathTimeProperty(), createDragonPhaseProperty());
         }
     }
@@ -3445,7 +3453,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.Slime
      */
-    public static final class OfSlime implements Registry {
+    public static final class OfSlime implements Creator {
 
         public static IntProperty<Slime> createSizeProperty() {
             return new IntProperty<>("Size");
@@ -3464,7 +3472,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createSizeProperty(), createWasOnGroundProperty());
         }
     }
@@ -3475,10 +3483,10 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.monster.MagmaCube
      */
-    public static final class OfMagmaCube implements Registry {
+    public static final class OfMagmaCube implements Creator {
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map);
         }
     }
@@ -3505,7 +3513,7 @@ public final class EntityVanillaProperties {
      *
      * @see net.minecraft.world.entity.decoration.ArmorStand
      */
-    public static final class OfArmorStand implements Registry {
+    public static final class OfArmorStand implements Creator {
 
         public static ItemStackListProperty<ArmorStand> createArmorItemsProperty() {
             return new ItemStackListProperty<>("ArmorItems");
@@ -3628,7 +3636,7 @@ public final class EntityVanillaProperties {
         }
 
         @Override
-        public void register(Map<String, EntityProperty<?>> map) {
+        public void create(Map<String, EntityProperty<?>> map) {
             p(map, createArmorItemsProperty(), createBodyProperty(), createDisabledSlotsProperty(), createHandItemsProperty(), createHeadProperty(), createInvisibleProperty(), createLeftArmProperty(), createLeftLegProperty(), createMarkerProperty(), createNoBasePlateProperty(), createPoseProperty(), createRightArmProperty(), createRightLegProperty(), createShowArmsProperty(), createSmallProperty());
         }
     }

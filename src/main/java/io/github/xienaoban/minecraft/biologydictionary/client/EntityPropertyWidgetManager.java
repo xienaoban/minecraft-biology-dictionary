@@ -67,22 +67,14 @@ public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRe
         }
 
         // Register it.
-        WidgetRegistry<E> registry = new WidgetRegistry<>() {
-            @Override
-            public Class<E> getEntityClass() {
-                return entityClazz;
-            }
-
-            @Override
-            public EntityPropertyWidget<E> createWidget(EntityProperties<E> properties) {
-                try {
-                    return Misc.cast(createWidget.invoke(properties));
-                } catch (Throwable e) {
-                    throw new RuntimeException(e);
-                }
+        WidgetRegistry<E> registry = properties -> {
+            try {
+                return Misc.cast(createWidget.invoke(properties));
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
             }
         };
-        registries.computeIfAbsent(registry.getEntityClass(), clazz -> new ArrayList<>()).add(registry);
+        registries.computeIfAbsent(entityClazz, clazz -> new ArrayList<>()).add(registry);
     }
 
     private List<WidgetRegistry<?>> getRegistries(Class<? extends Entity> clazz) {
@@ -104,10 +96,8 @@ public final class EntityPropertyWidgetManager implements EntityPropertyWidgetRe
         register(EntityBoundingBoxWidget.class);
     }
 
+    @FunctionalInterface
     private interface WidgetRegistry<E extends Entity> {
-        Class<E> getEntityClass();
-
-        @Environment(EnvType.CLIENT)
         EntityPropertyWidget<E> createWidget(EntityProperties<E> properties);
     }
 }

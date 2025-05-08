@@ -8,12 +8,15 @@ import net.minecraft.world.entity.Entity;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 final class EntityExtraProperties {
-    private static final Map<Class<? extends Entity>, List<Registry>> registries = new HashMap<>();
+
+    static final Map<Class<? extends Entity>, List<Creator>> registries = new HashMap<>();
+
     private static MethodHandles.Lookup lookup;
 
     static {
@@ -22,12 +25,23 @@ final class EntityExtraProperties {
         lookup = null;
     }
 
+    @FunctionalInterface
+    interface Creator {
+        EntityProperty<?> create();
+    }
+
     static void r(Class<? extends EntityProperty<? extends Entity>> clazz) {
-        final Class<? extends Entity> entityClazz;
-        final MethodHandle createWidget;
         try {
-            entityClazz = Misc.getFirstEntityClazzGeneric(clazz);
-            MethodHandle constructorHandle = lookup.findConstructor(clazz, MethodType.methodType(void.class));
+            final Class<? extends Entity> entityClazz = Misc.getFirstEntityClazzGeneric(clazz);
+            MethodHandle constructor = lookup.findConstructor(clazz, MethodType.methodType(void.class));
+            registries.computeIfAbsent(entityClazz, c -> new ArrayList<>())
+                    .add(() -> {
+                        try {
+                            return (EntityProperty<?>) constructor.invoke();
+                        } catch (Throwable e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -35,9 +49,5 @@ final class EntityExtraProperties {
 
     private static void init() {
         r(MobTemptProperty.class);
-    }
-
-    interface Registry {
-
     }
 }

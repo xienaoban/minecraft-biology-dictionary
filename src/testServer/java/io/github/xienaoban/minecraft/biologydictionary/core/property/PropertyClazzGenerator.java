@@ -129,7 +129,7 @@ public class PropertyClazzGenerator {
     private final CompilationUnit cu;
     private final ClassOrInterfaceDeclaration clazzAst;
 
-    private final NodeList<Expression> registerMethodBody = new NodeList<>(new NameExpr("map"));
+    private final NodeList<Expression> creatorMethodBody = new NodeList<>(new NameExpr("map"));
 
     private PropertyClazzGenerator(Class<? extends Entity> entityClazz, NbtTagCollector nbts, ClassOrInterfaceDeclaration wrapperClazz) {
         String targetClazzSimpleName = "Of" + entityClazz.getSimpleName();
@@ -139,7 +139,7 @@ public class PropertyClazzGenerator {
         this.clazzAst = new ClassOrInterfaceDeclaration(
                 NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier(), Modifier.finalModifier()),
                 false, targetClazzSimpleName);
-        this.clazzAst.addImplementedType(EntityVanillaProperties.Registry.class);
+        this.clazzAst.addImplementedType(EntityVanillaProperties.Creator.class);
         wrapperClazz.addMember(this.clazzAst);
     }
 
@@ -151,7 +151,7 @@ public class PropertyClazzGenerator {
             addPropertyCreateAndGetMethods(propertyName, nbts.getNbtTags().getOrDefault(propertyName, null));
         }
 
-        addPropertyRegisterMethod();
+        addPropertyCreatorMethod();
     }
 
     private void addClazzComments() {
@@ -196,15 +196,15 @@ public class PropertyClazzGenerator {
             method.setBody(new BlockStmt().addStatement("return g(map, \"" + propertyName + "\");"));
         }
 
-        registerMethodBody.add(new MethodCallExpr("create" + uc + "Property"));
+        creatorMethodBody.add(new MethodCallExpr("create" + uc + "Property"));
     }
 
-    private void addPropertyRegisterMethod() {
-        String methodName = "register";
+    private void addPropertyCreatorMethod() {
+        String methodName = "create";
         MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PUBLIC);
         method.addParameter(MAP_STR_PROPERTY_PARAM);
         method.addAnnotation(new MarkerAnnotationExpr("Override"));
-        method.setBody(new BlockStmt().addStatement(new ExpressionStmt(new MethodCallExpr(null, "p", registerMethodBody))));
+        method.setBody(new BlockStmt().addStatement(new ExpressionStmt(new MethodCallExpr(null, "p", creatorMethodBody))));
     }
 
     private static String toUpperCamelCase(String s) {
