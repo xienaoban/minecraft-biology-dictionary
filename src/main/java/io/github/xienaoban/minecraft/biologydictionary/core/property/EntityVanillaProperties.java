@@ -37,14 +37,13 @@ public final class EntityVanillaProperties {
 
     static final Map<Class<? extends Entity>, Creator> registries = new HashMap<>();
 
-    static {
-        init();
-    }
-
     @FunctionalInterface
     interface Creator {
-
         void create(Map<String, EntityProperty<?>> map);
+    }
+
+    static {
+        init();
     }
 
     private static void r(Class<? extends Entity> clazz, Creator registry) {

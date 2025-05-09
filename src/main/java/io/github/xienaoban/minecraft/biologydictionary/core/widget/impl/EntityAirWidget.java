@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.widget;
+package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -15,15 +15,17 @@ import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> {
+    private static final int L = 6, H = 1;
+
     public EntityAirWidget(EntityProperties<Entity> properties) {
         super(properties);
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, 6 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT));
         setElementBar(new AirBar());
     }
 
     private final class AirBar extends EntityPropertyProgressBar {
         public AirBar() {
-            super(Textures.ICONS, 7 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
         }
 
         @Override

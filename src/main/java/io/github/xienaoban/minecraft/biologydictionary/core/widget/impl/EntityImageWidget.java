@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.widget;
+package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
 import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;

@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 
-import io.github.xienaoban.minecraft.biologydictionary.client.EntityPropertyWidgetManager;
+import io.github.xienaoban.minecraft.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
@@ -26,7 +26,7 @@ public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private void initEntityPropertyWidgets() {
-        List<EntityPropertyWidget<?>> widgets = EntityPropertyWidgetManager.getInstance().getWidgets(properties);
+        List<EntityPropertyWidget<?>> widgets = EntityPropertyWidgets.getWidgets(properties);
         widgets.forEach(widget -> getPage(0).addWidget(widget));
     }
 

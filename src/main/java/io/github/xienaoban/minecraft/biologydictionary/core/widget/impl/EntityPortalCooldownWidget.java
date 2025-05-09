@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.widget;
+package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
@@ -23,13 +23,15 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
+    private static final int L = 1, H = 3;
+
     private final IntProperty<Entity> portalCooldownProperty = EntityVanillaProperties.OfEntity.getPortalCooldownProperty(p());
 
     private int inPortalRecheck = 0;
 
     public EntityPortalCooldownWidget(EntityProperties<Entity> properties) {
         super(properties);
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT));
         setElementBar(new PortalCooldownBar());
     }
 
@@ -72,7 +74,7 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
 
     private final class PortalCooldownBar extends EntityPropertyProgressBar {
         public PortalCooldownBar() {
-            super(Textures.ICONS, 2 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT);
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
         }
 
         @Override

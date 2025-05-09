@@ -19,15 +19,15 @@ final class EntityExtraProperties {
 
     private static MethodHandles.Lookup lookup;
 
-    static {
-        lookup = MethodHandles.lookup();
-        init();
-        lookup = null;
-    }
-
     @FunctionalInterface
     interface Creator {
         EntityProperty<?> create();
+    }
+
+    static {
+        lookup = MethodHandles.lookup();
+        registerBuiltIn();
+        lookup = null;
     }
 
     static void r(Class<? extends EntityProperty<? extends Entity>> clazz) {
@@ -47,7 +47,7 @@ final class EntityExtraProperties {
         }
     }
 
-    private static void init() {
+    private static void registerBuiltIn() {
         r(MobTemptProperty.class);
     }
 }
