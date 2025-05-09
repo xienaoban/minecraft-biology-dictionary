@@ -29,6 +29,7 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Animal> {
 
     private final class TemptBar extends EntityPropertyProgressBar {
         private float gap;
+        private int lastSize = 0;
 
         public TemptBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
@@ -49,6 +50,12 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Animal> {
                 renderInnerText(ctx, text, Colors.GRAY_FOR_TEXT_EMPTY);
                 return;
             }
+
+            if (lastSize != tempts.size()) {
+                lastSize = tempts.size();
+                gap = Math.min(10.0F, (getBox().getWidth() - 8.0F) / Math.max(1, lastSize - 1));
+            }
+
             for (int i = tempts.size() - 1; i >= 0; --i) {
                 ctx.renderTexture(Textures.ICONS, 24 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
