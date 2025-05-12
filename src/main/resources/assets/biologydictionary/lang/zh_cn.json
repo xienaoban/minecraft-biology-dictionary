@@ -10,6 +10,8 @@
   "text.biologydictionary.click_me_to_download": "点我点我点我！（≧.≦）",
   "text.biologydictionary.no_data_with_brackets": "（无数据）",
   "text.biologydictionary.empty_with_brackets": "（空）",
+  "text.biologydictionary.infinity":"无穷",
+  "text.biologydictionary.infinity_character": "∞",
   "text.biologydictionary.honey":"蜂蜜",
   "text.biologydictionary.bee_state_in_beehive": "状态：%s",
   "text.biologydictionary.bee_producing_nectar": "产蜜中",

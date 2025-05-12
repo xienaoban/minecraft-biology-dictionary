@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.extra;
 
-import io.github.xienaoban.minecraft.biologydictionary.common.mixin.MobIMixin;
-import io.github.xienaoban.minecraft.biologydictionary.common.mixin.TemptGoalIMixin;
+import io.github.xienaoban.minecraft.biologydictionary.mixin.MobIMixin;
+import io.github.xienaoban.minecraft.biologydictionary.mixin.TemptGoalIMixin;
 import io.github.xienaoban.minecraft.biologydictionary.common.property.ItemStackListProperty;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Mob;
@@ -10,6 +10,7 @@ import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -37,5 +38,6 @@ public class MobTemptProperty extends ItemStackListProperty<Mob> {
                 return;
             }
         }
+        set(Collections.emptyList());
     }
 }

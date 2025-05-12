@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.common.mixin;
+package io.github.xienaoban.minecraft.biologydictionary.mixin;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;

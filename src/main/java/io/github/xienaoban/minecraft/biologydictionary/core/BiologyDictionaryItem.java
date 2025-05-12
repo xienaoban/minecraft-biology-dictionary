@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core;
 
 import io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.minecraft.biologydictionary.common.mixin.MinecraftMixin;
+import io.github.xienaoban.minecraft.biologydictionary.mixin.MinecraftMixin;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import net.minecraft.core.component.DataComponents;
@@ -76,9 +76,9 @@ public final class BiologyDictionaryItem {
     private static String createWritablePageString() {
         return """
                 §l%s§2§l%s
-                                
+                
                 §r§0%s
-                                
+                
                 Modrinth: §9§n%s
                 """
                 .formatted(
