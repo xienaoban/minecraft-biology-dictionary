@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.util;
 
-import io.github.xienaoban.minecraft.biologydictionary.common.mixin.EntityIMixin;
+import io.github.xienaoban.minecraft.biologydictionary.mixin.EntityIMixin;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;

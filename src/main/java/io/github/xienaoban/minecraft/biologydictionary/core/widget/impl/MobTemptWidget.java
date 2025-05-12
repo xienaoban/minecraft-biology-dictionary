@@ -10,18 +10,21 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.Ent
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public class MobTemptWidget extends EntityPropertyStandardWidget<Animal> {
+@Environment(EnvType.CLIENT)
+public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
     private static final int L = 6, H = 2;
 
     MobTemptProperty mobTemptProperty = p().getExtra(MobTemptProperty.class);
 
-    public MobTemptWidget(EntityProperties<Animal> properties) {
+    public MobTemptWidget(EntityProperties<Mob> properties) {
         super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT));
         setElementBar(new TemptBar());

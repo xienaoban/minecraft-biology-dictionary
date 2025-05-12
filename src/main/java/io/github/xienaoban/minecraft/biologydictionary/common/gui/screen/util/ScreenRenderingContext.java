@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.CommonScreen;
-import io.github.xienaoban.minecraft.biologydictionary.common.mixin.GuiGraphicsIMixin;
+import io.github.xienaoban.minecraft.biologydictionary.mixin.GuiGraphicsIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

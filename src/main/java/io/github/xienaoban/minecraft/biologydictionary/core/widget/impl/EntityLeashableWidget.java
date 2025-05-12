@@ -5,9 +5,12 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPrope
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Leashable;
 
+@Environment(EnvType.CLIENT)
 public class EntityLeashableWidget extends EntityPropertyStandardWidget<Entity> {
     private final boolean leashable;
 

@@ -14,6 +14,8 @@ import java.util.Map;
 @SuppressWarnings("rawtypes")
 public final class EntityProperties<E extends Entity> {
 
+    public static final int ENTITY_PORTAL_COOLDOWN_INFINITY = 303;
+
     private final E entity;
 
     private final Map<String, EntityProperty<?>> vanillaProperties;

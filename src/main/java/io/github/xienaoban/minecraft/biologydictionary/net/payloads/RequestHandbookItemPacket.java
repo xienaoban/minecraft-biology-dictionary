@@ -1,20 +1,19 @@
 package io.github.xienaoban.minecraft.biologydictionary.net.payloads;
 
+import io.github.xienaoban.minecraft.biologydictionary.common.net.Packet;
 import io.github.xienaoban.minecraft.biologydictionary.core.BiologyDictionaryItem;
-import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayload;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.ServerNetApi;
 import net.minecraft.network.FriendlyByteBuf;
-import org.jetbrains.annotations.NotNull;
 
-public record RequestHandbookItemPacketPayload() implements PacketPayload {
+public record RequestHandbookItemPacket() implements Packet {
     public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
 
     @Override
-    public @NotNull Type<? extends PacketPayload> type() { return META.type(); }
+    public Type<? extends Packet> type() { return META.type(); }
 
     @SuppressWarnings("unused")
-    public RequestHandbookItemPacketPayload(FriendlyByteBuf buf) { this(); }
+    public RequestHandbookItemPacket(FriendlyByteBuf buf) { this(); }
 
     @Override
     public void write(FriendlyByteBuf buf) {}

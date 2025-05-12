@@ -5,7 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-public interface PacketPayload extends CustomPacketPayload {
+public interface Packet extends CustomPacketPayload {
     void write(FriendlyByteBuf buf);
 
     @Environment(EnvType.CLIENT)

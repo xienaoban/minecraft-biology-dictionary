@@ -5,13 +5,18 @@ import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanil
 import io.github.xienaoban.minecraft.biologydictionary.common.property.IntProperty;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
 import io.github.xienaoban.minecraft.biologydictionary.Lang;
+import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -19,9 +24,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
+@Environment(EnvType.CLIENT)
 public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
     private static final int L = 1, H = 3;
 
@@ -33,6 +40,8 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
         super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT));
         setElementBar(new PortalCooldownBar());
+
+        addElementButton(new LockPortalCooldownButton());
     }
 
     @Override
@@ -40,7 +49,9 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
         super.onTick(ticks);
         Integer i = portalCooldownProperty.get();
         if (i != null) {
-            if (isClientEntityInNetherPortal()) {
+            if (i == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+                // do nothing
+            } else if (isClientEntityInNetherPortal()) {
                 portalCooldownProperty.set(e().getDimensionChangingDelay());
             } else {
                 portalCooldownProperty.set(Math.max(0, i - 1));
@@ -83,17 +94,67 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
             if (portalCooldownProperty.get() == null) {
                 updatePercent(0);
                 super.onRender(ctx);
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS));
+                renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 return;
             }
             int cooldown = portalCooldownProperty.get();
             updatePercent((float) cooldown / (float) maxCooldown);
             super.onRender(ctx);
-            if (ctx.isDebug()) {
+            if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+                if (ctx.isDebug()) {
+                    renderInnerText(ctx, Component.translatable(Lang.TEXT_INFINITY));
+                } else {
+                    renderInnerText(ctx, Component.translatable(Lang.TEXT_INFINITY_CHARACTER));
+                }
+            } else if (ctx.isDebug()) {
                 renderInnerText(ctx, Component.literal(cooldown + "t/" + maxCooldown + "t"));
             } else {
                 renderInnerText(ctx, Component.literal((cooldown / MinecraftUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / MinecraftUtils.getClientTickCountPerSecond()) + "s"));
             }
+        }
+    }
+
+    private final class LockPortalCooldownButton extends EntityPropertyButton {
+        public LockPortalCooldownButton() {
+            super(Textures.ICONS, 21 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            Integer cooldown = portalCooldownProperty.get();
+            if (cooldown != null && cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+                setTextureLeftOffset(10);
+            } else {
+                setTextureLeftOffset(0);
+            }
+            super.onRender(ctx);
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            Integer optional = portalCooldownProperty.get();
+            if (optional == null) {
+                return true;
+            }
+            int cooldown = optional;
+            if (code == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                final int toSet;
+                if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+                    toSet = 0;
+                } else {
+                    toSet = EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY;
+                }
+
+                // Send to the server.
+                IntProperty<Entity> property = EntityVanillaProperties.OfEntity.createPortalCooldownProperty();
+                property.set(toSet);
+                CompoundTag nbt = new CompoundTag();
+                property.writeTo(nbt);
+                ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
+
+                portalCooldownProperty.set(toSet);
+            }
+            return super.onMouseDown(x, y, code);
         }
     }
 }
