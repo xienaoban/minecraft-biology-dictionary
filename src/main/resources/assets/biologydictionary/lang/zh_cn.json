@@ -1,0 +1,19 @@
+{
+  "biologydictionary": "生物辞典",
+  "title.biologydictionary": "生物辞典",
+  "description.biologydictionary": "奇怪，怎么长得有点像生物必修2...",
+  "key.category.biologydictionary": "生物辞典",
+  "key.biologydictionary.open_handbook": "打开手册",
+  "key.biologydictionary.debug": "切换调试模式",
+  "text.biologydictionary.mod_name_is": "模组名：",
+  "text.biologydictionary.mod_not_installed": "如果您看到了此段文字，说明您本地并未安装“生物辞典”模组，您可以前往以下网址下载本模组：",
+  "text.biologydictionary.click_me_to_download": "点我点我点我！（≧.≦）",
+  "text.biologydictionary.no_data_with_brackets": "（无数据）",
+  "text.biologydictionary.empty_with_brackets": "（空）",
+  "text.biologydictionary.honey":"蜂蜜",
+  "text.biologydictionary.bee_state_in_beehive": "状态：%s",
+  "text.biologydictionary.bee_producing_nectar": "产蜜中",
+  "text.biologydictionary.bee_resting": "休息中",
+  "text.biologydictionary.time_in_beehive": "逗留时间：%s",
+  "": ""
+}

@@ -16,18 +16,18 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "xienaoban.minecraft.biologydictionary.client.BiologyDictionaryClient"
+      "io.github.xienaoban.minecraft.biologydictionary.common.ClientModInitializer"
     ],
     "main": [
-      "xienaoban.minecraft.biologydictionary.BiologyDictionary"
+      "io.github.xienaoban.minecraft.biologydictionary.common.ModInitializer"
     ]
   },
   "mixins": [
     "biologydictionary.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.13",
+    "fabricloader": ">=0.16.9",
     "fabric": "*",
-    "minecraft": "1.19.3"
+    "minecraft": "1.21.4"
   }
 }

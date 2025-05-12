@@ -1,0 +1,19 @@
+{
+  "biologydictionary": "Biology Dictionary",
+  "title.biologydictionary": "Biology Dictionary",
+  "description.biologydictionary": "Helps you know more about minecraft entities!",
+  "key.category.biologydictionary": "Biology Dictionary",
+  "key.biologydictionary.open_handbook": "Open Handbook",
+  "key.biologydictionary.debug": "Toggle Debug Mode",
+  "text.biologydictionary.mod_name_is": "Mod name: ",
+  "text.biologydictionary.mod_not_installed": "It means that you have not installed the mod `Biology Dictionary` if you see this text. You may download this mod at: ",
+  "text.biologydictionary.click_me_to_download": "Click me to download!",
+  "text.biologydictionary.no_data_with_brackets": "(No Data)",
+  "text.biologydictionary.empty_with_brackets": "(Empty)",
+  "text.biologydictionary.honey":"Honey",
+  "text.biologydictionary.bee_state_in_beehive": "State: %s",
+  "text.biologydictionary.bee_producing_nectar": "Producing nectar",
+  "text.biologydictionary.bee_resting": "Resting",
+  "text.biologydictionary.time_in_beehive": "Time in hive: %s",
+  "": ""
+}
