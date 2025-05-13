@@ -3,48 +3,49 @@ package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.extra.MobTemptProperty;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla.LivingEntityActiveEffectsProperty;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 
-import java.util.List;
+import java.util.Map;
 
-@Environment(EnvType.CLIENT)
-public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
-    private static final int L = 6, H = 2;
+public class LivingEntityActiveEffectsWidget  extends EntityPropertyStandardWidget<LivingEntity> {
+    private static final int L = 6, H = 3;
 
-    private final MobTemptProperty mobTemptProperty = p().getExtra(MobTemptProperty.class);
+    private final LivingEntityActiveEffectsProperty activeEffectsProperty
+            = EntityVanillaProperties.OfLivingEntity.getActiveEffectsProperty(p());
 
-    public MobTemptWidget(EntityProperties<Mob> properties) {
+    public LivingEntityActiveEffectsWidget(EntityProperties<LivingEntity> properties) {
         super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT));
-        setElementBar(new TemptBar());
+        setElementBar(new ActiveEffectsBar());
     }
 
-    private final class TemptBar extends EntityPropertyProgressBar {
+    private final class ActiveEffectsBar extends EntityPropertyProgressBar {
         private float gap;
         private int lastSize = 0;
 
-        public TemptBar() {
+        public ActiveEffectsBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
         }
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             Component text = null;
-            List<ItemStack> tempts = mobTemptProperty.get();
-            if (tempts == null) {
+            Map<Holder<MobEffect>, MobEffectInstance> effects = activeEffectsProperty.get();
+            if (effects == null) {
                 text = Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS);
-            } else if (tempts.isEmpty()) {
+            } else if (effects.isEmpty()) {
                 text = Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS);
             }
             updatePercent(text != null ? 0 : 1);
@@ -54,29 +55,31 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
                 return;
             }
 
-            if (lastSize != tempts.size()) {
-                lastSize = tempts.size();
+            if (lastSize != effects.size()) {
+                lastSize = effects.size();
                 updateGap(lastSize);
             }
 
-            for (int i = tempts.size() - 1; i >= 0; --i) {
-                ctx.renderTexture(Textures.ICONS, 24 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
+            for (int i = effects.size() - 1; i >= 0; --i) {
+                ctx.renderTexture(Textures.ICONS, 22 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
-            for (int i = tempts.size() - 1; i >= 0; --i) {
-                ctx.renderItem(tempts.get(i), 0.5F, getBox().getLeft() + i * gap, getBox().getTop());
+            int i = -1;
+            for (Holder<MobEffect> effect : effects.keySet()) {
+                ++i;
+                ctx.renderSprite(effect, 0.444444F, getBox().getLeft() + 0.05F + i * gap, getBox().getTop());
             }
         }
 
         @Override
         protected void onResize(int width, int height) {
             super.onResize(width, height);
-            List<ItemStack> tempts = mobTemptProperty.get();
-            int size = tempts == null ? 0 : tempts.size();
+            Map<Holder<MobEffect>, MobEffectInstance> effects = activeEffectsProperty.get();
+            int size = effects == null ? 0 : effects.size();
             updateGap(size);
         }
 
         private void updateGap(float size) {
-            gap = Math.min(9.0F, (getBox().getWidth() - 8.0F) / Math.max(1, size - 1));
+            gap = Math.min(9.0F, (getBox().getWidth() - 8F) / Math.max(1, size - 1));
         }
     }
 }
