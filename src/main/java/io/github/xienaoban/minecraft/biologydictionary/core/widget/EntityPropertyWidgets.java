@@ -81,10 +81,11 @@ public final class EntityPropertyWidgets {
         r(EntityImageWidget.class);
         r(LivingEntityHealthWidget.class);
         r(EntityAirWidget.class);
-        r(EntityPortalCooldownWidget.class);
+        r(LivingEntityActiveEffectsWidget.class);
         r(AnimalFoodWidget.class);
         r(MobTemptWidget.class);
         r(EntityLeashableWidget.class);
         r(EntityBoundingBoxWidget.class);
+        r(EntityPortalCooldownWidget.class);
     }
 }

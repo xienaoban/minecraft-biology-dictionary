@@ -3,6 +3,9 @@ package io.github.xienaoban.minecraft.biologydictionary.common.util;
 import net.minecraft.world.entity.Entity;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public final class Misc {
     @SuppressWarnings("unchecked")
@@ -18,5 +21,11 @@ public final class Misc {
             throw new RuntimeException("The first argument of generic super class is not a sub class of Entity.");
         }
         return Misc.cast(c);
+    }
+
+    public static  <T> Collection<T> shuffle(Collection<T> collection) {
+        ArrayList<T> list = new ArrayList<>(collection);
+        Collections.shuffle(list);
+        return list;
     }
 }
