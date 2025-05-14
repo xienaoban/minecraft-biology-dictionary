@@ -6,6 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 
@@ -182,5 +183,9 @@ public abstract class ScreenElement {
 
     private void unregisterSubScreenElement(ScreenElement sub) {
         subScreenElements.remove(sub);
+    }
+
+    public static boolean isMouseLeft(int code) {
+        return code == GLFW.GLFW_MOUSE_BUTTON_LEFT;
     }
 }

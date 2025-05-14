@@ -19,7 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Map;
 
-public class LivingEntityActiveEffectsWidget  extends EntityPropertyStandardWidget<LivingEntity> {
+public class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidget<LivingEntity> {
     private static final int L = 6, H = 3;
 
     private final LivingEntityActiveEffectsProperty activeEffectsProperty
