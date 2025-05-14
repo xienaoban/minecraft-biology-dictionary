@@ -11,43 +11,43 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.minecraft.world.entity.Entity;
 
-public class EntitySilentWidget extends EntityPropertyStandardWidget<Entity> {
-    private static final int L = 19, H = 1;
+public class EntityInvulnerableWidget extends EntityPropertyStandardWidget<Entity> {
+    private static final int L = 18, H = 1;
 
-    private final BooleanProperty<Entity> silentProperty = EntityVanillaProperties.OfEntity.getSilentProperty(p());
+    private final BooleanProperty<Entity> invulnerableProperty = EntityVanillaProperties.OfEntity.getInvulnerableProperty(p());
 
-    public EntitySilentWidget(EntityProperties<Entity> properties) {
+    public EntityInvulnerableWidget(EntityProperties<Entity> properties) {
         super(properties, 2);
 
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * WIDGET_WIDTH, H * WIDGET_HEIGHT));
-        addElementButton(new SilentButton());
+        addElementButton(new InvulnerableButton());
     }
 
-    private boolean isSilent() {
-        Boolean silent = silentProperty.get();
-        return silent != null && silent;
+    private boolean isInvulnerable() {
+        Boolean inv = invulnerableProperty.get();
+        return inv != null && inv;
     }
 
-    private final class SilentButton extends EntityPropertyButton {
+    private final class InvulnerableButton extends EntityPropertyButton {
 
-        public SilentButton() {
+        public InvulnerableButton() {
             super(Textures.ICONS, 23 * WIDGET_WIDTH, WIDGET_HEIGHT);
         }
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            setTextureLeftOffset((isSilent() ? 1 : 0) * WIDGET_WIDTH);
+            setTextureLeftOffset((isInvulnerable() ? 0 : 1) * WIDGET_WIDTH);
             super.onRender(ctx);
         }
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                boolean silent = isSilent();
-                BooleanProperty<Entity> property = EntityVanillaProperties.OfEntity.createSilentProperty();
-                property.set(!silent);
+                boolean inv = isInvulnerable();
+                BooleanProperty<Entity> property = EntityVanillaProperties.OfEntity.createInvulnerableProperty();
+                property.set(!inv);
                 ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
-                silentProperty.set(!silent);
+                invulnerableProperty.set(!inv);
             }
             return true;
         }

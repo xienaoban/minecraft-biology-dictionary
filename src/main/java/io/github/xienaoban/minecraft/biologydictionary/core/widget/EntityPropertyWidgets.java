@@ -86,6 +86,7 @@ public final class EntityPropertyWidgets {
         r(MobTemptWidget.class);
         r(EntityLeashableWidget.class);
         r(EntityBoundingBoxWidget.class);
+        r(EntityInvulnerableWidget.class);
         r(EntitySilentWidget.class);
         r(EntityPortalCooldownWidget.class);
     }
