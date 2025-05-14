@@ -1,22 +1,21 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
+import io.github.xienaoban.minecraft.biologydictionary.Lang;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.common.property.IntProperty;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
-import io.github.xienaoban.minecraft.biologydictionary.common.property.IntProperty;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
-import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -24,7 +23,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -137,7 +135,7 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
                 return true;
             }
             int cooldown = optional;
-            if (code == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            if (isMouseLeft(code)) {
                 final int toSet;
                 if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
                     toSet = 0;
@@ -148,10 +146,7 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
                 // Send to the server.
                 IntProperty<Entity> property = EntityVanillaProperties.OfEntity.createPortalCooldownProperty();
                 property.set(toSet);
-                CompoundTag nbt = new CompoundTag();
-                property.writeTo(nbt);
-                ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
-
+                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
                 portalCooldownProperty.set(toSet);
             }
             return super.onMouseDown(x, y, code);
