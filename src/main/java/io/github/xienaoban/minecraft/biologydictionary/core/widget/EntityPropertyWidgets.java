@@ -16,16 +16,22 @@ import java.util.*;
 
 @Environment(EnvType.CLIENT)
 public final class EntityPropertyWidgets {
-    
-    private static final Map<Class<? extends Entity>, List<Creator<?>>> registries = new HashMap<>();
 
+    private static final Map<Class<? extends Entity>, List<Creator<?>>> registries = new HashMap<>();
+    private static final Map<Class<? extends EntityPropertyWidget<?>>, Integer> order = new HashMap<>();
+
+    private static int orderIndex;
     private static Set<Class<?>> visited;
     private static MethodHandles.Lookup lookup;
 
+    private static final Comparator<EntityPropertyWidget<?>> CMP = Comparator.comparingInt(o -> order.get(o.getClass()));
+
     public static void init() {
+        orderIndex = 0;
         visited = new HashSet<>();
         lookup = MethodHandles.lookup();
         registerBuiltIn();
+        orderIndex = -1;
         visited = null;
         lookup = null;
     }
@@ -43,6 +49,7 @@ public final class EntityPropertyWidgets {
                 res.add(widget);
             }
         }
+        res.sort(CMP);
         return res;
     }
 
@@ -71,6 +78,9 @@ public final class EntityPropertyWidgets {
             }
         };
         registries.computeIfAbsent(entityClazz, clazz -> new ArrayList<>()).add(creator);
+        if (order.put(widgetClazz, orderIndex++) != null) {
+            throw new RuntimeException("Duplicate registered widget: " + widgetClazz);
+        }
     }
 
     private static List<Creator<?>> getCreators(Class<? extends Entity> clazz) {
