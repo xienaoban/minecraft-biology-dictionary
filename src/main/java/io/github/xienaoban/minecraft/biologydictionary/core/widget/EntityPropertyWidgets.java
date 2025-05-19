@@ -17,14 +17,11 @@ import java.util.*;
 @Environment(EnvType.CLIENT)
 public final class EntityPropertyWidgets {
 
-    private static final Map<Class<? extends Entity>, List<Creator<?>>> registries = new HashMap<>();
-    private static final Map<Class<? extends EntityPropertyWidget<?>>, Integer> order = new HashMap<>();
+    private static final Map<Class<? extends Entity>, List<Registry>> registries = new HashMap<>();
 
     private static int orderIndex;
     private static Set<Class<?>> visited;
     private static MethodHandles.Lookup lookup;
-
-    private static final Comparator<EntityPropertyWidget<?>> CMP = Comparator.comparingInt(o -> order.get(o.getClass()));
 
     public static void init() {
         orderIndex = 0;
@@ -36,20 +33,29 @@ public final class EntityPropertyWidgets {
         lookup = null;
     }
 
-    @FunctionalInterface
-    private interface Creator<E extends Entity> {
-        EntityPropertyWidget<E> create(EntityProperties<E> properties);
+    private record Registry(int order, MethodHandle creator) {
+        public static final Comparator<Registry> CMP = Comparator.comparingInt(Registry::order);
+
+        public EntityPropertyWidget<?> create(EntityProperties<?> properties) {
+            try {
+                return (EntityPropertyWidget<?>) creator.invoke(properties);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public static List<EntityPropertyWidget<?>> getWidgets(EntityProperties<?> properties) {
-        List<EntityPropertyWidget<?>> res = new ArrayList<>();
+        List<Registry> registries = new ArrayList<>(16);
         for (var clazz : EntityUtils.topDown(properties.entity())) {
-            for (var creator : getCreators(clazz)) {
-                EntityPropertyWidget<?> widget = creator.create(Misc.cast(properties));
-                res.add(widget);
-            }
+            registries.addAll(getRegistries(clazz));
         }
-        res.sort(CMP);
+        registries.sort(Registry.CMP);
+
+        List<EntityPropertyWidget<?>> res = new ArrayList<>(registries.size());
+        for (var registry : registries) {
+            res.add(registry.create(properties));
+        }
         return res;
     }
 
@@ -70,20 +76,11 @@ public final class EntityPropertyWidgets {
         }
 
         // Register it.
-        Creator<E> creator = properties -> {
-            try {
-                return Misc.cast(createWidget.invoke(properties));
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
-        };
-        registries.computeIfAbsent(entityClazz, clazz -> new ArrayList<>()).add(creator);
-        if (order.put(widgetClazz, orderIndex++) != null) {
-            throw new RuntimeException("Duplicate registered widget: " + widgetClazz);
-        }
+        Registry registry = new Registry(++orderIndex, createWidget);
+        registries.computeIfAbsent(entityClazz, clazz -> new ArrayList<>()).add(registry);
     }
 
-    private static List<Creator<?>> getCreators(Class<? extends Entity> clazz) {
+    private static List<Registry> getRegistries(Class<? extends Entity> clazz) {
         return registries.getOrDefault(clazz, Collections.emptyList());
     }
 
