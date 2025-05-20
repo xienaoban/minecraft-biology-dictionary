@@ -1,6 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 
 import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.ElementScreen;
@@ -25,19 +26,23 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     protected final Minecraft minecraft;
 
     private final List<Page> pages;
-    private Page curLeftPage, curRightPage;
+    private int currPageIndex;
+    private Page currLeftPage, currRightPage;
+    private final PageNum leftPageNum, rightPageNum;
 
     public AbstractBiologyDictionaryScreen(Component title) {
         super(title);
         minecraft = Objects.requireNonNull(Minecraft.getInstance());
 
         pages = new ArrayList<>();
-        curLeftPage = new Page();
-        curLeftPage.setParent(getRootScreenElement());
-        curRightPage = new Page();
-        curRightPage.setParent(getRootScreenElement());
-        pages.add(curLeftPage);
-        pages.add(curRightPage);
+        currPageIndex = 0;
+        currLeftPage = null;
+        currRightPage = null;
+
+        leftPageNum = new PageNum(false);
+        leftPageNum.setParent(getRootScreenElement());
+        rightPageNum = new PageNum(true);
+        rightPageNum.setParent(getRootScreenElement());
     }
 
     @Override
@@ -80,14 +85,19 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     protected void resizeBox(int width, int height) {
-        if (curLeftPage != null) {
-            curLeftPage.getBox().setPosition(width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH,
+        if (currLeftPage != null) {
+            currLeftPage.getBox().setPosition(width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH,
                                              (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN);
         }
-        if (curRightPage != null) {
-            curRightPage.getBox().setPosition(width / 2F + PAGE_MID_MARGIN,
+        if (currRightPage != null) {
+            currRightPage.getBox().setPosition(width / 2F + PAGE_MID_MARGIN,
                                               (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN);
         }
+
+        leftPageNum.getBox().setPosition((width - Page.PAGE_WIDTH - PageNum.WIDTH) / 2F - PAGE_MID_MARGIN,
+                                    (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
+        rightPageNum.getBox().setPosition((width + Page.PAGE_WIDTH - PageNum.WIDTH) / 2F + PAGE_MID_MARGIN,
+                                    (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
     }
 
     @Override
@@ -108,32 +118,97 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
-    public Page getPage(int index) {
-        try {
-            return pages.get(index);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
+    public Page getPage(int pageIndex) {
+        return pages.get(pageIndex);
+    }
+
+    public Page getPageOrNull(int pageIndex) {
+        if (pageIndex < pages.size()) {
+            return pages.get(pageIndex);
         }
+        return null;
+    }
+
+    public int getPageSize() {
+        return pages.size();
+    }
+
+    public void setCurrPage(int pageIndex) {
+        currPageIndex = pageIndex;
+        updateCurrPages();
     }
 
     public Page addPage() {
         Page newPage = new Page();
         pages.add(newPage);
+        updateCurrPages();
         return newPage;
     }
 
-    public Page getOrAddPage(int index) {
-        while (index >= pages.size()) {
+    public Page getOrAddPage(int pageIndex) {
+        while (pageIndex >= pages.size()) {
             pages.add(new Page());
         }
-        return pages.get(index);
+        updateCurrPages();
+        return pages.get(pageIndex);
     }
 
-    public Page getCurLeftPage() {
-        return curLeftPage;
+    public Page getCurrLeftPage() {
+        return currLeftPage;
     }
 
-    public Page getCurRightPage() {
-        return curRightPage;
+    public Page getCurrRightPage() {
+        return currRightPage;
+    }
+
+    private void updateCurrPages() {
+        currLeftPage = updatePage(currLeftPage, getPageOrNull(currPageIndex));
+        currRightPage = updatePage(currRightPage, getPageOrNull(currPageIndex + 1));
+    }
+
+    private Page updatePage(Page oldPage, Page newPage) {
+        if (oldPage != newPage) {
+            if (oldPage != null) {
+                oldPage.setParent(null);
+            }
+            if (newPage != null) {
+                newPage.setParent(getRootScreenElement());
+            }
+        }
+        return newPage;
+    }
+
+    private final class PageNum extends ScreenElement {
+        private static final int WIDTH = 40, HEIGHT = 8;
+
+        private final int leftOrRight;
+
+        private int lastIndex = -1;
+        private int lastSize = -1;
+        private Component cache = Component.empty();
+
+        public PageNum(boolean leftOrRight) {
+            super(false);
+            this.leftOrRight = leftOrRight ? 2 : 1;
+            getBox().setSize(WIDTH, HEIGHT);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            final int index = currPageIndex;
+            final int size = getPageSize();
+            if (lastIndex != index || lastSize != size) {
+                lastIndex = index;
+                lastSize = size;
+                int real = index + leftOrRight;
+                if (real <= size) {
+                    cache = Component.literal(real + "/" + size);
+                } else {
+                    cache = Component.empty();
+                }
+            }
+            ctx.renderCenteredText(cache, 0xFF888888, (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
+        }
     }
 }
