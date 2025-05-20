@@ -32,6 +32,7 @@ public class EntityLeashableWidget extends EntityPropertyStandardWidget<Entity> 
 
         public LeashableButton() {
             super(Textures.ICONS, 23 * WIDGET_WIDTH, WIDGET_HEIGHT);
+            setSelectable(false);
             setTextureLeftOffset((leashable ? 0 : 1) * WIDGET_WIDTH);
         }
     }

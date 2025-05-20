@@ -95,7 +95,7 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             if (ctx.isDebug()) {
-                ctx.renderCenteredText(Component.literal("Get Book Item"), 0xFF000000, getBox().getLeft() + getBox().getWidth() / 2, getBox().getTop() + 2);
+                ctx.renderCenteredText(Component.literal("Get Book Item"), 0xFF000000, (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
             }
         }
 
