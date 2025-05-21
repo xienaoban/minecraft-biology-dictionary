@@ -85,7 +85,7 @@ public final class EntityPropertyWidgets {
     }
 
     private static void registerBuiltIn() {
-        r(EntityImageWidget.class);
+        r(EntityDisplayWidget.class);
         r(LivingEntityHealthWidget.class);
         r(EntityAirWidget.class);
         r(LivingEntityActiveEffectsWidget.class);
@@ -94,8 +94,9 @@ public final class EntityPropertyWidgets {
         r(EntityLeashableWidget.class);
         r(EntityBoundingBoxWidget.class);
         r(TurnPageTriggerWidget.class);
+        r(MobAiWidget.class);
         r(EntityInvulnerableWidget.class);
-        r(EntitySilentWidget.class);
+        r(EntitySoundWidget.class);
         r(EntityPortalCooldownWidget.class);
     }
 }

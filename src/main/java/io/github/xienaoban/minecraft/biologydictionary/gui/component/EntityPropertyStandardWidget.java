@@ -13,11 +13,11 @@ public class EntityPropertyStandardWidget<E extends Entity> extends EntityProper
     private EntityPropertyBar bar;
     private final List<EntityPropertyButton> buttons;
 
-    protected EntityPropertyStandardWidget(EntityProperties<E> properties) {
+    public EntityPropertyStandardWidget(EntityProperties<E> properties) {
         this(properties, Page.COLUMNS / 2);
     }
 
-    protected EntityPropertyStandardWidget(EntityProperties<E> properties, int columns) {
+    public EntityPropertyStandardWidget(EntityProperties<E> properties, int columns) {
         super(properties, 1, columns);
         this.bar = null;
         this.buttons = new ArrayList<>();

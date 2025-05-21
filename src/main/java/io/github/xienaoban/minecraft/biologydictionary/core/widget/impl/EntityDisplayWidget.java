@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
  * The entity can be rotated according to the mouse.
  */
 @Environment(EnvType.CLIENT)
-public final class EntityImageWidget extends EntityPropertyWidget<Entity> {
+public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
 
     private static RC calculateRowsAndColumns(Entity entity) {
         AABB box = entity.getBoundingBox();
@@ -92,11 +92,11 @@ public final class EntityImageWidget extends EntityPropertyWidget<Entity> {
     private final float entityScale;
     private final float entityBottom;
 
-    public EntityImageWidget(EntityProperties<Entity> properties) {
+    public EntityDisplayWidget(EntityProperties<Entity> properties) {
         this(properties, createFakeEntity(properties.entity()));
     }
 
-    private EntityImageWidget(EntityProperties<Entity> properties, Entity fake) {
+    private EntityDisplayWidget(EntityProperties<Entity> properties, Entity fake) {
         super(properties, calculateRowsAndColumns(fake));
         this.fake = fake;
         float[] sp = calculateScaleAndPosition();

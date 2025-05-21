@@ -9,45 +9,41 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.Ent
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 
-public class EntityInvulnerableWidget extends EntityPropertyStandardWidget<Entity> {
-    private static final int L = 19, T = 1;
+public class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
+    private static final int L = 18, T = 1;
 
-    private final BooleanProperty<Entity> invulnerableProperty = EntityVanillaProperties.OfEntity.getInvulnerableProperty(p());
-
-    public EntityInvulnerableWidget(EntityProperties<Entity> properties) {
+    public MobAiWidget(EntityProperties<Mob> properties) {
         super(properties, 2);
 
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * WIDGET_WIDTH, T * WIDGET_HEIGHT));
-        addElementButton(new InvulnerableButton());
+        addElementButton(new AiButton());
     }
 
-    private boolean isInvulnerable() {
-        Boolean inv = invulnerableProperty.get();
-        return inv != null && inv;
+    private boolean isNoAi() {
+        return e().isNoAi();
     }
 
-    private final class InvulnerableButton extends EntityPropertyButton {
+    private final class AiButton extends EntityPropertyButton {
 
-        public InvulnerableButton() {
+        public AiButton() {
             super(Textures.ICONS, L_ON_OFF * WIDGET_WIDTH, T_ON_OFF * WIDGET_HEIGHT);
         }
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            setTextureLeftOffset((isInvulnerable() ? 0 : 1) * WIDGET_WIDTH);
+            setTextureLeftOffset((isNoAi() ? 1 : 0) * WIDGET_WIDTH);
             super.onRender(ctx);
         }
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                boolean inv = isInvulnerable();
-                BooleanProperty<Entity> property = EntityVanillaProperties.OfEntity.createInvulnerableProperty();
-                property.set(!inv);
+                boolean noAi = isNoAi();
+                BooleanProperty<Mob> property = EntityVanillaProperties.OfMob.createNoAiProperty();
+                property.set(!noAi);
                 ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
-                invulnerableProperty.set(!inv);
             }
             return true;
         }
