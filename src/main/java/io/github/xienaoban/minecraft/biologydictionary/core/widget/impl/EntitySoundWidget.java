@@ -11,16 +11,16 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.minecraft.world.entity.Entity;
 
-public class EntitySilentWidget extends EntityPropertyStandardWidget<Entity> {
-    private static final int L = 19, T = 1;
+public class EntitySoundWidget extends EntityPropertyStandardWidget<Entity> {
+    private static final int L = 20, T = 1;
 
     private final BooleanProperty<Entity> silentProperty = EntityVanillaProperties.OfEntity.getSilentProperty(p());
 
-    public EntitySilentWidget(EntityProperties<Entity> properties) {
+    public EntitySoundWidget(EntityProperties<Entity> properties) {
         super(properties, 2);
 
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * WIDGET_WIDTH, T * WIDGET_HEIGHT));
-        addElementButton(new SilentButton());
+        addElementButton(new SoundButton());
     }
 
     private boolean isSilent() {
@@ -28,9 +28,8 @@ public class EntitySilentWidget extends EntityPropertyStandardWidget<Entity> {
         return silent != null && silent;
     }
 
-    private final class SilentButton extends EntityPropertyButton {
-
-        public SilentButton() {
+    private final class SoundButton extends EntityPropertyButton {
+        public SoundButton() {
             super(Textures.ICONS, L_ON_OFF * WIDGET_WIDTH, T_ON_OFF * WIDGET_HEIGHT);
         }
 

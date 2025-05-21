@@ -6,8 +6,8 @@ import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityPrope
 import io.github.xienaoban.minecraft.biologydictionary.core.property.extra.MobTemptProperty;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
@@ -20,7 +20,7 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
-    private static final int L = 6, T = 2;
+    private static final int L = 14, T = 2;
 
     private final MobTemptProperty mobTemptProperty = p().getExtra(MobTemptProperty.class);
 
@@ -30,7 +30,7 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
         setElementBar(new TemptBar());
     }
 
-    private final class TemptBar extends EntityPropertyProgressBar {
+    private final class TemptBar extends EntityPropertyBar {
         private float gap;
         private int lastSize = 0;
 
@@ -40,6 +40,8 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            renderFullBar(ctx);
             Component text = null;
             List<ItemStack> tempts = mobTemptProperty.get();
             if (tempts == null) {
@@ -47,9 +49,6 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
             } else if (tempts.isEmpty()) {
                 text = Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS);
             }
-            updatePercent(text != null ? 0 : 1);
-            updatePercent(1);
-            super.onRender(ctx);
             if (text != null) {
                 renderInnerText(ctx, text, Colors.GRAY_FOR_TEXT_EMPTY);
                 return;

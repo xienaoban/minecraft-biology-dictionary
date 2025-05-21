@@ -1,14 +1,14 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
+import io.github.xienaoban.minecraft.biologydictionary.Lang;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,7 +20,7 @@ import java.util.Comparator;
 
 @Environment(EnvType.CLIENT)
 public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal> {
-    private static final int L = 1, T = 2;
+    private static final int L = 11, T = 2;
 
     private final ItemStack[] foods;
 
@@ -32,7 +32,7 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
         setElementBar(new FoodBar());
     }
 
-    private final class FoodBar extends EntityPropertyProgressBar {
+    private final class FoodBar extends EntityPropertyBar {
         private float gap;
 
         public FoodBar() {
@@ -41,9 +41,8 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            updatePercent(foods.length == 0 ? 0 : 1);
-            updatePercent(1);
             super.onRender(ctx);
+            renderFullBar(ctx);
             if (foods.length == 0) {
                 renderInnerText(ctx, Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
                 return;

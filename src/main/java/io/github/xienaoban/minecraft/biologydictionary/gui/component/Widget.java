@@ -19,7 +19,7 @@ public abstract class Widget extends ScreenElement {
 
     private final int rows, columns;
 
-    protected Widget(int rows, int columns) {
+    public Widget(int rows, int columns) {
         if (rows <= 0 || rows > Page.ROWS) {
             throw new IllegalStateException("Unexpected value: " + rows);
         }

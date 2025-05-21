@@ -20,7 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.Map;
 
 public class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidget<LivingEntity> {
-    private static final int L = 6, T = 3;
+    private static final int L = 11, T = 3;
 
     private final LivingEntityActiveEffectsProperty activeEffectsProperty
             = EntityVanillaProperties.OfLivingEntity.getActiveEffectsProperty(p());
