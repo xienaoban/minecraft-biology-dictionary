@@ -12,14 +12,14 @@ import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.minecraft.world.entity.Entity;
 
 public class EntitySilentWidget extends EntityPropertyStandardWidget<Entity> {
-    private static final int L = 19, H = 1;
+    private static final int L = 19, T = 1;
 
     private final BooleanProperty<Entity> silentProperty = EntityVanillaProperties.OfEntity.getSilentProperty(p());
 
     public EntitySilentWidget(EntityProperties<Entity> properties) {
         super(properties, 2);
 
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * WIDGET_WIDTH, H * WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * WIDGET_WIDTH, T * WIDGET_HEIGHT));
         addElementButton(new SilentButton());
     }
 
@@ -31,7 +31,7 @@ public class EntitySilentWidget extends EntityPropertyStandardWidget<Entity> {
     private final class SilentButton extends EntityPropertyButton {
 
         public SilentButton() {
-            super(Textures.ICONS, 23 * WIDGET_WIDTH, WIDGET_HEIGHT);
+            super(Textures.ICONS, L_ON_OFF * WIDGET_WIDTH, T_ON_OFF * WIDGET_HEIGHT);
         }
 
         @Override

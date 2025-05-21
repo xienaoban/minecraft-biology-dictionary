@@ -12,7 +12,7 @@ import net.minecraft.world.entity.Leashable;
 
 @Environment(EnvType.CLIENT)
 public class EntityLeashableWidget extends EntityPropertyStandardWidget<Entity> {
-    private static final int L = 17, H = 1;
+    private static final int L = 17, T = 1;
 
     private final boolean leashable;
 
@@ -24,14 +24,14 @@ public class EntityLeashableWidget extends EntityPropertyStandardWidget<Entity> 
             this.leashable = false;
         }
 
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * WIDGET_WIDTH, H * WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * WIDGET_WIDTH, T * WIDGET_HEIGHT));
         addElementButton(new LeashableButton());
     }
 
     private final class LeashableButton extends EntityPropertyButton {
 
         public LeashableButton() {
-            super(Textures.ICONS, 23 * WIDGET_WIDTH, WIDGET_HEIGHT);
+            super(Textures.ICONS, L_YES_NO * WIDGET_WIDTH, T_YES_NO * WIDGET_HEIGHT);
             setSelectable(false);
             setTextureLeftOffset((leashable ? 0 : 1) * WIDGET_WIDTH);
         }

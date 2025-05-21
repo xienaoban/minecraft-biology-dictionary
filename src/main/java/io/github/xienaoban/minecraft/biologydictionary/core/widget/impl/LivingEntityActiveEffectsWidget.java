@@ -20,14 +20,14 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.Map;
 
 public class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidget<LivingEntity> {
-    private static final int L = 6, H = 3;
+    private static final int L = 6, T = 3;
 
     private final LivingEntityActiveEffectsProperty activeEffectsProperty
             = EntityVanillaProperties.OfLivingEntity.getActiveEffectsProperty(p());
 
     public LivingEntityActiveEffectsWidget(EntityProperties<LivingEntity> properties) {
         super(properties);
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new ActiveEffectsBar());
     }
 
@@ -36,7 +36,7 @@ public class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidge
         private int lastSize = 0;
 
         public ActiveEffectsBar() {
-            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
         }
 
         @Override
@@ -61,7 +61,7 @@ public class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidge
             }
 
             for (int i = effects.size() - 1; i >= 0; --i) {
-                ctx.renderTexture(Textures.ICONS, 22 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
+                ctx.renderTexture(Textures.ICONS, 21 * Widget.WIDGET_WIDTH, 3 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
             int i = -1;
             for (Holder<MobEffect> effect : effects.keySet()) {

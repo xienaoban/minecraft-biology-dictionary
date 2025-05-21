@@ -20,13 +20,13 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
-    private static final int L = 6, H = 2;
+    private static final int L = 6, T = 2;
 
     private final MobTemptProperty mobTemptProperty = p().getExtra(MobTemptProperty.class);
 
     public MobTemptWidget(EntityProperties<Mob> properties) {
         super(properties);
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new TemptBar());
     }
 
@@ -35,7 +35,7 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
         private int lastSize = 0;
 
         public TemptBar() {
-            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
         }
 
         @Override
@@ -48,6 +48,7 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
                 text = Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS);
             }
             updatePercent(text != null ? 0 : 1);
+            updatePercent(1);
             super.onRender(ctx);
             if (text != null) {
                 renderInnerText(ctx, text, Colors.GRAY_FOR_TEXT_EMPTY);
@@ -60,7 +61,7 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
             }
 
             for (int i = tempts.size() - 1; i >= 0; --i) {
-                ctx.renderTexture(Textures.ICONS, 24 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
+                ctx.renderTexture(Textures.ICONS, 22 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
             for (int i = tempts.size() - 1; i >= 0; --i) {
                 ctx.renderItem(tempts.get(i), 0.5F, getBox().getLeft() + i * gap, getBox().getTop());

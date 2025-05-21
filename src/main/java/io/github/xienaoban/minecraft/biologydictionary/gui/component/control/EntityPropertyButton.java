@@ -6,6 +6,9 @@ import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.Sc
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 
 public class EntityPropertyButton extends ScreenElement {
+    protected static final int L_YES_NO = 23, T_YES_NO = 1;
+    protected static final int L_ON_OFF = 21, T_ON_OFF = 1;
+
     private final TextureInfo texture;
     private final float textureLeft, textureTop;
     private float textureLeftOffset;

@@ -28,7 +28,7 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
-    private static final int L = 1, H = 3;
+    private static final int L = 1, T = 3;
 
     private final IntProperty<Entity> portalCooldownProperty = EntityVanillaProperties.OfEntity.getPortalCooldownProperty(p());
 
@@ -36,7 +36,7 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
 
     public EntityPortalCooldownWidget(EntityProperties<Entity> properties) {
         super(properties);
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new PortalCooldownBar());
 
         addElementButton(new LockPortalCooldownButton());
@@ -83,7 +83,7 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
 
     private final class PortalCooldownBar extends EntityPropertyProgressBar {
         public PortalCooldownBar() {
-            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
         }
 
         @Override
@@ -114,7 +114,7 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
 
     private final class LockPortalCooldownButton extends EntityPropertyButton {
         public LockPortalCooldownButton() {
-            super(Textures.ICONS, 21 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+            super(Textures.ICONS, 23 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT);
         }
 
         @Override

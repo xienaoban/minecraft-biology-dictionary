@@ -12,14 +12,14 @@ import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.minecraft.world.entity.Entity;
 
 public class EntityInvulnerableWidget extends EntityPropertyStandardWidget<Entity> {
-    private static final int L = 18, H = 1;
+    private static final int L = 18, T = 1;
 
     private final BooleanProperty<Entity> invulnerableProperty = EntityVanillaProperties.OfEntity.getInvulnerableProperty(p());
 
     public EntityInvulnerableWidget(EntityProperties<Entity> properties) {
         super(properties, 2);
 
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * WIDGET_WIDTH, H * WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * WIDGET_WIDTH, T * WIDGET_HEIGHT));
         addElementButton(new InvulnerableButton());
     }
 
@@ -31,7 +31,7 @@ public class EntityInvulnerableWidget extends EntityPropertyStandardWidget<Entit
     private final class InvulnerableButton extends EntityPropertyButton {
 
         public InvulnerableButton() {
-            super(Textures.ICONS, 23 * WIDGET_WIDTH, WIDGET_HEIGHT);
+            super(Textures.ICONS, L_ON_OFF * WIDGET_WIDTH, T_ON_OFF * WIDGET_HEIGHT);
         }
 
         @Override
