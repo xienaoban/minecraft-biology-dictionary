@@ -208,7 +208,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                     cache = Component.empty();
                 }
             }
-            ctx.renderCenteredText(cache, 0xFF888888, (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
+            ctx.renderCenteredText(cache, 0xFFAF711F, (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
         }
     }
 }
