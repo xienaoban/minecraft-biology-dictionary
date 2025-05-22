@@ -11,6 +11,8 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.Ent
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffect;
@@ -19,6 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Map;
 
+@Environment(EnvType.CLIENT)
 public class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidget<LivingEntity> {
     private static final int L = 11, T = 3;
 

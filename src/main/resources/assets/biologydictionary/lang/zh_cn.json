@@ -12,6 +12,8 @@
   "text.biologydictionary.empty_with_brackets": "（空）",
   "text.biologydictionary.infinity":"无穷",
   "text.biologydictionary.infinity_character": "∞",
+  "text.biologydictionary.adult": "已成年",
+  "text.biologydictionary.always_baby": "永不长大",
   "text.biologydictionary.honey":"蜂蜜",
   "text.biologydictionary.bee_state_in_beehive": "状态：%s",
   "text.biologydictionary.bee_producing_nectar": "产蜜中",

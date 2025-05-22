@@ -34,6 +34,8 @@ public final class Lang {
     public static final String TEXT_EMPTY_WITH_BRACKETS     = "text.biologydictionary.empty_with_brackets";
     public static final String TEXT_INFINITY                = "text.biologydictionary.infinity";
     public static final String TEXT_INFINITY_CHARACTER      = "text.biologydictionary.infinity_character";
+    public static final String TEXT_ADULT                   = "text.biologydictionary.adult";
+    public static final String TEXT_ALWAYS_BABY             = "text.biologydictionary.always_baby";
     public static final String TEXT_HONEY                   = "text.biologydictionary.honey";
     public static final String TEXT_BEE_STATE_IN_BEEHIVE    = "text.biologydictionary.bee_state_in_beehive";
     public static final String TEXT_BEE_PRODUCING_NECTAR    = "text.biologydictionary.bee_producing_nectar";
