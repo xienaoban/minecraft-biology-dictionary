@@ -12,6 +12,8 @@
   "text.biologydictionary.empty_with_brackets": "(Empty)",
   "text.biologydictionary.infinity":"Infinity",
   "text.biologydictionary.infinity_character": "∞",
+  "text.biologydictionary.adult": "Adult",
+  "text.biologydictionary.always_baby": "Not grow",
   "text.biologydictionary.honey":"Honey",
   "text.biologydictionary.bee_state_in_beehive": "State: %s",
   "text.biologydictionary.bee_producing_nectar": "Producing nectar",

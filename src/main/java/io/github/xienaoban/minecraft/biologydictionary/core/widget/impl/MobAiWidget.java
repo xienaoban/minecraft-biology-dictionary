@@ -9,8 +9,11 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.Ent
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Mob;
 
+@Environment(EnvType.CLIENT)
 public class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
     private static final int L = 18, T = 1;
 

@@ -63,10 +63,15 @@ public final class EntityPropertyWidgets {
         if (!visited.add(widgetClazz)) {
             throw new IllegalStateException(widgetClazz + " is already registered!");
         }
+
         final Class<E> entityClazz;
         final MethodHandle createWidget;
         try {
             entityClazz = Misc.getFirstEntityClazzGeneric(widgetClazz);
+            if (!widgetClazz.getSimpleName().startsWith(entityClazz.getSimpleName())
+                    && Misc.cast(widgetClazz) != TurnPageTriggerWidget.class) {
+                throw new AssertionError(widgetClazz + " must be started with \"" + entityClazz.getSimpleName() + "\"!");
+            }
 
             // Get the constructor of the widget class.
             Constructor<? extends EntityPropertyWidget<E>> constructor = widgetClazz.getDeclaredConstructor(EntityProperties.class);
@@ -97,6 +102,7 @@ public final class EntityPropertyWidgets {
         r(MobAiWidget.class);
         r(EntityInvulnerableWidget.class);
         r(EntitySoundWidget.class);
+        r(AgeableMobAgeWidget.class);
         r(EntityPortalCooldownWidget.class);
     }
 }
