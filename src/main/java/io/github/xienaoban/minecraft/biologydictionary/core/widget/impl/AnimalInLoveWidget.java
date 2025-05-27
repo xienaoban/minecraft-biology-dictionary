@@ -1,0 +1,77 @@
+package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
+
+import io.github.xienaoban.minecraft.biologydictionary.Lang;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.common.property.IntProperty;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.animal.Animal;
+
+@Environment(EnvType.CLIENT)
+public class AnimalInLoveWidget extends EntityPropertyStandardWidget<Animal> {
+    private static final int L = 1, T = 3;
+
+    private static final int IN_LOVE_MAX_TIME = 600;
+
+    private final IntProperty<Animal> inLoveProperty = EntityVanillaProperties.OfAnimal.getInLoveProperty(p());
+
+    public AnimalInLoveWidget(EntityProperties<Animal> properties) {
+        super(properties);
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
+        setElementBar(new InLoveBar());
+    }
+
+    private boolean isBabyClient() {
+        return EntityUtils.isBaby(e());
+    }
+
+    @Override
+    protected void onTick(int ticks) {
+        super.onTick(ticks);
+        Integer inLoveOpt = inLoveProperty.get();
+        if (inLoveOpt == null) {
+            return;
+        }
+        int age = inLoveOpt;
+        if (age > 0) {
+            inLoveProperty.set(age - 1);
+        }
+    }
+
+    private final class InLoveBar extends EntityPropertyProgressBar {
+        public InLoveBar() {
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            Integer inLoveOpt = inLoveProperty.get();
+            if (inLoveOpt == null) {
+                updatePercent(0);
+                super.onRender(ctx);
+                renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                return;
+            }
+            int inLoveTime = inLoveOpt;
+            int inLoveMaxTime = IN_LOVE_MAX_TIME;
+            updatePercent((float) inLoveTime / inLoveMaxTime);
+            super.onRender(ctx);
+            if (ctx.isDebug()) {
+                renderInnerText(ctx, Component.literal(inLoveTime + "t/" + inLoveMaxTime + "t"));
+            } else if (isBabyClient()) {
+                renderInnerText(ctx, Component.translatable(Lang.TEXT_BABY));
+            } else {
+                renderInnerText(ctx, Component.literal((inLoveTime / 20) + "s/" + (inLoveMaxTime / 20) + "s"));
+            }
+        }
+    }
+}

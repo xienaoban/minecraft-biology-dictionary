@@ -103,6 +103,7 @@ public final class EntityPropertyWidgets {
         r(EntityInvulnerableWidget.class);
         r(EntitySoundWidget.class);
         r(AgeableMobAgeWidget.class);
+        r(AnimalInLoveWidget.class);
         r(EntityPortalCooldownWidget.class);
     }
 }
