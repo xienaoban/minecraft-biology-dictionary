@@ -44,15 +44,18 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        Integer i = portalCooldownProperty.get();
-        if (i != null) {
-            if (i == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
-                // do nothing
-            } else if (isClientEntityInNetherPortal()) {
-                portalCooldownProperty.set(e().getDimensionChangingDelay());
-            } else {
-                portalCooldownProperty.set(Math.max(0, i - 1));
-            }
+        Integer cooldownOpt = portalCooldownProperty.get();
+        if (cooldownOpt == null) {
+            return;
+        }
+
+        int cooldown = cooldownOpt;
+        if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+            // do nothing
+        } else if (isClientEntityInNetherPortal()) {
+            portalCooldownProperty.set(e().getDimensionChangingDelay());
+        } else {
+            portalCooldownProperty.set(Math.max(0, cooldown - 1));
         }
     }
 
@@ -87,14 +90,15 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            if (portalCooldownProperty.get() == null) {
+            Integer cooldownOpt = portalCooldownProperty.get();
+            if (cooldownOpt == null) {
                 updatePercent(0);
                 super.onRender(ctx);
                 renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 return;
             }
             int maxCooldown = e().getDimensionChangingDelay();
-            int cooldown = portalCooldownProperty.get();
+            int cooldown = cooldownOpt;
             updatePercent((float) cooldown / (float) maxCooldown);
             super.onRender(ctx);
             if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
@@ -129,10 +133,11 @@ public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Ent
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            if (portalCooldownProperty.get() == null) {
+            Integer cooldownOpt = portalCooldownProperty.get();
+            if (cooldownOpt == null) {
                 return true;
             }
-            int cooldown = portalCooldownProperty.get();
+            int cooldown = cooldownOpt;
             if (isMouseLeft(code)) {
                 final int toSet;
                 if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {

@@ -3,6 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.common.property.IntProperty;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -35,18 +36,19 @@ public class AgeableMobAgeWidget extends EntityPropertyStandardWidget<AgeableMob
     }
 
     private boolean isAdultClient() {
-        return e().getAge() >= ADULT_MIN_AGE;
+        return !EntityUtils.isBaby(e());
     }
 
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        if (isAdultClient() || ageProperty.get() == null) {
+        Integer ageOpt = ageProperty.get();
+        if (isAdultClient() || ageOpt == null) {
             return;
         }
-        int age = ageProperty.get();
+        int age = ageOpt;
         if (age < 0) {
-            ageProperty.set(Math.min(0, age + 1));
+            ageProperty.set(age + 1);
         }
     }
 
@@ -57,7 +59,9 @@ public class AgeableMobAgeWidget extends EntityPropertyStandardWidget<AgeableMob
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            if (ageProperty.get() == null || forcedAgeProperty.get() == null) {
+            Integer ageOpt = ageProperty.get();
+            Integer forcedAgeOpt = forcedAgeProperty.get();
+            if (ageOpt == null || forcedAgeOpt == null) {
                 if (isAdultClient()) {
                     updatePercent(1F);
                 } else {
@@ -75,13 +79,13 @@ public class AgeableMobAgeWidget extends EntityPropertyStandardWidget<AgeableMob
                 }
                 return;
             }
-            int age = ageProperty.get();
-            int forcedAge = forcedAgeProperty.get();
+            int age = ageOpt;
+            int forcedAge = forcedAgeOpt;
             updatePercent(forcedAge < ADULT_MIN_AGE ? 0F : (1F - (float) age / BABY_MIN_AGE));
             super.onRender(ctx);
             if (ctx.isDebug()) {
                 renderInnerText(ctx, Component.literal(age + "t/" + ADULT_MIN_AGE + "t"));
-            } else if (age < ADULT_MIN_AGE) {
+            } else if (!isAdultClient()) {
                 if (forcedAge < ADULT_MIN_AGE) {
                     renderInnerText(ctx, Component.translatable(Lang.TEXT_ALWAYS_BABY));
                 } else {
@@ -116,7 +120,8 @@ public class AgeableMobAgeWidget extends EntityPropertyStandardWidget<AgeableMob
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            if (forcedAgeProperty.get() == null) {
+            Integer forcedAgeOpt = forcedAgeProperty.get();
+            if (forcedAgeOpt == null) {
                 return true;
             }
             if (isAdultClient()) {
@@ -124,7 +129,7 @@ public class AgeableMobAgeWidget extends EntityPropertyStandardWidget<AgeableMob
                 return true;
             }
 
-            int forcedAge = forcedAgeProperty.get();
+            int forcedAge = forcedAgeOpt;
             if (isMouseLeft(code)) {
                 final int toSet;
                 if (forcedAge == ADULT_MIN_AGE) {

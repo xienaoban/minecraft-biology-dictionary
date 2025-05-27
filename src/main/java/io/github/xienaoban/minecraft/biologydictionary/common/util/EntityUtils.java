@@ -1,6 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.util;
 
 import io.github.xienaoban.minecraft.biologydictionary.mixin.EntityIMixin;
+import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -24,6 +25,13 @@ public final class EntityUtils {
 
     public static void setInWater(Entity entity, boolean inWater) {
         ((EntityIMixin) entity).setWasTouchingWater(inWater);
+    }
+
+    /**
+     * Can be used in client side.
+     */
+    public static boolean isBaby(AgeableMob entity) {
+        return entity.isBaby();
     }
 
     public static List<Class<? extends Entity>> topDown(Entity entity) {
