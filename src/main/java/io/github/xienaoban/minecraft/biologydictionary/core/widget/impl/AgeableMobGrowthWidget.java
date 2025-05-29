@@ -15,12 +15,13 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
 
 @Environment(EnvType.CLIENT)
-public class AgeableMobAgeWidget extends EntityPropertyStandardWidget<AgeableMob> {
-    private static final int L = 1, T = 3;
+public class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<AgeableMob> {
+    private static final int L = 1, T = 4;
 
     private static final int BABY_MIN_AGE = AgeableMob.BABY_START_AGE;
     private static final int ADULT_MIN_AGE = 0;
@@ -28,10 +29,10 @@ public class AgeableMobAgeWidget extends EntityPropertyStandardWidget<AgeableMob
     private final IntProperty<AgeableMob> ageProperty = EntityVanillaProperties.OfAgeableMob.getAgeProperty(p());
     private final IntProperty<AgeableMob> forcedAgeProperty = EntityVanillaProperties.OfAgeableMob.getForcedAgeProperty(p());
 
-    public AgeableMobAgeWidget(EntityProperties<AgeableMob> properties) {
+    public AgeableMobGrowthWidget(EntityProperties<AgeableMob> properties) {
         super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
-        setElementBar(new AgeBar());
+        setElementBar(new GrowthBar());
         addElementButton(new LockBabyButton());
     }
 
@@ -43,17 +44,17 @@ public class AgeableMobAgeWidget extends EntityPropertyStandardWidget<AgeableMob
     protected void onTick(int ticks) {
         super.onTick(ticks);
         Integer ageOpt = ageProperty.get();
-        if (isAdultClient() || ageOpt == null) {
+        if (ageOpt == null) {
             return;
         }
         int age = ageOpt;
-        if (age < 0) {
+        if (age < ADULT_MIN_AGE) {
             ageProperty.set(age + 1);
         }
     }
 
-    private final class AgeBar extends EntityPropertyProgressBar {
-        public AgeBar() {
+    private final class GrowthBar extends EntityPropertyProgressBar {
+        public GrowthBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
         }
 
@@ -74,7 +75,7 @@ public class AgeableMobAgeWidget extends EntityPropertyStandardWidget<AgeableMob
                     if (isAdultClient()) {
                         renderInnerText(ctx, Component.translatable(Lang.TEXT_ADULT));
                     } else {
-                        renderInnerText(ctx, Component.literal("?s/" + (-BABY_MIN_AGE / 20 / 60) + "m"));
+                        renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                     }
                 }
                 return;
@@ -125,15 +126,17 @@ public class AgeableMobAgeWidget extends EntityPropertyStandardWidget<AgeableMob
                 return true;
             }
             if (isAdultClient()) {
-                // Do nothing if it is adult.
+                // Do nothing if it is an adult.
                 return true;
             }
 
             int forcedAge = forcedAgeOpt;
             if (isMouseLeft(code)) {
+                boolean lock = false;
                 final int toSet;
                 if (forcedAge == ADULT_MIN_AGE) {
                     toSet = BABY_MIN_AGE;
+                    lock = true;
                 } else {
                     toSet = ADULT_MIN_AGE;
                 }
@@ -141,8 +144,15 @@ public class AgeableMobAgeWidget extends EntityPropertyStandardWidget<AgeableMob
                 // Send to the server.
                 IntProperty<AgeableMob> property = EntityVanillaProperties.OfAgeableMob.createForcedAgeProperty();
                 property.set(toSet);
-                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
                 forcedAgeProperty.set(toSet);
+                CompoundTag nbt = property.toNbt();
+                if (lock) {
+                    IntProperty<AgeableMob> ap = EntityVanillaProperties.OfAgeableMob.createAgeProperty();
+                    ap.set(toSet);
+                    ageProperty.set(toSet);
+                    ap.writeTo(nbt);
+                }
+                ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
             }
             return super.onMouseDown(x, y, code);
         }
