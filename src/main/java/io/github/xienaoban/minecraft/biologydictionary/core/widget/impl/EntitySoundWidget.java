@@ -48,8 +48,8 @@ public class EntitySoundWidget extends EntityPropertyStandardWidget<Entity> {
                 boolean silent = isSilent();
                 BooleanProperty<Entity> property = EntityVanillaProperties.OfEntity.createSilentProperty();
                 property.set(!silent);
-                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
                 silentProperty.set(!silent);
+                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
             }
             return true;
         }

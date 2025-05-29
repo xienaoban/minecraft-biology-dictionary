@@ -15,6 +15,7 @@
   "text.biologydictionary.baby": "Baby",
   "text.biologydictionary.adult": "Adult",
   "text.biologydictionary.always_baby": "Not grow",
+  "text.biologydictionary.never_breed": "Infertile",
   "text.biologydictionary.honey":"Honey",
   "text.biologydictionary.bee_state_in_beehive": "State: %s",
   "text.biologydictionary.bee_producing_nectar": "Producing nectar",
