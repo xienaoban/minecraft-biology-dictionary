@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
@@ -54,7 +55,7 @@ public record PacketPayloadMeta<T extends Packet>(CustomPacketPayload.Type<T> ty
     }
 
     private static <T extends Packet> StreamCodec<FriendlyByteBuf, T> generateCodec(Class<T> clazz, MethodHandles.Lookup lookup) throws NoSuchMethodException, IllegalAccessException {
-        final MethodHandle decoder = lookup.unreflectConstructor(clazz.getConstructor(FriendlyByteBuf.class));
+        final MethodHandle decoder = lookup.findConstructor(clazz, MethodType.methodType(void.class, FriendlyByteBuf.class));
 
         @SuppressWarnings("unchecked")
         StreamCodec<FriendlyByteBuf, T> codec = CustomPacketPayload.codec(

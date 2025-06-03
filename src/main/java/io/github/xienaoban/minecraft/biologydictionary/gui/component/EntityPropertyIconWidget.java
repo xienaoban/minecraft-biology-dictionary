@@ -28,8 +28,4 @@ public abstract class EntityPropertyIconWidget<E extends Entity> extends EntityP
             icon.getBox().setPosition(getBox().getLeft(), getBox().getTop());
         }
     }
-
-    protected EntityPropertyIcon geIcon() {
-        return icon;
-    }
 }

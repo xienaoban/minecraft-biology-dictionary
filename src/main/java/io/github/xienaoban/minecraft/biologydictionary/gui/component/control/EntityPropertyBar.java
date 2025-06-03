@@ -4,6 +4,7 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
 import net.minecraft.network.chat.Component;
 
 public class EntityPropertyBar extends ScreenElement {
@@ -75,7 +76,7 @@ public class EntityPropertyBar extends ScreenElement {
     }
 
     protected void renderInnerText(ScreenRenderingContext ctx, Component text) {
-        renderInnerText(ctx, text, 0xBBFFFFFF);
+        renderInnerText(ctx, text, Colors.COMMON_LIGHT_TEXT);
     }
 
     protected void renderInnerText(ScreenRenderingContext ctx, Component text, int color) {
