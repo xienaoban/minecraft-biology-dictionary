@@ -11,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
+import java.lang.invoke.MethodType;
 import java.util.*;
 
 @Environment(EnvType.CLIENT)
@@ -33,7 +33,7 @@ public final class EntityPropertyWidgets {
         lookup = null;
     }
 
-    private record Registry(int order, MethodHandle creator) {
+    private record Registry(int order, Class<? extends EntityPropertyWidget<?>> clazz, MethodHandle creator) {
         public static final Comparator<Registry> CMP = Comparator.comparingInt(Registry::order);
 
         public EntityPropertyWidget<?> create(EntityProperties<?> properties) {
@@ -54,7 +54,11 @@ public final class EntityPropertyWidgets {
 
         List<EntityPropertyWidget<?>> res = new ArrayList<>(registries.size());
         for (var registry : registries) {
-            res.add(registry.create(properties));
+            try {
+                res.add(registry.create(properties));
+            } catch (UnsupportedWidgetException ignored) {
+                // Verification failed. This widget doesn't fit the entity.
+            }
         }
         return res;
     }
@@ -74,14 +78,13 @@ public final class EntityPropertyWidgets {
             }
 
             // Get the constructor of the widget class.
-            Constructor<? extends EntityPropertyWidget<E>> constructor = widgetClazz.getDeclaredConstructor(EntityProperties.class);
-            createWidget = lookup.unreflectConstructor(constructor);
+            createWidget = lookup.findConstructor(widgetClazz, MethodType.methodType(void.class, EntityProperties.class));
         } catch (Exception e) {
             throw new RuntimeException("Failed to register " + widgetClazz, e);
         }
 
         // Register it.
-        Registry registry = new Registry(++orderIndex, createWidget);
+        Registry registry = new Registry(++orderIndex, widgetClazz, createWidget);
         registries.computeIfAbsent(entityClazz, clazz -> new ArrayList<>()).add(registry);
     }
 
@@ -97,6 +100,8 @@ public final class EntityPropertyWidgets {
         r(AnimalFoodWidget.class);
         r(MobTemptWidget.class);
         r(EntityLeashableWidget.class);
+        r(LivingEntityMovementSpeedWidget.class);
+        r(LivingEntityJumpStrengthWidget.class);
         r(EntityBoundingBoxWidget.class);
         r(TurnPageTriggerWidget.class);
         r(MobAiWidget.class);
