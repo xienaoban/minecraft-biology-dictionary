@@ -6,11 +6,14 @@ import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityPrope
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.UnsupportedWidgetException;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
+@Environment(EnvType.CLIENT)
 public abstract class AbstractLivingEntityAttributeWidget<E extends LivingEntity> extends EntityPropertyStandardWidget<E> {
     private final Holder<Attribute> attribute;
 

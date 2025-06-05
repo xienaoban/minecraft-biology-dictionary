@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.CommonScreen;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.minecraft.biologydictionary.mixin.GuiGraphicsIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -68,9 +69,12 @@ public final class ScreenRenderingContext {
     public float getMouseY()            { return mouseY; }
     public float getTickDelta()         { return tickDelta; }
     public Font getFont()               { return screen.getFont(); }
-    public float getZ()                 { return ((CommonScreen) screen).getZ(); }
+    public float getZ()                 { return getCommonScreen().getZ(); }
     public boolean isDebug()            { return debug; }
     public void setDebug(boolean debug) { this.debug = debug; }
+
+    public CommonScreen getCommonScreen()           { return (CommonScreen) screen; }
+    public ElementScreen getElementScreen()           { return (ElementScreen) screen; }
 
     public PoseStack getPose() {
         return getGuiGraphics().pose();
@@ -219,6 +223,18 @@ public final class ScreenRenderingContext {
         try (ScaleRAII ignored = scaleOnce(size)) {
             renderSprite(effect, left / size, top / size);
         }
+    }
+
+    public void renderEntity(Entity entity, float left, float top, float right, float bottom,
+                             float rotateX, float rotateY, boolean lightFromBelow) {
+        float width = right - left;
+        float height = bottom - top;
+        float entityWidth = (float) entity.getBoundingBox().getXsize();
+        float entityHeight = (float) entity.getBoundingBox().getYsize();
+        float entityScale = Math.min(width / entityWidth, height / entityHeight);
+        float entityBottom = top + (entityScale * entityHeight + height) / 2;
+        renderEntity(entity, (left + right) / 2, entityBottom, entityScale,
+                rotateX, rotateY, lightFromBelow);
     }
 
     /**

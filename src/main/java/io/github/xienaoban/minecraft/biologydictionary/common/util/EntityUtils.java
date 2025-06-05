@@ -23,6 +23,10 @@ public final class EntityUtils {
         return entityType.create(level, null);
     }
 
+    public static <E extends Entity> EntityType<E> getEntityType(E entity) {
+        return Misc.cast(entity.getType());
+    }
+
     public static void setInWater(Entity entity, boolean inWater) {
         ((EntityIMixin) entity).setWasTouchingWater(inWater);
     }

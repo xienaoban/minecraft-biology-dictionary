@@ -4,9 +4,12 @@ import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityPrope
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
+@Environment(EnvType.CLIENT)
 public class LivingEntityJumpStrengthWidget extends AbstractLivingEntityAttributeWidget<LivingEntity> {
     private static final int L = 1, T = 1;
 
@@ -18,6 +21,7 @@ public class LivingEntityJumpStrengthWidget extends AbstractLivingEntityAttribut
 
     @Override
     protected double calcValue(double attr) {
+        // The conversion algorithm is from hwyla-addon-horseinfo.
         return -0.1817584952D * Math.pow(attr, 3) + 3.689713992D * Math.pow(attr, 2) + 2.128599134D * attr - 0.343930367D;
     }
 
