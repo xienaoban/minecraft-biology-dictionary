@@ -104,6 +104,8 @@ public final class EntityPropertyWidgets {
         r(LivingEntityJumpStrengthWidget.class);
         r(EntityBoundingBoxWidget.class);
         r(TurnPageTriggerWidget.class);
+        r(HorseVariantWidget.class);
+        r(HorseMarkingsWidget.class);
         r(MobAiWidget.class);
         r(EntityInvulnerableWidget.class);
         r(EntitySoundWidget.class);

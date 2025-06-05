@@ -13,10 +13,13 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.Ent
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
 
+@Environment(EnvType.CLIENT)
 public class AgeableMobBreedingCooldownWidget extends EntityPropertyStandardWidget<AgeableMob> {
     private static final int L = 6, T = 4;
 

@@ -4,9 +4,12 @@ import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityPrope
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
+@Environment(EnvType.CLIENT)
 public class LivingEntityMovementSpeedWidget extends AbstractLivingEntityAttributeWidget<LivingEntity> {
     private static final int L = 1, T = 1;
 
@@ -17,6 +20,7 @@ public class LivingEntityMovementSpeedWidget extends AbstractLivingEntityAttribu
 
     @Override
     protected double calcValue(double attr) {
+        // The conversion algorithm is from Minecraft wiki.
         return 43.178D * attr - 0.02141D;
     }
 

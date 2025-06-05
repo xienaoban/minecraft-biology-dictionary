@@ -1,6 +1,5 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util;
 
-import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.ElementScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -92,14 +91,14 @@ public abstract class ScreenElement {
     public final void render(ScreenRenderingContext ctx) {
         onRender(ctx);
         if (ctx.isDebug() && box.getWidth() > 0 && box.getHeight() > 0) {
-            ElementScreen screen = (ElementScreen) ctx.getScreen();
+            ElementScreen screen = ctx.getElementScreen();
             final int alpha = 0xFF000000;
             final int color;
             if (this == screen.getSelectedElement()) color = 0x0044CC00;
             else if (this == screen.getFocusedElement()) color = 0x00FFAA00;
             else if (contains(screen.getFocusedElement())) color = 0x000055FF;
             else color = 0x00CC0000;
-            ctx.renderRectangle(color | alpha, 0.6F, ((CommonScreen) ctx.getScreen()).getZ(),
+            ctx.renderRectangle(color | alpha, 0.6F, screen.getZ(),
                     box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
             if (this == screen.getFocusedElement()) {
                 ctx.renderText(Component.literal(getClass().getSimpleName()), 0xFF7719AA,
