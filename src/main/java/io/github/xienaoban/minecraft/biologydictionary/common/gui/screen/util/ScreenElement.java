@@ -96,7 +96,7 @@ public abstract class ScreenElement {
             final int color;
             if (this == screen.getSelectedElement()) color = 0x0044CC00;
             else if (this == screen.getFocusedElement()) color = 0x00FFAA00;
-            else if (contains(screen.getFocusedElement())) color = 0x000055FF;
+            else if (isInBox(screen.getFocusedElement())) color = 0x000055FF;
             else color = 0x00CC0000;
             ctx.renderRectangle(color | alpha, 0.6F, screen.getZ(),
                     box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
@@ -142,7 +142,7 @@ public abstract class ScreenElement {
     }
 
     /**
-     * In theory, the return value of this and {@link #contains} should be the same.
+     * In theory, the return value of this and {@link #isInBox} should be the same.
      */
     public final boolean isInStack(ScreenElement element) {
         while (element != null) {
@@ -155,7 +155,7 @@ public abstract class ScreenElement {
     /**
      * In theory, the return value of this and {@link #isInStack} should be the same.
      */
-    public final boolean contains(ScreenElement element) {
+    public final boolean isInBox(ScreenElement element) {
         if (element == null) return false;
         ScreenElementBox bi = element.getBox();
         ScreenElementBox bo = getBox();

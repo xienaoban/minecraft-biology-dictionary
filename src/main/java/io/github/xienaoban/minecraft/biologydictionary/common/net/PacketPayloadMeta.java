@@ -63,6 +63,8 @@ public record PacketPayloadMeta<T extends Packet>(CustomPacketPayload.Type<T> ty
                 (buf) -> {
                     try {
                         return (T) decoder.invoke(buf);
+                    } catch (RuntimeException e) {
+                        throw e;
                     } catch (Throwable e) {
                         throw new RuntimeException(e);
                     }
