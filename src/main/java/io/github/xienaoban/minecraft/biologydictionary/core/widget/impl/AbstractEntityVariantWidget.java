@@ -7,12 +7,15 @@ import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtil
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
@@ -58,8 +61,8 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         for (int i = 0; i < lines; ++i, --mod) {
             displayCntPerRow[i] = minCnt + (mod > 0 ? 1 : 0);
         }
-        variantWidth = getBox().getWidth() / maxDisplayCntPerLine - 2;
-        variantHeight = getBox().getHeight() / lines - 2;
+        variantWidth = getBox().getWidth() / maxDisplayCntPerLine - 1;
+        variantHeight = getBox().getHeight() / lines - 1;
         this.variants = new ArrayList<>(size());
         for (int i = 0; i < size(); ++ i) {
             VariantElement e = new VariantElement(i, variants.get(i));
@@ -125,6 +128,12 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         return equals(variant, getChosenVariant());
     }
 
+    public final String getVariantNameKeyPrefix() {
+        // variant.minecraft.cat.xxxx
+        ResourceLocation rl = EntityUtils.getEntityTypeName(e());
+        return "variant." + rl.getNamespace() + "." + rl.getPath() + ".";
+    }
+
     private void updateChosenVariant() {
         V curr = getVariantClient(e());
         V last = getChosenVariant();
@@ -174,16 +183,22 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
     }
 
     public class VariantElement extends ScreenElement {
+        private static final float FONT_SIZE = 0.5F;
+
         private final int index;
 
         private final V variant;
         private final E model;
         private final Component name;
+        private float nameWidth = -1;
 
         public VariantElement(int index, V variant) {
             this.index = index;
             this.variant = variant;
             this.model = EntityUtils.create(EntityUtils.getEntityType(e()), e().level());
+            this.model.setYRot(0);
+            this.model.setYHeadRot(0);
+            this.model.setYBodyRot(0);
             setVariantClient(model, variant);
             this.name = getVariantName(variant);
 
@@ -192,25 +207,66 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            final float left = getBox().getLeft();
-            final float top = getBox().getTop();
-            final float right = getBox().getRight();
-            final float bottom = getBox().getBottom();
+            super.onRender(ctx);
 
-            if (isAllowedToChoose() && contains(ctx.getElementScreen().getFocusedElement())) {
-                ctx.renderRectangle(0xAAE8C8B1, ctx.getZ(), left, top, right, bottom);
+            if (nameWidth == -1) {
+                nameWidth = ctx.calcTextWidth(name) * FONT_SIZE;
             }
 
-            renderEntity(ctx, model, left , top, right, bottom - 6);
-            ctx.renderCenteredText(name, Colors.COMMON_DARK_TEXT, 0.5F, (left + right) / 2, bottom - 6);
+            renderEntity(ctx);
 
             if (isChosen(index)) {
-                ctx.renderCenteredText(name, Colors.COMMON_DARK_TEXT, 0.5F, (left + right) / 2, bottom - 3);
+                renderCheckMark(ctx, true);
+                if (isInBox(ctx.getElementScreen().getFocusedElement())) {
+                    renderVariantName(ctx);
+                } else {
+                    renderVariantNameAuto(ctx);
+                }
+            } else if (isInBox(ctx.getElementScreen().getFocusedElement())) {
+                if (isAllowedToChoose()) {
+                    renderCheckMark(ctx, false);
+                }
+                renderVariantName(ctx);
+            } else {
+                renderVariantNameAuto(ctx);
             }
         }
 
-        private void renderEntity(ScreenRenderingContext ctx, E entity, float left, float top, float right, float bottom) {
-            ctx.renderEntity(entity, left, top, right, bottom, 0F, 0.25F, true);
+        private void renderCheckMark(ScreenRenderingContext ctx, boolean chosenTrueFocusedFalse) {
+            int textureLeft = chosenTrueFocusedFalse ? 23 : 24;
+            ctx.renderTexture(Textures.ICONS,
+                    textureLeft * Widget.WIDGET_WIDTH, 3 * Widget.WIDGET_HEIGHT,
+                    ctx.getZ() + 100,
+                    (getBox().getLeft() + getBox().getRight() - Widget.WIDGET_WIDTH) / 2F,
+                    getBox().getBottom() - 7 - Widget.WIDGET_HEIGHT,
+                    Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+        }
+
+        private void renderVariantNameAuto(ScreenRenderingContext ctx) {
+            if (nameWidth > getBox().getWidth()) {
+                renderEllipsis(ctx);
+            } else {
+                renderVariantName(ctx);
+            }
+        }
+
+        private void renderVariantName(ScreenRenderingContext ctx) {
+            renderTheText(ctx, name);
+        }
+
+        private void renderEllipsis(ScreenRenderingContext ctx) {
+            renderTheText(ctx, Component.literal("..."));
+        }
+
+        private void renderTheText(ScreenRenderingContext ctx, Component text) {
+            ctx.renderCenteredText(text, Colors.COMMON_DARK_TEXT, FONT_SIZE,
+                    (getBox().getLeft() + getBox().getRight()) / 2, getBox().getBottom() - 5);
+        }
+
+        private void renderEntity(ScreenRenderingContext ctx) {
+            ctx.renderEntity(model,
+                    getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom() - 5,
+                    0F, 0.25F, true);
         }
     }
 }

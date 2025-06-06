@@ -39,6 +39,8 @@ public final class EntityPropertyWidgets {
         public EntityPropertyWidget<?> create(EntityProperties<?> properties) {
             try {
                 return (EntityPropertyWidget<?>) creator.invoke(properties);
+            } catch (RuntimeException e) {
+                throw e;
             } catch (Throwable e) {
                 throw new RuntimeException(e);
             }
@@ -104,7 +106,7 @@ public final class EntityPropertyWidgets {
         r(LivingEntityJumpStrengthWidget.class);
         r(EntityBoundingBoxWidget.class);
         r(TurnPageTriggerWidget.class);
-        r(HorseVariantWidget.class);
+        r(EntityVariantWithNameWidget.class);
         r(HorseMarkingsWidget.class);
         r(MobAiWidget.class);
         r(EntityInvulnerableWidget.class);

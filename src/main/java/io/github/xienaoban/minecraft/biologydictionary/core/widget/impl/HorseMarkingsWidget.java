@@ -38,7 +38,7 @@ public class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse, Mark
 
     @Override
     protected Component getVariantName(Markings variant) {
-        return Component.translatable(variant.name().toLowerCase());
+        return Component.translatable( getVariantNameKeyPrefix() + "markings." + variant.name().toLowerCase());
     }
 
     @Override

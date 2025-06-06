@@ -1,6 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.util;
 
 import io.github.xienaoban.minecraft.biologydictionary.mixin.EntityIMixin;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -25,6 +26,10 @@ public final class EntityUtils {
 
     public static <E extends Entity> EntityType<E> getEntityType(E entity) {
         return Misc.cast(entity.getType());
+    }
+
+    public static ResourceLocation getEntityTypeName(Entity entity) {
+        return EntityType.getKey(entity.getType());
     }
 
     public static void setInWater(Entity entity, boolean inWater) {
