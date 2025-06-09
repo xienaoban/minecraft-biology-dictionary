@@ -1,6 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.mixin.HorseIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -18,7 +20,8 @@ public class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse, Mark
     private static final List<Markings> markings = Arrays.stream(Markings.values()).sorted(Comparator.comparingInt(Markings::getId)).toList();
 
     public HorseMarkingsWidget(EntityProperties<Horse> properties) {
-        super(properties, markings.size(), 7, 2);
+        super(properties, markings.size(), 2);
+        setBackgroundBars(Textures.ICONS, 3 * Widget.WIDGET_WIDTH, 24 * Widget.WIDGET_HEIGHT);
     }
 
     @Override

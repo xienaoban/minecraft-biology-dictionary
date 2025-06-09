@@ -11,7 +11,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 @Environment(EnvType.CLIENT)
 public class LivingEntityMovementSpeedWidget extends AbstractLivingEntityAttributeWidget<LivingEntity> {
-    private static final int L = 1, T = 1;
+    private static final int L = 17, T = 2;
 
     public LivingEntityMovementSpeedWidget(EntityProperties<LivingEntity> properties) {
         super(properties, Attributes.MOVEMENT_SPEED);
