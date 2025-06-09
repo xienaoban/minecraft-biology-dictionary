@@ -11,7 +11,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 @Environment(EnvType.CLIENT)
 public class LivingEntityJumpStrengthWidget extends AbstractLivingEntityAttributeWidget<LivingEntity> {
-    private static final int L = 1, T = 1;
+    private static final int L = 18, T = 2;
 
     public LivingEntityJumpStrengthWidget(EntityProperties<LivingEntity> properties) {
         super(properties, Attributes.JUMP_STRENGTH);

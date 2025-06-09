@@ -1,6 +1,8 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenElement;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
@@ -42,7 +44,12 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     private int chosenIndex;
 
+    private final List<BackgroundBar> backgroundBars;
     private final LocalPlayer player;
+
+    public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt, int rowsPerVariant) {
+        this(properties, variantCnt, 7, rowsPerVariant);
+    }
 
     public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt, int maxDisplayCntPerLine, int rowsPerVariant) {
         super(properties, calcRowsAndColumns(variantCnt, maxDisplayCntPerLine, rowsPerVariant));
@@ -72,6 +79,8 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
         chosenIndex = 0;
         updateChosenVariant();
+
+        backgroundBars = new ArrayList<>();
     }
 
     /**
@@ -134,6 +143,15 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         return "variant." + rl.getNamespace() + "." + rl.getPath() + ".";
     }
 
+    protected final void setBackgroundBars(TextureInfo texture, int textureLeft, int textureTop) {
+        for (int i = 0; i < displayCntPerRow.length; ++i) {
+            BackgroundBar bar = new BackgroundBar(texture, textureLeft, textureTop);
+            bar.getBox().setSize(getBox().getWidth(), Widget.WIDGET_HEIGHT);
+            bar.setParent(this);
+            backgroundBars.add(bar);
+        }
+    }
+
     private void updateChosenVariant() {
         V curr = getVariantClient(e());
         V last = getChosenVariant();
@@ -171,13 +189,20 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         final float mHeight = wHeight / lines;
         int vIdx = 0;
         for (int i = 0; i < lines; ++i) {
+            float top = wTop + i * mHeight + mHeight / 2 - variantHeight / 2;
+
             int cnt = displayCntPerRow[i];
             final float mWidth = wWidth / cnt;
             for (int j = 0; j < cnt; ++j) {
                 float left = wLeft + j * mWidth + mWidth / 2 - variantWidth / 2;
-                float top = wTop + i * mHeight + mHeight / 2 - variantHeight / 2;
                 variants.get(vIdx).getBox().setPosition(left, top);
                 ++vIdx;
+            }
+
+            if (i < backgroundBars.size()) {
+                BackgroundBar bar = backgroundBars.get(i);
+                ScreenElementBox box = bar.getBox();
+                box.setPosition(wLeft, top + 3);
             }
         }
     }
@@ -267,6 +292,38 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             ctx.renderEntity(model,
                     getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom() - 5,
                     0F, 0.25F, true);
+        }
+    }
+
+    private static class BackgroundBar extends ScreenElement {
+        private final TextureInfo texture;
+        private final int textureLeft, textureTop;
+
+        public BackgroundBar(TextureInfo texture, int textureLeft, int textureTop) {
+            this.texture = texture;
+            this.textureLeft = textureLeft;
+            this.textureTop = textureTop;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            float currPos = 0;
+            float widthLeft = 5;
+            ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(), getBox().getLeft(), getBox().getTop(), widthLeft, getBox().getHeight());
+            currPos += widthLeft;
+
+            float widthMid = getBox().getWidth() - 10;
+            while (widthMid > 10) {
+                ctx.renderTexture(texture, textureLeft + 5, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop(), 10, getBox().getHeight());
+                currPos += 10;
+                widthMid -= 10;
+            }
+            ctx.renderTexture(texture, textureLeft + 5, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop(), widthMid, getBox().getHeight());
+            currPos += widthMid;
+
+            float widthRight = 5;
+            ctx.renderTexture(texture, textureLeft + 15, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop(), widthRight, getBox().getHeight());
         }
     }
 }

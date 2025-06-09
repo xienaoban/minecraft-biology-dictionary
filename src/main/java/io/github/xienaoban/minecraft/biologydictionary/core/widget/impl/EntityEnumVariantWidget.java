@@ -3,6 +3,8 @@ package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.UnsupportedWidgetException;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Environment(EnvType.CLIENT)
-public class EntityVariantWithNameWidget extends AbstractEntityVariantWidget<Entity, Object> {
+public class EntityEnumVariantWidget extends AbstractEntityVariantWidget<Entity, Object> {
     private static final ConcurrentHashMap<Class<? extends Entity>, VariantData> cachedVariantData = new ConcurrentHashMap<>();
 
     private record VariantData(boolean hit, Class<?> variantClazz, List<Object> variants) {}
@@ -50,8 +52,9 @@ public class EntityVariantWithNameWidget extends AbstractEntityVariantWidget<Ent
         return cachedVariantData.get(properties.entity().getClass()).variants().size();
     }
 
-    public EntityVariantWithNameWidget(EntityProperties<Entity> properties) {
-        super(verify(properties), getVariantCount(properties), 7, 2);
+    public EntityEnumVariantWidget(EntityProperties<Entity> properties) {
+        super(verify(properties), getVariantCount(properties), 2);
+        setBackgroundBars(Textures.ICONS, 1 * Widget.WIDGET_WIDTH, 24 * Widget.WIDGET_HEIGHT);
     }
 
     @Override

@@ -101,12 +101,12 @@ public final class EntityPropertyWidgets {
         r(LivingEntityActiveEffectsWidget.class);
         r(AnimalFoodWidget.class);
         r(MobTemptWidget.class);
-        r(EntityLeashableWidget.class);
         r(LivingEntityMovementSpeedWidget.class);
         r(LivingEntityJumpStrengthWidget.class);
+        r(EntityLeashableWidget.class);
         r(EntityBoundingBoxWidget.class);
         r(TurnPageTriggerWidget.class);
-        r(EntityVariantWithNameWidget.class);
+        r(EntityEnumVariantWidget.class);
         r(HorseMarkingsWidget.class);
         r(MobAiWidget.class);
         r(EntityInvulnerableWidget.class);
