@@ -1,5 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.UnsupportedWidgetException;
@@ -20,27 +21,29 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Environment(EnvType.CLIENT)
-public class EntityEnumVariantWidget extends AbstractEntityVariantWidget<Entity, Object> {
+public class EntityVariantOfEnumWidget extends AbstractEntityVariantWidget<Entity, Object> {
     private static final ConcurrentHashMap<Class<? extends Entity>, VariantData> cachedVariantData = new ConcurrentHashMap<>();
 
     private record VariantData(boolean hit, Class<?> variantClazz, List<Object> variants) {}
 
     private static EntityProperties<Entity> verify(EntityProperties<Entity> properties) {
         VariantData vd = cachedVariantData.computeIfAbsent(properties.entity().getClass(), entityClazz -> {
-            for (Type t : entityClazz.getGenericInterfaces()) {
-                if (!(t instanceof ParameterizedType pt)) {
-                    continue;
-                }
-                if (pt.getRawType() != VariantHolder.class) {
-                    continue;
-                }
+            for (Class<?> c : EntityUtils.bottomUp(entityClazz)) {
+                for (Type t : c.getGenericInterfaces()) {
+                    if (!(t instanceof ParameterizedType pt)) {
+                        continue;
+                    }
+                    if (pt.getRawType() != VariantHolder.class) {
+                        continue;
+                    }
 
-                Type[] args = pt.getActualTypeArguments();
-                if (args.length == 1 && args[0] instanceof Class<?> variantClazz && variantClazz.isEnum()) {
-                    List<Object> variants = Misc.cast(Arrays.stream(variantClazz.getEnumConstants()).toList());
-                    return new VariantData(true, variantClazz, variants);
+                    Type[] args = pt.getActualTypeArguments();
+                    if (args.length == 1 && args[0] instanceof Class<?> variantClazz && variantClazz.isEnum()) {
+                        List<Object> variants = Misc.cast(Arrays.stream(variantClazz.getEnumConstants()).toList());
+                        return new VariantData(true, variantClazz, variants);
+                    }
+                    break;
                 }
-                break;
             }
             return new VariantData(false, null, null);
         });
@@ -52,9 +55,9 @@ public class EntityEnumVariantWidget extends AbstractEntityVariantWidget<Entity,
         return cachedVariantData.get(properties.entity().getClass()).variants().size();
     }
 
-    public EntityEnumVariantWidget(EntityProperties<Entity> properties) {
-        super(verify(properties), getVariantCount(properties), 2);
-        setBackgroundBars(Textures.ICONS, 1 * Widget.WIDGET_WIDTH, 24 * Widget.WIDGET_HEIGHT);
+    public EntityVariantOfEnumWidget(EntityProperties<Entity> properties) {
+        super(verify(properties), getVariantCount(properties));
+        setBackgroundBars(Textures.ICONS, BG_BAR1_LEFT * Widget.WIDGET_WIDTH, BG_BAR1_TOP * Widget.WIDGET_HEIGHT);
     }
 
     @Override
@@ -84,12 +87,7 @@ public class EntityEnumVariantWidget extends AbstractEntityVariantWidget<Entity,
     }
 
     @Override
-    protected void writeVariantToNbt(CompoundTag vanillaNbt, CompoundTag extraNbt) {
+    protected void writeVariantToNbt(Object variant, CompoundTag vanillaNbt, CompoundTag extraNbt) {
 
-    }
-
-    @Override
-    protected Object readVariantFromNbt(CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        return null;
     }
 }

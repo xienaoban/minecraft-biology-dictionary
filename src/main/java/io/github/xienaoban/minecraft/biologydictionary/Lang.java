@@ -21,6 +21,9 @@ public final class Lang {
     public static final String TAG_GROUP_INTERFACE = "tag_group.biologydictionary.interface";
     public static final String TAG_GROUP_NAMESPACE = "tag_group.biologydictionary.namespace";
 
+    public static final String VARIANT_CAT_PREFIX = "variant.minecraft.cat.";
+    public static final String VARIANT_FROG_PREFIX = "variant.minecraft.frog.";
+
     // Translation Keys
     public static final String GUI_OK = "gui.ok";
     public static final String GUI_CANCEL = "gui.cancel";

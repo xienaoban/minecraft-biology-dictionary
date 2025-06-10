@@ -20,8 +20,8 @@ public class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse, Mark
     private static final List<Markings> markings = Arrays.stream(Markings.values()).sorted(Comparator.comparingInt(Markings::getId)).toList();
 
     public HorseMarkingsWidget(EntityProperties<Horse> properties) {
-        super(properties, markings.size(), 2);
-        setBackgroundBars(Textures.ICONS, 3 * Widget.WIDGET_WIDTH, 24 * Widget.WIDGET_HEIGHT);
+        super(properties, markings.size());
+        setBackgroundBars(Textures.ICONS, BG_BAR2_LEFT * Widget.WIDGET_WIDTH, BG_BAR2_TOP * Widget.WIDGET_HEIGHT);
     }
 
     @Override
@@ -45,12 +45,7 @@ public class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse, Mark
     }
 
     @Override
-    protected void writeVariantToNbt(CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        throw new RuntimeException();
-    }
-
-    @Override
-    protected Markings readVariantFromNbt(CompoundTag vanillaNbt, CompoundTag extraNbt) {
+    protected void writeVariantToNbt(Markings variant, CompoundTag vanillaNbt, CompoundTag extraNbt) {
         throw new RuntimeException();
     }
 }

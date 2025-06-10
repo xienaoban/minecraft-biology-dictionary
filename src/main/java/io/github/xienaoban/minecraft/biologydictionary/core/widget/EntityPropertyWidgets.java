@@ -106,7 +106,9 @@ public final class EntityPropertyWidgets {
         r(EntityLeashableWidget.class);
         r(EntityBoundingBoxWidget.class);
         r(TurnPageTriggerWidget.class);
-        r(EntityEnumVariantWidget.class);
+        r(EntityVariantOfEnumWidget.class);
+        r(CatVariantWidget.class);
+        r(FrogVariantWidget.class);
         r(HorseMarkingsWidget.class);
         r(MobAiWidget.class);
         r(EntityInvulnerableWidget.class);
