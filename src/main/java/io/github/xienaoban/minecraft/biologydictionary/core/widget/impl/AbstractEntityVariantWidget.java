@@ -12,6 +12,7 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -26,6 +27,9 @@ import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends EntityPropertyWidget<E> {
+    protected static final int BG_BAR1_LEFT = 1, BG_BAR1_TOP = 24;
+    protected static final int BG_BAR2_LEFT = 3, BG_BAR2_TOP = 24;
+
     private static RC calcRowsAndColumns(int variantCnt, int maxDisplayCntPerLine, int rowsPerVariant) {
         int rows = rowsPerVariant * ((variantCnt + maxDisplayCntPerLine - 1) / maxDisplayCntPerLine);
         int cols;
@@ -47,8 +51,8 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
     private final List<BackgroundBar> backgroundBars;
     private final LocalPlayer player;
 
-    public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt, int rowsPerVariant) {
-        this(properties, variantCnt, 7, rowsPerVariant);
+    public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt) {
+        this(properties, variantCnt, 7, 2);
     }
 
     public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt, int maxDisplayCntPerLine, int rowsPerVariant) {
@@ -68,7 +72,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         for (int i = 0; i < lines; ++i, --mod) {
             displayCntPerRow[i] = minCnt + (mod > 0 ? 1 : 0);
         }
-        variantWidth = getBox().getWidth() / maxDisplayCntPerLine - 1;
+        variantWidth = getBox().getWidth() / displayCntPerRow[0] - 1;
         variantHeight = getBox().getHeight() / lines - 1;
         this.variants = new ArrayList<>(size());
         for (int i = 0; i < size(); ++ i) {
@@ -107,9 +111,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
      */
     protected abstract Component getVariantName(V variant);
 
-    protected abstract void writeVariantToNbt(CompoundTag vanillaNbt, CompoundTag extraNbt);
-
-    protected abstract V readVariantFromNbt(CompoundTag vanillaNbt, CompoundTag extraNbt);
+    protected abstract void writeVariantToNbt(V variant, CompoundTag vanillaNbt, CompoundTag extraNbt);
 
     protected boolean isAllowedToChoose() { return player.isCreative(); }
 
@@ -141,6 +143,18 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         // variant.minecraft.cat.xxxx
         ResourceLocation rl = EntityUtils.getEntityTypeName(e());
         return "variant." + rl.getNamespace() + "." + rl.getPath() + ".";
+    }
+
+    protected final void setVariantElementWidthFix(float widthFix) {
+        for (VariantElement ve : variants) {
+            ve.setWidthFix(widthFix);
+        }
+    }
+
+    protected final void setVariantElementHeightFix(float heightFix) {
+        for (VariantElement ve : variants) {
+            ve.setHeightFix(heightFix);
+        }
     }
 
     protected final void setBackgroundBars(TextureInfo texture, int textureLeft, int textureTop) {
@@ -217,6 +231,9 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         private final Component name;
         private float nameWidth = -1;
 
+        private float widthFix;
+        private float heightFix;
+
         public VariantElement(int index, V variant) {
             this.index = index;
             this.variant = variant;
@@ -228,6 +245,28 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             this.name = getVariantName(variant);
 
             getBox().setSize(variantWidth, variantHeight);
+        }
+
+        public void setWidthFix(float widthFix) {
+            this.widthFix = widthFix;
+        }
+
+        public void setHeightFix(float heightFix) {
+            this.heightFix = heightFix;
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                if (isAllowedToChoose()) {
+                    chosenIndex = index;
+                    CompoundTag v = new CompoundTag();
+                    CompoundTag e = new CompoundTag();
+                    writeVariantToNbt(variant, v, e);
+                    ClientNetManager.sendUpdatedEntityProperties(e(), v, e);
+                }
+            }
+            return super.onMouseDown(x, y, code);
         }
 
         @Override
@@ -289,9 +328,12 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         private void renderEntity(ScreenRenderingContext ctx) {
-            ctx.renderEntity(model,
-                    getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom() - 5,
-                    0F, 0.25F, true);
+            ctx.renderEntityBottomed(model,
+                    getBox().getLeft() - widthFix / 2,
+                    getBox().getTop() + 3 - heightFix,
+                    getBox().getRight() + widthFix / 2,
+                    getBox().getBottom() - 8,
+                    0F, 0.3F, true);
         }
     }
 
@@ -300,6 +342,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         private final int textureLeft, textureTop;
 
         public BackgroundBar(TextureInfo texture, int textureLeft, int textureTop) {
+            super(false, false);
             this.texture = texture;
             this.textureLeft = textureLeft;
             this.textureTop = textureTop;

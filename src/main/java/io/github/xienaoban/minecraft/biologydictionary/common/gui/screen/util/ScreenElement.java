@@ -18,17 +18,23 @@ public abstract class ScreenElement {
     @Nullable protected ScreenElement parent;
     private final ScreenElementBox box;
     private final ArrayList<ScreenElement> subScreenElements;
+    private boolean hoverable;
     private boolean selectable;
     private float priority;
 
     public ScreenElement() {
-        this(true);
+        this(true, true);
     }
 
     public ScreenElement(boolean selectable) {
+        this(true, selectable);
+    }
+
+    public ScreenElement(boolean hoverable, boolean selectable) {
         this.parent = null;
         this.box = new ScreenElementBox();
         this.subScreenElements = new ArrayList<>();
+        this.hoverable = hoverable;
         this.selectable = selectable;
     }
 
@@ -120,14 +126,20 @@ public abstract class ScreenElement {
     }
 
     public final boolean isFocused(float x, float y) {
-        return x >= box.getLeft() && x < box.getRight() && y >= box.getTop() && y < box.getBottom();
+        return isHoverable() && x >= box.getLeft() && x < box.getRight() && y >= box.getTop() && y < box.getBottom();
     }
 
     public final boolean mouseDown(float x, float y, int code) {
-        return !onMouseDown(x, y, code) && getParent() != null && getParent().mouseDown(x, y , code);
+        if (isSelectable() && onMouseDown(x, y, code)) {
+            return true;
+        }
+        return getParent() != null && getParent().mouseDown(x, y , code);
     }
 
     public final ScreenElementBox getBox() { return box; }
+
+    public final boolean isHoverable() { return hoverable; }
+    public final void setHoverable(boolean hoverable) { this.hoverable = hoverable; }
 
     public final boolean isSelectable() { return selectable; }
     public final void setSelectable(boolean selectable) { this.selectable = selectable; }

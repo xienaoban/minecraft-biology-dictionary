@@ -225,7 +225,18 @@ public final class ScreenRenderingContext {
         }
     }
 
-    public void renderEntity(Entity entity, float left, float top, float right, float bottom,
+    public void renderEntityBottomed(Entity entity, float left, float top, float right, float bottom,
+                                     float rotateX, float rotateY, boolean lightFromBelow) {
+        float width = right - left;
+        float height = bottom - top;
+        float entityWidth = (float) entity.getBoundingBox().getXsize();
+        float entityHeight = (float) entity.getBoundingBox().getYsize();
+        float entityScale = Math.min(width / entityWidth, height / entityHeight);
+        renderEntity(entity, (left + right) / 2, bottom, entityScale,
+                rotateX, rotateY, lightFromBelow);
+    }
+
+    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
                              float rotateX, float rotateY, boolean lightFromBelow) {
         float width = right - left;
         float height = bottom - top;

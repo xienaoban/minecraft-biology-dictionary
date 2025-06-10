@@ -3,16 +3,11 @@
   "title.biologydictionary": "Biology Dictionary",
   "description.biologydictionary": "Helps you know more about minecraft entities!",
 
-  "variant.minecraft.rabbit.brown":           "Brown",
-  "variant.minecraft.rabbit.white":           "White",
-  "variant.minecraft.rabbit.black":           "Black",
-  "variant.minecraft.rabbit.white_splotched": "White Splotched",
-  "variant.minecraft.rabbit.gold":            "Gold",
-  "variant.minecraft.rabbit.salt":            "Salt",
-  "variant.minecraft.rabbit.evil":            "Evil",
-
-  "variant.minecraft.mooshroom.red":   "Red",
-  "variant.minecraft.mooshroom.brown": "Brown",
+  "variant.minecraft.axolotl.lucy": "Lucy",
+  "variant.minecraft.axolotl.wild": "Wild",
+  "variant.minecraft.axolotl.gold": "Gold",
+  "variant.minecraft.axolotl.cyan": "Cyan",
+  "variant.minecraft.axolotl.blue": "Blue",
 
   "variant.minecraft.cat.tabby":             "Tabby",
   "variant.minecraft.cat.black":             "Black",
@@ -26,20 +21,12 @@
   "variant.minecraft.cat.jellie":            "Jellie",
   "variant.minecraft.cat.all_black":         "All Black",
 
-  "variant.minecraft.parrot.red_blue":    "Red",
-  "variant.minecraft.parrot.blue":        "Blue",
-  "variant.minecraft.parrot.green":       "Green",
-  "variant.minecraft.parrot.yellow_blue": "Yellow Blue",
-  "variant.minecraft.parrot.gray":        "Gray",
+  "variant.minecraft.fox.red":  "Red",
+  "variant.minecraft.fox.snow": "Snow",
 
   "variant.minecraft.frog.temperate": "Temperate",
   "variant.minecraft.frog.warm":      "Warm",
   "variant.minecraft.frog.cold":      "Cold",
-
-  "variant.minecraft.llama.sand":  "Sand",
-  "variant.minecraft.llama.snow":  "Snow",
-  "variant.minecraft.llama.wood":  "Wood",
-  "variant.minecraft.llama.dirty": "Dirty",
 
   "variant.minecraft.horse.white":      "White",
   "variant.minecraft.horse.creamy":     "Creamy",
@@ -55,8 +42,13 @@
   "variant.minecraft.horse.markings.white_dots":  "White Dots",
   "variant.minecraft.horse.markings.black_dots":  "Black Dots",
 
-  "variant.minecraft.fox.red":  "Red",
-  "variant.minecraft.fox.snow": "Snow",
+  "variant.minecraft.llama.creamy": "Creamy",
+  "variant.minecraft.llama.white":  "White",
+  "variant.minecraft.llama.brown":  "Brown",
+  "variant.minecraft.llama.gray":   "Gray",
+
+  "variant.minecraft.mooshroom.red":   "Red",
+  "variant.minecraft.mooshroom.brown": "Brown",
 
   "variant.minecraft.panda.normal":     "Normal",
   "variant.minecraft.panda.lazy":       "Lazy",
@@ -65,6 +57,25 @@
   "variant.minecraft.panda.brown":      "Brown",
   "variant.minecraft.panda.weak":       "Weak",
   "variant.minecraft.panda.aggressive": "Aggressive",
+
+  "variant.minecraft.parrot.red_blue":    "Red",
+  "variant.minecraft.parrot.blue":        "Blue",
+  "variant.minecraft.parrot.green":       "Green",
+  "variant.minecraft.parrot.yellow_blue": "Yellow Blue",
+  "variant.minecraft.parrot.gray":        "Gray",
+
+  "variant.minecraft.rabbit.brown":           "Brown",
+  "variant.minecraft.rabbit.white":           "White",
+  "variant.minecraft.rabbit.black":           "Black",
+  "variant.minecraft.rabbit.white_splotched": "White Splotched",
+  "variant.minecraft.rabbit.gold":            "Gold",
+  "variant.minecraft.rabbit.salt":            "Salt",
+  "variant.minecraft.rabbit.evil":            "Evil",
+
+  "variant.minecraft.trader_llama.creamy": "Creamy",
+  "variant.minecraft.trader_llama.white":  "White",
+  "variant.minecraft.trader_llama.brown":  "Brown",
+  "variant.minecraft.trader_llama.gray":   "Gray",
 
   "variant.minecraft.villager.type.desert":  "Desert",
   "variant.minecraft.villager.type.jungle":  "Jungle",

@@ -3,16 +3,11 @@
   "title.biologydictionary": "生物辞典",
   "description.biologydictionary": "奇怪，怎么长得有点像生物必修2...",
 
-  "variant.minecraft.rabbit.brown":           "棕色",
-  "variant.minecraft.rabbit.white":           "白色",
-  "variant.minecraft.rabbit.black":           "黑色",
-  "variant.minecraft.rabbit.white_splotched": "白斑",
-  "variant.minecraft.rabbit.gold":            "金色",
-  "variant.minecraft.rabbit.salt":            "盐色",
-  "variant.minecraft.rabbit.evil":            "邪恶",
-
-  "variant.minecraft.mooshroom.red":   "红色",
-  "variant.minecraft.mooshroom.brown": "棕色",
+  "variant.minecraft.axolotl.lucy": "粉色",
+  "variant.minecraft.axolotl.wild": "棕色",
+  "variant.minecraft.axolotl.gold": "金色",
+  "variant.minecraft.axolotl.cyan": "青色",
+  "variant.minecraft.axolotl.blue": "蓝色",
 
   "variant.minecraft.cat.tabby":             "虎斑",
   "variant.minecraft.cat.black":             "西服",
@@ -26,20 +21,12 @@
   "variant.minecraft.cat.jellie":            "黑白",
   "variant.minecraft.cat.all_black":         "黑色",
 
-  "variant.minecraft.parrot.red_blue":    "红蓝",
-  "variant.minecraft.parrot.blue":        "蓝色",
-  "variant.minecraft.parrot.green":       "绿色",
-  "variant.minecraft.parrot.yellow_blue": "黄蓝",
-  "variant.minecraft.parrot.gray":        "灰色",
+  "variant.minecraft.fox.red":  "红狐",
+  "variant.minecraft.fox.snow": "雪狐",
 
   "variant.minecraft.frog.temperate": "温带",
   "variant.minecraft.frog.warm":      "热带",
   "variant.minecraft.frog.cold":      "寒带",
-
-  "variant.minecraft.llama.sand":  "沙",
-  "variant.minecraft.llama.snow":  "雪",
-  "variant.minecraft.llama.wood":  "木",
-  "variant.minecraft.llama.dirty": "脏",
 
   "variant.minecraft.horse.white":      "白色",
   "variant.minecraft.horse.creamy":     "奶油色",
@@ -55,8 +42,13 @@
   "variant.minecraft.horse.markings.white_dots":  "白斑",
   "variant.minecraft.horse.markings.black_dots":  "黑斑",
 
-  "variant.minecraft.fox.red":  "红狐",
-  "variant.minecraft.fox.snow": "雪狐",
+  "variant.minecraft.llama.creamy": "奶油色",
+  "variant.minecraft.llama.white":  "白色",
+  "variant.minecraft.llama.brown":  "棕色",
+  "variant.minecraft.llama.gray":   "灰色",
+
+  "variant.minecraft.mooshroom.red":   "红色",
+  "variant.minecraft.mooshroom.brown": "棕色",
 
   "variant.minecraft.panda.normal":     "普通",
   "variant.minecraft.panda.lazy":       "慵懒",
@@ -65,6 +57,25 @@
   "variant.minecraft.panda.brown":      "棕色",
   "variant.minecraft.panda.weak":       "体弱",
   "variant.minecraft.panda.aggressive": "好斗",
+
+  "variant.minecraft.parrot.red_blue":    "红蓝",
+  "variant.minecraft.parrot.blue":        "蓝色",
+  "variant.minecraft.parrot.green":       "绿色",
+  "variant.minecraft.parrot.yellow_blue": "黄蓝",
+  "variant.minecraft.parrot.gray":        "灰色",
+
+  "variant.minecraft.rabbit.brown":           "棕色",
+  "variant.minecraft.rabbit.white":           "白色",
+  "variant.minecraft.rabbit.black":           "黑色",
+  "variant.minecraft.rabbit.white_splotched": "白斑",
+  "variant.minecraft.rabbit.gold":            "金色",
+  "variant.minecraft.rabbit.salt":            "盐色",
+  "variant.minecraft.rabbit.evil":            "邪恶",
+
+  "variant.minecraft.trader_llama.creamy": "奶油色",
+  "variant.minecraft.trader_llama.white":  "白色",
+  "variant.minecraft.trader_llama.brown":  "棕色",
+  "variant.minecraft.trader_llama.gray":   "灰色",
 
   "variant.minecraft.villager.type.desert":  "沙漠",
   "variant.minecraft.villager.type.jungle":  "丛林",

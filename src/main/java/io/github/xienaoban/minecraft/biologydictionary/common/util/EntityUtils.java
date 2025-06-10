@@ -44,14 +44,22 @@ public final class EntityUtils {
     }
 
     public static List<Class<? extends Entity>> topDown(Entity entity) {
-        List<Class<? extends Entity>> list = bottomUp(entity);
+        return topDown(entity.getClass());
+    }
+
+    public static List<Class<? extends Entity>> bottomUp(Entity entity) {
+        return bottomUp(entity.getClass());
+    }
+
+    public static List<Class<? extends Entity>> topDown(Class<? extends Entity> entityClazz) {
+        List<Class<? extends Entity>> list = bottomUp(entityClazz);
         Collections.reverse(list);
         return list;
     }
 
-    public static List<Class<? extends Entity>> bottomUp(Entity entity) {
+    public static List<Class<? extends Entity>> bottomUp(Class<? extends Entity> entityClazz) {
         List<Class<? extends Entity>> list = new ArrayList<>();
-        Class<? extends Entity> clazz = entity.getClass();
+        Class<? extends Entity> clazz = entityClazz;
         while (clazz != Entity.class) {
             list.add(clazz);
             clazz = clazz.getSuperclass().asSubclass(Entity.class);
