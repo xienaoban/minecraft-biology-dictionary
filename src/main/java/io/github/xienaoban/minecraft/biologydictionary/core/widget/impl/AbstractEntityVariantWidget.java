@@ -82,7 +82,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         chosenIndex = 0;
-        updateChosenVariant();
+        checkChosenVariant();
 
         backgroundBars = new ArrayList<>();
     }
@@ -114,7 +114,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
     /**
      * No attention.
      */
-    protected abstract void writeVariantToNbt(V variant, CompoundTag vanillaNbt, CompoundTag extraNbt);
+    protected abstract void writeVariantToNbt(VariantElement element, CompoundTag vanillaNbt, CompoundTag extraNbt);
 
     protected boolean isAllowedToChoose() { return player.isCreative(); }
 
@@ -169,13 +169,14 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
     }
 
-    private void updateChosenVariant() {
+    private void checkChosenVariant() {
         V curr = getVariantClient(e());
         V last = getChosenVariant();
         if (equals(curr, last)) {
             return;
         }
         chosenIndex = getVariantIndex(curr);
+        p().setEntityAppearanceDirty();
     }
 
     private int getVariantIndex(V variant) {
@@ -191,6 +192,14 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             }
         }
         return idx;
+    }
+
+    @Override
+    protected void onTick(int ticks) {
+        super.onTick(ticks);
+        if (ticks % 5 == 0) {
+            checkChosenVariant();
+        }
     }
 
     @Override
@@ -224,7 +233,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
     }
 
-    public class VariantElement extends ScreenElement {
+    public final class VariantElement extends ScreenElement {
         private static final float FONT_SIZE = 0.5F;
 
         private final int index;
@@ -250,6 +259,18 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             getBox().setSize(variantWidth, variantHeight);
         }
 
+        public int getIndex() {
+            return index;
+        }
+
+        public V getVariant() {
+            return variant;
+        }
+
+        public E getModel() {
+            return model;
+        }
+
         public void setWidthFix(float widthFix) {
             this.widthFix = widthFix;
         }
@@ -265,7 +286,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
                     chosenIndex = index;
                     CompoundTag v = new CompoundTag();
                     CompoundTag e = new CompoundTag();
-                    writeVariantToNbt(variant, v, e);
+                    writeVariantToNbt(this, v, e);
                     ClientNetManager.sendUpdatedEntityProperties(e(), v, e);
                 }
             }

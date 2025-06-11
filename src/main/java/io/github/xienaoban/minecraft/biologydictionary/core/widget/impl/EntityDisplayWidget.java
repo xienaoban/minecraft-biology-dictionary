@@ -1,22 +1,17 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
 import com.mojang.authlib.GameProfile;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
-import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.WaterAnimal;
-import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -54,32 +49,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     }
 
     private static void updateCompoundTag(Entity from, Entity to) {
-        CompoundTag tag = new CompoundTag();
-        from.saveWithoutId(tag);
-        tag.remove("AngryAt");
-        tag.remove("CustomName");
-        tag.remove("CustomNameVisible");
-        tag.remove("Dimension");
-        tag.remove("HurtTime");
-        tag.remove("Pos");
-        tag.remove("Rotation");
-
-        if (from instanceof LivingEntity) {
-            tag.remove("Brain");
-            tag.remove("SleepingX");
-            tag.remove("SleepingY");
-            tag.remove("SleepingZ");
-        }
-
-        if (from instanceof AbstractClientPlayer) {
-            tag.remove("Inventory");
-        } else if (from instanceof Dolphin) {
-            tag.remove("GotFish");
-        } else if (from instanceof Camel) {
-            tag.remove("LastPoseTick");
-        }
-
-        to.load(tag);
+        to.load(EntityUtils.getNbtToDisplay(from));
 
         // options not controlled by nbt
         if (to instanceof WaterAnimal waterAnimal) {
@@ -115,6 +85,18 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
         );
         float bottom = (scale * entityHeight + widgetHeight) / 2 + 10;
         return new float[] { scale, bottom };
+    }
+
+    @Override
+    protected void onTick(int ticks) {
+        super.onTick(ticks);
+
+        if (p().isEntityAppearanceDirty()) {
+            p().clearEntityAppearanceDirty();
+            updateCompoundTag(e(), fake);
+        } else if (ticks % 20 == 19) {
+            updateCompoundTag(e(), fake);
+        }
     }
 
     @Override

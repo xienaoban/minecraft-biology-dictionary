@@ -1,11 +1,12 @@
 package io.github.xienaoban.minecraft.biologydictionary.client;
 
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.EntityDetailScreen;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.HomeScreen;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
-import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -73,7 +74,12 @@ public final class BiologyDictionaryEvent {
             BDC.setHitEntity(target);
             BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target);
-            minecraft.setScreen(new EntityDetailScreen(properties));
+            try {
+                minecraft.setScreen(new EntityDetailScreen(properties));
+            } catch (RuntimeException e) {
+                Misc.printThrowableToLoggerAndGame(e);
+                return;
+            }
         }
         new ScreenRenderingContext(null).playScreenSound(SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
     }

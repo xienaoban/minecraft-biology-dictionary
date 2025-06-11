@@ -1,11 +1,16 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.util;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+
+import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
 
 public final class Misc {
     @SuppressWarnings("unchecked")
@@ -67,5 +72,14 @@ public final class Misc {
         } else {
             return String.valueOf(Math.round(num));
         }
+    }
+
+    public static void printThrowableToLoggerAndGame(Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        throwable.printStackTrace(pw);
+        String errStack = sw.toString();
+        LOGGER.error(errStack);
+        MinecraftUtils.showClientTextBoxMessage(Component.literal(errStack));
     }
 }
