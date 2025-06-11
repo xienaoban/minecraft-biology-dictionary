@@ -120,7 +120,7 @@ public class EntityVariantOfVariantHolderWidget extends AbstractEntityVariantWid
      * And the differences are about the variants.
      */
     private static List<String> calcVariantNbtKeys(Entity entity, List<Object> variants) {
-        Entity tmp = EntityUtils.create(EntityUtils.getEntityType(entity));
+        Entity tmp = EntityUtils.create(entity);
         VariantHolder<Object> vh = Misc.cast(tmp);
         List<String> res = new ArrayList<>();
 
@@ -170,11 +170,15 @@ public class EntityVariantOfVariantHolderWidget extends AbstractEntityVariantWid
 
     @Override
     protected void writeVariantToNbt(VariantElement element, CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        Entity model = element.getModel();
-        CompoundTag nbt = new CompoundTag();
-        model.saveWithoutId(nbt);
+        CompoundTag nbt1 = new CompoundTag();
+        e().saveWithoutId(nbt1);
+        Entity tmp = EntityUtils.create(e());
+        tmp.load(nbt1);
+        setVariantClient(tmp, element.getVariant());
+        CompoundTag nbt2 = new CompoundTag();
+        tmp.saveWithoutId(nbt2);
         for (String key : getVariantData(e()).variantNbtKeys()) {
-            vanillaNbt.put(key, Objects.requireNonNull(nbt.get(key)));
+            vanillaNbt.put(key, Objects.requireNonNull(nbt2.get(key)));
         }
     }
 }

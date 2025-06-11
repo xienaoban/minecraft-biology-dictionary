@@ -29,23 +29,23 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
         return new RC(5, 4);
     }
 
-    private static Entity createFakeEntity(Entity entity) {
-        Entity fake = EntityUtils.create(entity.getType(), entity.level());
-        if (fake == null) {
+    private static Entity createModelEntity(Entity entity) {
+        Entity model = EntityUtils.create(entity.getType(), entity.level());
+        if (model == null) {
             if (entity instanceof LocalPlayer me) {
                 GameProfile profile = me.getGameProfile();
-                fake = new RemotePlayer(me.clientLevel, new GameProfile(profile.getId(), profile.getName()));
+                model = new RemotePlayer(me.clientLevel, new GameProfile(profile.getId(), profile.getName()));
                 // to make name label invisible
                 // @see net.minecraft.client.renderer.entity.LivingEntityRenderer.shouldShowName
-                Vec3 pos = fake.position();
-                fake.setPos(pos.x(), pos.y() - 4097, pos.z());
+                Vec3 pos = model.position();
+                model.setPos(pos.x(), pos.y() - 4097, pos.z());
             } else {
-                fake = EntityUtils.create(EntityType.ARMOR_STAND, entity.level());
+                model = EntityUtils.create(EntityType.ARMOR_STAND, entity.level());
             }
         }
-        assert fake != null;
-        updateCompoundTag(entity, fake);
-        return fake;
+        assert model != null;
+        updateCompoundTag(entity, model);
+        return model;
     }
 
     private static void updateCompoundTag(Entity from, Entity to) {
@@ -57,26 +57,27 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
         }
     }
 
-    private final Entity fake;
+    private final Entity model;
 
     private final float entityScale;
     private final float entityBottom;
 
     public EntityDisplayWidget(EntityProperties<Entity> properties) {
-        this(properties, createFakeEntity(properties.entity()));
+        this(properties, createModelEntity(properties.entity()));
     }
 
-    private EntityDisplayWidget(EntityProperties<Entity> properties, Entity fake) {
-        super(properties, calculateRowsAndColumns(fake));
-        this.fake = fake;
+    private EntityDisplayWidget(EntityProperties<Entity> properties, Entity model) {
+        super(properties, calculateRowsAndColumns(model));
+        this.model = model;
+        p().setModel(model);
         float[] sp = calculateScaleAndPosition();
         entityScale = sp[0];
         entityBottom = sp[1];
     }
 
     private float[] calculateScaleAndPosition() {
-        float entityWidth = (float) fake.getBoundingBox().getXsize();
-        float entityHeight = (float) fake.getBoundingBox().getYsize();
+        float entityWidth = (float) model.getBoundingBox().getXsize();
+        float entityHeight = (float) model.getBoundingBox().getYsize();
         float widgetWidth = getBox().getWidth() - 8;
         float widgetHeight = getBox().getHeight() - 16;
         float scale = Math.min(
@@ -90,19 +91,15 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-
-        if (p().isEntityAppearanceDirty()) {
-            p().clearEntityAppearanceDirty();
-            updateCompoundTag(e(), fake);
-        } else if (ticks % 20 == 19) {
-            updateCompoundTag(e(), fake);
+        if (ticks % 20 == 15) {
+            updateCompoundTag(e(), model);
         }
     }
 
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        ctx.renderEntity(fake, (getBox().getLeft() + getBox().getRight()) / 2,
+        ctx.renderEntity(model, (getBox().getLeft() + getBox().getRight()) / 2,
                 getBox().getTop() + entityBottom, entityScale,
                 0.06F + (float) Math.atan(ctx.getMouseX() / 40F) / 10,
                 0.02F + (float) Math.atan(ctx.getMouseY() / 40F) / 20,

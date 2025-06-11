@@ -1,15 +1,14 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.minecraft.biologydictionary.mixin.HorseIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.animal.horse.Markings;
 
@@ -39,7 +38,7 @@ public class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse, Mark
 
     @Override
     protected void setVariantClient(Horse entity, Markings variant) {
-        ((HorseIMixin) entity).invokeSetVariantAndMarkings(e().getVariant(), variant);
+        EntityUtils.setVariantAndMarkings(entity, e().getVariant(), variant);
     }
 
     @Override
@@ -49,10 +48,14 @@ public class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse, Mark
 
     @Override
     protected void writeVariantToNbt(VariantElement element, CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        Entity model = element.getModel();
-        CompoundTag nbt = new CompoundTag();
-        model.saveWithoutId(nbt);
+        CompoundTag nbt1 = new CompoundTag();
+        e().saveWithoutId(nbt1);
+        Horse tmp = EntityUtils.create(e());
+        tmp.load(nbt1);
+        setVariantClient(tmp, element.getVariant());
+        CompoundTag nbt2 = new CompoundTag();
+        tmp.saveWithoutId(nbt2);
         String key = EntityVanillaProperties.OfHorse.getVariantProperty(p()).name();
-        vanillaNbt.put(key, Objects.requireNonNull(nbt.get(key)));
+        vanillaNbt.put(key, Objects.requireNonNull(nbt2.get(key)));
     }
 }
