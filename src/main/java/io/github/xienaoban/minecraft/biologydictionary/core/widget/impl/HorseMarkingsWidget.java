@@ -1,6 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.minecraft.biologydictionary.mixin.HorseIMixin;
@@ -8,12 +9,14 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.animal.horse.Markings;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse, Markings> {
@@ -45,7 +48,11 @@ public class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse, Mark
     }
 
     @Override
-    protected void writeVariantToNbt(Markings variant, CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        throw new RuntimeException();
+    protected void writeVariantToNbt(VariantElement element, CompoundTag vanillaNbt, CompoundTag extraNbt) {
+        Entity model = element.getModel();
+        CompoundTag nbt = new CompoundTag();
+        model.saveWithoutId(nbt);
+        String key = EntityVanillaProperties.OfHorse.getVariantProperty(p()).name();
+        vanillaNbt.put(key, Objects.requireNonNull(nbt.get(key)));
     }
 }

@@ -21,6 +21,8 @@ public final class EntityProperties<E extends Entity> {
     private final Map<String, EntityProperty<?>> vanillaProperties;
     private final Map<Class<? extends EntityProperty>, EntityProperty<?>> extraProperties;
 
+    private boolean entityAppearanceDirty;
+
     public EntityProperties(E entity) {
         this.entity = entity;
 
@@ -42,6 +44,8 @@ public final class EntityProperties<E extends Entity> {
         }
         this.vanillaProperties = Collections.unmodifiableMap(vMap);
         this.extraProperties = Collections.unmodifiableMap(eMap);
+
+        this.entityAppearanceDirty = false;
     }
 
     public E entity() { return entity; }
@@ -70,5 +74,17 @@ public final class EntityProperties<E extends Entity> {
         for (EntityProperty<?> property : extraProperties.values()) {
             property.readFrom(extraNbt);
         }
+    }
+
+    public boolean isEntityAppearanceDirty() {
+        return entityAppearanceDirty;
+    }
+
+    public void setEntityAppearanceDirty() {
+        entityAppearanceDirty = true;
+    }
+
+    public void clearEntityAppearanceDirty() {
+        entityAppearanceDirty = false;
     }
 }

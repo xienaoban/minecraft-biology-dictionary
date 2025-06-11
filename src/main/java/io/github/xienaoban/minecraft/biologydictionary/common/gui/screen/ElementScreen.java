@@ -2,13 +2,10 @@ package io.github.xienaoban.minecraft.biologydictionary.common.gui.screen;
 
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 @Environment(EnvType.CLIENT)
 public abstract class ElementScreen extends CommonScreen {
@@ -109,10 +106,7 @@ public abstract class ElementScreen extends CommonScreen {
     protected abstract void resizeBox(int width, int height);
 
     private void showExceptionMessageAndCloseScreen(Throwable throwable) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        throwable.printStackTrace(pw);
-        MinecraftUtils.showClientTextBoxMessage(Component.literal(sw.toString()));
+        Misc.printThrowableToLoggerAndGame(throwable);
         onClose();
     }
 
