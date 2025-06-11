@@ -111,6 +111,9 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
      */
     protected abstract Component getVariantName(V variant);
 
+    /**
+     * No attention.
+     */
     protected abstract void writeVariantToNbt(V variant, CompoundTag vanillaNbt, CompoundTag extraNbt);
 
     protected boolean isAllowedToChoose() { return player.isCreative(); }
