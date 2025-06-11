@@ -25,6 +25,10 @@ package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 public class UnsupportedWidgetException extends RuntimeException {
     private static final UnsupportedWidgetException INSTANCE = new UnsupportedWidgetException();
 
+    public static UnsupportedWidgetException get() {
+        return INSTANCE;
+    }
+
     public static void fastThrow() {
         throw INSTANCE;
     }
