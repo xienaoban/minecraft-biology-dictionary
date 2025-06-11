@@ -176,7 +176,16 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             return;
         }
         chosenIndex = getVariantIndex(curr);
-        p().setEntityAppearanceDirty();
+        onChosenChanged();
+    }
+
+    private void onChosenChanged() {
+        try {
+            E e = p().getModel();
+            setVariantClient(e, getChosenVariant());
+        } catch (Throwable ignored) {
+            // Don't care if it failed.
+        }
     }
 
     private int getVariantIndex(V variant) {
@@ -197,7 +206,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        if (ticks % 5 == 0) {
+        if (ticks % 10 == 5) {
             checkChosenVariant();
         }
     }
@@ -284,6 +293,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             if (isMouseLeft(code)) {
                 if (isAllowedToChoose()) {
                     chosenIndex = index;
+                    onChosenChanged();
                     CompoundTag v = new CompoundTag();
                     CompoundTag e = new CompoundTag();
                     writeVariantToNbt(this, v, e);

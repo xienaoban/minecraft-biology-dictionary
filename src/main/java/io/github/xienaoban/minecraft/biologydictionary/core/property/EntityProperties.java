@@ -21,7 +21,7 @@ public final class EntityProperties<E extends Entity> {
     private final Map<String, EntityProperty<?>> vanillaProperties;
     private final Map<Class<? extends EntityProperty>, EntityProperty<?>> extraProperties;
 
-    private boolean entityAppearanceDirty;
+    private E model;
 
     public EntityProperties(E entity) {
         this.entity = entity;
@@ -45,10 +45,13 @@ public final class EntityProperties<E extends Entity> {
         this.vanillaProperties = Collections.unmodifiableMap(vMap);
         this.extraProperties = Collections.unmodifiableMap(eMap);
 
-        this.entityAppearanceDirty = false;
+        this.model = null;
     }
 
     public E entity() { return entity; }
+
+    public E getModel() { return model; }
+    public void setModel(E model) { this.model = model; }
 
     public <EP extends EntityProperty<?>> EP getVanilla(String key) {
         return Misc.cast(vanillaProperties.getOrDefault(key, null));
@@ -74,17 +77,5 @@ public final class EntityProperties<E extends Entity> {
         for (EntityProperty<?> property : extraProperties.values()) {
             property.readFrom(extraNbt);
         }
-    }
-
-    public boolean isEntityAppearanceDirty() {
-        return entityAppearanceDirty;
-    }
-
-    public void setEntityAppearanceDirty() {
-        entityAppearanceDirty = true;
-    }
-
-    public void clearEntityAppearanceDirty() {
-        entityAppearanceDirty = false;
     }
 }

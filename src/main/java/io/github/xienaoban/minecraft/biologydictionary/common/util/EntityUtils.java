@@ -1,6 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.util;
 
 import io.github.xienaoban.minecraft.biologydictionary.mixin.EntityIMixin;
+import io.github.xienaoban.minecraft.biologydictionary.mixin.HorseIMixin;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.camel.Camel;
+import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -59,6 +61,10 @@ public final class EntityUtils {
         return EntityVanillaDeobfuscation.clazzToName.get(clazz);
     }
 
+    public static <E extends Entity> E create(E entity) {
+        return create(getEntityType(entity));
+    }
+
     public static <E extends Entity> E create(EntityType<E> entityType) {
         return create(entityType, MinecraftUtils.getLocalLevel());
     }
@@ -77,6 +83,12 @@ public final class EntityUtils {
 
     public static void setInWater(Entity entity, boolean inWater) {
         ((EntityIMixin) entity).setWasTouchingWater(inWater);
+    }
+
+    public static void setVariantAndMarkings(Horse entity,
+                                             net.minecraft.world.entity.animal.horse.Variant variant,
+                                             net.minecraft.world.entity.animal.horse.Markings markings) {
+        ((HorseIMixin) entity).invokeSetVariantAndMarkings(variant, markings);
     }
 
     /**
