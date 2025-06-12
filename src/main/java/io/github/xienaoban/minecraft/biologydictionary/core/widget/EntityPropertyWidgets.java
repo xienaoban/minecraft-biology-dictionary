@@ -108,6 +108,7 @@ public final class EntityPropertyWidgets {
         r(TurnPageTriggerWidget.class);
         r(EntityVariantOfVariantHolderWidget.class);
         r(HorseMarkingsWidget.class);
+        r(VillagerTypeWidget.class);
         r(MobAiWidget.class);
         r(EntityInvulnerableWidget.class);
         r(EntitySoundWidget.class);

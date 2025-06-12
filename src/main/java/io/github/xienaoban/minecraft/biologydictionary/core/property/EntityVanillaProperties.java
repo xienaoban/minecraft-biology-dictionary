@@ -2064,11 +2064,11 @@ public final class EntityVanillaProperties {
             return g(ep, "RestocksToday");
         }
 
-        public static UnsupportedProperty<Villager> createVillagerDataProperty() {
-            return new UnsupportedProperty<>("VillagerData");
+        public static VillagerVillagerDataProperty createVillagerDataProperty() {
+            return new VillagerVillagerDataProperty("VillagerData");
         }
 
-        public static UnsupportedProperty<Villager> getVillagerDataProperty(EntityProperties<?> ep) {
+        public static VillagerVillagerDataProperty getVillagerDataProperty(EntityProperties<?> ep) {
             return g(ep, "VillagerData");
         }
 

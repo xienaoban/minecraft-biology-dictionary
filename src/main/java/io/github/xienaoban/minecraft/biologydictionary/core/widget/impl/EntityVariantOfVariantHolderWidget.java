@@ -93,10 +93,9 @@ public class EntityVariantOfVariantHolderWidget extends AbstractEntityVariantWid
 
     private static VariantData createHolderVariantData(Entity entity, Class<?> variantClazz) {
         String variantName = EntityUtils.getEntityTypeName(entity).getPath() + "_variant";
-        Registry<Object> registry = Misc.cast(BuiltInRegistries.REGISTRY
-                .get(ResourceLocation.withDefaultNamespace(variantName))
-                .orElseThrow(UnsupportedWidgetException::get)
-                .value());
+        var optional = BuiltInRegistries.REGISTRY.get(ResourceLocation.withDefaultNamespace(variantName));
+        if (optional.isEmpty()) { return NO_VARIANT; }
+        Registry<Object> registry = Misc.cast(optional.get().value());
         List<Object> variants = registry.registryKeySet().stream()
                 .map(registry::getOrThrow)
                 .map(k -> (Object) k)
@@ -126,10 +125,9 @@ public class EntityVariantOfVariantHolderWidget extends AbstractEntityVariantWid
 
         Object v1 = variants.get(0), v2 = variants.get(1);
         CompoundTag t1 = new CompoundTag(), t2 = new CompoundTag();
-        Set<String> keys = new HashSet<>();
         vh.setVariant(v1);
         tmp.saveWithoutId(t1);
-        keys.addAll(t1.getAllKeys());
+        Set<String> keys = new HashSet<>(t1.getAllKeys());
         vh.setVariant(v2);
         tmp.saveWithoutId(t2);
         keys.addAll(t2.getAllKeys());
