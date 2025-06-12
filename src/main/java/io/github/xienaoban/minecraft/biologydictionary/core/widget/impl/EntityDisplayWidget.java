@@ -91,7 +91,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        if (ticks % 20 == 15) {
+        if (ticks % 20 == 15 && p().isNotInNoUpdateCooldown()) {
             updateCompoundTag(e(), model);
         }
     }

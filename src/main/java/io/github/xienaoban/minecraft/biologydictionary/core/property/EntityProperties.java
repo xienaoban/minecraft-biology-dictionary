@@ -21,6 +21,8 @@ public final class EntityProperties<E extends Entity> {
     private final Map<String, EntityProperty<?>> vanillaProperties;
     private final Map<Class<? extends EntityProperty>, EntityProperty<?>> extraProperties;
 
+    // Skip updating some client data for some time because of the client-server sync problem.
+    private int noUpdateCooldown = 0;
     private E model;
 
     public EntityProperties(E entity) {
@@ -52,6 +54,14 @@ public final class EntityProperties<E extends Entity> {
 
     public E getModel() { return model; }
     public void setModel(E model) { this.model = model; }
+
+    public boolean isInNoUpdateCooldown() { return noUpdateCooldown > 0; }
+    public boolean isNotInNoUpdateCooldown() { return noUpdateCooldown <= 0; }
+    public void setNoUpdateCooldown() { setNoUpdateCooldown(10); }
+    public void setNoUpdateCooldown(int noUpdateCooldown) { this.noUpdateCooldown = noUpdateCooldown; }
+    public void tickNoUpdateCooldown() {
+        if (noUpdateCooldown > 0) { --noUpdateCooldown; }
+    }
 
     public <EP extends EntityProperty<?>> EP getVanilla(String key) {
         return Misc.cast(vanillaProperties.getOrDefault(key, null));

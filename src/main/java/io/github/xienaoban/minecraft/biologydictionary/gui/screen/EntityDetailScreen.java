@@ -51,6 +51,7 @@ public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
     public void tick() {
         super.tick();
 
+        properties.tickNoUpdateCooldown();
         // Always 20 ticks per second. Not affected by "/tick rate" or "/gamerule randomTickSpeed".
         if (getTicks() % SYNC_PROPERTIES_INTERVAL_TICK_CNT == 0) {
             syncEntityProperties();

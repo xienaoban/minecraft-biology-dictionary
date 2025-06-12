@@ -48,8 +48,8 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     private int chosenIndex;
 
-    private final List<BackgroundBar> backgroundBars;
-    private final LocalPlayer player;
+    private final List<BackgroundBar> backgroundBars = new ArrayList<>();
+    private final LocalPlayer player = Objects.requireNonNull(MinecraftUtils.getLocalPlayer());
 
     public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt) {
         this(properties, variantCnt, 7, 2);
@@ -57,7 +57,6 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt, int maxDisplayCntPerLine, int rowsPerVariant) {
         super(properties, calcRowsAndColumns(variantCnt, maxDisplayCntPerLine, rowsPerVariant));
-        player = Objects.requireNonNull(MinecraftUtils.getLocalPlayer());
 
         size = variantCnt;
         List<V> variants = getAllVariants();
@@ -83,8 +82,6 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
         chosenIndex = 0;
         checkChosenVariant();
-
-        backgroundBars = new ArrayList<>();
     }
 
     /**
@@ -176,16 +173,6 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             return;
         }
         chosenIndex = getVariantIndex(curr);
-        onChosenChanged();
-    }
-
-    private void onChosenChanged() {
-        try {
-            E e = p().getModel();
-            setVariantClient(e, getChosenVariant());
-        } catch (Throwable ignored) {
-            // Don't care if it failed.
-        }
     }
 
     private int getVariantIndex(V variant) {
@@ -293,7 +280,11 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             if (isMouseLeft(code)) {
                 if (isAllowedToChoose()) {
                     chosenIndex = index;
-                    onChosenChanged();
+                    E m = p().getModel();
+                    if (m != null) {
+                        p().setNoUpdateCooldown();
+                        setVariantClient(m, getChosenVariant());
+                    }
                     CompoundTag v = new CompoundTag();
                     CompoundTag e = new CompoundTag();
                     writeVariantToNbt(this, v, e);
