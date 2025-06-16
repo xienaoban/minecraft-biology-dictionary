@@ -348,7 +348,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         private void renderTheText(ScreenRenderingContext ctx, Component text) {
-            ctx.renderCenteredText(text, Colors.COMMON_DARK_TEXT, FONT_SIZE,
+            ctx.renderCenteredText(text, Colors.COMMON_DARK_TEXT, FONT_SIZE, ctx.getZ(),
                     (getBox().getLeft() + getBox().getRight()) / 2, getBox().getBottom() - 5);
         }
 

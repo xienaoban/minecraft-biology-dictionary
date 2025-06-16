@@ -17,7 +17,7 @@ public final class LivingEntityHealthWidget extends EntityPropertyStandardWidget
     private static final int L = 1, T = 1;
 
     public LivingEntityHealthWidget(EntityProperties<LivingEntity> properties) {
-        super(properties, 4);
+        super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new HealthBar());
     }

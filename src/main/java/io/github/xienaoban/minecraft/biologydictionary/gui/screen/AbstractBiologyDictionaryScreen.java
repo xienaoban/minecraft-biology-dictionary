@@ -75,12 +75,12 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private void renderTitle(ScreenRenderingContext ctx, Component title) {
         float left = width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH + 2;
         float top = (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN - 12;
-        ctx.renderText(title, 0x66000000, left + 0.6F, top + 0.6F);
-        ctx.renderText(title, 0xFF080808, left, top);
+        ctx.renderText(title, 0x66000000, ctx.getZ(), left + 0.6F, top + 0.6F);
+        ctx.renderText(title, 0xFF080808, ctx.getZ(), left, top);
     }
 
     private void renderDebug(ScreenRenderingContext ctx) {
-        ctx.renderText(Component.literal(this.getClass().getSimpleName()), 0xFFFFFFFF, 2, 2);
+        ctx.renderText(Component.literal(this.getClass().getSimpleName()), 0xFFFFFFFF, ctx.getZ(), 2, 2);
     }
 
     @Override
@@ -208,7 +208,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                     cache = Component.empty();
                 }
             }
-            ctx.renderCenteredText(cache, 0xFFAF711F, (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
+            ctx.renderCenteredText(cache, 0xFFAF711F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
         }
     }
 }

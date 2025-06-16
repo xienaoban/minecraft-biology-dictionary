@@ -108,7 +108,7 @@ public abstract class ScreenElement {
                     box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
             if (this == screen.getFocusedElement()) {
                 ctx.renderText(Component.literal(getClass().getSimpleName()), 0xFF7719AA,
-                        0.5F, box.getLeft() + 1, box.getTop() - 4.5F);
+                        0.5F, ctx.getZ(), box.getLeft() + 1, box.getTop() - 4.5F);
             }
         }
         for (ScreenElement subEle : subScreenElements) {

@@ -3,6 +3,12 @@
   "title.biologydictionary": "Biology Dictionary",
   "description.biologydictionary": "Helps you know more about minecraft entities!",
 
+  "activity.minecraft.idle": "Idle",
+  "activity.minecraft.work": "Work",
+  "activity.minecraft.play": "Play",
+  "activity.minecraft.meet": "Meet",
+  "activity.minecraft.rest": "Rest",
+
   "variant.minecraft.axolotl.lucy": "Lucy",
   "variant.minecraft.axolotl.wild": "Wild",
   "variant.minecraft.axolotl.gold": "Gold",
