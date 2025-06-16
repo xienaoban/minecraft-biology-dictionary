@@ -3,6 +3,12 @@
   "title.biologydictionary": "生物辞典",
   "description.biologydictionary": "奇怪，怎么长得有点像生物必修2...",
 
+  "activity.minecraft.idle": "游荡",
+  "activity.minecraft.work": "工作",
+  "activity.minecraft.play": "玩耍",
+  "activity.minecraft.meet": "聚会",
+  "activity.minecraft.rest": "休息",
+
   "variant.minecraft.axolotl.lucy": "粉色",
   "variant.minecraft.axolotl.wild": "棕色",
   "variant.minecraft.axolotl.gold": "金色",

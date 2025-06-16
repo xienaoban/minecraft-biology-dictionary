@@ -20,6 +20,10 @@ public class EntityPropertyBar extends ScreenElement {
         setSelectable(false);
     }
 
+    public TextureInfo getTexture() { return texture; }
+    public float getTextureLeft() { return textureLeft; }
+    public float getTextureTop() { return textureTop; }
+
     @Override
     protected void onResize(int width, int height) {
         super.onResize(width, height);
@@ -31,20 +35,22 @@ public class EntityPropertyBar extends ScreenElement {
     protected void renderFullBar(ScreenRenderingContext ctx) {
         float currPos = 0;
         float widthLeft = 5;
-        ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(), getBox().getLeft() - 1, getBox().getTop() - 1, widthLeft + 1, getBox().getHeight() + 2);
+        final float top = getBox().getTop() - 1;
+        final float height = getBox().getHeight() + 2;
+        ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(), getBox().getLeft() - 1, top, widthLeft + 1, height);
         currPos += widthLeft;
 
         float widthMid = getBox().getWidth() - 10;
         while (widthMid > 8) {
-            ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop() - 1, 8, getBox().getHeight() + 2);
+            ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, 8, height);
             currPos += 8;
             widthMid -= 8;
         }
-        ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop() - 1, widthMid, getBox().getHeight() + 2);
+        ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, widthMid, height);
         currPos += widthMid;
 
         float widthRight = 5;
-        ctx.renderTexture(texture, textureLeft + 14, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop() - 1, widthRight + 1, getBox().getHeight() + 2);
+        ctx.renderTexture(texture, textureLeft + 14, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, widthRight + 1, height);
     }
 
     /**
@@ -53,26 +59,28 @@ public class EntityPropertyBar extends ScreenElement {
     protected void renderProgressBar(ScreenRenderingContext ctx, float percent) {
         if (percent <= 0) return;
         if (percent > 1) percent = 1;
-        float width = percent * getBox().getWidth();
+        final float top = getBox().getTop() - 1;
+        final float width = percent * getBox().getWidth();
+        final float height = getBox().getHeight() + 2;
         float currPos = 0;
         float widthLeft = Math.min(width, 5);
         float textureLeft = this.textureLeft + 2 * Widget.WIDGET_WIDTH;
-        ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(), getBox().getLeft() - 1, getBox().getTop() - 1, widthLeft + 1, getBox().getHeight() + 2);
+        ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(), getBox().getLeft() - 1, top, widthLeft + 1, height);
         currPos += widthLeft;
         if (currPos == width) return;
 
         float widthMid = Math.min(width - 5, getBox().getWidth() - 10);
         while (widthMid > 8) {
-            ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop() - 1, 8, getBox().getHeight() + 2);
+            ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, 8, height);
             currPos += 8;
             widthMid -= 8;
         }
-        ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop() - 1, widthMid, getBox().getHeight() + 2);
+        ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, widthMid, height);
         currPos += widthMid;
         if (currPos == width) return;
 
         float widthRight = width - (getBox().getWidth() - 5);
-        ctx.renderTexture(texture, textureLeft + 14, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop() - 1, widthRight + ((int) percent), getBox().getHeight() + 2);
+        ctx.renderTexture(texture, textureLeft + 14, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, widthRight + ((int) percent), height);
     }
 
     protected void renderInnerText(ScreenRenderingContext ctx, Component text) {
@@ -80,6 +88,6 @@ public class EntityPropertyBar extends ScreenElement {
     }
 
     protected void renderInnerText(ScreenRenderingContext ctx, Component text, int color) {
-        ctx.renderText(text, color, 0.5F, getBox().getLeft() + 3.0F, getBox().getTop() + 2.25F);
+        ctx.renderText(text, color, 0.5F, ctx.getZ(), getBox().getLeft() + 3.0F, getBox().getTop() + 2.25F);
     }
 }

@@ -88,6 +88,10 @@ public final class ScreenRenderingContext {
         return new ScaleRAII(this, size);
     }
 
+    public ScaleRAII scaleOnce(float size, float z) {
+        return new ScaleRAII(this, size, z);
+    }
+
     public int calcTextWidth(Component component) {
         return getFont().width(component);
     }
@@ -95,23 +99,25 @@ public final class ScreenRenderingContext {
     /**
      * @see net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip#renderText(net.minecraft.client.gui.Font, int, int, org.joml.Matrix4f, net.minecraft.client.renderer.MultiBufferSource.BufferSource)
      */
-    public void renderText(Component component, int color, float x, float y) {
-        getFont().drawInBatch(component.getVisualOrderText(), x, y, color, false, getPose().last().pose(), getBufferSource(), Font.DisplayMode.NORMAL, 0, 0xF000F0);
-    }
-
-    public void renderText(Component component, int color, float size, float x, float y) {
-        try (ScaleRAII ignored = scaleOnce(size)) {
-            renderText(component, color, x / size, y / size);
+    public void renderText(Component component, int color, float z, float x, float y) {
+        try (ScaleRAII ignored = scaleOnce(1F, z)) {
+            getFont().drawInBatch(component.getVisualOrderText(), x, y, color, false, getPose().last().pose(), getBufferSource(), Font.DisplayMode.NORMAL, 0, 0xF000F0);
         }
     }
 
-    public void renderCenteredText(Component component, int color, float x, float y) {
-        renderText(component, color, x - calcTextWidth(component) / 2.0F, y);
+    public void renderText(Component component, int color, float size, float z, float x, float y) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            renderText(component, color, z, x / size, y / size);
+        }
     }
 
-    public void renderCenteredText(Component component, int color, float size, float x, float y) {
+    public void renderCenteredText(Component component, int color, float z, float x, float y) {
+        renderText(component, color, z, x - calcTextWidth(component) / 2.0F, y);
+    }
+
+    public void renderCenteredText(Component component, int color, float size, float z, float x, float y) {
         try (ScaleRAII ignored = scaleOnce(size)) {
-            renderCenteredText(component, color, x / size, y / size);
+            renderCenteredText(component, color, z, x / size, y / size);
         }
     }
 

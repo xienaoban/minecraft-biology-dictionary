@@ -2,6 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
@@ -17,7 +18,7 @@ public class EntityLeashableWidget extends EntityPropertyStandardWidget<Entity> 
     private final boolean leashable;
 
     public EntityLeashableWidget(EntityProperties<Entity> properties) {
-        super(properties, 2);
+        super(properties, Page.COLUMNS / 4);
         if (e() instanceof Leashable entity) {
             this.leashable = (entity.isLeashed() || entity.canBeLeashed());
         } else {
