@@ -22,7 +22,7 @@ package io.github.xienaoban.minecraft.biologydictionary.core.widget;
  *    verification of widget super class.
  * 3. The current way may not be elegant. But it's intuitive and easy to use.
  */
-public class UnsupportedWidgetException extends RuntimeException {
+public final class UnsupportedWidgetException extends RuntimeException {
     private static final UnsupportedWidgetException INSTANCE = new UnsupportedWidgetException();
 
     public static UnsupportedWidgetException get() {

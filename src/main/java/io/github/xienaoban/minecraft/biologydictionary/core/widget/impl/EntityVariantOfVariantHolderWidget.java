@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
-public class EntityVariantOfVariantHolderWidget extends AbstractEntityVariantWidget<Entity, Object> {
+public final class EntityVariantOfVariantHolderWidget extends AbstractEntityVariantWidget<Entity, Object> {
     private static final ConcurrentHashMap<Class<? extends Entity>, VariantData> cachedVariantData = new ConcurrentHashMap<>();
 
     private record VariantData(boolean hit, Class<?> variantClazz, String variantType, List<Object> variants,

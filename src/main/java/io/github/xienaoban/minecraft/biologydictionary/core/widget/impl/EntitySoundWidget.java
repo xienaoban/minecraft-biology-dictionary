@@ -15,7 +15,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
-public class EntitySoundWidget extends EntityPropertyStandardWidget<Entity> {
+public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity> {
     private static final int L = 20, T = 1;
 
     private final BooleanProperty<Entity> silentProperty = EntityVanillaProperties.OfEntity.getSilentProperty(p());

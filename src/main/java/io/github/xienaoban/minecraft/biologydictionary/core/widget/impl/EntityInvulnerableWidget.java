@@ -15,7 +15,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
-public class EntityInvulnerableWidget extends EntityPropertyStandardWidget<Entity> {
+public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget<Entity> {
     private static final int L = 19, T = 1;
 
     private final BooleanProperty<Entity> invulnerableProperty = EntityVanillaProperties.OfEntity.getInvulnerableProperty(p());

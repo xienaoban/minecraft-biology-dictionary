@@ -15,7 +15,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Mob;
 
 @Environment(EnvType.CLIENT)
-public class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
+public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
     private static final int L = 18, T = 1;
 
     public MobAiWidget(EntityProperties<Mob> properties) {

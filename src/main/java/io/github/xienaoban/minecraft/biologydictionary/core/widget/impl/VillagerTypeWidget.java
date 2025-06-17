@@ -15,7 +15,7 @@ import net.minecraft.world.entity.npc.VillagerType;
 
 import java.util.List;
 
-public class VillagerTypeWidget extends AbstractEntityVariantWidget<Villager, VillagerType> {
+public final class VillagerTypeWidget extends AbstractEntityVariantWidget<Villager, VillagerType> {
     private static final List<VillagerType> types = BuiltInRegistries.VILLAGER_TYPE.stream().toList();
 
     public VillagerTypeWidget(EntityProperties<Villager> properties) {
