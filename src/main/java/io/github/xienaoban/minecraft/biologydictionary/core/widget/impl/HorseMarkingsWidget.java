@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
-public class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse, Markings> {
+public final class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse, Markings> {
     private static final List<Markings> markings = Arrays.stream(Markings.values()).sorted(Comparator.comparingInt(Markings::getId)).toList();
 
     public HorseMarkingsWidget(EntityProperties<Horse> properties) {

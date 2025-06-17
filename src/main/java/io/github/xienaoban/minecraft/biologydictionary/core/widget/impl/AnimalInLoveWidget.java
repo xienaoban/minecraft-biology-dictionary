@@ -17,7 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.Animal;
 
 @Environment(EnvType.CLIENT)
-public class AnimalInLoveWidget extends EntityPropertyStandardWidget<Animal> {
+public final class AnimalInLoveWidget extends EntityPropertyStandardWidget<Animal> {
     private static final int L = 6, T = 3;
 
     private static final int IN_LOVE_MAX_TIME = 600;

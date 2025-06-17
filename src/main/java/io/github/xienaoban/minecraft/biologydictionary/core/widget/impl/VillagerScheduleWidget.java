@@ -21,7 +21,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class VillagerScheduleWidget extends EntityPropertyStandardWidget<Villager> {
+public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<Villager> {
     private static final int L = 11, T = 4;
     private static final int AW = 4;
 
@@ -129,7 +129,7 @@ public class VillagerScheduleWidget extends EntityPropertyStandardWidget<Village
             final float scale = (getBox().getWidth() - 2) / MAX_TIME;
 
             int t = 0;
-            Activity activity = timeline[timeline.length - 1].activity;
+            Activity activity = timeline[timeline.length - 1].activity();
             ctx.renderTexture(getTexture(), getTextureLeft() + getTextureOffset(activity), getTextureTop() + 1, ctx.getZ(), getBox().getLeft(), getBox().getTop() + 1, 1, getBox().getHeight() - 2);
             float hoveredTextLeft = -1;
             int hoveredIdxNext = -1;
@@ -235,21 +235,12 @@ public class VillagerScheduleWidget extends EntityPropertyStandardWidget<Village
 
     private TimelineEntry[] getTimelineEntries() {
         TimelineEntry[] timeline;
-        Schedule schedule = e().getBrain().getSchedule();
-        if (schedule == Schedule.EMPTY) {
-            timeline = EMPTY_ZERO;
-        } else if (schedule == Schedule.SIMPLE) {
-            timeline = SIMPLE_ZERO;
-        } else if (schedule == Schedule.VILLAGER_BABY) {
+        if (e().isBaby()) {
             timeline = BABY_ZERO;
-        } else if (schedule == Schedule.VILLAGER_DEFAULT) {
-            if (e().getVillagerData().getProfession() == VillagerProfession.NONE) {
-                timeline = ADULT_WITHOUT_JOB_ZERO;
-            } else {
-                timeline = ADULT_WITH_JOB_ZERO;
-            }
+        } else if (e().getVillagerData().getProfession() == VillagerProfession.NONE) {
+            timeline = ADULT_WITHOUT_JOB_ZERO;
         } else {
-            timeline = EMPTY_ZERO;
+            timeline = ADULT_WITH_JOB_ZERO;
         }
         return timeline;
     }

@@ -12,7 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LivingEntityActiveEffectsProperty extends AbstractProperty<LivingEntity, Map<Holder<MobEffect>, MobEffectInstance>> {
+public final class LivingEntityActiveEffectsProperty extends AbstractProperty<LivingEntity, Map<Holder<MobEffect>, MobEffectInstance>> {
 
     public LivingEntityActiveEffectsProperty(String propertyName) {
         super(propertyName);

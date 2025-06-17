@@ -8,7 +8,7 @@ import net.minecraft.world.entity.npc.VillagerData;
 
 import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
 
-public class VillagerVillagerDataProperty extends AbstractProperty<Villager, VillagerData> {
+public final class VillagerVillagerDataProperty extends AbstractProperty<Villager, VillagerData> {
     public VillagerVillagerDataProperty(String propertyName) {
         super(propertyName);
     }

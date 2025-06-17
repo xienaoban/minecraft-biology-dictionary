@@ -20,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
 
 @Environment(EnvType.CLIENT)
-public class AgeableMobBreedingCooldownWidget extends EntityPropertyStandardWidget<AgeableMob> {
+public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStandardWidget<AgeableMob> {
     private static final int L = 6, T = 4;
 
     /**

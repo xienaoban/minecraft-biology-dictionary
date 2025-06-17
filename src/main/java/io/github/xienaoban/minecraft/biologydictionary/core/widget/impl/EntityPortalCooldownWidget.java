@@ -27,7 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
+public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
     private static final int L = 1, T = 3;
 
     private final IntProperty<Entity> portalCooldownProperty = EntityVanillaProperties.OfEntity.getPortalCooldownProperty(p());

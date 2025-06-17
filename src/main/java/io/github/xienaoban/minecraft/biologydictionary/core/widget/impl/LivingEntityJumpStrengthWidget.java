@@ -10,7 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 @Environment(EnvType.CLIENT)
-public class LivingEntityJumpStrengthWidget extends AbstractLivingEntityAttributeWidget<LivingEntity> {
+public final class LivingEntityJumpStrengthWidget extends AbstractLivingEntityAttributeWidget<LivingEntity> {
     private static final int L = 18, T = 2;
 
     public LivingEntityJumpStrengthWidget(EntityProperties<LivingEntity> properties) {

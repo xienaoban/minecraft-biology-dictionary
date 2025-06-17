@@ -22,7 +22,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.Map;
 
 @Environment(EnvType.CLIENT)
-public class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidget<LivingEntity> {
+public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidget<LivingEntity> {
     private static final int L = 11, T = 3;
 
     private final LivingEntityActiveEffectsProperty activeEffectsProperty

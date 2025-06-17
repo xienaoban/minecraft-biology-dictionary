@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
+public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
     private static final int L = 14, T = 2;
 
     private final MobTemptProperty mobTemptProperty = p().getExtra(MobTemptProperty.class);

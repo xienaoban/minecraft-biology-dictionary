@@ -12,7 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Leashable;
 
 @Environment(EnvType.CLIENT)
-public class EntityLeashableWidget extends EntityPropertyStandardWidget<Entity> {
+public final class EntityLeashableWidget extends EntityPropertyStandardWidget<Entity> {
     private static final int L = 17, T = 1;
 
     private final boolean leashable;
