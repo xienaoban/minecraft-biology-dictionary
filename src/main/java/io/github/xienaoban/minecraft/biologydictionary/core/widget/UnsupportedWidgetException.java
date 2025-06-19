@@ -3,16 +3,16 @@ package io.github.xienaoban.minecraft.biologydictionary.core.widget;
 /**
  * Finally I didn't choose to build a verification logic such as:
  * {@snippet :
- *   if (registry.verify(properties)) {
- *     registry.create(properties);
- *   }
+ *      if (registry.verify(properties)) {
+ *          registry.create(properties);
+ *      }
  * }
  *
  * But instead I choose to throw this exception in the constructors of widgets:
  * {@snippet :
- *   try {
- *     registry.create(properties);
- *   } catch (UnsupportedWidgetException ignored) {}
+ *      try {
+ *          registry.create(properties);
+ *      } catch (UnsupportedWidgetException ignored) {}
  * }
  *
  * Because
