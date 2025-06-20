@@ -38,6 +38,8 @@ final class EntityExtraProperties {
                     .add(() -> {
                         try {
                             return (EntityProperty<?>) constructor.invoke();
+                        } catch (RuntimeException e) {
+                            throw e;
                         } catch (Throwable e) {
                             throw new RuntimeException(e);
                         }

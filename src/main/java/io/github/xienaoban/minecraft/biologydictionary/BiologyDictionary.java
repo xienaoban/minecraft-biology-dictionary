@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BiologyDictionary {
+public final class BiologyDictionary {
     public static final String MOD_ID = "biologydictionary";
 
     public static final String MODRINTH_PAGE = "https://modrinth.com/mod/bole";

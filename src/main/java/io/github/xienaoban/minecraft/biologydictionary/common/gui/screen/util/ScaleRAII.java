@@ -14,6 +14,11 @@ public final class ScaleRAII implements AutoCloseable {
         guiGraphics.pose().scale(size, size, size);
     }
 
+    ScaleRAII(ScreenRenderingContext ctx, float size, float z) {
+        this(ctx, size);
+        guiGraphics.pose().translate(0, 0, z);
+    }
+
     @Override
     public void close() {
         guiGraphics.pose().popPose();

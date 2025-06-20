@@ -1,11 +1,12 @@
 package io.github.xienaoban.minecraft.biologydictionary.client;
 
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.EntityDetailScreen;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.HomeScreen;
 import io.github.xienaoban.minecraft.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
-import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -36,24 +37,35 @@ public final class BiologyDictionaryEvent {
         Entity target;
         float y = player.getXRot();
         HitResult hit = minecraft.hitResult;
-        if (y < -0.996F * 90.0F) target = null;
-        else if (y > 0.996F * 90.0F) target = player;
-        else if (y > 0.822F * 90.0F && player.isPassenger()) target = player.getVehicle();
-        else if (hit == null) target = null;
-        else if (hit.getType() != HitResult.Type.ENTITY) {
-            if (hit.getType() == HitResult.Type.BLOCK) {
-                BlockPos pos = ((BlockHitResult) hit).getBlockPos();
-                BDC.setHitBlock(pos);
-                BlockState blockState = player.level().getBlockState(pos);
-                if (blockState.getBlock() instanceof BeehiveBlock) {
-                    ClientNetManager.requestBeehiveInfo(pos);
-                    minecraft.setScreen(new BeehiveScreen(pos));
-                    new ScreenRenderingContext(null).playScreenSound(SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
-                    return;
-                }
+        if (y < -0.996F * 90.0F) {
+            target = null;
+        } else if (y > 0.996F * 90.0F) {
+            target = player;
+        } else if (y > 0.822F * 90.0F && player.isPassenger()) {
+            target = player.getVehicle();
+        } else if (y > 0.666F * 90.0F && player.isPassenger()
+                && (hit == null || hit.getType() != HitResult.Type.ENTITY)) {
+            target = player.getVehicle();
+        } else if (hit == null || hit.getType() == HitResult.Type.MISS) {
+            target = null;
+        } else if (hit.getType() == HitResult.Type.ENTITY) {
+            target = ((EntityHitResult) hit).getEntity();
+        } else if (hit.getType() == HitResult.Type.BLOCK) {
+            BlockPos pos = ((BlockHitResult) hit).getBlockPos();
+            BDC.setHitBlock(pos);
+            @SuppressWarnings("all") // 'Level' used without 'try'-with-resources statement
+            BlockState blockState = player.level().getBlockState(pos);
+            if (blockState.getBlock() instanceof BeehiveBlock) {
+                ClientNetManager.requestBeehiveInfo(pos);
+                minecraft.setScreen(new BeehiveScreen(pos));
+                new ScreenRenderingContext(null).playScreenSound(SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
+                return;
             }
             target = null;
-        } else target = ((EntityHitResult) hit).getEntity();
+        } else {
+            // Should not reach here, theoretically.
+            target = null;
+        }
 
         if (target == null) {
             minecraft.setScreen(new HomeScreen());
@@ -62,7 +74,12 @@ public final class BiologyDictionaryEvent {
             BDC.setHitEntity(target);
             BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target);
-            minecraft.setScreen(new EntityDetailScreen(properties));
+            try {
+                minecraft.setScreen(new EntityDetailScreen(properties));
+            } catch (RuntimeException e) {
+                Misc.printThrowableToLoggerAndGame(e);
+                return;
+            }
         }
         new ScreenRenderingContext(null).playScreenSound(SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
     }

@@ -5,6 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
@@ -38,5 +39,15 @@ public final class MinecraftUtils {
     @Environment(EnvType.CLIENT)
     public static int getClientTickCountPerSecond() {
         return 20;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void showClientTextBoxMessage(Component component) {
+        Objects.requireNonNull(Minecraft.getInstance().player).displayClientMessage(component, false);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void showClientCenteredMessage(Component component) {
+        Objects.requireNonNull(Minecraft.getInstance().player).displayClientMessage(component, true);
     }
 }

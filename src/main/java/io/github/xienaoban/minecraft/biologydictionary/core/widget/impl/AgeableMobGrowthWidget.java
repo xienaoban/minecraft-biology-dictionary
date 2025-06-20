@@ -1,0 +1,160 @@
+package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
+
+import io.github.xienaoban.minecraft.biologydictionary.Lang;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.common.property.IntProperty;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyButton;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.AgeableMob;
+
+@Environment(EnvType.CLIENT)
+public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<AgeableMob> {
+    private static final int L = 1, T = 4;
+
+    private static final int BABY_MIN_AGE = AgeableMob.BABY_START_AGE;
+    private static final int ADULT_MIN_AGE = 0;
+
+    private final IntProperty<AgeableMob> ageProperty = EntityVanillaProperties.OfAgeableMob.getAgeProperty(p());
+    private final IntProperty<AgeableMob> forcedAgeProperty = EntityVanillaProperties.OfAgeableMob.getForcedAgeProperty(p());
+
+    public AgeableMobGrowthWidget(EntityProperties<AgeableMob> properties) {
+        super(properties);
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
+        setElementBar(new GrowthBar());
+        addElementButton(new LockBabyButton());
+    }
+
+    private boolean isAdultClient() {
+        return !EntityUtils.isBaby(e());
+    }
+
+    @Override
+    protected void onTick(int ticks) {
+        super.onTick(ticks);
+        Integer ageOpt = ageProperty.get();
+        if (ageOpt == null) {
+            return;
+        }
+        int age = ageOpt;
+        if (age < ADULT_MIN_AGE) {
+            ageProperty.set(age + 1);
+        }
+    }
+
+    private final class GrowthBar extends EntityPropertyProgressBar {
+        public GrowthBar() {
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            Integer ageOpt = ageProperty.get();
+            Integer forcedAgeOpt = forcedAgeProperty.get();
+            if (ageOpt == null || forcedAgeOpt == null) {
+                if (isAdultClient()) {
+                    updatePercent(1F);
+                } else {
+                    updatePercent(0);
+                }
+                super.onRender(ctx);
+                if (ctx.isDebug()) {
+                    renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                } else {
+                    if (isAdultClient()) {
+                        renderInnerText(ctx, Component.translatable(Lang.TEXT_ADULT));
+                    } else {
+                        renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                    }
+                }
+                return;
+            }
+            int age = ageOpt;
+            int forcedAge = forcedAgeOpt;
+            updatePercent(forcedAge < ADULT_MIN_AGE ? 0F : (1F - (float) age / BABY_MIN_AGE));
+            super.onRender(ctx);
+            if (ctx.isDebug()) {
+                renderInnerText(ctx, Component.literal(age + "t/" + ADULT_MIN_AGE + "t"));
+            } else if (!isAdultClient()) {
+                if (forcedAge < ADULT_MIN_AGE) {
+                    renderInnerText(ctx, Component.translatable(Lang.TEXT_ALWAYS_BABY));
+                } else {
+                    renderInnerText(ctx, Component.literal(((age - BABY_MIN_AGE) / 20) + "s/" + (-BABY_MIN_AGE / 20 / 60) + "m"));
+                }
+            } else {
+                renderInnerText(ctx, Component.translatable(Lang.TEXT_ADULT));
+            }
+        }
+    }
+
+    private final class LockBabyButton extends EntityPropertyButton {
+        public LockBabyButton() {
+            super(Textures.ICONS, 23 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            if (isAdultClient()) {
+                // Treat adult as locked as it will never change state.
+                setTextureLeftOffset(10);
+            } else {
+                Integer forcedAge = forcedAgeProperty.get();
+                if (forcedAge != null && forcedAge < ADULT_MIN_AGE) {
+                    setTextureLeftOffset(10);
+                } else {
+                    setTextureLeftOffset(0);
+                }
+            }
+            super.onRender(ctx);
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            Integer forcedAgeOpt = forcedAgeProperty.get();
+            if (forcedAgeOpt == null) {
+                return true;
+            }
+            if (isAdultClient()) {
+                // Do nothing if it is an adult.
+                return true;
+            }
+
+            int forcedAge = forcedAgeOpt;
+            if (isMouseLeft(code)) {
+                boolean lock = false;
+                final int toSet;
+                if (forcedAge == ADULT_MIN_AGE) {
+                    toSet = BABY_MIN_AGE;
+                    lock = true;
+                } else {
+                    toSet = ADULT_MIN_AGE;
+                }
+
+                // Send to the server.
+                IntProperty<AgeableMob> property = EntityVanillaProperties.OfAgeableMob.createForcedAgeProperty();
+                property.set(toSet);
+                forcedAgeProperty.set(toSet);
+                CompoundTag nbt = property.toNbt();
+                if (lock) {
+                    IntProperty<AgeableMob> ap = EntityVanillaProperties.OfAgeableMob.createAgeProperty();
+                    ap.set(toSet);
+                    ageProperty.set(toSet);
+                    ap.writeTo(nbt);
+                }
+                ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
+            }
+            return super.onMouseDown(x, y, code);
+        }
+    }
+}

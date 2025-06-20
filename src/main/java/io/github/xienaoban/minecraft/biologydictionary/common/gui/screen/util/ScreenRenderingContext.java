@@ -1,10 +1,12 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util;
 
 import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.CommonScreen;
-import io.github.xienaoban.minecraft.biologydictionary.common.mixin.GuiGraphicsIMixin;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.ElementScreen;
+import io.github.xienaoban.minecraft.biologydictionary.mixin.GuiGraphicsIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -14,10 +16,13 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
@@ -64,9 +69,16 @@ public final class ScreenRenderingContext {
     public float getMouseY()            { return mouseY; }
     public float getTickDelta()         { return tickDelta; }
     public Font getFont()               { return screen.getFont(); }
-    public float getZ()                 { return ((CommonScreen) screen).getZ(); }
+    public float getZ()                 { return getCommonScreen().getZ(); }
     public boolean isDebug()            { return debug; }
     public void setDebug(boolean debug) { this.debug = debug; }
+
+    public CommonScreen getCommonScreen()           { return (CommonScreen) screen; }
+    public ElementScreen getElementScreen()           { return (ElementScreen) screen; }
+
+    public PoseStack getPose() {
+        return getGuiGraphics().pose();
+    }
 
     public MultiBufferSource.BufferSource getBufferSource() {
         return ((GuiGraphicsIMixin) getGuiGraphics()).getBufferSource();
@@ -76,6 +88,10 @@ public final class ScreenRenderingContext {
         return new ScaleRAII(this, size);
     }
 
+    public ScaleRAII scaleOnce(float size, float z) {
+        return new ScaleRAII(this, size, z);
+    }
+
     public int calcTextWidth(Component component) {
         return getFont().width(component);
     }
@@ -83,23 +99,25 @@ public final class ScreenRenderingContext {
     /**
      * @see net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip#renderText(net.minecraft.client.gui.Font, int, int, org.joml.Matrix4f, net.minecraft.client.renderer.MultiBufferSource.BufferSource)
      */
-    public void renderText(Component component, int color, float x, float y) {
-        getFont().drawInBatch(component.getVisualOrderText(), x, y, color, false, getGuiGraphics().pose().last().pose(), getBufferSource(), Font.DisplayMode.NORMAL, 0, 0xF000F0);
-    }
-
-    public void renderText(Component component, int color, float size, float x, float y) {
-        try (ScaleRAII ignored = scaleOnce(size)) {
-            renderText(component, color, x / size, y / size);
+    public void renderText(Component component, int color, float z, float x, float y) {
+        try (ScaleRAII ignored = scaleOnce(1F, z)) {
+            getFont().drawInBatch(component.getVisualOrderText(), x, y, color, false, getPose().last().pose(), getBufferSource(), Font.DisplayMode.NORMAL, 0, 0xF000F0);
         }
     }
 
-    public void renderCenteredText(Component component, int color, float x, float y) {
-        renderText(component, color, x - calcTextWidth(component) / 2.0F, y);
+    public void renderText(Component component, int color, float size, float z, float x, float y) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            renderText(component, color, z, x / size, y / size);
+        }
     }
 
-    public void renderCenteredText(Component component, int color, float size, float x, float y) {
+    public void renderCenteredText(Component component, int color, float z, float x, float y) {
+        renderText(component, color, z, x - calcTextWidth(component) / 2.0F, y);
+    }
+
+    public void renderCenteredText(Component component, int color, float size, float z, float x, float y) {
         try (ScaleRAII ignored = scaleOnce(size)) {
-            renderCenteredText(component, color, x / size, y / size);
+            renderCenteredText(component, color, z, x / size, y / size);
         }
     }
 
@@ -129,7 +147,7 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.GuiGraphics#fill(net.minecraft.client.renderer.RenderType, int, int, int, int, int, int)
      */
     public void renderRectangle(int color, float z, float left, float top, float right, float bottom) {
-        Matrix4f matrix4f = getGuiGraphics().pose().last().pose();
+        Matrix4f matrix4f = getPose().last().pose();
         VertexConsumer vertexConsumer = getBufferSource().getBuffer(RenderType.gui());
         vertexConsumer.addVertex(matrix4f, left, top, z).setColor(color);
         vertexConsumer.addVertex(matrix4f, left, bottom, z).setColor(color);
@@ -162,7 +180,7 @@ public final class ScreenRenderingContext {
         float uvBottom = textureBottom / texture.height();
 
         RenderType renderType = RenderType.guiTextured(texture.location());
-        Matrix4f matrix4f = getGuiGraphics().pose().last().pose();
+        Matrix4f matrix4f = getPose().last().pose();
         VertexConsumer vertexConsumer = getBufferSource().getBuffer(renderType).setColor(-1);
         vertexConsumer.addVertex(matrix4f, left,  top,    z).setUv(uvLeft,  uvTop).setColor(-1);
         vertexConsumer.addVertex(matrix4f, left,  bottom, z).setUv(uvLeft,  uvBottom).setColor(-1);
@@ -178,6 +196,62 @@ public final class ScreenRenderingContext {
         try (ScaleRAII ignored = scaleOnce(size)) {
             renderItem(itemStack, left / size, top / size);
         }
+    }
+
+    /**
+     * @see net.minecraft.client.gui.screens.inventory.EffectsInInventory#renderIcons(net.minecraft.client.gui.GuiGraphics, int, int, java.lang.Iterable, boolean)
+     */
+    public void renderSprite(Holder<MobEffect> effect, float left, float top) {
+        float right = left + 18;
+        float bottom = top + 18;
+
+        TextureAtlasSprite textureAtlasSprite = minecraft.getMobEffectTextures().get(effect);
+        ResourceLocation resourceLocation = textureAtlasSprite.atlasLocation();
+
+        float uvLeft = textureAtlasSprite.getU0();
+        float uvTop = textureAtlasSprite.getV0();
+        float uvRight = textureAtlasSprite.getU1();
+        float uvBottom = textureAtlasSprite.getV1();
+
+        RenderType renderType = RenderType.guiTextured(resourceLocation);
+        Matrix4f matrix4f = getPose().last().pose();
+        VertexConsumer vertexConsumer = getBufferSource().getBuffer(renderType).setColor(-1);
+        vertexConsumer.addVertex(matrix4f, left,  top,    getZ()).setUv(uvLeft,  uvTop).setColor(-1);
+        vertexConsumer.addVertex(matrix4f, left,  bottom, getZ()).setUv(uvLeft,  uvBottom).setColor(-1);
+        vertexConsumer.addVertex(matrix4f, right, bottom, getZ()).setUv(uvRight, uvBottom).setColor(-1);
+        vertexConsumer.addVertex(matrix4f, right, top,    getZ()).setUv(uvRight, uvTop).setColor(-1);
+
+
+        getGuiGraphics().blitSprite(RenderType::guiTextured, textureAtlasSprite, (int) left, (int) top, 18, 18);
+    }
+
+    public void renderSprite(Holder<MobEffect> effect, float size, float left, float top) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            renderSprite(effect, left / size, top / size);
+        }
+    }
+
+    public void renderEntityBottomed(Entity entity, float left, float top, float right, float bottom,
+                                     float rotateX, float rotateY, boolean lightFromBelow) {
+        float width = right - left;
+        float height = bottom - top;
+        float entityWidth = (float) entity.getBoundingBox().getXsize();
+        float entityHeight = (float) entity.getBoundingBox().getYsize();
+        float entityScale = Math.min(width / entityWidth, height / entityHeight);
+        renderEntity(entity, (left + right) / 2, bottom, entityScale,
+                rotateX, rotateY, lightFromBelow);
+    }
+
+    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
+                             float rotateX, float rotateY, boolean lightFromBelow) {
+        float width = right - left;
+        float height = bottom - top;
+        float entityWidth = (float) entity.getBoundingBox().getXsize();
+        float entityHeight = (float) entity.getBoundingBox().getYsize();
+        float entityScale = Math.min(width / entityWidth, height / entityHeight);
+        float entityBottom = top + (entityScale * entityHeight + height) / 2;
+        renderEntity(entity, (left + right) / 2, entityBottom, entityScale,
+                rotateX, rotateY, lightFromBelow);
     }
 
     /**

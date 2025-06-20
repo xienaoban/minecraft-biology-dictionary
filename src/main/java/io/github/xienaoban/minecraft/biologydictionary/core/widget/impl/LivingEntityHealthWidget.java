@@ -14,17 +14,17 @@ import net.minecraft.world.entity.LivingEntity;
 
 @Environment(EnvType.CLIENT)
 public final class LivingEntityHealthWidget extends EntityPropertyStandardWidget<LivingEntity> {
-    private static final int L = 1, H = 1;
+    private static final int L = 1, T = 1;
 
     public LivingEntityHealthWidget(EntityProperties<LivingEntity> properties) {
-        super(properties, 4);
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT));
+        super(properties);
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new HealthBar());
     }
 
     private final class HealthBar extends EntityPropertyProgressBar {
         public HealthBar() {
-            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
         }
 
         @Override

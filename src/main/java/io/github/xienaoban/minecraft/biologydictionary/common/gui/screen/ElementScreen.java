@@ -2,6 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.common.gui.screen;
 
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -30,9 +31,13 @@ public abstract class ElementScreen extends CommonScreen {
 
     @Override
     public void tick() {
-        super.tick();
-        ++ticks; // yes the first `ticks` will be 1 instead of 0
-        rootScreenElement.tick(ticks);
+        try {
+            super.tick();
+            ++ticks; // yes the first `ticks` will be 1 instead of 0
+            rootScreenElement.tick(ticks);
+        } catch (RuntimeException e) {
+            showExceptionMessageAndCloseScreen(e);
+        }
     }
 
     @Override
@@ -53,8 +58,12 @@ public abstract class ElementScreen extends CommonScreen {
 
     @Override
     protected void render(ScreenRenderingContext ctx) {
-        super.render(ctx);
-        rootScreenElement.render(ctx);
+        try {
+            super.render(ctx);
+            rootScreenElement.render(ctx);
+        } catch (RuntimeException e) {
+            showExceptionMessageAndCloseScreen(e);
+        }
     }
 
     public final ScreenElement getFocusedElement() {
@@ -95,6 +104,11 @@ public abstract class ElementScreen extends CommonScreen {
      * @param height the new height of the screen, same with this.height
      */
     protected abstract void resizeBox(int width, int height);
+
+    private void showExceptionMessageAndCloseScreen(Throwable throwable) {
+        Misc.printThrowableToLoggerAndGame(throwable);
+        onClose();
+    }
 
     private final class RootScreenElement extends ScreenElement {
         public RootScreenElement() {

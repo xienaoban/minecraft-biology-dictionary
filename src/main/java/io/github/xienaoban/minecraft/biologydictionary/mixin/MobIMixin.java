@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.common.mixin;
+package io.github.xienaoban.minecraft.biologydictionary.mixin;
 
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.GoalSelector;

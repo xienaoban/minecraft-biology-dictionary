@@ -1,8 +1,11 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 
+import io.github.xienaoban.minecraft.biologydictionary.client.EntityModelManager;
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
 import net.fabricmc.api.EnvType;
@@ -23,17 +26,35 @@ public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
         this.entity = properties.entity();
         this.properties = properties;
         initEntityPropertyWidgets();
+
+        EntityModelManager.getModel(entity);
     }
 
     private void initEntityPropertyWidgets() {
         List<EntityPropertyWidget<?>> widgets = EntityPropertyWidgets.getWidgets(properties);
-        widgets.forEach(widget -> getPage(0).addWidget(widget));
+        boolean add = true;
+        Page page = null;
+        for (var widget : widgets) {
+            if (widget instanceof TurnPageTriggerWidget) {
+                add = true;
+                continue;
+            }
+            if (add) {
+                page = addPage();
+                add = false;
+            }
+            if (!page.addWidget(widget)) {
+                page = addPage();
+                page.addWidget(widget);
+            }
+        }
     }
 
     @Override
     public void tick() {
         super.tick();
 
+        properties.tickNoUpdateCooldown();
         // Always 20 ticks per second. Not affected by "/tick rate" or "/gamerule randomTickSpeed".
         if (getTicks() % SYNC_PROPERTIES_INTERVAL_TICK_CNT == 0) {
             syncEntityProperties();

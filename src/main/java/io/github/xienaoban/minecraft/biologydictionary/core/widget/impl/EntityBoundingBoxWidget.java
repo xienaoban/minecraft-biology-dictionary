@@ -15,11 +15,11 @@ import net.minecraft.world.phys.AABB;
 
 @Environment(EnvType.CLIENT)
 public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<Entity> {
-    private static final int L = 11, H = 1;
+    private static final int L = 11, T = 1;
 
     public EntityBoundingBoxWidget(EntityProperties<Entity> properties) {
         super(properties);
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new BoxBar());
     }
 
@@ -28,7 +28,7 @@ public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<
         private Component textX, textY, textZ;
 
         public BoxBar() {
-            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
             updateTexts();
         }
 
@@ -37,9 +37,9 @@ public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<
             super.onRender(ctx);
             renderFullBar(ctx);
             updateTexts();
-            ctx.renderText(textX, 0xFFEE3D3D, 0.5F, getBox().getLeft() + 3 + 0, getBox().getTop() + 2.25F);
-            ctx.renderText(textY, 0xFF04B904, 0.5F, getBox().getLeft() + 3 + 12, getBox().getTop() + 2.25F);
-            ctx.renderText(textZ, 0xFF175FE4, 0.5F, getBox().getLeft() + 3 + 24, getBox().getTop() + 2.25F);
+            ctx.renderText(textX, 0xFFEE3D3D, 0.5F, ctx.getZ(), getBox().getLeft() + 3 + 0, getBox().getTop() + 2.25F);
+            ctx.renderText(textY, 0xFF04B904, 0.5F, ctx.getZ(), getBox().getLeft() + 3 + 12, getBox().getTop() + 2.25F);
+            ctx.renderText(textZ, 0xFF175FE4, 0.5F, ctx.getZ(), getBox().getLeft() + 3 + 24, getBox().getTop() + 2.25F);
         }
 
         private void updateTexts() {
