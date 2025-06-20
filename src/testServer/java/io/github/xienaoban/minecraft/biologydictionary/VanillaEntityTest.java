@@ -3,10 +3,10 @@ package io.github.xienaoban.minecraft.biologydictionary;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
-import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
@@ -22,10 +22,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class VanillaEntityTest implements FabricGameTest {
+public class VanillaEntityTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @GameTest(template = EMPTY_STRUCTURE)
+    @GameTest
     public void testDeobfuscationBatch(GameTestHelper helper) {
         AtomicBoolean success = new AtomicBoolean(true);
 
@@ -57,11 +57,11 @@ public class VanillaEntityTest implements FabricGameTest {
                 throw new RuntimeException(e);
             }
             LOGGER.info("Deobfuscation batch has been written to " + path + ".");
-            helper.fail("Some entities are not covered by the deobfuscation map.");
+            helper.fail(Component.literal("Some entities are not covered by the deobfuscation map."));
         }
     }
 
-    @GameTest(template = EMPTY_STRUCTURE)
+    @GameTest
     public void testOrderBatch(GameTestHelper helper) {
         boolean success = true;
 
@@ -87,7 +87,7 @@ public class VanillaEntityTest implements FabricGameTest {
             }
         }
         if (success) helper.succeed();
-        else helper.fail("Some entities have not been assigned an order.");
+        else helper.fail(Component.literal("Some entities have not been assigned an order."));
     }
 
     private void exportDeobfuscationOfVanillaEntities(PrintWriter out) {
