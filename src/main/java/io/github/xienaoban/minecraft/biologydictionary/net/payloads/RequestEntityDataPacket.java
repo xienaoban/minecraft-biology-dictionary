@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.net.payloads;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
-import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayload;
+import io.github.xienaoban.minecraft.biologydictionary.common.net.Packet;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
@@ -9,16 +9,15 @@ import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityPrope
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.NotNull;
 
-public record RequestEntityDataPacketPayload(int entityId) implements PacketPayload {
+public record RequestEntityDataPacket(int entityId) implements Packet {
     public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
 
     @Override
-    public @NotNull Type<? extends PacketPayload> type() { return META.type(); }
+    public Type<? extends Packet> type() { return META.type(); }
 
     @SuppressWarnings("unused")
-    public RequestEntityDataPacketPayload(FriendlyByteBuf buf) { this(buf.readInt()); }
+    public RequestEntityDataPacket(FriendlyByteBuf buf) { this(buf.readInt()); }
 
     @Override
     public void write(FriendlyByteBuf buf) { buf.writeInt(entityId); }
@@ -27,7 +26,7 @@ public record RequestEntityDataPacketPayload(int entityId) implements PacketPayl
     public void serverReceive(ServerNetApi.Context ctx) {
         Entity entity = ctx.player().getCommandSenderWorld().getEntity(entityId);
 
-        SendEntityDataPacketPayload toSend;
+        SendEntityDataPacket toSend;
         if (entity != null) {
             // Write vanilla NBT data.
             CompoundTag vanillaNbt = entity.saveWithoutId(new CompoundTag());
@@ -38,9 +37,9 @@ public record RequestEntityDataPacketPayload(int entityId) implements PacketPayl
                 p.loadFrom(Misc.cast(entity));
                 p.writeTo(extraNbt);
             }
-            toSend = new SendEntityDataPacketPayload(true, entity.getId(), vanillaNbt, extraNbt);
+            toSend = new SendEntityDataPacket(true, entity.getId(), vanillaNbt, extraNbt);
         } else {
-            toSend = new SendEntityDataPacketPayload(false, -1, null, null);
+            toSend = new SendEntityDataPacket(false, -1, null, null);
         }
 
         ServerNetApi.send(ctx.player(), toSend);

@@ -2,6 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.common.property.*;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla.*;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.ambient.Bat;
@@ -481,11 +482,11 @@ public final class EntityVanillaProperties {
             return g(ep, "Team");
         }
 
-        public static UnsupportedProperty<LivingEntity> createActiveEffectsProperty() {
-            return new UnsupportedProperty<>("active_effects");
+        public static LivingEntityActiveEffectsProperty createActiveEffectsProperty() {
+            return new LivingEntityActiveEffectsProperty("active_effects");
         }
 
-        public static UnsupportedProperty<LivingEntity> getActiveEffectsProperty(EntityProperties<?> ep) {
+        public static LivingEntityActiveEffectsProperty getActiveEffectsProperty(EntityProperties<?> ep) {
             return g(ep, "active_effects");
         }
 
@@ -2063,11 +2064,11 @@ public final class EntityVanillaProperties {
             return g(ep, "RestocksToday");
         }
 
-        public static UnsupportedProperty<Villager> createVillagerDataProperty() {
-            return new UnsupportedProperty<>("VillagerData");
+        public static VillagerVillagerDataProperty createVillagerDataProperty() {
+            return new VillagerVillagerDataProperty("VillagerData");
         }
 
-        public static UnsupportedProperty<Villager> getVillagerDataProperty(EntityProperties<?> ep) {
+        public static VillagerVillagerDataProperty getVillagerDataProperty(EntityProperties<?> ep) {
             return g(ep, "VillagerData");
         }
 

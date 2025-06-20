@@ -1,11 +1,11 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util;
 
-import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.ElementScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 
@@ -18,17 +18,23 @@ public abstract class ScreenElement {
     @Nullable protected ScreenElement parent;
     private final ScreenElementBox box;
     private final ArrayList<ScreenElement> subScreenElements;
+    private boolean hoverable;
     private boolean selectable;
     private float priority;
 
     public ScreenElement() {
-        this(true);
+        this(true, true);
     }
 
     public ScreenElement(boolean selectable) {
+        this(true, selectable);
+    }
+
+    public ScreenElement(boolean hoverable, boolean selectable) {
         this.parent = null;
         this.box = new ScreenElementBox();
         this.subScreenElements = new ArrayList<>();
+        this.hoverable = hoverable;
         this.selectable = selectable;
     }
 
@@ -91,18 +97,18 @@ public abstract class ScreenElement {
     public final void render(ScreenRenderingContext ctx) {
         onRender(ctx);
         if (ctx.isDebug() && box.getWidth() > 0 && box.getHeight() > 0) {
-            ElementScreen screen = (ElementScreen) ctx.getScreen();
+            ElementScreen screen = ctx.getElementScreen();
             final int alpha = 0xFF000000;
             final int color;
             if (this == screen.getSelectedElement()) color = 0x0044CC00;
             else if (this == screen.getFocusedElement()) color = 0x00FFAA00;
-            else if (contains(screen.getFocusedElement())) color = 0x000055FF;
+            else if (isInBox(screen.getFocusedElement())) color = 0x000055FF;
             else color = 0x00CC0000;
-            ctx.renderRectangle(color | alpha, 0.6F, ((CommonScreen) ctx.getScreen()).getZ(),
+            ctx.renderRectangle(color | alpha, 0.6F, screen.getZ(),
                     box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
             if (this == screen.getFocusedElement()) {
                 ctx.renderText(Component.literal(getClass().getSimpleName()), 0xFF7719AA,
-                        0.5F, box.getLeft() + 1, box.getTop() - 4.5F);
+                        0.5F, ctx.getZ(), box.getLeft() + 1, box.getTop() - 4.5F);
             }
         }
         for (ScreenElement subEle : subScreenElements) {
@@ -120,14 +126,20 @@ public abstract class ScreenElement {
     }
 
     public final boolean isFocused(float x, float y) {
-        return x >= box.getLeft() && x < box.getRight() && y >= box.getTop() && y < box.getBottom();
+        return isHoverable() && x >= box.getLeft() && x < box.getRight() && y >= box.getTop() && y < box.getBottom();
     }
 
     public final boolean mouseDown(float x, float y, int code) {
-        return !onMouseDown(x, y, code) && getParent() != null && getParent().mouseDown(x, y , code);
+        if (isSelectable() && onMouseDown(x, y, code)) {
+            return true;
+        }
+        return getParent() != null && getParent().mouseDown(x, y , code);
     }
 
     public final ScreenElementBox getBox() { return box; }
+
+    public final boolean isHoverable() { return hoverable; }
+    public final void setHoverable(boolean hoverable) { this.hoverable = hoverable; }
 
     public final boolean isSelectable() { return selectable; }
     public final void setSelectable(boolean selectable) { this.selectable = selectable; }
@@ -142,7 +154,7 @@ public abstract class ScreenElement {
     }
 
     /**
-     * In theory, the return value of this and {@link #contains} should be the same.
+     * In theory, the return value of this and {@link #isInBox} should be the same.
      */
     public final boolean isInStack(ScreenElement element) {
         while (element != null) {
@@ -155,7 +167,7 @@ public abstract class ScreenElement {
     /**
      * In theory, the return value of this and {@link #isInStack} should be the same.
      */
-    public final boolean contains(ScreenElement element) {
+    public final boolean isInBox(ScreenElement element) {
         if (element == null) return false;
         ScreenElementBox bi = element.getBox();
         ScreenElementBox bo = getBox();
@@ -182,5 +194,9 @@ public abstract class ScreenElement {
 
     private void unregisterSubScreenElement(ScreenElement sub) {
         subScreenElements.remove(sub);
+    }
+
+    public static boolean isMouseLeft(int code) {
+        return code == GLFW.GLFW_MOUSE_BUTTON_LEFT;
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.world.entity.Entity;
 public abstract class EntityPropertyIconWidget<E extends Entity> extends EntityPropertyWidget<E> {
     private EntityPropertyIcon icon;
 
-    protected EntityPropertyIconWidget(EntityProperties<E> properties, int rows, int columns) {
+    public EntityPropertyIconWidget(EntityProperties<E> properties, int rows, int columns) {
         super(properties, rows, columns);
         this.icon = null;
     }
@@ -27,9 +27,5 @@ public abstract class EntityPropertyIconWidget<E extends Entity> extends EntityP
         if (icon != null) {
             icon.getBox().setPosition(getBox().getLeft(), getBox().getTop());
         }
-    }
-
-    protected EntityPropertyIcon geIcon() {
-        return icon;
     }
 }

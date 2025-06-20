@@ -122,7 +122,7 @@ public class BeehiveScreen extends ElementScreen {
             if (customName != null) {
                 int wHalf = (ctx.calcTextWidth(customName) >> 2) + 1;
                 ctx.renderHorizontalLine(0x55777777, 6, ctx.getZ(), beeTop, x - wHalf, x + wHalf);
-                ctx.renderCenteredText(bee.entity.getCustomName(), color, 0.5F, x, beeTop - 2);
+                ctx.renderCenteredText(bee.entity.getCustomName(), color, 0.5F, ctx.getZ(), x, beeTop - 2);
             }
             if (ctx.getMouseX() > x - 10 && ctx.getMouseX() < x + 10 && ctx.getMouseY() > beeTop && ctx.getMouseY() < y) {
                 List<Component> texts = List.of(
@@ -134,10 +134,10 @@ public class BeehiveScreen extends ElementScreen {
                 ctx.getGuiGraphics().renderTooltip(ctx.getFont(), texts.stream().map(Component::getVisualOrderText).toList(), x - (maxLength + 20) / 2, y + 18);
             }
         }
-        ctx.renderText(Component.literal(honeyCnt + "/" + MAX_HONEY_CNT), color, LATTICES[5][0] + lw + 16 - 8.5F, LATTICES[5][1] + lh + 8);
-        ctx.renderText(Component.literal(beeCnt + "/" + MAX_BEE_CNT), color, LATTICES[6][0] + lw + 16 - 8.5F, LATTICES[6][1] + lh + 8);
-        ctx.renderCenteredText(Component.translatable(Lang.TEXT_HONEY), color, LATTICES[5][0] + lw + 16.5F, LATTICES[5][1] + lh + 16);
-        ctx.renderCenteredText(EntityType.BEE.getDescription(), color, LATTICES[6][0] + lw + 16.5F, LATTICES[6][1] + lh + 16);
+        ctx.renderText(Component.literal(honeyCnt + "/" + MAX_HONEY_CNT), color, ctx.getZ(), LATTICES[5][0] + lw + 16 - 8.5F, LATTICES[5][1] + lh + 8);
+        ctx.renderText(Component.literal(beeCnt + "/" + MAX_BEE_CNT), color, ctx.getZ(), LATTICES[6][0] + lw + 16 - 8.5F, LATTICES[6][1] + lh + 8);
+        ctx.renderCenteredText(Component.translatable(Lang.TEXT_HONEY), color, ctx.getZ(), LATTICES[5][0] + lw + 16.5F, LATTICES[5][1] + lh + 16);
+        ctx.renderCenteredText(EntityType.BEE.getDescription(), color, ctx.getZ(), LATTICES[6][0] + lw + 16.5F, LATTICES[6][1] + lh + 16);
         ctx.getGuiGraphics().pose().popPose();
     }
 

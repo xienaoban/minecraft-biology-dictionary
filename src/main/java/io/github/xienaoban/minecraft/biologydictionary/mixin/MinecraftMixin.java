@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.common.mixin;
+package io.github.xienaoban.minecraft.biologydictionary.mixin;
 
 import io.github.xienaoban.minecraft.biologydictionary.client.BiologyDictionaryEvent;
 import io.github.xienaoban.minecraft.biologydictionary.core.BiologyDictionaryItem;

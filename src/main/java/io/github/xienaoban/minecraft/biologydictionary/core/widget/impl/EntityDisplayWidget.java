@@ -1,22 +1,17 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
 import com.mojang.authlib.GameProfile;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
-import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.WaterAnimal;
-import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -25,7 +20,7 @@ import net.minecraft.world.phys.Vec3;
  * The entity can be rotated according to the mouse.
  */
 @Environment(EnvType.CLIENT)
-public final class EntityImageWidget extends EntityPropertyWidget<Entity> {
+public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
 
     private static RC calculateRowsAndColumns(Entity entity) {
         AABB box = entity.getBoundingBox();
@@ -34,52 +29,27 @@ public final class EntityImageWidget extends EntityPropertyWidget<Entity> {
         return new RC(5, 4);
     }
 
-    private static Entity createFakeEntity(Entity entity) {
-        Entity fake = EntityUtils.create(entity.getType(), entity.level());
-        if (fake == null) {
+    private static Entity createModelEntity(Entity entity) {
+        Entity model = EntityUtils.create(entity.getType(), entity.level());
+        if (model == null) {
             if (entity instanceof LocalPlayer me) {
                 GameProfile profile = me.getGameProfile();
-                fake = new RemotePlayer(me.clientLevel, new GameProfile(profile.getId(), profile.getName()));
+                model = new RemotePlayer(me.clientLevel, new GameProfile(profile.getId(), profile.getName()));
                 // to make name label invisible
                 // @see net.minecraft.client.renderer.entity.LivingEntityRenderer.shouldShowName
-                Vec3 pos = fake.position();
-                fake.setPos(pos.x(), pos.y() - 4097, pos.z());
+                Vec3 pos = model.position();
+                model.setPos(pos.x(), pos.y() - 4097, pos.z());
             } else {
-                fake = EntityUtils.create(EntityType.ARMOR_STAND, entity.level());
+                model = EntityUtils.create(EntityType.ARMOR_STAND, entity.level());
             }
         }
-        assert fake != null;
-        updateCompoundTag(entity, fake);
-        return fake;
+        assert model != null;
+        updateCompoundTag(entity, model);
+        return model;
     }
 
     private static void updateCompoundTag(Entity from, Entity to) {
-        CompoundTag tag = new CompoundTag();
-        from.saveWithoutId(tag);
-        tag.remove("AngryAt");
-        tag.remove("CustomName");
-        tag.remove("CustomNameVisible");
-        tag.remove("Dimension");
-        tag.remove("HurtTime");
-        tag.remove("Pos");
-        tag.remove("Rotation");
-
-        if (from instanceof LivingEntity) {
-            tag.remove("Brain");
-            tag.remove("SleepingX");
-            tag.remove("SleepingY");
-            tag.remove("SleepingZ");
-        }
-
-        if (from instanceof AbstractClientPlayer) {
-            tag.remove("Inventory");
-        } else if (from instanceof Dolphin) {
-            tag.remove("GotFish");
-        } else if (from instanceof Camel) {
-            tag.remove("LastPoseTick");
-        }
-
-        to.load(tag);
+        to.load(EntityUtils.getNbtToDisplay(from));
 
         // options not controlled by nbt
         if (to instanceof WaterAnimal waterAnimal) {
@@ -87,26 +57,27 @@ public final class EntityImageWidget extends EntityPropertyWidget<Entity> {
         }
     }
 
-    private final Entity fake;
+    private final Entity model;
 
     private final float entityScale;
     private final float entityBottom;
 
-    public EntityImageWidget(EntityProperties<Entity> properties) {
-        this(properties, createFakeEntity(properties.entity()));
+    public EntityDisplayWidget(EntityProperties<Entity> properties) {
+        this(properties, createModelEntity(properties.entity()));
     }
 
-    private EntityImageWidget(EntityProperties<Entity> properties, Entity fake) {
-        super(properties, calculateRowsAndColumns(fake));
-        this.fake = fake;
+    private EntityDisplayWidget(EntityProperties<Entity> properties, Entity model) {
+        super(properties, calculateRowsAndColumns(model));
+        this.model = model;
+        p().setModel(model);
         float[] sp = calculateScaleAndPosition();
         entityScale = sp[0];
         entityBottom = sp[1];
     }
 
     private float[] calculateScaleAndPosition() {
-        float entityWidth = (float) fake.getBoundingBox().getXsize();
-        float entityHeight = (float) fake.getBoundingBox().getYsize();
+        float entityWidth = (float) model.getBoundingBox().getXsize();
+        float entityHeight = (float) model.getBoundingBox().getYsize();
         float widgetWidth = getBox().getWidth() - 8;
         float widgetHeight = getBox().getHeight() - 16;
         float scale = Math.min(
@@ -118,9 +89,17 @@ public final class EntityImageWidget extends EntityPropertyWidget<Entity> {
     }
 
     @Override
+    protected void onTick(int ticks) {
+        super.onTick(ticks);
+        if (ticks % 20 == 15 && p().isNotInNoUpdateCooldown()) {
+            updateCompoundTag(e(), model);
+        }
+    }
+
+    @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        ctx.renderEntity(fake, (getBox().getLeft() + getBox().getRight()) / 2,
+        ctx.renderEntity(model, (getBox().getLeft() + getBox().getRight()) / 2,
                 getBox().getTop() + entityBottom, entityScale,
                 0.06F + (float) Math.atan(ctx.getMouseX() / 40F) / 10,
                 0.02F + (float) Math.atan(ctx.getMouseY() / 40F) / 20,

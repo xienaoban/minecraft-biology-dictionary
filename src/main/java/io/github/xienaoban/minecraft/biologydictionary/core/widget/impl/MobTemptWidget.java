@@ -6,37 +6,42 @@ import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityPrope
 import io.github.xienaoban.minecraft.biologydictionary.core.property.extra.MobTemptProperty;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public class MobTemptWidget extends EntityPropertyStandardWidget<Animal> {
-    private static final int L = 6, H = 2;
+@Environment(EnvType.CLIENT)
+public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
+    private static final int L = 14, T = 2;
 
-    MobTemptProperty mobTemptProperty = p().getExtra(MobTemptProperty.class);
+    private final MobTemptProperty mobTemptProperty = p().getExtra(MobTemptProperty.class);
 
-    public MobTemptWidget(EntityProperties<Animal> properties) {
+    public MobTemptWidget(EntityProperties<Mob> properties) {
         super(properties);
-        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT));
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new TemptBar());
     }
 
-    private final class TemptBar extends EntityPropertyProgressBar {
+    private final class TemptBar extends EntityPropertyBar {
         private float gap;
         private int lastSize = 0;
 
         public TemptBar() {
-            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
         }
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            renderFullBar(ctx);
             Component text = null;
             List<ItemStack> tempts = mobTemptProperty.get();
             if (tempts == null) {
@@ -44,8 +49,6 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Animal> {
             } else if (tempts.isEmpty()) {
                 text = Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS);
             }
-            updatePercent(text != null ? 0 : 1);
-            super.onRender(ctx);
             if (text != null) {
                 renderInnerText(ctx, text, Colors.GRAY_FOR_TEXT_EMPTY);
                 return;
@@ -53,11 +56,11 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Animal> {
 
             if (lastSize != tempts.size()) {
                 lastSize = tempts.size();
-                gap = Math.min(10.0F, (getBox().getWidth() - 8.0F) / Math.max(1, lastSize - 1));
+                updateGap(lastSize);
             }
 
             for (int i = tempts.size() - 1; i >= 0; --i) {
-                ctx.renderTexture(Textures.ICONS, 24 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
+                ctx.renderTexture(Textures.ICONS, 22 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
             for (int i = tempts.size() - 1; i >= 0; --i) {
                 ctx.renderItem(tempts.get(i), 0.5F, getBox().getLeft() + i * gap, getBox().getTop());
@@ -69,7 +72,11 @@ public class MobTemptWidget extends EntityPropertyStandardWidget<Animal> {
             super.onResize(width, height);
             List<ItemStack> tempts = mobTemptProperty.get();
             int size = tempts == null ? 0 : tempts.size();
-            gap = Math.min(10.0F, (getBox().getWidth() - 8.0F) / Math.max(1, size - 1));
+            updateGap(size);
+        }
+
+        private void updateGap(float size) {
+            gap = Math.min(9.0F, (getBox().getWidth() - 8.0F) / Math.max(1, size - 1));
         }
     }
 }

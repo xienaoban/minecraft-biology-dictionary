@@ -21,6 +21,8 @@ public final class Lang {
     public static final String TAG_GROUP_INTERFACE = "tag_group.biologydictionary.interface";
     public static final String TAG_GROUP_NAMESPACE = "tag_group.biologydictionary.namespace";
 
+    public static final String ACTIVITY_PREFIX = "activity.minecraft.";
+
     // Translation Keys
     public static final String GUI_OK = "gui.ok";
     public static final String GUI_CANCEL = "gui.cancel";
@@ -32,6 +34,12 @@ public final class Lang {
     public static final String TEXT_CLICK_ME_TO_DOWNLOAD    = "text.biologydictionary.click_me_to_download";
     public static final String TEXT_NO_DATA_WITH_BRACKETS   = "text.biologydictionary.no_data_with_brackets";
     public static final String TEXT_EMPTY_WITH_BRACKETS     = "text.biologydictionary.empty_with_brackets";
+    public static final String TEXT_INFINITY                = "text.biologydictionary.infinity";
+    public static final String TEXT_INFINITY_CHARACTER      = "text.biologydictionary.infinity_character";
+    public static final String TEXT_BABY                    = "text.biologydictionary.baby";
+    public static final String TEXT_ADULT                   = "text.biologydictionary.adult";
+    public static final String TEXT_ALWAYS_BABY             = "text.biologydictionary.always_baby";
+    public static final String TEXT_NEVER_BREED             = "text.biologydictionary.never_breed";
     public static final String TEXT_HONEY                   = "text.biologydictionary.honey";
     public static final String TEXT_BEE_STATE_IN_BEEHIVE    = "text.biologydictionary.bee_state_in_beehive";
     public static final String TEXT_BEE_PRODUCING_NECTAR    = "text.biologydictionary.bee_producing_nectar";

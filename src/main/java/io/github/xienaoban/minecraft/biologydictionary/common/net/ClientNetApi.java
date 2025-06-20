@@ -16,7 +16,7 @@ import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.
 @Environment(EnvType.CLIENT)
 public final class ClientNetApi {
 
-    public static <T extends PacketPayload> void register(Class<T> clazz) {
+    public static <T extends Packet> void register(Class<T> clazz) {
         try {
             @SuppressWarnings("unchecked")
             PacketPayloadMeta<T> meta = (PacketPayloadMeta<T>) clazz.getField("META").get(null);
@@ -40,7 +40,7 @@ public final class ClientNetApi {
         }
     }
 
-    public static <T extends PacketPayload> void send(T payload) {
+    public static <T extends Packet> void send(T payload) {
         ClientPlayNetworking.send(payload);
     }
 

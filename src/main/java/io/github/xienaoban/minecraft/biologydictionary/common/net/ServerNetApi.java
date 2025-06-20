@@ -15,7 +15,7 @@ import java.io.StringWriter;
 import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
 
 public final class ServerNetApi {
-    public static <T extends PacketPayload> void register(Class<T> clazz) {
+    public static <T extends Packet> void register(Class<T> clazz) {
         try {
             @SuppressWarnings("unchecked")
             PacketPayloadMeta<T> meta = (PacketPayloadMeta<T>) clazz.getField("META").get(null);
@@ -46,7 +46,7 @@ public final class ServerNetApi {
         }
     }
 
-    public static <T extends PacketPayload> void send(ServerPlayer player, T payload) {
+    public static <T extends Packet> void send(ServerPlayer player, T payload) {
         ServerPlayNetworking.send(player, payload);
     }
 

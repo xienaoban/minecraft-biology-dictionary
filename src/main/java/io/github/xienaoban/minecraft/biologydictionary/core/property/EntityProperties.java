@@ -14,10 +14,16 @@ import java.util.Map;
 @SuppressWarnings("rawtypes")
 public final class EntityProperties<E extends Entity> {
 
+    public static final int ENTITY_PORTAL_COOLDOWN_INFINITY = 303;
+
     private final E entity;
 
     private final Map<String, EntityProperty<?>> vanillaProperties;
     private final Map<Class<? extends EntityProperty>, EntityProperty<?>> extraProperties;
+
+    // Skip updating some client data for some time because of the client-server sync problem.
+    private int noUpdateCooldown = 0;
+    private E model;
 
     public EntityProperties(E entity) {
         this.entity = entity;
@@ -40,9 +46,22 @@ public final class EntityProperties<E extends Entity> {
         }
         this.vanillaProperties = Collections.unmodifiableMap(vMap);
         this.extraProperties = Collections.unmodifiableMap(eMap);
+
+        this.model = null;
     }
 
     public E entity() { return entity; }
+
+    public E getModel() { return model; }
+    public void setModel(E model) { this.model = model; }
+
+    public boolean isInNoUpdateCooldown() { return noUpdateCooldown > 0; }
+    public boolean isNotInNoUpdateCooldown() { return noUpdateCooldown <= 0; }
+    public void setNoUpdateCooldown() { setNoUpdateCooldown(10); }
+    public void setNoUpdateCooldown(int noUpdateCooldown) { this.noUpdateCooldown = noUpdateCooldown; }
+    public void tickNoUpdateCooldown() {
+        if (noUpdateCooldown > 0) { --noUpdateCooldown; }
+    }
 
     public <EP extends EntityProperty<?>> EP getVanilla(String key) {
         return Misc.cast(vanillaProperties.getOrDefault(key, null));

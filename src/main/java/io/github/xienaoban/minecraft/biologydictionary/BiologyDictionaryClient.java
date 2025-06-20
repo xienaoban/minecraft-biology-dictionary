@@ -13,7 +13,7 @@ import net.minecraft.world.entity.Entity;
 import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
 
 @Environment(EnvType.CLIENT)
-public class BiologyDictionaryClient {
+public final class BiologyDictionaryClient {
     public static final BiologyDictionaryClient BDC = new BiologyDictionaryClient();
 
     private Entity hitEntity;
