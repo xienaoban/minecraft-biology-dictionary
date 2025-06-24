@@ -1,42 +1,23 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.property;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public final class StringListProperty<E extends Entity> extends AbstractProperty<E, ArrayList<String>> {
+public final class StringListProperty<E extends Entity> extends AbstractProperty<E, List<String>> {
     public StringListProperty(String propertyName) {
         super(propertyName);
     }
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (nbt.contains(name(), Tag.TAG_LIST)) {
-            ListTag listTag = nbt.getList(name(), Tag.TAG_STRING);
-            ArrayList<String> list = new ArrayList<>();
-            for (int i = 0; i < listTag.size(); i++) {
-                list.add(listTag.getString(i));
-            }
-            set(list);
-        } else {
-            set(new ArrayList<>());
-        }
+        set(nbt.read(name(), Codec.STRING.listOf()).orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        if (get() != null) {
-            ListTag listTag = new ListTag();
-            for (var e : get()) {
-                listTag.add(StringTag.valueOf(e));
-            }
-            nbt.put(name(), listTag);
-        } else {
-            throw new IllegalPropertyStateException("list type must not be null");
-        }
+        nbt.storeNullable(name(), Codec.STRING.listOf(), get());
     }
 }

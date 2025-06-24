@@ -33,7 +33,7 @@ public abstract class CommonScreen extends Screen {
     public final void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {}
 
     public final void renderBlurredBackground(ScreenRenderingContext ctx) {
-        super.renderBlurredBackground();
+        super.renderBlurredBackground(ctx.getGuiGraphics());
     }
 
     public final void renderTransparentBackground(ScreenRenderingContext ctx) {

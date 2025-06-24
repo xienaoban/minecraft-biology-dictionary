@@ -1,7 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.property;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
 public final class ByteArrayProperty<E extends Entity> extends AbstractProperty<E, byte[]> {
@@ -11,11 +10,7 @@ public final class ByteArrayProperty<E extends Entity> extends AbstractProperty<
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (nbt.contains(name(), Tag.TAG_BYTE_ARRAY)) {
-            set(nbt.getByteArray(name()));
-        } else {
-            set(null);
-        }
+        set(nbt.getByteArray(name()).orElse(null));
     }
 
     @Override

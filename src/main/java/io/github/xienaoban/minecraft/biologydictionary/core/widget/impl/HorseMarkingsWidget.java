@@ -50,8 +50,7 @@ public final class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse
     protected void writeVariantToNbt(VariantElement element, CompoundTag vanillaNbt, CompoundTag extraNbt) {
         Horse tmp = EntityUtils.create(e());
         EntityUtils.setVariantAndMarkings(tmp, e().getVariant(), element.getVariant());
-        CompoundTag nbt = new CompoundTag();
-        tmp.saveWithoutId(nbt);
+        CompoundTag nbt = EntityUtils.getNbt(tmp);
         String key = EntityVanillaProperties.OfHorse.getVariantProperty(p()).name();
         vanillaNbt.put(key, Objects.requireNonNull(nbt.get(key)));
     }

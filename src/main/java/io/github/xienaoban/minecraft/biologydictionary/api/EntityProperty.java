@@ -26,7 +26,7 @@ public interface EntityProperty<E extends Entity> {
     /**
      * Read the property value from the entity.
      * This method is only used by extra property to read the server-side entity member variables. Because values of
-     * vanilla properties are read automatically through {@link Entity#addAdditionalSaveData(CompoundTag)}.
+     * vanilla properties are read automatically through {@link Entity#addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput)}.
      *
      * @param entity Minecraft entity
      */
@@ -35,7 +35,7 @@ public interface EntityProperty<E extends Entity> {
     /**
      * Write the property value to the entity.
      * This method is only used by extra property to write the server-side entity member variables. Because values of
-     * vanilla properties are written automatically through {@link Entity#readAdditionalSaveData(CompoundTag)}.
+     * vanilla properties are written automatically through {@link Entity#readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput)}.
      *
      * @param entity Minecraft entity
      */

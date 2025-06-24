@@ -4,6 +4,7 @@ import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.Packet;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.ServerNetApi;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import net.minecraft.nbt.CompoundTag;
@@ -31,16 +32,15 @@ public record SendUpdatedEntityPropertiesPacket(int entityId, CompoundTag vanill
 
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
-        Entity entity = ctx.player().getCommandSenderWorld().getEntity(entityId);
+        Entity entity = ctx.player().level().getEntity(entityId);
         if (entity == null) {
             return;
         }
 
         // Save vanilla properties to the entity.
         if (vanillaNbt != null) {
-            CompoundTag oldVanillaNbt = new CompoundTag();
-            entity.saveWithoutId(oldVanillaNbt);
-            entity.load(oldVanillaNbt.merge(vanillaNbt));
+            CompoundTag oldVanillaNbt = EntityUtils.getNbt(entity);
+            EntityUtils.setNbt(entity, oldVanillaNbt.merge(vanillaNbt));
         }
 
         // Save extra properties to the entity.

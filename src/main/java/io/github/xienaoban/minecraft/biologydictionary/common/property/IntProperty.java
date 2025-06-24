@@ -1,7 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.property;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
 public final class IntProperty<E extends Entity> extends AbstractProperty<E, Integer> {
@@ -11,11 +10,7 @@ public final class IntProperty<E extends Entity> extends AbstractProperty<E, Int
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (nbt.contains(name(), Tag.TAG_INT)) {
-            set(nbt.getInt(name()));
-        } else {
-            set(null);
-        }
+        set(nbt.getInt(name()).orElse(null));
     }
 
     @Override

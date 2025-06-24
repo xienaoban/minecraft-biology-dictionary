@@ -49,7 +49,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     }
 
     private static void updateCompoundTag(Entity from, Entity to) {
-        to.load(EntityUtils.getNbtToDisplay(from));
+        EntityUtils.setNbt(to, EntityUtils.getNbtToDisplay(from));
 
         // options not controlled by nbt
         if (to instanceof WaterAnimal waterAnimal) {
@@ -99,8 +99,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        ctx.renderEntity(model, (getBox().getLeft() + getBox().getRight()) / 2,
-                getBox().getTop() + entityBottom, entityScale,
+        ctx.renderEntityBottomed(model, getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
                 0.06F + (float) Math.atan(ctx.getMouseX() / 40F) / 10,
                 0.02F + (float) Math.atan(ctx.getMouseY() / 40F) / 20,
                 true);

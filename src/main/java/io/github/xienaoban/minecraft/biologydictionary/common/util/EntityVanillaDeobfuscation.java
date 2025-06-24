@@ -30,7 +30,6 @@ final class EntityVanillaDeobfuscation {
         /**/ r(net.minecraft.world.entity.Entity.class, "net.minecraft.world.entity.Entity");
         /*--*/ r(net.minecraft.world.entity.LivingEntity.class, "net.minecraft.world.entity.LivingEntity");
         /*----*/ r(net.minecraft.world.entity.Mob.class, "net.minecraft.world.entity.Mob");
-        /*------*/ r(net.minecraft.world.entity.FlyingMob.class, "net.minecraft.world.entity.FlyingMob");
         /*--------*/ r(net.minecraft.world.entity.monster.Ghast.class, "net.minecraft.world.entity.monster.Ghast");
         /*--------*/ r(net.minecraft.world.entity.monster.Phantom.class, "net.minecraft.world.entity.monster.Phantom");
         /*------*/ r(net.minecraft.world.entity.PathfinderMob.class, "net.minecraft.world.entity.PathfinderMob");
@@ -44,7 +43,7 @@ final class EntityVanillaDeobfuscation {
         /*--------------*/ r(net.minecraft.world.entity.animal.Cat.class, "net.minecraft.world.entity.animal.Cat");
         /*--------------*/ r(net.minecraft.world.entity.animal.ShoulderRidingEntity.class, "net.minecraft.world.entity.animal.ShoulderRidingEntity");
         /*----------------*/ r(net.minecraft.world.entity.animal.Parrot.class, "net.minecraft.world.entity.animal.Parrot");
-        /*--------------*/ r(net.minecraft.world.entity.animal.Wolf.class, "net.minecraft.world.entity.animal.Wolf");
+        /*--------------*/ r(net.minecraft.world.entity.animal.wolf.Wolf.class, "net.minecraft.world.entity.animal.wolf.Wolf");
         /*------------*/ r(net.minecraft.world.entity.animal.Bee.class, "net.minecraft.world.entity.animal.Bee");
         /*------------*/ r(net.minecraft.world.entity.animal.Chicken.class, "net.minecraft.world.entity.animal.Chicken");
         /*------------*/ r(net.minecraft.world.entity.animal.Cow.class, "net.minecraft.world.entity.animal.Cow");
@@ -55,7 +54,7 @@ final class EntityVanillaDeobfuscation {
         /*------------*/ r(net.minecraft.world.entity.animal.Pig.class, "net.minecraft.world.entity.animal.Pig");
         /*------------*/ r(net.minecraft.world.entity.animal.PolarBear.class, "net.minecraft.world.entity.animal.PolarBear");
         /*------------*/ r(net.minecraft.world.entity.animal.Rabbit.class, "net.minecraft.world.entity.animal.Rabbit");
-        /*------------*/ r(net.minecraft.world.entity.animal.Sheep.class, "net.minecraft.world.entity.animal.Sheep");
+        /*------------*/ r(net.minecraft.world.entity.animal.sheep.Sheep.class, "net.minecraft.world.entity.animal.sheep.Sheep");
         /*------------*/ r(net.minecraft.world.entity.animal.Turtle.class, "net.minecraft.world.entity.animal.Turtle");
         /*------------*/ r(net.minecraft.world.entity.animal.armadillo.Armadillo.class, "net.minecraft.world.entity.animal.armadillo.Armadillo");
         /*------------*/ r(net.minecraft.world.entity.animal.axolotl.Axolotl.class, "net.minecraft.world.entity.animal.axolotl.Axolotl");
@@ -150,11 +149,9 @@ final class EntityVanillaDeobfuscation {
         r(net.minecraft.world.entity.OwnableEntity.class, "net.minecraft.world.entity.OwnableEntity");
         r(net.minecraft.world.entity.PlayerRideableJumping.class, "net.minecraft.world.entity.PlayerRideableJumping");
         r(net.minecraft.world.entity.ReputationEventHandler.class, "net.minecraft.world.entity.ReputationEventHandler");
-        r(net.minecraft.world.entity.Saddleable.class, "net.minecraft.world.entity.Saddleable");
         r(net.minecraft.world.entity.Shearable.class, "net.minecraft.world.entity.Shearable");
         r(net.minecraft.world.entity.Targeting.class, "net.minecraft.world.entity.Targeting");
         r(net.minecraft.world.entity.TraceableEntity.class, "net.minecraft.world.entity.TraceableEntity");
-        r(net.minecraft.world.entity.VariantHolder.class, "net.minecraft.world.entity.VariantHolder");
         r(net.minecraft.world.entity.animal.Bucketable.class, "net.minecraft.world.entity.animal.Bucketable");
         r(net.minecraft.world.entity.animal.FlyingAnimal.class, "net.minecraft.world.entity.animal.FlyingAnimal");
         r(net.minecraft.world.entity.monster.CrossbowAttackMob.class, "net.minecraft.world.entity.monster.CrossbowAttackMob");

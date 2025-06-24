@@ -10,7 +10,6 @@ public abstract class AbstractProperty<E extends Entity, T> implements EntityPro
     private final String propertyName;
     private T value;
 
-
     public AbstractProperty(String propertyName) {
         this.propertyName = propertyName;
         this.value = null;
