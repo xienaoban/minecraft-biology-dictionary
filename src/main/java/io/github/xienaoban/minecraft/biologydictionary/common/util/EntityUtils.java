@@ -5,6 +5,7 @@ import io.github.xienaoban.minecraft.biologydictionary.mixin.HorseIMixin;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -13,6 +14,8 @@ import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,6 +84,17 @@ public final class EntityUtils {
         return EntityType.getKey(entity.getType());
     }
 
+    public static CompoundTag getNbt(Entity entity) {
+        TagValueOutput tagOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
+        entity.saveWithoutId(tagOut);
+        return tagOut.buildResult();
+    }
+
+    public static void setNbt(Entity entity, CompoundTag nbt) {
+        TagValueInput tagIn = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, entity.registryAccess(), nbt);
+        entity.load(tagIn);
+    }
+
     public static void setInWater(Entity entity, boolean inWater) {
         ((EntityIMixin) entity).setWasTouchingWater(inWater);
     }
@@ -99,8 +113,7 @@ public final class EntityUtils {
     }
 
     public static CompoundTag getNbtToDisplay(Entity entity) {
-        CompoundTag tag = new CompoundTag();
-        entity.saveWithoutId(tag);
+        CompoundTag tag = EntityUtils.getNbt(entity);
         return adaptNbtToDisplay(entity, tag);
     }
 

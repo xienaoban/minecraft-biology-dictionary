@@ -4,6 +4,7 @@ import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.Packet;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.ServerNetApi;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import net.minecraft.nbt.CompoundTag;
@@ -24,12 +25,12 @@ public record RequestEntityDataPacket(int entityId) implements Packet {
 
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
-        Entity entity = ctx.player().getCommandSenderWorld().getEntity(entityId);
+        Entity entity = ctx.player().level().getEntity(entityId);
 
         SendEntityDataPacket toSend;
         if (entity != null) {
             // Write vanilla NBT data.
-            CompoundTag vanillaNbt = entity.saveWithoutId(new CompoundTag());
+            CompoundTag vanillaNbt = EntityUtils.getNbt(entity);
 
             // Write data that not in vanilla NBT.
             CompoundTag extraNbt = new CompoundTag();

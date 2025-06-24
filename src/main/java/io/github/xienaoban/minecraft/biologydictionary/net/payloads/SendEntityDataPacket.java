@@ -1,9 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.net.payloads;
 
-import io.github.xienaoban.minecraft.biologydictionary.common.net.Packet;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.ClientNetApi;
+import io.github.xienaoban.minecraft.biologydictionary.common.net.Packet;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayloadMeta;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;

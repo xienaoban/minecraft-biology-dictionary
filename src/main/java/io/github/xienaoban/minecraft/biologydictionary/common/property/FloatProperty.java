@@ -1,7 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.property;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
 public final class FloatProperty<E extends Entity> extends AbstractProperty<E, Float> {
@@ -11,11 +10,7 @@ public final class FloatProperty<E extends Entity> extends AbstractProperty<E, F
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (nbt.contains(name(), Tag.TAG_FLOAT)) {
-            set(nbt.getFloat(name()));
-        } else {
-            set(null);
-        }
+        set(nbt.getFloat(name()).orElse(null));
     }
 
     @Override

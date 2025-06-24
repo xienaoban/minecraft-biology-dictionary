@@ -15,7 +15,9 @@ import net.minecraft.world.entity.animal.frog.Frog;
 import net.minecraft.world.entity.animal.frog.Tadpole;
 import net.minecraft.world.entity.animal.goat.Goat;
 import net.minecraft.world.entity.animal.horse.*;
+import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.animal.sniffer.Sniffer;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -69,7 +71,6 @@ public final class EntityVanillaProperties {
         r(Entity.class, new OfEntity());
         r(LivingEntity.class, new OfLivingEntity());
         r(Mob.class, new OfMob());
-        r(FlyingMob.class, new OfFlyingMob());
         r(Ghast.class, new OfGhast());
         r(Phantom.class, new OfPhantom());
         r(PathfinderMob.class, new OfPathfinderMob());
@@ -270,11 +271,11 @@ public final class EntityVanillaProperties {
             return g(ep, "Invulnerable");
         }
 
-        public static DoubleListProperty<Entity> createMotionProperty() {
-            return new DoubleListProperty<>("Motion");
+        public static UnsupportedProperty<Entity> createMotionProperty() {
+            return new UnsupportedProperty<>("Motion");
         }
 
-        public static DoubleListProperty<Entity> getMotionProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<Entity> getMotionProperty(EntityProperties<?> ep) {
             return g(ep, "Motion");
         }
 
@@ -310,19 +311,19 @@ public final class EntityVanillaProperties {
             return g(ep, "PortalCooldown");
         }
 
-        public static DoubleListProperty<Entity> createPosProperty() {
-            return new DoubleListProperty<>("Pos");
+        public static UnsupportedProperty<Entity> createPosProperty() {
+            return new UnsupportedProperty<>("Pos");
         }
 
-        public static DoubleListProperty<Entity> getPosProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<Entity> getPosProperty(EntityProperties<?> ep) {
             return g(ep, "Pos");
         }
 
-        public static FloatListProperty<Entity> createRotationProperty() {
-            return new FloatListProperty<>("Rotation");
+        public static UnsupportedProperty<Entity> createRotationProperty() {
+            return new UnsupportedProperty<>("Rotation");
         }
 
-        public static FloatListProperty<Entity> getRotationProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<Entity> getRotationProperty(EntityProperties<?> ep) {
             return g(ep, "Rotation");
         }
 
@@ -524,19 +525,19 @@ public final class EntityVanillaProperties {
      */
     public static final class OfMob implements Creator {
 
-        public static FloatListProperty<Mob> createArmorDropChancesProperty() {
-            return new FloatListProperty<>("ArmorDropChances");
+        public static UnsupportedProperty<Mob> createArmorDropChancesProperty() {
+            return new UnsupportedProperty<>("ArmorDropChances");
         }
 
-        public static FloatListProperty<Mob> getArmorDropChancesProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<Mob> getArmorDropChancesProperty(EntityProperties<?> ep) {
             return g(ep, "ArmorDropChances");
         }
 
-        public static ItemStackListProperty<Mob> createArmorItemsProperty() {
-            return new ItemStackListProperty<>("ArmorItems");
+        public static ItemStackWithSlotListProperty<Mob> createArmorItemsProperty() {
+            return new ItemStackWithSlotListProperty<>("ArmorItems");
         }
 
-        public static ItemStackListProperty<Mob> getArmorItemsProperty(EntityProperties<?> ep) {
+        public static ItemStackWithSlotListProperty<Mob> getArmorItemsProperty(EntityProperties<?> ep) {
             return g(ep, "ArmorItems");
         }
 
@@ -564,19 +565,19 @@ public final class EntityVanillaProperties {
             return g(ep, "DeathLootTableSeed");
         }
 
-        public static FloatListProperty<Mob> createHandDropChancesProperty() {
-            return new FloatListProperty<>("HandDropChances");
+        public static UnsupportedProperty<Mob> createHandDropChancesProperty() {
+            return new UnsupportedProperty<>("HandDropChances");
         }
 
-        public static FloatListProperty<Mob> getHandDropChancesProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<Mob> getHandDropChancesProperty(EntityProperties<?> ep) {
             return g(ep, "HandDropChances");
         }
 
-        public static ItemStackListProperty<Mob> createHandItemsProperty() {
-            return new ItemStackListProperty<>("HandItems");
+        public static ItemStackWithSlotListProperty<Mob> createHandItemsProperty() {
+            return new ItemStackWithSlotListProperty<>("HandItems");
         }
 
-        public static ItemStackListProperty<Mob> getHandItemsProperty(EntityProperties<?> ep) {
+        public static ItemStackWithSlotListProperty<Mob> getHandItemsProperty(EntityProperties<?> ep) {
             return g(ep, "HandItems");
         }
 
@@ -612,31 +613,17 @@ public final class EntityVanillaProperties {
             return g(ep, "body_armor_drop_chance");
         }
 
-        public static ItemStackProperty<Mob> createBodyArmorItemProperty() {
-            return new ItemStackProperty<>("body_armor_item");
+        public static UnsupportedProperty<Mob> createBodyArmorItemProperty() {
+            return new UnsupportedProperty<>("body_armor_item");
         }
 
-        public static ItemStackProperty<Mob> getBodyArmorItemProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<Mob> getBodyArmorItemProperty(EntityProperties<?> ep) {
             return g(ep, "body_armor_item");
         }
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
             p(map, createArmorDropChancesProperty(), createArmorItemsProperty(), createCanPickUpLootProperty(), createDeathLootTableProperty(), createDeathLootTableSeedProperty(), createHandDropChancesProperty(), createHandItemsProperty(), createLeftHandedProperty(), createNoAiProperty(), createPersistenceRequiredProperty(), createBodyArmorDropChanceProperty(), createBodyArmorItemProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.FlyingMob
-     */
-    public static final class OfFlyingMob implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
         }
     }
 
@@ -1019,7 +1006,7 @@ public final class EntityVanillaProperties {
      *  - "CollarColor": BYTE
      *  - "variant": STRING
      *
-     * @see net.minecraft.world.entity.animal.Wolf
+     * @see net.minecraft.world.entity.animal.wolf.Wolf
      */
     public static final class OfWolf implements Creator {
 
@@ -1238,11 +1225,11 @@ public final class EntityVanillaProperties {
             return g(ep, "Sleeping");
         }
 
-        public static UuidListProperty<Fox> createTrustedProperty() {
-            return new UuidListProperty<>("Trusted");
+        public static EntityReferenceListProperty<Fox> createTrustedProperty() {
+            return new EntityReferenceListProperty<>("Trusted");
         }
 
-        public static UuidListProperty<Fox> getTrustedProperty(EntityProperties<?> ep) {
+        public static EntityReferenceListProperty<Fox> getTrustedProperty(EntityProperties<?> ep) {
             return g(ep, "Trusted");
         }
 
@@ -1381,7 +1368,7 @@ public final class EntityVanillaProperties {
      *  - "Color": BYTE
      *  - "Sheared": BOOLEAN
      *
-     * @see net.minecraft.world.entity.animal.Sheep
+     * @see net.minecraft.world.entity.animal.sheep.Sheep
      */
     public static final class OfSheep implements Creator {
 
@@ -1669,11 +1656,11 @@ public final class EntityVanillaProperties {
             return g(ep, "Owner");
         }
 
-        public static ItemStackProperty<AbstractHorse> createSaddleItemProperty() {
-            return new ItemStackProperty<>("SaddleItem");
+        public static UnsupportedProperty<AbstractHorse> createSaddleItemProperty() {
+            return new UnsupportedProperty<>("SaddleItem");
         }
 
-        public static ItemStackProperty<AbstractHorse> getSaddleItemProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<AbstractHorse> getSaddleItemProperty(EntityProperties<?> ep) {
             return g(ep, "SaddleItem");
         }
 
@@ -1740,11 +1727,11 @@ public final class EntityVanillaProperties {
             return g(ep, "ChestedHorse");
         }
 
-        public static ItemStackListProperty<AbstractChestedHorse> createItemsProperty() {
-            return new ItemStackListProperty<>("Items");
+        public static ItemStackWithSlotListProperty<AbstractChestedHorse> createItemsProperty() {
+            return new ItemStackWithSlotListProperty<>("Items");
         }
 
-        public static ItemStackListProperty<AbstractChestedHorse> getItemsProperty(EntityProperties<?> ep) {
+        public static ItemStackWithSlotListProperty<AbstractChestedHorse> getItemsProperty(EntityProperties<?> ep) {
             return g(ep, "Items");
         }
 
@@ -3507,19 +3494,19 @@ public final class EntityVanillaProperties {
      */
     public static final class OfArmorStand implements Creator {
 
-        public static ItemStackListProperty<ArmorStand> createArmorItemsProperty() {
-            return new ItemStackListProperty<>("ArmorItems");
+        public static ItemStackWithSlotListProperty<ArmorStand> createArmorItemsProperty() {
+            return new ItemStackWithSlotListProperty<>("ArmorItems");
         }
 
-        public static ItemStackListProperty<ArmorStand> getArmorItemsProperty(EntityProperties<?> ep) {
+        public static ItemStackWithSlotListProperty<ArmorStand> getArmorItemsProperty(EntityProperties<?> ep) {
             return g(ep, "ArmorItems");
         }
 
-        public static FloatListProperty<ArmorStand> createBodyProperty() {
-            return new FloatListProperty<>("Body");
+        public static UnsupportedProperty<ArmorStand> createBodyProperty() {
+            return new UnsupportedProperty<>("Body");
         }
 
-        public static FloatListProperty<ArmorStand> getBodyProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<ArmorStand> getBodyProperty(EntityProperties<?> ep) {
             return g(ep, "Body");
         }
 
@@ -3531,19 +3518,19 @@ public final class EntityVanillaProperties {
             return g(ep, "DisabledSlots");
         }
 
-        public static ItemStackListProperty<ArmorStand> createHandItemsProperty() {
-            return new ItemStackListProperty<>("HandItems");
+        public static ItemStackWithSlotListProperty<ArmorStand> createHandItemsProperty() {
+            return new ItemStackWithSlotListProperty<>("HandItems");
         }
 
-        public static ItemStackListProperty<ArmorStand> getHandItemsProperty(EntityProperties<?> ep) {
+        public static ItemStackWithSlotListProperty<ArmorStand> getHandItemsProperty(EntityProperties<?> ep) {
             return g(ep, "HandItems");
         }
 
-        public static FloatListProperty<ArmorStand> createHeadProperty() {
-            return new FloatListProperty<>("Head");
+        public static UnsupportedProperty<ArmorStand> createHeadProperty() {
+            return new UnsupportedProperty<>("Head");
         }
 
-        public static FloatListProperty<ArmorStand> getHeadProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<ArmorStand> getHeadProperty(EntityProperties<?> ep) {
             return g(ep, "Head");
         }
 
@@ -3555,19 +3542,19 @@ public final class EntityVanillaProperties {
             return g(ep, "Invisible");
         }
 
-        public static FloatListProperty<ArmorStand> createLeftArmProperty() {
-            return new FloatListProperty<>("LeftArm");
+        public static UnsupportedProperty<ArmorStand> createLeftArmProperty() {
+            return new UnsupportedProperty<>("LeftArm");
         }
 
-        public static FloatListProperty<ArmorStand> getLeftArmProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<ArmorStand> getLeftArmProperty(EntityProperties<?> ep) {
             return g(ep, "LeftArm");
         }
 
-        public static FloatListProperty<ArmorStand> createLeftLegProperty() {
-            return new FloatListProperty<>("LeftLeg");
+        public static UnsupportedProperty<ArmorStand> createLeftLegProperty() {
+            return new UnsupportedProperty<>("LeftLeg");
         }
 
-        public static FloatListProperty<ArmorStand> getLeftLegProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<ArmorStand> getLeftLegProperty(EntityProperties<?> ep) {
             return g(ep, "LeftLeg");
         }
 
@@ -3595,19 +3582,19 @@ public final class EntityVanillaProperties {
             return g(ep, "Pose");
         }
 
-        public static FloatListProperty<ArmorStand> createRightArmProperty() {
-            return new FloatListProperty<>("RightArm");
+        public static UnsupportedProperty<ArmorStand> createRightArmProperty() {
+            return new UnsupportedProperty<>("RightArm");
         }
 
-        public static FloatListProperty<ArmorStand> getRightArmProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<ArmorStand> getRightArmProperty(EntityProperties<?> ep) {
             return g(ep, "RightArm");
         }
 
-        public static FloatListProperty<ArmorStand> createRightLegProperty() {
-            return new FloatListProperty<>("RightLeg");
+        public static UnsupportedProperty<ArmorStand> createRightLegProperty() {
+            return new UnsupportedProperty<>("RightLeg");
         }
 
-        public static FloatListProperty<ArmorStand> getRightLegProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<ArmorStand> getRightLegProperty(EntityProperties<?> ep) {
             return g(ep, "RightLeg");
         }
 

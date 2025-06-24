@@ -24,7 +24,6 @@ public enum TagMap {
     INT_ARRAY     (Tag.TAG_INT_ARRAY   , "TAG_INT_ARRAY"   , IntArrayTag.class    , "getIntArray"           , "putIntArray"            ),
     LONG_ARRAY    (Tag.TAG_LONG_ARRAY  , "TAG_LONG_ARRAY"  , LongArrayTag.class   , "getLongArray"          , "putLongArray"           ),
     LIST          (Tag.TAG_LIST        , "TAG_LIST"        , ListTag.class        , "getList"               , "put"                    ),
-    ANY_NUMERIC   (Tag.TAG_ANY_NUMERIC , "TAG_ANY_NUMERIC" , NumericTag.class     , null                    , null                     ),
 
     // Special
     BLOCK_POS     (/* value */ 1000    , BlockPos.class  , "NbtUtils.readBlockPos" , "NbtUtils.writeBlockPos" ),
@@ -163,7 +162,6 @@ public enum TagMap {
         if (this == that) return false;
         return switch (that) {
             case TagMap.ANY -> true;
-            case TagMap.ANY_NUMERIC -> this.isNumeric();
             case TagMap.BYTE -> this == TagMap.BOOLEAN;
             case TagMap.INT -> this == TagMap.BYTE;
             case TagMap.LONG -> this == TagMap.INT;

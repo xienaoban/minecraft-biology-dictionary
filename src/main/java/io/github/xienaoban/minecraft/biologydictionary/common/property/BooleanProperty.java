@@ -1,7 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.property;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
 public final class BooleanProperty<E extends Entity> extends AbstractProperty<E, Boolean> {
@@ -11,11 +10,7 @@ public final class BooleanProperty<E extends Entity> extends AbstractProperty<E,
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (nbt.contains(name(), Tag.TAG_BYTE)) {
-            set(nbt.getBoolean(name()));
-        } else {
-            set(null);
-        }
+        set(nbt.getBoolean(name()).orElse(null));
     }
 
     @Override

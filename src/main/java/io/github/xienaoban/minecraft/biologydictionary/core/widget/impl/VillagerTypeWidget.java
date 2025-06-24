@@ -1,16 +1,12 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla.VillagerVillagerDataProperty;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.VillagerType;
 
 import java.util.List;
@@ -30,12 +26,13 @@ public final class VillagerTypeWidget extends AbstractEntityVariantWidget<Villag
 
     @Override
     protected VillagerType getVariantClient(Villager entity) {
-        return entity.getVariant();
+        // return entity.getVariant();
+        return null;
     }
 
     @Override
     protected void setVariantClient(Villager entity, VillagerType variant) {
-        entity.setVariant(variant);
+        // entity.setVariant(variant);
     }
 
     @Override
@@ -45,10 +42,10 @@ public final class VillagerTypeWidget extends AbstractEntityVariantWidget<Villag
 
     @Override
     protected void writeVariantToNbt(VariantElement element, CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        VillagerVillagerDataProperty property = EntityVanillaProperties.OfVillager.createVillagerDataProperty();
-        VillagerType villagerType = element.getVariant();
-        VillagerData rawData = e().getVillagerData();
-        property.set(new VillagerData(villagerType, rawData.getProfession(), rawData.getLevel()));
-        ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
+        // VillagerVillagerDataProperty property = EntityVanillaProperties.OfVillager.createVillagerDataProperty();
+        // VillagerType villagerType = element.getVariant();
+        // VillagerData rawData = e().getVillagerData();
+        // property.set(new VillagerData(villagerType, rawData.profession(), rawData.level()));
+        // ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
     }
 }

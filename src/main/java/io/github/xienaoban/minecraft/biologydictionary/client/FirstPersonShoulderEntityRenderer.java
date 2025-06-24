@@ -12,7 +12,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 
 import java.util.Optional;
 
@@ -84,7 +87,8 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
         LivingEntity entity;
         if (nbt == null || nbt.isEmpty()) entity = null;
         else {
-            Optional<Entity> optionalEntity = EntityType.create(nbt, player.level(), null);
+            ValueInput tagIn = TagValueInput.create(ProblemReporter.DISCARDING, player.registryAccess(), nbt);
+            Optional<Entity> optionalEntity = EntityType.create(tagIn, player.level(), null);
             if (optionalEntity.isEmpty()) entity = null;
             else {
                 entity = (LivingEntity) optionalEntity.get();

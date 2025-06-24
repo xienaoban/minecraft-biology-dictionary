@@ -1,7 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.common.property;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
 public final class LongProperty<E extends Entity> extends AbstractProperty<E, Long> {
@@ -11,11 +10,7 @@ public final class LongProperty<E extends Entity> extends AbstractProperty<E, Lo
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (nbt.contains(name(), Tag.TAG_LONG)) {
-            set(nbt.getLong(name()));
-        } else {
-            set(null);
-        }
+        set(nbt.getLong(name()).orElse(null));
     }
 
     @Override

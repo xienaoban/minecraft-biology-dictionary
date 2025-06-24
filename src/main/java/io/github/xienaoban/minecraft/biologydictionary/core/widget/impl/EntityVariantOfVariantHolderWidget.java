@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.VariantHolder;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -50,9 +49,10 @@ public final class EntityVariantOfVariantHolderWidget extends AbstractEntityVari
                     if (!(t instanceof ParameterizedType pt)) {
                         continue;
                     }
-                    if (pt.getRawType() != VariantHolder.class) {
-                        continue;
-                    }
+                    // if (pt.getRawType() != VariantHolder.class) {
+                    //     continue;
+                    // }
+                    if (true) continue;
 
                     // 2. Get variant class.
                     Type[] args = pt.getActualTypeArguments();
@@ -119,24 +119,25 @@ public final class EntityVariantOfVariantHolderWidget extends AbstractEntityVari
      * And the differences are about the variants.
      */
     private static List<String> calcVariantNbtKeys(Entity entity, List<Object> variants) {
-        Entity tmp = EntityUtils.create(entity);
-        VariantHolder<Object> vh = Misc.cast(tmp);
+        // [TODO]
         List<String> res = new ArrayList<>();
-
-        Object v1 = variants.get(0), v2 = variants.get(1);
-        CompoundTag t1 = new CompoundTag(), t2 = new CompoundTag();
-        vh.setVariant(v1);
-        tmp.saveWithoutId(t1);
-        Set<String> keys = new HashSet<>(t1.getAllKeys());
-        vh.setVariant(v2);
-        tmp.saveWithoutId(t2);
-        keys.addAll(t2.getAllKeys());
-        for (String key : keys) {
-            if (Objects.equals(t1.get(key), t2.get(key))) {
-                continue;
-            }
-            res.add(key);
-        }
+        // Entity tmp = EntityUtils.create(entity);
+        // VariantHolder<Object> vh = Misc.cast(tmp);
+        //
+        // Object v1 = variants.get(0), v2 = variants.get(1);
+        // CompoundTag t1 = new CompoundTag(), t2 = new CompoundTag();
+        // vh.setVariant(v1);
+        // tmp.saveWithoutId(t1);
+        // Set<String> keys = new HashSet<>(t1.getAllKeys());
+        // vh.setVariant(v2);
+        // tmp.saveWithoutId(t2);
+        // keys.addAll(t2.getAllKeys());
+        // for (String key : keys) {
+        //     if (Objects.equals(t1.get(key), t2.get(key))) {
+        //         continue;
+        //     }
+        //     res.add(key);
+        // }
         return res;
     }
 
@@ -152,12 +153,13 @@ public final class EntityVariantOfVariantHolderWidget extends AbstractEntityVari
 
     @Override
     protected Object getVariantClient(Entity entity) {
-        return ((VariantHolder<?>) entity).getVariant();
+        // return ((VariantHolder<?>) entity).getVariant();
+        return null;
     }
 
     @Override
     protected void setVariantClient(Entity entity, Object variant) {
-        ((VariantHolder<?>) entity).setVariant(Misc.cast(variant));
+        // ((VariantHolder<?>) entity).setVariant(Misc.cast(variant));
     }
 
     @Override
@@ -168,15 +170,15 @@ public final class EntityVariantOfVariantHolderWidget extends AbstractEntityVari
 
     @Override
     protected void writeVariantToNbt(VariantElement element, CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        CompoundTag nbt1 = new CompoundTag();
-        e().saveWithoutId(nbt1);
-        Entity tmp = EntityUtils.create(e());
-        tmp.load(nbt1);
-        setVariantClient(tmp, element.getVariant());
-        CompoundTag nbt2 = new CompoundTag();
-        tmp.saveWithoutId(nbt2);
-        for (String key : getVariantData(e()).variantNbtKeys()) {
-            vanillaNbt.put(key, Objects.requireNonNull(nbt2.get(key)));
-        }
+        // CompoundTag nbt1 = new CompoundTag();
+        // e().saveWithoutId(nbt1);
+        // Entity tmp = EntityUtils.create(e());
+        // tmp.load(nbt1);
+        // setVariantClient(tmp, element.getVariant());
+        // CompoundTag nbt2 = new CompoundTag();
+        // tmp.saveWithoutId(nbt2);
+        // for (String key : getVariantData(e()).variantNbtKeys()) {
+        //     vanillaNbt.put(key, Objects.requireNonNull(nbt2.get(key)));
+        // }
     }
 }
