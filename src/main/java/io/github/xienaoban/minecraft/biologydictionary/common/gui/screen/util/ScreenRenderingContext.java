@@ -30,10 +30,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
 import java.lang.Math;
@@ -110,10 +112,10 @@ public final class ScreenRenderingContext {
     public void renderText(Component component, int color, float z, float x, float y) {
         if (z != getZ()) {
             try (ScaleRAII ignored = scaleOnce(1F, z)) {
-                getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color);
+                getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
             }
         } else {
-            getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color);
+            getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
         }
     }
 
@@ -141,18 +143,20 @@ public final class ScreenRenderingContext {
         renderRectangle(color, z, x - width / 2.0F, top, x + width / 2.0F, bottom);
     }
 
+    /**
+     * Another choice is:
+     * {@snippet :
+     *     renderHorizontalLine(color, width, z, top, left, right);
+     *     renderHorizontalLine(color, width, z, bottom - width, left, right);
+     *     renderVerticalLine(color, width, z, left, top, bottom);
+     *     renderVerticalLine(color, width, z, right - width, top, bottom);
+     * }
+     */
     public void renderRectangle(int color, float width, float z, float left, float top, float right, float bottom) {
          renderRectangle(color, z, left, top, right, top + width);
          renderRectangle(color, z, left, bottom - width, right, bottom);
          renderRectangle(color, z, left, top, left + width, bottom);
          renderRectangle(color, z, right - width, top, right, bottom);
-         /*
-         Another choice is:
-         renderHorizontalLine(color, width, z, top, left, right);
-         renderHorizontalLine(color, width, z, bottom - width, left, right);
-         renderVerticalLine(color, width, z, left, top, bottom);
-         renderVerticalLine(color, width, z, right - width, top, bottom);
-         */
     }
 
     /**
@@ -177,8 +181,12 @@ public final class ScreenRenderingContext {
                 vertexConsumer.addVertexWith2DPose(pose, x1, y0, z + f).setColor(color);
             }
         }
+        Matrix3x2f pose = new Matrix3x2f(getPose());
+        ScreenRectangle scissorArea = getScissorStack().peek();
+        ScreenRectangle bounds = getBounds(left, top, right, bottom, pose, scissorArea);
+
         getGuiRenderState().submitGuiElement(new RectangleState(RenderPipelines.GUI, TextureSetup.noTexture(),
-                new Matrix3x2f(getPose()), getScissorStack().peek(), null, color, z, left, top, right, bottom));
+                pose, scissorArea, bounds, color, z, left, top, right, bottom));
     }
 
     public void renderTexture(TextureInfo texture,
@@ -190,6 +198,12 @@ public final class ScreenRenderingContext {
     }
 
     /**
+     * {@snippet :
+     *     getGuiGraphics().blit(RenderPipelines.GUI_TEXTURED, texture.location(),
+     *         (int) left, (int) top,
+     *         (int) textureLeft, (int) textureTop, (int) (textureRight - textureLeft), (int) (textureBottom - textureTop),
+     *         (int) texture.width(), (int) texture.height());
+     * }
      * @see net.minecraft.client.gui.GuiGraphics#submitBlit(RenderPipeline, GpuTextureView, int, int, int, int, float, float, float, float, int)
      */
     public void renderTexture(TextureInfo texture,
@@ -213,9 +227,12 @@ public final class ScreenRenderingContext {
         float uvTop = textureTop / texture.height();
         float uvRight = textureRight / texture.width();
         float uvBottom = textureBottom / texture.height();
+        Matrix3x2f pose = new Matrix3x2f(getPose());
+        ScreenRectangle scissorArea = getScissorStack().peek();
+        ScreenRectangle bounds = getBounds(left, top, right, bottom, pose, scissorArea);
 
         getGuiRenderState().submitGuiElement(new TextureState(RenderPipelines.GUI_TEXTURED, gpuTextureView,
-                new Matrix3x2f(getPose()), getScissorStack().peek(), null,
+                pose, scissorArea, bounds,
                 uvLeft, uvTop, uvRight, uvBottom, z, left, top, right, bottom));
     }
 
@@ -249,7 +266,7 @@ public final class ScreenRenderingContext {
 
     public void renderEntityBottomed(Entity entity, float left, float top, float right, float bottom,
                                      float rotateX, float rotateY, boolean lightFromBelow) {
-        int x0 = (int) Math.ceil(left), y0 = (int) Math.ceil(top), x1 = (int) Math.floor(right), y1 = (int) Math.floor(bottom);
+        int x0 = Mth.ceil(left), y0 = Mth.ceil(top), x1 = Mth.floor(right), y1 = Mth.floor(bottom);
         getGuiGraphics().enableScissor(x0, y0, x1, y1);
         Quaternionf quaternionf = new Quaternionf().rotateZ((float) Math.PI);
         Quaternionf quaternionf2 = new Quaternionf().rotateX(rotateY * 20.0F * (float) (Math.PI / 180.0));
@@ -292,5 +309,12 @@ public final class ScreenRenderingContext {
      */
     public void playScreenSound(SoundEvent sound, float volume, float pitch) {
         getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));
+    }
+
+    private static ScreenRectangle getBounds(float x0, float y0, float x1, float y1, Matrix3x2f matrix3x2f, @Nullable ScreenRectangle screenRectangle) {
+        int x0i = Mth.floor(x0);    int x1i = Mth.ceil(x1);
+        int y0i = Mth.floor(y0);    int y1i = Mth.ceil(y1);
+        ScreenRectangle screenRectangle2 = new ScreenRectangle(x0i, y0i, x1i - x0i, y1i - y0i).transformMaxBounds(matrix3x2f);
+        return screenRectangle != null ? screenRectangle.intersection(screenRectangle2) : screenRectangle2;
     }
 }
