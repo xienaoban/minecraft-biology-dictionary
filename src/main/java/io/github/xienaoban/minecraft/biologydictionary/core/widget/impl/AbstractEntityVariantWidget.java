@@ -161,6 +161,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         for (int i = 0; i < displayCntPerRow.length; ++i) {
             BackgroundBar bar = new BackgroundBar(texture, textureLeft, textureTop);
             bar.getBox().setSize(getBox().getWidth(), Widget.WIDGET_HEIGHT);
+            bar.setPriority(-1);
             bar.setParent(this);
             backgroundBars.add(bar);
         }
@@ -353,12 +354,12 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         private void renderEntity(ScreenRenderingContext ctx) {
-            ctx.renderEntityBottomed(model,
+            ctx.renderEntityCentered(model,
                     getBox().getLeft() - widthFix / 2,
                     getBox().getTop() + 3 - heightFix,
                     getBox().getRight() + widthFix / 2,
                     getBox().getBottom() - 8,
-                    0F, 0.3F, true);
+                    0F, 0.3F);
         }
     }
 
