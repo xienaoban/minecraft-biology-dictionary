@@ -20,7 +20,7 @@ public abstract class ScreenElement {
     private final ArrayList<ScreenElement> subScreenElements;
     private boolean hoverable;
     private boolean selectable;
-    private float priority;
+    private float priority = 0;
 
     public ScreenElement() {
         this(true, true);

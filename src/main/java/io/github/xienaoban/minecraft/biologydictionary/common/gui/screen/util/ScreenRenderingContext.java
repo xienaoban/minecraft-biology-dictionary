@@ -36,9 +36,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.joml.*;
-
-import java.lang.Math;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fStack;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 @Environment(EnvType.CLIENT)
 public final class ScreenRenderingContext {
@@ -265,42 +266,61 @@ public final class ScreenRenderingContext {
     }
 
     public void renderEntityBottomed(Entity entity, float left, float top, float right, float bottom,
-                                     float rotateX, float rotateY, boolean lightFromBelow) {
+                                     float rotateX, float rotateY) {
+        float width = right - left;
+        float height = bottom - top;
+        float entityWidth = entity.getBbWidth();
+        float entityHeight = entity.getBbHeight();
+        float scale = Math.min(width / (float) Math.log(1 + entityWidth), height / (float) Math.log(1 + entityHeight)) / 2.5F;
+
         int x0 = Mth.ceil(left), y0 = Mth.ceil(top), x1 = Mth.floor(right), y1 = Mth.floor(bottom);
         getGuiGraphics().enableScissor(x0, y0, x1, y1);
-        Quaternionf quaternionf = new Quaternionf().rotateZ((float) Math.PI);
-        Quaternionf quaternionf2 = new Quaternionf().rotateX(rotateY * 20.0F * (float) (Math.PI / 180.0));
-        quaternionf.mul(quaternionf2);
-        float w = entity instanceof LivingEntity living ? living.getScale() : 1F;
-        Vector3f vector3f = new Vector3f(0.0F, entity.getBbHeight() / 2.0F + 0.0625F * w, 0.0F);
-        float x = 30 / w;
+        Quaternionf quaternionf = new Quaternionf().rotateX(rotateY * 20F * (float) (Math.PI / 180F));
+        Quaternionf quaternionf2 = new Quaternionf().rotateY((float) Math.PI - rotateX * 20F * (float) (Math.PI / 180F));
+        Quaternionf quaternionf3 = new Quaternionf().rotateZ((float) Math.PI);
+        quaternionf.mul(quaternionf2).mul(quaternionf3);
+        float sc = entity instanceof LivingEntity living ? living.getScale() : 1F;
+        Vector3f vector3f = new Vector3f(0F, entity.getBbHeight() + 0.0625F * sc, 0F);
 
         EntityRenderDispatcher entityRenderDispatcher = getMinecraft().getEntityRenderDispatcher();
         EntityRenderer<? super Entity, ?> entityRenderer = entityRenderDispatcher.getRenderer(entity);
-        EntityRenderState entityRenderState = entityRenderer.createRenderState(entity, 1.0F);
-        getGuiGraphics().submitEntityRenderState(entityRenderState, x, vector3f, quaternionf, quaternionf2, x0, y0, x1, y1);
+        EntityRenderState entityRenderState = entityRenderer.createRenderState(entity, 1F);
+        getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);
 
         getGuiGraphics().disableScissor();
     }
 
-    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
-                             float rotateX, float rotateY, boolean lightFromBelow) {
-        float width = right - left;
-        float height = bottom - top;
-        float entityWidth = (float) entity.getBoundingBox().getXsize();
-        float entityHeight = (float) entity.getBoundingBox().getYsize();
-        float entityScale = Math.min(width / entityWidth, height / entityHeight);
-        float entityBottom = top + (entityScale * entityHeight + height) / 2;
-        renderEntity(entity, (left + right) / 2, entityBottom, entityScale,
-                rotateX, rotateY, lightFromBelow);
-    }
-
     /**
+     * {@snippet :
+     *     InventoryScreen.renderEntityInInventoryFollowsMouse(getGuiGraphics(), (int) left, (int) top, (int) right, (int) bottom, 30, 0.0625F, rotateX * 20, rotateY * 20, livingEntity);
+     * }
+     *
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(GuiGraphics, int, int, int, int, float, Vector3f, Quaternionf, Quaternionf, LivingEntity)
      */
-    public void renderEntity(Entity entity, float midX, float bottom, float scale,
-                             float rotateX, float rotateY, boolean lightFromBelow) {
+    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
+                             float rotateX, float rotateY) {
+        float width = right - left;
+        float height = bottom - top;
+        float entityWidth = entity.getBbWidth();
+        float entityHeight = entity.getBbHeight();
+        float scale = Math.min(width / (float) Math.log(1 + entityWidth), height / (float) Math.log(1 + entityHeight)) / 2.5F;
+
+        int x0 = Mth.ceil(left), y0 = Mth.ceil(top), x1 = Mth.floor(right), y1 = Mth.floor(bottom);
+        getGuiGraphics().enableScissor(x0, y0, x1, y1);
+        Quaternionf quaternionf = new Quaternionf().rotateX(rotateY * 20F * (float) (Math.PI / 180F));
+        Quaternionf quaternionf2 = new Quaternionf().rotateY((float) Math.PI - rotateX * 20F * (float) (Math.PI / 180F));
+        Quaternionf quaternionf3 = new Quaternionf().rotateZ((float) Math.PI);
+        quaternionf.mul(quaternionf2).mul(quaternionf3);
+        float sc = entity instanceof LivingEntity living ? living.getScale() : 1F;
+        Vector3f vector3f = new Vector3f(0F, entity.getBbHeight() / 1.9F + 0.0625F * sc, 0F);
+
+        EntityRenderDispatcher entityRenderDispatcher = getMinecraft().getEntityRenderDispatcher();
+        EntityRenderer<? super Entity, ?> entityRenderer = entityRenderDispatcher.getRenderer(entity);
+        EntityRenderState entityRenderState = entityRenderer.createRenderState(entity, 1F);
+        getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);
+
+        getGuiGraphics().disableScissor();
 
     }
 

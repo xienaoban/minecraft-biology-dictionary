@@ -56,6 +56,7 @@ final class EntityOrder {
         f(EntityType.GLOW_SQUID);
         f(EntityType.ALLAY);
         f(EntityType.STRIDER);
+        f(EntityType.HAPPY_GHAST);
 
         // neutral
         f(EntityType.ARMOR_STAND);

@@ -71,9 +71,6 @@ public class BeehiveScreen extends ElementScreen {
         int diff = (int) (this.mills - lastMills);
         renderBlurredBackground(ctx);
         ctx.getGuiGraphics().pose().pushMatrix();
-        // RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        // RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        // RenderSystem.setShaderTexture(0, Textures.BEEHIVE);
         int w = (this.width - 128) >> 1;
         int h = (this.height - 128) >> 1;
 
@@ -118,7 +115,7 @@ public class BeehiveScreen extends ElementScreen {
             float t = 14.0F * Math.min(bee.ticksInHive, bee.minTicksInHive) / bee.minTicksInHive;
             ctx.renderHorizontalLine(0xFF443300, 2.2F, ctx.getZ(), y - 1, x - 7.5F, x + 7.5F);
             ctx.renderHorizontalLine(bee.entity.hasNectar() ? 0xFFFFBB00 : 0x64FFBB00, 1.2F, ctx.getZ(), y - 1, x - 7, x - 7 + t);
-            ctx.renderEntity(bee.entity, x, y, beeSize, (float) Math.atan(action.mouseX / 80), (float) Math.atan(action.mouseY / 80), true);
+            ctx.renderEntityBottomed(bee.entity, x - 19F, y - 42F, x + 19F, y, (float) Math.atan(action.mouseX / 80), (float) Math.atan(action.mouseY / 80));
             Component customName = bee.entity.getCustomName();
             int beeTop = y - (bee.entity.isBaby() ? 20 : 25);
             if (customName != null) {
