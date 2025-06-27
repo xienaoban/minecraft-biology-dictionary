@@ -1,9 +1,11 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
+import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.NbtTagCollector;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.PropertyClazzGenerator;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,13 +14,21 @@ public class VanillaEntityNbtTest {
 
     @GameTest
     public void testCollectVanillaNbts(GameTestHelper helper) {
-        NbtTagCollector.collectAll();
+        try {
+            NbtTagCollector.collectAll();
+        } catch (Throwable throwable) {
+            helper.fail(Component.literal(Misc.getStackToString(throwable)));
+        }
         helper.succeed();
     }
 
     // @GameTest
     public void testGenerateVanillaProperties(GameTestHelper helper) {
-        PropertyClazzGenerator.generateAll();
+        try {
+            PropertyClazzGenerator.generateAll();
+        } catch (Throwable throwable) {
+            helper.fail(Component.literal(Misc.getStackToString(throwable)));
+        }
         helper.succeed();
     }
 }

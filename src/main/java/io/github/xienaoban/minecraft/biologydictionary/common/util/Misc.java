@@ -18,6 +18,13 @@ public final class Misc {
         return (T) obj;
     }
 
+    public static String getStackToString(Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        throwable.printStackTrace(pw);
+        return sw.toString();
+    }
+
     public static <E extends Entity> Class<E> getFirstEntityClazzGeneric(Class<?> clazz) {
         // Get the entity class (aka E) based on generic super class EntityPropertyWidget.
         ParameterizedType superWidgetType = (ParameterizedType) clazz.getGenericSuperclass();
