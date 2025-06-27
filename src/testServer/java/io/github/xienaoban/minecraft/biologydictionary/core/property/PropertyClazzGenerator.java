@@ -156,13 +156,13 @@ public class PropertyClazzGenerator {
         comment.append("Properties (NBT tags) of this entity:\n");
         for (var e : nbts.getNbtTags().entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
             NbtTagCollector.NbtTagInfo pi = e.getValue();
-            comment.append(" - \"").append(e.getKey()).append("\": ").append(pi.getTypeString()).append('\n');
+            comment.append(" - \"").append(e.getKey()).append("\": ").append(pi.typeString()).append('\n');
         }
         if (!nbts.getConflicts().isEmpty()) {
             comment.append("[Attention] Some properties cannot be recognized yet:\n");
             for (var e : nbts.getConflicts().entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
                 Collection<NbtTagCollector.NbtTagInfo> pis = e.getValue().values();
-                comment.append(" - \"").append(e.getKey()).append("\": ").append(pis.stream().sorted().map(NbtTagCollector.NbtTagInfo::getTypeString).toList()).append('\n');
+                comment.append(" - \"").append(e.getKey()).append("\": ").append(pis.stream().sorted().map(NbtTagCollector.NbtTagInfo::typeString).toList()).append('\n');
             }
         }
         comment.append('\n');
@@ -175,7 +175,7 @@ public class PropertyClazzGenerator {
         String uc = toUpperCamelCase(propertyName);
         String returnRowType = (propertyInfo == null
                 ? "UnsupportedProperty"
-                : toUpperCamelCase(propertyInfo.type().name()) + (propertyInfo.list() ? "List" : "") + "Property");
+                : toUpperCamelCase(propertyInfo.typeString()) + "Property");
         String returnType = returnRowType + "<" + entityClazz.getSimpleName() + ">";
 
         {

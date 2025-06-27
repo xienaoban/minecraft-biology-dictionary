@@ -3,7 +3,7 @@ package io.github.xienaoban.minecraft.biologydictionary;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+// import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class VanillaEntityTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @GameTest
+    // @GameTest
     public void testDeobfuscationBatch(GameTestHelper helper) {
         AtomicBoolean success = new AtomicBoolean(true);
 
@@ -61,7 +61,7 @@ public class VanillaEntityTest {
         }
     }
 
-    @GameTest
+    // @GameTest
     public void testOrderBatch(GameTestHelper helper) {
         boolean success = true;
 

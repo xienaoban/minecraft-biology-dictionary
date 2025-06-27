@@ -5,13 +5,11 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.JavaNames;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
-import net.minecraft.nbt.NbtUtils;
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,16 +29,10 @@ import java.util.regex.Pattern;
 public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     private static final Path LOGGER_PATH = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_DIR_PATH.toString(), ".nbt-tag-list.log");
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final boolean PRINT_TAG_METHODS = false;
 
-    private static final String TAG_ARG_NAME = "compoundTag";
-
-    private static final String NBT_UTILS_CLASS_NAME = NbtUtils.class.getSimpleName();
-    private static final String READ_BLOCK_POS_METHOD_NAME = "readBlockPos";
-    private static final String WRITE_BLOCK_POS_METHOD_NAME = "writeBlockPos";
-
-    private static final String ITEM_STACK_CLASS_NAME = ItemStack.class.getSimpleName();
-    private static final String READ_ITEM_STACK_METHOD_NAME = "parse";
-    private static final String READ_OR_NULL_ITEM_STACK_METHOD_NAME = "parseOptional";
+    private static final String VALUE_INPUT_NAME = "valueInput";
+    private static final String VALUE_OUTPUT_NAME = "valueOutput";
 
     private static Map<Class<? extends Entity>, NbtTagCollector> allNbts = null;
 
@@ -62,6 +54,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             nbtFileWriter = writer;
             EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
                 Class<? extends Entity> entityClazz = cur.getClazz();
+                // if (entityClazz != Cat.class) return true;
                 LOGGER.info("Testing {}", entityClazz);
                 NbtTagCollector collector = collect(entityClazz);
                 allNbts.put(entityClazz, collector);
@@ -105,9 +98,8 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                     }
                     String nbtName = matcher.group(1);
                     Map<NbtTagInfo, NbtTagInfo> map = new HashMap<>();
-                    Matcher matcher2 = NbtTagInfo.DE_PATTERN.matcher(matcher.group(2));
-                    NbtTagInfo tag;
-                    while ((tag = NbtTagInfo.deserialize(matcher2)) != null) {
+                    for (String s : matcher.group(2).split(", ")) {
+                        NbtTagInfo tag = NbtTagInfo.deserialize(s);
                         map.put(tag, tag);
                     }
                     Objects.requireNonNull(collector).conflicts.put(nbtName, map);
@@ -117,8 +109,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                         throw new RuntimeException("Matcher not found!");
                     }
                     String nbtName = matcher.group(1);
-                    Matcher matcher2 = NbtTagInfo.DE_PATTERN.matcher(matcher.group(2));
-                    Objects.requireNonNull(collector).nbtTags.put(nbtName, NbtTagInfo.deserialize(matcher2));
+                    Objects.requireNonNull(collector).nbtTags.put(nbtName, NbtTagInfo.deserialize(matcher.group(2)));
                 } else if (line.isEmpty()) {
                     collector = null;
                 } else {
@@ -130,21 +121,11 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         }
     }
 
-
     private static NbtTagCollector collect(Class<? extends Entity> entityClazz) {
         CompilationUnit ast = AstParser.generateAst(entityClazz);
         NbtTagCollector collector = new NbtTagCollector(entityClazz);
         collector.visit(ast, null);
 
-        for (var it = collector.nbtTags.entrySet().iterator(); it.hasNext();) {
-            var e = it.next();
-            var k = e.getKey();
-            var v = e.getValue();
-            if (!(v.hasGetter && v.hasPutter) || v.type == TagMap.ANY || v.type == TagMap.COMPOUND) {
-                it.remove();
-                collector.addConflict(k, v);
-            }
-        }
         logAndWrite("NBT tags of entity " + entityClazz + ":");
         for (var e : collector.nbtTags.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
             NbtTagInfo pi = e.getValue();
@@ -152,7 +133,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         }
         for (var e : collector.conflicts.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
             Map<NbtTagInfo, NbtTagInfo> pis = e.getValue();
-            logAndWrite(" - !\"" + e.getKey() + "\": " + pis.values().stream().sorted().toList());
+            logAndWrite(" - !\"" + e.getKey() + "\": " + pis.values());
         }
         logAndWrite("");
 
@@ -193,130 +174,110 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     @Override
     public void visit(MethodDeclaration n, Void arg) {
         currentMethod = n;
+
+        // Print the method nodes.
+        if (PRINT_TAG_METHODS) {
+            String methodName = n.getNameAsString();
+            if (JavaNames.ENTITY_READ_ADDITIONAL_NBT.equals(methodName) || JavaNames.ENTITY_WRITE_ADDITIONAL_NBT.equals(methodName)
+                    || JavaNames.ENTITY_READ_NBT.equals(methodName) || JavaNames.ENTITY_WRITE_NBT.equals(methodName)) {
+                PrintNodeVisitor<Void> printer = new PrintNodeVisitor<>();
+                LOGGER.info("Now print method {}", methodName);
+                printer.visit(n, null);
+            }
+        }
+
         super.visit(n, arg);
     }
 
     @Override
     public void visit(MethodCallExpr n, Void arg) {
         String methodName = n.getName().getIdentifier();
+        NodeList<Expression> arguments = n.getArguments();
+
         n.getScope().ifPresent(expression -> expression.ifNameExpr(nameExpr -> {
             String methodScope = nameExpr.getName().getIdentifier();
+            String nbtTagName;
             try {
-                if (TAG_ARG_NAME.equals(methodScope)) {
-                    // Probably be `compoundTag.getXXX()` or `compoundTag.putXXX()`.
-                    LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
-                    NodeList<Expression> arguments = n.getArguments();
-                    String nbtTagName = arguments.get(0).asStringLiteralExpr().getValue();
+                nbtTagName = arguments.get(0).asStringLiteralExpr().getValue();
+            } catch (Throwable ignored) { return; }
+            try {
+                if (VALUE_INPUT_NAME.equals(methodScope)) {
+                    LOGGER.trace("ValueInput for " + nbtTagName + " found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
                     if (methodName.startsWith("get")) {
-                        parseGetter(nbtTagName, methodName, arguments);
-                    } else if (methodName.startsWith("put")) {
-                        parsePutter(nbtTagName, methodName, arguments);
-                    } else if (methodName.equals("contains") || methodName.startsWith("has")) {
-                        parseContainer(nbtTagName, methodName, arguments);
-                    } else if (methodName.equals("remove")) {
-                        // ignore
-                    } else {
-                        throw new AssertionError("Handle it");
+                        parseGetter(nbtTagName, methodName);
+                    } else if (methodName.startsWith("read")) {
+                        parseReader(nbtTagName, n);
                     }
-                } else if (NBT_UTILS_CLASS_NAME.equals(methodScope)) {
-                    // Probably be `NbtUtils.readBlockPos()` or `NbtUtils.writeBlockPos()`.
-                    LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
-                    NodeList<Expression> arguments = n.getArguments();
-
-                    if (methodName.equals(READ_BLOCK_POS_METHOD_NAME)) {
-                        String tagArgName = arguments.get(0).asNameExpr().getNameAsString();
-                        String nbtTagName = arguments.get(1).asStringLiteralExpr().getValue();
-                        if (TAG_ARG_NAME.equals(tagArgName)) {
-                            mergeNbtTagInfo(nbtTagName, new NbtTagInfo(TagMap.BLOCK_POS, false, true, false));
-                        }
-                    }
-                } else if (ITEM_STACK_CLASS_NAME.equals(methodScope)) {
-                    // Probably be `ItemStack.parse()` or `ItemStack.parseOptional()`.
-                    LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
-                    NodeList<Expression> arguments = n.getArguments();
-
-                    // For `this.bodyArmorItem = (ItemStack)ItemStack.parse(this.registryAccess(), compoundTag.getCompound("body_armor_item")).orElse(ItemStack.EMPTY);`
-                    arguments.get(1).ifMethodCallExpr(methodCallExpr1 -> methodCallExpr1.getScope().ifPresent(expression1 -> expression1.ifNameExpr(nameExpr1 -> {
-                        String methodScope1 = nameExpr1.getName().getIdentifier();
-                        if (TAG_ARG_NAME.equals(methodScope1)) {
-                            super.visit(methodCallExpr1, arg);
-                        }
-                    })));
-
-                    if (methodName.equals(READ_ITEM_STACK_METHOD_NAME) || methodName.equals(READ_OR_NULL_ITEM_STACK_METHOD_NAME)) {
-                        if (currentPropertyName != null && nbtTags.containsKey(currentPropertyName)) {
-                            boolean isList = nbtTags.get(currentPropertyName).list();
-                            mergeNbtTagInfo(currentPropertyName, new NbtTagInfo(TagMap.ITEM_STACK, isList, true, false));
-                        }
+                } else if (VALUE_OUTPUT_NAME.equals(methodScope)) {
+                    LOGGER.trace("ValueOutput for " + nbtTagName + " found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
+                    if (methodName.startsWith("put")) {
+                        parsePutter(nbtTagName, methodName);
+                    } else if (methodName.startsWith("store")) {
+                        parseStorer(nbtTagName, n);
                     }
                 }
             } catch (Throwable e) {
                 throw new AssertionError("Failed to parse method: `" + n + "` in `" + currentMethod.getDeclarationAsString() + "`", e);
             }
         }));
+
+        if (arguments.size() == 2 || arguments.size() == 3) {
+            arguments.get(0).ifNameExpr(nameExpr -> {
+                String arg0 = nameExpr.getName().getIdentifier();
+                String arg1;
+                if (arguments.get(1).isStringLiteralExpr()) {
+                    arg1 = arguments.get(1).asStringLiteralExpr().getValue();
+                } else {
+                    return;
+                }
+
+                if (VALUE_INPUT_NAME.equals(arg0)) {
+                    LOGGER.trace("ValueInput for " + arg1 + " found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
+                    parseCalleeReader(arg1, n);
+                } else if (VALUE_OUTPUT_NAME.equals(arg0)) {
+                    LOGGER.trace("ValueOutput for " + arg1 + " found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
+                    parseCalleeStorer(arg1, n);
+                }
+            });
+        }
         super.visit(n, arg);
     }
 
-    private void parseGetter(String nbtTagName, String methodName, NodeList<Expression> arguments) {
-        TagMap type;
-        boolean list;
-        if (methodName.equals("getList")) {
-            if (arguments.size() != 2) throw new AssertionError(arguments.size());
-            Expression second = arguments.get(1);
-            IntegerLiteralExpr integerLiteralExpr = second.asIntegerLiteralExpr();
-            type = TagMap.getByValue(integerLiteralExpr.asNumber().intValue());
-            list = true;
-        } else {
-            if (arguments.size() != 1) throw new AssertionError(arguments.size());
-            type = TagMap.getByGetter(methodName);
-            list = false;
+    private void parseGetter(String nbtTagName, String methodName) {
+        if (methodName.endsWith("Or")) {
+            methodName = methodName.substring(0, methodName.length() - 2);
         }
-
-        mergeNbtTagInfo(nbtTagName, new NbtTagInfo(type, list, true, false));
+        TagMap type = TagMap.getByGetter(methodName);
+        mergeNbtTagInfo(nbtTagName, new BuiltinTagInfo(type, true, false));
     }
 
-    private void parsePutter(String nbtTagName, String methodName, NodeList<Expression> arguments) {
-        TagMap type;
-        if (methodName.equals("putList")) {
-            throw new AssertionError("Handle it");
-        } else {
-            if (arguments.size() != 2) throw new AssertionError(arguments.size());
-            type = TagMap.getByPutter(methodName);
-            if (type == TagMap.ANY && arguments.get(1).isMethodCallExpr()) {
-                MethodCallExpr call = arguments.get(1).asMethodCallExpr();
-                try {
-                    String methodScope2 = call.getScope().orElseThrow().asNameExpr().getName().getIdentifier();
-                    String methodName2 = call.getName().getIdentifier();
-                    if (NBT_UTILS_CLASS_NAME.equals(methodScope2) && WRITE_BLOCK_POS_METHOD_NAME.equals(methodName2)) {
-                        type = TagMap.BLOCK_POS;
-                    }
-                } catch (Exception ignored) {}
-            }
-        }
-
-        mergeNbtTagInfo(nbtTagName, new NbtTagInfo(type, false, false, true));
+    private void parseReader(String nbtTagName, MethodCallExpr currNode) {
+        NodeList<Expression> arguments = currNode.getArguments();
+        String codec = arguments.get(1).toString();
+        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(codec, null, true, false));
     }
 
-    private void parseContainer(String nbtTagName, String methodName, NodeList<Expression> arguments) {
-        TagMap type = switch (methodName) {
-            case "contains" -> {
-                if (arguments.size() == 1) {
-                    yield TagMap.ANY;
-                } else if (arguments.size() == 2) {
-                    IntegerLiteralExpr integerLiteralExpr = arguments.get(1).asIntegerLiteralExpr();
-                    yield TagMap.getByValue(integerLiteralExpr.asNumber().intValue());
-                } else {
-                    throw new AssertionError(arguments.size());
-                }
-            }
-            case "hasUUID" -> {
-                if (arguments.size() != 1) throw new AssertionError(arguments.size());
-                yield TagMap.UUID;
-            }
-            default -> throw new AssertionError("Handle it");
-        };
+    private void parseCalleeReader(String nbtTagName, MethodCallExpr currNode) {
+        String caller = currNode.getScope().orElseThrow().toString();
+        String reader = currNode.getName().getIdentifier();
+        mergeNbtTagInfo(nbtTagName, new FuncTagInfo(caller, reader, null, null, true, false));
+    }
 
-        mergeNbtTagInfo(nbtTagName, new NbtTagInfo(type, false, false, false));
+    private void parsePutter(String nbtTagName, String methodName) {
+        TagMap type = TagMap.getByPutter(methodName);
+        mergeNbtTagInfo(nbtTagName, new BuiltinTagInfo(type, false, true));
+    }
+
+    private void parseStorer(String nbtTagName, MethodCallExpr currNode) {
+        NodeList<Expression> arguments = currNode.getArguments();
+        String codec = arguments.get(1).toString();
+        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(codec, null, false, true));
+    }
+
+    private void parseCalleeStorer(String nbtTagName, MethodCallExpr currNode) {
+        String caller = currNode.getScope().orElseThrow().toString();
+        String storer = currNode.getName().getIdentifier();
+        mergeNbtTagInfo(nbtTagName, new FuncTagInfo(caller, null, storer, null, false, true));
     }
 
     private void mergeNbtTagInfo(String nbtTagName, NbtTagInfo pi) {
@@ -330,18 +291,11 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             nbtTags.put(nbtTagName, pi);
         } else {
             NbtTagInfo pj = nbtTags.get(nbtTagName);
-            NbtTagInfo pk;
-
-            boolean hasGetter = pi.hasGetter || pj.hasGetter;
-            boolean hasPutter = pi.hasPutter || pj.hasPutter;
-
-            if (Objects.equals(pi, pj)) {
-                pk = new NbtTagInfo(pi.type, pj.list, hasGetter, hasPutter);
-            } else if (pi.isMorePreciseThan(pj)) {
-                pk = new NbtTagInfo(pi.type, pi.list, hasGetter, hasPutter);
-            } else if (pj.isMorePreciseThan(pi)) {
-                pk = new NbtTagInfo(pj.type, pj.list, hasGetter, hasPutter);
-            } else {
+            NbtTagInfo pk = pi.merge(pj);
+            if (pk == null) {
+                pk = pj.merge(pi);
+            }
+            if (pk == null) {
                 LOGGER.debug("Conflict of \"" + nbtTagName + "\": " + pi + " vs " + pj);
                 addConflict(nbtTagName, pi);
                 addConflict(nbtTagName, pj);
@@ -354,87 +308,337 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
 
     private void addConflict(String nbtTagName, NbtTagInfo pi) {
         Map<NbtTagInfo, NbtTagInfo> map = conflicts.computeIfAbsent(nbtTagName, s -> new HashMap<>());
-        NbtTagInfo key = new NbtTagInfo(pi.type, pi.list, false, false);
         if (!map.containsKey(pi)) {
-            map.put(key, pi);
+            map.put(pi, pi);
         } else {
-            NbtTagInfo pj = map.get(key);
-            boolean hasGetter = pi.hasGetter || pj.hasGetter;
-            boolean hasPutter = pi.hasPutter || pj.hasPutter;
-            map.put(key, new NbtTagInfo(key.type, key.list, hasGetter, hasPutter));
+            NbtTagInfo pKey = null;
+            NbtTagInfo pMerge = null;
+            for (NbtTagInfo pj : map.values()) {
+                pMerge = pi.merge(pj);
+                if (pMerge == null) {
+                    pMerge = pj.merge(pi);
+                }
+                if (pMerge != null) {
+                    pKey = pj;
+                    break;
+                }
+            }
+            if (pMerge == null) {
+                map.put(pi, pi);
+            } else {
+                map.remove(pKey);
+                map.put(pMerge, pMerge);
+            }
         }
     }
 
-    public record NbtTagInfo(TagMap type, boolean list, boolean hasGetter, boolean hasPutter) implements Comparable<NbtTagInfo> {
+    public interface NbtTagInfo {
+        NbtTagInfo merge(NbtTagInfo o);
+        String typeString();
+        boolean hasGetter();
+        boolean hasPutter();
+        boolean equals(Object that);
+        int hashCode();
+        String toString();
 
+        static NbtTagInfo deserialize(String s) {
+            return switch (s.charAt(0)) {
+                case 'B' -> BuiltinTagInfo.deserialize(s);
+                case 'C' -> CodecTagInfo.deserialize(s);
+                case 'F' -> FuncTagInfo.deserialize(s);
+                case 'U' -> UnknownTagInfo.deserialize(s);
+                default -> throw new AssertionError("Bad NBT tag: " + s);
+            };
+        }
+    }
+
+    public record BuiltinTagInfo(TagMap type, boolean hasGetter, boolean hasPutter) implements NbtTagInfo {
         private static final String DE_REGEX = """
-                NbtTagInfo\\{type=([^,]+), hasGetter=(true|false), hasPutter=(true|false)\\}
+                BuiltinTag\\{type="([^"]+)", hasGetter=(true|false), hasPutter=(true|false)\\}
                 """.replaceAll("[\r\n]", "");
         private static final Pattern DE_PATTERN = Pattern.compile(DE_REGEX);
 
-        private static NbtTagInfo deserialize(Matcher matcher) {
+        public static BuiltinTagInfo deserialize(String s) {
+            Matcher matcher = DE_PATTERN.matcher(s);
             if (!matcher.find()) {
                 return null;
             }
-            String t = matcher.group(1);
-            boolean isList = t.startsWith("[") && t.endsWith("]");
-            TagMap type = TagMap.valueOf(isList ? t.substring(1, t.length() - 1) : t);
+            TagMap type = TagMap.valueOf(matcher.group(1));
             boolean hasGetter = Boolean.getBoolean(matcher.group(2));
             boolean hasPutter = Boolean.getBoolean(matcher.group(3));
-            return new NbtTagInfo(type, isList, hasGetter, hasPutter);
-        }
-
-        public NbtTagInfo {
-            if (type.isList()) {
-                type = type.removeList();
-                if (!list) list = true;
-                else LOGGER.warn("Nested arrays are not supported for now.");
-            }
-        }
-
-        public boolean isMorePreciseThan(NbtTagInfo that) {
-            if (this.list == that.list) {
-                return this.type.isMorePreciseThan(that.type);
-            }
-            return !that.list && that.type == TagMap.ANY;
-        }
-
-        public String getTypeString() {
-            return (list ? ("[" + type.name() + "]") : type.name());
+            return new BuiltinTagInfo(type, hasGetter, hasPutter);
         }
 
         @Override
-        public String toString() {
-            return "NbtTagInfo{" +
-                    "type=" + getTypeString() +
-                    ", hasGetter=" + hasGetter +
-                    ", hasPutter=" + hasPutter +
-                    '}';
+        public NbtTagInfo merge(NbtTagInfo o) {
+            if (o instanceof UnknownTagInfo that) {
+                return new BuiltinTagInfo(this.type,
+                        this.hasGetter || that.hasGetter,
+                        this.hasPutter || that.hasPutter);
+            }
+            if (o instanceof BuiltinTagInfo that) {
+                TagMap type;
+                if (this.type == that.type) {
+                    type = this.type;
+                } else if (this.type.isMorePreciseThan(that.type)) {
+                    type = this.type;
+                } else {
+                    return null;
+                }
+                return new BuiltinTagInfo(type,
+                        this.hasGetter || that.hasGetter,
+                        this.hasPutter || that.hasPutter);
+            }
+            return null;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            NbtTagInfo that = (NbtTagInfo) o;
-            return list == that.list && type == that.type;
+        public String typeString() {
+            return type.getDataClass().getSimpleName();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof BuiltinTagInfo that) {
+                return Objects.equals(this.type, that.type);
+            }
+            return false;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(type, list);
+            return type.hashCode();
         }
 
         @Override
-        public int compareTo(NbtTagCollector.NbtTagInfo that) {
-            int c = Integer.compare(this.type.getId(), that.type.getId());
-            if (c == 0) {
-                if (this.list == that.list) {
-                    return 0;
-                }
-                return this.list ? 1 : -1;
+        public String toString() {
+            return "BuiltinTag{" +
+                    "type=\"" + typeString() + "\"" +
+                    ", hasGetter=" + hasGetter +
+                    ", hasPutter=" + hasPutter +
+                    '}';
+        }
+    }
+
+    public record CodecTagInfo(String codec, String type, boolean hasGetter, boolean hasPutter) implements NbtTagInfo {
+        private static final String DE_REGEX = """
+                CodecTag\\{codec="([^"]+)", type="([^"]+)", hasGetter=(true|false), hasPutter=(true|false)\\}
+                """.replaceAll("[\r\n]", "");
+        private static final Pattern DE_PATTERN = Pattern.compile(DE_REGEX);
+
+        public static CodecTagInfo deserialize(String s) {
+            Matcher matcher = DE_PATTERN.matcher(s);
+            if (!matcher.find()) {
+                return null;
             }
-            return c;
+            String codec = matcher.group(1);
+            String type = matcher.group(2);
+            boolean hasGetter = Boolean.getBoolean(matcher.group(3));
+            boolean hasPutter = Boolean.getBoolean(matcher.group(4));
+            return new CodecTagInfo(type, codec, hasGetter, hasPutter);
+        }
+
+        @Override
+        public NbtTagInfo merge(NbtTagInfo o) {
+            if (o instanceof UnknownTagInfo that) {
+                return new CodecTagInfo(this.codec, this.type,
+                        this.hasGetter || that.hasGetter,
+                        this.hasPutter || that.hasPutter);
+            }
+            if (o instanceof CodecTagInfo that && Objects.equals(this.codec, that.codec)) {
+                String type;
+                if (this.type == null) {
+                    type = that.type;
+                } else if (that.type == null) {
+                    type = this.type;
+                } else if (Objects.equals(this.type, that.type)){
+                    type = this.type;
+                } else {
+                    return null;
+                }
+                return new CodecTagInfo(this.codec, type,
+                        this.hasGetter || that.hasGetter,
+                        this.hasPutter || that.hasPutter);
+            }
+            return null;
+        }
+
+        @Override
+        public String typeString() {
+            return type;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof CodecTagInfo that) {
+                return Objects.equals(this.codec, that.codec) &&
+                        Objects.equals(this.type, that.type);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(codec, type);
+        }
+
+        @Override
+        public String toString() {
+            return "CodecTag{" +
+                    "codec=\"" + codec + "\"" +
+                    ", type=\"" + type + "\"" +
+                    ", hasGetter=" + hasGetter +
+                    ", hasPutter=" + hasPutter +
+                    '}';
+        }
+    }
+
+    public record FuncTagInfo(String caller, String reader, String storer, String type, boolean hasGetter, boolean hasPutter) implements NbtTagInfo {
+        private static final String DE_REGEX = """
+                FuncTag\\{caller="([^"]+)", reader="([^"]+)", storer="([^"]+)", type="([^"]+)", hasGetter=(true|false), hasPutter=(true|false)\\}
+                """.replaceAll("[\r\n]", "");
+        private static final Pattern DE_PATTERN = Pattern.compile(DE_REGEX);
+
+        public static FuncTagInfo deserialize(String s) {
+            Matcher matcher = DE_PATTERN.matcher(s);
+            if (!matcher.find()) {
+                return null;
+            }
+            String caller = matcher.group(1);
+            String reader = matcher.group(2);
+            String storer = matcher.group(3);
+            String type = matcher.group(4);
+            boolean hasGetter = Boolean.getBoolean(matcher.group(5));
+            boolean hasPutter = Boolean.getBoolean(matcher.group(6));
+            return new FuncTagInfo(type, caller, reader, storer, hasGetter, hasPutter);
+        }
+
+        @Override
+        public NbtTagInfo merge(NbtTagInfo o) {
+            if (o instanceof UnknownTagInfo that) {
+                return new FuncTagInfo(this.caller, this.reader, this.storer, this.type,
+                        this.hasGetter || that.hasGetter,
+                        this.hasPutter || that.hasPutter);
+            }
+            if (o instanceof FuncTagInfo that && Objects.equals(this.caller, that.caller)) {
+                String reader;
+                if (this.reader == null) {
+                    reader = that.reader;
+                } else if (that.reader == null) {
+                    reader = this.reader;
+                } else if (Objects.equals(this.reader, that.reader)){
+                    reader = this.reader;
+                } else {
+                    return null;
+                }
+                String storer;
+                if (this.storer == null) {
+                    storer = that.storer;
+                } else if (that.storer == null) {
+                    storer = this.storer;
+                } else if (Objects.equals(this.storer, that.storer)){
+                    storer = this.storer;
+                } else {
+                    return null;
+                }
+                String type;
+                if (this.type == null) {
+                    type = that.type;
+                } else if (that.type == null) {
+                    type = this.type;
+                } else if (Objects.equals(this.type, that.type)){
+                    type = this.type;
+                } else {
+                    return null;
+                }
+                return new FuncTagInfo(this.caller, reader, storer, type,
+                        this.hasGetter || that.hasGetter,
+                        this.hasPutter || that.hasPutter);
+            }
+            return null;
+        }
+
+        @Override
+        public String typeString() {
+            return type;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof FuncTagInfo that) {
+                return Objects.equals(this.caller, that.caller) &&
+                        Objects.equals(this.reader, that.reader) &&
+                        Objects.equals(this.storer, that.storer) &&
+                        Objects.equals(this.type, that.type);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(caller, reader, storer, type);
+        }
+
+        @Override
+        public String toString() {
+            return "FuncTag{" +
+                    "caller=\"" + caller + "\"" +
+                    ", reader=\"" + reader + "\"" +
+                    ", storer=\"" + storer + "\"" +
+                    ", type=\"" + type + "\"" +
+                    ", hasGetter=" + hasGetter +
+                    ", hasPutter=" + hasPutter +
+                    '}';
+        }
+    }
+
+    public record UnknownTagInfo(boolean hasGetter, boolean hasPutter) implements NbtTagInfo {
+        private static final String DE_REGEX = """
+                UnknownTagInfo\\{hasGetter=(true|false), hasPutter=(true|false)\\}
+                """.replaceAll("[\r\n]", "");
+        private static final Pattern DE_PATTERN = Pattern.compile(DE_REGEX);
+
+        public static UnknownTagInfo deserialize(String s) {
+            Matcher matcher = DE_PATTERN.matcher(s);
+            if (!matcher.find()) {
+                return null;
+            }
+            boolean hasGetter = Boolean.getBoolean(matcher.group(1));
+            boolean hasPutter = Boolean.getBoolean(matcher.group(2));
+            return new UnknownTagInfo(hasGetter, hasPutter);
+        }
+
+        @Override
+        public NbtTagInfo merge(NbtTagInfo o) {
+            if (o instanceof UnknownTagInfo that) {
+                return new UnknownTagInfo(
+                        this.hasGetter || that.hasGetter,
+                        this.hasPutter || that.hasPutter);
+            }
+            return null;
+        }
+
+        @Override
+        public String typeString() {
+            return null;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof UnknownTagInfo;
+        }
+
+        @Override
+        public int hashCode() {
+            return 114514;
+        }
+
+        @Override
+        public String toString() {
+            return "UnknownTag{" +
+                    "hasGetter=" + hasGetter +
+                    ", hasPutter=" + hasPutter +
+                    '}';
         }
     }
 }
