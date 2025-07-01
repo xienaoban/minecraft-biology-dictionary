@@ -2,13 +2,14 @@ package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import io.github.xienaoban.minecraft.biologydictionary.common.util.JavaNames;
+import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
+import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,9 +24,6 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * TODO: NbtUtils.readBlockPos in net.minecraft.world.entity.animal.Bee
- */
 public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     private static final Path LOGGER_PATH = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_DIR_PATH.toString(), ".nbt-tag-list.log");
     private static final Logger LOGGER = LogManager.getLogger();
@@ -54,7 +52,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             nbtFileWriter = writer;
             EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
                 Class<? extends Entity> entityClazz = cur.getClazz();
-                // if (entityClazz != Cat.class) return true;
+                // if (entityClazz != Mob.class) return true;
                 LOGGER.info("Testing {}", entityClazz);
                 NbtTagCollector collector = collect(entityClazz);
                 allNbts.put(entityClazz, collector);
@@ -89,7 +87,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                     String clazzName = line.substring(line.lastIndexOf(' ') + 1, line.length() - 1);
                     Class<? extends Entity> entityClazz = Misc.cast(Class.forName(clazzName));
                     logAndWrite("NBT tags of entity " + entityClazz + ":");
-                    collector = new NbtTagCollector(entityClazz);
+                    collector = new NbtTagCollector(entityClazz, Objects.requireNonNull(null));
                     allNbts.put(entityClazz, collector);
                 } else if (line.startsWith(" - !")) {
                     Matcher matcher = patternBad.matcher(line);
@@ -123,7 +121,10 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
 
     private static NbtTagCollector collect(Class<? extends Entity> entityClazz) {
         CompilationUnit ast = AstParser.generateAst(entityClazz);
-        NbtTagCollector collector = new NbtTagCollector(entityClazz);
+        ClassTypeCollector knownTypes = new ClassTypeCollector(entityClazz);
+        knownTypes.visit(ast,null);
+        knownTypes.print();
+        NbtTagCollector collector = new NbtTagCollector(entityClazz, knownTypes);
         collector.visit(ast, null);
 
         logAndWrite("NBT tags of entity " + entityClazz + ":");
@@ -138,6 +139,15 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         logAndWrite("");
 
         return collector;
+    }
+
+    private static String removeOptional(String raw) {
+        if (raw == null) { return null; }
+        System.out.println(raw);
+        if (raw.startsWith("java.util.Optional<")) {
+            return raw.substring("java.util.Optional<".length(), raw.length() - 1);
+        }
+        return raw;
     }
 
     private static void logAndWrite(String line) {
@@ -155,12 +165,14 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     private final Class<? extends Entity> entityClazz;
     private final Map<String, NbtTagInfo> nbtTags = new HashMap<>();
     private final Map<String, Map<NbtTagInfo, NbtTagInfo>> conflicts = new HashMap<>();
+    private final ClassTypeCollector knownTypes;
 
     private MethodDeclaration currentMethod;
     private String currentPropertyName;
 
-    private NbtTagCollector(Class<? extends Entity> entityClazz) {
+    private NbtTagCollector(Class<? extends Entity> entityClazz, ClassTypeCollector knownTypes) {
         this.entityClazz = entityClazz;
+        this.knownTypes = knownTypes;
     }
 
     public Map<String, NbtTagInfo> getNbtTags() {
@@ -178,8 +190,8 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         // Print the method nodes.
         if (PRINT_TAG_METHODS) {
             String methodName = n.getNameAsString();
-            if (JavaNames.ENTITY_READ_ADDITIONAL_NBT.equals(methodName) || JavaNames.ENTITY_WRITE_ADDITIONAL_NBT.equals(methodName)
-                    || JavaNames.ENTITY_READ_NBT.equals(methodName) || JavaNames.ENTITY_WRITE_NBT.equals(methodName)) {
+            if (TestUtils.ENTITY_READ_ADDITIONAL_NBT.equals(methodName) || TestUtils.ENTITY_WRITE_ADDITIONAL_NBT.equals(methodName)
+                    || TestUtils.ENTITY_READ_NBT.equals(methodName) || TestUtils.ENTITY_WRITE_NBT.equals(methodName)) {
                 PrintNodeVisitor<Void> printer = new PrintNodeVisitor<>();
                 LOGGER.info("Now print method {}", methodName);
                 printer.visit(n, null);
@@ -202,14 +214,14 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             } catch (Throwable ignored) { return; }
             try {
                 if (VALUE_INPUT_NAME.equals(methodScope)) {
-                    LOGGER.trace("ValueInput for " + nbtTagName + " found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
+                    LOGGER.trace(VALUE_INPUT_NAME + ".func() for {} found in {}.{}:\t{}", nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
                     if (methodName.startsWith("get")) {
                         parseGetter(nbtTagName, methodName);
                     } else if (methodName.startsWith("read")) {
                         parseReader(nbtTagName, n);
                     }
                 } else if (VALUE_OUTPUT_NAME.equals(methodScope)) {
-                    LOGGER.trace("ValueOutput for " + nbtTagName + " found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
+                    LOGGER.trace(VALUE_OUTPUT_NAME + ".func() for {} found in {}.{}:\t{}", nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
                     if (methodName.startsWith("put")) {
                         parsePutter(nbtTagName, methodName);
                     } else if (methodName.startsWith("store")) {
@@ -232,10 +244,10 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                 }
 
                 if (VALUE_INPUT_NAME.equals(arg0)) {
-                    LOGGER.trace("ValueInput for " + arg1 + " found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
+                    LOGGER.trace("func(" + VALUE_INPUT_NAME + ", ...) for {} found in {}.{}:\t{}", arg1, entityClazz, currentMethod.getNameAsString(), n);
                     parseCalleeReader(arg1, n);
                 } else if (VALUE_OUTPUT_NAME.equals(arg0)) {
-                    LOGGER.trace("ValueOutput for " + arg1 + " found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
+                    LOGGER.trace("func(" + VALUE_OUTPUT_NAME + ", ...) for {} found in {}.{}:\t{}", arg1, entityClazz, currentMethod.getNameAsString(), n);
                     parseCalleeStorer(arg1, n);
                 }
             });
@@ -254,7 +266,38 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     private void parseReader(String nbtTagName, MethodCallExpr currNode) {
         NodeList<Expression> arguments = currNode.getArguments();
         String codec = arguments.get(1).toString();
-        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(codec, null, true, false));
+        String type = null;
+        Node curr = currNode;
+        label:
+        while (curr.getParentNode().isPresent()) {
+            Node next = curr.getParentNode().get();
+            switch (next) {
+                case ExpressionStmt ignored:
+                    break label;
+                case MethodCallExpr methodCallExpr:
+                    if (methodCallExpr.getScope().orElse(null) instanceof ThisExpr) {
+                        int idx = methodCallExpr.getArguments().indexOf(curr);
+                        if (idx < 0) {
+                            throw new AssertionError();
+                        }
+                        type = knownTypes.getMethodArgType(methodCallExpr.getNameAsString(), idx);
+                        break label;
+                    }
+                    break;
+                case AssignExpr assignExpr:
+                    if (assignExpr.getOperator().equals(AssignExpr.Operator.ASSIGN)
+                            && assignExpr.getTarget() instanceof FieldAccessExpr fieldAccessExpr && fieldAccessExpr.getScope() instanceof ThisExpr) {
+                        type = knownTypes.getFieldType(fieldAccessExpr.getNameAsString());
+                        break label;
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+            curr = next;
+        }
+        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(codec, removeOptional(type), true, false));
     }
 
     private void parseCalleeReader(String nbtTagName, MethodCallExpr currNode) {
@@ -271,7 +314,14 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     private void parseStorer(String nbtTagName, MethodCallExpr currNode) {
         NodeList<Expression> arguments = currNode.getArguments();
         String codec = arguments.get(1).toString();
-        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(codec, null, false, true));
+        String type = null;
+        Expression toStore = currNode.getArguments().get(2);
+        if (toStore instanceof FieldAccessExpr fieldAccessExpr && fieldAccessExpr.getScope() instanceof ThisExpr) {
+            type = knownTypes.getFieldType(fieldAccessExpr.getNameAsString());
+        } else if (toStore instanceof MethodCallExpr methodCallExpr && methodCallExpr.getScope().orElse(null) instanceof ThisExpr) {
+            type = knownTypes.getMethodRetType(methodCallExpr.getNameAsString());
+        }
+        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(codec, removeOptional(type), false, true));
     }
 
     private void parseCalleeStorer(String nbtTagName, MethodCallExpr currNode) {

@@ -13,6 +13,11 @@ public class TestUtils {
     public static final Path TEST_ROOT;
     public static final Path TEST_JAVA_ROOT;
 
+    public static final String ENTITY_READ_NBT = "load";
+    public static final String ENTITY_WRITE_NBT = "saveWithoutId";
+    public static final String ENTITY_READ_ADDITIONAL_NBT = "readAdditionalSaveData";
+    public static final String ENTITY_WRITE_ADDITIONAL_NBT = "addAdditionalSaveData";
+
     static {
         GAME_ROOT = Paths.get("").toAbsolutePath();
         if (!GAME_ROOT.endsWith(Paths.get("build", "testServer"))) {
