@@ -54,9 +54,15 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
 
     public ClassTypeCollector(Class<? extends Entity> entityClazz) {
         write("Types of entity class " + entityClazz);
+
+        fullyQualifiedTypes.put("this", "this");
+        fullyQualifiedTypes.put("super", "super");
+        fullyQualifiedTypes.put("extends", "extends");
+        fullyQualifiedTypes.put("Object", "Object");
+        fullyQualifiedTypes.put("String", "String");
     }
 
-    private String getFullyQualifiedType(String type) {
+    public String getFullyQualifiedType(String type) {
         if (type == null) {
             return null;
         }
@@ -65,8 +71,8 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
         boolean skipChars = false;
         for (int i = 0; i < type.length(); ++i) {
             char c = type.charAt(i);
-            if (c == '<' || c == '>' || c == ',' || c == ' ' || c == '.') {
-                skipChars = (c == '.');
+            if (c == '.' || c == ':' || c == '<' || c == '>' || c == ',' || c == ' ' || c == '(' || c == ')' || c == '?') {
+                skipChars = (c == '.' || c == ':');
                 if (!currType.isEmpty()) {
                     res.append(getFullyQualifiedType0(currType.toString()));
                     currType = new StringBuilder();
@@ -129,7 +135,8 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
             throw new RuntimeException("Duplicated fields? Field: \"" + n + "\".");
         }
         // If it can be imported, then it is a general class that does not require a
-        // fully qualified name "fullyQualifiedTypes.put(type, fullyQualifiedType);".
+        // fully qualified name.
+        // fullyQualifiedTypes.put(type, fullyQualifiedType);
         fullyQualifiedTypes.put(type, type);
         super.visit(n, arg);
     }
@@ -140,7 +147,9 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
             String name = vd.getNameAsString();
             String type = vd.getTypeAsString();
             if (fieldTypes.containsKey(name)) {
-                throw new RuntimeException("Duplicated fields? name=\"" + name + "\", old-type=\"" + fieldTypes.get(name) + "\", new-type=\"" + type + "\", field: \"" + n + "\".");
+                throw new RuntimeException("Duplicated fields? name=\"" + name + "\", "
+                        + "old-type=\"" + fieldTypes.get(name) + "\", "
+                        + "new-type=\"" + type + "\", field: \"" + n + "\".");
             }
             fieldTypes.put(name, type);
         }
@@ -161,18 +170,41 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
 
     @Override
     public void visit(ClassOrInterfaceDeclaration n, Void arg) {
+        if (visitClazzDeclaration(n)) {
+            super.visit(n, arg);
+        }
+    }
+
+    @Override
+    public void visit(EnumDeclaration n, Void arg) {
+        if (visitClazzDeclaration(n)) {
+            super.visit(n, arg);
+        }
+    }
+
+    @Override
+    public void visit(RecordDeclaration n, Void arg) {
+        if (visitClazzDeclaration(n)) {
+            super.visit(n, arg);
+        }
+    }
+
+    /**
+     * @return Should invoke super or not
+     */
+    private boolean visitClazzDeclaration(TypeDeclaration<?> n) {
         if (depth == 1 && n.hasModifier(Modifier.Keyword.PUBLIC)) {
             currClazzName = n.getNameAsString();
-            super.visit(n, arg);
+            return true;
         } else {
             String innerClazzName = n.getNameAsString();
             if (fullyQualifiedTypes.containsKey(innerClazzName)) {
                 throw new RuntimeException("Duplicated fields? Field: \"" + n + "\".");
             }
-            fullyQualifiedTypes.put(innerClazzName, currPackageName + '.' + currClazzName + '.' + innerClazzName);
+            // No need to use fully qualified name for inner classes.
+            // fullyQualifiedTypes.put(innerClazzName, currPackageName + '.' + currClazzName + '.' + innerClazzName);
+            fullyQualifiedTypes.put(innerClazzName, currClazzName + '.' + innerClazzName);
+            return false;
         }
     }
-
-    @Override
-    public void visit(RecordDeclaration n, Void arg) {}
 }
