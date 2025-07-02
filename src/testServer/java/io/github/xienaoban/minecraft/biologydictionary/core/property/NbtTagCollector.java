@@ -12,6 +12,8 @@ import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
+import net.minecraft.world.entity.variant.VariantUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,6 +61,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                 allNbts.put(entityClazz, collector);
                 return true;
             });
+            ClassTypeCollector.storeImport();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -124,7 +127,6 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         CompilationUnit ast = AstParser.generateAst(entityClazz);
         ClassTypeCollector knownTypes = new ClassTypeCollector(entityClazz);
         knownTypes.visit(ast,null);
-        knownTypes.print();
         NbtTagCollector collector = new NbtTagCollector(entityClazz, knownTypes);
         collector.visit(ast, null);
 
@@ -206,51 +208,67 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         String methodName = n.getName().getIdentifier();
         NodeList<Expression> arguments = n.getArguments();
 
-        n.getScope().ifPresent(expression -> expression.ifNameExpr(nameExpr -> {
-            String methodScope = nameExpr.getName().getIdentifier();
-            String nbtTagName;
-            try {
-                nbtTagName = arguments.get(0).asStringLiteralExpr().getValue();
-            } catch (Throwable ignored) { return; }
-            try {
+        try {
+            if (n.getScope().orElse(null) instanceof Expression scopeExpression) {
+                String methodScope = scopeExpression.toString();
                 if (VALUE_INPUT_NAME.equals(methodScope)) {
-                    LOGGER.trace(VALUE_INPUT_NAME + ".func() for {} found in {}.{}:\t{}", nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
+                    String nbtTagName = arguments.get(0).asStringLiteralExpr().getValue();
+                    LOGGER.trace(VALUE_INPUT_NAME + ".func() for {} found in {}.{}:\t{}",
+                            nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
                     if (methodName.startsWith("get")) {
                         parseGetter(nbtTagName, methodName);
                     } else if (methodName.startsWith("read")) {
                         parseReader(nbtTagName, n);
                     }
                 } else if (VALUE_OUTPUT_NAME.equals(methodScope)) {
-                    LOGGER.trace(VALUE_OUTPUT_NAME + ".func() for {} found in {}.{}:\t{}", nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
+                    String nbtTagName = arguments.get(0).asStringLiteralExpr().getValue();
+                    LOGGER.trace(VALUE_OUTPUT_NAME + ".func() for {} found in {}.{}:\t{}",
+                            nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
                     if (methodName.startsWith("put")) {
                         parsePutter(nbtTagName, methodName);
                     } else if (methodName.startsWith("store")) {
                         parseStorer(nbtTagName, n);
                     }
+                } else if (arguments.size() == 2 || arguments.size() == 3) {
+                    String valueInputOutput = null;
+                    String nbtTagName = null;
+                    int valueInputOutputIdx = -1;
+                    int nbtTagNameIdx = -1;
+                    for (int i = 0; i < arguments.size(); ++i) {
+                        Expression e = arguments.get(i);
+                        if (e instanceof NameExpr nameExpr) {
+                            String s = nameExpr.getName().getIdentifier();
+                            if (VALUE_INPUT_NAME.equals(s) || VALUE_OUTPUT_NAME.equals(s)) {
+                                if (valueInputOutputIdx != -1) {
+                                    throw new AssertionError();
+                                }
+                                valueInputOutput = s;
+                                valueInputOutputIdx = i;
+                            }
+                        } else if (e instanceof StringLiteralExpr stringLiteralExpr) {
+                            if (nbtTagNameIdx != -1) {
+                                throw new AssertionError();
+                            }
+                            nbtTagName = stringLiteralExpr.getValue();
+                            nbtTagNameIdx = i;
+                        }
+                    }
+                    if (valueInputOutput != null) {
+                        if (VALUE_INPUT_NAME.equals(valueInputOutput)) {
+                            LOGGER.trace("func(" + VALUE_INPUT_NAME + ", ...) for {} found in {}.{}:\t{}",
+                                    nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
+                            parseCalleeReader(nbtTagName, methodScope, methodName, n);
+                        } else if (VALUE_OUTPUT_NAME.equals(valueInputOutput)) {
+                            LOGGER.trace("func(" + VALUE_OUTPUT_NAME + ", ...) for {} found in {}.{}:\t{}",
+                                    nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
+                            parseCalleeStorer(nbtTagName, methodScope, methodName, n);
+                        }
+                    }
+
                 }
-            } catch (Throwable e) {
-                throw new AssertionError("Failed to parse method: `" + n + "` in `" + currentMethod.getDeclarationAsString() + "`", e);
             }
-        }));
-
-        if (arguments.size() == 2 || arguments.size() == 3) {
-            arguments.get(0).ifNameExpr(nameExpr -> {
-                String arg0 = nameExpr.getName().getIdentifier();
-                String arg1;
-                if (arguments.get(1).isStringLiteralExpr()) {
-                    arg1 = arguments.get(1).asStringLiteralExpr().getValue();
-                } else {
-                    return;
-                }
-
-                if (VALUE_INPUT_NAME.equals(arg0)) {
-                    LOGGER.trace("func(" + VALUE_INPUT_NAME + ", ...) for {} found in {}.{}:\t{}", arg1, entityClazz, currentMethod.getNameAsString(), n);
-                    parseCalleeReader(arg1, n);
-                } else if (VALUE_OUTPUT_NAME.equals(arg0)) {
-                    LOGGER.trace("func(" + VALUE_OUTPUT_NAME + ", ...) for {} found in {}.{}:\t{}", arg1, entityClazz, currentMethod.getNameAsString(), n);
-                    parseCalleeStorer(arg1, n);
-                }
-            });
+        } catch (Throwable e) {
+            throw new AssertionError("Failed to parse method: `" + n + "` in `" + currentMethod.getDeclarationAsString() + "`", e);
         }
         super.visit(n, arg);
     }
@@ -301,10 +319,19 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         mergeNbtTagInfo(nbtTagName, new CodecTagInfo(knownTypes.getFullyQualifiedType(codec), removeOptional(type), true, false));
     }
 
-    private void parseCalleeReader(String nbtTagName, MethodCallExpr currNode) {
-        String caller = currNode.getScope().orElseThrow().toString();
-        String reader = currNode.getName().getIdentifier();
-        mergeNbtTagInfo(nbtTagName, new FuncTagInfo(caller, reader, null, null, true, false));
+    private void parseCalleeReader(String nbtTagName, String methodScope, String methodName, MethodCallExpr currNode) {
+        if (EntityReference.class.getSimpleName().equals(methodScope)) {
+            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, methodName, null, "EntityReference<?>", true, false));
+        } else if (VariantUtils.class.getSimpleName().equals(methodScope)) {
+            if (nbtTagName != null) {
+                throw new AssertionError("Should be something like `VariantUtils.readVariant(valueInput, Registries.CAT_VARIANT)`");
+            }
+            mergeNbtTagInfo(VariantUtils.TAG_VARIANT, new FuncTagInfo(methodScope, methodName, null, "Holder<?>", true, false));
+        } else if (nbtTagName != null) {
+            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, methodName, null, null, true, false));
+        } else if (!(currNode.getScope().orElse(null) instanceof ThisExpr)) {
+            throw new RuntimeException("Unknown tag: `" + currNode + "` in `" + currentMethod.getDeclarationAsString() + "`");
+        }
     }
 
     private void parsePutter(String nbtTagName, String methodName) {
@@ -325,10 +352,19 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         mergeNbtTagInfo(nbtTagName, new CodecTagInfo(knownTypes.getFullyQualifiedType(codec), removeOptional(type), false, true));
     }
 
-    private void parseCalleeStorer(String nbtTagName, MethodCallExpr currNode) {
-        String caller = currNode.getScope().orElseThrow().toString();
-        String storer = currNode.getName().getIdentifier();
-        mergeNbtTagInfo(nbtTagName, new FuncTagInfo(caller, null, storer, null, false, true));
+    private void parseCalleeStorer(String nbtTagName, String methodScope, String methodName, MethodCallExpr currNode) {
+        if (EntityReference.class.getSimpleName().equals(methodScope)) {
+            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, null, methodName, "EntityReference<?>", false, true));
+        } else if (VariantUtils.class.getSimpleName().equals(methodScope)) {
+            if (nbtTagName != null) {
+                throw new AssertionError("Should be something like `VariantUtils.writeVariant(valueOutput, this.getVariant())`");
+            }
+            mergeNbtTagInfo(VariantUtils.TAG_VARIANT, new FuncTagInfo(methodScope, null, methodName, "Holder<?>", false, true));
+        } else if (nbtTagName != null) {
+            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, null, methodName, null, false, true));
+        } else if (!(currNode.getScope().orElse(null) instanceof ThisExpr)) {
+            throw new RuntimeException("Unknown tag: `" + currNode + "` in `" + currentMethod.getDeclarationAsString() + "`");
+        }
     }
 
     private void mergeNbtTagInfo(String nbtTagName, NbtTagInfo pi) {

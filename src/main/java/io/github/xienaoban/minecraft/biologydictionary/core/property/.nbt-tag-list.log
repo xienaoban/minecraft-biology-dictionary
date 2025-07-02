@@ -36,8 +36,8 @@ NBT tags of entity class net.minecraft.world.entity.LivingEntity:
  - "locator_bar_icon": CodecTag{codec="Waypoint.Icon.CODEC", type="Waypoint.Icon", hasGetter=true, hasPutter=true}
  - "sleeping_pos": CodecTag{codec="BlockPos.CODEC", type="null", hasGetter=true, hasPutter=true}
  - "ticks_since_last_hurt_by_mob": BuiltinTag{type="int", hasGetter=true, hasPutter=true}
- - !"last_hurt_by_mob": [FuncTag{caller="EntityReference", reader="read", storer="null", type="null", hasGetter=true, hasPutter=false}, FuncTag{caller="this.lastHurtByMob", reader="null", storer="store", type="null", hasGetter=false, hasPutter=true}]
- - !"last_hurt_by_player": [FuncTag{caller="this.lastHurtByPlayer", reader="null", storer="store", type="null", hasGetter=false, hasPutter=true}, FuncTag{caller="EntityReference", reader="read", storer="null", type="null", hasGetter=true, hasPutter=false}]
+ - !"last_hurt_by_mob": [FuncTag{caller="this.lastHurtByMob", reader="null", storer="store", type="null", hasGetter=false, hasPutter=true}, FuncTag{caller="EntityReference", reader="read", storer="null", type="EntityReference<?>", hasGetter=true, hasPutter=false}]
+ - !"last_hurt_by_player": [FuncTag{caller="this.lastHurtByPlayer", reader="null", storer="store", type="null", hasGetter=false, hasPutter=true}, FuncTag{caller="EntityReference", reader="read", storer="null", type="EntityReference<?>", hasGetter=true, hasPutter=false}]
 
 NBT tags of entity class net.minecraft.world.entity.Mob:
  - "CanPickUpLoot": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
@@ -69,14 +69,15 @@ NBT tags of entity class net.minecraft.world.entity.GlowSquid:
 
 NBT tags of entity class net.minecraft.world.entity.animal.Animal:
  - "InLove": BuiltinTag{type="int", hasGetter=true, hasPutter=true}
- - "LoveCause": FuncTag{caller="EntityReference", reader="read", storer="null", type="null", hasGetter=true, hasPutter=false}
+ - "LoveCause": FuncTag{caller="EntityReference", reader="read", storer="store", type="EntityReference<?>", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.TamableAnimal:
- - "Owner": FuncTag{caller="EntityReference", reader="readWithOldOwnerConversion", storer="null", type="null", hasGetter=true, hasPutter=false}
+ - "Owner": FuncTag{caller="EntityReference", reader="readWithOldOwnerConversion", storer="store", type="EntityReference<?>", hasGetter=true, hasPutter=true}
  - "Sitting": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.animal.Cat:
  - "CollarColor": CodecTag{codec="DyeColor.LEGACY_ID_CODEC", type="DyeColor", hasGetter=true, hasPutter=true}
+ - "variant": FuncTag{caller="VariantUtils", reader="readVariant", storer="writeVariant", type="Holder<?>", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.animal.ShoulderRidingEntity:
 
@@ -85,11 +86,13 @@ NBT tags of entity class net.minecraft.world.entity.animal.Parrot:
 
 NBT tags of entity class net.minecraft.world.entity.animal.wolf.Wolf:
  - "CollarColor": CodecTag{codec="DyeColor.LEGACY_ID_CODEC", type="DyeColor", hasGetter=true, hasPutter=true}
- - "sound_variant": CodecTag{codec="ResourceKey.codec((ResourceKey<? extends Registry<net.minecraft.world.entity.animal.wolf.Object>>) Registries.WOLF_SOUND_VARIANT)", type="null", hasGetter=true, hasPutter=true}
+ - "sound_variant": CodecTag{codec="ResourceKey.codec((ResourceKey<? extends Registry<Object>>) Registries.WOLF_SOUND_VARIANT)", type="null", hasGetter=true, hasPutter=true}
+ - "variant": FuncTag{caller="VariantUtils", reader="readVariant", storer="writeVariant", type="Holder<?>", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.animal.AbstractCow:
 
 NBT tags of entity class net.minecraft.world.entity.animal.Cow:
+ - "variant": FuncTag{caller="VariantUtils", reader="readVariant", storer="writeVariant", type="Holder<?>", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.animal.MushroomCow:
  - "Type": CodecTag{codec="MushroomCow.Variant.CODEC", type="MushroomCow.Variant", hasGetter=true, hasPutter=true}
@@ -107,6 +110,7 @@ NBT tags of entity class net.minecraft.world.entity.animal.Bee:
 NBT tags of entity class net.minecraft.world.entity.animal.Chicken:
  - "EggLayTime": BuiltinTag{type="int", hasGetter=true, hasPutter=true}
  - "IsChickenJockey": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
+ - "variant": FuncTag{caller="VariantUtils", reader="readVariant", storer="writeVariant", type="Holder<?>", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.animal.Fox:
  - "Crouching": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
@@ -126,6 +130,7 @@ NBT tags of entity class net.minecraft.world.entity.animal.Panda:
  - "MainGene": CodecTag{codec="Panda.Gene.CODEC", type="Panda.Gene", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.animal.Pig:
+ - "variant": FuncTag{caller="VariantUtils", reader="readVariant", storer="writeVariant", type="Holder<?>", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.animal.PolarBear:
 
@@ -146,6 +151,7 @@ NBT tags of entity class net.minecraft.world.entity.animal.axolotl.Axolotl:
  - "Variant": CodecTag{codec="Axolotl.Variant.LEGACY_CODEC", type="Axolotl.Variant", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.animal.frog.Frog:
+ - "variant": FuncTag{caller="VariantUtils", reader="readVariant", storer="writeVariant", type="Holder<?>", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.animal.goat.Goat:
  - "HasLeftHorn": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
@@ -155,7 +161,7 @@ NBT tags of entity class net.minecraft.world.entity.animal.goat.Goat:
 NBT tags of entity class net.minecraft.world.entity.animal.horse.AbstractHorse:
  - "Bred": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
  - "EatingHaystack": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
- - "Owner": FuncTag{caller="EntityReference", reader="readWithOldOwnerConversion", storer="null", type="null", hasGetter=true, hasPutter=false}
+ - "Owner": FuncTag{caller="EntityReference", reader="readWithOldOwnerConversion", storer="store", type="EntityReference<?>", hasGetter=true, hasPutter=true}
  - "Tame": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
  - "Temper": BuiltinTag{type="int", hasGetter=true, hasPutter=true}
 
@@ -330,7 +336,7 @@ NBT tags of entity class net.minecraft.world.entity.monster.CaveSpider:
 NBT tags of entity class net.minecraft.world.entity.monster.Vex:
  - "bound_pos": CodecTag{codec="BlockPos.CODEC", type="BlockPos", hasGetter=true, hasPutter=true}
  - "life_ticks": BuiltinTag{type="int", hasGetter=true, hasPutter=true}
- - "owner": FuncTag{caller="EntityReference", reader="read", storer="null", type="null", hasGetter=true, hasPutter=false}
+ - "owner": FuncTag{caller="EntityReference", reader="read", storer="store", type="EntityReference<?>", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.monster.Zoglin:
  - "IsBaby": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}

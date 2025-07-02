@@ -5,6 +5,8 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.*;
 import net.minecraft.world.entity.Entity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -13,23 +15,30 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
-    private static final Path LOGGER_PATH = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_DIR_PATH.toString(), ".entity-types.log");
-    private static final BufferedWriter nbtFileWriter;
+    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Path WRITE_PATH = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_DIR_PATH.toString(), ".nbt-tag-import.log");
 
-    static {
-        try {
-            nbtFileWriter = Files.newBufferedWriter(LOGGER_PATH);
+    private static final Map<String, String> toImports = new HashMap<>();
+
+    public static void storeImport() {
+        try (BufferedWriter nbtFileWriter = Files.newBufferedWriter(WRITE_PATH)) {
+            for (String s : toImports.values().stream().sorted().toList()) {
+                nbtFileWriter.write(s);
+                nbtFileWriter.newLine();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void write(String line) {
-        try {
-            nbtFileWriter.write(line);
-            nbtFileWriter.newLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private static void addImport(String simpleName, String fullName) {
+        if (toImports.containsKey(simpleName)) {
+            String oldFullName = toImports.get(simpleName);
+            if (!Objects.equals(fullName, oldFullName)) {
+                LOGGER.warn("Duplicated imported class: key=`{}`, old-value=`{}`, new-value=`{}`", simpleName, oldFullName, fullName);
+            }
+        } else {
+            toImports.put(simpleName, fullName);
         }
     }
 
@@ -53,7 +62,7 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
     public record MethodTypes(String returnType, List<String> argumentTypes) {}
 
     public ClassTypeCollector(Class<? extends Entity> entityClazz) {
-        write("Types of entity class " + entityClazz);
+        addImport(entityClazz.getSimpleName(), entityClazz.getName());
 
         fullyQualifiedTypes.put("this", "this");
         fullyQualifiedTypes.put("super", "super");
@@ -107,20 +116,6 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
         return getFullyQualifiedType(methodTypes.get(name).argumentTypes().get(argIdx));
     }
 
-    public void print() {
-        write("P: " + currPackageName);
-        write("C: " + currClazzName);
-        for (var e : fullyQualifiedTypes.entrySet()) {
-            write("Q: " + e.getKey() + ": " + e.getValue());
-        }
-        for (var e : fieldTypes.entrySet()) {
-            write("F: " + e.getKey() + ": " + e.getValue());
-        }
-        for (var e : methodTypes.entrySet()) {
-            write("M: " + e.getKey() + ": " + e.getValue());
-        }
-    }
-
     @Override
     public void visit(PackageDeclaration n, Void arg) {
         currPackageName = n.getNameAsString();
@@ -138,6 +133,7 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
         // fully qualified name.
         // fullyQualifiedTypes.put(type, fullyQualifiedType);
         fullyQualifiedTypes.put(type, type);
+        addImport(type, fullyQualifiedType);
         super.visit(n, arg);
     }
 

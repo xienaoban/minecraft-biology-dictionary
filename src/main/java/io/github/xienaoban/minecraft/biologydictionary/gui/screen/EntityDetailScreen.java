@@ -1,6 +1,5 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 
-import io.github.xienaoban.minecraft.biologydictionary.client.EntityModelManager;
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.TurnPageTriggerWidget;
@@ -26,8 +25,6 @@ public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
         this.entity = properties.entity();
         this.properties = properties;
         initEntityPropertyWidgets();
-
-        EntityModelManager.getModel(entity);
     }
 
     private void initEntityPropertyWidgets() {
