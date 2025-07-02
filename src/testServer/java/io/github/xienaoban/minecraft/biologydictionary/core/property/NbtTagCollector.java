@@ -5,6 +5,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
@@ -52,7 +53,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             nbtFileWriter = writer;
             EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
                 Class<? extends Entity> entityClazz = cur.getClazz();
-                // if (entityClazz != Mob.class) return true;
+                // if (entityClazz != LivingEntity.class) return true;
                 LOGGER.info("Testing {}", entityClazz);
                 NbtTagCollector collector = collect(entityClazz);
                 allNbts.put(entityClazz, collector);
@@ -143,9 +144,8 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
 
     private static String removeOptional(String raw) {
         if (raw == null) { return null; }
-        System.out.println(raw);
-        if (raw.startsWith("java.util.Optional<")) {
-            return raw.substring("java.util.Optional<".length(), raw.length() - 1);
+        if (raw.startsWith("Optional<")) {
+            return raw.substring("Optional<".length(), raw.length() - 1);
         }
         return raw;
     }
@@ -268,8 +268,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         String codec = arguments.get(1).toString();
         String type = null;
         Node curr = currNode;
-        label:
-        while (curr.getParentNode().isPresent()) {
+        label: while (curr.getParentNode().isPresent()) {
             Node next = curr.getParentNode().get();
             switch (next) {
                 case ExpressionStmt ignored:
@@ -290,14 +289,16 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                         type = knownTypes.getFieldType(fieldAccessExpr.getNameAsString());
                         break label;
                     }
-
                     break;
+                case VariableDeclarator variableDeclarator:
+                    type = knownTypes.getFullyQualifiedType(variableDeclarator.getTypeAsString());
+                    break label;
                 default:
                     break;
             }
             curr = next;
         }
-        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(codec, removeOptional(type), true, false));
+        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(knownTypes.getFullyQualifiedType(codec), removeOptional(type), true, false));
     }
 
     private void parseCalleeReader(String nbtTagName, MethodCallExpr currNode) {
@@ -321,7 +322,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         } else if (toStore instanceof MethodCallExpr methodCallExpr && methodCallExpr.getScope().orElse(null) instanceof ThisExpr) {
             type = knownTypes.getMethodRetType(methodCallExpr.getNameAsString());
         }
-        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(codec, removeOptional(type), false, true));
+        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(knownTypes.getFullyQualifiedType(codec), removeOptional(type), false, true));
     }
 
     private void parseCalleeStorer(String nbtTagName, MethodCallExpr currNode) {
@@ -413,7 +414,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             if (!matcher.find()) {
                 return null;
             }
-            TagMap type = TagMap.valueOf(matcher.group(1));
+            TagMap type = TagMap.getByClazz(matcher.group(1));
             boolean hasGetter = Boolean.getBoolean(matcher.group(2));
             boolean hasPutter = Boolean.getBoolean(matcher.group(3));
             return new BuiltinTagInfo(type, hasGetter, hasPutter);

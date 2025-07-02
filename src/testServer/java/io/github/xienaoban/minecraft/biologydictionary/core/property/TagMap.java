@@ -25,12 +25,19 @@ public enum TagMap {
     ANY           (/* value */ -1      , null              , Tag.class            , Object.class        ,"get"                   , "put"                    );
 
     private static final Map<Integer, TagMap> byValue = createMapByValue();
+    private static final Map<String, TagMap> byClazz = createMapByClazz();
     private static final Map<String, TagMap> byGetter = createMapByGetter();
     private static final Map<String, TagMap> byPutter = createMapByPutter();
 
     public static TagMap getByValue(int v) {
         TagMap res = byValue.get(v);
         if (res == null) throw new AssertionError(v);
+        return res;
+    }
+
+    public static TagMap getByClazz(String clazzName) {
+        TagMap res = byClazz.get(clazzName);
+        if (res == null) throw new AssertionError(clazzName);
         return res;
     }
 
@@ -52,6 +59,14 @@ public enum TagMap {
         HashMap<Integer, TagMap> res = new HashMap<>();
         for (TagMap e : values()) {
             res.put(e.id, e);
+        }
+        return res;
+    }
+
+    private static Map<String, TagMap> createMapByClazz() {
+        HashMap<String, TagMap> res = new HashMap<>();
+        for (TagMap e : values()) {
+            res.put(e.dataClass.getSimpleName(), e);
         }
         return res;
     }
