@@ -14,10 +14,16 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
+import io.github.xienaoban.minecraft.biologydictionary.common.property.CodecProperty;
+import io.github.xienaoban.minecraft.biologydictionary.common.property.EntityReferenceProperty;
 import io.github.xienaoban.minecraft.biologydictionary.common.property.UnsupportedProperty;
+import io.github.xienaoban.minecraft.biologydictionary.common.property.VariantProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
+import net.minecraft.world.entity.variant.VariantUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -109,6 +115,11 @@ public class PropertyClazzGenerator {
         cu.addImport(UnsupportedProperty.class.getPackageName(), false, true);
         cu.addImport(Map.class);
         cu.addImport(EntityProperty.class);
+
+        ClassTypeCollector.loadImport();
+        for (String s : ClassTypeCollector.getImports()) {
+            cu.addImport(s);
+        }
     }
 
     private static void writeClassToFile(CompilationUnit cu) {
@@ -162,7 +173,7 @@ public class PropertyClazzGenerator {
             comment.append("[Attention] Some properties cannot be recognized yet:\n");
             for (var e : nbts.getConflicts().entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
                 Collection<NbtTagCollector.NbtTagInfo> pis = e.getValue().values();
-                comment.append(" - \"").append(e.getKey()).append("\": ").append(pis.stream().sorted().map(NbtTagCollector.NbtTagInfo::typeString).toList()).append('\n');
+                comment.append(" - \"").append(e.getKey()).append("\": ").append(pis.stream().map(NbtTagCollector.NbtTagInfo::typeString).toList()).append('\n');
             }
         }
         comment.append('\n');
@@ -173,16 +184,48 @@ public class PropertyClazzGenerator {
 
     private void addPropertyCreateAndGetMethods(String propertyName, NbtTagCollector.NbtTagInfo propertyInfo) {
         String uc = toUpperCamelCase(propertyName);
-        String returnRowType = (propertyInfo == null
-                ? "UnsupportedProperty"
-                : toUpperCamelCase(propertyInfo.typeString()) + "Property");
-        String returnType = returnRowType + "<" + entityClazz.getSimpleName() + ">";
+        String returnRawType;
+        String returnType;
+        String arguments = "\"" + propertyName + "\"";
+        switch (propertyInfo != null ? propertyInfo : new NbtTagCollector.UnknownTagInfo(false, false)) {
+            case NbtTagCollector.BuiltinTagInfo builtinTagInfo:
+                returnRawType = toUpperCamelCase(builtinTagInfo.typeString()) + "Property";
+                returnType = returnRawType + "<" + entityClazz.getSimpleName() + ">";
+                break;
+            case NbtTagCollector.CodecTagInfo codecTagInfo:
+                returnRawType = CodecProperty.class.getSimpleName();
+                returnType = returnRawType + "<" + entityClazz.getSimpleName() + ", " + codecTagInfo.typeString() + ">";
+                arguments += ", " + codecTagInfo.codec();
+                break;
+            case NbtTagCollector.FuncTagInfo funcTagInfo:
+                String caller = funcTagInfo.caller();
+                if (EntityReference.class.getSimpleName().equals(caller)) {
+                    returnRawType = EntityReferenceProperty.class.getSimpleName();
+                    returnType = returnRawType + "<" + entityClazz.getSimpleName() + ">";
+                } else if (VariantUtils.class.getSimpleName().equals(caller)) {
+                    returnRawType = VariantProperty.class.getSimpleName();
+                    returnType = returnRawType + "<" + entityClazz.getSimpleName() + ", " + Holder.class.getSimpleName() + "<?>>";
+                } else {
+                    returnRawType = UnsupportedProperty.class.getSimpleName();
+                    returnType = returnRawType + "<" + entityClazz.getSimpleName() + ">";
+                }
+                break;
+            default:
+                returnRawType = UnsupportedProperty.class.getSimpleName();
+                returnType = returnRawType + "<" + entityClazz.getSimpleName() + ">";
+                break;
+        }
 
         {
             String methodName = "create" + uc + "Property";
             MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
-            method.setType(returnType);
-            method.setBody(new BlockStmt().addStatement("return new " + returnRowType + "<>(\"" + propertyName + "\");"));
+            try {
+                method.setType(returnType);
+            } catch (RuntimeException e) {
+                LOGGER.error("Cannot parse `{}`", returnType);
+                throw e;
+            }
+            method.setBody(new BlockStmt().addStatement("return new " + returnRawType + "<>(" + arguments + ");"));
         }
 
         {
