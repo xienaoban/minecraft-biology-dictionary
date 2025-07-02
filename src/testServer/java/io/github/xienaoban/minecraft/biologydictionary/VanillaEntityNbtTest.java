@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 public class VanillaEntityNbtTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @GameTest
+    // @GameTest
     public void testCollectVanillaNbts(GameTestHelper helper) {
         try {
             NbtTagCollector.collectAll();
@@ -22,7 +22,7 @@ public class VanillaEntityNbtTest {
         helper.succeed();
     }
 
-    // @GameTest
+    @GameTest
     public void testGenerateVanillaProperties(GameTestHelper helper) {
         try {
             PropertyClazzGenerator.generateAll();

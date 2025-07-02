@@ -22,7 +22,6 @@ NBT tags of entity class net.minecraft.world.entity.Entity:
 
 NBT tags of entity class net.minecraft.world.entity.LivingEntity:
  - "AbsorptionAmount": BuiltinTag{type="float", hasGetter=true, hasPutter=true}
- - "Brain": CodecTag{codec="Codec.PASSTHROUGH", type="null", hasGetter=true, hasPutter=true}
  - "DeathTime": BuiltinTag{type="short", hasGetter=true, hasPutter=true}
  - "FallFlying": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
  - "Health": BuiltinTag{type="float", hasGetter=true, hasPutter=true}
@@ -34,10 +33,11 @@ NBT tags of entity class net.minecraft.world.entity.LivingEntity:
  - "equipment": CodecTag{codec="net.minecraft.world.entity.EntityEquipment.CODEC", type="net.minecraft.world.entity.EntityEquipment", hasGetter=true, hasPutter=true}
  - "last_hurt_by_player_memory_time": BuiltinTag{type="int", hasGetter=true, hasPutter=true}
  - "locator_bar_icon": CodecTag{codec="Waypoint.Icon.CODEC", type="Waypoint.Icon", hasGetter=true, hasPutter=true}
- - "sleeping_pos": CodecTag{codec="BlockPos.CODEC", type="null", hasGetter=true, hasPutter=true}
  - "ticks_since_last_hurt_by_mob": BuiltinTag{type="int", hasGetter=true, hasPutter=true}
+ - !"Brain": [CodecTag{codec="Codec.PASSTHROUGH", type="null", hasGetter=true, hasPutter=true}]
  - !"last_hurt_by_mob": [FuncTag{caller="this.lastHurtByMob", reader="null", storer="store", type="null", hasGetter=false, hasPutter=true}, FuncTag{caller="EntityReference", reader="read", storer="null", type="EntityReference<?>", hasGetter=true, hasPutter=false}]
  - !"last_hurt_by_player": [FuncTag{caller="this.lastHurtByPlayer", reader="null", storer="store", type="null", hasGetter=false, hasPutter=true}, FuncTag{caller="EntityReference", reader="read", storer="null", type="EntityReference<?>", hasGetter=true, hasPutter=false}]
+ - !"sleeping_pos": [CodecTag{codec="BlockPos.CODEC", type="null", hasGetter=true, hasPutter=true}]
 
 NBT tags of entity class net.minecraft.world.entity.Mob:
  - "CanPickUpLoot": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
@@ -86,8 +86,8 @@ NBT tags of entity class net.minecraft.world.entity.animal.Parrot:
 
 NBT tags of entity class net.minecraft.world.entity.animal.wolf.Wolf:
  - "CollarColor": CodecTag{codec="DyeColor.LEGACY_ID_CODEC", type="DyeColor", hasGetter=true, hasPutter=true}
- - "sound_variant": CodecTag{codec="ResourceKey.codec((ResourceKey<? extends Registry<Object>>) Registries.WOLF_SOUND_VARIANT)", type="null", hasGetter=true, hasPutter=true}
  - "variant": FuncTag{caller="VariantUtils", reader="readVariant", storer="writeVariant", type="Holder<?>", hasGetter=true, hasPutter=true}
+ - !"sound_variant": [CodecTag{codec="ResourceKey.codec((ResourceKey<? extends Registry<Object>>) Registries.WOLF_SOUND_VARIANT)", type="null", hasGetter=true, hasPutter=true}]
 
 NBT tags of entity class net.minecraft.world.entity.animal.AbstractCow:
 
@@ -116,8 +116,8 @@ NBT tags of entity class net.minecraft.world.entity.animal.Fox:
  - "Crouching": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
  - "Sitting": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
  - "Sleeping": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
- - "Trusted": CodecTag{codec="net.minecraft.world.entity.animal.Fox.TRUSTED_LIST_CODEC", type="null", hasGetter=true, hasPutter=true}
  - "Type": CodecTag{codec="Fox.Variant.CODEC", type="Fox.Variant", hasGetter=true, hasPutter=true}
+ - !"Trusted": [CodecTag{codec="net.minecraft.world.entity.animal.Fox.TRUSTED_LIST_CODEC", type="null", hasGetter=true, hasPutter=true}]
 
 NBT tags of entity class net.minecraft.world.entity.animal.HappyGhast:
  - "still_timeout": BuiltinTag{type="int", hasGetter=true, hasPutter=true}

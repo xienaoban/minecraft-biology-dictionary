@@ -21,6 +21,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -91,7 +92,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                     String clazzName = line.substring(line.lastIndexOf(' ') + 1, line.length() - 1);
                     Class<? extends Entity> entityClazz = Misc.cast(Class.forName(clazzName));
                     logAndWrite("NBT tags of entity " + entityClazz + ":");
-                    collector = new NbtTagCollector(entityClazz, Objects.requireNonNull(null));
+                    collector = new NbtTagCollector(entityClazz, null);
                     allNbts.put(entityClazz, collector);
                 } else if (line.startsWith(" - !")) {
                     Matcher matcher = patternBad.matcher(line);
@@ -100,8 +101,9 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                     }
                     String nbtName = matcher.group(1);
                     Map<NbtTagInfo, NbtTagInfo> map = new HashMap<>();
-                    for (String s : matcher.group(2).split(", ")) {
-                        NbtTagInfo tag = NbtTagInfo.deserialize(s);
+                    String list = matcher.group(2);
+                    for (String s : list.substring(0, list.length() - 1).split("}, ")) {
+                        NbtTagInfo tag = NbtTagInfo.deserialize(s + '}');
                         map.put(tag, tag);
                     }
                     Objects.requireNonNull(collector).conflicts.put(nbtName, map);
@@ -129,6 +131,14 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         knownTypes.visit(ast,null);
         NbtTagCollector collector = new NbtTagCollector(entityClazz, knownTypes);
         collector.visit(ast, null);
+
+        for (String key : new ArrayList<>(collector.nbtTags.keySet())) {
+            NbtTagInfo value = collector.nbtTags.get(key);
+            if (value.isIncomplete()) {
+                collector.nbtTags.remove(key);
+                collector.addConflict(key, value);
+            }
+        }
 
         logAndWrite("NBT tags of entity " + entityClazz + ":");
         for (var e : collector.nbtTags.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
@@ -424,6 +434,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         String typeString();
         boolean hasGetter();
         boolean hasPutter();
+        boolean isIncomplete();
         boolean equals(Object that);
         int hashCode();
         String toString();
@@ -485,6 +496,11 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         }
 
         @Override
+        public boolean isIncomplete() {
+            return type == null;
+        }
+
+        @Override
         public boolean equals(Object obj) {
             if (obj instanceof BuiltinTagInfo that) {
                 return Objects.equals(this.type, that.type);
@@ -522,7 +538,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             String type = matcher.group(2);
             boolean hasGetter = Boolean.getBoolean(matcher.group(3));
             boolean hasPutter = Boolean.getBoolean(matcher.group(4));
-            return new CodecTagInfo(type, codec, hasGetter, hasPutter);
+            return new CodecTagInfo(codec, type, hasGetter, hasPutter);
         }
 
         @Override
@@ -553,6 +569,11 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         @Override
         public String typeString() {
             return type;
+        }
+
+        @Override
+        public boolean isIncomplete() {
+            return codec == null || type == null;
         }
 
         @Override
@@ -651,6 +672,11 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         }
 
         @Override
+        public boolean isIncomplete() {
+            return caller == null || type == null;
+        }
+
+        @Override
         public boolean equals(Object obj) {
             if (obj instanceof FuncTagInfo that) {
                 return Objects.equals(this.caller, that.caller) &&
@@ -708,6 +734,11 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         @Override
         public String typeString() {
             return null;
+        }
+
+        @Override
+        public boolean isIncomplete() {
+            return true;
         }
 
         @Override

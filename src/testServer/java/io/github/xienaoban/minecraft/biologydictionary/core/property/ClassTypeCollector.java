@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,15 +17,27 @@ import java.util.*;
 
 public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final Path WRITE_PATH = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_DIR_PATH.toString(), ".nbt-tag-import.log");
+    private static final Path IMPORT_PATH = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_DIR_PATH.toString(), ".nbt-tag-import.log");
 
     private static final Map<String, String> toImports = new HashMap<>();
 
+    public static void loadImport() {
+        try (BufferedReader fileReader = Files.newBufferedReader(IMPORT_PATH)) {
+            fileReader.lines().forEach(s -> addImport(s.substring(s.lastIndexOf('.')), s));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Collection<String> getImports() {
+        return toImports.values();
+    }
+
     public static void storeImport() {
-        try (BufferedWriter nbtFileWriter = Files.newBufferedWriter(WRITE_PATH)) {
+        try (BufferedWriter fileWriter = Files.newBufferedWriter(IMPORT_PATH)) {
             for (String s : toImports.values().stream().sorted().toList()) {
-                nbtFileWriter.write(s);
-                nbtFileWriter.newLine();
+                fileWriter.write(s);
+                fileWriter.newLine();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

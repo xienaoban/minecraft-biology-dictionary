@@ -6,18 +6,8 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public class ItemStackListProperty<E extends Entity> extends AbstractProperty<E, List<ItemStack>> {
+public class ItemStackListProperty<E extends Entity> extends CodecProperty<E, List<ItemStack>> {
     public ItemStackListProperty(String propertyName) {
-        super(propertyName);
-    }
-
-    @Override
-    public void readFrom(CompoundTag nbt) {
-        set(nbt.read(name(), ItemStack.CODEC.listOf()).orElse(null));
-    }
-
-    @Override
-    public void writeTo(CompoundTag nbt) {
-        nbt.storeNullable(name(), ItemStack.CODEC.listOf(), get());
+        super(propertyName, ItemStack.CODEC.listOf());
     }
 }
