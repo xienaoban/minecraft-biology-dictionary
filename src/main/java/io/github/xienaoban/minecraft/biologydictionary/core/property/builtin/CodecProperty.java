@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.common.property;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.builtin;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;

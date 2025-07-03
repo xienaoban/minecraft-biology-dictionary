@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla;
 
-import io.github.xienaoban.minecraft.biologydictionary.common.property.AbstractProperty;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.builtin.AbstractProperty;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerData;

@@ -1,22 +1,22 @@
-package io.github.xienaoban.minecraft.biologydictionary.common.property;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.builtin;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
-public final class LongProperty<E extends Entity> extends AbstractProperty<E, Long> {
-    public LongProperty(String propertyName) {
+public final class ShortProperty<E extends Entity> extends AbstractProperty<E, Short> {
+    public ShortProperty(String propertyName) {
         super(propertyName);
     }
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        set(nbt.getLong(name()).orElse(null));
+        set(nbt.getShort(name()).orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
         if (get() != null) {
-            nbt.putLong(name(), get());
+            nbt.putShort(name(), get());
         } else {
             throw new IllegalPropertyStateException("primitive type must not be null");
         }

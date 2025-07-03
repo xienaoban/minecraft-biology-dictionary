@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.common.property;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.builtin;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import net.minecraft.nbt.CompoundTag;
