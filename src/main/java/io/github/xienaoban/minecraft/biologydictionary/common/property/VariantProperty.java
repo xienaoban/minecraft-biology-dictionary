@@ -3,12 +3,10 @@ package io.github.xienaoban.minecraft.biologydictionary.common.property;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.variant.VariantUtils;
-import net.minecraft.world.level.storage.TagValueInput;
 
 import java.util.Optional;
 

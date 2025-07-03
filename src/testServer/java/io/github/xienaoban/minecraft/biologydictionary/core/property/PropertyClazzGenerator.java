@@ -20,7 +20,6 @@ import io.github.xienaoban.minecraft.biologydictionary.common.property.Unsupport
 import io.github.xienaoban.minecraft.biologydictionary.common.property.VariantProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
-import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.variant.VariantUtils;
@@ -204,7 +203,8 @@ public class PropertyClazzGenerator {
                     returnType = returnRawType + "<" + entityClazz.getSimpleName() + ">";
                 } else if (VariantUtils.class.getSimpleName().equals(caller)) {
                     returnRawType = VariantProperty.class.getSimpleName();
-                    returnType = returnRawType + "<" + entityClazz.getSimpleName() + ", " + Holder.class.getSimpleName() + "<?>>";
+                    returnType = returnRawType + "<" + entityClazz.getSimpleName() + ", " + funcTagInfo.typeString() + ">";
+                    arguments = funcTagInfo.optional();
                 } else {
                     returnRawType = UnsupportedProperty.class.getSimpleName();
                     returnType = returnRawType + "<" + entityClazz.getSimpleName() + ">";

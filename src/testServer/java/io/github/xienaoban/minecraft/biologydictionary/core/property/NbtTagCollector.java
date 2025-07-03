@@ -9,8 +9,10 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.Result;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.util.TestUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.variant.VariantUtils;
@@ -21,10 +23,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -331,14 +330,16 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
 
     private void parseCalleeReader(String nbtTagName, String methodScope, String methodName, MethodCallExpr currNode) {
         if (EntityReference.class.getSimpleName().equals(methodScope)) {
-            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, methodName, null, "EntityReference<?>", true, false));
+            String type = EntityReference.class.getSimpleName() + "<?>";
+            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, methodName, null, null, type, true, false));
         } else if (VariantUtils.class.getSimpleName().equals(methodScope)) {
             if (nbtTagName != null) {
                 throw new AssertionError("Should be something like `VariantUtils.readVariant(valueInput, Registries.CAT_VARIANT)`");
             }
-            mergeNbtTagInfo(VariantUtils.TAG_VARIANT, new FuncTagInfo(methodScope, methodName, null, "Holder<?>", true, false));
+            String registry = currNode.getArgument(1).toString();
+            mergeNbtTagInfo(VariantUtils.TAG_VARIANT, new FuncTagInfo(methodScope, methodName, null, registry,null , true, false));
         } else if (nbtTagName != null) {
-            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, methodName, null, null, true, false));
+            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, methodName, null, null, null, true, false));
         } else if (!(currNode.getScope().orElse(null) instanceof ThisExpr)) {
             throw new RuntimeException("Unknown tag: `" + currNode + "` in `" + currentMethod.getDeclarationAsString() + "`");
         }
@@ -364,14 +365,25 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
 
     private void parseCalleeStorer(String nbtTagName, String methodScope, String methodName, MethodCallExpr currNode) {
         if (EntityReference.class.getSimpleName().equals(methodScope)) {
-            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, null, methodName, "EntityReference<?>", false, true));
+            String type = EntityReference.class.getSimpleName() + "<?>";
+            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, null, methodName, null, type, false, true));
         } else if (VariantUtils.class.getSimpleName().equals(methodScope)) {
             if (nbtTagName != null) {
                 throw new AssertionError("Should be something like `VariantUtils.writeVariant(valueOutput, this.getVariant())`");
             }
-            mergeNbtTagInfo(VariantUtils.TAG_VARIANT, new FuncTagInfo(methodScope, null, methodName, "Holder<?>", false, true));
+            String type;
+            if (currNode.getArgument(1) instanceof MethodCallExpr methodCallExpr && methodCallExpr.getScope().orElse(null) instanceof ThisExpr) {
+                String s = knownTypes.getMethodRetType(methodCallExpr.getNameAsString());
+                if (!s.startsWith(Holder.class.getSimpleName() + "<")) {
+                    throw new RuntimeException("Not `Holder<XxxVariant>`: " + s);
+                }
+                type = s.substring(Holder.class.getSimpleName().length() + 1, s.length() - 1);
+            } else {
+                type = null;
+            }
+            mergeNbtTagInfo(VariantUtils.TAG_VARIANT, new FuncTagInfo(methodScope, null, methodName, null, type, false, true));
         } else if (nbtTagName != null) {
-            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, null, methodName, null, false, true));
+            mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, null, methodName, null, null, false, true));
         } else if (!(currNode.getScope().orElse(null) instanceof ThisExpr)) {
             throw new RuntimeException("Unknown tag: `" + currNode + "` in `" + currentMethod.getDeclarationAsString() + "`");
         }
@@ -426,6 +438,22 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                 map.remove(pKey);
                 map.put(pMerge, pMerge);
             }
+        }
+    }
+
+    private static String nullable(String s) {
+        return "null".equals(s) ? null : s;
+    }
+
+    private static <T> Result<T> tryMerge(T t1, T t2) {
+        if (t1 == null) {
+            return Result.of(t2);
+        } else if (t2 == null) {
+            return Result.of(t1);
+        } else if (Objects.equals(t1, t2)){
+            return Result.of(t1);
+        } else {
+            return null;
         }
     }
 
@@ -534,8 +562,8 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             if (!matcher.find()) {
                 return null;
             }
-            String codec = matcher.group(1);
-            String type = matcher.group(2);
+            String codec = nullable(matcher.group(1));
+            String type = nullable(matcher.group(2));
             boolean hasGetter = Boolean.getBoolean(matcher.group(3));
             boolean hasPutter = Boolean.getBoolean(matcher.group(4));
             return new CodecTagInfo(codec, type, hasGetter, hasPutter);
@@ -549,17 +577,9 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                         this.hasPutter || that.hasPutter);
             }
             if (o instanceof CodecTagInfo that && Objects.equals(this.codec, that.codec)) {
-                String type;
-                if (this.type == null) {
-                    type = that.type;
-                } else if (that.type == null) {
-                    type = this.type;
-                } else if (Objects.equals(this.type, that.type)){
-                    type = this.type;
-                } else {
-                    return null;
-                }
-                return new CodecTagInfo(this.codec, type,
+                Result<String> type = tryMerge(this.type, that.type);
+                if (Result.failed(type)) { return null; }
+                return new CodecTagInfo(this.codec, type.get(),
                         this.hasGetter || that.hasGetter,
                         this.hasPutter || that.hasPutter);
             }
@@ -601,9 +621,9 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         }
     }
 
-    public record FuncTagInfo(String caller, String reader, String storer, String type, boolean hasGetter, boolean hasPutter) implements NbtTagInfo {
+    public record FuncTagInfo(String caller, String reader, String storer, String optional, String type, boolean hasGetter, boolean hasPutter) implements NbtTagInfo {
         private static final String DE_REGEX = """
-                FuncTag\\{caller="([^"]+)", reader="([^"]+)", storer="([^"]+)", type="([^"]+)", hasGetter=(true|false), hasPutter=(true|false)\\}
+                FuncTag\\{caller="([^"]+)", reader="([^"]+)", storer="([^"]+)", optional="([^"]+)", type="([^"]+)", hasGetter=(true|false), hasPutter=(true|false)\\}
                 """.replaceAll("[\r\n]", "");
         private static final Pattern DE_PATTERN = Pattern.compile(DE_REGEX);
 
@@ -612,54 +632,37 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             if (!matcher.find()) {
                 return null;
             }
-            String caller = matcher.group(1);
-            String reader = matcher.group(2);
-            String storer = matcher.group(3);
-            String type = matcher.group(4);
-            boolean hasGetter = Boolean.getBoolean(matcher.group(5));
-            boolean hasPutter = Boolean.getBoolean(matcher.group(6));
-            return new FuncTagInfo(type, caller, reader, storer, hasGetter, hasPutter);
+            String caller   = nullable(matcher.group(1));
+            String reader   = nullable(matcher.group(2));
+            String storer   = nullable(matcher.group(3));
+            String optional = nullable(matcher.group(4));
+            String type     = nullable(matcher.group(5));
+            boolean hasGetter = Boolean.getBoolean(matcher.group(6));
+            boolean hasPutter = Boolean.getBoolean(matcher.group(7));
+            return new FuncTagInfo(caller, reader, storer, optional, type, hasGetter, hasPutter);
         }
 
         @Override
         public NbtTagInfo merge(NbtTagInfo o) {
             if (o instanceof UnknownTagInfo that) {
-                return new FuncTagInfo(this.caller, this.reader, this.storer, this.type,
+                return new FuncTagInfo(this.caller, this.reader, this.storer, this.optional, this.type,
                         this.hasGetter || that.hasGetter,
                         this.hasPutter || that.hasPutter);
             }
             if (o instanceof FuncTagInfo that && Objects.equals(this.caller, that.caller)) {
-                String reader;
-                if (this.reader == null) {
-                    reader = that.reader;
-                } else if (that.reader == null) {
-                    reader = this.reader;
-                } else if (Objects.equals(this.reader, that.reader)){
-                    reader = this.reader;
-                } else {
-                    return null;
-                }
-                String storer;
-                if (this.storer == null) {
-                    storer = that.storer;
-                } else if (that.storer == null) {
-                    storer = this.storer;
-                } else if (Objects.equals(this.storer, that.storer)){
-                    storer = this.storer;
-                } else {
-                    return null;
-                }
-                String type;
-                if (this.type == null) {
-                    type = that.type;
-                } else if (that.type == null) {
-                    type = this.type;
-                } else if (Objects.equals(this.type, that.type)){
-                    type = this.type;
-                } else {
-                    return null;
-                }
-                return new FuncTagInfo(this.caller, reader, storer, type,
+                Result<String> reader = tryMerge(this.reader, that.reader);
+                if (Result.failed(reader)) { return null; }
+
+                Result<String> storer = tryMerge(this.storer, that.storer);
+                if (Result.failed(storer)) { return null; }
+
+                Result<String> optional = tryMerge(this.optional, that.optional);
+                if (Result.failed(optional)) { return null; }
+
+                Result<String> type = tryMerge(this.type, that.type);
+                if (Result.failed(type)) { return null; }
+
+                return new FuncTagInfo(this.caller, reader.get(), storer.get(), optional.get(), type.get(),
                         this.hasGetter || that.hasGetter,
                         this.hasPutter || that.hasPutter);
             }
@@ -698,6 +701,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                     "caller=\"" + caller + "\"" +
                     ", reader=\"" + reader + "\"" +
                     ", storer=\"" + storer + "\"" +
+                    ", optional=\"" + optional + "\"" +
                     ", type=\"" + type + "\"" +
                     ", hasGetter=" + hasGetter +
                     ", hasPutter=" + hasPutter +
