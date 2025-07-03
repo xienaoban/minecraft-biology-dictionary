@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.minecraft.biologydictionary.common.property.BooleanProperty;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.builtin.BooleanProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;

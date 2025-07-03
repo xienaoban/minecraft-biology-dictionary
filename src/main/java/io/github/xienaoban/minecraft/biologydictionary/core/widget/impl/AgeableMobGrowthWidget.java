@@ -2,7 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.core.widget.impl;
 
 import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.minecraft.biologydictionary.common.property.IntProperty;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;

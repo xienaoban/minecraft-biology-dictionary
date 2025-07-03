@@ -1,7 +1,6 @@
-package io.github.xienaoban.minecraft.biologydictionary.common.property;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.builtin;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
 import java.util.List;

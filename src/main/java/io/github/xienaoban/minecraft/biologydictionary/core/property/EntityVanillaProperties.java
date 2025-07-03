@@ -1,7 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
-import io.github.xienaoban.minecraft.biologydictionary.common.property.*;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.builtin.*;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla.LivingEntityActiveEffectsProperty;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,7 +40,6 @@ import net.minecraft.world.entity.monster.piglin.PiglinBrute;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.DyeColor;
@@ -3050,11 +3049,11 @@ public final class EntityVanillaProperties {
             return g(ep, "Offers");
         }
 
-        public static CodecProperty<ZombieVillager, VillagerData> createVillagerDataProperty() {
-            return new CodecProperty<>("VillagerData", VillagerData.CODEC);
+        public static CodecProperty<ZombieVillager, net.minecraft.world.entity.npc.VillagerData> createVillagerDataProperty() {
+            return new CodecProperty<>("VillagerData", net.minecraft.world.entity.npc.VillagerData.CODEC);
         }
 
-        public static CodecProperty<ZombieVillager, VillagerData> getVillagerDataProperty(EntityProperties<?> ep) {
+        public static CodecProperty<ZombieVillager, net.minecraft.world.entity.npc.VillagerData> getVillagerDataProperty(EntityProperties<?> ep) {
             return g(ep, "VillagerData");
         }
 

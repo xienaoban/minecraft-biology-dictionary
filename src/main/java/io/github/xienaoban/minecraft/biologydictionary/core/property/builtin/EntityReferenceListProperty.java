@@ -1,6 +1,5 @@
-package io.github.xienaoban.minecraft.biologydictionary.common.property;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.builtin;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 

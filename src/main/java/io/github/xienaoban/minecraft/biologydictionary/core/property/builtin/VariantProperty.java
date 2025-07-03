@@ -1,4 +1,4 @@
-package io.github.xienaoban.minecraft.biologydictionary.common.property;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.builtin;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
