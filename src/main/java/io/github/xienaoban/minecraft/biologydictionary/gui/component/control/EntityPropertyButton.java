@@ -1,9 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.component.control;
 
-import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 
 public class EntityPropertyButton extends ScreenElement {
     protected static final int L_YES_NO = 23, T_YES_NO = 1;

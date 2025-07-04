@@ -1,9 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.component;
 
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyBar;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyButton;
-import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenElement;
 import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;

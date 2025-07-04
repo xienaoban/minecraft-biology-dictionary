@@ -1,7 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.net;
 
-import io.github.xienaoban.minecraft.biologydictionary.net.payloads.*;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.ClientNetApi;
+import io.github.xienaoban.minecraft.biologydictionary.net.payloads.RequestBeehiveInfoPacket;
+import io.github.xienaoban.minecraft.biologydictionary.net.payloads.RequestEntityDataPacket;
+import io.github.xienaoban.minecraft.biologydictionary.net.payloads.RequestHandbookItemPacket;
 import io.github.xienaoban.minecraft.biologydictionary.net.payloads.SendUpdatedEntityPropertiesPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

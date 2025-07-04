@@ -1,9 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.core;
 
 import io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.minecraft.biologydictionary.mixin.MinecraftMixin;
-import io.github.xienaoban.minecraft.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.minecraft.biologydictionary.Lang;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.DevUtils;
+import io.github.xienaoban.minecraft.biologydictionary.mixin.MinecraftMixin;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
