@@ -1,9 +1,12 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
+import io.github.xienaoban.minecraft.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.minecraft.biologydictionary.common.server.ServerEventRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +33,7 @@ public final class BiologyDictionary {
         ServerEventRegistry.registerStopping(servers::remove);
 
         ServerEventRegistry.registerStarted(server -> EntityManager.init());
-        ServerEventRegistry.registerStopping(server -> EntityManager.deinit());
+        ServerEventRegistry.registerStopping(server -> EntityManager.destroy());
 
         LOGGER.info("BiologyDictionary initialized.");
     }
@@ -39,5 +42,18 @@ public final class BiologyDictionary {
 
     public Set<MinecraftServer> getServers() {
         return servers;
+    }
+
+    public Level justGiveMeALevel() {
+        if (DevUtils.isClient()) {
+            Level level = Minecraft.getInstance().level;
+            if (level != null) { return level; }
+        }
+        for (MinecraftServer server : getServers()) {
+            for (Level level : server.getAllLevels()) {
+                return level;
+            }
+        }
+        return null;
     }
 }

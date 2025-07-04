@@ -55,6 +55,14 @@ public final class EntityUtils {
         return EntityVanillaDeobfuscation.clazzes;
     }
 
+    public static boolean isVanillaEntity(Entity entity) {
+        return isVanillaEntity(entity.getClass());
+    }
+
+    public static boolean isVanillaEntity(Class<? extends Entity> entityClass) {
+        return EntityVanillaDeobfuscation.clazzToName.containsKey(entityClass);
+    }
+
     /**
      * Get deobfuscated class name of the vanilla entity.
      * @param clazz Entity class
@@ -84,6 +92,10 @@ public final class EntityUtils {
         return EntityType.getKey(entity.getType());
     }
 
+    // ============================================================================ //
+    //                               Entity NBT Utils                               //
+    // ============================================================================ //
+
     public static CompoundTag getNbt(Entity entity) {
         TagValueOutput tagOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
         entity.saveWithoutId(tagOut);
@@ -95,21 +107,9 @@ public final class EntityUtils {
         entity.load(tagIn);
     }
 
-    public static void setInWater(Entity entity, boolean inWater) {
-        ((EntityIMixin) entity).setWasTouchingWater(inWater);
-    }
-
-    public static void setVariantAndMarkings(Horse entity,
-                                             net.minecraft.world.entity.animal.horse.Variant variant,
-                                             net.minecraft.world.entity.animal.horse.Markings markings) {
-        ((HorseIMixin) entity).invokeSetVariantAndMarkings(variant, markings);
-    }
-
-    /**
-     * Can be used in client side.
-     */
-    public static boolean isBaby(AgeableMob entity) {
-        return entity.isBaby();
+    public static void mergeNbt(Entity entity, CompoundTag nbt) {
+        CompoundTag oldVanillaNbt = getNbt(entity);
+        setNbt(entity, oldVanillaNbt.merge(nbt));
     }
 
     public static CompoundTag getNbtToDisplay(Entity entity) {
@@ -142,5 +142,26 @@ public final class EntityUtils {
         }
 
         return tag;
+    }
+
+    // ============================================================================ //
+    //                        Entity Data Getters & Setters                         //
+    // ============================================================================ //
+
+    public static void setInWater(Entity entity, boolean inWater) {
+        ((EntityIMixin) entity).setWasTouchingWater(inWater);
+    }
+
+    /**
+     * Can be used in client side.
+     */
+    public static boolean isBaby(AgeableMob entity) {
+        return entity.isBaby();
+    }
+
+    public static void setVariantAndMarkings(Horse entity,
+                                             net.minecraft.world.entity.animal.horse.Variant variant,
+                                             net.minecraft.world.entity.animal.horse.Markings markings) {
+        ((HorseIMixin) entity).invokeSetVariantAndMarkings(variant, markings);
     }
 }

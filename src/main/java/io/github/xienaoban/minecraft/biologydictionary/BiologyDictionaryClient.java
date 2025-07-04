@@ -1,5 +1,7 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
+import io.github.xienaoban.minecraft.biologydictionary.common.client.ClientEventRegistry;
+import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.minecraft.biologydictionary.client.FirstPersonShoulderEntityRenderer;
 import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
@@ -30,6 +32,10 @@ public final class BiologyDictionaryClient {
         FirstPersonShoulderEntityRenderer.init();
         KeyMappingManager.init();
         ClientNetManager.init();
+
+        ClientEventRegistry.registerWorldConnected(client -> EntityManager.init());
+        ClientEventRegistry.registerWorldDisconnecting(client -> EntityManager.destroy());
+
         LOGGER.info("BiologyDictionary (client) initialized.");
     }
 

@@ -27,6 +27,14 @@
   "variant.minecraft.cat.jellie":            "Jellie",
   "variant.minecraft.cat.all_black":         "All Black",
 
+  "variant.minecraft.chicken.temperate":  "Temperate",
+  "variant.minecraft.chicken.warm":       "Warm",
+  "variant.minecraft.chicken.cold":       "Cold",
+
+  "variant.minecraft.cow.temperate":  "Temperate",
+  "variant.minecraft.cow.warm":       "Warm",
+  "variant.minecraft.cow.cold":       "Cold",
+
   "variant.minecraft.fox.red":  "Red",
   "variant.minecraft.fox.snow": "Snow",
 
