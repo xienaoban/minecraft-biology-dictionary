@@ -1,13 +1,13 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.screen.misc;
 
+import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import io.github.xienaoban.minecraft.biologydictionary.client.KeyMappingManager;
-import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
-import io.github.xienaoban.minecraft.biologydictionary.Lang;
+import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;

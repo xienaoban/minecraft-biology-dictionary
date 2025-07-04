@@ -1,9 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.net.payloads;
 
 import io.github.xienaoban.minecraft.biologydictionary.common.net.Packet;
-import io.github.xienaoban.minecraft.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.minecraft.biologydictionary.common.net.ServerNetApi;
+import io.github.xienaoban.minecraft.biologydictionary.core.BiologyDictionaryItem;
 import net.minecraft.network.FriendlyByteBuf;
 
 public record RequestHandbookItemPacket() implements Packet {

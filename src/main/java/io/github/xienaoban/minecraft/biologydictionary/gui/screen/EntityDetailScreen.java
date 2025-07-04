@@ -1,12 +1,12 @@
 package io.github.xienaoban.minecraft.biologydictionary.gui.screen;
 
-import io.github.xienaoban.minecraft.biologydictionary.core.widget.EntityPropertyWidgets;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.minecraft.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
-import io.github.xienaoban.minecraft.biologydictionary.common.util.MinecraftUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;

@@ -1,9 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary;
 
+import io.github.xienaoban.minecraft.biologydictionary.common.server.ServerEventRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.minecraft.biologydictionary.core.EntityManager;
 import io.github.xienaoban.minecraft.biologydictionary.net.ServerNetManager;
-import io.github.xienaoban.minecraft.biologydictionary.common.server.ServerEventRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;

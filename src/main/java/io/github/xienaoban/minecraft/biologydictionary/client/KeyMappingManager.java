@@ -1,9 +1,9 @@
 package io.github.xienaoban.minecraft.biologydictionary.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import io.github.xienaoban.minecraft.biologydictionary.common.client.ClientEventRegistry;
 import io.github.xienaoban.minecraft.biologydictionary.common.client.KeyMappingRegistry;
-import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
