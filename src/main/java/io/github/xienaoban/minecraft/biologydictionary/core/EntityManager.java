@@ -5,7 +5,6 @@ import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,15 +27,26 @@ public final class EntityManager {
 
     public static void init() {
         synchronized (EntityManager.class) {
-            if (instance != null) throw new AssertionError("EntityManager is null?!");
-            instance = new EntityManager(getTempLevel());
+            if (instance == null) {
+                Level level = BD.justGiveMeALevel();
+                if (level != null) {
+                    instance = new EntityManager(BD.justGiveMeALevel());
+                    LOGGER.info("EntityManager initialized.");
+                } else {
+                    LOGGER.info("EntityManager not initialized.");
+                }
+            }
         }
     }
 
-    public static void deinit() {
+    public static void destroy() {
         synchronized (EntityManager.class) {
-            // if (instance == null) throw new AssertionError("EntityManager is not null?!");
-            instance = null;
+            if (instance != null) {
+                instance = null;
+                LOGGER.info("EntityManager destroyed.");
+            } else {
+                LOGGER.info("EntityManager has been destroyed.");
+            }
         }
     }
 
@@ -46,15 +56,6 @@ public final class EntityManager {
      */
     public static Integer getMyPreferredEntityOrder(EntityType<?> clazz) {
         return EntityOrder.map.get(clazz);
-    }
-
-    private static Level getTempLevel() {
-        for (MinecraftServer server : BD.getServers()) {
-            for (Level level : server.getAllLevels()) {
-                return level;
-            }
-        }
-        throw new RuntimeException("Should not reach here!");
     }
 
     private final Map<Class<? extends Entity>, EntityTreeNode> tree = new HashMap<>();

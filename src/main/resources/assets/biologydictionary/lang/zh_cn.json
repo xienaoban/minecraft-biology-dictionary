@@ -27,6 +27,14 @@
   "variant.minecraft.cat.jellie":            "黑白",
   "variant.minecraft.cat.all_black":         "黑色",
 
+  "variant.minecraft.chicken.temperate":  "温带",
+  "variant.minecraft.chicken.warm":       "热带",
+  "variant.minecraft.chicken.cold":       "寒带",
+
+  "variant.minecraft.cow.temperate":  "温带",
+  "variant.minecraft.cow.warm":       "热带",
+  "variant.minecraft.cow.cold":       "寒带",
+
   "variant.minecraft.fox.red":  "红狐",
   "variant.minecraft.fox.snow": "雪狐",
 

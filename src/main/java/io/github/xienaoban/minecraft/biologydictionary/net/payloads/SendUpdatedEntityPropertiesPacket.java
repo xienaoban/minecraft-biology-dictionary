@@ -39,8 +39,7 @@ public record SendUpdatedEntityPropertiesPacket(int entityId, CompoundTag vanill
 
         // Save vanilla properties to the entity.
         if (vanillaNbt != null) {
-            CompoundTag oldVanillaNbt = EntityUtils.getNbt(entity);
-            EntityUtils.setNbt(entity, oldVanillaNbt.merge(vanillaNbt));
+            EntityUtils.mergeNbt(entity, vanillaNbt);
         }
 
         // Save extra properties to the entity.

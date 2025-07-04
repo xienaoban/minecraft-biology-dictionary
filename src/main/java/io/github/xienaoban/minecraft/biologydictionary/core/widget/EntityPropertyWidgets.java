@@ -106,7 +106,7 @@ public final class EntityPropertyWidgets {
         r(EntityLeashableWidget.class);
         r(EntityBoundingBoxWidget.class);
         r(TurnPageTriggerWidget.class);
-        r(EntityVariantOfVariantHolderWidget.class);
+        r(EntityVariantStandardWidget.class);
         r(HorseMarkingsWidget.class);
         r(VillagerTypeWidget.class);
         r(VillagerScheduleWidget.class);
