@@ -2,7 +2,8 @@ package io.github.xienaoban.minecraft.biologydictionary.core.property;
 
 import io.github.xienaoban.minecraft.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.builtin.*;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla.LivingEntityActiveEffectsProperty;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla.EntityReferenceProperty;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla.VariantProperty;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
@@ -10,6 +11,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.gossip.GossipContainer;
@@ -483,11 +485,11 @@ public final class EntityVanillaProperties {
             return g(ep, "Team");
         }
 
-        public static LivingEntityActiveEffectsProperty createActiveEffectsProperty() {
-            return new LivingEntityActiveEffectsProperty("active_effects");
+        public static CodecProperty<LivingEntity, List<MobEffectInstance>> createActiveEffectsProperty() {
+            return new CodecProperty<>("active_effects", MobEffectInstance.CODEC.listOf());
         }
 
-        public static LivingEntityActiveEffectsProperty getActiveEffectsProperty(EntityProperties<?> ep) {
+        public static CodecProperty<LivingEntity, List<MobEffectInstance>> getActiveEffectsProperty(EntityProperties<?> ep) {
             return g(ep, "active_effects");
         }
 

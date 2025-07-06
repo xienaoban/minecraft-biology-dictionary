@@ -78,6 +78,10 @@
   "variant.minecraft.parrot.yellow_blue": "Yellow Blue",
   "variant.minecraft.parrot.gray":        "Gray",
 
+  "variant.minecraft.pig.temperate":  "Temperate",
+  "variant.minecraft.pig.warm":       "Warm",
+  "variant.minecraft.pig.cold":       "Cold",
+
   "variant.minecraft.rabbit.brown":           "Brown",
   "variant.minecraft.rabbit.white":           "White",
   "variant.minecraft.rabbit.black":           "Black",

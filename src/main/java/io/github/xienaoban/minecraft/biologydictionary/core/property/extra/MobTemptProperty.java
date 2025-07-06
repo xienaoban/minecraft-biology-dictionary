@@ -1,6 +1,6 @@
 package io.github.xienaoban.minecraft.biologydictionary.core.property.extra;
 
-import io.github.xienaoban.minecraft.biologydictionary.core.property.builtin.ItemStackListProperty;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla.ItemStackListProperty;
 import io.github.xienaoban.minecraft.biologydictionary.mixin.MobIMixin;
 import io.github.xienaoban.minecraft.biologydictionary.mixin.TemptGoalIMixin;
 import net.minecraft.core.registries.BuiltInRegistries;
