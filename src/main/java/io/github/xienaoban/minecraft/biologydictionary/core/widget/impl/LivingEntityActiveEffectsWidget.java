@@ -4,7 +4,7 @@ import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla.LivingEntityActiveEffectsProperty;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.builtin.CodecProperty;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.control.EntityPropertyIcon;
@@ -13,19 +13,17 @@ import io.github.xienaoban.minecraft.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
-import java.util.Map;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidget<LivingEntity> {
     private static final int L = 11, T = 3;
 
-    private final LivingEntityActiveEffectsProperty activeEffectsProperty
+    private final CodecProperty<LivingEntity, List<MobEffectInstance>> activeEffectsProperty
             = EntityVanillaProperties.OfLivingEntity.getActiveEffectsProperty(p());
 
     public LivingEntityActiveEffectsWidget(EntityProperties<LivingEntity> properties) {
@@ -45,7 +43,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             Component text = null;
-            Map<Holder<MobEffect>, MobEffectInstance> effects = activeEffectsProperty.get();
+            List<MobEffectInstance> effects = activeEffectsProperty.get();
             if (effects == null) {
                 text = Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS);
             } else if (effects.isEmpty()) {
@@ -67,16 +65,16 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
                 ctx.renderTexture(Textures.ICONS, 21 * Widget.WIDGET_WIDTH, 3 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
             int i = -1;
-            for (Holder<MobEffect> effect : effects.keySet()) {
+            for (MobEffectInstance effect : effects) {
                 ++i;
-                ctx.renderSprite(effect, 0.444444F, getBox().getLeft() + 0.05F + i * gap, getBox().getTop());
+                ctx.renderSprite(effect.getEffect(), 0.444444F, getBox().getLeft() + 0.05F + i * gap, getBox().getTop());
             }
         }
 
         @Override
         protected void onResize(int width, int height) {
             super.onResize(width, height);
-            Map<Holder<MobEffect>, MobEffectInstance> effects = activeEffectsProperty.get();
+            List<MobEffectInstance> effects = activeEffectsProperty.get();
             int size = effects == null ? 0 : effects.size();
             updateGap(size);
         }

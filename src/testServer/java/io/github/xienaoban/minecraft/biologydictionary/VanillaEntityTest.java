@@ -34,7 +34,7 @@ public class VanillaEntityTest {
 
             // skip non-vanilla classes
             if (!MinecraftUtils.isVanillaClass(clazz)) {
-                LOGGER.info("Skipped non-vanilla class: \"" + clazz.getName() + "\".");
+                LOGGER.info("Skipped non-vanilla class for deobfuscation: \"{}\".", clazz.getName());
                 return true;
             }
 
@@ -56,7 +56,7 @@ public class VanillaEntityTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            LOGGER.info("Deobfuscation batch has been written to " + path + ".");
+            LOGGER.info("Deobfuscation batch has been written to {}.", path);
             helper.fail(Component.literal("Some entities are not covered by the deobfuscation map."));
         }
     }
@@ -70,20 +70,20 @@ public class VanillaEntityTest {
 
             // skip entities that are not LivingEntity (like arrow or boat)
             if (classInfo == null) {
-                LOGGER.trace("Skipped entities like arrow or boat: \"" + EntityType.getKey(entityType) + "\".");
+                LOGGER.trace("Skipped entities like arrow or boat: \"{}\".", EntityType.getKey(entityType));
                 continue;
             }
 
             // skip non-vanilla classes
             Class<?> clazz = classInfo.getClazz();
             if (!MinecraftUtils.isVanillaClass(clazz)) {
-                LOGGER.info("Skipped non-vanilla class: \"" + clazz.getName() + "\".");
+                LOGGER.info("Skipped non-vanilla class for order: \"{}\".", clazz.getName());
                 continue;
             }
 
             if (EntityManager.getMyPreferredEntityOrder(entityType) == null) {
                 success = false;
-                LOGGER.error("Entity \"" + classInfo.getStringId() + "\" is not assigned an order.");
+                LOGGER.error("Entity \"{}\" is not assigned an order.", classInfo.getStringId());
             }
         }
         if (success) helper.succeed();

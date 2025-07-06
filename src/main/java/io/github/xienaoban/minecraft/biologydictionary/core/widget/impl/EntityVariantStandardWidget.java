@@ -4,7 +4,7 @@ import io.github.xienaoban.minecraft.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.minecraft.biologydictionary.core.property.EntityVanillaProperties;
-import io.github.xienaoban.minecraft.biologydictionary.core.property.builtin.VariantProperty;
+import io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla.VariantProperty;
 import io.github.xienaoban.minecraft.biologydictionary.core.widget.UnsupportedWidgetException;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.minecraft.biologydictionary.gui.util.Textures;

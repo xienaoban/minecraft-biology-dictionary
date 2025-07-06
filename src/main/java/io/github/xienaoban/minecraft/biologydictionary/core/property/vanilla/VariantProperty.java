@@ -1,5 +1,6 @@
-package io.github.xienaoban.minecraft.biologydictionary.core.property.builtin;
+package io.github.xienaoban.minecraft.biologydictionary.core.property.vanilla;
 
+import io.github.xienaoban.minecraft.biologydictionary.core.property.builtin.AbstractProperty;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
