@@ -267,29 +267,18 @@ public final class ScreenRenderingContext {
     }
 
     public void renderEntityBottomed(Entity entity, float left, float top, float right, float bottom,
+                                     float rotateX, float rotateY, float forceScale) {
+        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, 1F);
+    }
+
+    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
                                      float rotateX, float rotateY) {
-        float width = right - left;
-        float height = bottom - top;
-        float entityWidth = entity.getBbWidth();
-        float entityHeight = entity.getBbHeight();
-        float scale = Math.min(width / (float) Math.log(1 + entityWidth), height / (float) Math.log(1 + entityHeight)) / 2.5F;
+        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, -1, 1.9F);
+    }
 
-        int x0 = Mth.ceil(left), y0 = Mth.ceil(top), x1 = Mth.floor(right), y1 = Mth.floor(bottom);
-        getGuiGraphics().enableScissor(x0, y0, x1, y1);
-        Quaternionf quaternionf = new Quaternionf().rotateX(rotateY * 20F * (float) (Math.PI / 180F));
-        Quaternionf quaternionf2 = new Quaternionf().rotateY((float) Math.PI - rotateX * 20F * (float) (Math.PI / 180F));
-        Quaternionf quaternionf3 = new Quaternionf().rotateZ((float) Math.PI);
-        quaternionf.mul(quaternionf2).mul(quaternionf3);
-        float sc = entity instanceof LivingEntity living ? living.getScale() : 1F;
-        Vector3f vector3f = new Vector3f(0F, entity.getBbHeight() + 0.0625F * sc, 0F);
-
-        EntityRenderDispatcher entityRenderDispatcher = getMinecraft().getEntityRenderDispatcher();
-        EntityRenderer<Entity, EntityRenderState> entityRenderer = Misc.cast(entityRenderDispatcher.getRenderer(entity));
-        EntityRenderState entityRenderState = entityRenderer.createRenderState();
-        entityRenderer.extractRenderState(entity, entityRenderState, 1F);
-        getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);
-
-        getGuiGraphics().disableScissor();
+    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
+                             float rotateX, float rotateY, float forceScale) {
+        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, 1.9F);
     }
 
     /**
@@ -300,13 +289,18 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(GuiGraphics, int, int, int, int, float, Vector3f, Quaternionf, Quaternionf, LivingEntity)
      */
-    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
-                             float rotateX, float rotateY) {
-        float width = right - left;
-        float height = bottom - top;
-        float entityWidth = entity.getBbWidth();
-        float entityHeight = entity.getBbHeight();
-        float scale = Math.min(width / (float) Math.log(1 + entityWidth), height / (float) Math.log(1 + entityHeight)) / 2.5F;
+    private void renderEntity(Entity entity, float left, float top, float right, float bottom,
+                              float rotateX, float rotateY, float forceScale, float internalOffset) {
+        final float width = right - left;
+        final float height = bottom - top;
+        final float entityWidth = entity.getBbWidth();
+        final float entityHeight = entity.getBbHeight();
+        final float scale;
+        if (forceScale < 0) {
+            scale = Math.min(width / (float) Math.log(1.1F + entityWidth), height / (float) Math.log(1.1F + entityHeight)) / 2.2F;
+        } else {
+            scale = Math.min(width / entityWidth, height / entityHeight) / 1.5F * forceScale;
+        }
 
         int x0 = Mth.ceil(left), y0 = Mth.ceil(top), x1 = Mth.floor(right), y1 = Mth.floor(bottom);
         getGuiGraphics().enableScissor(x0, y0, x1, y1);
@@ -315,7 +309,7 @@ public final class ScreenRenderingContext {
         Quaternionf quaternionf3 = new Quaternionf().rotateZ((float) Math.PI);
         quaternionf.mul(quaternionf2).mul(quaternionf3);
         float sc = entity instanceof LivingEntity living ? living.getScale() : 1F;
-        Vector3f vector3f = new Vector3f(0F, entity.getBbHeight() / 1.9F + 0.0625F * sc, 0F);
+        Vector3f vector3f = new Vector3f(0F, entity.getBbHeight() / internalOffset + 0.0625F * sc, 0F);
 
         EntityRenderDispatcher entityRenderDispatcher = getMinecraft().getEntityRenderDispatcher();
         EntityRenderer<Entity, EntityRenderState> entityRenderer = Misc.cast(entityRenderDispatcher.getRenderer(entity));
@@ -325,6 +319,10 @@ public final class ScreenRenderingContext {
 
         getGuiGraphics().disableScissor();
 
+        if (isDebug() && width > 0 && height > 0) {
+            final int color = 0xFFAAAAAA;
+            renderRectangle(color, 0.6F, getZ(), left, top, right, bottom);
+        }
     }
 
     /**

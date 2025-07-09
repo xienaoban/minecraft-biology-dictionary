@@ -95,7 +95,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
         ctx.renderEntityCentered(model, getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
-                0.06F + (float) Math.atan(ctx.getMouseX() / 40F) / 10,
-                0.02F + (float) Math.atan(ctx.getMouseY() / 40F) / 20);
+                (float) Math.atan(ctx.getMouseX() / 40F) / 10,
+                (float) Math.atan(ctx.getMouseY() / 40F) / 20);
     }
 }

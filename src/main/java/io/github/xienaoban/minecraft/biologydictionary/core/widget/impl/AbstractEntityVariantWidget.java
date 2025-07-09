@@ -355,11 +355,11 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
         private void renderEntity(ScreenRenderingContext ctx) {
             ctx.renderEntityCentered(model,
-                    getBox().getLeft() - widthFix / 2,
-                    getBox().getTop() + 3 - heightFix,
-                    getBox().getRight() + widthFix / 2,
-                    getBox().getBottom() - 8,
-                    0F, 0.3F);
+                    getBox().getLeft() - 1- widthFix / 2,
+                    getBox().getTop() + 1 - heightFix,
+                    getBox().getRight() + 1 + widthFix / 2,
+                    getBox().getBottom() - 6,
+                    0F, 0.3F, 1F);
         }
     }
 
