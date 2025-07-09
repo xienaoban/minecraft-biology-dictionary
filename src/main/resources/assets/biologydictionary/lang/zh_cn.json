@@ -78,9 +78,9 @@
   "variant.minecraft.parrot.yellow_blue": "黄蓝",
   "variant.minecraft.parrot.gray":        "灰色",
 
-  "variant.minecraft.pig.temperate":  "Temperate",
-  "variant.minecraft.pig.warm":       "Warm",
-  "variant.minecraft.pig.cold":       "Cold",
+  "variant.minecraft.pig.temperate":  "温带",
+  "variant.minecraft.pig.warm":       "热带",
+  "variant.minecraft.pig.cold":       "寒带",
 
   "variant.minecraft.rabbit.brown":           "棕色",
   "variant.minecraft.rabbit.white":           "白色",

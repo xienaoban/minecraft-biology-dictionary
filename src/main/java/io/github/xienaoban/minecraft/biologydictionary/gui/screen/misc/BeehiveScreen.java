@@ -111,11 +111,11 @@ public class BeehiveScreen extends ElementScreen {
                 y = h + 24 + ((p & 1) == 0 ? 0 : 8);
             }
             BeeInfo bee = this.bees[i];
-            int beeSize = bee.entity.isBaby() ? 46 : 32;
+            float beeScale = bee.entity.isBaby() ? 0.6F : 1F;
             float t = 14.0F * Math.min(bee.ticksInHive, bee.minTicksInHive) / bee.minTicksInHive;
             ctx.renderHorizontalLine(0xFF443300, 2.2F, ctx.getZ(), y - 1, x - 7.5F, x + 7.5F);
             ctx.renderHorizontalLine(bee.entity.hasNectar() ? 0xFFFFBB00 : 0x64FFBB00, 1.2F, ctx.getZ(), y - 1, x - 7, x - 7 + t);
-            ctx.renderEntityBottomed(bee.entity, x - 19F, y - 42F, x + 19F, y, (float) Math.atan(action.mouseX / 80), (float) Math.atan(action.mouseY / 80));
+            ctx.renderEntityCentered(bee.entity, x - 14F, y - 26F, x + 14F, y, (float) Math.atan(action.mouseX / 80), (float) Math.atan(action.mouseY / 80), beeScale);
             Component customName = bee.entity.getCustomName();
             int beeTop = y - (bee.entity.isBaby() ? 20 : 25);
             if (customName != null) {
@@ -156,6 +156,9 @@ public class BeehiveScreen extends ElementScreen {
         if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)
                 || Objects.requireNonNull(minecraft).options.keyInventory.matches(keyCode, scanCode)) {
             onClose();
+            return true;
+        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
+            screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
