@@ -4,6 +4,7 @@ import io.github.xienaoban.minecraft.biologydictionary.Lang;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Page;
 import io.github.xienaoban.minecraft.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.minecraft.biologydictionary.gui.screen.misc.DebugScreen;
 import io.github.xienaoban.minecraft.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -71,6 +72,11 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
                 ctx.renderText(Component.literal("256"), 0xFF222222, 0.5F, ctx.getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 2, getBox().getTop() + 3);
             }
 
+            @Override
+            protected boolean onMouseDown(float x, float y, int code) {
+                minecraft.setScreen(new DebugScreen());
+                return true;
+            }
         })) System.out.println("aaa?");
 
         for (int i = 0; i < 11; ++i) {

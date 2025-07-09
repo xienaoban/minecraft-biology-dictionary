@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.ElementScreen;
+import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -283,8 +284,9 @@ public final class ScreenRenderingContext {
         Vector3f vector3f = new Vector3f(0F, entity.getBbHeight() + 0.0625F * sc, 0F);
 
         EntityRenderDispatcher entityRenderDispatcher = getMinecraft().getEntityRenderDispatcher();
-        EntityRenderer<? super Entity, ?> entityRenderer = entityRenderDispatcher.getRenderer(entity);
-        EntityRenderState entityRenderState = entityRenderer.createRenderState(entity, 1F);
+        EntityRenderer<Entity, EntityRenderState> entityRenderer = Misc.cast(entityRenderDispatcher.getRenderer(entity));
+        EntityRenderState entityRenderState = entityRenderer.createRenderState();
+        entityRenderer.extractRenderState(entity, entityRenderState, 1F);
         getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);
 
         getGuiGraphics().disableScissor();
@@ -316,8 +318,9 @@ public final class ScreenRenderingContext {
         Vector3f vector3f = new Vector3f(0F, entity.getBbHeight() / 1.9F + 0.0625F * sc, 0F);
 
         EntityRenderDispatcher entityRenderDispatcher = getMinecraft().getEntityRenderDispatcher();
-        EntityRenderer<? super Entity, ?> entityRenderer = entityRenderDispatcher.getRenderer(entity);
-        EntityRenderState entityRenderState = entityRenderer.createRenderState(entity, 1F);
+        EntityRenderer<Entity, EntityRenderState> entityRenderer = Misc.cast(entityRenderDispatcher.getRenderer(entity));
+        EntityRenderState entityRenderState = entityRenderer.createRenderState();
+        entityRenderer.extractRenderState(entity, entityRenderState, 1F);
         getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);
 
         getGuiGraphics().disableScissor();
