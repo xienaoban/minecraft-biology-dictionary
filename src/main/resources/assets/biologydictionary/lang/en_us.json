@@ -27,6 +27,14 @@
   "variant.minecraft.cat.jellie":            "Jellie",
   "variant.minecraft.cat.all_black":         "All Black",
 
+  "variant.minecraft.chicken.temperate": "Temperate",
+  "variant.minecraft.chicken.warm":      "Warm",
+  "variant.minecraft.chicken.cold":      "Cold",
+
+  "variant.minecraft.cow.temperate": "Temperate",
+  "variant.minecraft.cow.warm":      "Warm",
+  "variant.minecraft.cow.cold":      "Cold",
+
   "variant.minecraft.fox.red":  "Red",
   "variant.minecraft.fox.snow": "Snow",
 
@@ -70,6 +78,10 @@
   "variant.minecraft.parrot.yellow_blue": "Yellow Blue",
   "variant.minecraft.parrot.gray":        "Gray",
 
+  "variant.minecraft.pig.temperate": "Temperate",
+  "variant.minecraft.pig.warm":      "Warm",
+  "variant.minecraft.pig.cold":      "Cold",
+
   "variant.minecraft.rabbit.brown":           "Brown",
   "variant.minecraft.rabbit.white":           "White",
   "variant.minecraft.rabbit.black":           "Black",
@@ -90,6 +102,16 @@
   "variant.minecraft.villager.snow":    "Snow",
   "variant.minecraft.villager.swamp":   "Swamp",
   "variant.minecraft.villager.taiga":   "Taiga",
+
+  "variant.minecraft.wolf.pale":     "Pale",
+  "variant.minecraft.wolf.spotted":  "Spotted",
+  "variant.minecraft.wolf.snowy":    "Snowy",
+  "variant.minecraft.wolf.black":    "Black",
+  "variant.minecraft.wolf.ashen":    "Ashen",
+  "variant.minecraft.wolf.rusty":    "Rusty",
+  "variant.minecraft.wolf.woods":    "Woods",
+  "variant.minecraft.wolf.chestnut": "Chestnut",
+  "variant.minecraft.wolf.striped":  "Striped",
 
   "key.category.biologydictionary": "Biology Dictionary",
   "key.biologydictionary.open_handbook": "Open Handbook",
