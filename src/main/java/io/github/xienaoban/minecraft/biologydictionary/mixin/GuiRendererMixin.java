@@ -2,6 +2,7 @@ package io.github.xienaoban.minecraft.biologydictionary.mixin;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import io.github.xienaoban.minecraft.biologydictionary.common.gui.fix.PictureInPictureRendererFactory;
+import io.github.xienaoban.minecraft.biologydictionary.common.gui.screen.CommonScreen;
 import io.github.xienaoban.minecraft.biologydictionary.common.util.Misc;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
@@ -47,13 +48,15 @@ public abstract class GuiRendererMixin {
 
     @Inject(method = "preparePictureInPictureState(Lnet/minecraft/client/gui/render/state/pip/PictureInPictureRenderState;I)V", at = @At("HEAD"), cancellable = true)
     private <T extends PictureInPictureRenderState> void injectPreparePictureInPictureState(T pictureInPictureRenderState, int guiScale, CallbackInfo ci) {
-        PictureInPictureRendererFactory<T> factory = Misc.cast(pictureInPictureRendererFactories.get(pictureInPictureRenderState.getClass()));
-        if (factory != null) {
-            PictureInPictureRenderer<T> pictureinpicturerenderer = factory.create(bufferSource);
-            if (pictureinpicturerenderer != null) {
-                pictureinpicturerenderer.prepare(pictureInPictureRenderState, renderState, guiScale);
+        if (CommonScreen.isOpened()) {
+            PictureInPictureRendererFactory<T> factory = Misc.cast(pictureInPictureRendererFactories.get(pictureInPictureRenderState.getClass()));
+            if (factory != null) {
+                PictureInPictureRenderer<T> pictureinpicturerenderer = factory.create(bufferSource);
+                if (pictureinpicturerenderer != null) {
+                    pictureinpicturerenderer.prepare(pictureInPictureRenderState, renderState, guiScale);
+                    ci.cancel();
+                }
             }
-            ci.cancel();
         }
     }
 }

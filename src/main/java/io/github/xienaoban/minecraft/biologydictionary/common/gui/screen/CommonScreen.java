@@ -8,6 +8,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
+import static io.github.xienaoban.minecraft.biologydictionary.BiologyDictionary.LOGGER;
+
 /**
  * Why wrap the rendering APIs here?
  * 1. Because the APIs always change between different MC versions.
@@ -15,6 +17,12 @@ import net.minecraft.network.chat.Component;
  */
 @Environment(EnvType.CLIENT)
 public abstract class CommonScreen extends Screen {
+    private static boolean commonScreenOpened = false;
+
+    public static boolean isOpened() {
+        return commonScreenOpened;
+    }
+
     protected final ScreenRenderingContext screenRenderingContext;
 
     protected CommonScreen(Component component) {
@@ -51,4 +59,18 @@ public abstract class CommonScreen extends Screen {
     public Font getFont() { return font; }
 
     public float getZ() { return 0; }
+
+    @Override
+    public void added() {
+        super.added();
+        commonScreenOpened = true;
+        LOGGER.info("Screen {} opened.", getClass().getSimpleName());
+    }
+
+    @Override
+    public void removed() {
+        super.removed();
+        commonScreenOpened = false;
+        LOGGER.info("Screen {} closed.", getClass().getSimpleName());
+    }
 }
