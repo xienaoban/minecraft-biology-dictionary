@@ -27,13 +27,13 @@
   "variant.minecraft.cat.jellie":            "黑白",
   "variant.minecraft.cat.all_black":         "黑色",
 
-  "variant.minecraft.chicken.temperate":  "温带",
-  "variant.minecraft.chicken.warm":       "热带",
-  "variant.minecraft.chicken.cold":       "寒带",
+  "variant.minecraft.chicken.temperate": "温带",
+  "variant.minecraft.chicken.warm":      "热带",
+  "variant.minecraft.chicken.cold":      "寒带",
 
-  "variant.minecraft.cow.temperate":  "温带",
-  "variant.minecraft.cow.warm":       "热带",
-  "variant.minecraft.cow.cold":       "寒带",
+  "variant.minecraft.cow.temperate": "温带",
+  "variant.minecraft.cow.warm":      "热带",
+  "variant.minecraft.cow.cold":      "寒带",
 
   "variant.minecraft.fox.red":  "红狐",
   "variant.minecraft.fox.snow": "雪狐",
@@ -78,9 +78,9 @@
   "variant.minecraft.parrot.yellow_blue": "黄蓝",
   "variant.minecraft.parrot.gray":        "灰色",
 
-  "variant.minecraft.pig.temperate":  "温带",
-  "variant.minecraft.pig.warm":       "热带",
-  "variant.minecraft.pig.cold":       "寒带",
+  "variant.minecraft.pig.temperate": "温带",
+  "variant.minecraft.pig.warm":      "热带",
+  "variant.minecraft.pig.cold":      "寒带",
 
   "variant.minecraft.rabbit.brown":           "棕色",
   "variant.minecraft.rabbit.white":           "白色",
@@ -102,6 +102,16 @@
   "variant.minecraft.villager.snow":    "寒带",
   "variant.minecraft.villager.swamp":   "沼泽",
   "variant.minecraft.villager.taiga":   "针叶",
+
+  "variant.minecraft.wolf.pale":     "苍白",
+  "variant.minecraft.wolf.spotted":  "斑点",
+  "variant.minecraft.wolf.snowy":    "雪白",
+  "variant.minecraft.wolf.black":    "黑色",
+  "variant.minecraft.wolf.ashen":    "灰色",
+  "variant.minecraft.wolf.rusty":    "锈色",
+  "variant.minecraft.wolf.woods":    "森林",
+  "variant.minecraft.wolf.chestnut": "栗色",
+  "variant.minecraft.wolf.striped":  "条纹",
 
   "key.category.biologydictionary": "生物辞典",
   "key.biologydictionary.open_handbook": "打开手册",

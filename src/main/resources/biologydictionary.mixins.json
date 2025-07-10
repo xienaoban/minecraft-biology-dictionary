@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "io.github.xienaoban.minecraft.biologydictionary.mixin",
+  "package": "io.github.xienaoban.biologydictionary.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "EntityIMixin",
