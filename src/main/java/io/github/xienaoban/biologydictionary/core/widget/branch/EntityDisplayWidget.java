@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.core.widget.impl;
+package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
@@ -67,20 +67,6 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
         super(properties, calculateRowsAndColumns(model));
         this.model = model;
         p().setModel(model);
-        float[] sp = calculateScaleAndPosition();
-    }
-
-    private float[] calculateScaleAndPosition() {
-        float entityWidth = (float) model.getBoundingBox().getXsize();
-        float entityHeight = (float) model.getBoundingBox().getYsize();
-        float widgetWidth = getBox().getWidth() - 8;
-        float widgetHeight = getBox().getHeight() - 16;
-        float scale = Math.min(
-                entityWidth < 1 ? widgetWidth / (0.4F * entityWidth + 0.6F) : widgetWidth / entityWidth,
-                entityHeight < 1 ? widgetHeight / (0.4F * entityHeight + 0.6F) : widgetHeight / entityHeight
-        );
-        float bottom = (scale * entityHeight + widgetHeight) / 2 + 10;
-        return new float[] { scale, bottom };
     }
 
     @Override

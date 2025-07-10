@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.core.widget.impl;
+package io.github.xienaoban.biologydictionary.core.widget.variant;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
