@@ -1,0 +1,54 @@
+package io.github.xienaoban.biologydictionary.core.widget.branch;
+
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyBar;
+import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
+
+@Environment(EnvType.CLIENT)
+public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<Entity> {
+    private static final int L = 11, T = 1;
+
+    public EntityBoundingBoxWidget(EntityProperties<Entity> properties) {
+        super(properties);
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
+        setElementBar(new BoxBar());
+    }
+
+    private final class BoxBar extends EntityPropertyBar {
+        private AABB lastBox;
+        private Component textX, textY, textZ;
+
+        public BoxBar() {
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
+            updateTexts();
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            renderFullBar(ctx);
+            updateTexts();
+            ctx.renderText(textX, 0xFFEE3D3D, 0.5F, ctx.getZ(), getBox().getLeft() + 3 + 0, getBox().getTop() + 2.25F);
+            ctx.renderText(textY, 0xFF04B904, 0.5F, ctx.getZ(), getBox().getLeft() + 3 + 12, getBox().getTop() + 2.25F);
+            ctx.renderText(textZ, 0xFF175FE4, 0.5F, ctx.getZ(), getBox().getLeft() + 3 + 24, getBox().getTop() + 2.25F);
+        }
+
+        private void updateTexts() {
+            AABB currBox = e().getBoundingBox();
+            if (lastBox == currBox) return;
+            lastBox = currBox;
+            textX = Component.literal(String.format("%.2f", lastBox.getXsize()));
+            textY = Component.literal(String.format("%.2f", lastBox.getYsize()));
+            textZ = Component.literal(String.format("%.2f", lastBox.getZsize()));
+        }
+    }
+}
