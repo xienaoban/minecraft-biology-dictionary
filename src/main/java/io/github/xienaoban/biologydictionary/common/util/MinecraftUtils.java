@@ -18,13 +18,13 @@ public final class MinecraftUtils {
     }
 
     @Environment(EnvType.CLIENT)
-    public static LocalPlayer getLocalPlayer() {
+    public static LocalPlayer getClientPlayer() {
         return Minecraft.getInstance().player;
     }
 
     @Environment(EnvType.CLIENT)
-    public static Level getLocalLevel() {
-        return Minecraft.getInstance().level;
+    public static Level getClientLevel() {
+        return LazyClientLevel.get();
     }
 
     @Environment(EnvType.CLIENT)
@@ -44,7 +44,7 @@ public final class MinecraftUtils {
 
     @Environment(EnvType.CLIENT)
     public static long getGameTimeMillis(float tickDelta) {
-        return Objects.requireNonNull(Minecraft.getInstance().level).getGameTime() * 50L + (long) (tickDelta * 50F);
+        return Objects.requireNonNull(getClientLevel()).getGameTime() * 50L + (long) (tickDelta * 50F);
     }
 
     @Environment(EnvType.CLIENT)
@@ -60,5 +60,16 @@ public final class MinecraftUtils {
     @Environment(EnvType.CLIENT)
     public static void showClientCenteredMessage(Component component) {
         Objects.requireNonNull(Minecraft.getInstance().player).displayClientMessage(component, true);
+    }
+
+    /**
+     * To avoid RuntimeException:
+     *     "Cannot load class net.minecraft.client.multiplayer.ClientLevel in environment type SERVER."
+     */
+    @Environment(EnvType.CLIENT)
+    private static final class LazyClientLevel {
+        static Level get() {
+            return Minecraft.getInstance().level;
+        }
     }
 }

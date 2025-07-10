@@ -49,7 +49,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
     private int chosenIndex;
 
     private final List<BackgroundBar> backgroundBars = new ArrayList<>();
-    private final LocalPlayer player = Objects.requireNonNull(MinecraftUtils.getLocalPlayer());
+    private final LocalPlayer player = Objects.requireNonNull(MinecraftUtils.getClientPlayer());
 
     public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt) {
         this(properties, variantCnt, 7, 2);

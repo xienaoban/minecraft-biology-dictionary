@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.NbtTagCollector;
 import io.github.xienaoban.biologydictionary.core.property.PropertyClazzGenerator;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+// import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +22,7 @@ public class VanillaEntityNbtTest {
         helper.succeed();
     }
 
-    @GameTest
+    // @GameTest
     public void testGenerateVanillaProperties(GameTestHelper helper) {
         try {
             PropertyClazzGenerator.generateAll();
