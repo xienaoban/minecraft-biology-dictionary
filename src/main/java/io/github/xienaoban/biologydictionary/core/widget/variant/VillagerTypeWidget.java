@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.core.widget.impl;
+package io.github.xienaoban.biologydictionary.core.widget.variant;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.EntityVanillaProperties;

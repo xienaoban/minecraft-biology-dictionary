@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.core.widget.impl;
+package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
@@ -20,20 +20,23 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
 
 @Environment(EnvType.CLIENT)
-public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<AgeableMob> {
-    private static final int L = 1, T = 4;
+public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStandardWidget<AgeableMob> {
+    private static final int L = 6, T = 4;
 
-    private static final int BABY_MIN_AGE = AgeableMob.BABY_START_AGE;
-    private static final int ADULT_MIN_AGE = 0;
+    /**
+     * @see net.minecraft.world.entity.animal.Animal#PARENT_AGE_AFTER_BREEDING
+     */
+    private static final int BREED_MAX = 6000;
+    private static final int BREED_OFF = 0;
 
     private final IntProperty<AgeableMob> ageProperty = EntityVanillaProperties.OfAgeableMob.getAgeProperty(p());
     private final IntProperty<AgeableMob> forcedAgeProperty = EntityVanillaProperties.OfAgeableMob.getForcedAgeProperty(p());
 
-    public AgeableMobGrowthWidget(EntityProperties<AgeableMob> properties) {
+    public AgeableMobBreedingCooldownWidget(EntityProperties<AgeableMob> properties) {
         super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
-        setElementBar(new GrowthBar());
-        addElementButton(new LockBabyButton());
+        setElementBar(new BreedingBar());
+        addElementButton(new LockNeverBreedButton());
     }
 
     private boolean isAdultClient() {
@@ -48,13 +51,13 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
             return;
         }
         int age = ageOpt;
-        if (age < ADULT_MIN_AGE) {
-            ageProperty.set(age + 1);
+        if (age > BREED_OFF) {
+            ageProperty.set(age - 1);
         }
     }
 
-    private final class GrowthBar extends EntityPropertyProgressBar {
-        public GrowthBar() {
+    private final class BreedingBar extends EntityPropertyProgressBar {
+        public BreedingBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
         }
 
@@ -63,54 +66,50 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
             Integer ageOpt = ageProperty.get();
             Integer forcedAgeOpt = forcedAgeProperty.get();
             if (ageOpt == null || forcedAgeOpt == null) {
-                if (isAdultClient()) {
-                    updatePercent(1F);
-                } else {
-                    updatePercent(0);
-                }
+                updatePercent(0);
                 super.onRender(ctx);
                 if (ctx.isDebug()) {
                     renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 } else {
                     if (isAdultClient()) {
-                        renderInnerText(ctx, Component.translatable(Lang.TEXT_ADULT));
-                    } else {
                         renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                    } else {
+                        renderInnerText(ctx, Component.translatable(Lang.TEXT_BABY));
                     }
                 }
                 return;
             }
             int age = ageOpt;
             int forcedAge = forcedAgeOpt;
-            updatePercent(forcedAge < ADULT_MIN_AGE ? 0F : (1F - (float) age / BABY_MIN_AGE));
+            updatePercent(forcedAge > BREED_OFF ? 1 : ((float) age / BREED_MAX));
             super.onRender(ctx);
             if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(age + "t/" + ADULT_MIN_AGE + "t"));
-            } else if (!isAdultClient()) {
-                if (forcedAge < ADULT_MIN_AGE) {
-                    renderInnerText(ctx, Component.translatable(Lang.TEXT_ALWAYS_BABY));
+                renderInnerText(ctx, Component.literal(age + "t/" + BREED_MAX + "t"));
+            } else if (isAdultClient()) {
+                if (forcedAge > BREED_OFF) {
+                    renderInnerText(ctx, Component.translatable(Lang.TEXT_NEVER_BREED));
                 } else {
-                    renderInnerText(ctx, Component.literal(((age - BABY_MIN_AGE) / 20) + "s/" + (-BABY_MIN_AGE / 20 / 60) + "m"));
+                    renderInnerText(ctx, Component.literal((age / 20) + "s/" + (BREED_MAX / 20 / 60) + "m"));
                 }
             } else {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_ADULT));
+                renderInnerText(ctx, Component.translatable(Lang.TEXT_BABY));
             }
         }
     }
 
-    private final class LockBabyButton extends EntityPropertyButton {
-        public LockBabyButton() {
+    private final class LockNeverBreedButton extends EntityPropertyButton {
+        public LockNeverBreedButton() {
             super(Textures.ICONS, 23 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT);
         }
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            if (isAdultClient()) {
+            if (!isAdultClient()) {
                 // Treat adult as locked as it will never change state.
                 setTextureLeftOffset(10);
             } else {
                 Integer forcedAge = forcedAgeProperty.get();
-                if (forcedAge != null && forcedAge < ADULT_MIN_AGE) {
+                if (forcedAge != null && forcedAge > BREED_OFF) {
                     setTextureLeftOffset(10);
                 } else {
                     setTextureLeftOffset(0);
@@ -125,8 +124,8 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
             if (forcedAgeOpt == null) {
                 return true;
             }
-            if (isAdultClient()) {
-                // Do nothing if it is an adult.
+            if (!isAdultClient()) {
+                // Do nothing if it is a baby.
                 return true;
             }
 
@@ -134,11 +133,11 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
             if (isMouseLeft(code)) {
                 boolean lock = false;
                 final int toSet;
-                if (forcedAge == ADULT_MIN_AGE) {
-                    toSet = BABY_MIN_AGE;
+                if (forcedAge == BREED_OFF) {
+                    toSet = BREED_MAX;
                     lock = true;
                 } else {
-                    toSet = ADULT_MIN_AGE;
+                    toSet = BREED_OFF;
                 }
 
                 // Send to the server.

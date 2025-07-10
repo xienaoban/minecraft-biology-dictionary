@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.core.widget.impl;
+package io.github.xienaoban.biologydictionary.core.widget.variant;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
@@ -38,7 +38,7 @@ public final class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse
 
     @Override
     protected void setVariantClient(Horse entity, Markings variant) {
-        EntityUtils.setVariantAndMarkings(entity, e().getVariant(), variant);
+        EntityUtils.setVariantAndMarkings(entity, entity.getVariant(), variant);
     }
 
     @Override
