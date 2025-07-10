@@ -16,10 +16,10 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "io.github.xienaoban.minecraft.biologydictionary.common.ClientModInitializer"
+      "io.github.xienaoban.biologydictionary.common.ClientModInitializer"
     ],
     "main": [
-      "io.github.xienaoban.minecraft.biologydictionary.common.ModInitializer"
+      "io.github.xienaoban.biologydictionary.common.ModInitializer"
     ]
   },
   "mixins": [
