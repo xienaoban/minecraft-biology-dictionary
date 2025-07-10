@@ -45,9 +45,9 @@ public class BeehiveScreen extends ElementScreen {
     private int passedClientTickCount = 0;
 
     public BeehiveScreen(BlockPos pos) {
-        super(MinecraftUtils.getLocalLevel().getBlockState(pos).getBlock().getName());
+        super(MinecraftUtils.getClientLevel().getBlockState(pos).getBlock().getName());
         this.pos = pos;
-        this.level = MinecraftUtils.getLocalLevel();
+        this.level = MinecraftUtils.getClientLevel();
         this.entity = (BeehiveBlockEntity) this.level.getBlockEntity(pos);
         Objects.requireNonNull(this.entity);
 

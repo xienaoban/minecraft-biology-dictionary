@@ -2,7 +2,6 @@ package io.github.xienaoban.biologydictionary.core.property;
 
 import io.github.xienaoban.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.biologydictionary.core.property.builtin.*;
-import io.github.xienaoban.biologydictionary.core.property.builtin.*;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.VariantProperty;
 import net.minecraft.core.BlockPos;

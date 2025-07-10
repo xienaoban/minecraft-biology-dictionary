@@ -77,7 +77,7 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity> E create(EntityType<E> entityType) {
-        return create(entityType, MinecraftUtils.getLocalLevel());
+        return create(entityType, MinecraftUtils.getClientLevel());
     }
 
     public static <E extends Entity> E create(EntityType<E> entityType, Level level) {
