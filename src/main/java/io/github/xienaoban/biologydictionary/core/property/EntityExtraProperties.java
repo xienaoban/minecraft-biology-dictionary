@@ -30,10 +30,15 @@ final class EntityExtraProperties {
         lookup = null;
     }
 
-    static void r(Class<? extends EntityProperty<? extends Entity>> clazz) {
+    static void r(Class<? extends EntityProperty<? extends Entity>> propertyClazz) {
         try {
-            final Class<? extends Entity> entityClazz = Misc.getFirstEntityClazzGeneric(clazz);
-            MethodHandle constructor = lookup.findConstructor(clazz, MethodType.methodType(void.class));
+            final Class<? extends Entity> entityClazz= Misc.getClazzGeneric(propertyClazz, EntityProperty.class, 0)
+                    .asSubclass(Entity.class);
+            if (!propertyClazz.getSimpleName().startsWith(entityClazz.getSimpleName())) {
+                throw new AssertionError(propertyClazz + " must be started with \"" + entityClazz.getSimpleName() + "\"!");
+            }
+
+            MethodHandle constructor = lookup.findConstructor(propertyClazz, MethodType.methodType(void.class));
             registries.computeIfAbsent(entityClazz, c -> new ArrayList<>())
                     .add(() -> {
                         try {

@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
-public class EntityVariantStandardWidget extends AbstractEntityVariantWidget<Entity, Holder<Object>> {
+public final class EntityVariantStandardWidget extends AbstractEntityVariantWidget<Entity, Holder<Object>> {
     private static final ConcurrentHashMap<Class<? extends Entity>, VariantData> cachedVariantData = new ConcurrentHashMap<>();
 
     private static final MethodHandles.Lookup lookup = MethodHandles.lookup();
