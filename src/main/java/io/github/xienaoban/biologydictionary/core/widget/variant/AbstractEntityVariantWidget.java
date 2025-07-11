@@ -158,6 +158,10 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
     }
 
     protected final void setBackgroundBars(TextureInfo texture, int textureLeft, int textureTop) {
+        for (BackgroundBar bar : backgroundBars) {
+            bar.setParent(null);
+        }
+        backgroundBars.clear();
         for (int i = 0; i < displayCntPerRow.length; ++i) {
             BackgroundBar bar = new BackgroundBar(texture, textureLeft, textureTop);
             bar.getBox().setSize(getBox().getWidth(), Widget.WIDGET_HEIGHT);
