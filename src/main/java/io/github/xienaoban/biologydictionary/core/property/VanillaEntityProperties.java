@@ -56,7 +56,7 @@ import net.minecraft.world.waypoints.Waypoint;
 
 import java.util.*;
 
-public final class EntityVanillaProperties {
+public final class VanillaEntityProperties {
 
     static final Map<Class<? extends Entity>, Creator> registries = new HashMap<>();
 

@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.branch.*;
+import io.github.xienaoban.biologydictionary.core.widget.leaf.BeeHivePropertyWidget;
 import io.github.xienaoban.biologydictionary.core.widget.leaf.VillagerScheduleWidget;
 import io.github.xienaoban.biologydictionary.core.widget.variant.*;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
@@ -123,5 +124,6 @@ public final class EntityPropertyWidgets {
         r(AgeableMobBreedingCooldownWidget.class);
         r(AnimalInLoveWidget.class);
         r(EntityPortalCooldownWidget.class);
+        r(BeeHivePropertyWidget.class);
     }
 }

@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.variant;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
@@ -51,7 +51,7 @@ public final class HorseVariantWidget extends AbstractEntityVariantWidget<Horse,
         Horse tmp = EntityUtils.create(e());
         EntityUtils.setVariantAndMarkings(tmp, element.getVariant(), e().getMarkings());
         CompoundTag nbt = EntityUtils.getNbt(tmp);
-        String key = EntityVanillaProperties.OfHorse.getVariantProperty(p()).name();
+        String key = VanillaEntityProperties.OfHorse.getVariantProperty(p()).name();
         vanillaNbt.put(key, Objects.requireNonNull(nbt.get(key)));
     }
 }

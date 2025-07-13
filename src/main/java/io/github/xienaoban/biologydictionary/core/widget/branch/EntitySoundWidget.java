@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -18,7 +18,7 @@ import net.minecraft.world.entity.Entity;
 public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity> {
     private static final int L = 20, T = 1;
 
-    private final BooleanProperty<Entity> silentProperty = EntityVanillaProperties.OfEntity.getSilentProperty(p());
+    private final BooleanProperty<Entity> silentProperty = VanillaEntityProperties.OfEntity.getSilentProperty(p());
 
     public EntitySoundWidget(EntityProperties<Entity> properties) {
         super(properties, Page.COLUMNS / 4);
@@ -47,7 +47,7 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean silent = isSilent();
-                BooleanProperty<Entity> property = EntityVanillaProperties.OfEntity.createSilentProperty();
+                BooleanProperty<Entity> property = VanillaEntityProperties.OfEntity.createSilentProperty();
                 property.set(!silent);
                 silentProperty.set(!silent);
                 ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);

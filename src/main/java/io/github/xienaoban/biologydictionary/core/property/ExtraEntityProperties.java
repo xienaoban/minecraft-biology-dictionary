@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class EntityExtraProperties {
+final class ExtraEntityProperties {
 
     static final Map<Class<? extends Entity>, List<Creator>> registries = new HashMap<>();
 

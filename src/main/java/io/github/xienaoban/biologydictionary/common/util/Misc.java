@@ -23,7 +23,7 @@ public final class Misc {
         return sw.toString();
     }
 
-    public static Class<?> getClazzGeneric(Class<?> targetClazz, Class<?> sourceClazz, int sourceIdx) {
+    public static Class<?> getClazzGeneric(Class<?> targetClazz, Class<?> sourceClazz, int sourceGenericIdx) {
         record ResOrIdx(Class<?> res, int idx) {
             static ResOrIdx of(Class<?> res) {
                 return new ResOrIdx(res, -1);
@@ -59,12 +59,15 @@ public final class Misc {
                                 return ResOrIdx.of(i);
                             }
                         }
-                        throw new RuntimeException("Generic type not match: " + Arrays.toString(curr.getTypeParameters()) + " vs " + Arrays.toString(supP.getActualTypeArguments()));
+                        throw new RuntimeException("Generic type not match: "
+                                + Arrays.toString(curr.getTypeParameters()) + " vs "
+                                + Arrays.toString(supP.getActualTypeArguments()));
                     } else if (sup instanceof Class<?> supC) {
                         ResOrIdx res = calc(supC, sourceClazz, sourceIdx);
                         if (res == null) { continue; }
                         if (res.res == null) {
-                            throw new RuntimeException("Generic should be resolved: " + curr + ", " + Arrays.toString(curr.getTypeParameters()));
+                            throw new RuntimeException("Generic should be resolved: "
+                                    + curr + ", " + Arrays.toString(curr.getTypeParameters()));
                         }
                         return res;
                     } else {
@@ -76,11 +79,13 @@ public final class Misc {
             }
         }
 
-        ResOrIdx res = ResOrIdx.calc(targetClazz, sourceClazz, sourceIdx);
+        ResOrIdx res = ResOrIdx.calc(targetClazz, sourceClazz, sourceGenericIdx);
         if (res == null) {
             throw new RuntimeException(targetClazz + " does not extend " + sourceClazz);
         } else if (res.res == null) {
-            throw new RuntimeException("Cannot obtain the actual type of generic \"" + sourceClazz.getTypeParameters()[sourceIdx] + "\" in " + sourceClazz + ", which is inherited by " + targetClazz);
+            throw new RuntimeException("Cannot obtain the actual type of generic \""
+                    + sourceClazz.getTypeParameters()[sourceGenericIdx] + "\" in " + sourceClazz
+                    + ", which is inherited by " + targetClazz);
         }
         return res.res;
     }
