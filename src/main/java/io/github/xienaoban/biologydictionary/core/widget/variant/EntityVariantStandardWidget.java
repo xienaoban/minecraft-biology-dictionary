@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.variant;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.VariantProperty;
 import io.github.xienaoban.biologydictionary.core.widget.UnsupportedWidgetException;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -58,7 +58,7 @@ public final class EntityVariantStandardWidget extends AbstractEntityVariantWidg
             String fullName = EntityUtils.getDeobfuscatedName(entity.getClass());
             String simpleName = fullName.substring(fullName.lastIndexOf('.') + 1);
             try {
-                Class<?> ofEntity = Class.forName(EntityVanillaProperties.class.getName() + "$Of" + simpleName);
+                Class<?> ofEntity = Class.forName(VanillaEntityProperties.class.getName() + "$Of" + simpleName);
                 Method creatorM = ofEntity.getDeclaredMethod("createVariantProperty");
                 Method getterM = ofEntity.getDeclaredMethod("getVariantProperty", EntityProperties.class);
                 if (creatorM.getReturnType() != VariantProperty.class

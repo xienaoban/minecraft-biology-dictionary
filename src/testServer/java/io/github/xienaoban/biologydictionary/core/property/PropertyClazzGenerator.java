@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 public class PropertyClazzGenerator {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final Class<EntityVanillaProperties> TARGET_CLAZZ = EntityVanillaProperties.class;
+    public static final Class<VanillaEntityProperties> TARGET_CLAZZ = VanillaEntityProperties.class;
 
     public static final String OUTPUT_CLAZZ_PACKAGE = TARGET_CLAZZ.getPackageName();
     private static final String PROPERTY_WRAPPER_CLAZZ_NAME = TARGET_CLAZZ.getSimpleName();
@@ -146,7 +146,7 @@ public class PropertyClazzGenerator {
         this.clazzAst = new ClassOrInterfaceDeclaration(
                 NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier(), Modifier.finalModifier()),
                 false, targetClazzSimpleName);
-        this.clazzAst.addImplementedType(EntityVanillaProperties.Creator.class);
+        this.clazzAst.addImplementedType(VanillaEntityProperties.Creator.class);
         wrapperClazz.addMember(this.clazzAst);
     }
 

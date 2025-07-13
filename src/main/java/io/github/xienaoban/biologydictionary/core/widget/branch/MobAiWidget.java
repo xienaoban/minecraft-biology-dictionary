@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -45,7 +45,7 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean noAi = isNoAi();
-                BooleanProperty<Mob> property = EntityVanillaProperties.OfMob.createNoAiProperty();
+                BooleanProperty<Mob> property = VanillaEntityProperties.OfMob.createNoAiProperty();
                 property.set(!noAi);
                 ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
             }

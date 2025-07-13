@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.widget.variant;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
@@ -42,7 +42,7 @@ public class PandaMainGeneWidget extends AbstractEntityVariantWidget<Panda, Pand
 
     @Override
     protected void writeVariantToNbt(AbstractEntityVariantWidget<Panda, Panda.Gene>.VariantElement element, CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        CodecProperty<Panda, Panda.Gene> gene = EntityVanillaProperties.OfPanda.createMainGeneProperty();
+        CodecProperty<Panda, Panda.Gene> gene = VanillaEntityProperties.OfPanda.createMainGeneProperty();
         gene.set(element.getVariant());
         gene.writeTo(vanillaNbt);
     }

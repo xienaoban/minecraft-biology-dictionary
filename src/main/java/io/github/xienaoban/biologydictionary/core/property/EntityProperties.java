@@ -28,18 +28,18 @@ public final class EntityProperties<E extends Entity> {
     public EntityProperties(E entity) {
         this.entity = entity;
 
-        final var vRegs = EntityVanillaProperties.registries;
-        final var eRegs = EntityExtraProperties.registries;
+        final var vRegs = VanillaEntityProperties.registries;
+        final var eRegs = ExtraEntityProperties.registries;
 
         Map<String, EntityProperty<?>> vMap = new HashMap<>();
         Map<Class<? extends EntityProperty>, EntityProperty<?>> eMap = new HashMap<>();
         for (var clazz : EntityUtils.topDown(entity)) {
-            EntityVanillaProperties.Creator vc = vRegs.getOrDefault(clazz, null);
+            VanillaEntityProperties.Creator vc = vRegs.getOrDefault(clazz, null);
             if (vc != null) {
                 vc.create(vMap);
             }
 
-            for (EntityExtraProperties.Creator ec : eRegs.getOrDefault(clazz, Collections.emptyList())) {
+            for (ExtraEntityProperties.Creator ec : eRegs.getOrDefault(clazz, Collections.emptyList())) {
                 EntityProperty<?> p = ec.create();
                 eMap.put(p.getClass(), p);
             }

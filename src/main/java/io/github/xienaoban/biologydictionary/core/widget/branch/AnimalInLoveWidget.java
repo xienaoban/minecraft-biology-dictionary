@@ -4,7 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -22,7 +22,7 @@ public final class AnimalInLoveWidget extends EntityPropertyStandardWidget<Anima
 
     private static final int IN_LOVE_MAX_TIME = 600;
 
-    private final IntProperty<Animal> inLoveProperty = EntityVanillaProperties.OfAnimal.getInLoveProperty(p());
+    private final IntProperty<Animal> inLoveProperty = VanillaEntityProperties.OfAnimal.getInLoveProperty(p());
 
     public AnimalInLoveWidget(EntityProperties<Animal> properties) {
         super(properties);
