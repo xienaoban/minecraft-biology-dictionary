@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRenderer;
+import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.client.ClientEventRegistry;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
@@ -9,6 +10,7 @@ import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 
@@ -17,6 +19,8 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 @Environment(EnvType.CLIENT)
 public final class BiologyDictionaryClient {
     public static final BiologyDictionaryClient BDC = new BiologyDictionaryClient();
+
+    private int ticks;
 
     private Entity hitEntity;
     private BlockPos hitBlock;
@@ -28,18 +32,22 @@ public final class BiologyDictionaryClient {
         hitBlock = null;
         hitEntityProperties = null;
 
+        ClientEventRegistry.registerWorldConnected(client -> EntityManager.init());
+        ClientEventRegistry.registerWorldDisconnecting(client -> EntityManager.destroy());
+        ClientEventRegistry.registerEndTick(this::tick);
+
         EntityPropertyWidgets.init();
         FirstPersonShoulderEntityRenderer.init();
         KeyMappingManager.init();
         ClientNetManager.init();
-
-        ClientEventRegistry.registerWorldConnected(client -> EntityManager.init());
-        ClientEventRegistry.registerWorldDisconnecting(client -> EntityManager.destroy());
+        HighlightManager.init();
 
         LOGGER.info("BiologyDictionary (client) initialized.");
     }
 
     public void forceInitialize() { /* do nothing but to trigger cinit */ }
+
+    public int getTicks() { return ticks; }
 
     public Entity getHitEntity() { return hitEntity; }
     public void setHitEntity(Entity hitEntity) { this.hitEntity = hitEntity; }
@@ -50,4 +58,8 @@ public final class BiologyDictionaryClient {
 
     public EntityProperties<? extends Entity> getHitEntityProperties() { return hitEntityProperties; }
     public void setHitEntityProperties(EntityProperties<? extends Entity> hitEntityProperties) { this.hitEntityProperties = hitEntityProperties; }
+
+    private void tick(Minecraft client) {
+        if (!client.isPaused()) ++ticks;
+    }
 }

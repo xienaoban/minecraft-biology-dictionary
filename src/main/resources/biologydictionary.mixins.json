@@ -13,6 +13,7 @@
   "client": [
     "GuiRendererMixin",
     "ItemInHandRendererMixin",
+    "LevelRendererMixin",
     "MinecraftMixin"
   ],
   "injectors": {

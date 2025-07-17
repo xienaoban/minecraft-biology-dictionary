@@ -5,9 +5,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 
@@ -23,7 +23,7 @@ public final class MinecraftUtils {
     }
 
     @Environment(EnvType.CLIENT)
-    public static Level getClientLevel() {
+    public static ClientLevel getClientLevel() {
         return LazyClientLevel.get();
     }
 
@@ -68,7 +68,7 @@ public final class MinecraftUtils {
      */
     @Environment(EnvType.CLIENT)
     private static final class LazyClientLevel {
-        static Level get() {
+        static ClientLevel get() {
             return Minecraft.getInstance().level;
         }
     }
