@@ -26,6 +26,10 @@ public final class EntityUtils {
         EntityVanillaDeobfuscation.clazzToName.get(null);
     }
 
+    // ============================================================================ //
+    //                              Entity Class Utils                              //
+    // ============================================================================ //
+
     public static List<Class<? extends Entity>> topDown(Entity entity) {
         return topDown(entity.getClass());
     }
