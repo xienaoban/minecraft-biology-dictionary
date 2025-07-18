@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
-    private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT = (int) (MinecraftUtils.getClientTickCountPerSecond() * 1.5);
+    private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT = (int) (McClientUtils.getClientTickCountPerSecond() * 1.5);
 
     private final Entity entity;
     private final EntityProperties<? extends Entity> properties;

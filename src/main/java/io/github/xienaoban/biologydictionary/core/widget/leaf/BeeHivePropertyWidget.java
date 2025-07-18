@@ -1,17 +1,21 @@
 package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
+import io.github.xienaoban.biologydictionary.Const;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.Bee;
@@ -21,17 +25,23 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
     private static final int L = 1, T = 1;
 
     private static final float NO_DIS = Float.MIN_VALUE;
+    private static final float MAX_DIS = /* Bee.TOO_FAR_DISTANCE */ 48F;
+    private static final float MAX_DIS_LOG = (float) Math.log(MAX_DIS);
+
 
     private final CodecProperty<Bee, BlockPos> hivePosProperty = VanillaEntityProperties.OfBee.getHivePosProperty(p());
 
     private BlockPos lastHivePos = null;
     private float cachedDistanceToHive = NO_DIS;
+    private float cachedDisLog = NO_DIS;
 
     public BeeHivePropertyWidget(EntityProperties<Bee> properties) {
         super(properties);
 
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new HiveDistanceBar());
+        addElementButton(new HighlightHiveButton());
+        addElementButton(new ClearHiveButton());
     }
 
     private float calcDistToHive() {
@@ -44,8 +54,9 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        if (ticks % MinecraftUtils.getClientTickCountPerSecond() == 11) {
+        if (ticks % McClientUtils.getClientTickCountPerSecond() == 11) {
             cachedDistanceToHive = calcDistToHive();
+            cachedDisLog = (float) Math.log(cachedDistanceToHive);
         }
     }
 
@@ -56,6 +67,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         if (currHivePos != lastHivePos) {
             lastHivePos = currHivePos;
             cachedDistanceToHive = calcDistToHive();
+            cachedDisLog = (float) Math.log(cachedDistanceToHive);
         }
     }
 
@@ -74,8 +86,44 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
             }
 
             super.onRender(ctx);
-            updatePercent(cachedDistanceToHive / 48 /* Bee.TOO_FAR_DISTANCE */);
+            updatePercent(cachedDisLog / MAX_DIS_LOG);
             renderInnerText(ctx, Component.literal(Misc.format4Digits(cachedDistanceToHive) + 'm'));
+        }
+    }
+
+    private final class HighlightHiveButton extends EntityPropertyButton {
+        public HighlightHiveButton() {
+            super(Textures.ICONS, L_ON_OFF * WIDGET_WIDTH, T_ON_OFF * WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                BlockPos currHivePos = hivePosProperty.get();
+                if (currHivePos == null) { return true; }
+                HighlightManager.highlightBlock(currHivePos, Const.HIGHLIGHT_BLOCK_TICKS);
+                McClientUtils.setScreen(null);
+            }
+            return true;
+        }
+    }
+
+    private final class ClearHiveButton extends EntityPropertyButton {
+        public ClearHiveButton() {
+            super(Textures.ICONS, L_ON_OFF * WIDGET_WIDTH, T_ON_OFF * WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                BlockPos currHivePos = hivePosProperty.get();
+                if (currHivePos == null) { return true; }
+                CodecProperty<Bee, BlockPos> property = VanillaEntityProperties.OfBee.createHivePosProperty();
+                property.set(null);
+                hivePosProperty.set(null);
+                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
+            }
+            return true;
         }
     }
 }

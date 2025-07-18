@@ -39,6 +39,11 @@ public class CodecProperty<E extends Entity, T> extends AbstractProperty<E, T> {
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        nbt.storeNullable(name(), codec, get());
+        T v = get();
+        if (v != null) {
+            nbt.store(name(), codec, v);
+        } else {
+            nbt.put(name(), new CompoundTag());
+        }
     }
 }

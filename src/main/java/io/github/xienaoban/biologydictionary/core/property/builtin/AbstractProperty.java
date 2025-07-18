@@ -4,11 +4,9 @@ import io.github.xienaoban.biologydictionary.api.EntityProperty;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
-import java.lang.invoke.VarHandle;
-
 public abstract class AbstractProperty<E extends Entity, T> implements EntityProperty<E> {
     private final String propertyName;
-    private T value;
+    private volatile T value;
 
     public AbstractProperty(String propertyName) {
         this.propertyName = propertyName;
@@ -25,7 +23,6 @@ public abstract class AbstractProperty<E extends Entity, T> implements EntityPro
     }
 
     public final void set(T newValue) {
-        VarHandle.storeStoreFence();
         value = newValue;
     }
 

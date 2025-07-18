@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
@@ -13,7 +14,6 @@ import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
@@ -32,7 +32,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     public AbstractBiologyDictionaryScreen(Component title) {
         super(title);
-        minecraft = Objects.requireNonNull(Minecraft.getInstance());
+        minecraft = McClientUtils.getClient();
 
         pages = new ArrayList<>();
         currPageIndex = 0;

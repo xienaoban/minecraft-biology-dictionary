@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import net.fabricmc.api.EnvType;
@@ -73,7 +73,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        if (ticks % MinecraftUtils.getClientTickCountPerSecond() == 15 && p().isNotInNoUpdateCooldown()) {
+        if (ticks % McClientUtils.getClientTickCountPerSecond() == 15 && p().isNotInNoUpdateCooldown()) {
             updateCompoundTag(e(), model);
         }
     }

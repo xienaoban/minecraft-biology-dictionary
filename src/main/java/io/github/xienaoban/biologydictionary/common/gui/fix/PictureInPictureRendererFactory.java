@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.common.gui.fix;
 
 import com.google.common.collect.ImmutableMap;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.*;
 import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -66,7 +66,7 @@ public class PictureInPictureRendererFactory<T extends PictureInPictureRenderSta
             Class<? extends PictureInPictureRenderState> key = pictureInPictureRenderer.getRenderStateClass();
 
             Function<MultiBufferSource.BufferSource, PictureInPictureRenderer<?>> factory = switch (pictureInPictureRenderer) {
-                case GuiEntityRenderer          ignored -> buffers -> new GuiEntityRenderer(buffers, Minecraft.getInstance().getEntityRenderDispatcher());
+                case GuiEntityRenderer          ignored -> buffers -> new GuiEntityRenderer(buffers, McClientUtils.getClient().getEntityRenderDispatcher());
                 case GuiSkinRenderer            ignored -> GuiSkinRenderer::new;
                 case GuiBookModelRenderer       ignored -> GuiBookModelRenderer::new;
                 case GuiBannerResultRenderer    ignored -> GuiBannerResultRenderer::new;
