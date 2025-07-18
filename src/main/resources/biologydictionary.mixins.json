@@ -11,6 +11,7 @@
     "TemptGoalIMixin"
   ],
   "client": [
+    "EntityRenderDispatcherIMixin",
     "GuiRendererMixin",
     "ItemInHandRendererMixin",
     "LevelRendererMixin",

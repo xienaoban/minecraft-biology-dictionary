@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -23,7 +23,7 @@ public class DebugScreen extends Screen {
 
     public DebugScreen() {
         super(Component.literal("Debug"));
-        minecraft = Minecraft.getInstance();
+        minecraft = McClientUtils.getClient();
         entities.add(EntityType.COW.create(minecraft.level, null));
         entities.add(EntityType.HORSE.create(minecraft.level, null));
     }

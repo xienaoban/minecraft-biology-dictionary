@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import io.github.xienaoban.biologydictionary.mixin.EntityRenderDispatcherIMixin;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -47,9 +48,12 @@ public final class HighlightRenderer {
         double fixedX = Mth.lerp(delta, entity.xOld, entity.getX());
         double fixedY = Mth.lerp(delta, entity.yOld, entity.getY());
         double fixedZ = Mth.lerp(delta, entity.zOld, entity.getZ());
+        boolean old = ((EntityRenderDispatcherIMixin) entityRenderDispatcher).getShouldRenderShadow();
+        entityRenderDispatcher.setRenderShadow(false);
         entityRenderDispatcher.render(entity,
                 fixedX - cameraVec.x(), fixedY - cameraVec.y(), fixedZ - cameraVec.z(), delta,
                 poseStack, bufferSource, entityRenderDispatcher.getPackedLightCoords(entity, delta));
+        entityRenderDispatcher.setRenderShadow(old);
     }
 
     private static void renderBlock(BlockRenderDispatcher blockRenderDispatcher,

@@ -142,6 +142,6 @@ public final class Misc {
         throwable.printStackTrace(pw);
         String errStack = sw.toString();
         LOGGER.error(errStack);
-        MinecraftUtils.showClientTextBoxMessage(Component.literal(errStack));
+        McClientUtils.showClientTextBoxMessage(Component.literal(errStack));
     }
 }

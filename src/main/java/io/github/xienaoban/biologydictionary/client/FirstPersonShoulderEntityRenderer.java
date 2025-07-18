@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.github.xienaoban.biologydictionary.common.client.RenderingRegistry;
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -52,7 +52,7 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
             default -> null;
         };
         if (hudPos == null) return;
-        long curTime = MinecraftUtils.getGameTimeMillis(tickDelta);
+        long curTime = McClientUtils.getGameTimeMillis(tickDelta);
         long diffTime = Math.min(50, curTime - lastTime);
         lastTime = curTime;
         for (int i = 0; i < 2; ++i) {

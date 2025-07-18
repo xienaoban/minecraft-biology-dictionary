@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import java.util.Optional;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.BD;
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 /**
  * @see net.minecraft.world.entity.variant.VariantUtils
@@ -46,6 +47,8 @@ public class VariantProperty<E extends Entity, T> extends AbstractProperty<E, Ho
         if (get() != null && get().unwrapKey().isPresent()) {
             ResourceKey<?> resourceKey = get().unwrapKey().get();
             nbt.store(name(), ResourceLocation.CODEC, resourceKey.location());
+        } else {
+            LOGGER.warn("Unknown variant key: {}", get());
         }
     }
 }

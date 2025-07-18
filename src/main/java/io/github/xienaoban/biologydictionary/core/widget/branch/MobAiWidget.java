@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
+import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -12,7 +13,10 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.phys.Vec3;
 
 @Environment(EnvType.CLIENT)
 public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
@@ -27,6 +31,10 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
 
     private boolean isNoAi() {
         return e().isNoAi();
+    }
+
+    private void setNoAi(boolean ai) {
+        e().setNoAi(ai);
     }
 
     private final class AiButton extends EntityPropertyButton {
@@ -47,7 +55,16 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
                 boolean noAi = isNoAi();
                 BooleanProperty<Mob> property = VanillaEntityProperties.OfMob.createNoAiProperty();
                 property.set(!noAi);
-                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
+                setNoAi(!noAi);
+                CompoundTag nbt = property.toNbt();
+
+                // Clear the motion caused by collisions accumulated during the AI-disabled period
+                // to prevent the entity from flying around randomly.
+                CodecProperty<Entity, Vec3> motionProperty = VanillaEntityProperties.OfEntity.createMotionProperty();
+                motionProperty.set(Vec3.ZERO);
+                motionProperty.writeTo(nbt);
+
+                ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
             }
             return true;
         }

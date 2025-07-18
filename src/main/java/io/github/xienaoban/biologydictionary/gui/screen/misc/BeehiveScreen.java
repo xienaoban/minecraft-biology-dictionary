@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.ChatFormatting;
@@ -45,9 +45,9 @@ public class BeehiveScreen extends ElementScreen {
     private int passedClientTickCount = 0;
 
     public BeehiveScreen(BlockPos pos) {
-        super(MinecraftUtils.getClientLevel().getBlockState(pos).getBlock().getName());
+        super(McClientUtils.getClientLevel().getBlockState(pos).getBlock().getName());
         this.pos = pos;
-        this.level = MinecraftUtils.getClientLevel();
+        this.level = McClientUtils.getClientLevel();
         this.entity = (BeehiveBlockEntity) this.level.getBlockEntity(pos);
         Objects.requireNonNull(this.entity);
 

@@ -2,8 +2,13 @@ package io.github.xienaoban.biologydictionary.common.util;
 
 import io.github.xienaoban.biologydictionary.mixin.EntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.HorseIMixin;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.AgeableMob;
@@ -76,12 +81,14 @@ public final class EntityUtils {
         return EntityVanillaDeobfuscation.clazzToName.get(clazz);
     }
 
+    @Environment(EnvType.CLIENT)
     public static <E extends Entity> E create(E entity) {
         return create(getEntityType(entity));
     }
 
+    @Environment(EnvType.CLIENT)
     public static <E extends Entity> E create(EntityType<E> entityType) {
-        return create(entityType, MinecraftUtils.getClientLevel());
+        return create(entityType, McClientUtils.getClientLevel());
     }
 
     public static <E extends Entity> E create(EntityType<E> entityType, Level level) {
@@ -100,6 +107,17 @@ public final class EntityUtils {
     //                               Entity NBT Utils                               //
     // ============================================================================ //
 
+    /**
+     * NBT uses {@code tag.contains(key) == false} to represent null tag, rather than
+     * using {@code tag[key] = null}.
+     * Therefore, merging NBT cannot handle cases where the tag is null.
+     * So we have to remove the key from NBT to represent the null tag.
+     *
+     * @deprecated Just use {@code tag[key] = new CompoundTag()} to represent null.
+     */
+    @Deprecated
+    public static final String NBT_TO_RM_KEY = ".biologydictionary-remove$";
+
     public static CompoundTag getNbt(Entity entity) {
         TagValueOutput tagOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
         entity.saveWithoutId(tagOut);
@@ -113,7 +131,31 @@ public final class EntityUtils {
 
     public static void mergeNbt(Entity entity, CompoundTag nbt) {
         CompoundTag oldVanillaNbt = getNbt(entity);
-        setNbt(entity, oldVanillaNbt.merge(nbt));
+        CompoundTag newVanillaNbt = oldVanillaNbt.merge(nbt);
+        // removeNullNbt(newVanillaNbt);
+        setNbt(entity, newVanillaNbt);
+    }
+
+    @Deprecated
+    public static void removeNullNbt(CompoundTag nbt) {
+        ListTag list = (ListTag) nbt.get(NBT_TO_RM_KEY);
+        if (list != null) {
+            nbt.remove(NBT_TO_RM_KEY);
+            for (Tag tag : list) {
+                String key = ((StringTag) tag).value();
+                nbt.remove(key);
+            }
+        }
+    }
+
+    @Deprecated
+    public static void setNullNbt(CompoundTag nbt, String key) {
+        ListTag list = (ListTag) nbt.get(NBT_TO_RM_KEY);
+        if (list == null) {
+            list = new ListTag();
+            nbt.put(NBT_TO_RM_KEY, list);
+        }
+        list.add(StringTag.valueOf(key));
     }
 
     public static CompoundTag getNbtToDisplay(Entity entity) {

@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.screen.EntityDetailScreen;
@@ -54,12 +54,12 @@ public final class BiologyDictionaryEvent {
         } else if (hit.getType() == HitResult.Type.BLOCK) {
             BlockPos pos = ((BlockHitResult) hit).getBlockPos();
             BDC.setHitBlock(pos);
-            HighlightManager.addHighlightedBlock(minecraft.level, pos, 10 * 20); // todo delete
+            HighlightManager.highlightBlock(minecraft.level, pos, 10 * 20); // todo delete
             @SuppressWarnings("all") // 'Level' used without 'try'-with-resources statement
             BlockState blockState = player.level().getBlockState(pos);
             if (blockState.getBlock() instanceof BeehiveBlock) {
                 ClientNetManager.requestBeehiveInfo(pos);
-                MinecraftUtils.setScreen(minecraft, new BeehiveScreen(pos));
+                McClientUtils.setScreen(minecraft, new BeehiveScreen(pos));
                 new ScreenRenderingContext(null).playScreenSound(SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
                 return;
             }
@@ -70,15 +70,15 @@ public final class BiologyDictionaryEvent {
         }
 
         if (target == null) {
-            MinecraftUtils.setScreen(minecraft, new HomeScreen());
+            McClientUtils.setScreen(minecraft, new HomeScreen());
         } else {
             EntityProperties<Entity> properties = new EntityProperties<>(target);
             BDC.setHitEntity(target);
-            HighlightManager.addHighlightedEntity(target, 10 * 20); // todo delete
+            HighlightManager.highlightEntity(target, 10 * 20); // todo delete
             BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target);
             try {
-                MinecraftUtils.setScreen(minecraft, new EntityDetailScreen(properties));
+                McClientUtils.setScreen(minecraft, new EntityDetailScreen(properties));
             } catch (RuntimeException e) {
                 Misc.printThrowableToLoggerAndGame(e);
                 return;
