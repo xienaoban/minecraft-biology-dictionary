@@ -6,8 +6,10 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 
 public class EntityPropertyButton extends ScreenElement {
-    protected static final int L_YES_NO = 23, T_YES_NO = 1;
-    protected static final int L_ON_OFF = 21, T_ON_OFF = 1;
+    protected static final int L_YES_NO  = 23, T_YES_NO  = 1;
+    protected static final int L_ON_OFF  = 21, T_ON_OFF  = 1;
+    protected static final int L_LOCATE  = 23, T_LOCATE  = 4;
+    protected static final int L_REFRESH = 24, T_REFRESH = 4;
 
     private final TextureInfo texture;
     private final float textureLeft, textureTop;
