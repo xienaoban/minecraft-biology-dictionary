@@ -22,7 +22,7 @@ import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.phys.Vec3;
 
 public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
-    private static final int L = 1, T = 1;
+    private static final int L = 6, T = 5;
 
     private static final float NO_DIS = Float.MIN_VALUE;
     private static final float MAX_DIS = /* Bee.TOO_FAR_DISTANCE */ 48F;
@@ -40,7 +40,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
 
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new HiveDistanceBar());
-        addElementButton(new HighlightHiveButton());
+        addElementButton(new LocateHiveButton());
         addElementButton(new ClearHiveButton());
     }
 
@@ -91,9 +91,9 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         }
     }
 
-    private final class HighlightHiveButton extends EntityPropertyButton {
-        public HighlightHiveButton() {
-            super(Textures.ICONS, L_ON_OFF * WIDGET_WIDTH, T_ON_OFF * WIDGET_HEIGHT);
+    private final class LocateHiveButton extends EntityPropertyButton {
+        public LocateHiveButton() {
+            super(Textures.ICONS, L_LOCATE * WIDGET_WIDTH, T_LOCATE * WIDGET_HEIGHT);
         }
 
         @Override
@@ -110,7 +110,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
 
     private final class ClearHiveButton extends EntityPropertyButton {
         public ClearHiveButton() {
-            super(Textures.ICONS, L_ON_OFF * WIDGET_WIDTH, T_ON_OFF * WIDGET_HEIGHT);
+            super(Textures.ICONS, L_REFRESH * WIDGET_WIDTH, T_REFRESH * WIDGET_HEIGHT);
         }
 
         @Override
