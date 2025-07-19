@@ -22,7 +22,7 @@ import java.util.List;
 public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
     private static final int L = 14, T = 2;
 
-    private final MobTemptProperty mobTemptProperty = p().getExtra(MobTemptProperty.class);
+    private final MobTemptProperty temptProperty = p().getExtra(MobTemptProperty.class);
 
     public MobTemptWidget(EntityProperties<Mob> properties) {
         super(properties);
@@ -43,7 +43,7 @@ public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
             super.onRender(ctx);
             renderFullBar(ctx);
             Component text = null;
-            List<ItemStack> tempts = mobTemptProperty.get();
+            List<ItemStack> tempts = temptProperty.get();
             if (tempts == null) {
                 text = Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS);
             } else if (tempts.isEmpty()) {
@@ -70,7 +70,7 @@ public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
         @Override
         protected void onResize(int width, int height) {
             super.onResize(width, height);
-            List<ItemStack> tempts = mobTemptProperty.get();
+            List<ItemStack> tempts = temptProperty.get();
             int size = tempts == null ? 0 : tempts.size();
             updateGap(size);
         }
