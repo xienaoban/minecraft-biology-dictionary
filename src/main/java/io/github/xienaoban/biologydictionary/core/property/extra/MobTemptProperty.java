@@ -21,8 +21,8 @@ public final class MobTemptProperty extends ItemStackListProperty<Mob> {
     }
 
     @Override
-    public void loadFrom(Mob entity) {
-        super.loadFrom(entity);
+    public void getFrom(Mob entity) {
+        super.getFrom(entity);
         List<Predicate<ItemStack>> predicates = getPredicates(entity);
         if (predicates.isEmpty()) {
             set(Collections.emptyList());

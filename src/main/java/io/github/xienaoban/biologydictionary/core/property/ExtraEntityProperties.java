@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.property;
 import io.github.xienaoban.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.extra.MobTemptProperty;
+import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
 import net.minecraft.world.entity.Entity;
 
 import java.lang.invoke.MethodHandle;
@@ -55,6 +56,7 @@ final class ExtraEntityProperties {
     }
 
     private static void registerBuiltIn() {
+        r(VillagerJobSiteProperty.class);
         r(MobTemptProperty.class);
     }
 }

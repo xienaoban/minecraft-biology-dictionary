@@ -1,0 +1,128 @@
+package io.github.xienaoban.biologydictionary.core.widget.leaf;
+
+import io.github.xienaoban.biologydictionary.Const;
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.client.HighlightManager;
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
+import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
+import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
+import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.phys.Vec3;
+
+public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager> {
+    private static final int L = 1, T = 5;
+
+    private static final float NO_DIS = Float.MIN_VALUE;
+    private static final float MAX_DIS = 16F;
+    private static final float MAX_DIS_LOG = (float) Math.log(MAX_DIS);
+
+    VillagerJobSiteProperty jobSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
+
+    private GlobalPos lastJobSitePos = null;
+    private float cachedDistanceToJobSite = NO_DIS;
+    private float cachedDisLog = NO_DIS;
+
+    public VillagerJobSiteWidget(EntityProperties<Villager> properties) {
+        super(properties);
+
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
+        setElementBar(new JobSiteDistanceBar());
+        addElementButton(new LocateJobSiteButton());
+        addElementButton(new ClearJobSiteButton());
+    }
+
+    private float calcDistToJobSite() {
+        GlobalPos jobSitePos = jobSiteProperty.get();
+        if (jobSitePos == null) { return NO_DIS; }
+        if (jobSitePos.dimension() != e().level().dimension()) { return NO_DIS; }
+        Vec3 entityPos = e().position();
+        return (float) entityPos.distanceTo(jobSitePos.pos().getCenter());
+    }
+
+    @Override
+    protected void onTick(int ticks) {
+        super.onTick(ticks);
+        if (ticks % McClientUtils.getClientTickCountPerSecond() == 11) {
+            cachedDistanceToJobSite = calcDistToJobSite();
+            cachedDisLog = (float) Math.log(cachedDistanceToJobSite);
+        }
+    }
+
+    @Override
+    protected void onRender(ScreenRenderingContext ctx) {
+        super.onRender(ctx);
+        GlobalPos currJobSitePos = jobSiteProperty.get();
+        if (currJobSitePos != lastJobSitePos) {
+            lastJobSitePos = currJobSitePos;
+            cachedDistanceToJobSite = calcDistToJobSite();
+            cachedDisLog = (float) Math.log(cachedDistanceToJobSite);
+        }
+    }
+
+    private final class JobSiteDistanceBar extends EntityPropertyProgressBar {
+        public JobSiteDistanceBar() {
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            if (cachedDistanceToJobSite == NO_DIS) {
+                updatePercent(0);
+                super.onRender(ctx);
+                renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                return;
+            }
+
+            super.onRender(ctx);
+            updatePercent(cachedDisLog / MAX_DIS_LOG);
+            renderInnerText(ctx, Component.literal(Misc.format4Digits(cachedDistanceToJobSite) + 'm'));
+        }
+    }
+
+    private final class LocateJobSiteButton extends EntityPropertyButton {
+        public LocateJobSiteButton() {
+            super(Textures.ICONS, L_LOCATE * WIDGET_WIDTH, T_LOCATE * WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                GlobalPos currJobSitePos = jobSiteProperty.get();
+                if (currJobSitePos == null) { return true; }
+                HighlightManager.highlightBlock(currJobSitePos.pos(), Const.HIGHLIGHT_BLOCK_TICKS);
+                McClientUtils.setScreen(null);
+            }
+            return true;
+        }
+    }
+
+    private final class ClearJobSiteButton extends EntityPropertyButton {
+        public ClearJobSiteButton() {
+            super(Textures.ICONS, L_REFRESH * WIDGET_WIDTH, T_REFRESH * WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                GlobalPos currJobSitePos = jobSiteProperty.get();
+                if (currJobSitePos == null) { return true; }
+                VillagerJobSiteProperty property = new VillagerJobSiteProperty();
+                property.set(null);
+                jobSiteProperty.set(null);
+                ClientNetManager.sendUpdatedEntityProperties(e(), null, property.toNbt());
+            }
+            return true;
+        }
+    }
+}
