@@ -311,12 +311,12 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
             if (isChosen(index)) {
                 renderCheckMark(ctx, true);
-                if (isInBox(ctx.getElementScreen().getFocusedElement())) {
+                if (isInBox(ctx.getElementScreen().getHoveredElement())) {
                     renderVariantName(ctx);
                 } else {
                     renderVariantNameAuto(ctx);
                 }
-            } else if (isInBox(ctx.getElementScreen().getFocusedElement())) {
+            } else if (isInBox(ctx.getElementScreen().getHoveredElement())) {
                 if (isAllowedToChoose()) {
                     renderCheckMark(ctx, false);
                 }
@@ -326,8 +326,8 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             }
         }
 
-        private void renderCheckMark(ScreenRenderingContext ctx, boolean chosenTrueFocusedFalse) {
-            int textureLeft = chosenTrueFocusedFalse ? 23 : 24;
+        private void renderCheckMark(ScreenRenderingContext ctx, boolean chosenTrueHoveredFalse) {
+            int textureLeft = chosenTrueHoveredFalse ? 23 : 24;
             ctx.renderTexture(Textures.ICONS,
                     textureLeft * Widget.WIDGET_WIDTH, 3 * Widget.WIDGET_HEIGHT,
                     ctx.getZ() + 100,
