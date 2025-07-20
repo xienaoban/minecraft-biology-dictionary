@@ -81,7 +81,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
             if (cachedDistanceToHive == NO_DIS) {
                 updatePercent(0);
                 super.onRender(ctx);
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                renderInnerText(ctx, Component.translatable(Lang.TEXT_NONE_WITH_BRACKETS));
                 return;
             }
 
