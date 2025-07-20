@@ -22,6 +22,7 @@ public class VillagerJobSiteProperty extends GlobalPosProperty<Villager> {
     @Override
     public void setTo(Villager entity) {
         super.setTo(entity);
-        entity.getBrain().setMemory(MemoryModuleType.JOB_SITE, get()); // todo not enough
+        // todo: the villager won't find new job site anymore
+        entity.getBrain().setMemory(MemoryModuleType.JOB_SITE, get());
     }
 }

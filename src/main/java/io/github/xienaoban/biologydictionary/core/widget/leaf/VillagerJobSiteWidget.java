@@ -14,7 +14,6 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.npc.Villager;
@@ -39,7 +38,6 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new JobSiteDistanceBar());
         addElementButton(new LocateJobSiteButton());
-        addElementButton(new ClearJobSiteButton());
     }
 
     private float calcDistToJobSite() {
@@ -80,7 +78,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
             if (cachedDistanceToJobSite == NO_DIS) {
                 updatePercent(0);
                 super.onRender(ctx);
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                renderInnerText(ctx, Component.translatable(Lang.TEXT_NONE_WITH_BRACKETS));
                 return;
             }
 
@@ -102,25 +100,6 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
                 if (currJobSitePos == null) { return true; }
                 HighlightManager.highlightBlock(currJobSitePos.pos(), Const.HIGHLIGHT_BLOCK_TICKS);
                 McClientUtils.setScreen(null);
-            }
-            return true;
-        }
-    }
-
-    private final class ClearJobSiteButton extends EntityPropertyButton {
-        public ClearJobSiteButton() {
-            super(Textures.ICONS, L_REFRESH * WIDGET_WIDTH, T_REFRESH * WIDGET_HEIGHT);
-        }
-
-        @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
-                GlobalPos currJobSitePos = jobSiteProperty.get();
-                if (currJobSitePos == null) { return true; }
-                VillagerJobSiteProperty property = new VillagerJobSiteProperty();
-                property.set(null);
-                jobSiteProperty.set(null);
-                ClientNetManager.sendUpdatedEntityProperties(e(), null, property.toNbt());
             }
             return true;
         }
