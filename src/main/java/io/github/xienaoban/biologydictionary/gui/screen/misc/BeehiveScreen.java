@@ -67,27 +67,27 @@ public class BeehiveScreen extends ElementScreen {
     @Override
     protected void render(ScreenRenderingContext ctx) {
         super.render(ctx);
-        long lastMills = this.mills;
-        this.mills = System.currentTimeMillis();
-        int diff = (int) (this.mills - lastMills);
+        long lastMills = mills;
+        mills = System.currentTimeMillis();
+        int diff = (int) (mills - lastMills);
         renderBlurredBackground(ctx);
         ctx.getGuiGraphics().pose().pushMatrix();
-        int w = (this.width - 128) >> 1;
-        int h = (this.height - 128) >> 1;
+        int w = (width - 128) >> 1;
+        int h = (height - 128) >> 1;
 
-        int beeCnt = this.blockBeeCnt;
-        int honeyCnt = this.blockHoneyCnt;
+        int beeCnt = blockBeeCnt;
+        int honeyCnt = blockHoneyCnt;
 
-        if (this.lastBeeCnt > beeCnt) {
-            this.lastBeeCnt = beeCnt;
-            BeeAction tmp = this.actions[0];
+        if (lastBeeCnt > beeCnt) {
+            lastBeeCnt = beeCnt;
+            BeeAction tmp = actions[0];
             for (int i = 1; i < MAX_BEE_CNT; ++i) {
-                this.actions[i - 1] = this.actions[i];
+                actions[i - 1] = actions[i];
             }
-            this.actions[MAX_BEE_CNT - 1] = tmp;
+            actions[MAX_BEE_CNT - 1] = tmp;
         }
         else {
-            this.lastBeeCnt = beeCnt;
+            lastBeeCnt = beeCnt;
         }
 
         int lw = w + 32, lh = h + 23;
@@ -99,7 +99,7 @@ public class BeehiveScreen extends ElementScreen {
         ctx.renderTexture(Textures.BEEHIVE, 0, 0, 0, w, h, 128, 128);
         int color = 0xBCFFFFFF;
         for (int i = 0; i < beeCnt; ++i) {
-            BeeAction action = this.actions[i];
+            BeeAction action = actions[i];
             action.run(diff);
             int x, y;
             if (honeyCnt + i < MAX_HONEY_CNT) {
@@ -111,7 +111,7 @@ public class BeehiveScreen extends ElementScreen {
                 x = w + p * 32;
                 y = h + 24 + ((p & 1) == 0 ? 0 : 8);
             }
-            BeeInfo bee = this.bees[i];
+            BeeInfo bee = bees[i];
             float beeScale = bee.entity.isBaby() ? 0.6F : 1F;
             float t = 14.0F * Math.min(bee.ticksInHive, bee.minTicksInHive) / bee.minTicksInHive;
             ctx.renderHorizontalLine(0xFF443300, 2.2F, ctx.getZ(), y - 1, x - 7.5F, x + 7.5F);
@@ -168,7 +168,7 @@ public class BeehiveScreen extends ElementScreen {
         super.tick();
         passedClientTickCount++;
         if (passedClientTickCount % 5 == 0) {
-            if (!(this.level.getBlockState(pos).getBlock() instanceof BeehiveBlock)) {
+            if (!(level.getBlockState(pos).getBlock() instanceof BeehiveBlock)) {
                 onClose();
                 return;
             }
@@ -201,9 +201,9 @@ public class BeehiveScreen extends ElementScreen {
         public int minTicksInHive;
 
         public BeeInfo(Level level) {
-            this.entity = EntityUtils.create(EntityType.BEE, level);
-            this.ticksInHive = -1;
-            this.minTicksInHive = -1;
+            entity = EntityUtils.create(EntityType.BEE, level);
+            ticksInHive = -1;
+            minTicksInHive = -1;
         }
     }
 
@@ -215,27 +215,27 @@ public class BeehiveScreen extends ElementScreen {
         private final Random random;
 
         public BeeAction () {
-            this.random = new Random();
-            this.mouseX = this.random.nextFloat(-50, 50);
-            this.mouseY = this.random.nextFloat(-1, 20);
-            this.mouseCooldownTime = this.random.nextInt(3 * 1000);
+            random = new Random();
+            mouseX = random.nextFloat(-50, 50);
+            mouseY = random.nextFloat(-1, 20);
+            mouseCooldownTime = random.nextInt(3 * 1000);
         }
 
         public void run(int mills) {
-            if (this.mouseMoveTime > 0) {
-                this.mouseMoveTime -= mills;
-                this.mouseX += this.speedMouseX * mills;
-                this.mouseY += this.speedMouseY * mills;
-                if (Math.abs(this.mouseX) > 50) this.speedMouseX = -0.2F * this.speedMouseX;
-                if (this.mouseY > 20 || this.mouseY < 2) this.speedMouseY = -0.2F * this.speedMouseY;
+            if (mouseMoveTime > 0) {
+                mouseMoveTime -= mills;
+                mouseX += speedMouseX * mills;
+                mouseY += speedMouseY * mills;
+                if (Math.abs(mouseX) > 50) speedMouseX = -0.2F * speedMouseX;
+                if (mouseY > 20 || mouseY < 2) speedMouseY = -0.2F * speedMouseY;
             }
             else {
-                this.mouseCooldownTime -= mills;
-                if (this.mouseCooldownTime < 0) {
-                    this.mouseCooldownTime = this.random.nextInt(5 * 1000);
-                    this.mouseMoveTime = this.random.nextInt(1000);
-                    this.speedMouseX = this.random.nextFloat(-0.3F, 0.3F);
-                    this.speedMouseY = this.random.nextFloat(-0.1F, 0.1F);
+                mouseCooldownTime -= mills;
+                if (mouseCooldownTime < 0) {
+                    mouseCooldownTime = random.nextInt(5 * 1000);
+                    mouseMoveTime = random.nextInt(1000);
+                    speedMouseX = random.nextFloat(-0.3F, 0.3F);
+                    speedMouseY = random.nextFloat(-0.1F, 0.1F);
                 }
             }
         }

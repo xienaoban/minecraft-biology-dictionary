@@ -66,8 +66,8 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
                 nextXHeadRot[i] = (float) (Math.random() - 0.5D) * 20F;
             }
             if (curTime - lastHeadYawTime[i] < 1000) {
-                float yHeadRotDiff = HEAD_ROT_SPEED * diffTime * (this.nextYHeadRot[i] - entity.getYHeadRot());
-                float xRotDiff     = HEAD_ROT_SPEED * diffTime * (this.nextXHeadRot[i] - entity.getXRot());
+                float yHeadRotDiff = HEAD_ROT_SPEED * diffTime * (nextYHeadRot[i] - entity.getYHeadRot());
+                float xRotDiff     = HEAD_ROT_SPEED * diffTime * (nextXHeadRot[i] - entity.getXRot());
                 entity.setYHeadRot(entity.getYHeadRot() + yHeadRotDiff);
                 entity.setXRot(    entity.getXRot()     + xRotDiff);
             }

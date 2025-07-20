@@ -25,7 +25,7 @@ public final class BiologyDictionary {
     private final Set<MinecraftServer> servers;
 
     private BiologyDictionary() {
-        this.servers = ConcurrentHashMap.newKeySet();
+        servers = ConcurrentHashMap.newKeySet();
 
         ServerNetManager.init();
 

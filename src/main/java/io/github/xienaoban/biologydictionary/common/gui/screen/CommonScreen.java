@@ -27,7 +27,7 @@ public abstract class CommonScreen extends Screen {
 
     protected CommonScreen(Component component) {
         super(component);
-        this.screenRenderingContext = new ScreenRenderingContext(this);
+        screenRenderingContext = new ScreenRenderingContext(this);
     }
 
     @Override
@@ -56,7 +56,7 @@ public abstract class CommonScreen extends Screen {
         super.render(ctx.getGuiGraphics(), (int) ctx.getMouseX(), (int) ctx.getMouseY(), ctx.getTickDelta());
     }
 
-    public Font getFont() { return font; }
+    public Font getFont() { return super.getFont(); }
 
     public float getZ() { return 0; }
 

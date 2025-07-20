@@ -20,9 +20,9 @@ public final class EntityLeashableWidget extends EntityPropertyStandardWidget<En
     public EntityLeashableWidget(EntityProperties<Entity> properties) {
         super(properties, Page.COLUMNS / 4);
         if (e() instanceof Leashable entity) {
-            this.leashable = (entity.isLeashed() || entity.canBeLeashed());
+            leashable = (entity.isLeashed() || entity.canBeLeashed());
         } else {
-            this.leashable = false;
+            leashable = false;
         }
 
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * WIDGET_WIDTH, T * WIDGET_HEIGHT));

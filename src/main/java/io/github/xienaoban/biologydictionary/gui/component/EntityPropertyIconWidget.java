@@ -12,7 +12,7 @@ public abstract class EntityPropertyIconWidget<E extends Entity> extends EntityP
 
     public EntityPropertyIconWidget(EntityProperties<E> properties, int rows, int columns) {
         super(properties, rows, columns);
-        this.icon = null;
+        icon = null;
     }
 
     public EntityPropertyIcon getElementIcon() { return icon; }
