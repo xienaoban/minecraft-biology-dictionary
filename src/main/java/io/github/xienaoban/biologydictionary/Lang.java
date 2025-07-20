@@ -32,6 +32,7 @@ public final class Lang {
     public static final String TEXT_MOD_NAME_IS             = "text.biologydictionary.mod_name_is";
     public static final String TEXT_MOD_NOT_INSTALLED       = "text.biologydictionary.mod_not_installed";
     public static final String TEXT_CLICK_ME_TO_DOWNLOAD    = "text.biologydictionary.click_me_to_download";
+    public static final String TEXT_TARGET_ENTITY_TOO_FAR   = "text.biologydictionary.target_entity_too_far";
     public static final String TEXT_NO_DATA_WITH_BRACKETS   = "text.biologydictionary.no_data_with_brackets";
     public static final String TEXT_NONE_WITH_BRACKETS      = "text.biologydictionary.none_with_brackets";
     public static final String TEXT_EMPTY_WITH_BRACKETS     = "text.biologydictionary.empty_with_brackets";

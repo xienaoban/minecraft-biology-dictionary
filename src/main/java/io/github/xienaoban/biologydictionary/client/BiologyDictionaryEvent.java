@@ -54,8 +54,6 @@ public final class BiologyDictionaryEvent {
         } else if (hit.getType() == HitResult.Type.BLOCK) {
             BlockPos pos = ((BlockHitResult) hit).getBlockPos();
             BDC.setHitBlock(pos);
-            HighlightManager.highlightBlock(minecraft.level, pos, 4 * 20); // todo delete
-            @SuppressWarnings("all") // 'Level' used without 'try'-with-resources statement
             BlockState blockState = player.level().getBlockState(pos);
             if (blockState.getBlock() instanceof BeehiveBlock) {
                 ClientNetManager.requestBeehiveInfo(pos);
@@ -74,7 +72,6 @@ public final class BiologyDictionaryEvent {
         } else {
             EntityProperties<Entity> properties = new EntityProperties<>(target);
             BDC.setHitEntity(target);
-            HighlightManager.highlightEntity(target, 4 * 20); // todo delete
             BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target);
             try {
