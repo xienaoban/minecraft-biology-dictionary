@@ -26,8 +26,8 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 
 @Environment(EnvType.CLIENT)
 public final class BiologyDictionaryEvent {
-    public static void openBookScreen(Minecraft minecraft) {
-        LocalPlayer player = minecraft.player;
+    public static void openBookScreen(Minecraft client) {
+        LocalPlayer player = client.player;
         BDC.setHitEntity(null);
         BDC.setHitBlock(null);
         BDC.setHitEntityProperties(null);
@@ -37,7 +37,7 @@ public final class BiologyDictionaryEvent {
         }
         Entity target;
         float y = player.getXRot();
-        HitResult hit = minecraft.hitResult;
+        HitResult hit = client.hitResult;
         if (y < -0.996F * 90.0F) {
             target = null;
         } else if (y > 0.996F * 90.0F) {
@@ -57,7 +57,7 @@ public final class BiologyDictionaryEvent {
             BlockState blockState = player.level().getBlockState(pos);
             if (blockState.getBlock() instanceof BeehiveBlock) {
                 ClientNetManager.requestBeehiveInfo(pos);
-                McClientUtils.setScreen(minecraft, new BeehiveScreen(pos));
+                McClientUtils.setScreen(client, new BeehiveScreen(pos));
                 new ScreenRenderingContext(null).playScreenSound(SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
                 return;
             }
@@ -68,14 +68,14 @@ public final class BiologyDictionaryEvent {
         }
 
         if (target == null) {
-            McClientUtils.setScreen(minecraft, new HomeScreen());
+            McClientUtils.setScreen(client, new HomeScreen());
         } else {
             EntityProperties<Entity> properties = new EntityProperties<>(target);
             BDC.setHitEntity(target);
             BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target);
             try {
-                McClientUtils.setScreen(minecraft, new EntityDetailScreen(properties));
+                McClientUtils.setScreen(client, new EntityDetailScreen(properties));
             } catch (RuntimeException e) {
                 Misc.printThrowableToLoggerAndGame(e);
                 return;

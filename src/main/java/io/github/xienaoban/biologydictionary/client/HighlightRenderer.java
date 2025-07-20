@@ -18,13 +18,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 public final class HighlightRenderer {
-    public static void render(Minecraft minecraft, ClientLevel level,
+    public static void render(Minecraft client, ClientLevel level,
                               PoseStack poseStack, OutlineBufferSource bufferSource,
                               Camera camera, DeltaTracker deltaTracker) {
         bufferSource.setColor(/* R */ 0, /* G */ 255, /* B */ 0, /* A */ 255);
 
-        EntityRenderDispatcher entityRenderDispatcher = minecraft.getEntityRenderDispatcher();
-        BlockRenderDispatcher blockRenderDispatcher = minecraft.getBlockRenderer();
+        EntityRenderDispatcher entityRenderDispatcher = client.getEntityRenderDispatcher();
+        BlockRenderDispatcher blockRenderDispatcher = client.getBlockRenderer();
 
         Vec3 cameraVec = camera.getPosition();
 
