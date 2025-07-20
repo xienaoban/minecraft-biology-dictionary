@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 @Environment(EnvType.CLIENT)
 public abstract class ElementScreen extends CommonScreen {
     private final RootScreenElement rootScreenElement;
-    private ScreenElement focusedElement;
+    private ScreenElement hoveredElement;
     private ScreenElement selectedElement;
 
     private int ticks;
@@ -18,7 +18,7 @@ public abstract class ElementScreen extends CommonScreen {
     protected ElementScreen(Component component) {
         super(component);
         this.rootScreenElement = new RootScreenElement();
-        this.focusedElement = null;
+        this.hoveredElement = null;
 
         this.ticks = 0;
     }
@@ -53,7 +53,7 @@ public abstract class ElementScreen extends CommonScreen {
     @Override
     protected void beforeRender(ScreenRenderingContext ctx) {
         super.beforeRender(ctx);
-        updateFocusedElement(ctx.getMouseX(), ctx.getMouseY());
+        updateHoveredElement(ctx.getMouseX(), ctx.getMouseY());
     }
 
     @Override
@@ -66,15 +66,15 @@ public abstract class ElementScreen extends CommonScreen {
         }
     }
 
-    public final ScreenElement getFocusedElement() {
-        return focusedElement;
+    public final ScreenElement getHoveredElement() {
+        return hoveredElement;
     }
 
-    private void updateFocusedElement(float x, float y) {
-        if (focusedElement != null && focusedElement.isFocused(x, y)) {
-            focusedElement = focusedElement.focus(x, y);
+    private void updateHoveredElement(float x, float y) {
+        if (hoveredElement != null && hoveredElement.isHovered(x, y)) {
+            hoveredElement = hoveredElement.hover(x, y);
         } else {
-            focusedElement = rootScreenElement.focus(x, y);
+            hoveredElement = rootScreenElement.hover(x, y);
         }
     }
 
@@ -83,7 +83,7 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     private void updateSelectedElement() {
-        ScreenElement element = getFocusedElement();
+        ScreenElement element = getHoveredElement();
         while (element != null && !element.isSelectable()) {
             element = element.getParent();
         }

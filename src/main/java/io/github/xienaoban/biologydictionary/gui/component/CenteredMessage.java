@@ -38,7 +38,7 @@ public class CenteredMessage extends ScreenElement {
         long currTime = System.currentTimeMillis();
         if (currTime > endTime) { text = null; return; }
 
-        if (isFocused(ctx.getMouseX(), ctx.getMouseY())) {
+        if (isHovered(ctx.getMouseX(), ctx.getMouseY())) {
             this.endTime = Math.max(endTime, currTime + 3000);
         }
 
