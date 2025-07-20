@@ -11,7 +11,7 @@ public class EntityPropertyProgressBar extends EntityPropertyBar {
 
     public EntityPropertyProgressBar(TextureInfo texture, float textureLeft, float textureTop) {
         super(texture, textureLeft, textureTop);
-        this.percent = 0;
+        percent = 0;
     }
 
     @Override
@@ -22,6 +22,6 @@ public class EntityPropertyProgressBar extends EntityPropertyBar {
     }
 
     public void updatePercent(float zeroToOne) {
-        this.percent = Math.min(Math.max(zeroToOne, 0.0F), 1.0F);
+        percent = Math.min(Math.max(zeroToOne, 0.0F), 1.0F);
     }
 }

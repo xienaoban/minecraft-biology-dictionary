@@ -43,6 +43,8 @@ import org.joml.Matrix3x2fStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import java.util.Objects;
+
 @Environment(EnvType.CLIENT)
 public final class ScreenRenderingContext {
     private final Screen screen;
@@ -54,7 +56,7 @@ public final class ScreenRenderingContext {
     private boolean debug;
 
     public ScreenRenderingContext(Screen screen) {
-        this.client = McClientUtils.getClient();
+        this.client = Objects.requireNonNull(McClientUtils.getClient());
         this.screen = screen;
         this.debug = false;
     }

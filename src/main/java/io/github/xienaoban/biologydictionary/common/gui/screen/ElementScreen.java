@@ -17,10 +17,10 @@ public abstract class ElementScreen extends CommonScreen {
 
     protected ElementScreen(Component component) {
         super(component);
-        this.rootScreenElement = new RootScreenElement();
-        this.hoveredElement = null;
+        rootScreenElement = new RootScreenElement();
+        hoveredElement = null;
 
-        this.ticks = 0;
+        ticks = 0;
     }
 
     @Override

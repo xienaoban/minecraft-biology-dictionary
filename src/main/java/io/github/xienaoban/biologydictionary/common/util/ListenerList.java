@@ -12,7 +12,7 @@ public class ListenerList<T> {
 
     @SuppressWarnings("unchecked")
     public ListenerList(Class<?> listenerClass) {
-        this.listeners = (T[]) Array.newInstance(listenerClass, 0);
+        listeners = (T[]) Array.newInstance(listenerClass, 0);
     }
 
     synchronized public void addListener(T listener) {

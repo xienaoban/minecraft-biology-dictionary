@@ -43,7 +43,7 @@ public abstract class GuiRendererMixin {
 
     @Inject(method = "close()V", at = @At("TAIL"))
     private void injectClose(CallbackInfo ci) {
-        this.pictureInPictureRendererFactories.values().forEach(PictureInPictureRendererFactory::close);
+        pictureInPictureRendererFactories.values().forEach(PictureInPictureRendererFactory::close);
     }
 
     @Inject(method = "preparePictureInPictureState(Lnet/minecraft/client/gui/render/state/pip/PictureInPictureRenderState;I)V", at = @At("HEAD"), cancellable = true)

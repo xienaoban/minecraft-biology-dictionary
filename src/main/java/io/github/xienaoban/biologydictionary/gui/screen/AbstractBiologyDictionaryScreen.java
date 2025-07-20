@@ -13,9 +13,11 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
@@ -33,8 +35,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     // Replace the `@Nullable minecraft` in class `Screen`. This `minecraft` must not be null.
-    protected final Minecraft client = McClientUtils.getClient();
-    protected final LocalPlayer player = client.player;
+    protected final Minecraft client = Objects.requireNonNull(McClientUtils.getClient());
+    protected final LocalPlayer player = Objects.requireNonNull(client.player);
 
     private final List<Page> pages;
     private int currPageIndex;
@@ -95,7 +97,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     private void renderDebug(ScreenRenderingContext ctx) {
-        ctx.renderText(Component.literal(this.getClass().getSimpleName()), 0xFFFFFFFF, ctx.getZ(), 2, 2);
+        ctx.renderText(Component.literal(getClass().getSimpleName()), 0xFFFFFFFF, ctx.getZ(), 2, 2);
     }
 
     @Override

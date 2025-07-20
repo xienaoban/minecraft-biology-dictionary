@@ -39,7 +39,7 @@ public class CenteredMessage extends ScreenElement {
         if (currTime > endTime) { text = null; return; }
 
         if (isHovered(ctx.getMouseX(), ctx.getMouseY())) {
-            this.endTime = Math.max(endTime, currTime + 3000);
+            endTime = Math.max(endTime, currTime + 3000);
         }
 
         int color = colorNoAlpha | (alpha(currTime, endTime) << 24);
