@@ -120,6 +120,9 @@ public final class EntityUtils {
 
     public static CompoundTag getNbt(Entity entity) {
         TagValueOutput tagOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
+        // A bug in 1.21.8: If leash the mob and then cancel the leash,
+        // `this.writeLeashData(valueOutput, this.leashData);` will fail.
+        // Let's see if Mojang will fix it. todo
         entity.saveWithoutId(tagOut);
         return tagOut.buildResult();
     }

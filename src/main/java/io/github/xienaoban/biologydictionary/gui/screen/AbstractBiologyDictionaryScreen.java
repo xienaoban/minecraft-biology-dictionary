@@ -11,6 +11,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     // Replace the `@Nullable minecraft` in class `Screen`. This `minecraft` must not be null.
     protected final Minecraft minecraft;
+    protected final LocalPlayer player;
 
     private final List<Page> pages;
     private int currPageIndex;
@@ -44,6 +46,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     public AbstractBiologyDictionaryScreen(Component title) {
         super(title);
         minecraft = McClientUtils.getClient();
+        player = minecraft.player;
 
         pages = new ArrayList<>();
         currPageIndex = 0;
