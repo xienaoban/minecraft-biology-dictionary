@@ -49,8 +49,8 @@ public final class McClientUtils {
         setScreen(getClient(), screen);
     }
 
-    public static void setScreen(Minecraft minecraft, Screen screen) {
-        minecraft.setScreen(screen);
+    public static void setScreen(Minecraft client, Screen screen) {
+        client.setScreen(screen);
     }
 
     public static long getGameTimeMillis(float tickDelta) {

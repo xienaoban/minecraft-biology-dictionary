@@ -9,8 +9,7 @@ import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -29,6 +28,8 @@ public class BeehiveScreen extends ElementScreen {
     private static final int[][] LATTICES = {{0, 0}, {32, 0}, {0, 50}, {32, 50}, {16, 25}, {-16, 25}, {48, 25}};
     private static final int MAX_HONEY_CNT = BeehiveBlock.MAX_HONEY_LEVELS;
     private static final int MAX_BEE_CNT = BeehiveBlockEntity.MAX_OCCUPANTS;
+
+    protected final Minecraft client = McClientUtils.getClient();
 
     private final BlockPos pos;
     private final Level level;
@@ -152,7 +153,7 @@ public class BeehiveScreen extends ElementScreen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)
-                || Objects.requireNonNull(minecraft).options.keyInventory.matches(keyCode, scanCode)) {
+                || client.options.keyInventory.matches(keyCode, scanCode)) {
             onClose();
             return true;
         } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {

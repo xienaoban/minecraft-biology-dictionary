@@ -123,7 +123,7 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
-            final float currTime = Objects.requireNonNull(ctx.getMinecraft().level).getDayTime();
+            final float currTime = Objects.requireNonNull(ctx.getClient().level).getDayTime();
             final float currTimeZero = (currTime + MAX_TIME - ZERO_TIME) % MAX_TIME;
             final TimelineEntry[] timeline = getTimelineEntries();
             final float scale = (getBox().getWidth() - 2) / MAX_TIME;

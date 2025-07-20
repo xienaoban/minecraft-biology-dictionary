@@ -33,8 +33,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     // Replace the `@Nullable minecraft` in class `Screen`. This `minecraft` must not be null.
-    protected final Minecraft minecraft;
-    protected final LocalPlayer player;
+    protected final Minecraft client = McClientUtils.getClient();
+    protected final LocalPlayer player = client.player;
 
     private final List<Page> pages;
     private int currPageIndex;
@@ -45,8 +45,6 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     public AbstractBiologyDictionaryScreen(Component title) {
         super(title);
-        minecraft = McClientUtils.getClient();
-        player = minecraft.player;
 
         pages = new ArrayList<>();
         currPageIndex = 0;
@@ -65,7 +63,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     @Override
     protected void init() {
         super.init();
-        if (this.minecraft != super.minecraft) {
+        if (client != minecraft) {
             throw new RuntimeException("this.minecraft != super.minecraft");
         }
         // add some vanilla-widgets here
@@ -130,7 +128,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)
-                || minecraft.options.keyInventory.matches(keyCode, scanCode)) {
+                || client.options.keyInventory.matches(keyCode, scanCode)) {
             onClose();
             return true;
         } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {

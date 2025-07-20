@@ -75,7 +75,7 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
 
             @Override
             protected boolean onMouseDown(float x, float y, int code) {
-                McClientUtils.setScreen(minecraft, new DebugScreen());
+                McClientUtils.setScreen(client, new DebugScreen());
                 return true;
             }
         })) System.out.println("aaa?");
