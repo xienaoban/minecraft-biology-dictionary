@@ -13,6 +13,7 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
+import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
@@ -97,7 +98,10 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 GlobalPos currJobSitePos = jobSiteProperty.get();
-                if (currJobSitePos == null) { return true; }
+                if (currJobSitePos == null) {
+                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_LOCATE));
+                    return true;
+                }
                 HighlightManager.highlightBlock(currJobSitePos.pos(), Const.HIGHLIGHT_BLOCK_TICKS);
                 McClientUtils.setScreen(null);
             }

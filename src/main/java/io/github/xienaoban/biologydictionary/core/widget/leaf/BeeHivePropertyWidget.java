@@ -14,6 +14,7 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
+import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.core.BlockPos;
@@ -100,7 +101,10 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 BlockPos currHivePos = hivePosProperty.get();
-                if (currHivePos == null) { return true; }
+                if (currHivePos == null) {
+                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_LOCATE));
+                    return true;
+                }
                 HighlightManager.highlightBlock(currHivePos, Const.HIGHLIGHT_BLOCK_TICKS);
                 McClientUtils.setScreen(null);
             }
@@ -117,7 +121,10 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 BlockPos currHivePos = hivePosProperty.get();
-                if (currHivePos == null) { return true; }
+                if (currHivePos == null) {
+                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_CLEAR));
+                    return true;
+                }
                 CodecProperty<Bee, BlockPos> property = VanillaEntityProperties.OfBee.createHivePosProperty();
                 property.set(null);
                 hivePosProperty.set(null);

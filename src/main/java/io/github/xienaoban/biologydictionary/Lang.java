@@ -41,6 +41,8 @@ public final class Lang {
     public static final String TEXT_ADULT                   = "text.biologydictionary.adult";
     public static final String TEXT_ALWAYS_BABY             = "text.biologydictionary.always_baby";
     public static final String TEXT_NEVER_BREED             = "text.biologydictionary.never_breed";
+    public static final String TEXT_NO_BLOCK_TO_LOCATE      = "text.biologydictionary.no_block_to_locate";
+    public static final String TEXT_NO_BLOCK_TO_CLEAR       = "text.biologydictionary.no_block_to_clear";
     public static final String TEXT_HONEY                   = "text.biologydictionary.honey";
     public static final String TEXT_BEE_STATE_IN_BEEHIVE    = "text.biologydictionary.bee_state_in_beehive";
     public static final String TEXT_BEE_PRODUCING_NECTAR    = "text.biologydictionary.bee_producing_nectar";
