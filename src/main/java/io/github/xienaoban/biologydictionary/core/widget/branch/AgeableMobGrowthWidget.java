@@ -4,7 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -26,8 +26,8 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
     private static final int BABY_MIN_AGE = AgeableMob.BABY_START_AGE;
     private static final int ADULT_MIN_AGE = 0;
 
-    private final IntProperty<AgeableMob> ageProperty = EntityVanillaProperties.OfAgeableMob.getAgeProperty(p());
-    private final IntProperty<AgeableMob> forcedAgeProperty = EntityVanillaProperties.OfAgeableMob.getForcedAgeProperty(p());
+    private final IntProperty<AgeableMob> ageProperty = VanillaEntityProperties.OfAgeableMob.getAgeProperty(p());
+    private final IntProperty<AgeableMob> forcedAgeProperty = VanillaEntityProperties.OfAgeableMob.getForcedAgeProperty(p());
 
     public AgeableMobGrowthWidget(EntityProperties<AgeableMob> properties) {
         super(properties);
@@ -142,12 +142,12 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                 }
 
                 // Send to the server.
-                IntProperty<AgeableMob> property = EntityVanillaProperties.OfAgeableMob.createForcedAgeProperty();
+                IntProperty<AgeableMob> property = VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty();
                 property.set(toSet);
                 forcedAgeProperty.set(toSet);
                 CompoundTag nbt = property.toNbt();
                 if (lock) {
-                    IntProperty<AgeableMob> ap = EntityVanillaProperties.OfAgeableMob.createAgeProperty();
+                    IntProperty<AgeableMob> ap = VanillaEntityProperties.OfAgeableMob.createAgeProperty();
                     ap.set(toSet);
                     ageProperty.set(toSet);
                     ap.writeTo(nbt);

@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -33,7 +33,7 @@ public class VanillaEntityTest {
             Class<? extends Entity> clazz = cur.getClazz();
 
             // skip non-vanilla classes
-            if (!MinecraftUtils.isVanillaClass(clazz)) {
+            if (!McUtils.isVanillaClass(clazz)) {
                 LOGGER.info("Skipped non-vanilla class for deobfuscation: \"{}\".", clazz.getName());
                 return true;
             }
@@ -76,7 +76,7 @@ public class VanillaEntityTest {
 
             // skip non-vanilla classes
             Class<?> clazz = classInfo.getClazz();
-            if (!MinecraftUtils.isVanillaClass(clazz)) {
+            if (!McUtils.isVanillaClass(clazz)) {
                 LOGGER.info("Skipped non-vanilla class for order: \"{}\".", clazz.getName());
                 continue;
             }
@@ -99,13 +99,13 @@ public class VanillaEntityTest {
             Class<?> clazz = cur.getClazz();
 
             // skip non-vanilla classes
-            if (!MinecraftUtils.isVanillaClass(clazz)) return true;
+            if (!McUtils.isVanillaClass(clazz)) return true;
 
             out.println(space + "/*" + "-".repeat(depth * 2) + "*/ "
                     + "r(" + clazz.getName().replace('$', '.') + ".class, \""
                     + clazz.getName() + "\");");
             for (Class<?> interfaze : clazz.getInterfaces()) {
-                if (MinecraftUtils.isVanillaClass(interfaze)) {
+                if (McUtils.isVanillaClass(interfaze)) {
                     interfazes.add(interfaze);
                 }
             }

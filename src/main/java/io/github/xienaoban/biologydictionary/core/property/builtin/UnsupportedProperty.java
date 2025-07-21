@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.property.builtin;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
-public class UnsupportedProperty<E extends Entity> extends AbstractProperty<E, Object> {
+public final class UnsupportedProperty<E extends Entity> extends AbstractProperty<E, Object> {
     public UnsupportedProperty(String propertyName) {
         super(propertyName);
     }

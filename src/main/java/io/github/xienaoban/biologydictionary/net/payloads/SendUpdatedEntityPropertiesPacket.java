@@ -46,7 +46,7 @@ public record SendUpdatedEntityPropertiesPacket(int entityId, CompoundTag vanill
         if (extraNbt != null) {
             for (EntityProperty<?> p : new EntityProperties<>(entity).getExtras()) {
                 p.readFrom(extraNbt);
-                p.saveTo(Misc.cast(entity));
+                p.setTo(Misc.cast(entity));
             }
         }
     }

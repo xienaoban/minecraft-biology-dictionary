@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.common.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -42,18 +43,20 @@ import org.joml.Matrix3x2fStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import java.util.Objects;
+
 @Environment(EnvType.CLIENT)
 public final class ScreenRenderingContext {
     private final Screen screen;
 
-    Minecraft minecraft;
+    Minecraft client;
     GuiGraphics guiGraphics;
     private float mouseX, mouseY;
     private float tickDelta;
     private boolean debug;
 
     public ScreenRenderingContext(Screen screen) {
-        this.minecraft = Minecraft.getInstance();
+        this.client = Objects.requireNonNull(McClientUtils.getClient());
         this.screen = screen;
         this.debug = false;
     }
@@ -69,12 +72,12 @@ public final class ScreenRenderingContext {
         this.guiGraphics = guiGraphics;
         this.tickDelta = tickDelta;
 
-        this.mouseX = (float) minecraft.mouseHandler.xpos() * (float) minecraft.getWindow().getGuiScaledWidth() / (float) minecraft.getWindow().getScreenWidth();
-        this.mouseY = (float) minecraft.mouseHandler.ypos() * (float) minecraft.getWindow().getGuiScaledHeight() / (float) minecraft.getWindow().getScreenHeight();
+        this.mouseX = (float) client.mouseHandler.xpos() * (float) client.getWindow().getGuiScaledWidth() / (float) client.getWindow().getScreenWidth();
+        this.mouseY = (float) client.mouseHandler.ypos() * (float) client.getWindow().getGuiScaledHeight() / (float) client.getWindow().getScreenHeight();
         assert mouseX == (int) this.mouseX && mouseY == (int) this.mouseY;
     }
 
-    public Minecraft getMinecraft()     { return minecraft; }
+    public Minecraft getClient()     { return client; }
     public Screen getScreen()           { return screen; }
     public GuiGraphics getGuiGraphics() { return guiGraphics; }
     public float getMouseX()            { return mouseX; }
@@ -92,7 +95,7 @@ public final class ScreenRenderingContext {
         return getGuiGraphics().pose();
     }
     public GuiGraphics.ScissorStack getScissorStack() { return getGuiGraphics().scissorStack; }
-    public GuiSpriteManager getSpriteManager() { return minecraft.getGuiSprites(); }
+    public GuiSpriteManager getSpriteManager() { return client.getGuiSprites(); }
     public GuiRenderState getGuiRenderState() { return getGuiGraphics().guiRenderState; }
 
     public MultiBufferSource.BufferSource getBufferSource() {
@@ -224,7 +227,7 @@ public final class ScreenRenderingContext {
             }
         }
 
-        TextureSetup gpuTextureView = TextureSetup.singleTexture(getMinecraft().getTextureManager().getTexture(texture.location()).getTextureView());
+        TextureSetup gpuTextureView = TextureSetup.singleTexture(getClient().getTextureManager().getTexture(texture.location()).getTextureView());
         float uvLeft = textureLeft / texture.width();
         float uvTop = textureTop / texture.height();
         float uvRight = textureRight / texture.width();
@@ -311,7 +314,7 @@ public final class ScreenRenderingContext {
         float sc = entity instanceof LivingEntity living ? living.getScale() : 1F;
         Vector3f vector3f = new Vector3f(0F, entity.getBbHeight() / internalOffset + 0.0625F * sc, 0F);
 
-        EntityRenderDispatcher entityRenderDispatcher = getMinecraft().getEntityRenderDispatcher();
+        EntityRenderDispatcher entityRenderDispatcher = getClient().getEntityRenderDispatcher();
         EntityRenderer<Entity, EntityRenderState> entityRenderer = Misc.cast(entityRenderDispatcher.getRenderer(entity));
         EntityRenderState entityRenderState = entityRenderer.createRenderState();
         entityRenderer.extractRenderState(entity, entityRenderState, 1F);
@@ -329,7 +332,7 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.screens.inventory.PageButton#playDownSound(net.minecraft.client.sounds.SoundManager)
      */
     public void playScreenSound(SoundEvent sound, float volume, float pitch) {
-        getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));
+        getClient().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));
     }
 
     private static ScreenRectangle getBounds(float x0, float y0, float x1, float y1, Matrix3x2f matrix3x2f, @Nullable ScreenRectangle screenRectangle) {

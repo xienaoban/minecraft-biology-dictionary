@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -23,16 +24,17 @@ public class DebugScreen extends Screen {
 
     public DebugScreen() {
         super(Component.literal("Debug"));
-        minecraft = Minecraft.getInstance();
-        entities.add(EntityType.COW.create(minecraft.level, null));
-        entities.add(EntityType.HORSE.create(minecraft.level, null));
+        Minecraft client = McClientUtils.getClient();
+        entities.add(EntityType.COW.create(client.level, null));
+        entities.add(EntityType.HORSE.create(client.level, null));
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         super.render(guiGraphics, mouseX, mouseY, f);
 
-        ModelPart flag = this.minecraft.getEntityModels().bakeLayer(ModelLayers.STANDING_BANNER_FLAG).getChild("flag");
+        Minecraft client = McClientUtils.getClient();
+        ModelPart flag = client.getEntityModels().bakeLayer(ModelLayers.STANDING_BANNER_FLAG).getChild("flag");
         DyeColor dyeColor = DyeColor.ORANGE;
         BannerPatternLayers resultBannerPatterns = BannerPatternLayers.EMPTY;
 
@@ -40,7 +42,7 @@ public class DebugScreen extends Screen {
         int top;
         left = width / 2 - 100;
         top = height / 2;
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 26, top + 8, left + 75, top + 78, 30, 0.0625F, mouseX, mouseY, this.minecraft.player);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 26, top + 8, left + 75, top + 78, 30, 0.0625F, mouseX, mouseY, client.player);
         // guiGraphics.submitBannerPatternRenderState(flag, dyeColor, resultBannerPatterns, left, top, left + 20, top + 40);
         left = width / 2;
         top = height / 2;

@@ -19,8 +19,8 @@ public class EntityPropertyStandardWidget<E extends Entity> extends EntityProper
 
     public EntityPropertyStandardWidget(EntityProperties<E> properties, int columns) {
         super(properties, 1, columns);
-        this.bar = null;
-        this.buttons = new ArrayList<>();
+        bar = null;
+        buttons = new ArrayList<>();
     }
 
     public EntityPropertyBar getElementBar() { return bar; }

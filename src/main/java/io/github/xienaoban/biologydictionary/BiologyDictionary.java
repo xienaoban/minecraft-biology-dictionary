@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.common.server.ServerEventRegistry;
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.minecraft.server.MinecraftServer;
@@ -25,7 +25,7 @@ public final class BiologyDictionary {
     private final Set<MinecraftServer> servers;
 
     private BiologyDictionary() {
-        this.servers = ConcurrentHashMap.newKeySet();
+        servers = ConcurrentHashMap.newKeySet();
 
         ServerNetManager.init();
 
@@ -46,7 +46,7 @@ public final class BiologyDictionary {
 
     public Level justGiveMeALevel() {
         if (DevUtils.isClient()) {
-            Level level = MinecraftUtils.getClientLevel();
+            Level level = McClientUtils.getClientLevel0();
             if (level != null) { return level; }
         }
         for (MinecraftServer server : getServers()) {

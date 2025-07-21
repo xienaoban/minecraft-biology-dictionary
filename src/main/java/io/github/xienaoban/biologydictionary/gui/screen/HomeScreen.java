@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.DebugScreen;
@@ -75,7 +75,7 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
 
             @Override
             protected boolean onMouseDown(float x, float y, int code) {
-                MinecraftUtils.setScreen(minecraft, new DebugScreen());
+                McClientUtils.setScreen(client, new DebugScreen());
                 return true;
             }
         })) System.out.println("aaa?");

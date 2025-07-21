@@ -35,7 +35,7 @@ public record RequestEntityDataPacket(int entityId) implements Packet {
             // Write data that not in vanilla NBT.
             CompoundTag extraNbt = new CompoundTag();
             for (EntityProperty<?> p : new EntityProperties<>(entity).getExtras()) {
-                p.loadFrom(Misc.cast(entity));
+                p.getFrom(Misc.cast(entity));
                 p.writeTo(extraNbt);
             }
             toSend = new SendEntityDataPacket(true, entity.getId(), vanillaNbt, extraNbt);

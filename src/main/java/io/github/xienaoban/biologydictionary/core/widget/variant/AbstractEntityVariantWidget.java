@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElemen
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -42,14 +42,14 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
     }
 
     private final int size;
-    private final List<VariantElement> variants;
+    private final List<VariantElement> variantElements;
     private final int[] displayCntPerRow;
     private final float variantWidth, variantHeight;
 
     private int chosenIndex;
 
     private final List<BackgroundBar> backgroundBars = new ArrayList<>();
-    private final LocalPlayer player = Objects.requireNonNull(MinecraftUtils.getClientPlayer());
+    private final LocalPlayer player = Objects.requireNonNull(McClientUtils.getClientPlayer());
 
     public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt) {
         this(properties, variantCnt, 7, 2);
@@ -73,11 +73,11 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
         variantWidth = getBox().getWidth() / displayCntPerRow[0] - 1;
         variantHeight = getBox().getHeight() / lines - 1;
-        this.variants = new ArrayList<>(size());
+        variantElements = new ArrayList<>(size());
         for (int i = 0; i < size(); ++ i) {
             VariantElement e = new VariantElement(i, variants.get(i));
             e.setParent(this);
-            this.variants.add(e);
+            variantElements.add(e);
         }
 
         chosenIndex = 0;
@@ -128,7 +128,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
     }
 
     public final V getChosenVariant() {
-        return variants.get(chosenIndex).variant;
+        return variantElements.get(chosenIndex).variant;
     }
 
     public final boolean isChosen(int variantIndex) {
@@ -146,18 +146,22 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
     }
 
     protected final void setVariantElementWidthFix(float widthFix) {
-        for (VariantElement ve : variants) {
+        for (VariantElement ve : variantElements) {
             ve.setWidthFix(widthFix);
         }
     }
 
     protected final void setVariantElementHeightFix(float heightFix) {
-        for (VariantElement ve : variants) {
+        for (VariantElement ve : variantElements) {
             ve.setHeightFix(heightFix);
         }
     }
 
     protected final void setBackgroundBars(TextureInfo texture, int textureLeft, int textureTop) {
+        for (BackgroundBar bar : backgroundBars) {
+            bar.setParent(null);
+        }
+        backgroundBars.clear();
         for (int i = 0; i < displayCntPerRow.length; ++i) {
             BackgroundBar bar = new BackgroundBar(texture, textureLeft, textureTop);
             bar.getBox().setSize(getBox().getWidth(), Widget.WIDGET_HEIGHT);
@@ -180,7 +184,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         int idx = 0;
         boolean hit = false;
         for (int i = 0; i < size; ++i) {
-            if (equals(variant, variants.get(i).variant)) {
+            if (equals(variant, variantElements.get(i).variant)) {
                 if (hit) {
                     throw new RuntimeException("Multiple hit variants!");
                 }
@@ -218,7 +222,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             final float mWidth = wWidth / cnt;
             for (int j = 0; j < cnt; ++j) {
                 float left = wLeft + j * mWidth + mWidth / 2 - variantWidth / 2;
-                variants.get(vIdx).getBox().setPosition(left, top);
+                variantElements.get(vIdx).getBox().setPosition(left, top);
                 ++vIdx;
             }
 
@@ -307,12 +311,12 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
             if (isChosen(index)) {
                 renderCheckMark(ctx, true);
-                if (isInBox(ctx.getElementScreen().getFocusedElement())) {
+                if (isInBox(ctx.getElementScreen().getHoveredElement())) {
                     renderVariantName(ctx);
                 } else {
                     renderVariantNameAuto(ctx);
                 }
-            } else if (isInBox(ctx.getElementScreen().getFocusedElement())) {
+            } else if (isInBox(ctx.getElementScreen().getHoveredElement())) {
                 if (isAllowedToChoose()) {
                     renderCheckMark(ctx, false);
                 }
@@ -322,8 +326,8 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             }
         }
 
-        private void renderCheckMark(ScreenRenderingContext ctx, boolean chosenTrueFocusedFalse) {
-            int textureLeft = chosenTrueFocusedFalse ? 23 : 24;
+        private void renderCheckMark(ScreenRenderingContext ctx, boolean chosenTrueHoveredFalse) {
+            int textureLeft = chosenTrueHoveredFalse ? 23 : 24;
             ctx.renderTexture(Textures.ICONS,
                     textureLeft * Widget.WIDGET_WIDTH, 3 * Widget.WIDGET_HEIGHT,
                     ctx.getZ() + 100,

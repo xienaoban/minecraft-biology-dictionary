@@ -4,12 +4,16 @@ import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.gui.component.CenteredMessage;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,17 +26,27 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     private static final int PAGE_MID_MARGIN = 12, PAGE_TOP_MARGIN = 30;
 
+    public static AbstractBiologyDictionaryScreen current() {
+        return McClientUtils.getCurrentScreen();
+    }
+
+    public static AbstractBiologyDictionaryScreen current(Minecraft client) {
+        return McClientUtils.getCurrentScreen(client);
+    }
+
     // Replace the `@Nullable minecraft` in class `Screen`. This `minecraft` must not be null.
-    protected final Minecraft minecraft;
+    protected final Minecraft client = Objects.requireNonNull(McClientUtils.getClient());
+    protected final LocalPlayer player = Objects.requireNonNull(client.player);
 
     private final List<Page> pages;
     private int currPageIndex;
     private Page currLeftPage, currRightPage;
     private final PageNum leftPageNum, rightPageNum;
 
+    private final CenteredMessage centeredMessage;
+
     public AbstractBiologyDictionaryScreen(Component title) {
         super(title);
-        minecraft = Objects.requireNonNull(Minecraft.getInstance());
 
         pages = new ArrayList<>();
         currPageIndex = 0;
@@ -43,12 +57,15 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         leftPageNum.setParent(getRootScreenElement());
         rightPageNum = new PageNum(true);
         rightPageNum.setParent(getRootScreenElement());
+
+        centeredMessage = new CenteredMessage();
+        centeredMessage.setParent(getRootScreenElement());
     }
 
     @Override
     protected void init() {
         super.init();
-        if (this.minecraft != super.minecraft) {
+        if (client != minecraft) {
             throw new RuntimeException("this.minecraft != super.minecraft");
         }
         // add some vanilla-widgets here
@@ -80,7 +97,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     private void renderDebug(ScreenRenderingContext ctx) {
-        ctx.renderText(Component.literal(this.getClass().getSimpleName()), 0xFFFFFFFF, ctx.getZ(), 2, 2);
+        ctx.renderText(Component.literal(getClass().getSimpleName()), 0xFFFFFFFF, ctx.getZ(), 2, 2);
     }
 
     @Override
@@ -98,6 +115,11 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                                     (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
         rightPageNum.getBox().setPosition((width + Page.PAGE_WIDTH - PageNum.WIDTH) / 2F + PAGE_MID_MARGIN,
                                     (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
+
+        centeredMessage.getBox().set(width / 2F - Page.PAGE_WIDTH,
+                (height + BOOK_HEIGHT) / 2F,
+                width / 2F + Page.PAGE_WIDTH,
+                (height + BOOK_HEIGHT) / 2F + 20);
     }
 
     @Override
@@ -108,7 +130,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)
-                || minecraft.options.keyInventory.matches(keyCode, scanCode)) {
+                || client.options.keyInventory.matches(keyCode, scanCode)) {
             onClose();
             return true;
         } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
@@ -176,6 +198,14 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
             }
         }
         return newPage;
+    }
+
+    public final void sendScreenMessage(Component text) {
+        centeredMessage.setText(text);
+    }
+
+    public final void sendScreenMessage(Component text, int color) {
+        centeredMessage.setText(text, color);
     }
 
     private final class PageNum extends ScreenElement {
