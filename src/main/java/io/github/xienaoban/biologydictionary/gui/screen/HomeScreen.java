@@ -1,96 +1,70 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
-import io.github.xienaoban.biologydictionary.gui.screen.misc.DebugScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class HomeScreen extends AbstractBiologyDictionaryScreen {
+    private long currTime = 0;
+    private float entityRotateX, entityRotateY;
+
     public HomeScreen() {
         super(Component.translatable(Lang.BIOLOGY_DICTIONARY_TITLE));
-        for (int i = 0; i < 9; ++i) {
-            if (!getOrAddPage(0).addWidget(new Widget(1, 1) {
-                @Override
-                protected void onRender(ScreenRenderingContext ctx) {
-                    setSelectable(false);
-                    ctx.renderRectangle(0xFFCCCCFF, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + Widget.WIDGET_WIDTH, getBox().getBottom());
-                    ctx.renderRectangle(0xFF8888FF, getZ(), getBox().getLeft() + 1, getBox().getTop() + 1, getBox().getLeft() + Widget.WIDGET_WIDTH - 1, getBox().getBottom() - 1);
-                }
-            })) System.out.println("ccc?");
-        }
-        getOrAddPage(0).addWidget(new GetBookItemWidget());
-        for (int i = 0; i < 5; ++i) {
-            if (!getOrAddPage(0).addWidget(new Widget(1, Page.COLUMNS / 2) {
-                @Override
-                protected void onRender(ScreenRenderingContext ctx) {
-                    ctx.renderRectangle(0xFFFFCCCC, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + Widget.WIDGET_WIDTH, getBox().getBottom());
-                    ctx.renderRectangle(0xFFFF8888, getZ(), getBox().getLeft() + 1, getBox().getTop() + 1, getBox().getLeft() + Widget.WIDGET_WIDTH, - 1, getBox().getBottom() - 1);
-                    ctx.renderRectangle(0xFFEE8888, getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 1, getBox().getTop() + 1, getBox().getRight(), getBox().getBottom() - 1);
-                    ctx.renderText(Component.literal("256"), 0xFF222222, 0.5F, ctx.getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 2, getBox().getTop() + 3);
-                }
+        initEntityWidgets();
+    }
 
-            })) System.out.println("aaa?");
+    private void initEntityWidgets() {
+        ClientLevel level = McClientUtils.getClientLevel();
+        List<Widget> widgets = new ArrayList<>();
+        for (EntityManager.EntityClassInfo eci : EntityManager.getInstance().getEntityInfoList()) {
+            EntityType<?> type = eci.getType();
+            Entity entity = EntityUtils.create(type, level);
+            widgets.add(new EntityWidget(entity));
         }
-        if (!getOrAddPage(0).addWidget(new Widget(1, Page.COLUMNS) {
-            @Override
-            protected void onRender(ScreenRenderingContext ctx) {
-                ctx.renderRectangle(0xFFCCFFCC, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + Widget.WIDGET_WIDTH, getBox().getBottom());
-                ctx.renderRectangle(0xFF88FF88, getZ(), getBox().getLeft() + 1, getBox().getTop() + 1, getBox().getLeft() + Widget.WIDGET_WIDTH - 1, getBox().getBottom() - 1);
-                ctx.renderRectangle(0xFF88EE88, getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 1, getBox().getTop() + 1, getBox().getRight(), getBox().getBottom() - 1);
-                ctx.renderText(Component.literal("1.5 2.5 1.5"), 0xFF222222, 0.5F, ctx.getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 2, getBox().getTop() + 2);
-            }
+        addAllWidgetsOneByOne(widgets);
+    }
 
-            @Override
-            protected boolean onMouseDown(float x, float y, int code) {
-                return true;
-            }
-        })) System.out.println("bbb?");
-        for (int i = 0; i < 3; ++i) {
-            if (!getOrAddPage(0).addWidget(new Widget(1, 2) {
-                @Override
-                protected void onRender(ScreenRenderingContext ctx) {
-                    setSelectable(false);
-                    ctx.renderRectangle(0xFFCCFFCC, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + Widget.WIDGET_WIDTH, getBox().getBottom());
-                    ctx.renderRectangle(0xFF88FF88, getZ(), getBox().getLeft() + 1, getBox().getTop() + 1, getBox().getLeft() + Widget.WIDGET_WIDTH - 1, getBox().getBottom() - 1);
-                    ctx.renderRectangle(0xFF333333, 1, getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 1, getBox().getTop() + 2, getBox().getLeft() + 21, getBox().getBottom() - 2);
-                }
-            })) System.out.println("ccc?");
+    @Override
+    protected void render(ScreenRenderingContext ctx) {
+        currTime = System.currentTimeMillis();
+        int t = (int) (currTime % 8000);
+        t = t > 4000 ? 6000 - t : t - 2000;
+        entityRotateX = (float) Math.atan(t / 400F);
+        entityRotateY = (float) Math.atan(45 / 40F);
+
+        super.render(ctx);
+    }
+
+    private class EntityWidget extends Widget {
+        private final Entity entity;
+
+        public EntityWidget(Entity entity) {
+            super(2, 2);
+            this.entity = entity;
         }
 
-        if (!getOrAddPage(1).addWidget(new Widget(3, Page.COLUMNS) {
-            @Override
-            protected void onRender(ScreenRenderingContext ctx) {
-                ctx.renderRectangle(0xFFFFCCCC, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + Widget.WIDGET_WIDTH, getBox().getBottom());
-                ctx.renderRectangle(0xFFFF8888, getZ(), getBox().getLeft() + 1, getBox().getTop() + 1, getBox().getLeft() + Widget.WIDGET_WIDTH, - 1, getBox().getBottom() - 1);
-                ctx.renderRectangle(0xFFEE8888, getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 1, getBox().getTop() + 1, getBox().getRight(), getBox().getBottom() - 1);
-                ctx.renderText(Component.literal("256"), 0xFF222222, 0.5F, ctx.getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 2, getBox().getTop() + 3);
-            }
-
-            @Override
-            protected boolean onMouseDown(float x, float y, int code) {
-                McClientUtils.setScreen(client, new DebugScreen());
-                return true;
-            }
-        })) System.out.println("aaa?");
-
-        for (int i = 0; i < 11; ++i) {
-            if (!getOrAddPage(1).addWidget(new Widget(1, Page.COLUMNS / 2) {
-                @Override
-                protected void onRender(ScreenRenderingContext ctx) {
-                    ctx.renderRectangle(0xFFFFCCCC, getZ(), getBox().getLeft(), getBox().getTop(), getBox().getLeft() + Widget.WIDGET_WIDTH, getBox().getBottom());
-                    ctx.renderRectangle(0xFFFF8888, getZ(), getBox().getLeft() + 1, getBox().getTop() + 1, getBox().getLeft() + Widget.WIDGET_WIDTH, - 1, getBox().getBottom() - 1);
-                    ctx.renderRectangle(0xFFEE8888, getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 1, getBox().getTop() + 1, getBox().getRight(), getBox().getBottom() - 1);
-                    ctx.renderText(Component.literal("256"), 0xFF222222, 0.5F, ctx.getZ(), getBox().getLeft() + Widget.WIDGET_WIDTH + 2, getBox().getTop() + 3);
-                }
-
-            })) System.out.println("aaa?");
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            ctx.renderEntityCentered(entity, box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6, entityRotateX, entityRotateY);
+            ctx.renderCenteredText(entity.getType().getDescription(), 0xFF000000, 0.5F, getZ(), (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
         }
     }
 
