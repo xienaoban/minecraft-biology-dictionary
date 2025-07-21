@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.screen.EntityDetailScreen;
@@ -26,8 +26,8 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 
 @Environment(EnvType.CLIENT)
 public final class BiologyDictionaryEvent {
-    public static void openBookScreen(Minecraft minecraft) {
-        LocalPlayer player = minecraft.player;
+    public static void openBookScreen(Minecraft client) {
+        LocalPlayer player = client.player;
         BDC.setHitEntity(null);
         BDC.setHitBlock(null);
         BDC.setHitEntityProperties(null);
@@ -37,7 +37,7 @@ public final class BiologyDictionaryEvent {
         }
         Entity target;
         float y = player.getXRot();
-        HitResult hit = minecraft.hitResult;
+        HitResult hit = client.hitResult;
         if (y < -0.996F * 90.0F) {
             target = null;
         } else if (y > 0.996F * 90.0F) {
@@ -54,11 +54,10 @@ public final class BiologyDictionaryEvent {
         } else if (hit.getType() == HitResult.Type.BLOCK) {
             BlockPos pos = ((BlockHitResult) hit).getBlockPos();
             BDC.setHitBlock(pos);
-            @SuppressWarnings("all") // 'Level' used without 'try'-with-resources statement
             BlockState blockState = player.level().getBlockState(pos);
             if (blockState.getBlock() instanceof BeehiveBlock) {
                 ClientNetManager.requestBeehiveInfo(pos);
-                MinecraftUtils.setScreen(minecraft, new BeehiveScreen(pos));
+                McClientUtils.setScreen(client, new BeehiveScreen(pos));
                 new ScreenRenderingContext(null).playScreenSound(SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
                 return;
             }
@@ -69,14 +68,14 @@ public final class BiologyDictionaryEvent {
         }
 
         if (target == null) {
-            MinecraftUtils.setScreen(minecraft, new HomeScreen());
+            McClientUtils.setScreen(client, new HomeScreen());
         } else {
             EntityProperties<Entity> properties = new EntityProperties<>(target);
             BDC.setHitEntity(target);
             BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target);
             try {
-                MinecraftUtils.setScreen(minecraft, new EntityDetailScreen(properties));
+                McClientUtils.setScreen(client, new EntityDetailScreen(properties));
             } catch (RuntimeException e) {
                 Misc.printThrowableToLoggerAndGame(e);
                 return;

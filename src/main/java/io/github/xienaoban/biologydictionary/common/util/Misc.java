@@ -1,14 +1,12 @@
 package io.github.xienaoban.biologydictionary.common.util;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.lang.reflect.Type;
+import java.util.*;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -25,14 +23,71 @@ public final class Misc {
         return sw.toString();
     }
 
-    public static <E extends Entity> Class<E> getFirstEntityClazzGeneric(Class<?> clazz) {
-        // Get the entity class (aka E) based on generic super class EntityPropertyWidget.
-        ParameterizedType superWidgetType = (ParameterizedType) clazz.getGenericSuperclass();
-        Class<?> c = (Class<?>) superWidgetType.getActualTypeArguments()[0];
-        if (!Entity.class.isAssignableFrom(c)) {
-            throw new RuntimeException("The first argument of generic super class is not a sub class of Entity.");
+    public static Class<?> getClazzGeneric(Class<?> targetClazz, Class<?> sourceClazz, int sourceGenericIdx) {
+        record ResOrIdx(Class<?> res, int idx) {
+            static ResOrIdx of(Class<?> res) {
+                return new ResOrIdx(res, -1);
+            }
+            static ResOrIdx of(int idx) {
+                return new ResOrIdx(null, idx);
+            }
+
+            static ResOrIdx calc(Class<?> curr, Class<?> sourceClazz, int sourceIdx) {
+                if (curr == Object.class) { return null; }
+                if (curr == sourceClazz) { return ResOrIdx.of(sourceIdx); }
+
+                List<Type> supers = new ArrayList<>();
+                supers.add(curr.getGenericSuperclass());
+                supers.addAll(List.of(curr.getGenericInterfaces()));
+                for (Type sup : supers) {
+                    if (sup instanceof ParameterizedType supP) {
+                        ResOrIdx res = calc((Class<?>) supP.getRawType(), sourceClazz, sourceIdx);
+                        if (res == null) { continue; }
+                        if (res.res != null) { return res; }
+
+                        int idx = res.idx();
+                        Type type = supP.getActualTypeArguments()[idx];
+                        if (type instanceof Class<?> clazz) {
+                            return ResOrIdx.of(clazz);
+                        }
+
+                        String name = type.getTypeName();
+                        int i = -1;
+                        for (var param : curr.getTypeParameters()) {
+                            ++i;
+                            if (name.equals(param.getName())) {
+                                return ResOrIdx.of(i);
+                            }
+                        }
+                        throw new RuntimeException("Generic type not match: "
+                                + Arrays.toString(curr.getTypeParameters()) + " vs "
+                                + Arrays.toString(supP.getActualTypeArguments()));
+                    } else if (sup instanceof Class<?> supC) {
+                        ResOrIdx res = calc(supC, sourceClazz, sourceIdx);
+                        if (res == null) { continue; }
+                        if (res.res == null) {
+                            throw new RuntimeException("Generic should be resolved: "
+                                    + curr + ", " + Arrays.toString(curr.getTypeParameters()));
+                        }
+                        return res;
+                    } else {
+                        throw new RuntimeException("Neither ParameterizedType nor Class: "
+                                + (sup == null ? null : sup.getClass()) + ", " + sup);
+                    }
+                }
+                return null;
+            }
         }
-        return Misc.cast(c);
+
+        ResOrIdx res = ResOrIdx.calc(targetClazz, sourceClazz, sourceGenericIdx);
+        if (res == null) {
+            throw new RuntimeException(targetClazz + " does not extend " + sourceClazz);
+        } else if (res.res == null) {
+            throw new RuntimeException("Cannot obtain the actual type of generic \""
+                    + sourceClazz.getTypeParameters()[sourceGenericIdx] + "\" in " + sourceClazz
+                    + ", which is inherited by " + targetClazz);
+        }
+        return res.res;
     }
 
     public static <T> Collection<T> shuffle(Collection<T> collection) {
@@ -87,6 +142,6 @@ public final class Misc {
         throwable.printStackTrace(pw);
         String errStack = sw.toString();
         LOGGER.error(errStack);
-        MinecraftUtils.showClientTextBoxMessage(Component.literal(errStack));
+        McClientUtils.showClientTextBoxMessage(Component.literal(errStack));
     }
 }

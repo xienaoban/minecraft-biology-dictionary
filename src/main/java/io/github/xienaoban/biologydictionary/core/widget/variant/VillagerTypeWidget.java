@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.widget.variant;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
@@ -56,7 +56,7 @@ public final class VillagerTypeWidget extends AbstractEntityVariantWidget<Villag
 
     @Override
     protected void writeVariantToNbt(VariantElement element, CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        CodecProperty<Villager, VillagerData> property = EntityVanillaProperties.OfVillager.createVillagerDataProperty();
+        CodecProperty<Villager, VillagerData> property = VanillaEntityProperties.OfVillager.createVillagerDataProperty();
         property.set(e().getVillagerData().withType(element.getVariant()));
         property.writeTo(vanillaNbt);
     }

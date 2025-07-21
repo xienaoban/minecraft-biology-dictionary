@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -18,7 +18,7 @@ import net.minecraft.world.entity.Entity;
 public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget<Entity> {
     private static final int L = 19, T = 1;
 
-    private final BooleanProperty<Entity> invulnerableProperty = EntityVanillaProperties.OfEntity.getInvulnerableProperty(p());
+    private final BooleanProperty<Entity> invulnerableProperty = VanillaEntityProperties.OfEntity.getInvulnerableProperty(p());
 
     public EntityInvulnerableWidget(EntityProperties<Entity> properties) {
         super(properties, Page.COLUMNS / 4);
@@ -48,7 +48,7 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean inv = isInvulnerable();
-                BooleanProperty<Entity> property = EntityVanillaProperties.OfEntity.createInvulnerableProperty();
+                BooleanProperty<Entity> property = VanillaEntityProperties.OfEntity.createInvulnerableProperty();
                 property.set(!inv);
                 invulnerableProperty.set(!inv);
                 ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);

@@ -2,9 +2,9 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.MinecraftUtils;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityVanillaProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -30,7 +30,7 @@ import java.util.List;
 public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
     private static final int L = 1, T = 3;
 
-    private final IntProperty<Entity> portalCooldownProperty = EntityVanillaProperties.OfEntity.getPortalCooldownProperty(p());
+    private final IntProperty<Entity> portalCooldownProperty = VanillaEntityProperties.OfEntity.getPortalCooldownProperty(p());
 
     private int inPortalRecheck = 0;
 
@@ -110,7 +110,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             } else if (ctx.isDebug()) {
                 renderInnerText(ctx, Component.literal(cooldown + "t/" + maxCooldown + "t"));
             } else {
-                renderInnerText(ctx, Component.literal((cooldown / MinecraftUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / MinecraftUtils.getClientTickCountPerSecond()) + "s"));
+                renderInnerText(ctx, Component.literal((cooldown / McClientUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / McClientUtils.getClientTickCountPerSecond()) + "s"));
             }
         }
     }
@@ -147,7 +147,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
                 }
 
                 // Send to the server.
-                IntProperty<Entity> property = EntityVanillaProperties.OfEntity.createPortalCooldownProperty();
+                IntProperty<Entity> property = VanillaEntityProperties.OfEntity.createPortalCooldownProperty();
                 property.set(toSet);
                 portalCooldownProperty.set(toSet);
                 ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);

@@ -4,11 +4,10 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.branch.*;
+import io.github.xienaoban.biologydictionary.core.widget.leaf.BeeHivePropertyWidget;
+import io.github.xienaoban.biologydictionary.core.widget.leaf.VillagerJobSiteWidget;
 import io.github.xienaoban.biologydictionary.core.widget.leaf.VillagerScheduleWidget;
-import io.github.xienaoban.biologydictionary.core.widget.variant.EntityVariantStandardWidget;
-import io.github.xienaoban.biologydictionary.core.widget.variant.HorseMarkingsWidget;
-import io.github.xienaoban.biologydictionary.core.widget.variant.HorseVariantWidget;
-import io.github.xienaoban.biologydictionary.core.widget.variant.VillagerTypeWidget;
+import io.github.xienaoban.biologydictionary.core.widget.variant.*;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -78,7 +77,8 @@ public final class EntityPropertyWidgets {
         final Class<E> entityClazz;
         final MethodHandle createWidget;
         try {
-            entityClazz = Misc.getFirstEntityClazzGeneric(widgetClazz);
+            entityClazz = Misc.cast(Misc.getClazzGeneric(widgetClazz, EntityPropertyWidget.class, 0)
+                    .asSubclass(Entity.class));
             if (!widgetClazz.getSimpleName().startsWith(entityClazz.getSimpleName())
                     && Misc.cast(widgetClazz) != TurnPageTriggerWidget.class) {
                 throw new AssertionError(widgetClazz + " must be started with \"" + entityClazz.getSimpleName() + "\"!");
@@ -114,6 +114,8 @@ public final class EntityPropertyWidgets {
         r(EntityVariantStandardWidget.class);
         r(HorseVariantWidget.class);
         r(HorseMarkingsWidget.class);
+        r(PandaMainGeneWidget.class);
+        r(PandaHiddenGeneWidget.class);
         r(VillagerTypeWidget.class);
         r(VillagerScheduleWidget.class);
         r(MobAiWidget.class);
@@ -123,5 +125,7 @@ public final class EntityPropertyWidgets {
         r(AgeableMobBreedingCooldownWidget.class);
         r(AnimalInLoveWidget.class);
         r(EntityPortalCooldownWidget.class);
+        r(VillagerJobSiteWidget.class);
+        r(BeeHivePropertyWidget.class);
     }
 }

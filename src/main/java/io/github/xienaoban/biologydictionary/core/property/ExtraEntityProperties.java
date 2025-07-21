@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.property;
 import io.github.xienaoban.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.extra.MobTemptProperty;
+import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
 import net.minecraft.world.entity.Entity;
 
 import java.lang.invoke.MethodHandle;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class EntityExtraProperties {
+final class ExtraEntityProperties {
 
     static final Map<Class<? extends Entity>, List<Creator>> registries = new HashMap<>();
 
@@ -30,10 +31,15 @@ final class EntityExtraProperties {
         lookup = null;
     }
 
-    static void r(Class<? extends EntityProperty<? extends Entity>> clazz) {
+    static void r(Class<? extends EntityProperty<? extends Entity>> propertyClazz) {
         try {
-            final Class<? extends Entity> entityClazz = Misc.getFirstEntityClazzGeneric(clazz);
-            MethodHandle constructor = lookup.findConstructor(clazz, MethodType.methodType(void.class));
+            final Class<? extends Entity> entityClazz= Misc.getClazzGeneric(propertyClazz, EntityProperty.class, 0)
+                    .asSubclass(Entity.class);
+            if (!propertyClazz.getSimpleName().startsWith(entityClazz.getSimpleName())) {
+                throw new AssertionError(propertyClazz + " must be started with \"" + entityClazz.getSimpleName() + "\"!");
+            }
+
+            MethodHandle constructor = lookup.findConstructor(propertyClazz, MethodType.methodType(void.class));
             registries.computeIfAbsent(entityClazz, c -> new ArrayList<>())
                     .add(() -> {
                         try {
@@ -50,6 +56,7 @@ final class EntityExtraProperties {
     }
 
     private static void registerBuiltIn() {
+        r(VillagerJobSiteProperty.class);
         r(MobTemptProperty.class);
     }
 }
