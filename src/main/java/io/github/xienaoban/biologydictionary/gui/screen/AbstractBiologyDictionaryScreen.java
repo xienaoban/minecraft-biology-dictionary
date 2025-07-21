@@ -5,15 +5,16 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.biologydictionary.gui.component.CenteredMessage;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private int currPageIndex;
     private Page currLeftPage, currRightPage;
     private final PageNum leftPageNum, rightPageNum;
+    private final PageTurnButton turnLeft, turnRight;
 
     private final CenteredMessage centeredMessage;
 
@@ -57,6 +59,10 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         leftPageNum.setParent(getRootScreenElement());
         rightPageNum = new PageNum(true);
         rightPageNum.setParent(getRootScreenElement());
+        turnLeft = new PageTurnButton(-2);
+        turnLeft.setParent(getRootScreenElement());
+        turnRight = new PageTurnButton(2);
+        turnRight.setParent(getRootScreenElement());
 
         centeredMessage = new CenteredMessage();
         centeredMessage.setParent(getRootScreenElement());
@@ -66,7 +72,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     protected void init() {
         super.init();
         if (client != minecraft) {
-            throw new RuntimeException("this.minecraft != super.minecraft");
+            throw new AssertionError("this.minecraft != super.minecraft");
         }
         // add some vanilla-widgets here
     }
@@ -112,9 +118,14 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
 
         leftPageNum.getBox().setPosition((width - Page.PAGE_WIDTH - PageNum.WIDTH) / 2F - PAGE_MID_MARGIN,
-                                    (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
+                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
         rightPageNum.getBox().setPosition((width + Page.PAGE_WIDTH - PageNum.WIDTH) / 2F + PAGE_MID_MARGIN,
-                                    (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
+                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
+
+        turnLeft.getBox().setPosition((width - PageTurnButton.SIZE) / 2F - Page.PAGE_WIDTH,
+                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT);
+        turnRight.getBox().setPosition((width - PageTurnButton.SIZE) / 2F + Page.PAGE_WIDTH,
+                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT);
 
         centeredMessage.getBox().set(width / 2F - Page.PAGE_WIDTH,
                 (height + BOOK_HEIGHT) / 2F,
@@ -156,6 +167,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     public void setCurrPage(int pageIndex) {
+        if (pageIndex < 0 || pageIndex >= pages.size()) { return; }
         currPageIndex = pageIndex;
         updateCurrPages();
     }
@@ -186,6 +198,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private void updateCurrPages() {
         currLeftPage = updatePage(currLeftPage, getPageOrNull(currPageIndex));
         currRightPage = updatePage(currRightPage, getPageOrNull(currPageIndex + 1));
+        updateBoxSizes();
     }
 
     private Page updatePage(Page oldPage, Page newPage) {
@@ -198,6 +211,25 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
             }
         }
         return newPage;
+    }
+
+    protected void addAllWidgetsOneByOne(List<? extends Widget> widgets) {
+        boolean add = true;
+        Page page = null;
+        for (var widget : widgets) {
+            if (widget instanceof TurnPageTriggerWidget) {
+                add = true;
+                continue;
+            }
+            if (add) {
+                page = addPage();
+                add = false;
+            }
+            if (!page.addWidget(widget)) {
+                page = addPage();
+                page.addWidget(widget);
+            }
+        }
     }
 
     public final void sendScreenMessage(Component text) {
@@ -239,6 +271,30 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 }
             }
             ctx.renderCenteredText(cache, 0xFFAF711F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
+        }
+    }
+
+    private final class PageTurnButton extends ScreenElement {
+        public static final int SIZE = 16;
+
+        private final int pagesToTurn;
+
+        public PageTurnButton(int pagesToTurn) {
+            this.pagesToTurn = pagesToTurn;
+            getBox().setSize(SIZE, SIZE);
+        }
+
+        public void turn() {
+            setCurrPage(currPageIndex + pagesToTurn);
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                turn();
+                return true;
+            }
+            return super.onMouseDown(x, y, code);
         }
     }
 }

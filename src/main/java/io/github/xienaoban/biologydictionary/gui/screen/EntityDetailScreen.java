@@ -5,9 +5,7 @@ import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
-import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
-import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,22 +32,7 @@ public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
 
     private void initEntityPropertyWidgets() {
         List<EntityPropertyWidget<?>> widgets = EntityPropertyWidgets.getWidgets(properties);
-        boolean add = true;
-        Page page = null;
-        for (var widget : widgets) {
-            if (widget instanceof TurnPageTriggerWidget) {
-                add = true;
-                continue;
-            }
-            if (add) {
-                page = addPage();
-                add = false;
-            }
-            if (!page.addWidget(widget)) {
-                page = addPage();
-                page.addWidget(widget);
-            }
-        }
+        addAllWidgetsOneByOne(widgets);
     }
 
     @Override

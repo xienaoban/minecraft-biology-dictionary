@@ -26,7 +26,7 @@ public abstract class ElementScreen extends CommonScreen {
     @Override
     protected void init() {
         super.init();
-        rootScreenElement.resize(width, height);
+        updateBoxSizes();
     }
 
     @Override
@@ -92,6 +92,10 @@ public abstract class ElementScreen extends CommonScreen {
 
     public final ScreenElement getRootScreenElement() {
         return rootScreenElement;
+    }
+
+    public final void updateBoxSizes() {
+        rootScreenElement.resize(width, height);
     }
 
     public final int getTicks() {

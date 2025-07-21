@@ -40,9 +40,10 @@ final class EntityOrder {
         f(EntityType.SNIFFER);
         f(EntityType.VILLAGER);
         f(EntityType.WANDERING_TRADER);
+        f(EntityType.BAT);
         f(EntityType.PARROT);
         f(EntityType.BEE);
-        f(EntityType.BAT);
+        f(EntityType.ALLAY);
         f(EntityType.COD);
         f(EntityType.SALMON);
         f(EntityType.TROPICAL_FISH);
@@ -54,12 +55,10 @@ final class EntityOrder {
         f(EntityType.TURTLE);
         f(EntityType.SQUID);
         f(EntityType.GLOW_SQUID);
-        f(EntityType.ALLAY);
         f(EntityType.STRIDER);
         f(EntityType.HAPPY_GHAST);
 
         // neutral
-        f(EntityType.ARMOR_STAND);
         f(EntityType.IRON_GOLEM);
         f(EntityType.SNOW_GOLEM);
 
@@ -74,15 +73,24 @@ final class EntityOrder {
         f(EntityType.BOGGED);
         f(EntityType.WITHER_SKELETON);
         f(EntityType.ENDERMAN);
+        f(EntityType.SLIME);
         f(EntityType.SILVERFISH);
         f(EntityType.SPIDER);
         f(EntityType.CAVE_SPIDER);
+        f(EntityType.PHANTOM);
+        f(EntityType.VEX);
+        f(EntityType.RAVAGER);
+        f(EntityType.PILLAGER);
+        f(EntityType.VINDICATOR);
+        f(EntityType.EVOKER);
+        f(EntityType.ILLUSIONER);
+        f(EntityType.WITCH);
         f(EntityType.BREEZE);
+        f(EntityType.CREAKING);
+        f(EntityType.WARDEN);
+        f(EntityType.WITHER);
         f(EntityType.GUARDIAN);
         f(EntityType.ELDER_GUARDIAN);
-        f(EntityType.SLIME);
-        f(EntityType.CREAKING);
-        f(EntityType.SLIME);
         f(EntityType.MAGMA_CUBE);
         f(EntityType.BLAZE);
         f(EntityType.GHAST);
@@ -91,19 +99,12 @@ final class EntityOrder {
         f(EntityType.PIGLIN);
         f(EntityType.PIGLIN_BRUTE);
         f(EntityType.ZOMBIFIED_PIGLIN);
-        f(EntityType.PHANTOM);
         f(EntityType.ENDERMITE);
         f(EntityType.SHULKER);
-        f(EntityType.VEX);
-        f(EntityType.RAVAGER);
-        f(EntityType.PILLAGER);
-        f(EntityType.VINDICATOR);
-        f(EntityType.EVOKER);
-        f(EntityType.ILLUSIONER);
-        f(EntityType.WITCH);
-        f(EntityType.GIANT);
-        f(EntityType.WARDEN);
-        f(EntityType.WITHER);
         f(EntityType.ENDER_DRAGON);
+        f(EntityType.GIANT);
+
+        // other
+        f(EntityType.ARMOR_STAND);
     }
 }
