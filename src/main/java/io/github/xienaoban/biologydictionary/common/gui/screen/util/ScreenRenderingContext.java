@@ -300,7 +300,19 @@ public final class ScreenRenderingContext {
         final float entityHeight = entity.getBbHeight();
         final float scale;
         if (forceScale < 0) {
-            scale = Math.min(width / (float) Math.log(1.1F + entityWidth), height / (float) Math.log(1.1F + entityHeight)) / 2.2F;
+            float vw;
+            if (entityWidth > 1.8F) {
+                vw = entityWidth / 1.4F;
+            } else {
+                vw = (float) Math.log(1.1F + entityWidth);
+            }
+            float vh;
+            if (entityHeight > 2.2F) {
+                vh = entityHeight / 1.8F;
+            } else {
+                vh = (float) Math.log(1.1F + entityHeight);
+            }
+            scale = Math.min(width / vw, height / vh) / 2.2F;
         } else {
             scale = Math.min(width / entityWidth, height / entityHeight) / 1.5F * forceScale;
         }
@@ -340,5 +352,13 @@ public final class ScreenRenderingContext {
         int y0i = Mth.floor(y0);    int y1i = Mth.ceil(y1);
         ScreenRectangle screenRectangle2 = new ScreenRectangle(x0i, y0i, x1i - x0i, y1i - y0i).transformMaxBounds(matrix3x2f);
         return screenRectangle != null ? screenRectangle.intersection(screenRectangle2) : screenRectangle2;
+    }
+
+    private static float sigmoid(float x) {
+        return (float) (1F / (1F + Math.exp(-x)));
+    }
+
+    private static float zero2one(float x) {
+        return sigmoid(x) * 2 - 1;
     }
 }

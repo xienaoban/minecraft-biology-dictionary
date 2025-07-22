@@ -15,6 +15,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.WaterAnimal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,9 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
         for (EntityManager.EntityClassInfo eci : EntityManager.getInstance().getEntityInfoList()) {
             EntityType<?> type = eci.getType();
             Entity entity = EntityUtils.create(type, level);
+            if (entity instanceof WaterAnimal) {
+                EntityUtils.setInWater(entity, true);
+            }
             widgets.add(new EntityWidget(entity));
         }
         addAllWidgetsOneByOne(widgets);
