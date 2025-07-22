@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
@@ -15,6 +16,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +24,9 @@ import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
-    public static final int BOOK_LEFT = 96, BOOK_TOP = 0, BOOK_RIGHT = 416, BOOK_BOTTOM = 192;
-    public static final int BOOK_WIDTH = BOOK_RIGHT - BOOK_LEFT, BOOK_HEIGHT = BOOK_BOTTOM - BOOK_TOP;
+    public static final int BOOK_TEXTURE_LEFT = 96, BOOK_TEXTURE_TOP = 0, BOOK_TEXTURE_RIGHT = 416, BOOK_TEXTURE_BOTTOM = 224;
+    public static final int BOOK_TEXTURE_WIDTH = BOOK_TEXTURE_RIGHT - BOOK_TEXTURE_LEFT, BOOK_TEXTURE_HEIGHT = BOOK_TEXTURE_BOTTOM - BOOK_TEXTURE_TOP;
+    public static final int BOOK_WIDTH = BOOK_TEXTURE_WIDTH, BOOK_HEIGHT = BOOK_TEXTURE_HEIGHT - 32;
 
     private static final int PAGE_MID_MARGIN = 12, PAGE_TOP_MARGIN = 30;
 
@@ -81,10 +84,10 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     protected void render(ScreenRenderingContext ctx) {
         renderBlurredBackground(ctx);
         ctx.renderTexture(Textures.BOOK,
-                BOOK_LEFT, BOOK_TOP, BOOK_RIGHT, BOOK_BOTTOM,
+                BOOK_TEXTURE_LEFT, BOOK_TEXTURE_TOP, BOOK_TEXTURE_RIGHT, BOOK_TEXTURE_BOTTOM,
                 getZ(),
-                (width - BOOK_WIDTH) / 2F, (height - BOOK_HEIGHT) / 2F,
-                (width + BOOK_WIDTH) / 2F, (height + BOOK_HEIGHT) / 2F);
+                (width - BOOK_TEXTURE_WIDTH) / 2F, (height - BOOK_TEXTURE_HEIGHT) / 2F,
+                (width + BOOK_TEXTURE_WIDTH) / 2F, (height + BOOK_TEXTURE_HEIGHT) / 2F);
         renderTitle(ctx, title);
 
         if (ctx.isDebug()) {
@@ -122,10 +125,10 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         rightPageNum.getBox().setPosition((width + Page.PAGE_WIDTH - PageNum.WIDTH) / 2F + PAGE_MID_MARGIN,
                 (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
 
-        turnLeft.getBox().setPosition((width - PageTurnButton.SIZE) / 2F - Page.PAGE_WIDTH,
-                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT);
-        turnRight.getBox().setPosition((width - PageTurnButton.SIZE) / 2F + Page.PAGE_WIDTH,
-                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT);
+        turnLeft.getBox().setPosition((width - PageTurnButton.SIZE) / 2F - (Page.PAGE_WIDTH + 4),
+                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
+        turnRight.getBox().setPosition((width - PageTurnButton.SIZE) / 2F + (Page.PAGE_WIDTH + 4),
+                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
 
         centeredMessage.getBox().set(width / 2F - Page.PAGE_WIDTH,
                 (height + BOOK_HEIGHT) / 2F,
@@ -291,10 +294,25 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
+                new ScreenRenderingContext(null).playScreenSound(SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
                 turn();
                 return true;
             }
             return super.onMouseDown(x, y, code);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            int h = (getHoveredElement() == this ? 1 : 0);
+            int lr;
+            if (pagesToTurn < 0) {
+                lr = 15 - 6 - h;
+            } else {
+                lr = 16 + 6 + h;
+            }
+            ScreenElementBox box = getBox();
+            ctx.renderTexture(Textures.BOOK, lr * 16, 224, ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
         }
     }
 }
