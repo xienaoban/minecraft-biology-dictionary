@@ -1,6 +1,8 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
+import io.github.xienaoban.biologydictionary.Const;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
@@ -61,6 +63,26 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
         public EntityWidget(Entity entity) {
             super(2, 2);
             this.entity = entity;
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                int cnt = 0;
+                for (Entity e : McClientUtils.getClientLevel().entitiesForRendering()) {
+                    if (e.getType() != entity.getType()) { continue; }
+                    if (player.distanceToSqr(e) > Const.HIGHLIGHT_ENTITIES_DISTANCE * Const.HIGHLIGHT_ENTITIES_DISTANCE) {
+                        continue;
+                    }
+                    ++cnt;
+                    HighlightManager.highlightEntity(e, Const.HIGHLIGHT_ENTITIES_TICKS);
+                }
+                McClientUtils.showClientCenteredMessage(Component.translatable(Lang.TEXT_HIGHLIGHTED_ENTITIES,
+                        cnt, entity.getType().getDescription(), Const.HIGHLIGHT_ENTITIES_DISTANCE));
+                onClose();
+                return true;
+            }
+            return super.onMouseDown(x, y, code);
         }
 
         @Override
