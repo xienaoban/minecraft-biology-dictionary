@@ -22,7 +22,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class VanillaEntityTest {
+public class VanillaEntityCollectionTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @GameTest
