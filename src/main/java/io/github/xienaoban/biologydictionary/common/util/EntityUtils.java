@@ -99,8 +99,24 @@ public final class EntityUtils {
         return Misc.cast(entity.getType());
     }
 
-    public static ResourceLocation getEntityTypeName(Entity entity) {
-        return EntityType.getKey(entity.getType());
+    public static ResourceLocation getEntityTypeId(Entity entity) {
+        return getEntityTypeId(entity.getType());
+    }
+
+    public static ResourceLocation getEntityTypeId(EntityType<?> entityType) {
+        return EntityType.getKey(entityType);
+    }
+
+    public static String getEntityTypeIdString(Entity entity) {
+        return getEntityTypeIdString(entity.getType());
+    }
+
+    public static String getEntityTypeIdString(EntityType<?> entityType) {
+        return getEntityTypeId(entityType).toString();
+    }
+
+    public static <E extends Entity> EntityType<E> getEntityTypeByIdString(String name) {
+        return Misc.cast(EntityType.byString(name).orElse(null));
     }
 
     // ============================================================================ //
