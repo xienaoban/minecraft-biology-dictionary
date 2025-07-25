@@ -1,15 +1,13 @@
 package io.github.xienaoban.biologydictionary.net;
 
 import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
-import io.github.xienaoban.biologydictionary.net.payloads.RequestBeehiveInfoPacket;
-import io.github.xienaoban.biologydictionary.net.payloads.RequestEntityDataPacket;
-import io.github.xienaoban.biologydictionary.net.payloads.RequestHandbookItemPacket;
-import io.github.xienaoban.biologydictionary.net.payloads.SendUpdatedEntityPropertiesPacket;
+import io.github.xienaoban.biologydictionary.net.payloads.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetManager {
@@ -23,6 +21,10 @@ public final class ClientNetManager {
 
     public static void requestEntityData(Entity entity) {
         ClientNetApi.send(new RequestEntityDataPacket(entity.getId()));
+    }
+
+    public static void requestEntityHighlighting(EntityType<?> entityType, float radius) {
+        ClientNetApi.send(new RequestEntityHighlightingPacket(entityType, radius));
     }
 
     public static void requestBeehiveInfo(BlockPos pos) {

@@ -141,7 +141,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     public final String getVariantNameKeyPrefix() {
         // variant.minecraft.cat.xxxx
-        ResourceLocation rl = EntityUtils.getEntityTypeName(e());
+        ResourceLocation rl = EntityUtils.getEntityTypeId(e());
         return "variant." + rl.getNamespace() + "." + rl.getPath() + ".";
     }
 
