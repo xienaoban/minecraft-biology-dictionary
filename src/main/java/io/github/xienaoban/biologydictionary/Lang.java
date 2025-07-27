@@ -29,6 +29,13 @@ public final class Lang {
     public static final String GUI_YES = "gui.yes";
     public static final String GUI_NO = "gui.no";
 
+    public static final String BOOKMARK_ALL             = "bookmark.biologydictionary.all";
+    public static final String BOOKMARK_BACK_TO_HOME    = "bookmark.biologydictionary.back_to_home";
+    public static final String BOOKMARK_CLASSES         = "bookmark.biologydictionary.classes";
+    public static final String BOOKMARK_INTERFACES      = "bookmark.biologydictionary.interfaces";
+    public static final String BOOKMARK_MODS            = "bookmark.biologydictionary.mods";
+    public static final String BOOKMARK_ABOUT = "bookmark.biologydictionary.about";
+
     public static final String TEXT_MOD_NAME_IS                         = "text.biologydictionary.mod_name_is";
     public static final String TEXT_MOD_NOT_INSTALLED                   = "text.biologydictionary.mod_not_installed";
     public static final String TEXT_CLICK_ME_TO_DOWNLOAD                = "text.biologydictionary.click_me_to_download";

@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
@@ -10,6 +11,7 @@ import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.biologydictionary.gui.component.CenteredMessage;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -21,6 +23,8 @@ import net.minecraft.sounds.SoundEvents;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
@@ -42,32 +46,27 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     protected final Minecraft client = Objects.requireNonNull(McClientUtils.getClient());
     protected final LocalPlayer player = Objects.requireNonNull(client.player);
 
-    private final List<Page> pages;
-    private int currPageIndex;
-    private Page currLeftPage, currRightPage;
-    private final PageNum leftPageNum, rightPageNum;
-    private final PageTurnButton turnLeft, turnRight;
+    private final Bookmark[] bookmarks = new Bookmark[10];
 
-    private final CenteredMessage centeredMessage;
+    private final List<Page> pages = new ArrayList<>();
+    private int currPageIndex = 0;
+    private Page currLeftPage = null;
+    private Page currRightPage = null;
+    private final PageNum leftPageNum = new PageNum(false);
+    private final PageNum rightPageNum = new PageNum(true);
+    private final PageTurnButton turnLeft = new PageTurnButton(-2);
+    private final PageTurnButton turnRight = new PageTurnButton(2);
+
+    private final CenteredMessage centeredMessage = new CenteredMessage();
 
     public AbstractBiologyDictionaryScreen(Component title) {
         super(title);
 
-        pages = new ArrayList<>();
-        currPageIndex = 0;
-        currLeftPage = null;
-        currRightPage = null;
-
-        leftPageNum = new PageNum(false);
         leftPageNum.setParent(getRootScreenElement());
-        rightPageNum = new PageNum(true);
         rightPageNum.setParent(getRootScreenElement());
-        turnLeft = new PageTurnButton(-2);
         turnLeft.setParent(getRootScreenElement());
-        turnRight = new PageTurnButton(2);
         turnRight.setParent(getRootScreenElement());
 
-        centeredMessage = new CenteredMessage();
         centeredMessage.setParent(getRootScreenElement());
     }
 
@@ -111,6 +110,14 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     protected void resizeBox(int width, int height) {
+        for (int i = 0; i < bookmarks.length; ++i) {
+            Bookmark bookmark = bookmarks[i];
+            if (bookmark == null) { continue; }
+            ScreenElementBox box = bookmark.getBox();
+            box.setPosition(width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH - box.getWidth() - 18 + (i % 3),
+                    (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + i * (box.getHeight() + 4));
+        }
+
         if (currLeftPage != null) {
             currLeftPage.getBox().setPosition(width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH,
                                              (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN);
@@ -154,6 +161,53 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
+    public Bookmark getBookmark(int idx) {
+        return bookmarks[idx];
+    }
+
+    public Bookmark setBookmark(int idx, Bookmark bookmark) {
+        Bookmark old = bookmarks[idx];
+        bookmarks[idx] = bookmark;
+        bookmark.setIdx(idx);
+        bookmark.setParent(getRootScreenElement());
+        if (old != null) {
+            old.setParent(null);
+        }
+        return old;
+    }
+
+    public void addBookmark(Bookmark bookmark) {
+        for (int i = 0; i < bookmarks.length; ++i) {
+            if (bookmarks[i] == null) {
+                bookmarks[i] = bookmark;
+                bookmark.setIdx(i);
+                bookmark.setParent(getRootScreenElement());
+                return;
+            }
+        }
+        LOGGER.error("Bookmarks are full. Failed to add {} from first!", bookmark.getClass());
+    }
+
+    public void addBookmarkFromLast(Bookmark bookmark) {
+        for (int i = bookmarks.length - 1; i >= 0; --i) {
+            if (bookmarks[i] == null) {
+                bookmarks[i] = bookmark;
+                bookmark.setIdx(i);
+                bookmark.setParent(getRootScreenElement());
+                return;
+            }
+        }
+        LOGGER.error("Bookmarks are full. Failed to add {} from last!", bookmark.getClass());
+    }
+
+    public Page getCurrLeftPage() {
+        return currLeftPage;
+    }
+
+    public Page getCurrRightPage() {
+        return currRightPage;
+    }
+
     public Page getPage(int pageIndex) {
         return pages.get(pageIndex);
     }
@@ -190,12 +244,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         return pages.get(pageIndex);
     }
 
-    public Page getCurrLeftPage() {
-        return currLeftPage;
-    }
-
-    public Page getCurrRightPage() {
-        return currRightPage;
+    public void clearAllPages() {
+        pages.clear();
+        updateCurrPages();
     }
 
     private void updateCurrPages() {
@@ -242,6 +293,69 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     public final void sendScreenMessage(Component text, int color) {
         centeredMessage.setText(text, color);
     }
+
+    public abstract class Bookmark extends ScreenElement {
+        private static final int L = 1, T = 24;
+        private static final int W = 3, H = 1;
+        private static final int CNT = 5;
+
+        private final Component text;
+
+        private int idx;
+
+        public Bookmark(Component text) {
+            this.text = text;
+            getBox().setSize(W * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
+        }
+
+        public void setIdx(int idx) {
+            this.idx = idx;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            float offsetL = (getHoveredElement() == this ? W : 0);
+            float offsetT = (idx % CNT) * H;
+            ctx.renderTexture(Textures.ICONS,
+                    (L + offsetL) * Widget.WIDGET_WIDTH,
+                    (T - offsetT) * Widget.WIDGET_HEIGHT,
+                    ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
+            ctx.renderCenteredText(text, Colors.COMMON_LIGHT_TEXT, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 2);
+        }
+    }
+
+    public final class OpenBdHomeScreenBookmark extends Bookmark {
+        public OpenBdHomeScreenBookmark() {
+            super(Component.translatable(Lang.BOOKMARK_BACK_TO_HOME));
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                McClientUtils.setScreen(client, new BdHomeScreen());
+                return true;
+            }
+            return super.onMouseDown(x, y, code);
+        }
+    }
+
+    public final class OpenBdAboutScreenBookmark extends Bookmark {
+        public OpenBdAboutScreenBookmark() {
+            super(Component.translatable(Lang.BOOKMARK_ABOUT));
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                McClientUtils.setScreen(client, new BdAboutScreen());
+                return true;
+            }
+            return super.onMouseDown(x, y, code);
+        }
+    }
+
 
     private final class PageNum extends ScreenElement {
         private static final int WIDTH = 40, HEIGHT = 8;

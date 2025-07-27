@@ -16,18 +16,24 @@ import net.minecraft.world.entity.Entity;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class EntityDetailScreen extends AbstractBiologyDictionaryScreen {
+public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
     private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT = (int) (McClientUtils.getClientTickCountPerSecond() * 1.5);
     private static final int CLOSE_SCREEN_DISTANCE = 10;
 
     private final Entity entity;
     private final EntityProperties<? extends Entity> properties;
 
-    public EntityDetailScreen(EntityProperties<? extends Entity> properties) {
+    public BdEntityDetailScreen(EntityProperties<? extends Entity> properties) {
         super(properties.entity().getType().getDescription());
         this.entity = properties.entity();
         this.properties = properties;
+        initBookmarks();
         initEntityPropertyWidgets();
+    }
+
+    private void initBookmarks() {
+        addBookmarkFromLast(new OpenBdAboutScreenBookmark());
+        addBookmark(new OpenBdHomeScreenBookmark());
     }
 
     private void initEntityPropertyWidgets() {

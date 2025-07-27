@@ -1,11 +1,10 @@
 package io.github.xienaoban.biologydictionary.client;
 
-import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.gui.screen.EntityDetailScreen;
-import io.github.xienaoban.biologydictionary.gui.screen.HomeScreen;
+import io.github.xienaoban.biologydictionary.gui.screen.BdEntityDetailScreen;
+import io.github.xienaoban.biologydictionary.gui.screen.BdHomeScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
@@ -68,14 +67,14 @@ public final class BiologyDictionaryEvent {
         }
 
         if (target == null) {
-            McClientUtils.setScreen(client, new HomeScreen());
+            McClientUtils.setScreen(client, new BdHomeScreen());
         } else {
             EntityProperties<Entity> properties = new EntityProperties<>(target);
             BDC.setHitEntity(target);
             BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target);
             try {
-                McClientUtils.setScreen(client, new EntityDetailScreen(properties));
+                McClientUtils.setScreen(client, new BdEntityDetailScreen(properties));
             } catch (RuntimeException e) {
                 Misc.printThrowableToLoggerAndGame(e);
                 return;

@@ -7,9 +7,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
-import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
-import io.github.xienaoban.biologydictionary.gui.screen.misc.DebugScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,14 +21,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class HomeScreen extends AbstractBiologyDictionaryScreen {
+public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private long currTime = 0;
     private float entityRotateX, entityRotateY;
 
-    public HomeScreen() {
+    public BdHomeScreen() {
         super(Component.translatable(Lang.BIOLOGY_DICTIONARY_TITLE));
+        initBookmarks();
         initEntityWidgets();
+    }
 
+    private void initBookmarks() {
+        addBookmarkFromLast(new OpenBdAboutScreenBookmark());
+        addBookmark(new AllEntitiesBookmark());
+        addBookmark(new ClassesBookmark());
+        addBookmark(new InterfacesBookmark());
+        addBookmark(new ModsBookmark());
     }
 
     private void initEntityWidgets() {
@@ -44,15 +50,6 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
             }
             widgets.add(new EntityWidget(entity));
         }
-
-        widgets.add(new GetBookItemWidget());
-        widgets.add(new Widget(1, 1) {
-            @Override
-            protected boolean onMouseDown(float x, float y, int code) {
-                McClientUtils.setScreen(new DebugScreen());
-                return true;
-            }
-        });
 
         addAllWidgetsOneByOne(widgets);
     }
@@ -68,7 +65,68 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
         super.render(ctx);
     }
 
-    private class EntityWidget extends Widget {
+    private final class AllEntitiesBookmark extends Bookmark {
+        public AllEntitiesBookmark() {
+            super(Component.translatable(Lang.BOOKMARK_ALL));
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                clearAllPages();
+                initEntityWidgets();
+                return true;
+            }
+            return super.onMouseDown(x, y, code);
+        }
+    }
+
+    private final class ClassesBookmark extends Bookmark {
+        public ClassesBookmark() {
+            super(Component.translatable(Lang.BOOKMARK_CLASSES));
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                clearAllPages();
+                return true;
+            }
+            return super.onMouseDown(x, y, code);
+        }
+    }
+
+    private final class InterfacesBookmark extends Bookmark {
+        public InterfacesBookmark() {
+            super(Component.translatable(Lang.BOOKMARK_INTERFACES));
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                clearAllPages();
+                return true;
+            }
+            return super.onMouseDown(x, y, code);
+        }
+    }
+
+    private final class ModsBookmark extends Bookmark {
+        public ModsBookmark() {
+            super(Component.translatable(Lang.BOOKMARK_MODS));
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                clearAllPages();
+                return true;
+            }
+            return super.onMouseDown(x, y, code);
+        }
+    }
+
+    private final class EntityWidget extends Widget {
         private final Entity entity;
 
         private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
@@ -95,26 +153,6 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
             ScreenElementBox box = getBox();
             ctx.renderEntityCentered(entity, entityRenderingCache, box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6, entityRotateX, entityRotateY);
             ctx.renderCenteredText(entity.getType().getDescription(), 0xFF000000, 0.5F, getZ(), (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
-        }
-    }
-
-    private class GetBookItemWidget extends Widget {
-        protected GetBookItemWidget() {
-            super(1, Page.COLUMNS);
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            if (ctx.isDebug()) {
-                ctx.renderCenteredText(Component.literal("Get Book Item"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
-            }
-        }
-
-        @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            ClientNetManager.requestBookItem();
-            onClose();
-            return true;
         }
     }
 }
