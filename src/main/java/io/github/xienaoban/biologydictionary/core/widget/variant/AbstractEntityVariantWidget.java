@@ -247,6 +247,9 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         private float widthFix;
         private float heightFix;
 
+        private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
+                = new ScreenRenderingContext.EntityRenderingCache();
+
         public VariantElement(int index, V variant) {
             this.index = index;
             this.variant = variant;
@@ -358,7 +361,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         private void renderEntity(ScreenRenderingContext ctx) {
-            ctx.renderEntityCentered(model,
+            ctx.renderEntityCentered(model, entityRenderingCache,
                     getBox().getLeft() - 1- widthFix / 2,
                     getBox().getTop() + 1 - heightFix,
                     getBox().getRight() + 1 + widthFix / 2,

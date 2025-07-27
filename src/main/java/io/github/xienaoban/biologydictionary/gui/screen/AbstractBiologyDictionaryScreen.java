@@ -294,7 +294,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                new ScreenRenderingContext(null).playScreenSound(SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
+                McClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
                 turn();
                 return true;
             }
