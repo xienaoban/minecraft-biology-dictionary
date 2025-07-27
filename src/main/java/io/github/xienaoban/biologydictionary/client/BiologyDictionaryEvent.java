@@ -58,7 +58,7 @@ public final class BiologyDictionaryEvent {
             if (blockState.getBlock() instanceof BeehiveBlock) {
                 ClientNetManager.requestBeehiveInfo(pos);
                 McClientUtils.setScreen(client, new BeehiveScreen(pos));
-                new ScreenRenderingContext(null).playScreenSound(SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
+                McClientUtils.playScreenSound(client, SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
                 return;
             }
             target = null;
@@ -81,6 +81,6 @@ public final class BiologyDictionaryEvent {
                 return;
             }
         }
-        new ScreenRenderingContext(null).playScreenSound(SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
+        McClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
     }
 }

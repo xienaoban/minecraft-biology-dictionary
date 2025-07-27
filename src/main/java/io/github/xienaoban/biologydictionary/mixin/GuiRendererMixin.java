@@ -1,9 +1,11 @@
 package io.github.xienaoban.biologydictionary.mixin;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import io.github.xienaoban.biologydictionary.common.gui.fix.PictureInPictureRendererFactory;
+import io.github.xienaoban.biologydictionary.client.PictureInPictureRendererPool;
 import io.github.xienaoban.biologydictionary.common.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.gui.render.state.GuiRenderState;
@@ -19,7 +21,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+/**
+ * To fix the GUI rendering bug that only one entity can be rendered in a screen.
+ * The solution is learned from NeoForge.
+ *
+ * @see PictureInPictureRendererPool
+ */
 @Mixin(GuiRenderer.class)
 public abstract class GuiRendererMixin {
     @Shadow
@@ -29,34 +38,54 @@ public abstract class GuiRendererMixin {
     @Final private MultiBufferSource.BufferSource bufferSource;
 
     @Unique
-    private Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRendererFactory<?>> pictureInPictureRendererFactories;
+    private Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRendererPool<?>> pictureInPictureRendererPools;
+    @Unique
+    private final Set<PictureInPictureRenderState> pictureInPictureRenderStatesScratch = new ReferenceOpenHashSet<>();
 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/client/gui/render/state/GuiRenderState;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;Ljava/util/List;)V")
     private void init(GuiRenderState guiRenderState, MultiBufferSource.BufferSource bufferSource, List<PictureInPictureRenderer<?>> list, CallbackInfo ci) {
-        pictureInPictureRendererFactories = PictureInPictureRendererFactory.createFactories(list);
+        pictureInPictureRendererPools = PictureInPictureRendererPool.createFactories(list);
     }
 
     @Inject(method = "render(Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V", at = @At("TAIL"))
     private void injectRender(GpuBufferSlice gpuBufferSlice, CallbackInfo ci) {
-        pictureInPictureRendererFactories.values().forEach(PictureInPictureRendererFactory::clearUnusedRenderers);
+        pictureInPictureRendererPools.values().forEach(PictureInPictureRendererPool::clearUnusedRenderers);
     }
 
     @Inject(method = "close()V", at = @At("TAIL"))
     private void injectClose(CallbackInfo ci) {
-        pictureInPictureRendererFactories.values().forEach(PictureInPictureRendererFactory::close);
+        pictureInPictureRendererPools.values().forEach(PictureInPictureRendererPool::close);
     }
 
-    @Inject(method = "preparePictureInPictureState(Lnet/minecraft/client/gui/render/state/pip/PictureInPictureRenderState;I)V", at = @At("HEAD"), cancellable = true)
-    private <T extends PictureInPictureRenderState> void injectPreparePictureInPictureState(T pictureInPictureRenderState, int guiScale, CallbackInfo ci) {
+    @Inject(method = "preparePictureInPicture()V", at = @At("HEAD"), cancellable = true)
+    private void injectPreparePictureInPicture(CallbackInfo ci) {
         if (CommonScreen.isOpened()) {
-            PictureInPictureRendererFactory<T> factory = Misc.cast(pictureInPictureRendererFactories.get(pictureInPictureRenderState.getClass()));
-            if (factory != null) {
-                PictureInPictureRenderer<T> pictureinpicturerenderer = factory.create(bufferSource);
-                if (pictureinpicturerenderer != null) {
-                    pictureinpicturerenderer.prepare(pictureInPictureRenderState, renderState, guiScale);
-                    ci.cancel();
+            int guiScale = Minecraft.getInstance().getWindow().getGuiScale();
+            pictureInPictureRenderStatesScratch.clear();
+            renderState.forEachPictureInPicture(state -> {
+                if (preparePictureInPictureState(state, guiScale, true)) {
+                    pictureInPictureRenderStatesScratch.add(state);
                 }
-            }
+            });
+            renderState.forEachPictureInPicture(state -> {
+                if (pictureInPictureRenderStatesScratch.add(state)) {
+                    preparePictureInPictureState(state, guiScale, false);
+                }
+            });
+            pictureInPictureRenderStatesScratch.clear();
+            ci.cancel();
         }
+    }
+
+    @Unique
+    private <T extends PictureInPictureRenderState> boolean preparePictureInPictureState(T pictureInPictureRenderState, int guiScale, boolean firstPass) {
+        PictureInPictureRendererPool<T> pool = Misc.cast(pictureInPictureRendererPools.get(pictureInPictureRenderState.getClass()));
+        if (pool == null) { return false; }
+        PictureInPictureRenderer<T> pictureinpicturerenderer = pool.get(bufferSource, pictureInPictureRenderState, guiScale, firstPass);
+        if (pictureinpicturerenderer != null) {
+            pictureinpicturerenderer.prepare(pictureInPictureRenderState, renderState, guiScale);
+            return true;
+        }
+        return false;
     }
 }

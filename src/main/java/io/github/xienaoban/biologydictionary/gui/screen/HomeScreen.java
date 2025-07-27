@@ -9,6 +9,7 @@ import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.screen.misc.DebugScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -29,6 +30,7 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
     public HomeScreen() {
         super(Component.translatable(Lang.BIOLOGY_DICTIONARY_TITLE));
         initEntityWidgets();
+
     }
 
     private void initEntityWidgets() {
@@ -42,6 +44,16 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
             }
             widgets.add(new EntityWidget(entity));
         }
+
+        widgets.add(new GetBookItemWidget());
+        widgets.add(new Widget(1, 1) {
+            @Override
+            protected boolean onMouseDown(float x, float y, int code) {
+                McClientUtils.setScreen(new DebugScreen());
+                return true;
+            }
+        });
+
         addAllWidgetsOneByOne(widgets);
     }
 
@@ -58,6 +70,9 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
 
     private class EntityWidget extends Widget {
         private final Entity entity;
+
+        private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
+                = new ScreenRenderingContext.EntityRenderingCache();
 
         public EntityWidget(Entity entity) {
             super(2, 2);
@@ -78,7 +93,7 @@ public class HomeScreen extends AbstractBiologyDictionaryScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
-            ctx.renderEntityCentered(entity, box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6, entityRotateX, entityRotateY);
+            ctx.renderEntityCentered(entity, entityRenderingCache, box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6, entityRotateX, entityRotateY);
             ctx.renderCenteredText(entity.getType().getDescription(), 0xFF000000, 0.5F, getZ(), (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
         }
     }

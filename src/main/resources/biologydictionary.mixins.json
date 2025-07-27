@@ -17,7 +17,8 @@
     "GuiRendererMixin",
     "ItemInHandRendererMixin",
     "LevelRendererMixin",
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "PictureInPictureRendererIMixin"
   ],
   "injectors": {
     "defaultRequire": 1

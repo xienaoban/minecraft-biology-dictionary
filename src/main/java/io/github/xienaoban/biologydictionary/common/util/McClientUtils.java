@@ -7,7 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
@@ -67,5 +69,16 @@ public final class McClientUtils {
 
     public static void showClientCenteredMessage(Component component) {
         Objects.requireNonNull(getClient().player).displayClientMessage(component, true);
+    }
+
+    public static void playScreenSound(SoundEvent sound, float volume, float pitch) {
+        playScreenSound(getClient(), sound, volume, pitch);
+    }
+
+    /**
+     * @see net.minecraft.client.gui.screens.inventory.PageButton#playDownSound(net.minecraft.client.sounds.SoundManager)
+     */
+    public static void playScreenSound(Minecraft client, SoundEvent sound, float volume, float pitch) {
+        client.getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));
     }
 }
