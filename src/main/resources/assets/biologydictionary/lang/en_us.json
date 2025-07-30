@@ -119,10 +119,22 @@
 
   "bookmark.biologydictionary.all":          "All",
   "bookmark.biologydictionary.back_to_home": "Back To Home",
-  "bookmark.biologydictionary.classes":      "Classes",
-  "bookmark.biologydictionary.interfaces":   "Interfaces",
-  "bookmark.biologydictionary.mods":         "Mods",
   "bookmark.biologydictionary.about":        "About",
+
+  "tag_group.biologydictionary.default":   "Default",
+  "tag_group.biologydictionary.class":     "Classes",
+  "tag_group.biologydictionary.interface": "Interfaces",
+  "tag_group.biologydictionary.mod":       "Mods",
+
+  "tag.biologydictionary.default.friendly":             "Friendly",
+  "tag.biologydictionary.default.friendly_terrestrial": "Terrestrial",
+  "tag.biologydictionary.default.friendly_humanoid":    "Humanoid",
+  "tag.biologydictionary.default.friendly_aquatic":     "Aquatic",
+  "tag.biologydictionary.default.friendly_flying":      "Flying",
+  "tag.biologydictionary.default.friendly_neutral":     "Neutral",
+  "tag.biologydictionary.default.enemy":                "Enemy",
+  "tag.biologydictionary.default.enemy_humanoid":       "Humanoid",
+  "tag.biologydictionary.default.enemy_patrol":         "Patrol",
 
   "text.biologydictionary.mod_name_is": "Mod name: ",
   "text.biologydictionary.mod_not_installed": "It means that you have not installed the mod `Biology Dictionary` if you see this text. You may download this mod at: ",

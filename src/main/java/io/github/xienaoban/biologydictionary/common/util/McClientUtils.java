@@ -32,7 +32,11 @@ public final class McClientUtils {
     }
 
     public static ClientLevel getClientLevel() {
-        return getClient().level;
+        return getClientLevel(getClient());
+    }
+
+    public static ClientLevel getClientLevel(Minecraft client) {
+        return client.level;
     }
 
     public static boolean isFirstPerson() {

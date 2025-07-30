@@ -267,6 +267,12 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         return newPage;
     }
 
+    protected void resetAndAndWidgetsOneByOne(List<? extends Widget> widgets) {
+        clearAllPages();
+        addAllWidgetsOneByOne(widgets);
+        setCurrPage(0);
+    }
+
     protected void addAllWidgetsOneByOne(List<? extends Widget> widgets) {
         boolean add = true;
         Page page = null;
@@ -322,7 +328,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                     (L + offsetL) * Widget.WIDGET_WIDTH,
                     (T - offsetT) * Widget.WIDGET_HEIGHT,
                     ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
-            ctx.renderCenteredText(text, Colors.COMMON_LIGHT_TEXT, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 2);
+            ctx.renderCenteredText(text, Colors.COMMON_LIGHT_TEXT, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 3);
         }
     }
 
@@ -334,6 +340,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
+                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 McClientUtils.setScreen(client, new BdHomeScreen());
                 return true;
             }
@@ -349,10 +356,40 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
+                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 McClientUtils.setScreen(client, new BdAboutScreen());
                 return true;
             }
             return super.onMouseDown(x, y, code);
+        }
+    }
+
+    public abstract class Catalog extends Widget {
+        private final int depth;
+        private final Component text;
+
+        public Catalog(int depth, Component text) {
+            super(1, Page.COLUMNS);
+            this.depth = depth;
+            this.text = text;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            int d = depth * 10;
+            ctx.renderTexture(Textures.ICONS, 7 * Widget.WIDGET_WIDTH, 24 * Widget.WIDGET_HEIGHT,
+                    ctx.getZ(),
+                    box.getLeft() + d, box.getTop(),
+                    3 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+            int color;
+            if (getHoveredElement() == this) {
+                color = Colors.BLACK;
+            } else {
+                color = Colors.COMMON_DARK_TEXT;
+            }
+            ctx.renderText(text, color, 0.5F, ctx.getZ(), box.getLeft() + d + 2, box.getTop() + 3);
         }
     }
 

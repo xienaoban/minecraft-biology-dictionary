@@ -16,11 +16,6 @@ public final class Lang {
     public static final String KEY_OPEN_HANDBOOK = "key.biologydictionary.open_handbook";
     public static final String KEY_DEBUG = "key.biologydictionary.debug";
 
-    public static final String TAG_GROUP_DEFAULT   = "tag_group.biologydictionary.default";
-    public static final String TAG_GROUP_CLASS     = "tag_group.biologydictionary.class";
-    public static final String TAG_GROUP_INTERFACE = "tag_group.biologydictionary.interface";
-    public static final String TAG_GROUP_NAMESPACE = "tag_group.biologydictionary.namespace";
-
     public static final String ACTIVITY_PREFIX = "activity.minecraft.";
 
     // Translation Keys
@@ -31,10 +26,22 @@ public final class Lang {
 
     public static final String BOOKMARK_ALL             = "bookmark.biologydictionary.all";
     public static final String BOOKMARK_BACK_TO_HOME    = "bookmark.biologydictionary.back_to_home";
-    public static final String BOOKMARK_CLASSES         = "bookmark.biologydictionary.classes";
-    public static final String BOOKMARK_INTERFACES      = "bookmark.biologydictionary.interfaces";
-    public static final String BOOKMARK_MODS            = "bookmark.biologydictionary.mods";
-    public static final String BOOKMARK_ABOUT = "bookmark.biologydictionary.about";
+    public static final String BOOKMARK_ABOUT           = "bookmark.biologydictionary.about";
+
+    public static final String TAG_GROUP_DEFAULT   = "tag_group.biologydictionary.default";
+    public static final String TAG_GROUP_CLASS     = "tag_group.biologydictionary.class";
+    public static final String TAG_GROUP_INTERFACE = "tag_group.biologydictionary.interface";
+    public static final String TAG_GROUP_MODS      = "tag_group.biologydictionary.mod";
+
+    public static final String TAG_DEFAULT_FRIENDLY             = "tag.biologydictionary.default.friendly";
+    public static final String TAG_DEFAULT_FRIENDLY_TERRESTRIAL = "tag.biologydictionary.default.friendly_terrestrial";
+    public static final String TAG_DEFAULT_FRIENDLY_HUMANOID    = "tag.biologydictionary.default.friendly_humanoid";
+    public static final String TAG_DEFAULT_FRIENDLY_AQUATIC     = "tag.biologydictionary.default.friendly_aquatic";
+    public static final String TAG_DEFAULT_FRIENDLY_FLYING      = "tag.biologydictionary.default.friendly_flying";
+    public static final String TAG_DEFAULT_FRIENDLY_NEUTRAL     = "tag.biologydictionary.default.friendly_neutral";
+    public static final String TAG_DEFAULT_ENEMY                = "tag.biologydictionary.default.enemy";
+    public static final String TAG_DEFAULT_ENEMY_HUMANOID       = "tag.biologydictionary.default.enemy_humanoid";
+    public static final String TAG_DEFAULT_ENEMY_PATROL         = "tag.biologydictionary.default.enemy_patrol";
 
     public static final String TEXT_MOD_NAME_IS                         = "text.biologydictionary.mod_name_is";
     public static final String TEXT_MOD_NOT_INSTALLED                   = "text.biologydictionary.mod_not_installed";

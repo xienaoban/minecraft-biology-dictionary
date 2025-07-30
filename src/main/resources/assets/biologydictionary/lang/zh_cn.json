@@ -119,10 +119,22 @@
 
   "bookmark.biologydictionary.all":          "所有生物",
   "bookmark.biologydictionary.back_to_home": "返回主页",
-  "bookmark.biologydictionary.classes":      "类分类",
-  "bookmark.biologydictionary.interfaces":   "接口分类",
-  "bookmark.biologydictionary.mods":         "模组分类",
   "bookmark.biologydictionary.about":        "关于",
+
+  "tag_group.biologydictionary.default":   "默认分类",
+  "tag_group.biologydictionary.class":     "类分类",
+  "tag_group.biologydictionary.interface": "接口分类",
+  "tag_group.biologydictionary.mod":       "模组分类",
+
+  "tag.biologydictionary.default.friendly":             "友好生物",
+  "tag.biologydictionary.default.friendly_terrestrial": "陆生生物",
+  "tag.biologydictionary.default.friendly_humanoid":    "人形生物",
+  "tag.biologydictionary.default.friendly_aquatic":     "水生生物",
+  "tag.biologydictionary.default.friendly_flying":      "飞行生物",
+  "tag.biologydictionary.default.friendly_neutral":     "中立生物",
+  "tag.biologydictionary.default.enemy":                "敌对生物",
+  "tag.biologydictionary.default.enemy_humanoid":       "人形生物",
+  "tag.biologydictionary.default.enemy_patrol":         "灾厄小队",
 
   "text.biologydictionary.mod_name_is": "模组名：",
   "text.biologydictionary.mod_not_installed": "如果您看到了此段文字，说明您本地并未安装“生物辞典”模组，您可以前往以下网址下载本模组：",

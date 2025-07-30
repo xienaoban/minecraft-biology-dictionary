@@ -73,11 +73,11 @@ public final class EntityUtils {
     }
 
     /**
-     * Get deobfuscated class name of the vanilla entity.
+     * Get deobfuscated class name of the vanilla entity class (or interfaces).
      * @param clazz Entity class
      * @return deobfuscated class name or null if not vanilla entity class
      */
-    public static String getDeobfuscatedName(Class<? extends Entity> clazz) {
+    public static String getDeobfuscatedName(Class<?> clazz) {
         return EntityVanillaDeobfuscation.clazzToName.get(clazz);
     }
 

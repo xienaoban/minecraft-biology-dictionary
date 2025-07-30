@@ -13,6 +13,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -43,6 +44,7 @@ public record SendEntityHighlightingPacket(boolean allowed, EntityType<?> entity
     public void clientReceive(ClientNetApi.Context ctx) {
         if (!allowed) { return; }
 
+        McClientUtils.playScreenSound(SoundEvents.ENDER_DRAGON_FLAP, 0.6F, -10.0F);
         LocalPlayer player = ctx.player();
         int cnt = 0;
         for (Entity e : McClientUtils.getClientLevel().entitiesForRendering()) {

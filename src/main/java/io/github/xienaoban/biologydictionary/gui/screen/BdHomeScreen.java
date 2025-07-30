@@ -13,6 +13,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.WaterAnimal;
@@ -34,15 +35,20 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private void initBookmarks() {
         addBookmarkFromLast(new OpenBdAboutScreenBookmark());
         addBookmark(new AllEntitiesBookmark());
-        addBookmark(new ClassesBookmark());
-        addBookmark(new InterfacesBookmark());
-        addBookmark(new ModsBookmark());
+        for (EntityManager.TagGroup group : EntityManager.getInstance().getTagGroups()) {
+            addBookmark(new TagGroupBookmark(group));
+        }
     }
 
     private void initEntityWidgets() {
-        ClientLevel level = McClientUtils.getClientLevel();
+        List<Widget> list = getEntityWidgets(EntityManager.getInstance().getEntityClassInfos());
+        addAllWidgetsOneByOne(list);
+    }
+
+    private List<Widget> getEntityWidgets(List<EntityManager.EntityClassInfo> infos) {
+        ClientLevel level = McClientUtils.getClientLevel(client);
         List<Widget> widgets = new ArrayList<>();
-        for (EntityManager.EntityClassInfo eci : EntityManager.getInstance().getEntityInfoList()) {
+        for (EntityManager.EntityClassInfo eci : infos) {
             EntityType<?> type = eci.getType();
             Entity entity = EntityUtils.create(type, level);
             if (entity instanceof WaterAnimal) {
@@ -50,8 +56,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             }
             widgets.add(new EntityWidget(entity));
         }
-
-        addAllWidgetsOneByOne(widgets);
+        return widgets;
     }
 
     @Override
@@ -73,53 +78,54 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                clearAllPages();
-                initEntityWidgets();
+                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                List<Widget> list = getEntityWidgets(EntityManager.getInstance().getEntityClassInfos());
+                resetAndAndWidgetsOneByOne(list);
                 return true;
             }
             return super.onMouseDown(x, y, code);
         }
     }
 
-    private final class ClassesBookmark extends Bookmark {
-        public ClassesBookmark() {
-            super(Component.translatable(Lang.BOOKMARK_CLASSES));
+    private final class TagGroupBookmark extends Bookmark {
+        private final EntityManager.TagGroup group;
+
+        public TagGroupBookmark(EntityManager.TagGroup group) {
+            super(group.getText());
+            this.group = group;
         }
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                clearAllPages();
+                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                ArrayList<TagCatalog> tags = new ArrayList<>();
+                group.dfsTags((tag, depth) -> {
+                    tags.add(new TagCatalog(depth, tag));
+                    return true;
+                });
+                resetAndAndWidgetsOneByOne(tags);
                 return true;
             }
             return super.onMouseDown(x, y, code);
         }
     }
 
-    private final class InterfacesBookmark extends Bookmark {
-        public InterfacesBookmark() {
-            super(Component.translatable(Lang.BOOKMARK_INTERFACES));
+    private final class TagCatalog extends Catalog {
+        private final EntityManager.Tag tag;
+
+        public TagCatalog(int depth, EntityManager.Tag tag) {
+            super(depth, tag.getText());
+            this.tag = tag;
         }
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
+                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
                 clearAllPages();
-                return true;
-            }
-            return super.onMouseDown(x, y, code);
-        }
-    }
-
-    private final class ModsBookmark extends Bookmark {
-        public ModsBookmark() {
-            super(Component.translatable(Lang.BOOKMARK_MODS));
-        }
-
-        @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
-                clearAllPages();
+                List<Widget> list = getEntityWidgets(tag.getEntities());
+                resetAndAndWidgetsOneByOne(list);
                 return true;
             }
             return super.onMouseDown(x, y, code);
@@ -140,6 +146,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
+                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
                 ClientNetManager.requestEntityHighlighting(entity.getType(), Const.HIGHLIGHT_ENTITIES_DISTANCE);
                 onClose();
                 return true;
