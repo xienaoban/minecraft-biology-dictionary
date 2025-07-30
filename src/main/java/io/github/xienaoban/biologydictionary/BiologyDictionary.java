@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.common.server.ServerEventRegistry;
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
@@ -27,6 +28,7 @@ public final class BiologyDictionary {
     private BiologyDictionary() {
         servers = ConcurrentHashMap.newKeySet();
 
+        EntityUtils.init();
         ServerNetManager.init();
 
         ServerEventRegistry.registerStarted(servers::add);

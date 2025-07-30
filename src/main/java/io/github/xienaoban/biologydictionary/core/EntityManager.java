@@ -8,8 +8,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.animal.AgeableWaterCreature;
+import net.minecraft.world.entity.animal.FlyingAnimal;
+import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.animal.allay.Allay;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.BD;
@@ -59,24 +70,25 @@ public final class EntityManager {
     }
 
     private final Map<Class<? extends Entity>, EntityTreeNode> tree = new HashMap<>();
-    private final Map<EntityType<?>, EntityClassInfo> info = new HashMap<>();
-    private final List<EntityClassInfo> sortedInfo = new ArrayList<>();
+    private final Map<EntityType<?>, EntityClassInfo> infos = new HashMap<>();
+    private final List<EntityClassInfo> sortedInfos = new ArrayList<>();
     private final Map<Class<? extends Entity>, EntityType<?>> clazzToType = new HashMap<>();
-
-    private final List<TagGroup> tagGroups = new ArrayList<>();
 
     private final TagGroup defaultTags   = new TagGroup(Lang.TAG_GROUP_DEFAULT);
     private final TagGroup classTags     = new TagGroup(Lang.TAG_GROUP_CLASS);
     private final TagGroup interfaceTags = new TagGroup(Lang.TAG_GROUP_INTERFACE);
-    private final TagGroup namespaceTags = new TagGroup(Lang.TAG_GROUP_NAMESPACE);
+    private final TagGroup namespaceTags = new TagGroup(Lang.TAG_GROUP_MODS);
+
+    private final List<TagGroup> tagGroups = new ArrayList<>(List.of(defaultTags, classTags, interfaceTags, namespaceTags));
 
     private EntityManager(Level level) {
-        EntityUtils.init();
         EntityOrder.map.get(null);
 
         initEntities(level);
         initEntitiesSortClassInfo();
         initEntitiesSortTreeNode();
+        initJavaTagGroups();
+        initDefaultTags();
     }
 
     private void initEntities(Level level) {
@@ -91,17 +103,17 @@ public final class EntityManager {
                 LOGGER.error("Cannot init EntityClassInfo of\"" + EntityType.getKey(entityType) + "\": " + e);
                 throw e;
             }
-            info.put(entityClassInfo.getType(), entityClassInfo);
-            sortedInfo.add(entityClassInfo);
+            infos.put(entityClassInfo.getType(), entityClassInfo);
+            sortedInfos.add(entityClassInfo);
             clazzToType.put(entityClassInfo.getClazz(), entityType);
             getOrCreateEntityTreeNode(entityClassInfo.getClazz());
         }
-        // [Should I?] info.put(EntityType.PLAYER, new EntityInfo(EntityType.PLAYER, PlayerEntity.class));
+        // [Should I?] info.put(EntityType.PLAYER, new EntityClassInfo(EntityType.PLAYER, PlayerEntity.class));
         // [Should I?] getEntityTreeNode(PlayerEntity.class);
     }
 
     private void initEntitiesSortClassInfo() {
-        sortedInfo.sort((a, b) -> {
+        sortedInfos.sort((a, b) -> {
             Integer oa = getMyPreferredEntityOrder(a.getType());
             Integer ob = getMyPreferredEntityOrder(b.getType());
             if (oa != null && ob != null) {
@@ -130,8 +142,8 @@ public final class EntityManager {
             }
             return i - j;
         });
-        for (int i = sortedInfo.size() - 1; i >= 0; --i) {
-            sortedInfo.get(i).setSortId(i);
+        for (int i = sortedInfos.size() - 1; i >= 0; --i) {
+            sortedInfos.get(i).setSortId(i);
         }
     }
 
@@ -139,6 +151,98 @@ public final class EntityManager {
         for (EntityTreeNode node : tree.values()) {
             node.sortSons();
         }
+    }
+
+    private void initJavaTagGroups() {
+        dfsEntityTree(true, (root, depth) -> {
+            if (!Modifier.isAbstract(root.getClazz().getModifiers())) {
+                return false;
+            }
+            this.classTags.addTag(getClassRealName(root.getClazz()), getClassRealName(root.getFather().getClazz()));
+            return true;
+        });
+        for (EntityClassInfo info : sortedInfos) {
+            this.namespaceTags.addToTag(EntityUtils.getEntityTypeId(info.getType()).getNamespace(), info);
+
+            for (Class<? extends Entity> clazz : EntityUtils.bottomUp(info.getClazz())) {
+                String realName = getClassRealName(clazz);
+                if (classTags.containsTag(realName)) {
+                    this.classTags.addToTag(realName, info);
+                }
+                for (Class<?> clazz2 : clazz.getInterfaces()) {
+                    if (!clazz2.getSimpleName().contains("Mixin")) {
+                        this.interfaceTags.addToTag(getClassRealName(clazz2), info);
+                    }
+                }
+            }
+        }
+    }
+
+    private void initDefaultTags() {
+        this.defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL, Lang.TAG_DEFAULT_FRIENDLY);
+        this.defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_HUMANOID,    Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL);
+        this.defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_AQUATIC,     Lang.TAG_DEFAULT_FRIENDLY);
+        this.defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_FLYING,      Lang.TAG_DEFAULT_FRIENDLY);
+        this.defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_NEUTRAL,     Lang.TAG_DEFAULT_FRIENDLY);
+        this.defaultTags.addTag(Lang.TAG_DEFAULT_ENEMY_HUMANOID,       Lang.TAG_DEFAULT_ENEMY);
+        this.defaultTags.addTag(Lang.TAG_DEFAULT_ENEMY_PATROL,         Lang.TAG_DEFAULT_ENEMY);
+
+        ArrayList<EntityClassInfo> friendlyList = new ArrayList<>();
+        ArrayList<EntityClassInfo> terrestrialList = new ArrayList<>();
+        ArrayList<EntityClassInfo> humanList = new ArrayList<>();
+        ArrayList<EntityClassInfo> aquaticList = new ArrayList<>();
+        ArrayList<EntityClassInfo> flyingList = new ArrayList<>();
+        ArrayList<EntityClassInfo> neutralList = new ArrayList<>();
+        ArrayList<EntityClassInfo> enemyList = new ArrayList<>();
+        ArrayList<EntityClassInfo> humanoidList = new ArrayList<>();
+        ArrayList<EntityClassInfo> patrolList = new ArrayList<>();
+
+        for (EntityClassInfo info : sortedInfos) {
+            Class<? extends Entity> entityClazz = info.getClazz();
+            Vec3 box = info.getBox();
+            if (Enemy.class.isAssignableFrom(entityClazz)) {
+                enemyList.add(info);
+                if (box.y() / box.x() >= 2) {
+                    humanoidList.add(info);
+                }
+                if (PatrollingMonster.class.isAssignableFrom(entityClazz)) {
+                    patrolList.add(info);
+                }
+            } else {
+                friendlyList.add(info);
+                if (box.y() / box.x() >= 2) {
+                    humanList.add(info);
+                }
+                if (NeutralMob.class.isAssignableFrom(entityClazz)) {
+                    neutralList.add(info);
+                }
+                if (WaterAnimal.class.isAssignableFrom(entityClazz)
+                        || AgeableWaterCreature.class.isAssignableFrom(entityClazz)) {
+                    aquaticList.add(info);
+                } else if (FlyingAnimal.class.isAssignableFrom(entityClazz)
+                        || entityClazz == Bat.class || entityClazz == Allay.class) {
+                    flyingList.add(info);
+                } else {
+                    terrestrialList.add(info);
+                }
+            }
+        }
+        humanList.add(getEntityClassInfo(EntityType.IRON_GOLEM));
+        aquaticList.add(getEntityClassInfo(EntityType.TURTLE));
+        aquaticList.add(getEntityClassInfo(EntityType.AXOLOTL));
+        aquaticList.add(getEntityClassInfo(EntityType.FROG));
+        humanList.sort(Comparator.comparingInt(a -> a.sortId));
+        aquaticList.sort(Comparator.comparingInt(a -> a.sortId));
+
+        defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY, friendlyList);
+        defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL, terrestrialList);
+        defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY_HUMANOID, humanList);
+        defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY_AQUATIC, aquaticList);
+        defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY_FLYING, flyingList);
+        defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY_NEUTRAL, neutralList);
+        defaultTags.addAllToTag(Lang.TAG_DEFAULT_ENEMY, enemyList);
+        defaultTags.addAllToTag(Lang.TAG_DEFAULT_ENEMY_HUMANOID, humanoidList);
+        defaultTags.addAllToTag(Lang.TAG_DEFAULT_ENEMY_PATROL, patrolList);
     }
 
     private EntityTreeNode getOrCreateEntityTreeNode(Class<? extends Entity> clazz) {
@@ -159,15 +263,15 @@ public final class EntityManager {
     }
 
     public EntityClassInfo getEntityClassInfo(EntityType<?> entityType) {
-        return info.get(entityType);
+        return infos.get(entityType);
     }
 
     public EntityClassInfo getEntityClassInfo(Class<? extends Entity> entityClazz) {
         return getEntityClassInfo(getEntityType(entityClazz));
     }
 
-    public List<EntityClassInfo> getEntityInfoList() {
-        return sortedInfo;
+    public List<EntityClassInfo> getEntityClassInfos() {
+        return sortedInfos;
     }
 
     public boolean isVanillaEntity(EntityType<?> entityType) {
@@ -175,7 +279,10 @@ public final class EntityManager {
                 .equals(getEntityClassInfo(entityType).getLocation().getNamespace());
     }
 
-    public static String getClassRealName(Class<? extends Entity> clazz) {
+    /**
+     * Get Deobfuscated class name of vanilla entity-related classes/interfaces.
+     */
+    public static String getClassRealName(Class<?> clazz) {
         String res = EntityUtils.getDeobfuscatedName(clazz);
         if (res == null) res = clazz.getName();
         return res;
@@ -219,21 +326,25 @@ public final class EntityManager {
 
         private final EntityType<?> type;
         private final Class<? extends Entity> clazz;
-        private final Entity instance;
+        // private final Entity instance;
+        private final Vec3 box;
         private final List<Tag> tags;
         private int sortId;
 
         private EntityClassInfo(EntityType<?> entityType, Entity entity) {
             type = entityType;
-            // Do not assign it for now to prevent memory leak because of the client level.
-            instance = null;
             clazz = entity.getClass();
+            // Do not assign it for now to prevent memory leak because of the client level.
+            // instance = null;
+            AABB b = entity.getBoundingBox();
+            box = new Vec3(b.getXsize(), b.getYsize(), b.getZsize());
             tags = new ArrayList<>();
         }
 
         public EntityType<?> getType() { return type; }
         public Class<? extends Entity> getClazz() { return clazz; }
-        public Entity getInstance() { return instance; }
+        // public Entity getInstance() { return instance; }
+        public Vec3 getBox() { return box; }
         public ResourceLocation getLocation() { return EntityType.getKey(getType()); }
         public String getStringId() { return getLocation().toString(); }
 
@@ -346,6 +457,10 @@ public final class EntityManager {
         public Component getText() { return text; }
         public Collection<Tag> getTags() { return tags.values(); }
         public List<Tag> getRootTags() { return rootTags; }
+
+        public boolean containsTag(String tagName) {
+            return tags.containsKey(tagName);
+        }
 
         public Tag getTag(String tagName) {
             Tag tag = tags.getOrDefault(tagName, null);
