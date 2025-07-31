@@ -378,18 +378,18 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
-            int d = depth * 10;
+            int d = depth * 8;
             ctx.renderTexture(Textures.ICONS, 7 * Widget.WIDGET_WIDTH, 24 * Widget.WIDGET_HEIGHT,
                     ctx.getZ(),
                     box.getLeft() + d, box.getTop(),
-                    3 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+                    4 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
             int color;
             if (getHoveredElement() == this) {
                 color = Colors.BLACK;
             } else {
                 color = Colors.COMMON_DARK_TEXT;
             }
-            ctx.renderText(text, color, 0.5F, ctx.getZ(), box.getLeft() + d + 2, box.getTop() + 3);
+            ctx.renderText(text, color, 0.5F, ctx.getZ(), box.getLeft() + d + 12, box.getTop() + 3);
         }
     }
 
