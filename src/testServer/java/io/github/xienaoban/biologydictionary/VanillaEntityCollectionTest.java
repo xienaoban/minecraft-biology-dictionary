@@ -29,7 +29,7 @@ public class VanillaEntityCollectionTest {
     public void testDeobfuscationBatch(GameTestHelper helper) {
         AtomicBoolean success = new AtomicBoolean(true);
 
-        EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
+        EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
             Class<? extends Entity> clazz = cur.getClazz();
 
             // skip non-vanilla classes
@@ -95,7 +95,7 @@ public class VanillaEntityCollectionTest {
         final Set<Class<?>> interfazes = new HashSet<>();
         out.println(space + "// classes");
 
-        EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
+        EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
             Class<?> clazz = cur.getClazz();
 
             // skip non-vanilla classes

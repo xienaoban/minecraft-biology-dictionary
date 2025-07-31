@@ -154,7 +154,7 @@ public final class EntityManager {
     }
 
     private void initJavaTagGroups() {
-        dfsEntityTree(true, (root, depth) -> {
+        dfsEntityTree(false, (root, depth) -> {
             if (!Modifier.isAbstract(root.getClazz().getModifiers())) {
                 return false;
             }
@@ -288,24 +288,28 @@ public final class EntityManager {
         return res;
     }
 
-    public void dfsEntityTree(boolean skipRoot, TreeNodeExecutor<EntityTreeNode> executor) {
-        dfsEntityTree(skipRoot, executor, TreeNodeExecutor.empty());
+    public void dfsEntityTree(boolean includeRoot, TreeNodeExecutor<EntityTreeNode> executor) {
+        dfsEntityTree(includeRoot, executor, TreeNodeExecutor.empty());
     }
 
-    public void dfsEntityTree(boolean skipRoot, TreeNodeExecutor<EntityTreeNode> frontExecutor, TreeNodeExecutor<EntityTreeNode> rearExecutor) {
+    public void dfsEntityTree(boolean includeRoot, TreeNodeExecutor<EntityTreeNode> frontExecutor, TreeNodeExecutor<EntityTreeNode> rearExecutor) {
         EntityTreeNode root = tree.get(Entity.class);
-        if (skipRoot) {
-            root.getSons().forEach(son -> dfsEntityTreePrivate(son, 1, frontExecutor, rearExecutor));
+        if (includeRoot) {
+            dfsEntityTreePrivate(root, 0, frontExecutor, rearExecutor);
         }
         else {
-            dfsEntityTreePrivate(root, 0, frontExecutor, rearExecutor);
+            for (var son : root.getSons()) {
+                dfsEntityTreePrivate(son, 1, frontExecutor, rearExecutor);
+            }
         }
     }
 
     private void dfsEntityTreePrivate(EntityTreeNode root, int depth, TreeNodeExecutor<EntityTreeNode> frontExecutor, TreeNodeExecutor<EntityTreeNode> rearExecutor) {
         if (frontExecutor.execute(root, depth)) {
             int d2 = depth + 1;
-            root.getSons().forEach(son -> dfsEntityTreePrivate(son, d2, frontExecutor, rearExecutor));
+            for (var son : root.getSons()) {
+                dfsEntityTreePrivate(son, d2, frontExecutor, rearExecutor);
+            }
         }
         rearExecutor.execute(root, depth);
     }

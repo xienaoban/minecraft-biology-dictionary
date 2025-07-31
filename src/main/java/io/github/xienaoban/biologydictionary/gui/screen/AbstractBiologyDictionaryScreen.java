@@ -32,7 +32,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     public static final int BOOK_TEXTURE_WIDTH = BOOK_TEXTURE_RIGHT - BOOK_TEXTURE_LEFT, BOOK_TEXTURE_HEIGHT = BOOK_TEXTURE_BOTTOM - BOOK_TEXTURE_TOP;
     public static final int BOOK_WIDTH = BOOK_TEXTURE_WIDTH, BOOK_HEIGHT = BOOK_TEXTURE_HEIGHT - 32;
 
-    private static final int PAGE_MID_MARGIN = 12, PAGE_TOP_MARGIN = 30;
+    private static final int PAGE_MID_MARGIN = 12, PAGE_TOP_MARGIN = 28;
 
     public static AbstractBiologyDictionaryScreen current() {
         return McClientUtils.getCurrentScreen();
@@ -393,6 +393,13 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
     }
 
+    public final static class PlaceHolderWidget extends Widget {
+        public PlaceHolderWidget(int rows, int columns) {
+            super(rows, columns);
+            setHoverable(false);
+            setSelectable(false);
+        }
+    }
 
     private final class PageNum extends ScreenElement {
         private static final int WIDTH = 40, HEIGHT = 8;
