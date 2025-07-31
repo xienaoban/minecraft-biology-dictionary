@@ -27,8 +27,8 @@ import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends EntityPropertyWidget<E> {
-    protected static final int BG_BAR1_LEFT = 10, BG_BAR1_TOP = 24;
-    protected static final int BG_BAR2_LEFT = 12, BG_BAR2_TOP = 24;
+    protected static final int BG_BAR1_LEFT = 11, BG_BAR1_TOP = 24;
+    protected static final int BG_BAR2_LEFT = 13, BG_BAR2_TOP = 24;
 
     private static RC calcRowsAndColumns(int variantCnt, int maxDisplayCntPerLine, int rowsPerVariant) {
         int rows = rowsPerVariant * ((variantCnt + maxDisplayCntPerLine - 1) / maxDisplayCntPerLine);
