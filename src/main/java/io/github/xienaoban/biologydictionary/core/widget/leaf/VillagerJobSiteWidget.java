@@ -83,8 +83,8 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
                 return;
             }
 
-            super.onRender(ctx);
             updatePercent(cachedDisLog / MAX_DIS_LOG);
+            super.onRender(ctx);
             renderInnerText(ctx, Component.literal(Misc.format4Digits(cachedDistanceToJobSite) + 'm'));
         }
     }

@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.core.widget.branch.*;
 import io.github.xienaoban.biologydictionary.core.widget.leaf.BeeHivePropertyWidget;
 import io.github.xienaoban.biologydictionary.core.widget.leaf.VillagerJobSiteWidget;
 import io.github.xienaoban.biologydictionary.core.widget.leaf.VillagerScheduleWidget;
+import io.github.xienaoban.biologydictionary.core.widget.leaf.WanderingTraderDespawnDelayWidget;
 import io.github.xienaoban.biologydictionary.core.widget.variant.*;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import net.fabricmc.api.EnvType;
@@ -127,5 +128,6 @@ public final class EntityPropertyWidgets {
         r(EntityPortalCooldownWidget.class);
         r(VillagerJobSiteWidget.class);
         r(BeeHivePropertyWidget.class);
+        r(WanderingTraderDespawnDelayWidget.class);
     }
 }
