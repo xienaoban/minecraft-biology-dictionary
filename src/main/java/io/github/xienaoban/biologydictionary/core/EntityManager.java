@@ -1,8 +1,10 @@
 package io.github.xienaoban.biologydictionary.core;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.McUtils;
+import io.github.xienaoban.biologydictionary.common.util.Misc;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -12,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.AgeableWaterCreature;
+import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.animal.allay.Allay;
@@ -40,12 +43,17 @@ public final class EntityManager {
     public static void init() {
         synchronized (EntityManager.class) {
             if (instance == null) {
-                Level level = BD.justGiveMeALevel();
-                if (level != null) {
-                    instance = new EntityManager(BD.justGiveMeALevel());
-                    LOGGER.info("EntityManager initialized.");
-                } else {
-                    LOGGER.info("EntityManager not initialized.");
+                try {
+                    Level level = BD.justGiveMeALevel();
+                    if (level != null) {
+                        instance = new EntityManager(BD.justGiveMeALevel());
+                        LOGGER.info("EntityManager initialized.");
+                    } else {
+                        LOGGER.info("EntityManager not initialized.");
+                    }
+                } catch (Throwable e) {
+                    instance = null;
+                    LOGGER.error("Failed to init EntityManager: {}", Misc.getStackToString(e));
                 }
             }
         }
@@ -89,6 +97,7 @@ public final class EntityManager {
         initEntities(level);
         initEntitiesSortClassInfo();
         initEntitiesSortTreeNode();
+        initMcTagTagGroups();
         initJavaTagGroups();
         initDefaultTags();
     }
@@ -155,6 +164,21 @@ public final class EntityManager {
         }
     }
 
+    private void initMcTagTagGroups() {
+        TagGroup tags = mcTagTags;
+        BuiltInRegistries.ENTITY_TYPE.getTags()
+                .sorted(DevUtils.getResourceLocationComparator(holders -> holders.key().location()))
+                .forEach(holders -> {
+                    String key = holders.key().location().toLanguageKey();
+                    List<EntityClassInfo> list = holders.stream()
+                            .map(Holder::unwrapKey).filter(Optional::isPresent).map(Optional::get)
+                            .map(EntityUtils::getEntityType).map(this::getEntityClassInfo).filter(Objects::nonNull)
+                            .sorted(Comparator.comparingInt(EntityClassInfo::getSortId))
+                            .toList();
+                    tags.addAllToTag(key, list);
+        });
+    }
+
     private void initJavaTagGroups() {
         dfsEntityTree(false, (root, depth) -> {
             if (!Modifier.isAbstract(root.getClazz().getModifiers())) {
@@ -178,56 +202,53 @@ public final class EntityManager {
                 }
             }
         }
-        interfaceTags.getRootTags().sort((t1, t2) -> {
-            String s1 = t1.getName();
-            String s2 = t2.getName();
-            boolean isVanilla1 = McUtils.isVanillaClass(s1);
-            boolean isVanilla2 = McUtils.isVanillaClass(s2);
-            if (isVanilla1 == isVanilla2) {
-                return s1.compareTo(s2);
-            }
-            return isVanilla1 ? -1 : 1;
-        });
+        interfaceTags.getRootTags().sort(DevUtils.getClassNameComparator(Tag::getName));
     }
 
     private void initDefaultTags() {
         defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL, Lang.TAG_DEFAULT_FRIENDLY);
         defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_HUMANOID,    Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL);
         defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_AQUATIC,     Lang.TAG_DEFAULT_FRIENDLY);
+        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_BUCKETABLE,  Lang.TAG_DEFAULT_FRIENDLY_AQUATIC);
         defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_FLYING,      Lang.TAG_DEFAULT_FRIENDLY);
         defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_NEUTRAL,     Lang.TAG_DEFAULT_FRIENDLY);
         defaultTags.addTag(Lang.TAG_DEFAULT_ENEMY_HUMANOID,       Lang.TAG_DEFAULT_ENEMY);
         defaultTags.addTag(Lang.TAG_DEFAULT_ENEMY_PATROL,         Lang.TAG_DEFAULT_ENEMY);
 
-        ArrayList<EntityClassInfo> friendlyList = new ArrayList<>();
-        ArrayList<EntityClassInfo> terrestrialList = new ArrayList<>();
-        ArrayList<EntityClassInfo> humanList = new ArrayList<>();
-        ArrayList<EntityClassInfo> aquaticList = new ArrayList<>();
-        ArrayList<EntityClassInfo> flyingList = new ArrayList<>();
-        ArrayList<EntityClassInfo> neutralList = new ArrayList<>();
-        ArrayList<EntityClassInfo> enemyList = new ArrayList<>();
-        ArrayList<EntityClassInfo> humanoidList = new ArrayList<>();
-        ArrayList<EntityClassInfo> patrolList = new ArrayList<>();
+        List<EntityClassInfo> friendlyList = new ArrayList<>();
+        List<EntityClassInfo> terrestrialList = new ArrayList<>();
+        List<EntityClassInfo> humanList = new ArrayList<>();
+        List<EntityClassInfo> aquaticList = new ArrayList<>();
+        List<EntityClassInfo> bucketableList = new ArrayList<>();
+        List<EntityClassInfo> flyingList = new ArrayList<>();
+        List<EntityClassInfo> neutralList = new ArrayList<>();
+        List<EntityClassInfo> enemyList = new ArrayList<>();
+        List<EntityClassInfo> humanoidList = new ArrayList<>();
+        List<EntityClassInfo> patrolList = new ArrayList<>();
 
         for (EntityClassInfo info : sortedInfos) {
             Class<? extends Entity> entityClazz = info.getClazz();
             Vec3 box = info.getBox();
+            boolean ratio = box.y() / box.x() >= 2;
             if (Enemy.class.isAssignableFrom(entityClazz)) {
                 enemyList.add(info);
-                if (box.y() / box.x() >= 2) {
+                if (ratio) {
                     humanoidList.add(info);
                 }
+
                 if (PatrollingMonster.class.isAssignableFrom(entityClazz)) {
                     patrolList.add(info);
                 }
             } else {
                 friendlyList.add(info);
-                if (box.y() / box.x() >= 2) {
+                if (ratio) {
                     humanList.add(info);
                 }
+
                 if (NeutralMob.class.isAssignableFrom(entityClazz)) {
                     neutralList.add(info);
                 }
+
                 if (WaterAnimal.class.isAssignableFrom(entityClazz)
                         || AgeableWaterCreature.class.isAssignableFrom(entityClazz)) {
                     aquaticList.add(info);
@@ -237,19 +258,24 @@ public final class EntityManager {
                 } else {
                     terrestrialList.add(info);
                 }
+
+                if (Bucketable.class.isAssignableFrom(entityClazz)) {
+                    bucketableList.add(info);
+                }
             }
         }
         humanList.add(getEntityClassInfo(EntityType.IRON_GOLEM));
         aquaticList.add(getEntityClassInfo(EntityType.TURTLE));
         aquaticList.add(getEntityClassInfo(EntityType.AXOLOTL));
         aquaticList.add(getEntityClassInfo(EntityType.FROG));
-        humanList.sort(Comparator.comparingInt(a -> a.sortId));
-        aquaticList.sort(Comparator.comparingInt(a -> a.sortId));
+        humanList.sort(Comparator.comparingInt(EntityClassInfo::getSortId));
+        aquaticList.sort(Comparator.comparingInt(EntityClassInfo::getSortId));
 
         defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY, friendlyList);
         defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL, terrestrialList);
         defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY_HUMANOID, humanList);
         defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY_AQUATIC, aquaticList);
+        defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY_BUCKETABLE, bucketableList);
         defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY_FLYING, flyingList);
         defaultTags.addAllToTag(Lang.TAG_DEFAULT_FRIENDLY_NEUTRAL, neutralList);
         defaultTags.addAllToTag(Lang.TAG_DEFAULT_ENEMY, enemyList);
@@ -368,6 +394,7 @@ public final class EntityManager {
         protected void addTag(Tag tag) { tags.add(tag); }
         protected void removeTag(Tag tag) { tags.remove(tag); }
 
+        public int getSortId() { return sortId; }
         public void setSortId(int sortId) { this.sortId = sortId; }
 
         @Override

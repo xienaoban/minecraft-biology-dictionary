@@ -25,7 +25,7 @@ public record SendEntityHighlightingPacket(boolean allowed, EntityType<?> entity
 
     @SuppressWarnings("unused")
     public SendEntityHighlightingPacket(FriendlyByteBuf buf) {
-        this(buf.readBoolean(), EntityUtils.getEntityTypeByIdString(buf.readUtf()), buf.readFloat());
+        this(buf.readBoolean(), EntityUtils.getEntityType(buf.readUtf()), buf.readFloat());
     }
 
     @Override

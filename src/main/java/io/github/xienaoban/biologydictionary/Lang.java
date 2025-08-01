@@ -45,6 +45,7 @@ public final class Lang {
     TAG_DEFAULT_FRIENDLY_TERRESTRIAL = "tag.biologydictionary.default.friendly_terrestrial",
     TAG_DEFAULT_FRIENDLY_HUMANOID    = "tag.biologydictionary.default.friendly_humanoid",
     TAG_DEFAULT_FRIENDLY_AQUATIC     = "tag.biologydictionary.default.friendly_aquatic",
+    TAG_DEFAULT_FRIENDLY_BUCKETABLE  = "tag.biologydictionary.default.friendly_bucketable",
     TAG_DEFAULT_FRIENDLY_FLYING      = "tag.biologydictionary.default.friendly_flying",
     TAG_DEFAULT_FRIENDLY_NEUTRAL     = "tag.biologydictionary.default.friendly_neutral",
     TAG_DEFAULT_ENEMY                = "tag.biologydictionary.default.enemy",

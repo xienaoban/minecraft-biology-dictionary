@@ -26,6 +26,17 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 @Environment(EnvType.CLIENT)
 public final class BiologyDictionaryEvent {
     public static void openBookScreen(Minecraft client) {
+        try {
+            tryOpenBookScreen(client);
+        } catch (Throwable e) {
+            BDC.setHitEntity(null);
+            BDC.setHitBlock(null);
+            BDC.setHitEntityProperties(null);
+            LOGGER.error("Failed to open Biology Dictionary screen: {}", Misc.getStackToString(e));
+        }
+    }
+
+    public static void tryOpenBookScreen(Minecraft client) {
         LocalPlayer player = client.player;
         BDC.setHitEntity(null);
         BDC.setHitBlock(null);

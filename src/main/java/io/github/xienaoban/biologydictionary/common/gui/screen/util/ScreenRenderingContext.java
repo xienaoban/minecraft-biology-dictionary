@@ -41,6 +41,7 @@ import org.joml.Matrix3x2fStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import java.util.List;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
@@ -277,6 +278,20 @@ public final class ScreenRenderingContext {
         try (ScaleRAII ignored = scaleOnce(size)) {
             renderSprite(effect, left / size, top / size);
         }
+    }
+
+    //=======================================================================================
+    // Rendering tooltips.
+    //=======================================================================================
+
+    public void renderTooltipForNextFrame(List<Component> texts, float leftX, float topY) {
+        getGuiGraphics().setComponentTooltipForNextFrame(getFont(), texts, (int) leftX, (int) topY);
+    }
+
+    public void renderTooltipCenteredForNextFrame(List<Component> texts, float midX, float topY) {
+        int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+        getGuiGraphics().setComponentTooltipForNextFrame(getFont(), texts,
+                (int) (midX - (maxLength + 20) / 2F), (int) topY);
     }
 
     //=======================================================================================
