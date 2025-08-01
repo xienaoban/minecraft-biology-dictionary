@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Const;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScaleRAII;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
@@ -9,11 +10,13 @@ import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -116,9 +119,12 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private final class TagCatalog extends Catalog {
         private final EntityManager.Tag tag;
 
+        private final Component size;
+
         public TagCatalog(int depth, EntityManager.Tag tag) {
             super(depth, tag.getText());
             this.tag = tag;
+            this.size = Component.literal("(" + tag.getEntities().size() + ")");
         }
 
         @Override
@@ -131,6 +137,37 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 return true;
             }
             return super.onMouseDown(x, y, code);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            int d = depth * 8;
+            ScreenElementBox box = getBox();
+            boolean hovered = getHoveredElement() == this;
+            int textColor;
+            if (hovered) {
+                textColor = Colors.BLACK;
+            } else {
+                textColor = Colors.COMMON_DARK_LIGHTER_TEXT;
+            }
+
+            ctx.renderText(size, textColor, 0.5F, ctx.getZ(),
+                    box.getLeft() + d + 13 + ctx.calcTextWidth(text) * 0.5F, box.getTop() + 3);
+
+            if (hovered) {
+                Component toShow;
+                if (text.getContents() instanceof TranslatableContents translatableContents) {
+                    toShow = Component.literal(translatableContents.getKey());
+                } else {
+                    toShow = text;
+                }
+                List<Component> texts = new ArrayList<>();
+                texts.add(toShow);
+                try (ScaleRAII ignored = ctx.scaleOnce(0.5F)) {
+                    ctx.renderTooltipForNextFrame(texts, box.getLeft(), box.getBottom() + 6 + texts.size() * 10);
+                }
+            }
         }
     }
 

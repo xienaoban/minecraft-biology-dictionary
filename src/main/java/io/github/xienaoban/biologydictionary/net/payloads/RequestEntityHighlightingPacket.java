@@ -23,7 +23,7 @@ public record RequestEntityHighlightingPacket(EntityType<?> entityType, float ra
 
     @SuppressWarnings("unused")
     public RequestEntityHighlightingPacket(FriendlyByteBuf buf) {
-        this(EntityUtils.getEntityTypeByIdString(buf.readUtf()), buf.readFloat());
+        this(EntityUtils.getEntityType(buf.readUtf()), buf.readFloat());
     }
 
     @Override

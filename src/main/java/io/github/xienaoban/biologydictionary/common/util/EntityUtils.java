@@ -5,10 +5,12 @@ import io.github.xienaoban.biologydictionary.mixin.HorseIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.AgeableMob;
@@ -115,8 +117,16 @@ public final class EntityUtils {
         return getEntityTypeId(entityType).toString();
     }
 
-    public static <E extends Entity> EntityType<E> getEntityTypeByIdString(String name) {
-        return Misc.cast(EntityType.byString(name).orElse(null));
+    public static <E extends Entity> EntityType<E> getEntityType(String key) {
+        return Misc.cast(EntityType.byString(key).orElse(null));
+    }
+
+    public static <E extends Entity> EntityType<E> getEntityType(ResourceKey<EntityType<?>> key) {
+        return getEntityType(key.location());
+    }
+
+    public static <E extends Entity> EntityType<E> getEntityType(ResourceLocation key) {
+        return Misc.cast(BuiltInRegistries.ENTITY_TYPE.getOptional(key).orElse(null));
     }
 
     // ============================================================================ //

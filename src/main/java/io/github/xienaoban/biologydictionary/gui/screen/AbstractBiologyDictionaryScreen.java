@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElemen
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.biologydictionary.gui.component.CenteredMessage;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -18,7 +19,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.ArrayList;
@@ -62,6 +62,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     public AbstractBiologyDictionaryScreen(Component title) {
         super(title);
+        check();
 
         leftPageNum.setParent(getRootScreenElement());
         rightPageNum.setParent(getRootScreenElement());
@@ -69,6 +70,13 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         turnRight.setParent(getRootScreenElement());
 
         centeredMessage.setParent(getRootScreenElement());
+    }
+
+    private void check() {
+        if (EntityManager.getInstance() == null) {
+            McClientUtils.showClientTextBoxMessage(Component.literal("Failed to init EntityManager??"));
+            throw new RuntimeException("Failed to init EntityManager??");
+        }
     }
 
     @Override
@@ -367,8 +375,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     public abstract class Catalog extends Widget {
-        private final int depth;
-        private final Component text;
+        protected final int depth;
+        protected final Component text;
 
         public Catalog(int depth, Component text) {
             super(1, Page.COLUMNS);
@@ -385,8 +393,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                     ctx.getZ(),
                     box.getLeft() + d, box.getTop(),
                     4 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+            boolean hovered = getHoveredElement() == this;
             int textColor, lineColor;
-            if (getHoveredElement() == this) {
+            if (hovered) {
                 textColor = Colors.BLACK;
                 lineColor = 0x44AF711F;
             } else {
@@ -397,17 +406,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 ctx.renderHorizontalLine(lineColor, 1F, ctx.getZ(), (box.getTop() + box.getBottom()) / 2,
                         box.getLeft() + 1, box.getLeft() + d - 1);
             }
-            if (ctx.isDebug()) {
-                Component toShow;
-                if (text.getContents() instanceof TranslatableContents translatableContents) {
-                    toShow = Component.literal(translatableContents.getKey());
-                } else {
-                    toShow = text;
-                }
-                ctx.renderText(toShow, textColor, 0.5F, ctx.getZ(), box.getLeft() + d + 12, box.getTop() + 3);
-            } else {
-                ctx.renderText(text, textColor, 0.5F, ctx.getZ(), box.getLeft() + d + 12, box.getTop() + 3);
-            }
+            ctx.renderText(text, textColor, 0.5F, ctx.getZ(), box.getLeft() + d + 12, box.getTop() + 3);
         }
     }
 
