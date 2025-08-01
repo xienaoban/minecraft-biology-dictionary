@@ -31,9 +31,15 @@ public final class Lang {
     BOOKMARK_ABOUT        = "bookmark.biologydictionary.about",
 
     TAG_GROUP_DEFAULT   = "tag_group.biologydictionary.default",
+    TAG_GROUP_TAG       = "tag_group.biologydictionary.tag",
     TAG_GROUP_CLASS     = "tag_group.biologydictionary.class",
     TAG_GROUP_INTERFACE = "tag_group.biologydictionary.interface",
     TAG_GROUP_MODS      = "tag_group.biologydictionary.mod",
+    TAG_GROUP_DEFAULT_DESC   = "tag_group.biologydictionary.default.desc",
+    TAG_GROUP_TAG_DESC       = "tag_group.biologydictionary.tag.desc",
+    TAG_GROUP_CLASS_DESC     = "tag_group.biologydictionary.class.desc",
+    TAG_GROUP_INTERFACE_DESC = "tag_group.biologydictionary.interface.desc",
+    TAG_GROUP_MODS_DESC      = "tag_group.biologydictionary.mod.desc",
 
     TAG_DEFAULT_FRIENDLY             = "tag.biologydictionary.default.friendly",
     TAG_DEFAULT_FRIENDLY_TERRESTRIAL = "tag.biologydictionary.default.friendly_terrestrial",

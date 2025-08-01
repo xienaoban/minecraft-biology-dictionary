@@ -11,6 +11,10 @@ public final class McUtils {
         return clazz.getPackageName().startsWith(JavaNames.MINECRAFT_PACKAGE);
     }
 
+    public static boolean isVanillaClass(String clazzName) {
+        return clazzName.startsWith(JavaNames.MINECRAFT_PACKAGE);
+    }
+
     public static void showClientTextBoxMessage(ServerPlayer player, Component component) {
         player.displayClientMessage(component, false);
     }

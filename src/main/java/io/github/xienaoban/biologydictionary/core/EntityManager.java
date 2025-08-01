@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.McUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -74,12 +75,13 @@ public final class EntityManager {
     private final List<EntityClassInfo> sortedInfos = new ArrayList<>();
     private final Map<Class<? extends Entity>, EntityType<?>> clazzToType = new HashMap<>();
 
-    private final TagGroup defaultTags   = new TagGroup(Lang.TAG_GROUP_DEFAULT);
-    private final TagGroup classTags     = new TagGroup(Lang.TAG_GROUP_CLASS);
-    private final TagGroup interfaceTags = new TagGroup(Lang.TAG_GROUP_INTERFACE);
-    private final TagGroup namespaceTags = new TagGroup(Lang.TAG_GROUP_MODS);
+    private final TagGroup defaultTags   = new TagGroup(Lang.TAG_GROUP_DEFAULT,   Component.translatable(Lang.TAG_GROUP_DEFAULT_DESC));
+    private final TagGroup mcTagTags     = new TagGroup(Lang.TAG_GROUP_TAG,       Component.translatable(Lang.TAG_GROUP_TAG_DESC));
+    private final TagGroup namespaceTags = new TagGroup(Lang.TAG_GROUP_MODS,      Component.translatable(Lang.TAG_GROUP_MODS_DESC));
+    private final TagGroup classTags     = new TagGroup(Lang.TAG_GROUP_CLASS,     Component.translatable(Lang.TAG_GROUP_CLASS_DESC));
+    private final TagGroup interfaceTags = new TagGroup(Lang.TAG_GROUP_INTERFACE, Component.translatable(Lang.TAG_GROUP_INTERFACE_DESC));
 
-    private final List<TagGroup> tagGroups = new ArrayList<>(List.of(defaultTags, classTags, interfaceTags, namespaceTags));
+    private final List<TagGroup> tagGroups = new ArrayList<>(List.of(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
 
     private EntityManager(Level level) {
         EntityOrder.map.get(null);
@@ -158,34 +160,44 @@ public final class EntityManager {
             if (!Modifier.isAbstract(root.getClazz().getModifiers())) {
                 return false;
             }
-            this.classTags.addTag(getClassRealName(root.getClazz()), getClassRealName(root.getFather().getClazz()));
+            classTags.addTag(getClassRealName(root.getClazz()), getClassRealName(root.getFather().getClazz()));
             return true;
         });
         for (EntityClassInfo info : sortedInfos) {
-            this.namespaceTags.addToTag(EntityUtils.getEntityTypeId(info.getType()).getNamespace(), info);
+            namespaceTags.addToTag(EntityUtils.getEntityTypeId(info.getType()).getNamespace(), info);
 
             for (Class<? extends Entity> clazz : EntityUtils.bottomUp(info.getClazz())) {
                 String realName = getClassRealName(clazz);
                 if (classTags.containsTag(realName)) {
-                    this.classTags.addToTag(realName, info);
+                    classTags.addToTag(realName, info);
                 }
                 for (Class<?> clazz2 : clazz.getInterfaces()) {
                     if (!clazz2.getSimpleName().contains("Mixin")) {
-                        this.interfaceTags.addToTag(getClassRealName(clazz2), info);
+                        interfaceTags.addToTag(getClassRealName(clazz2), info);
                     }
                 }
             }
         }
+        interfaceTags.getRootTags().sort((t1, t2) -> {
+            String s1 = t1.getName();
+            String s2 = t2.getName();
+            boolean isVanilla1 = McUtils.isVanillaClass(s1);
+            boolean isVanilla2 = McUtils.isVanillaClass(s2);
+            if (isVanilla1 == isVanilla2) {
+                return s1.compareTo(s2);
+            }
+            return isVanilla1 ? -1 : 1;
+        });
     }
 
     private void initDefaultTags() {
-        this.defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL, Lang.TAG_DEFAULT_FRIENDLY);
-        this.defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_HUMANOID,    Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL);
-        this.defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_AQUATIC,     Lang.TAG_DEFAULT_FRIENDLY);
-        this.defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_FLYING,      Lang.TAG_DEFAULT_FRIENDLY);
-        this.defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_NEUTRAL,     Lang.TAG_DEFAULT_FRIENDLY);
-        this.defaultTags.addTag(Lang.TAG_DEFAULT_ENEMY_HUMANOID,       Lang.TAG_DEFAULT_ENEMY);
-        this.defaultTags.addTag(Lang.TAG_DEFAULT_ENEMY_PATROL,         Lang.TAG_DEFAULT_ENEMY);
+        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL, Lang.TAG_DEFAULT_FRIENDLY);
+        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_HUMANOID,    Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL);
+        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_AQUATIC,     Lang.TAG_DEFAULT_FRIENDLY);
+        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_FLYING,      Lang.TAG_DEFAULT_FRIENDLY);
+        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_NEUTRAL,     Lang.TAG_DEFAULT_FRIENDLY);
+        defaultTags.addTag(Lang.TAG_DEFAULT_ENEMY_HUMANOID,       Lang.TAG_DEFAULT_ENEMY);
+        defaultTags.addTag(Lang.TAG_DEFAULT_ENEMY_PATROL,         Lang.TAG_DEFAULT_ENEMY);
 
         ArrayList<EntityClassInfo> friendlyList = new ArrayList<>();
         ArrayList<EntityClassInfo> terrestrialList = new ArrayList<>();
@@ -445,20 +457,23 @@ public final class EntityManager {
     }
 
     public static class TagGroup {
-        private final String name;
-        private final Component text;
+        private final String id;
+        private final Component name;
+        private final Component description;
         private final Map<String, Tag> tags;
         private final List<Tag> rootTags;
 
-        public TagGroup(String tagGroupName) {
-            name = tagGroupName;
-            text = Component.translatable(tagGroupName);
-            tags = new HashMap<>();
-            rootTags = new ArrayList<>();
+        public TagGroup(String tagGroupName, Component description) {
+            this.id = tagGroupName;
+            this.name = Component.translatable(tagGroupName);
+            this.description = description;
+            this.tags = new HashMap<>();
+            this.rootTags = new ArrayList<>();
         }
 
-        public String getName() { return name; }
-        public Component getText() { return text; }
+        public String getId() { return id; }
+        public Component getName() { return name; }
+        public Component getDescription() { return description; }
         public Collection<Tag> getTags() { return tags.values(); }
         public List<Tag> getRootTags() { return rootTags; }
 
