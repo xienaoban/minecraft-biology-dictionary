@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
@@ -91,7 +92,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         private final EntityManager.TagGroup group;
 
         public TagGroupBookmark(EntityManager.TagGroup group) {
-            super(group.getText());
+            super(group.getName());
             this.group = group;
         }
 
@@ -99,11 +100,12 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                ArrayList<TagCatalog> tags = new ArrayList<>();
+                ArrayList<Widget> tags = new ArrayList<>();
                 group.dfsTags((tag, depth) -> {
                     tags.add(new TagCatalog(depth, tag));
                     return true;
                 });
+                tags.addFirst(new DescriptionWidget(1, Page.COLUMNS, group.getDescription()));
                 resetAndAndWidgetsOneByOne(tags);
                 return true;
             }

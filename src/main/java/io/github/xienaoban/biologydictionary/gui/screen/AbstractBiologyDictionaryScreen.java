@@ -18,6 +18,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.ArrayList;
@@ -156,6 +157,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
             return true;
         } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
             screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
+            sendScreenMessage(Component.literal("Debug mode " + (screenRenderingContext.isDebug() ? "on" : "off")));
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -383,21 +385,53 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                     ctx.getZ(),
                     box.getLeft() + d, box.getTop(),
                     4 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
-            int color;
+            int textColor, lineColor;
             if (getHoveredElement() == this) {
-                color = Colors.BLACK;
+                textColor = Colors.BLACK;
+                lineColor = 0x44AF711F;
             } else {
-                color = Colors.COMMON_DARK_TEXT;
+                textColor = Colors.COMMON_DARK_LIGHTER_TEXT;
+                lineColor = 0x22AF711F;
             }
-            ctx.renderText(text, color, 0.5F, ctx.getZ(), box.getLeft() + d + 12, box.getTop() + 3);
+            if (depth != 0) {
+                ctx.renderHorizontalLine(lineColor, 1F, ctx.getZ(), (box.getTop() + box.getBottom()) / 2,
+                        box.getLeft() + 1, box.getLeft() + d - 1);
+            }
+            if (ctx.isDebug()) {
+                Component toShow;
+                if (text.getContents() instanceof TranslatableContents translatableContents) {
+                    toShow = Component.literal(translatableContents.getKey());
+                } else {
+                    toShow = text;
+                }
+                ctx.renderText(toShow, textColor, 0.5F, ctx.getZ(), box.getLeft() + d + 12, box.getTop() + 3);
+            } else {
+                ctx.renderText(text, textColor, 0.5F, ctx.getZ(), box.getLeft() + d + 12, box.getTop() + 3);
+            }
         }
     }
 
-    public final static class PlaceHolderWidget extends Widget {
+    public static final class PlaceHolderWidget extends Widget {
         public PlaceHolderWidget(int rows, int columns) {
             super(rows, columns);
             setHoverable(false);
             setSelectable(false);
+        }
+    }
+
+    public static final class DescriptionWidget extends Widget {
+        private final Component text;
+
+        public DescriptionWidget(int rows, int columns, Component text) {
+            super(rows, columns);
+            this.text = text;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            ctx.renderText(text, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), box.getLeft() + 2, box.getTop() + 3);
         }
     }
 
