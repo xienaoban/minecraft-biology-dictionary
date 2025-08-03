@@ -20,6 +20,10 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.GuiElementRenderState;
 import net.minecraft.client.gui.render.state.GuiRenderState;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -36,11 +40,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix3x2f;
-import org.joml.Matrix3x2fStack;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.List;
 import java.util.Objects;
 
@@ -284,14 +286,86 @@ public final class ScreenRenderingContext {
     // Rendering tooltips.
     //=======================================================================================
 
-    public void renderTooltipForNextFrame(List<Component> texts, float leftX, float topY) {
+    public void renderComponentTooltipForNextFrameVanilla(List<Component> texts, float leftX, float topY) {
         getGuiGraphics().setComponentTooltipForNextFrame(getFont(), texts, (int) leftX, (int) topY);
     }
 
-    public void renderTooltipCenteredForNextFrame(List<Component> texts, float midX, float topY) {
+    public void renderComponentTooltipCenteredForNextFrameVanilla(List<Component> texts, float midX, float topY) {
         int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
         getGuiGraphics().setComponentTooltipForNextFrame(getFont(), texts,
                 (int) (midX - (maxLength + 20) / 2F), (int) topY);
+    }
+
+    public void renderComponentTooltip(List<Component> texts, float leftX, float topY) {
+        renderTooltip(texts, leftX, topY, 1F);
+    }
+
+    public void renderComponentTooltip(List<Component> texts, float size, float leftX, float topY) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            renderTooltip(texts, leftX, topY, size);
+        }
+    }
+
+    public void renderComponentTooltipCentered(List<Component> texts, float midX, float topY) {
+        int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+        renderComponentTooltip(texts, midX - (maxLength + 20) / 2F, topY);
+    }
+
+    public void renderComponentTooltipCentered(List<Component> texts, float size, float midX, float topY) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+            renderTooltip(texts, midX - (maxLength + 20) / 2F, topY, size);
+        }
+    }
+
+    /**
+     * Similar to GuiGraphics#renderTooltip.
+     * The only difference is that we give the argument {@code size}
+     * to calculate the real gui width and gui height.
+     *
+     * @see net.minecraft.client.gui.GuiGraphics#renderTooltip(net.minecraft.client.gui.Font, java.util.List, int, int, net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner, net.minecraft.resources.ResourceLocation)
+     */
+    private void renderTooltip(List<Component> texts,
+                               float x, float y, float size
+    ) {
+        Font font = getFont();
+        List<ClientTooltipComponent> list = texts.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
+        ClientTooltipPositioner clientTooltipPositioner = DefaultTooltipPositioner.INSTANCE;
+        ResourceLocation resourceLocation = null;
+
+        int width = 0;
+        int height = list.size() == 1 ? -2 : 0;
+
+        for (ClientTooltipComponent clientTooltipComponent : list) {
+            int m = clientTooltipComponent.getWidth(font);
+            if (m > width) {
+                width = m;
+            }
+            height += clientTooltipComponent.getHeight(font);
+        }
+
+        Vector2ic vector2ic = clientTooltipPositioner.positionTooltip((int) (getGuiGraphics().guiWidth() / size), (int) (getGuiGraphics().guiHeight() / size), (int) ((x - 4) / size), (int) ((y + height) / size), width, height);
+        int p = vector2ic.x();
+        int q = vector2ic.y();
+        getPose().pushMatrix();
+        TooltipRenderUtil.renderTooltipBackground(getGuiGraphics(), p, q, width, height, resourceLocation);
+        int r = q;
+
+        for (int s = 0; s < list.size(); s++) {
+            ClientTooltipComponent clientTooltipComponent2 = list.get(s);
+            clientTooltipComponent2.renderText(getGuiGraphics(), font, p, r);
+            r += clientTooltipComponent2.getHeight(font) + (s == 0 ? 2 : 0);
+        }
+
+        r = q;
+
+        for (int s = 0; s < list.size(); s++) {
+            ClientTooltipComponent clientTooltipComponent2 = list.get(s);
+            clientTooltipComponent2.renderImage(font, p, r, width, height, getGuiGraphics());
+            r += clientTooltipComponent2.getHeight(font) + (s == 0 ? 2 : 0);
+        }
+
+        getPose().popMatrix();
     }
 
     //=======================================================================================

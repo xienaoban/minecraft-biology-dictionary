@@ -133,7 +133,7 @@ public class BeehiveScreen extends ElementScreen {
                         Component.translatable(Lang.TEXT_BEE_STATE_IN_BEEHIVE, Component.translatable(bee.entity.hasNectar() ? Lang.TEXT_BEE_PRODUCING_NECTAR : Lang.TEXT_BEE_RESTING)).withStyle(ChatFormatting.GRAY),
                         Component.translatable(Lang.TEXT_TIME_IN_BEEHIVE, (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s").withStyle(ChatFormatting.GRAY)
                 );
-                ctx.renderTooltipCenteredForNextFrame(texts, x, y + 18F);
+                ctx.renderComponentTooltipCenteredForNextFrameVanilla(texts, x, y + 18F);
             }
         }
         ctx.renderText(Component.literal(honeyCnt + "/" + MAX_HONEY_CNT), color, ctx.getZ(), LATTICES[5][0] + lw + 16 - 8.5F, LATTICES[5][1] + lh + 8);

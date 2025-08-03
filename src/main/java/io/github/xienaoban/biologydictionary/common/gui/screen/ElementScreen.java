@@ -66,6 +66,12 @@ public abstract class ElementScreen extends CommonScreen {
         try {
             super.render(ctx);
             rootScreenElement.render(ctx);
+
+            ctx.getGuiGraphics().nextStratum();
+            ScreenElement hovered = getHoveredElement();
+            if (hovered != null) {
+                hovered.renderHovered(ctx);
+            }
         } catch (Throwable e) {
             showExceptionMessageAndCloseScreen(e);
         }
@@ -81,6 +87,10 @@ public abstract class ElementScreen extends CommonScreen {
         } else {
             hoveredElement = rootScreenElement.hover(x, y);
         }
+    }
+
+    public final void clearHoveredElement() {
+        hoveredElement = null;
     }
 
     public final ScreenElement getSelectedElement() {
