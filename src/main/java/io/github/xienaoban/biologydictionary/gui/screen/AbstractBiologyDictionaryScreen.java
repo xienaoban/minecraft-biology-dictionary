@@ -234,6 +234,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     public void setCurrPage(int pageIndex) {
+        clearHoveredElement();
         if (pageIndex < 0 || pageIndex >= pages.size()) { return; }
         currPageIndex = pageIndex;
         updateCurrPages();

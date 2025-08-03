@@ -26,6 +26,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.Function;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.BD;
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
@@ -175,20 +176,27 @@ public final class EntityManager {
                             .map(EntityUtils::getEntityType).map(this::getEntityClassInfo).filter(Objects::nonNull)
                             .sorted(Comparator.comparingInt(EntityClassInfo::getSortId))
                             .toList();
+                    tags.addTag(new Tag(key, null, Component.literal(holders.key().location().toString())));
                     tags.addAllToTag(key, list);
         });
     }
 
     private void initJavaTagGroups() {
+        classTags.addTag(new Tag(getClassRealName(Entity.class)));
         dfsEntityTree(false, (root, depth) -> {
             if (!Modifier.isAbstract(root.getClazz().getModifiers())) {
                 return false;
             }
-            classTags.addTag(getClassRealName(root.getClazz()), getClassRealName(root.getFather().getClazz()));
+            Tag father = classTags.getTag(getClassRealName(root.getFather().getClazz()));
+            String clazzName = getClassRealName(root.getClazz());
+            classTags.addTag(new Tag(clazzName, father, Component.literal(clazzName)));
             return true;
         });
         for (EntityClassInfo info : sortedInfos) {
-            namespaceTags.addToTag(EntityUtils.getEntityTypeId(info.getType()).getNamespace(), info);
+            String namespace = EntityUtils.getEntityTypeId(info.getType()).getNamespace();
+            namespaceTags.getOrAddTag(namespace,
+                    s -> new Tag(s, null, Component.literal(s)));
+            namespaceTags.addToTag(namespace, info);
 
             for (Class<? extends Entity> clazz : EntityUtils.bottomUp(info.getClazz())) {
                 String realName = getClassRealName(clazz);
@@ -197,7 +205,10 @@ public final class EntityManager {
                 }
                 for (Class<?> clazz2 : clazz.getInterfaces()) {
                     if (!clazz2.getSimpleName().contains("Mixin")) {
-                        interfaceTags.addToTag(getClassRealName(clazz2), info);
+                        String interfazeName = getClassRealName(clazz2);
+                        interfaceTags.getOrAddTag(interfazeName,
+                                s -> new Tag(s, null, Component.literal(s)));
+                        interfaceTags.addToTag(interfazeName, info);
                     }
                 }
             }
@@ -206,14 +217,16 @@ public final class EntityManager {
     }
 
     private void initDefaultTags() {
-        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL, Lang.TAG_DEFAULT_FRIENDLY);
-        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_HUMANOID,    Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL);
-        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_AQUATIC,     Lang.TAG_DEFAULT_FRIENDLY);
-        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_BUCKETABLE,  Lang.TAG_DEFAULT_FRIENDLY_AQUATIC);
-        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_FLYING,      Lang.TAG_DEFAULT_FRIENDLY);
-        defaultTags.addTag(Lang.TAG_DEFAULT_FRIENDLY_NEUTRAL,     Lang.TAG_DEFAULT_FRIENDLY);
-        defaultTags.addTag(Lang.TAG_DEFAULT_ENEMY_HUMANOID,       Lang.TAG_DEFAULT_ENEMY);
-        defaultTags.addTag(Lang.TAG_DEFAULT_ENEMY_PATROL,         Lang.TAG_DEFAULT_ENEMY);
+        defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_FRIENDLY));
+        defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL, defaultTags.getTag(Lang.TAG_DEFAULT_FRIENDLY)));
+        defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_FRIENDLY_HUMANOID,    defaultTags.getTag(Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL)));
+        defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_FRIENDLY_AQUATIC,     defaultTags.getTag(Lang.TAG_DEFAULT_FRIENDLY)));
+        defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_FRIENDLY_BUCKETABLE,  defaultTags.getTag(Lang.TAG_DEFAULT_FRIENDLY_AQUATIC)));
+        defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_FRIENDLY_FLYING,      defaultTags.getTag(Lang.TAG_DEFAULT_FRIENDLY)));
+        defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_FRIENDLY_NEUTRAL,     defaultTags.getTag(Lang.TAG_DEFAULT_FRIENDLY)));
+        defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_ENEMY));
+        defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_ENEMY_HUMANOID,       defaultTags.getTag(Lang.TAG_DEFAULT_ENEMY)));
+        defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_ENEMY_PATROL,         defaultTags.getTag(Lang.TAG_DEFAULT_ENEMY)));
 
         List<EntityClassInfo> friendlyList = new ArrayList<>();
         List<EntityClassInfo> terrestrialList = new ArrayList<>();
@@ -441,6 +454,7 @@ public final class EntityManager {
     public static class Tag implements Comparable<Tag> {
         private final String name;
         private final Component text;
+        private final Component description;
         private final List<EntityClassInfo> entities;
         private final Tag father;
         private final List<Tag> sons;
@@ -450,18 +464,24 @@ public final class EntityManager {
         }
 
         public Tag(String tagName, Tag fatherTag) {
-            name = tagName;
-            text = Component.translatable(tagName);
-            entities = new ArrayList<>();
-            father = fatherTag;
-            if (father != null) {
-                father.addSon(this);
+            this(tagName, fatherTag, null);
+        }
+
+        public Tag(String tagName, Tag fatherTag, Component description) {
+            this.name = tagName;
+            this.text = Component.translatable(tagName);
+            this.description = description;
+            this.entities = new ArrayList<>();
+            this.father = fatherTag;
+            if (this.father != null) {
+                this.father.addSon(this);
             }
-            sons = new ArrayList<>();
+            this.sons = new ArrayList<>();
         }
 
         public String getName() { return name; }
         public Component getText() { return text; }
+        public Component getDescription() { return description; }
 
         public List<EntityClassInfo> getEntities() { return entities; }
         protected void addEntity(EntityClassInfo info) { entities.add(info); }
@@ -511,17 +531,28 @@ public final class EntityManager {
         public Tag getTag(String tagName) {
             Tag tag = tags.getOrDefault(tagName, null);
             if (tag == null) {
-                tag = new Tag(tagName);
-                tags.put(tagName, tag);
-                rootTags.add(tag);
+                throw new RuntimeException("Tag \"" + tagName + "\" doesn't exist.");
             }
             return tag;
         }
 
-        public void addTag(String tagName, String fatherTagName) {
-            Tag old = tags.put(tagName, new Tag(tagName, getTag(fatherTagName)));
+        public Tag getOrAddTag(String tagName, Function<String, Tag> func) {
+            return tags.computeIfAbsent(tagName, s -> {
+                Tag tag = func.apply(s);
+                if (tag.getFather() == null) {
+                    rootTags.add(tag);
+                }
+                return tag;
+            });
+        }
+
+        public void addTag(Tag tag) {
+            Tag old = tags.put(tag.getName(), tag);
+            if (tag.getFather() == null) {
+                rootTags.add(tag);
+            }
             if (old != null) {
-                throw new RuntimeException("Tag \"" + tagName + "\" already exists.");
+                throw new RuntimeException("Tag \"" + tag.getName() + "\" already exists.");
             }
         }
 
