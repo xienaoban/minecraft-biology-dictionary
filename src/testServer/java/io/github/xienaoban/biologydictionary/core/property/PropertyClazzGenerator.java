@@ -64,7 +64,7 @@ public class PropertyClazzGenerator {
         addGeneralImports(cu);
 
         NbtTagCollector.loadAll();
-        EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
+        EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
             Class<? extends Entity> entityClazz = cur.getClazz();
             LOGGER.info("Testing {}", entityClazz);
 

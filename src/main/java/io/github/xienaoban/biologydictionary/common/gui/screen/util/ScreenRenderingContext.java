@@ -20,6 +20,10 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.GuiElementRenderState;
 import net.minecraft.client.gui.render.state.GuiRenderState;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -27,22 +31,19 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix3x2f;
-import org.joml.Matrix3x2fStack;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import org.joml.*;
 
+import java.lang.Math;
+import java.util.List;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
@@ -110,6 +111,10 @@ public final class ScreenRenderingContext {
         return new ScaleRAII(this, size, z);
     }
 
+    //=======================================================================================
+    // Rendering texts.
+    //=======================================================================================
+
     public int calcTextWidth(Component component) {
         return getFont().width(component);
     }
@@ -139,6 +144,10 @@ public final class ScreenRenderingContext {
             renderCenteredText(component, color, z, x / size, y / size);
         }
     }
+
+    //=======================================================================================
+    // Rendering geometries.
+    //=======================================================================================
 
     public void renderHorizontalLine(int color, float width, float z, float y, float left, float right) {
         renderRectangle(color, z, left, y - width / 2.0F, right, y + width / 2.0F);
@@ -241,6 +250,10 @@ public final class ScreenRenderingContext {
                 uvLeft, uvTop, uvRight, uvBottom, z, left, top, right, bottom));
     }
 
+    //=======================================================================================
+    // Rendering items and sprites.
+    //=======================================================================================
+
     public void renderItem(ItemStack itemStack, float left, float top) {
         getGuiGraphics().renderFakeItem(itemStack, (int) left, (int) top);
     }
@@ -269,19 +282,112 @@ public final class ScreenRenderingContext {
         }
     }
 
-    public void renderEntityBottomed(Entity entity, float left, float top, float right, float bottom,
+    //=======================================================================================
+    // Rendering tooltips.
+    //=======================================================================================
+
+    public void renderComponentTooltipForNextFrameVanilla(List<Component> texts, float leftX, float topY) {
+        getGuiGraphics().setComponentTooltipForNextFrame(getFont(), texts, (int) leftX, (int) topY);
+    }
+
+    public void renderComponentTooltipCenteredForNextFrameVanilla(List<Component> texts, float midX, float topY) {
+        int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+        getGuiGraphics().setComponentTooltipForNextFrame(getFont(), texts,
+                (int) (midX - (maxLength + 20) / 2F), (int) topY);
+    }
+
+    public void renderComponentTooltip(List<Component> texts, float leftX, float topY) {
+        renderTooltip(texts, leftX, topY, 1F);
+    }
+
+    public void renderComponentTooltip(List<Component> texts, float size, float leftX, float topY) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            renderTooltip(texts, leftX, topY, size);
+        }
+    }
+
+    public void renderComponentTooltipCentered(List<Component> texts, float midX, float topY) {
+        int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+        renderComponentTooltip(texts, midX - (maxLength + 20) / 2F, topY);
+    }
+
+    public void renderComponentTooltipCentered(List<Component> texts, float size, float midX, float topY) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+            renderTooltip(texts, midX - (maxLength + 20) / 2F, topY, size);
+        }
+    }
+
+    /**
+     * Similar to GuiGraphics#renderTooltip.
+     * The only difference is that we give the argument {@code size}
+     * to calculate the real gui width and gui height.
+     *
+     * @see net.minecraft.client.gui.GuiGraphics#renderTooltip(net.minecraft.client.gui.Font, java.util.List, int, int, net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner, net.minecraft.resources.ResourceLocation)
+     */
+    private void renderTooltip(List<Component> texts,
+                               float x, float y, float size
+    ) {
+        Font font = getFont();
+        List<ClientTooltipComponent> list = texts.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
+        ClientTooltipPositioner clientTooltipPositioner = DefaultTooltipPositioner.INSTANCE;
+        ResourceLocation resourceLocation = null;
+
+        int width = 0;
+        int height = list.size() == 1 ? -2 : 0;
+
+        for (ClientTooltipComponent clientTooltipComponent : list) {
+            int m = clientTooltipComponent.getWidth(font);
+            if (m > width) {
+                width = m;
+            }
+            height += clientTooltipComponent.getHeight(font);
+        }
+
+        Vector2ic vector2ic = clientTooltipPositioner.positionTooltip((int) (getGuiGraphics().guiWidth() / size), (int) (getGuiGraphics().guiHeight() / size), (int) ((x - 4) / size), (int) ((y + height) / size), width, height);
+        int p = vector2ic.x();
+        int q = vector2ic.y();
+        getPose().pushMatrix();
+        TooltipRenderUtil.renderTooltipBackground(getGuiGraphics(), p, q, width, height, resourceLocation);
+        int r = q;
+
+        for (int s = 0; s < list.size(); s++) {
+            ClientTooltipComponent clientTooltipComponent2 = list.get(s);
+            clientTooltipComponent2.renderText(getGuiGraphics(), font, p, r);
+            r += clientTooltipComponent2.getHeight(font) + (s == 0 ? 2 : 0);
+        }
+
+        r = q;
+
+        for (int s = 0; s < list.size(); s++) {
+            ClientTooltipComponent clientTooltipComponent2 = list.get(s);
+            clientTooltipComponent2.renderImage(font, p, r, width, height, getGuiGraphics());
+            r += clientTooltipComponent2.getHeight(font) + (s == 0 ? 2 : 0);
+        }
+
+        getPose().popMatrix();
+    }
+
+    //=======================================================================================
+    // Rendering entities.
+    //=======================================================================================
+
+    public void renderEntityBottomed(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache,
+                                     float left, float top, float right, float bottom,
                                      float rotateX, float rotateY, float forceScale) {
-        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, 1F);
+        renderEntity(entity, cache, left, top, right, bottom, rotateX, rotateY, forceScale, 1F);
     }
 
-    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
+    public void renderEntityCentered(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache,
+                                     float left, float top, float right, float bottom,
                                      float rotateX, float rotateY) {
-        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, -1, 1.9F);
+        renderEntity(entity, cache, left, top, right, bottom, rotateX, rotateY, -1, 1.9F);
     }
 
-    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
-                             float rotateX, float rotateY, float forceScale) {
-        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, 1.9F);
+    public void renderEntityCentered(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache,
+                                     float left, float top, float right, float bottom,
+                                     float rotateX, float rotateY, float forceScale) {
+        renderEntity(entity, cache, left, top, right, bottom, rotateX, rotateY, forceScale, 1.9F);
     }
 
     /**
@@ -292,17 +398,38 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(GuiGraphics, int, int, int, int, float, Vector3f, Quaternionf, Quaternionf, LivingEntity)
      */
-    private void renderEntity(Entity entity, float left, float top, float right, float bottom,
+    private void renderEntity(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset) {
         final float width = right - left;
         final float height = bottom - top;
         final float entityWidth = entity.getBbWidth();
         final float entityHeight = entity.getBbHeight();
+
+        boolean cached = (cache != null && cache.cached)
+                && (cache.width == width && cache.height == height)
+                && (cache.entityWidth == entityWidth && cache.entityHeight == entityHeight);
+
         final float scale;
-        if (forceScale < 0) {
-            scale = Math.min(width / (float) Math.log(1.1F + entityWidth), height / (float) Math.log(1.1F + entityHeight)) / 2.2F;
+        if (cached) {
+            scale = cache.scale;
         } else {
-            scale = Math.min(width / entityWidth, height / entityHeight) / 1.5F * forceScale;
+            if (forceScale < 0) {
+                float vw;
+                if (entityWidth > 1.8F) {
+                    vw = entityWidth / 1.4F;
+                } else {
+                    vw = (float) Math.log(1.1F + entityWidth);
+                }
+                float vh;
+                if (entityHeight > 2.2F) {
+                    vh = entityHeight / 1.8F;
+                } else {
+                    vh = (float) Math.log(1.1F + entityHeight);
+                }
+                scale = Math.min(width / vw, height / vh) / 2.2F;
+            } else {
+                scale = Math.min(width / entityWidth, height / entityHeight) / 1.5F * forceScale;
+            }
         }
 
         int x0 = Mth.ceil(left), y0 = Mth.ceil(top), x1 = Mth.floor(right), y1 = Mth.floor(bottom);
@@ -316,7 +443,12 @@ public final class ScreenRenderingContext {
 
         EntityRenderDispatcher entityRenderDispatcher = getClient().getEntityRenderDispatcher();
         EntityRenderer<Entity, EntityRenderState> entityRenderer = Misc.cast(entityRenderDispatcher.getRenderer(entity));
-        EntityRenderState entityRenderState = entityRenderer.createRenderState();
+        EntityRenderState entityRenderState;
+        if (cache != null && cache.entityRenderState != null) {
+            entityRenderState = cache.entityRenderState;
+        } else {
+            entityRenderState = entityRenderer.createRenderState();
+        }
         entityRenderer.extractRenderState(entity, entityRenderState, 1F);
         getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);
 
@@ -326,13 +458,18 @@ public final class ScreenRenderingContext {
             final int color = 0xFFAAAAAA;
             renderRectangle(color, 0.6F, getZ(), left, top, right, bottom);
         }
-    }
 
-    /**
-     * @see net.minecraft.client.gui.screens.inventory.PageButton#playDownSound(net.minecraft.client.sounds.SoundManager)
-     */
-    public void playScreenSound(SoundEvent sound, float volume, float pitch) {
-        getClient().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));
+        if (cache != null && !cached) {
+            cache.cached = true;
+
+            cache.width = width;
+            cache.height = height;
+            cache.entityWidth = entityWidth;
+            cache.entityHeight = entityHeight;
+
+            cache.entityRenderState = entityRenderState;
+            cache.scale = scale;
+        }
     }
 
     private static ScreenRectangle getBounds(float x0, float y0, float x1, float y1, Matrix3x2f matrix3x2f, @Nullable ScreenRectangle screenRectangle) {
@@ -340,5 +477,17 @@ public final class ScreenRenderingContext {
         int y0i = Mth.floor(y0);    int y1i = Mth.ceil(y1);
         ScreenRectangle screenRectangle2 = new ScreenRectangle(x0i, y0i, x1i - x0i, y1i - y0i).transformMaxBounds(matrix3x2f);
         return screenRectangle != null ? screenRectangle.intersection(screenRectangle2) : screenRectangle2;
+    }
+
+    public static final class EntityRenderingCache {
+        private boolean cached;
+
+        private float width;
+        private float height;
+        private float entityWidth;
+        private float entityHeight;
+
+        private EntityRenderState entityRenderState;
+        private float scale;
     }
 }

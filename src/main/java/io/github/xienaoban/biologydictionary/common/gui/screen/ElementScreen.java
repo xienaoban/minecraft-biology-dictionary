@@ -26,7 +26,7 @@ public abstract class ElementScreen extends CommonScreen {
     @Override
     protected void init() {
         super.init();
-        rootScreenElement.resize(width, height);
+        updateBoxSizes();
     }
 
     @Override
@@ -35,19 +35,24 @@ public abstract class ElementScreen extends CommonScreen {
             super.tick();
             ++ticks; // yes the first `ticks` will be 1 instead of 0
             rootScreenElement.tick(ticks);
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             showExceptionMessageAndCloseScreen(e);
         }
     }
 
     @Override
     public final boolean mouseClicked(double x, double y, int code) {
-        updateSelectedElement();
-        if (getSelectedElement() != null) {
-            return getSelectedElement().mouseDown((float) x, (float) y, code);
-        } else {
-            return super.mouseClicked(x, y, code);
+        try {
+            updateSelectedElement();
+            if (getSelectedElement() != null) {
+                return getSelectedElement().mouseDown((float) x, (float) y, code);
+            } else {
+                return super.mouseClicked(x, y, code);
+            }
+        } catch (Throwable e) {
+            showExceptionMessageAndCloseScreen(e);
         }
+        return true;
     }
 
     @Override
@@ -61,7 +66,13 @@ public abstract class ElementScreen extends CommonScreen {
         try {
             super.render(ctx);
             rootScreenElement.render(ctx);
-        } catch (RuntimeException e) {
+
+            ctx.getGuiGraphics().nextStratum();
+            ScreenElement hovered = getHoveredElement();
+            if (hovered != null) {
+                hovered.renderHovered(ctx);
+            }
+        } catch (Throwable e) {
             showExceptionMessageAndCloseScreen(e);
         }
     }
@@ -78,6 +89,10 @@ public abstract class ElementScreen extends CommonScreen {
         }
     }
 
+    public final void clearHoveredElement() {
+        hoveredElement = null;
+    }
+
     public final ScreenElement getSelectedElement() {
         return selectedElement;
     }
@@ -92,6 +107,10 @@ public abstract class ElementScreen extends CommonScreen {
 
     public final ScreenElement getRootScreenElement() {
         return rootScreenElement;
+    }
+
+    public final void updateBoxSizes() {
+        rootScreenElement.resize(width, height);
     }
 
     public final int getTicks() {

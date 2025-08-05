@@ -1,11 +1,10 @@
 package io.github.xienaoban.biologydictionary.client;
 
-import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.gui.screen.EntityDetailScreen;
-import io.github.xienaoban.biologydictionary.gui.screen.HomeScreen;
+import io.github.xienaoban.biologydictionary.gui.screen.BdEntityDetailScreen;
+import io.github.xienaoban.biologydictionary.gui.screen.BdHomeScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
@@ -27,6 +26,17 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 @Environment(EnvType.CLIENT)
 public final class BiologyDictionaryEvent {
     public static void openBookScreen(Minecraft client) {
+        try {
+            tryOpenBookScreen(client);
+        } catch (Throwable e) {
+            BDC.setHitEntity(null);
+            BDC.setHitBlock(null);
+            BDC.setHitEntityProperties(null);
+            LOGGER.error("Failed to open Biology Dictionary screen: {}", Misc.getStackToString(e));
+        }
+    }
+
+    public static void tryOpenBookScreen(Minecraft client) {
         LocalPlayer player = client.player;
         BDC.setHitEntity(null);
         BDC.setHitBlock(null);
@@ -58,7 +68,7 @@ public final class BiologyDictionaryEvent {
             if (blockState.getBlock() instanceof BeehiveBlock) {
                 ClientNetManager.requestBeehiveInfo(pos);
                 McClientUtils.setScreen(client, new BeehiveScreen(pos));
-                new ScreenRenderingContext(null).playScreenSound(SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
+                McClientUtils.playScreenSound(client, SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
                 return;
             }
             target = null;
@@ -68,19 +78,19 @@ public final class BiologyDictionaryEvent {
         }
 
         if (target == null) {
-            McClientUtils.setScreen(client, new HomeScreen());
+            McClientUtils.setScreen(client, new BdHomeScreen());
         } else {
             EntityProperties<Entity> properties = new EntityProperties<>(target);
             BDC.setHitEntity(target);
             BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target);
             try {
-                McClientUtils.setScreen(client, new EntityDetailScreen(properties));
+                McClientUtils.setScreen(client, new BdEntityDetailScreen(properties));
             } catch (RuntimeException e) {
                 Misc.printThrowableToLoggerAndGame(e);
                 return;
             }
         }
-        new ScreenRenderingContext(null).playScreenSound(SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
+        McClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
     }
 }

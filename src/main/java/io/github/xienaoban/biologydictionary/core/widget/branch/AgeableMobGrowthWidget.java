@@ -132,11 +132,9 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
 
             int forcedAge = forcedAgeOpt;
             if (isMouseLeft(code)) {
-                boolean lock = false;
                 final int toSet;
                 if (forcedAge == ADULT_MIN_AGE) {
                     toSet = BABY_MIN_AGE;
-                    lock = true;
                 } else {
                     toSet = ADULT_MIN_AGE;
                 }
@@ -146,12 +144,12 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                 property.set(toSet);
                 forcedAgeProperty.set(toSet);
                 CompoundTag nbt = property.toNbt();
-                if (lock) {
-                    IntProperty<AgeableMob> ap = VanillaEntityProperties.OfAgeableMob.createAgeProperty();
-                    ap.set(toSet);
-                    ageProperty.set(toSet);
-                    ap.writeTo(nbt);
-                }
+
+                IntProperty<AgeableMob> ap = VanillaEntityProperties.OfAgeableMob.createAgeProperty();
+                ap.set(BABY_MIN_AGE);
+                ageProperty.set(BABY_MIN_AGE);
+                ap.writeTo(nbt);
+
                 ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
             }
             return super.onMouseDown(x, y, code);

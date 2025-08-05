@@ -22,14 +22,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class VanillaEntityTest {
+public class VanillaEntityCollectionTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @GameTest
     public void testDeobfuscationBatch(GameTestHelper helper) {
         AtomicBoolean success = new AtomicBoolean(true);
 
-        EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
+        EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
             Class<? extends Entity> clazz = cur.getClazz();
 
             // skip non-vanilla classes
@@ -95,7 +95,7 @@ public class VanillaEntityTest {
         final Set<Class<?>> interfazes = new HashSet<>();
         out.println(space + "// classes");
 
-        EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
+        EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
             Class<?> clazz = cur.getClazz();
 
             // skip non-vanilla classes

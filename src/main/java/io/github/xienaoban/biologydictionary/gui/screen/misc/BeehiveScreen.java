@@ -115,8 +115,11 @@ public class BeehiveScreen extends ElementScreen {
             float beeScale = bee.entity.isBaby() ? 0.6F : 1F;
             float t = 14.0F * Math.min(bee.ticksInHive, bee.minTicksInHive) / bee.minTicksInHive;
             ctx.renderHorizontalLine(0xFF443300, 2.2F, ctx.getZ(), y - 1, x - 7.5F, x + 7.5F);
-            ctx.renderHorizontalLine(bee.entity.hasNectar() ? 0xFFFFBB00 : 0x64FFBB00, 1.2F, ctx.getZ(), y - 1, x - 7, x - 7 + t);
-            ctx.renderEntityCentered(bee.entity, x - 14F, y - 26F, x + 14F, y, (float) Math.atan(action.mouseX / 80), (float) Math.atan(action.mouseY / 80), beeScale);
+            ctx.renderHorizontalLine(bee.entity.hasNectar() ? 0xFFFFBB00 : 0x64FFBB00,
+                    1.2F, ctx.getZ(), y - 1, x - 7, x - 7 + t);
+            ctx.renderEntityCentered(bee.entity, bee.entityRenderingCache,
+                    x - 14F, y - 26F, x + 14F, y,
+                    (float) Math.atan(action.mouseX / 80), (float) Math.atan(action.mouseY / 80), beeScale);
             Component customName = bee.entity.getCustomName();
             int beeTop = y - (bee.entity.isBaby() ? 20 : 25);
             if (customName != null) {
@@ -130,8 +133,7 @@ public class BeehiveScreen extends ElementScreen {
                         Component.translatable(Lang.TEXT_BEE_STATE_IN_BEEHIVE, Component.translatable(bee.entity.hasNectar() ? Lang.TEXT_BEE_PRODUCING_NECTAR : Lang.TEXT_BEE_RESTING)).withStyle(ChatFormatting.GRAY),
                         Component.translatable(Lang.TEXT_TIME_IN_BEEHIVE, (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s").withStyle(ChatFormatting.GRAY)
                 );
-                int maxLength = texts.stream().mapToInt(ctx::calcTextWidth).max().getAsInt();
-                ctx.getGuiGraphics().setComponentTooltipForNextFrame(ctx.getFont(), texts, x - (maxLength + 20) / 2, y + 18);
+                ctx.renderComponentTooltipCenteredForNextFrameVanilla(texts, x, y + 18F);
             }
         }
         ctx.renderText(Component.literal(honeyCnt + "/" + MAX_HONEY_CNT), color, ctx.getZ(), LATTICES[5][0] + lw + 16 - 8.5F, LATTICES[5][1] + lh + 8);
@@ -199,6 +201,9 @@ public class BeehiveScreen extends ElementScreen {
         public final Bee entity;
         public int ticksInHive;
         public int minTicksInHive;
+
+        private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
+                = new ScreenRenderingContext.EntityRenderingCache();
 
         public BeeInfo(Level level) {
             entity = EntityUtils.create(EntityType.BEE, level);

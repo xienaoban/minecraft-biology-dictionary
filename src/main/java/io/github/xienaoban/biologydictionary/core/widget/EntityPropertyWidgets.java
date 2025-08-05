@@ -4,9 +4,7 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.branch.*;
-import io.github.xienaoban.biologydictionary.core.widget.leaf.BeeHivePropertyWidget;
-import io.github.xienaoban.biologydictionary.core.widget.leaf.VillagerJobSiteWidget;
-import io.github.xienaoban.biologydictionary.core.widget.leaf.VillagerScheduleWidget;
+import io.github.xienaoban.biologydictionary.core.widget.leaf.*;
 import io.github.xienaoban.biologydictionary.core.widget.variant.*;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import net.fabricmc.api.EnvType;
@@ -103,6 +101,7 @@ public final class EntityPropertyWidgets {
         r(EntityDisplayWidget.class);
         r(LivingEntityHealthWidget.class);
         r(EntityAirWidget.class);
+        r(DolphinMoistnessWidget.class);
         r(LivingEntityActiveEffectsWidget.class);
         r(AnimalFoodWidget.class);
         r(MobTemptWidget.class);
@@ -127,5 +126,6 @@ public final class EntityPropertyWidgets {
         r(EntityPortalCooldownWidget.class);
         r(VillagerJobSiteWidget.class);
         r(BeeHivePropertyWidget.class);
+        r(WanderingTraderDespawnDelayWidget.class);
     }
 }

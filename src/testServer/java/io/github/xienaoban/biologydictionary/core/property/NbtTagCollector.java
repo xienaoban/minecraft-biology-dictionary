@@ -55,7 +55,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         }
         try (BufferedWriter writer = Files.newBufferedWriter(LOGGER_PATH)) {
             nbtFileWriter = writer;
-            EntityManager.getInstance().dfsEntityTree(false, (cur, depth) -> {
+            EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
                 Class<? extends Entity> entityClazz = cur.getClazz();
                 // if (entityClazz != LivingEntity.class) return true;
                 LOGGER.info("Testing {}", entityClazz);

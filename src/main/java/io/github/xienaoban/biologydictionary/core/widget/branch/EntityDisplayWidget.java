@@ -60,6 +60,9 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
 
     private final Entity model;
 
+    private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
+            = new ScreenRenderingContext.EntityRenderingCache();
+
     public EntityDisplayWidget(EntityProperties<Entity> properties) {
         this(properties, createModelEntity(properties.entity()));
     }
@@ -81,7 +84,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        ctx.renderEntityCentered(model, getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
+        ctx.renderEntityCentered(model, entityRenderingCache, getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
                 (float) Math.atan(ctx.getMouseX() / 40F) / 10,
                 (float) Math.atan(ctx.getMouseY() / 40F) / 20);
     }
