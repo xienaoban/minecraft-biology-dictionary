@@ -21,7 +21,7 @@ public final class HighlightRenderer {
     public static void render(Minecraft client, ClientLevel level,
                               PoseStack poseStack, OutlineBufferSource bufferSource,
                               Camera camera, DeltaTracker deltaTracker) {
-        bufferSource.setColor(/* R */ 0, /* G */ 255, /* B */ 0, /* A */ 255);
+        bufferSource.setColor(/* R */ 255, /* G */ 255, /* B */ 255, /* A */ 255);
 
         EntityRenderDispatcher entityRenderDispatcher = client.getEntityRenderDispatcher();
         BlockRenderDispatcher blockRenderDispatcher = client.getBlockRenderer();

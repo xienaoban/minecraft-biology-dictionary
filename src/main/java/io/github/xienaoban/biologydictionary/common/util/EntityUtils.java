@@ -5,10 +5,12 @@ import io.github.xienaoban.biologydictionary.mixin.HorseIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.AgeableMob;
@@ -73,11 +75,11 @@ public final class EntityUtils {
     }
 
     /**
-     * Get deobfuscated class name of the vanilla entity.
+     * Get deobfuscated class name of the vanilla entity class (or interfaces).
      * @param clazz Entity class
      * @return deobfuscated class name or null if not vanilla entity class
      */
-    public static String getDeobfuscatedName(Class<? extends Entity> clazz) {
+    public static String getDeobfuscatedName(Class<?> clazz) {
         return EntityVanillaDeobfuscation.clazzToName.get(clazz);
     }
 
@@ -99,8 +101,32 @@ public final class EntityUtils {
         return Misc.cast(entity.getType());
     }
 
-    public static ResourceLocation getEntityTypeName(Entity entity) {
-        return EntityType.getKey(entity.getType());
+    public static ResourceLocation getEntityTypeId(Entity entity) {
+        return getEntityTypeId(entity.getType());
+    }
+
+    public static ResourceLocation getEntityTypeId(EntityType<?> entityType) {
+        return EntityType.getKey(entityType);
+    }
+
+    public static String getEntityTypeIdString(Entity entity) {
+        return getEntityTypeIdString(entity.getType());
+    }
+
+    public static String getEntityTypeIdString(EntityType<?> entityType) {
+        return getEntityTypeId(entityType).toString();
+    }
+
+    public static <E extends Entity> EntityType<E> getEntityType(String key) {
+        return Misc.cast(EntityType.byString(key).orElse(null));
+    }
+
+    public static <E extends Entity> EntityType<E> getEntityType(ResourceKey<EntityType<?>> key) {
+        return getEntityType(key.location());
+    }
+
+    public static <E extends Entity> EntityType<E> getEntityType(ResourceLocation key) {
+        return Misc.cast(BuiltInRegistries.ENTITY_TYPE.getOptional(key).orElse(null));
     }
 
     // ============================================================================ //

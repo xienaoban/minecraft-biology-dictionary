@@ -109,7 +109,6 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
     public VillagerScheduleWidget(EntityProperties<Villager> properties) {
         super(properties, Page.COLUMNS);
 
-
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new ScheduleBar());
     }

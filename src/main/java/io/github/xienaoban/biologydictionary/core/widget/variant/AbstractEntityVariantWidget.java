@@ -27,8 +27,8 @@ import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends EntityPropertyWidget<E> {
-    protected static final int BG_BAR1_LEFT = 1, BG_BAR1_TOP = 24;
-    protected static final int BG_BAR2_LEFT = 3, BG_BAR2_TOP = 24;
+    protected static final int BG_BAR1_LEFT = 11, BG_BAR1_TOP = 24;
+    protected static final int BG_BAR2_LEFT = 13, BG_BAR2_TOP = 24;
 
     private static RC calcRowsAndColumns(int variantCnt, int maxDisplayCntPerLine, int rowsPerVariant) {
         int rows = rowsPerVariant * ((variantCnt + maxDisplayCntPerLine - 1) / maxDisplayCntPerLine);
@@ -141,7 +141,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     public final String getVariantNameKeyPrefix() {
         // variant.minecraft.cat.xxxx
-        ResourceLocation rl = EntityUtils.getEntityTypeName(e());
+        ResourceLocation rl = EntityUtils.getEntityTypeId(e());
         return "variant." + rl.getNamespace() + "." + rl.getPath() + ".";
     }
 
@@ -246,6 +246,9 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
         private float widthFix;
         private float heightFix;
+
+        private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
+                = new ScreenRenderingContext.EntityRenderingCache();
 
         public VariantElement(int index, V variant) {
             this.index = index;
@@ -358,7 +361,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         private void renderEntity(ScreenRenderingContext ctx) {
-            ctx.renderEntityCentered(model,
+            ctx.renderEntityCentered(model, entityRenderingCache,
                     getBox().getLeft() - 1- widthFix / 2,
                     getBox().getTop() + 1 - heightFix,
                     getBox().getRight() + 1 + widthFix / 2,

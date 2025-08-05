@@ -12,6 +12,7 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.mixin.AnimalIMixin;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -26,8 +27,8 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
     /**
      * @see net.minecraft.world.entity.animal.Animal#PARENT_AGE_AFTER_BREEDING
      */
-    private static final int BREED_MAX = 6000;
-    private static final int BREED_OFF = 0;
+    private static final int BREED_COOLDOWN_MAX = AnimalIMixin.getParentAgeAfterBreeding();
+    private static final int BREED_COOLDOWN_OFF = 0;
 
     private final IntProperty<AgeableMob> ageProperty = VanillaEntityProperties.OfAgeableMob.getAgeProperty(p());
     private final IntProperty<AgeableMob> forcedAgeProperty = VanillaEntityProperties.OfAgeableMob.getForcedAgeProperty(p());
@@ -51,7 +52,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
             return;
         }
         int age = ageOpt;
-        if (age > BREED_OFF) {
+        if (age > BREED_COOLDOWN_OFF) {
             ageProperty.set(age - 1);
         }
     }
@@ -81,15 +82,15 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
             }
             int age = ageOpt;
             int forcedAge = forcedAgeOpt;
-            updatePercent(forcedAge > BREED_OFF ? 1 : ((float) age / BREED_MAX));
+            updatePercent(forcedAge > BREED_COOLDOWN_OFF ? 1 : ((float) age / BREED_COOLDOWN_MAX));
             super.onRender(ctx);
             if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(age + "t/" + BREED_MAX + "t"));
+                renderInnerText(ctx, Component.literal(age + "t/" + BREED_COOLDOWN_MAX + "t"));
             } else if (isAdultClient()) {
-                if (forcedAge > BREED_OFF) {
+                if (forcedAge > BREED_COOLDOWN_OFF) {
                     renderInnerText(ctx, Component.translatable(Lang.TEXT_NEVER_BREED));
                 } else {
-                    renderInnerText(ctx, Component.literal((age / 20) + "s/" + (BREED_MAX / 20 / 60) + "m"));
+                    renderInnerText(ctx, Component.literal((age / 20) + "s/" + (BREED_COOLDOWN_MAX / 20 / 60) + "m"));
                 }
             } else {
                 renderInnerText(ctx, Component.translatable(Lang.TEXT_BABY));
@@ -109,7 +110,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                 setTextureLeftOffset(10);
             } else {
                 Integer forcedAge = forcedAgeProperty.get();
-                if (forcedAge != null && forcedAge > BREED_OFF) {
+                if (forcedAge != null && forcedAge > BREED_COOLDOWN_OFF) {
                     setTextureLeftOffset(10);
                 } else {
                     setTextureLeftOffset(0);
@@ -131,13 +132,11 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
 
             int forcedAge = forcedAgeOpt;
             if (isMouseLeft(code)) {
-                boolean lock = false;
                 final int toSet;
-                if (forcedAge == BREED_OFF) {
-                    toSet = BREED_MAX;
-                    lock = true;
+                if (forcedAge == BREED_COOLDOWN_OFF) {
+                    toSet = BREED_COOLDOWN_MAX;
                 } else {
-                    toSet = BREED_OFF;
+                    toSet = BREED_COOLDOWN_OFF;
                 }
 
                 // Send to the server.
@@ -145,12 +144,12 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                 property.set(toSet);
                 forcedAgeProperty.set(toSet);
                 CompoundTag nbt = property.toNbt();
-                if (lock) {
-                    IntProperty<AgeableMob> ap = VanillaEntityProperties.OfAgeableMob.createAgeProperty();
-                    ap.set(toSet);
-                    ageProperty.set(toSet);
-                    ap.writeTo(nbt);
-                }
+
+                IntProperty<AgeableMob> ap = VanillaEntityProperties.OfAgeableMob.createAgeProperty();
+                ap.set(BREED_COOLDOWN_MAX);
+                ageProperty.set(BREED_COOLDOWN_MAX);
+                ap.writeTo(nbt);
+
                 ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
             }
             return super.onMouseDown(x, y, code);

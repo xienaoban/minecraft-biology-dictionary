@@ -44,12 +44,6 @@ public abstract class ScreenElement {
     protected void onTick(int ticks) {}
 
     /**
-     * Render the content of the current element.
-     * @param ctx the context of the screen
-     */
-    protected void onRender(ScreenRenderingContext ctx) {}
-
-    /**
      * Resize the width and height of the current element.
      * And also relocate the sub elements.
      * @param width the new width of the screen, same with this.width
@@ -65,6 +59,20 @@ public abstract class ScreenElement {
      * @return whether to consume the event (return false to pass the event to the parent element)
      */
     protected boolean onMouseDown(float x, float y, int code) { return false; }
+
+    /**
+     * Render the content of the current element.
+     * @param ctx the context of the screen
+     */
+    protected void onRender(ScreenRenderingContext ctx) {}
+
+    /**
+     * Render the content of the current element.
+     * @param ctx the context of the screen
+     */
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        return false;
+    }
 
     @Nullable public final ScreenElement getParent() {
         return parent;
@@ -113,6 +121,15 @@ public abstract class ScreenElement {
         }
         for (ScreenElement subEle : subScreenElements) {
             subEle.render(ctx);
+        }
+    }
+
+    public final void renderHovered(ScreenRenderingContext ctx) {
+        assert isHovered(ctx.getMouseX(), ctx.getMouseY());
+        ScreenElement hovered = this;
+        while (!hovered.onRenderHovered(ctx)) {
+            hovered = hovered.getParent();
+            if (hovered == null) { return; }
         }
     }
 
