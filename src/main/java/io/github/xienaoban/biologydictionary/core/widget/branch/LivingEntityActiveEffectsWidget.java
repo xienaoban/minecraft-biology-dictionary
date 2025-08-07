@@ -11,12 +11,16 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.mixin.MobEffectInstanceIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -30,6 +34,58 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new ActiveEffectsBar());
+    }
+
+    @Override
+    protected void onTick(int ticks) {
+        super.onTick(ticks);
+        List<MobEffectInstance> effects = activeEffectsProperty.get();
+        if (effects == null || effects.isEmpty()) {
+            return;
+        }
+        for (MobEffectInstance effect : effects) {
+            int duration = effect.getDuration();
+            if (duration > 0) {
+                ((MobEffectInstanceIMixin) effect).setDuration(duration - 1);
+            }
+        }
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        List<Component> list = new ArrayList<>();
+        list.add(Component.empty());
+        List<MobEffectInstance> effects = activeEffectsProperty.get();
+        if (effects == null || effects.isEmpty()) {
+            list.add(tooltipBody(Lang.TEXT_EMPTY_WITH_BRACKETS));
+        } else {
+            int maxW = -1;
+            for (MobEffectInstance effect : effects) {
+                Component name = effect.getEffect().value().getDisplayName();
+                maxW = Math.max(maxW, ctx.calcTextWidth(name));
+            }
+            for (MobEffectInstance effect : effects) {
+                Component name = ComponentUtils.formatList(List.of(
+                        effect.getEffect().value().getDisplayName(),
+                        Component.literal(String.valueOf(effect.getAmplifier() + 1))),
+                        Component.empty());
+                int duration = effect.getDuration();
+                Component time;
+                if (ctx.isDebug()) {
+                    time = Component.literal(duration + "t").withStyle(ChatFormatting.GRAY);
+                } else if (duration == MobEffectInstance.INFINITE_DURATION) {
+                    time = Component.translatable(Lang.TEXT_INFINITY_CHARACTER).withStyle(ChatFormatting.GRAY);
+                } else {
+                    time = Component.literal((effect.getDuration() / 20) + "s").withStyle(ChatFormatting.GRAY);
+                }
+                int w = ctx.calcTextWidth(name) + ctx.calcTextWidth(time);
+                Component dot = Component.literal(".".repeat(Math.max(0, (maxW + 40 - w) / 2))).withStyle(ChatFormatting.DARK_GRAY);
+                list.add(ComponentUtils.formatList(List.of(name, dot, time), Component.literal(" ")));
+            }
+        }
+        list.addFirst(tooltipTitle(Lang.PROPERTY_WIDGET_EFFECTS));
+        renderTooltip(ctx, list);
+        return true;
     }
 
     private final class ActiveEffectsBar extends EntityPropertyProgressBar {

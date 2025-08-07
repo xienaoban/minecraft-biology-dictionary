@@ -52,6 +52,13 @@ public final class Lang {
     TAG_DEFAULT_ENEMY_HUMANOID       = "tag.biologydictionary.default.enemy_humanoid",
     TAG_DEFAULT_ENEMY_PATROL         = "tag.biologydictionary.default.enemy_patrol",
 
+    PROPERTY_WIDGET_HEALTH              = "property_widget.biologydictionary.health",
+    PROPERTY_WIDGET_AIR                 = "property_widget.biologydictionary.air",
+    PROPERTY_WIDGET_EFFECTS             = "property_widget.biologydictionary.effects",
+    PROPERTY_WIDGET_BOUNDING_BOX        = "property_widget.biologydictionary.bounding_box",
+    PROPERTY_WIDGET_SOUND               = "property_widget.biologydictionary.sound",
+    PROPERTY_WIDGET_SOUND_MUTE          = "property_widget.biologydictionary.sound.mute",
+
     TEXT_MOD_NAME_IS                         = "text.biologydictionary.mod_name_is",
     TEXT_MOD_NOT_INSTALLED                   = "text.biologydictionary.mod_not_installed",
     TEXT_CLICK_ME_TO_DOWNLOAD                = "text.biologydictionary.click_me_to_download",
