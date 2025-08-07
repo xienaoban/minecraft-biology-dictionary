@@ -36,6 +36,13 @@
   "tag.biologydictionary.default.enemy_humanoid"       : "Humanoid",
   "tag.biologydictionary.default.enemy_patrol"         : "Patrol",
 
+  "property_widget.biologydictionary.health"        : "Health Points",
+  "property_widget.biologydictionary.air"           : "Oxygen",
+  "property_widget.biologydictionary.effects"       : "Effects",
+  "property_widget.biologydictionary.bounding_box"  : "Bounding Box (X Y Z)",
+  "property_widget.biologydictionary.sound"         : "Sound",
+  "property_widget.biologydictionary.sound.mute"    : "Mute",
+
   "net.minecraft.world.entity.Entity"                                  : "Entity",
   "net.minecraft.world.entity.LivingEntity"                            : "LivingEntity",
   "net.minecraft.world.entity.Mob"                                     : "Mob",

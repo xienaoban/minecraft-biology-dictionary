@@ -36,6 +36,13 @@
   "tag.biologydictionary.default.enemy_humanoid"       : "人形生物",
   "tag.biologydictionary.default.enemy_patrol"         : "灾厄小队",
 
+  "property_widget.biologydictionary.health"        : "血量",
+  "property_widget.biologydictionary.air"           : "氧气",
+  "property_widget.biologydictionary.effects"       : "药水效果",
+  "property_widget.biologydictionary.bounding_box"  : "碰撞箱（X Y Z）",
+  "property_widget.biologydictionary.sound"         : "声音",
+  "property_widget.biologydictionary.sound.mute"    : "静音",
+
   "net.minecraft.world.entity.Entity"                                  : "实体",
   "net.minecraft.world.entity.LivingEntity"                            : "活体",
   "net.minecraft.world.entity.Mob"                                     : "生物",

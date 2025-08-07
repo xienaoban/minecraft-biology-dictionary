@@ -344,7 +344,7 @@ public final class ScreenRenderingContext {
             height += clientTooltipComponent.getHeight(font);
         }
 
-        Vector2ic vector2ic = clientTooltipPositioner.positionTooltip((int) (getGuiGraphics().guiWidth() / size), (int) (getGuiGraphics().guiHeight() / size), (int) ((x - 4) / size), (int) ((y + height) / size), width, height);
+        Vector2ic vector2ic = clientTooltipPositioner.positionTooltip((int) (getGuiGraphics().guiWidth() / size), (int) (getGuiGraphics().guiHeight() / size), (int) (x / size - 8), (int) (y / size + 16), width, height);
         int p = vector2ic.x();
         int q = vector2ic.y();
         getPose().pushMatrix();

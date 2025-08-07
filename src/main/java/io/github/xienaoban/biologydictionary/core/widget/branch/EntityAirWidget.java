@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
@@ -21,6 +22,12 @@ public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> 
         super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new AirBar());
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx, tooltipTitle(Lang.PROPERTY_WIDGET_AIR));
+        return true;
     }
 
     private final class AirBar extends EntityPropertyProgressBar {
