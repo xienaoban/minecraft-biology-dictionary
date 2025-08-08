@@ -72,6 +72,15 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         }
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_BEE_HIVE),
+                tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_DESC)
+        );
+        return true;
+    }
+
     private final class HiveDistanceBar extends EntityPropertyProgressBar {
         public HiveDistanceBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);

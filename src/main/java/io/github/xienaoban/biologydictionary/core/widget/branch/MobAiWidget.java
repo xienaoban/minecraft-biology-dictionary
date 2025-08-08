@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -35,6 +36,15 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
 
     private void setNoAi(boolean ai) {
         e().setNoAi(ai);
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_AI),
+                tooltipDescription(Lang.PROPERTY_WIDGET_AI_DESC)
+        );
+        return true;
     }
 
     private final class AiButton extends EntityPropertyButton {

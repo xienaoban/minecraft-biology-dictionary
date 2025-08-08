@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.variant;
 
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
@@ -232,6 +233,15 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
                 box.setPosition(wLeft, top + 3);
             }
         }
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_VARIANT),
+                tooltipDescription(Lang.PROPERTY_WIDGET_VARIANT_DESC)
+        );
+        return true;
     }
 
     public final class VariantElement extends ScreenElement {

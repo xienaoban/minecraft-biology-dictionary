@@ -1,5 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.widget.variant;
 
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
@@ -59,5 +61,14 @@ public final class VillagerTypeWidget extends AbstractEntityVariantWidget<Villag
         CodecProperty<Villager, VillagerData> property = VanillaEntityProperties.OfVillager.createVillagerDataProperty();
         property.set(e().getVillagerData().withType(element.getVariant()));
         property.writeTo(vanillaNbt);
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_VILLAGER_TYPE),
+                tooltipDescription(Lang.PROPERTY_WIDGET_VILLAGER_TYPE_DESC)
+        );
+        return true;
     }
 }

@@ -69,6 +69,15 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
         }
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_JOB_SITE),
+                tooltipDescription(Lang.PROPERTY_WIDGET_JOB_SITE_DESC)
+        );
+        return true;
+    }
+
     private final class JobSiteDistanceBar extends EntityPropertyProgressBar {
         public JobSiteDistanceBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);

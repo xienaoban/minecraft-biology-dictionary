@@ -26,7 +26,10 @@ public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx, tooltipTitle(Lang.PROPERTY_WIDGET_BOUNDING_BOX));
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_BOUNDING_BOX),
+                tooltipDescription(Lang.PROPERTY_WIDGET_BOUNDING_BOX_DESC)
+        );
         return true;
     }
 

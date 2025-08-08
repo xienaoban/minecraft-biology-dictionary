@@ -30,6 +30,15 @@ public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
         setElementBar(new TemptBar());
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_TEMPT),
+                tooltipDescription(Lang.PROPERTY_WIDGET_TEMPT_DESC)
+        );
+        return true;
+    }
+
     private final class TemptBar extends EntityPropertyBar {
         private float gap;
         private int lastSize = 0;

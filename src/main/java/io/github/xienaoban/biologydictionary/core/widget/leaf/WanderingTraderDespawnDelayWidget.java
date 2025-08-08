@@ -46,6 +46,15 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
         }
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_DESPAWN_DELAY),
+                tooltipDescription(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_DESC)
+        );
+        return true;
+    }
+
     private final class DespawnDelayBar extends EntityPropertyProgressBar {
         public DespawnDelayBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);

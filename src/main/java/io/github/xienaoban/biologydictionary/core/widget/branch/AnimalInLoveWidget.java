@@ -47,6 +47,15 @@ public final class AnimalInLoveWidget extends EntityPropertyStandardWidget<Anima
         }
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_IN_LOVE),
+                tooltipDescription(Lang.PROPERTY_WIDGET_IN_LOVE_DESC)
+        );
+        return true;
+    }
+
     private final class InLoveBar extends EntityPropertyProgressBar {
         public InLoveBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);

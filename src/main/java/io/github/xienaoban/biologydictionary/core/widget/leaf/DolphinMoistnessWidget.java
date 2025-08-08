@@ -43,6 +43,15 @@ public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin
         }
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_MOISTNESS),
+                tooltipDescription(Lang.PROPERTY_WIDGET_MOISTNESS_DESC)
+        );
+        return true;
+    }
+
     private final class MoistnessBar extends EntityPropertyProgressBar {
 
         public MoistnessBar() {

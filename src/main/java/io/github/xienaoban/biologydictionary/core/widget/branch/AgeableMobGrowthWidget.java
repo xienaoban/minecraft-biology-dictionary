@@ -53,6 +53,15 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
         }
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_GROWTH),
+                tooltipDescription(Lang.PROPERTY_WIDGET_GROWTH_DESC)
+                );
+        return true;
+    }
+
     private final class GrowthBar extends EntityPropertyProgressBar {
         public GrowthBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);

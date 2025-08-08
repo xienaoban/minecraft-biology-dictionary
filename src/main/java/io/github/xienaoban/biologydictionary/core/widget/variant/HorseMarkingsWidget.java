@@ -1,5 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.widget.variant;
 
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -53,5 +55,14 @@ public final class HorseMarkingsWidget extends AbstractEntityVariantWidget<Horse
         CompoundTag nbt = EntityUtils.getNbt(tmp);
         String key = VanillaEntityProperties.OfHorse.getVariantProperty(p()).name();
         vanillaNbt.put(key, Objects.requireNonNull(nbt.get(key)));
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_MARKINGS),
+                tooltipDescription(Lang.PROPERTY_WIDGET_MARKINGS_DESC)
+        );
+        return true;
     }
 }

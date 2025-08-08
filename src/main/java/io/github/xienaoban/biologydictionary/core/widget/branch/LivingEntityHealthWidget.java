@@ -25,7 +25,10 @@ public final class LivingEntityHealthWidget extends EntityPropertyStandardWidget
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx, tooltipTitle(Lang.PROPERTY_WIDGET_HEALTH));
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_HEALTH),
+                tooltipDescription(Lang.PROPERTY_WIDGET_HEALTH_DESC)
+        );
         return true;
     }
 

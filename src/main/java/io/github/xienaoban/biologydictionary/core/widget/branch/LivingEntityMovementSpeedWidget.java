@@ -1,5 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
@@ -27,5 +29,14 @@ public final class LivingEntityMovementSpeedWidget extends AbstractLivingEntityA
     @Override
     protected String calcUnit(double attr, double value) {
         return "m/s";
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_MOVEMENT_SPEED),
+                tooltipDescription(Lang.PROPERTY_WIDGET_MOVEMENT_SPEED_DESC)
+        );
+        return true;
     }
 }
