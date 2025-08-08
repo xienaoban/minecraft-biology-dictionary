@@ -35,7 +35,10 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx, tooltipTitle(Lang.PROPERTY_WIDGET_SOUND));
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_SOUND),
+                tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_DESC)
+        );
         return true;
     }
 
@@ -52,7 +55,10 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx, tooltipTitle(Lang.PROPERTY_WIDGET_SOUND_MUTE));
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_SOUND_MUTE),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_MUTE_DESC)
+            );
             return true;
         }
 

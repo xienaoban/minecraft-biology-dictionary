@@ -1,5 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
@@ -28,5 +30,14 @@ public final class LivingEntityJumpStrengthWidget extends AbstractLivingEntityAt
     @Override
     protected String calcUnit(double attr, double value) {
         return "m";
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_JUMP_STRENGTH),
+                tooltipDescription(Lang.PROPERTY_WIDGET_JUMP_STRENGTH_DESC)
+        );
+        return true;
     }
 }

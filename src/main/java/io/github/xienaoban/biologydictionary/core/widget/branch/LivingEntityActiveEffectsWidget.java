@@ -54,6 +54,8 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
         List<Component> list = new ArrayList<>();
+        list.add(tooltipTitle(Lang.PROPERTY_WIDGET_EFFECTS));
+        list.add(tooltipDescription(Lang.PROPERTY_WIDGET_EFFECTS_DESC));
         list.add(Component.empty());
         List<MobEffectInstance> effects = activeEffectsProperty.get();
         if (effects == null || effects.isEmpty()) {
@@ -83,7 +85,6 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
                 list.add(ComponentUtils.formatList(List.of(name, dot, time), Component.literal(" ")));
             }
         }
-        list.addFirst(tooltipTitle(Lang.PROPERTY_WIDGET_EFFECTS));
         renderTooltip(ctx, list);
         return true;
     }

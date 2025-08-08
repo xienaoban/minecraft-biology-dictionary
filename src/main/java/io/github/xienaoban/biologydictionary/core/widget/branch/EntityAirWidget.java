@@ -26,7 +26,10 @@ public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> 
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx, tooltipTitle(Lang.PROPERTY_WIDGET_AIR));
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_AIR),
+                tooltipDescription(Lang.PROPERTY_WIDGET_AIR_DESC)
+        );
         return true;
     }
 

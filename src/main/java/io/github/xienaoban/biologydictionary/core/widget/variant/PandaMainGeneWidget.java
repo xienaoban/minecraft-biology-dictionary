@@ -1,5 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.widget.variant;
 
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
@@ -45,5 +47,14 @@ public class PandaMainGeneWidget extends AbstractEntityVariantWidget<Panda, Pand
         CodecProperty<Panda, Panda.Gene> gene = VanillaEntityProperties.OfPanda.createMainGeneProperty();
         gene.set(element.getVariant());
         gene.writeTo(vanillaNbt);
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_MAIN_GENE),
+                tooltipDescription(Lang.PROPERTY_WIDGET_MAIN_GENE_DESC)
+        );
+        return true;
     }
 }

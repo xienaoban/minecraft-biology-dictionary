@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -30,6 +31,15 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
     private boolean isInvulnerable() {
         Boolean inv = invulnerableProperty.get();
         return inv != null && inv;
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_INVULNERABLE),
+                tooltipDescription(Lang.PROPERTY_WIDGET_INVULNERABLE_DESC)
+        );
+        return true;
     }
 
     private final class InvulnerableButton extends EntityPropertyButton {

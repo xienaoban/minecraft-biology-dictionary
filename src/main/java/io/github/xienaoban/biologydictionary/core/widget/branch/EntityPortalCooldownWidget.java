@@ -59,6 +59,15 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
         }
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN),
+                tooltipDescription(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_DESC)
+        );
+        return true;
+    }
+
     private boolean isClientEntityInNetherPortal() {
         Entity entity = e();
         Level level = entity.level();

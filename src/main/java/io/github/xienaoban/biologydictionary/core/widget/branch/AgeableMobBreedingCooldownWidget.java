@@ -57,6 +57,15 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
         }
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN),
+                tooltipDescription(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_DESC)
+        );
+        return true;
+    }
+
     private final class BreedingBar extends EntityPropertyProgressBar {
         public BreedingBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
