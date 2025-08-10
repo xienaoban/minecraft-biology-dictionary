@@ -116,5 +116,14 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
             }
             return true;
         }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_JOB_SITE_LOCATE),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_JOB_SITE_LOCATE_DESC)
+            );
+            return true;
+        }
     }
 }

@@ -56,8 +56,8 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_SOUND_MUTE),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_MUTE_DESC)
+                    tooltipTitle(Lang.PROPERTY_WIDGET_SOUND_SWITCH),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_SWITCH_DESC)
             );
             return true;
         }
