@@ -119,6 +119,15 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
             }
             return true;
         }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_BEE_HIVE_LOCATE),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_LOCATE_DESC)
+            );
+            return true;
+        }
     }
 
     private final class ClearHiveButton extends EntityPropertyButton {
@@ -139,6 +148,15 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
                 hivePosProperty.set(null);
                 ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
             }
+            return true;
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR_DESC)
+            );
             return true;
         }
     }

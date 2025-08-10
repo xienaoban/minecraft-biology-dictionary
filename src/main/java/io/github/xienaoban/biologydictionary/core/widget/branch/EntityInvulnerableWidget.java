@@ -49,12 +49,6 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
         }
 
         @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            setTextureLeftOffset((isInvulnerable() ? 0 : 1) * WIDGET_WIDTH);
-            super.onRender(ctx);
-        }
-
-        @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean inv = isInvulnerable();
@@ -63,6 +57,21 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
                 invulnerableProperty.set(!inv);
                 ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
             }
+            return true;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            setTextureLeftOffset((isInvulnerable() ? 0 : 1) * WIDGET_WIDTH);
+            super.onRender(ctx);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH_DESC)
+            );
             return true;
         }
     }

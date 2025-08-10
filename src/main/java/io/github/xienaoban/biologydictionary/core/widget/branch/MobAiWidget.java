@@ -54,12 +54,6 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
         }
 
         @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            setTextureLeftOffset((isNoAi() ? 1 : 0) * WIDGET_WIDTH);
-            super.onRender(ctx);
-        }
-
-        @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean noAi = isNoAi();
@@ -76,6 +70,21 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
 
                 ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
             }
+            return true;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            setTextureLeftOffset((isNoAi() ? 1 : 0) * WIDGET_WIDTH);
+            super.onRender(ctx);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_AI_SWITCH),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_AI_SWITCH_DESC)
+            );
             return true;
         }
     }

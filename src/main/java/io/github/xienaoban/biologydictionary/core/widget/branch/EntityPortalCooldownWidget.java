@@ -130,17 +130,6 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
         }
 
         @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            Integer cooldown = portalCooldownProperty.get();
-            if (cooldown != null && cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
-                setTextureLeftOffset(10);
-            } else {
-                setTextureLeftOffset(0);
-            }
-            super.onRender(ctx);
-        }
-
-        @Override
         protected boolean onMouseDown(float x, float y, int code) {
             Integer cooldownOpt = portalCooldownProperty.get();
             if (cooldownOpt == null) {
@@ -162,6 +151,26 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
                 ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
             }
             return super.onMouseDown(x, y, code);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            Integer cooldown = portalCooldownProperty.get();
+            if (cooldown != null && cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+                setTextureLeftOffset(10);
+            } else {
+                setTextureLeftOffset(0);
+            }
+            super.onRender(ctx);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_LOCK),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_LOCK_DESC)
+            );
+            return true;
         }
     }
 }
