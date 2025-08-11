@@ -23,7 +23,7 @@ import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.phys.Vec3;
 
 public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
-    private static final int L = 6, T = 5;
+    private static final int L = 1, T = 6;
 
     private static final float NO_DIS = Float.MIN_VALUE;
     private static final float MAX_DIS = /* Bee.TOO_FAR_DISTANCE */ 48F;

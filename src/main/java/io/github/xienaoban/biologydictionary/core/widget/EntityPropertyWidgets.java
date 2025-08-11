@@ -125,6 +125,7 @@ public final class EntityPropertyWidgets {
         r(AnimalInLoveWidget.class);
         r(EntityPortalCooldownWidget.class);
         r(VillagerJobSiteWidget.class);
+        r(VillagerRestocksTodayWidget.class);
         r(BeeHivePropertyWidget.class);
         r(WanderingTraderDespawnDelayWidget.class);
     }
