@@ -98,6 +98,8 @@
   "property_widget.biologydictionary.job_site.desc"               : "决定了村民的职业，接近方块才能补货",
   "property_widget.biologydictionary.job_site.locate"             : "定位工作站点方块",
   "property_widget.biologydictionary.job_site.locate.desc"        : "高亮工作站点方块一段时间",
+  "property_widget.biologydictionary.restocks_today"              : "今日已补货次数",
+  "property_widget.biologydictionary.restocks_today.desc"         : "一般来说村民每天只在工作时间会补货最多2次",
   "property_widget.biologydictionary.bee_hive"                    : "蜂巢/蜂箱方块",
   "property_widget.biologydictionary.bee_hive.desc"               : "蜜蜂的目标蜂巢/蜂箱方块",
   "property_widget.biologydictionary.bee_hive.locate"             : "定位蜂巢位置",

@@ -114,6 +114,8 @@ public final class Lang {
     PROPERTY_WIDGET_JOB_SITE_DESC               = "property_widget.biologydictionary.job_site.desc",
     PROPERTY_WIDGET_JOB_SITE_LOCATE             = "property_widget.biologydictionary.job_site.locate",
     PROPERTY_WIDGET_JOB_SITE_LOCATE_DESC        = "property_widget.biologydictionary.job_site.locate.desc",
+    PROPERTY_WIDGET_RESTOCKS_TODAY              = "property_widget.biologydictionary.restocks_today",
+    PROPERTY_WIDGET_RESTOCKS_TODAY_DESC         = "property_widget.biologydictionary.restocks_today.desc",
     PROPERTY_WIDGET_BEE_HIVE                    = "property_widget.biologydictionary.bee_hive",
     PROPERTY_WIDGET_BEE_HIVE_DESC               = "property_widget.biologydictionary.bee_hive.desc",
     PROPERTY_WIDGET_BEE_HIVE_LOCATE             = "property_widget.biologydictionary.bee_hive.locate",

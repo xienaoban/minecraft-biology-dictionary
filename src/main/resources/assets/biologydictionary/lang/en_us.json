@@ -98,6 +98,8 @@
   "property_widget.biologydictionary.job_site.desc"               : "Villagers should get close to the block to replenish goods",
   "property_widget.biologydictionary.job_site.locate"             : "Locate The Job Site",
   "property_widget.biologydictionary.job_site.locate.desc"        : "Highlight the site for some time",
+  "property_widget.biologydictionary.restocks_today"              : "Number Of Restocks Today",
+  "property_widget.biologydictionary.restocks_today.desc"         : "Generally, villagers only restock 2 times a day during working hours",
   "property_widget.biologydictionary.bee_hive"                    : "Bee Hive",
   "property_widget.biologydictionary.bee_hive.desc"               : "Home of the bee",
   "property_widget.biologydictionary.bee_hive.locate"             : "Locate The Bee Hive",
