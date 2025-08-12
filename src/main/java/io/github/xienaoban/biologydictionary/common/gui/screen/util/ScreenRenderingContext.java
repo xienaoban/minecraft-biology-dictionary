@@ -308,13 +308,13 @@ public final class ScreenRenderingContext {
 
     public void renderComponentTooltipCentered(List<Component> texts, float midX, float topY) {
         int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
-        renderComponentTooltip(texts, midX - (maxLength + 20) / 2F, topY);
+        renderComponentTooltip(texts, midX - (maxLength + 6) / 2F, topY);
     }
 
     public void renderComponentTooltipCentered(List<Component> texts, float size, float midX, float topY) {
         try (ScaleRAII ignored = scaleOnce(size)) {
             int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
-            renderTooltip(texts, midX - (maxLength + 20) / 2F, topY, size);
+            renderTooltip(texts, midX - (maxLength + 6) * size / 2F, topY, size);
         }
     }
 

@@ -11,6 +11,8 @@ public final class PacketPayloads {
             RequestEntityDataPacket.class,
             RequestHandbookItemPacket.class,
             RequestEntityHighlightingPacket.class,
+            RequestSpawnEggPacket.class,
+            SendScreenMessagePacket.class,
             SendBeehiveInfoPacket.class,
             SendEntityDataPacket.class,
             SendUpdatedEntityPropertiesPacket.class,
