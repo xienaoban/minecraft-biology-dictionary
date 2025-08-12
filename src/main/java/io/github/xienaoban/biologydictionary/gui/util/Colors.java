@@ -11,4 +11,6 @@ public final class Colors {
     public static final int COMMON_DARK_TEXT = 0xBB000000;
     public static final int BLACK = 0xFF000000;
 
+    public static final int SCREEN_MESSAGE_DEFAULT_COLOR = 0x00FFFF00;
+
 }

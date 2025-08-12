@@ -7,13 +7,13 @@ import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.McUtils;
+import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.GameType;
 
 public record RequestEntityHighlightingPacket(EntityType<?> entityType, float radius) implements Packet {
     public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
@@ -45,7 +45,7 @@ public record RequestEntityHighlightingPacket(EntityType<?> entityType, float ra
             allowed = false;
             McUtils.showClientCenteredMessage(player, Component.translatable(Lang.TEXT_FAILED_TO_HIGHLIGHT,
                     Component.translatable(Lang.TEXT_UNKNOWN_ENTITY_TYPE)));
-        } else if (player.gameMode() == GameType.CREATIVE || player.gameMode() == GameType.SPECTATOR) {
+        } else if (PlayerUtils.isCreative(player) || PlayerUtils.isSpectator(player)) {
             allowed = true;
         } else if (entityType == EntityType.PLAYER) {
             allowed = false;
