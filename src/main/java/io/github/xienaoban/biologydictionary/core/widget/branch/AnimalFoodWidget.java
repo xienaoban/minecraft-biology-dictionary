@@ -32,6 +32,15 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
         setElementBar(new FoodBar());
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_FOOD),
+                tooltipDescription(Lang.PROPERTY_WIDGET_FOOD_DESC)
+        );
+        return true;
+    }
+
     private final class FoodBar extends EntityPropertyBar {
         private float gap;
 

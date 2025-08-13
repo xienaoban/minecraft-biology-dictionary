@@ -69,6 +69,15 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
         }
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_JOB_SITE),
+                tooltipDescription(Lang.PROPERTY_WIDGET_JOB_SITE_DESC)
+        );
+        return true;
+    }
+
     private final class JobSiteDistanceBar extends EntityPropertyProgressBar {
         public JobSiteDistanceBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
@@ -105,6 +114,15 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
                 HighlightManager.highlightBlock(currJobSitePos.pos(), Const.HIGHLIGHT_BLOCK_TICKS);
                 McClientUtils.setScreen(null);
             }
+            return true;
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_JOB_SITE_LOCATE),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_JOB_SITE_LOCATE_DESC)
+            );
             return true;
         }
     }

@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -32,6 +33,15 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
         return silent != null && silent;
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_SOUND),
+                tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_DESC)
+        );
+        return true;
+    }
+
     private final class SoundButton extends EntityPropertyButton {
         public SoundButton() {
             super(Textures.ICONS, L_ON_OFF * WIDGET_WIDTH, T_ON_OFF * WIDGET_HEIGHT);
@@ -41,6 +51,15 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
         protected void onRender(ScreenRenderingContext ctx) {
             setTextureLeftOffset((isSilent() ? 1 : 0) * WIDGET_WIDTH);
             super.onRender(ctx);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_SOUND_SWITCH),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_SWITCH_DESC)
+            );
+            return true;
         }
 
         @Override

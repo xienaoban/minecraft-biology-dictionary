@@ -17,7 +17,7 @@ import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.entity.npc.WanderingTraderSpawner;
 
 public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWidget<WanderingTrader> {
-    private static final int L = 1, T = 6;
+    private static final int L = 6, T = 6;
 
     /**
      * @see WanderingTraderSpawner#spawn(ServerLevel)
@@ -44,6 +44,15 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
         if (delay > 0) {
             despawnDelayProperty.set(delay - 1);
         }
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_DESPAWN_DELAY),
+                tooltipDescription(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_DESC)
+        );
+        return true;
     }
 
     private final class DespawnDelayBar extends EntityPropertyProgressBar {

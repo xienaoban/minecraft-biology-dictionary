@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -32,16 +33,19 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
         return inv != null && inv;
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_INVULNERABLE),
+                tooltipDescription(Lang.PROPERTY_WIDGET_INVULNERABLE_DESC)
+        );
+        return true;
+    }
+
     private final class InvulnerableButton extends EntityPropertyButton {
 
         public InvulnerableButton() {
             super(Textures.ICONS, L_ON_OFF * WIDGET_WIDTH, T_ON_OFF * WIDGET_HEIGHT);
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            setTextureLeftOffset((isInvulnerable() ? 0 : 1) * WIDGET_WIDTH);
-            super.onRender(ctx);
         }
 
         @Override
@@ -53,6 +57,21 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
                 invulnerableProperty.set(!inv);
                 ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
             }
+            return true;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            setTextureLeftOffset((isInvulnerable() ? 0 : 1) * WIDGET_WIDTH);
+            super.onRender(ctx);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH_DESC)
+            );
             return true;
         }
     }

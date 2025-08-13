@@ -9,6 +9,7 @@
     "EntityIMixin",
     "EntityMixin",
     "HorseIMixin",
+    "MobEffectInstanceIMixin",
     "MobIMixin",
     "TemptGoalIMixin"
   ],

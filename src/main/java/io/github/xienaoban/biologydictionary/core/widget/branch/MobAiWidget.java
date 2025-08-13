@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -37,16 +38,19 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
         e().setNoAi(ai);
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_AI),
+                tooltipDescription(Lang.PROPERTY_WIDGET_AI_DESC)
+        );
+        return true;
+    }
+
     private final class AiButton extends EntityPropertyButton {
 
         public AiButton() {
             super(Textures.ICONS, L_ON_OFF * WIDGET_WIDTH, T_ON_OFF * WIDGET_HEIGHT);
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            setTextureLeftOffset((isNoAi() ? 1 : 0) * WIDGET_WIDTH);
-            super.onRender(ctx);
         }
 
         @Override
@@ -66,6 +70,21 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
 
                 ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
             }
+            return true;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            setTextureLeftOffset((isNoAi() ? 1 : 0) * WIDGET_WIDTH);
+            super.onRender(ctx);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_AI_SWITCH),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_AI_SWITCH_DESC)
+            );
             return true;
         }
     }

@@ -11,71 +11,51 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.animal.Dolphin;
+import net.minecraft.world.entity.npc.Villager;
 
-public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin> {
-    private static final int L = 6, T = 2;
+public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Villager> {
+    private static final int L = 6, T = 5;
 
-    /**
-     * @see Dolphin#TOTAL_MOISTNESS_LEVEL
-     */
-    private static final int TOTAL_MOISTNESS_LEVEL = 2400;
+    private static final int MAX_RESTOCK_TODAY = 2;
 
-    private final IntProperty<Dolphin> moistnessProperty = VanillaEntityProperties.OfDolphin.getMoistnessProperty(p());
+    private final IntProperty<Villager> restocksTodayProperty = VanillaEntityProperties.OfVillager.getRestocksTodayProperty(p());
 
-    public DolphinMoistnessWidget(EntityProperties<Dolphin> properties) {
+    public VillagerRestocksTodayWidget(EntityProperties<Villager> properties) {
         super(properties);
 
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
-        setElementBar(new MoistnessBar());
-    }
-
-    @Override
-    protected void onTick(int ticks) {
-        super.onTick(ticks);
-        Integer mL = moistnessProperty.get();
-        if (mL == null) {
-            return;
-        }
-        int m = mL;
-        if (m > 0 && !e().isInWaterOrRain() && !e().isNoAi()) {
-            moistnessProperty.set(m - 1);
-        }
+        setElementBar(new RestocksTodayBar());
     }
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
         renderTooltip(ctx,
-                tooltipTitle(Lang.PROPERTY_WIDGET_MOISTNESS),
-                tooltipDescription(Lang.PROPERTY_WIDGET_MOISTNESS_DESC)
+                tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY),
+                tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_DESC)
         );
         return true;
     }
 
-    private final class MoistnessBar extends EntityPropertyProgressBar {
+    private final class RestocksTodayBar extends EntityPropertyProgressBar {
 
-        public MoistnessBar() {
+        public RestocksTodayBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
         }
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer mL = moistnessProperty.get();
-            if (mL == null) {
+            Integer numI = restocksTodayProperty.get();
+            if (numI == null) {
                 updatePercent(0);
                 super.onRender(ctx);
                 renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 return;
             }
-            int m = mL;
-            int mMax = TOTAL_MOISTNESS_LEVEL;
-            updatePercent((float) m / mMax);
+
+            int num = numI;
+            updatePercent((float) num / MAX_RESTOCK_TODAY);
             super.onRender(ctx);
-            if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(m + "t/" + mMax + "t"));
-            } else {
-                renderInnerText(ctx, Component.literal((m / 20) + "s/" + (mMax / 20) + "s"));
-            }
+            renderInnerText(ctx, Component.literal(String.valueOf(num)));
         }
     }
 }
