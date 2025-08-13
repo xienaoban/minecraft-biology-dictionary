@@ -51,13 +51,23 @@ public record RequestEntityHighlightingPacket(EntityType<?> entityType, float ra
             allowed = false;
             McUtils.showClientCenteredMessage(player, Component.translatable(Lang.TEXT_FAILED_TO_HIGHLIGHT,
                     Component.translatable(Lang.TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS)));
-        } else if (player.totalExperience < Const.HIGHLIGHT_ENTITIES_EXP) {
-            allowed = false;
-            McUtils.showClientCenteredMessage(player, Component.translatable(Lang.TEXT_FAILED_TO_HIGHLIGHT,
-                    Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE)));
         } else {
-            allowed = true;
-            player.giveExperiencePoints(-Const.HIGHLIGHT_ENTITIES_EXP);
+            int experience;
+            if (radius <= Const.HIGHLIGHT_ENTITIES_NEAR_DISTANCE) {
+                experience = Const.HIGHLIGHT_ENTITIES_NEAR_EXP;
+            } else if (radius <= Const.HIGHLIGHT_ENTITIES_FAR_DISTANCE) {
+                experience = Const.HIGHLIGHT_ENTITIES_FAR_EXP;
+            } else {
+                experience = Integer.MAX_VALUE;
+            }
+            if (player.totalExperience < experience) {
+                allowed = false;
+                McUtils.showClientCenteredMessage(player, Component.translatable(Lang.TEXT_FAILED_TO_HIGHLIGHT,
+                        Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE)));
+            } else {
+                allowed = true;
+                player.giveExperiencePoints(-experience);
+            }
         }
 
         if (allowed) {

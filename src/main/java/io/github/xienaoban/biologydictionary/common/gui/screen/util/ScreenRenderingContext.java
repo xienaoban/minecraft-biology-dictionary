@@ -78,7 +78,7 @@ public final class ScreenRenderingContext {
         assert mouseX == (int) this.mouseX && mouseY == (int) this.mouseY;
     }
 
-    public Minecraft getClient()     { return client; }
+    public Minecraft getClient()        { return client; }
     public Screen getScreen()           { return screen; }
     public GuiGraphics getGuiGraphics() { return guiGraphics; }
     public float getMouseX()            { return mouseX; }
