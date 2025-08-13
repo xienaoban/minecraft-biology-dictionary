@@ -13,6 +13,9 @@ public final class Lang {
 
     BIOLOGY_DICTIONARY_TITLE = "title.biologydictionary",
     BIOLOGY_DICTIONARY_DESCRIPTION = "description.biologydictionary",
+    AUTHOR = "author.biologydictionary",
+    MOD_NAME_TWO_LANG = "mode_name.biologydictionary.two_lang",
+    AUTHOR_NAME_TWO_LANG = "author_name.biologydictionary.two_lang",
 
     KEY_CATEGORY = "key.category.biologydictionary",
     KEY_OPEN_HANDBOOK = "key.biologydictionary.open_handbook",
@@ -131,6 +134,7 @@ public final class Lang {
     PROPERTY_WIDGET_DESPAWN_DELAY_DESC          = "property_widget.biologydictionary.despawn_delay.desc",
 
     TEXT_MOD_NAME_IS                         = "text.biologydictionary.mod_name_is",
+    TEXT_AUTHOR_IS                           = "text.biologydictionary.author_is",
     TEXT_MOD_NOT_INSTALLED                   = "text.biologydictionary.mod_not_installed",
     TEXT_CLICK_ME_TO_DOWNLOAD                = "text.biologydictionary.click_me_to_download",
     TEXT_INFO_FROM_THIS_MOD                  = "text.biologydictionary.info_from_this_mod",

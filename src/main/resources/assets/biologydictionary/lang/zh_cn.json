@@ -1,13 +1,16 @@
 {
   "biologydictionary": "生物辞典",
   "title.biologydictionary": "生物辞典",
-  "description.biologydictionary": "奇怪，怎么长得有点像生物必修2...",
+  "description.biologydictionary": "一本封面有点像生物必修2的奇怪的书...",
+  "author.biologydictionary": "蟹脑板",
 
   "minecraft": "我的世界",
 
   "key.category.biologydictionary": "生物辞典",
   "key.biologydictionary.open_handbook": "打开手册",
   "key.biologydictionary.debug": "切换调试模式",
+  "mode_name.biologydictionary.two_lang": "生物辞典（Biology Dictionary）",
+  "author_name.biologydictionary.two_lang": "蟹脑板（XieNaoban）",
 
   "bookmark.biologydictionary.all"          : "所有生物",
   "bookmark.biologydictionary.back_to_home" : "返回主页",
@@ -322,6 +325,7 @@
   "variant.minecraft.wolf.striped"  : "条纹",
 
   "text.biologydictionary.mod_name_is": "模组名：",
+  "text.biologydictionary.author_is": "作者：",
   "text.biologydictionary.mod_not_installed": "如果您看到了此段文字，说明您本地并未安装“生物辞典”模组，您可以前往以下网址下载本模组：",
   "text.biologydictionary.click_me_to_download": "点我点我点我！（≧.≦）",
   "text.biologydictionary.info_from_this_mod": "生物辞典信息：%s",

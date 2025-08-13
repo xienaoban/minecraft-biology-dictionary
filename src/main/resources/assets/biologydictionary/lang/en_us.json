@@ -2,12 +2,15 @@
   "biologydictionary": "Biology Dictionary",
   "title.biologydictionary": "Biology Dictionary",
   "description.biologydictionary": "Helps you know more about minecraft entities!",
+  "author.biologydictionary": "XieNaoban",
 
   "minecraft": "Minecraft",
 
   "key.category.biologydictionary": "Biology Dictionary",
   "key.biologydictionary.open_handbook": "Open Handbook",
   "key.biologydictionary.debug": "Toggle Debug Mode",
+  "mode_name.biologydictionary.two_lang": "Biology Dictionary (生物辞典)",
+  "author_name.biologydictionary.two_lang": "XieNaoban (蟹脑板)",
 
   "bookmark.biologydictionary.all"          : "All",
   "bookmark.biologydictionary.back_to_home" : "Back To Home",
@@ -322,6 +325,7 @@
   "variant.minecraft.wolf.striped"  : "Striped",
 
   "text.biologydictionary.mod_name_is": "Mod name: ",
+  "text.biologydictionary.author_is": "Author: ",
   "text.biologydictionary.mod_not_installed": "It means that you have not installed the mod `Biology Dictionary` if you see this text. You may download this mod at: ",
   "text.biologydictionary.click_me_to_download": "Click me to download!",
   "text.biologydictionary.info_from_this_mod": "Info From Biology Dictionary: %s",
