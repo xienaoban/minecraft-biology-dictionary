@@ -57,6 +57,15 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
         }
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN),
+                tooltipDescription(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_DESC)
+        );
+        return true;
+    }
+
     private final class BreedingBar extends EntityPropertyProgressBar {
         public BreedingBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
@@ -104,22 +113,6 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
         }
 
         @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            if (!isAdultClient()) {
-                // Treat adult as locked as it will never change state.
-                setTextureLeftOffset(10);
-            } else {
-                Integer forcedAge = forcedAgeProperty.get();
-                if (forcedAge != null && forcedAge > BREED_COOLDOWN_OFF) {
-                    setTextureLeftOffset(10);
-                } else {
-                    setTextureLeftOffset(0);
-                }
-            }
-            super.onRender(ctx);
-        }
-
-        @Override
         protected boolean onMouseDown(float x, float y, int code) {
             Integer forcedAgeOpt = forcedAgeProperty.get();
             if (forcedAgeOpt == null) {
@@ -153,6 +146,31 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                 ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
             }
             return super.onMouseDown(x, y, code);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            if (!isAdultClient()) {
+                // Treat adult as locked as it will never change state.
+                setTextureLeftOffset(10);
+            } else {
+                Integer forcedAge = forcedAgeProperty.get();
+                if (forcedAge != null && forcedAge > BREED_COOLDOWN_OFF) {
+                    setTextureLeftOffset(10);
+                } else {
+                    setTextureLeftOffset(0);
+                }
+            }
+            super.onRender(ctx);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK_DESC)
+            );
+            return true;
         }
     }
 }

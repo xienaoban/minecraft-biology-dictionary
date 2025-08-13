@@ -1,9 +1,13 @@
 package io.github.xienaoban.biologydictionary.gui.component;
 
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public abstract class EntityPropertyWidget<E extends Entity> extends Widget {
@@ -26,6 +30,14 @@ public abstract class EntityPropertyWidget<E extends Entity> extends Widget {
     }
 
     public final EntityProperties<E> p() { return properties; }
+
+    protected void renderTooltip(ScreenRenderingContext ctx, Component... texts) {
+        ctx.renderComponentTooltip(List.of(texts), 0.5F, getBox().getLeft(), getBox().getBottom() + 1);
+    }
+
+    protected void renderTooltip(ScreenRenderingContext ctx, List<Component> texts) {
+        ctx.renderComponentTooltip(texts, 0.5F, getBox().getLeft(), getBox().getBottom() + 1);
+    }
 
     public record RC(int rows, int columns) {}
 }

@@ -27,6 +27,10 @@ public final class ClientNetManager {
         ClientNetApi.send(new RequestEntityHighlightingPacket(entityType, radius));
     }
 
+    public static void requestSpawnEgg(EntityType<?> entityType) {
+        ClientNetApi.send(new RequestSpawnEggPacket(entityType));
+    }
+
     public static void requestBeehiveInfo(BlockPos pos) {
         ClientNetApi.send(new RequestBeehiveInfoPacket(pos));
     }

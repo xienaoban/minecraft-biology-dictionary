@@ -78,7 +78,7 @@ public final class ScreenRenderingContext {
         assert mouseX == (int) this.mouseX && mouseY == (int) this.mouseY;
     }
 
-    public Minecraft getClient()     { return client; }
+    public Minecraft getClient()        { return client; }
     public Screen getScreen()           { return screen; }
     public GuiGraphics getGuiGraphics() { return guiGraphics; }
     public float getMouseX()            { return mouseX; }
@@ -308,13 +308,13 @@ public final class ScreenRenderingContext {
 
     public void renderComponentTooltipCentered(List<Component> texts, float midX, float topY) {
         int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
-        renderComponentTooltip(texts, midX - (maxLength + 20) / 2F, topY);
+        renderComponentTooltip(texts, midX - (maxLength + 6) / 2F, topY);
     }
 
     public void renderComponentTooltipCentered(List<Component> texts, float size, float midX, float topY) {
         try (ScaleRAII ignored = scaleOnce(size)) {
             int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
-            renderTooltip(texts, midX - (maxLength + 20) / 2F, topY, size);
+            renderTooltip(texts, midX - (maxLength + 6) * size / 2F, topY, size);
         }
     }
 
@@ -344,7 +344,7 @@ public final class ScreenRenderingContext {
             height += clientTooltipComponent.getHeight(font);
         }
 
-        Vector2ic vector2ic = clientTooltipPositioner.positionTooltip((int) (getGuiGraphics().guiWidth() / size), (int) (getGuiGraphics().guiHeight() / size), (int) ((x - 4) / size), (int) ((y + height) / size), width, height);
+        Vector2ic vector2ic = clientTooltipPositioner.positionTooltip((int) (getGuiGraphics().guiWidth() / size), (int) (getGuiGraphics().guiHeight() / size), (int) (x / size - 8), (int) (y / size + 16), width, height);
         int p = vector2ic.x();
         int q = vector2ic.y();
         getPose().pushMatrix();

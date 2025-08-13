@@ -33,7 +33,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
         super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new GrowthBar());
-        addElementButton(new LockBabyButton());
+        addElementButton(new LockInBabyButton());
     }
 
     private boolean isAdultClient() {
@@ -51,6 +51,15 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
         if (age < ADULT_MIN_AGE) {
             ageProperty.set(age + 1);
         }
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_GROWTH),
+                tooltipDescription(Lang.PROPERTY_WIDGET_GROWTH_DESC)
+                );
+        return true;
     }
 
     private final class GrowthBar extends EntityPropertyProgressBar {
@@ -98,25 +107,9 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
         }
     }
 
-    private final class LockBabyButton extends EntityPropertyButton {
-        public LockBabyButton() {
+    private final class LockInBabyButton extends EntityPropertyButton {
+        public LockInBabyButton() {
             super(Textures.ICONS, 23 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT);
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            if (isAdultClient()) {
-                // Treat adult as locked as it will never change state.
-                setTextureLeftOffset(10);
-            } else {
-                Integer forcedAge = forcedAgeProperty.get();
-                if (forcedAge != null && forcedAge < ADULT_MIN_AGE) {
-                    setTextureLeftOffset(10);
-                } else {
-                    setTextureLeftOffset(0);
-                }
-            }
-            super.onRender(ctx);
         }
 
         @Override
@@ -153,6 +146,31 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                 ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
             }
             return super.onMouseDown(x, y, code);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            if (isAdultClient()) {
+                // Treat adult as locked as it will never change state.
+                setTextureLeftOffset(10);
+            } else {
+                Integer forcedAge = forcedAgeProperty.get();
+                if (forcedAge != null && forcedAge < ADULT_MIN_AGE) {
+                    setTextureLeftOffset(10);
+                } else {
+                    setTextureLeftOffset(0);
+                }
+            }
+            super.onRender(ctx);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_GROWTH_LOCK),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_GROWTH_LOCK_DESC)
+            );
+            return true;
         }
     }
 }

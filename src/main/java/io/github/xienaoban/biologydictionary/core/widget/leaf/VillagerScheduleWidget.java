@@ -113,6 +113,15 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
         setElementBar(new ScheduleBar());
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_SCHEDULE),
+                tooltipDescription(Lang.PROPERTY_WIDGET_SCHEDULE_DESC)
+        );
+        return true;
+    }
+
     private final class ScheduleBar extends EntityPropertyBar {
 
         public ScheduleBar() {

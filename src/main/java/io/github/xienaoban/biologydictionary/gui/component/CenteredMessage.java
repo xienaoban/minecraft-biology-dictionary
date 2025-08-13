@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.component;
 
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import net.minecraft.network.chat.Component;
 
 public class CenteredMessage extends ScreenElement {
@@ -21,7 +22,7 @@ public class CenteredMessage extends ScreenElement {
     }
 
     public void setText(Component text) {
-        setText(text, 0x00FFFF00);
+        setText(text, Colors.SCREEN_MESSAGE_DEFAULT_COLOR);
     }
 
     public void setText(Component text, int color) {

@@ -23,7 +23,7 @@ import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.phys.Vec3;
 
 public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
-    private static final int L = 6, T = 5;
+    private static final int L = 1, T = 6;
 
     private static final float NO_DIS = Float.MIN_VALUE;
     private static final float MAX_DIS = /* Bee.TOO_FAR_DISTANCE */ 48F;
@@ -72,6 +72,15 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         }
     }
 
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_BEE_HIVE),
+                tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_DESC)
+        );
+        return true;
+    }
+
     private final class HiveDistanceBar extends EntityPropertyProgressBar {
         public HiveDistanceBar() {
             super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
@@ -110,6 +119,15 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
             }
             return true;
         }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_BEE_HIVE_LOCATE),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_LOCATE_DESC)
+            );
+            return true;
+        }
     }
 
     private final class ClearHiveButton extends EntityPropertyButton {
@@ -130,6 +148,15 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
                 hivePosProperty.set(null);
                 ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
             }
+            return true;
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR_DESC)
+            );
             return true;
         }
     }

@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.common.gui.screen.util;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -215,5 +216,17 @@ public abstract class ScreenElement {
 
     public static boolean isMouseLeft(int code) {
         return code == GLFW.GLFW_MOUSE_BUTTON_LEFT;
+    }
+
+    public static Component tooltipTitle(String trans) {
+        return Component.translatable(trans).withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD);
+    }
+
+    public static Component tooltipDescription(String trans) {
+        return Component.translatable(trans).withStyle(ChatFormatting.GRAY);
+    }
+
+    public static Component tooltipBody(String trans) {
+        return Component.translatable(trans).withStyle(ChatFormatting.WHITE);
     }
 }
