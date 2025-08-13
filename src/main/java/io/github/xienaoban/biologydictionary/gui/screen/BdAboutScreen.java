@@ -6,15 +6,17 @@ import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.DebugScreen;
+import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
     public BdAboutScreen() {
-        super(Component.translatable(Lang.BIOLOGY_DICTIONARY_TITLE));
+        super(Component.translatable(Lang.BOOKMARK_ABOUT));
         initBookmarks();
         initWidgets();
     }
@@ -24,11 +26,29 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private void initWidgets() {
-        List<Widget> widgets = new ArrayList<>();
-        widgets.add(new GetBookItemWidget());
-        widgets.add(new OpenDebugScreenWidget());
+        List<Widget> widgets = List.of(
+                new ModNameAuthorNameWidget(),
+                new GetBookItemWidget(),
+                new OpenDebugScreenWidget()
+        );
 
         addAllWidgetsOneByOne(widgets);
+    }
+
+    private static class ModNameAuthorNameWidget extends Widget {
+        protected ModNameAuthorNameWidget() {
+            super(2, Page.COLUMNS);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            ctx.renderCenteredText(
+                    ComponentUtils.formatList(List.of(Component.translatable(Lang.TEXT_MOD_NAME_IS).withStyle(ChatFormatting.BOLD), Component.translatable(Lang.MOD_NAME_TWO_LANG)), Component.empty()),
+                    Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
+            ctx.renderCenteredText(
+                    ComponentUtils.formatList(List.of(Component.translatable(Lang.TEXT_AUTHOR_IS).withStyle(ChatFormatting.BOLD), Component.translatable(Lang.AUTHOR_NAME_TWO_LANG)), Component.empty()),
+                    Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 12);
+        }
     }
 
     private class GetBookItemWidget extends Widget {

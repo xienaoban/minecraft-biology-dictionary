@@ -219,11 +219,11 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             int colorHighlight1, colorHighlight2, colorEgg;
             if (mouseY < BUTTONS_CUT2) {
                 if (mouseY < BUTTONS_CUT1) {
-                    colorHighlight1 = 0xc2ffffff;
-                    colorHighlight2 = 0xd4ffffff;
-                } else {
                     colorHighlight1 = 0xd4ffffff;
                     colorHighlight2 = 0xc2ffffff;
+                } else {
+                    colorHighlight1 = 0xc2ffffff;
+                    colorHighlight2 = 0xd4ffffff;
                 }
                 colorEgg = 0xaaffffff;
             } else {
