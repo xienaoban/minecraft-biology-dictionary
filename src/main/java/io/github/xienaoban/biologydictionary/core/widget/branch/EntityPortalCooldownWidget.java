@@ -148,7 +148,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
                 IntProperty<Entity> property = VanillaEntityProperties.OfEntity.createPortalCooldownProperty();
                 property.set(toSet);
                 portalCooldownProperty.set(toSet);
-                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
+                ClientNetManager.sendUpdatedEntityPropertiesOld(e(), property.toNbt(), null);
             }
             return super.onMouseDown(x, y, code);
         }

@@ -146,7 +146,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
                 CodecProperty<Bee, BlockPos> property = VanillaEntityProperties.OfBee.createHivePosProperty();
                 property.set(null);
                 hivePosProperty.set(null);
-                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
+                ClientNetManager.sendUpdatedEntityPropertiesOld(e(), property.toNbt(), null);
             }
             return true;
         }

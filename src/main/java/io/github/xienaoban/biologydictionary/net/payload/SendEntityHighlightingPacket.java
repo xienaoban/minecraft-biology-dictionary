@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.net.payloads;
+package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.Const;
 import io.github.xienaoban.biologydictionary.Lang;
@@ -55,7 +55,7 @@ public record SendEntityHighlightingPacket(boolean allowed, EntityType<?> entity
             ++cnt;
             HighlightManager.highlightEntity(e, Const.HIGHLIGHT_ENTITIES_TICKS);
         }
-        McClientUtils.showClientCenteredMessage(Component.translatable(Lang.TEXT_HIGHLIGHTED_ENTITIES,
+        McClientUtils.sendCenteredMessage(Component.translatable(Lang.TEXT_HIGHLIGHTED_ENTITIES,
                 cnt, entityType.getDescription(), radius));
     }
 }

@@ -143,7 +143,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                 ageProperty.set(BREED_COOLDOWN_MAX);
                 ap.writeTo(nbt);
 
-                ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
+                ClientNetManager.sendUpdatedEntityPropertiesOld(e(), nbt, null);
             }
             return super.onMouseDown(x, y, code);
         }

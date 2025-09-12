@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.net.payloads;
+package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.biologydictionary.common.net.Packet;

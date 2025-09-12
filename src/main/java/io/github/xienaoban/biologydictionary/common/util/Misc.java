@@ -1,14 +1,10 @@
 package io.github.xienaoban.biologydictionary.common.util;
 
-import net.minecraft.network.chat.Component;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public final class Misc {
     @SuppressWarnings("unchecked")
@@ -134,14 +130,5 @@ public final class Misc {
         } else {
             return String.valueOf(Math.round(num));
         }
-    }
-
-    public static void printThrowableToLoggerAndGame(Throwable throwable) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        throwable.printStackTrace(pw);
-        String errStack = sw.toString();
-        LOGGER.error(errStack);
-        McClientUtils.showClientTextBoxMessage(Component.literal(errStack));
     }
 }

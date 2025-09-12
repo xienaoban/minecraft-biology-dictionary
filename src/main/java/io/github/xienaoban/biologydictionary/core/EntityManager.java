@@ -182,7 +182,8 @@ public final class EntityManager {
     }
 
     private void initJavaTagGroups() {
-        classTags.addTag(new Tag(getClassRealName(Entity.class)));
+        String rootClazzName = getClassRealName(Entity.class);
+        classTags.addTag(new Tag(rootClazzName, null, Component.literal(rootClazzName)));
         dfsEntityTree(false, (root, depth) -> {
             if (!Modifier.isAbstract(root.getClazz().getModifiers())) {
                 return false;

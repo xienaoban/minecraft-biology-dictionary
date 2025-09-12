@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.net;
 
 import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.net.payloads.*;
+import io.github.xienaoban.biologydictionary.net.payload.*;
 
 import java.util.List;
 
@@ -12,10 +12,11 @@ public final class PacketPayloads {
             RequestHandbookItemPacket.class,
             RequestEntityHighlightingPacket.class,
             RequestSpawnEggPacket.class,
-            SendScreenMessagePacket.class,
+            SendCenteredMessagePacket.class,
             SendBeehiveInfoPacket.class,
             SendEntityDataPacket.class,
             SendUpdatedEntityPropertiesPacket.class,
+            SendUpdatedEntityPropertiesOldPacket.class,
             SendEntityHighlightingPacket.class
     );
 }

@@ -32,6 +32,11 @@ public abstract class AbstractProperty<E extends Entity, T> implements EntityPro
         return nbt;
     }
 
+    public final CompoundTag toNbtWith(T newValue) {
+        value = newValue;
+        return toNbt();
+    }
+
     public static final class IllegalPropertyStateException extends RuntimeException {
         public IllegalPropertyStateException(String message) {
             super(message);
