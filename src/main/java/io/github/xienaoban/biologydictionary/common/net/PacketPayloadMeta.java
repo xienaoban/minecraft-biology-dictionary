@@ -47,7 +47,7 @@ public record PacketPayloadMeta<T extends Packet>(CustomPacketPayload.Type<T> ty
         final String classEnd = "Packet";
         final String className = clazz.getSimpleName();
         if (!className.endsWith(classEnd)) {
-            throw new RuntimeException("Class doesn't ends with \"PacketPayload\": " + clazz.getName());
+            throw new RuntimeException("Class doesn't ends with \"Packet\": " + clazz.getName());
         }
         String path = className.substring(0, className.length() - classEnd.length())
                 .replaceAll("([A-Z]+)", "_$1").substring(1).toLowerCase();

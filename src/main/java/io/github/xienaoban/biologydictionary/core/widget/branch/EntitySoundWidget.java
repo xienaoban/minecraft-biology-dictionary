@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.core.handler.PropertyUpdaters;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
@@ -66,10 +67,9 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean silent = isSilent();
-                BooleanProperty<Entity> property = VanillaEntityProperties.OfEntity.createSilentProperty();
-                property.set(!silent);
-                silentProperty.set(!silent);
-                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
+                if (ClientNetManager.sendUpdatedEntityProperties(e(), PropertyUpdaters.ENTITY_SET_SOUND, !silent)) {
+                    silentProperty.set(!silent);
+                }
             }
             return true;
         }

@@ -68,7 +68,7 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
                 motionProperty.set(Vec3.ZERO);
                 motionProperty.writeTo(nbt);
 
-                ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
+                ClientNetManager.sendUpdatedEntityPropertiesOld(e(), nbt, null);
             }
             return true;
         }

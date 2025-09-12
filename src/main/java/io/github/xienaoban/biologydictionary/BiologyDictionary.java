@@ -6,7 +6,11 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,5 +61,21 @@ public final class BiologyDictionary {
             }
         }
         return null;
+    }
+
+    public static void sendCenteredMessage(ServerPlayer player, Component text) {
+        ServerNetManager.sendCenteredMessage(player, text);
+    }
+
+    public static void sendCenteredInfo(ServerPlayer player, MutableComponent text) {
+        sendCenteredMessage(player, text.withStyle(ChatFormatting.WHITE));
+    }
+
+    public static void sendCenteredWarning(ServerPlayer player, MutableComponent text) {
+        sendCenteredMessage(player, text.withStyle(ChatFormatting.YELLOW));
+    }
+
+    public static void sendCenteredError(ServerPlayer player, MutableComponent text) {
+        sendCenteredMessage(player, text.withStyle(ChatFormatting.RED));
     }
 }

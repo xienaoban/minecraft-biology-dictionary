@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.net.payloads;
+package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.Const;
 import io.github.xienaoban.biologydictionary.Lang;
@@ -60,13 +60,13 @@ public record RequestEntityHighlightingPacket(EntityType<?> entityType, float ra
             } else {
                 experience = Integer.MAX_VALUE;
             }
-            if (player.totalExperience < experience) {
+            if (PlayerUtils.getExperience(player) < experience) {
                 allowed = false;
                 McUtils.showClientCenteredMessage(player, Component.translatable(Lang.TEXT_FAILED_TO_HIGHLIGHT,
                         Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE)));
             } else {
                 allowed = true;
-                player.giveExperiencePoints(-experience);
+                PlayerUtils.addExperience(player, -experience);
             }
         }
 

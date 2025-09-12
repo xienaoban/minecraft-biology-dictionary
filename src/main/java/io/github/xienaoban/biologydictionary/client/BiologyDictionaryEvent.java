@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.client;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
@@ -87,7 +88,7 @@ public final class BiologyDictionaryEvent {
             try {
                 McClientUtils.setScreen(client, new BdEntityDetailScreen(properties));
             } catch (RuntimeException e) {
-                Misc.printThrowableToLoggerAndGame(e);
+                BiologyDictionaryClient.printThrowableToLoggerAndGame(e);
                 return;
             }
         }

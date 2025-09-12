@@ -16,6 +16,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
@@ -74,7 +75,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     private void check() {
         if (EntityManager.getInstance() == null) {
-            McClientUtils.showClientTextBoxMessage(Component.literal("Failed to init EntityManager??"));
+            McClientUtils.sendTextBoxMessage(Component.literal("Failed to init EntityManager??").withStyle(ChatFormatting.RED));
             throw new RuntimeException("Failed to init EntityManager??");
         }
     }

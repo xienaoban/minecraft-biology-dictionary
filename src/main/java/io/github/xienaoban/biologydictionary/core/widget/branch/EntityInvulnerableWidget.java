@@ -55,7 +55,7 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
                 BooleanProperty<Entity> property = VanillaEntityProperties.OfEntity.createInvulnerableProperty();
                 property.set(!inv);
                 invulnerableProperty.set(!inv);
-                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
+                ClientNetManager.sendUpdatedEntityPropertiesOld(e(), property.toNbt(), null);
             }
             return true;
         }

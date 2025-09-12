@@ -1,12 +1,12 @@
-package io.github.xienaoban.biologydictionary.net.payloads;
+package io.github.xienaoban.biologydictionary.net.payload;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
-import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,13 +41,13 @@ public record RequestSpawnEggPacket(EntityType<?> entityType) implements Packet 
         ServerPlayer player = ctx.player();
 
         if (entityType == null) {
-            ServerNetManager.sendScreenMessage(player, Component.translatable(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
+            BiologyDictionary.sendCenteredWarning(player, Component.translatable(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
         } else if (!PlayerUtils.isCreative(player)) {
-            ServerNetManager.sendScreenMessage(player, Component.translatable(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
+            BiologyDictionary.sendCenteredWarning(player, Component.translatable(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
         } else {
             SpawnEggItem item = SpawnEggItem.byId(entityType);
             if (item == null) {
-                ServerNetManager.sendScreenMessage(player, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                BiologyDictionary.sendCenteredWarning(player, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
             } else {
                 ItemStack stack = new ItemStack(item);
                 player.getInventory().add(stack);
@@ -55,7 +55,7 @@ public record RequestSpawnEggPacket(EntityType<?> entityType) implements Packet 
                 player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                         SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS,
                         1F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                ServerNetManager.sendScreenMessage(player,
+                BiologyDictionary.sendCenteredWarning(player,
                         Component.translatable(Lang.TEXT_OFFER_OR_DROP, Component.translatable(item.getDescriptionId())));
             }
         }

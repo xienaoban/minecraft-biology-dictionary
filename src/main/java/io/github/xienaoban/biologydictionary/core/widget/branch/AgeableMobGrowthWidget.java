@@ -143,7 +143,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                 ageProperty.set(BABY_MIN_AGE);
                 ap.writeTo(nbt);
 
-                ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
+                ClientNetManager.sendUpdatedEntityPropertiesOld(e(), nbt, null);
             }
             return super.onMouseDown(x, y, code);
         }

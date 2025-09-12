@@ -15,4 +15,12 @@ public final class PlayerUtils {
     public static boolean isSurvival(Player player) {
         return player.gameMode() == GameType.SURVIVAL;
     }
+
+    public static int getExperience(Player player) {
+        return player.totalExperience;
+    }
+
+    public static void addExperience(Player player, int experience) {
+        player.giveExperiencePoints(experience);
+    }
 }
