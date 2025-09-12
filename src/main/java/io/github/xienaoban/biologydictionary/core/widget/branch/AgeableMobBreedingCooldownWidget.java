@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.core.handler.PropertyUpdaters;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -16,7 +17,6 @@ import io.github.xienaoban.biologydictionary.mixin.AnimalIMixin;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
 
@@ -132,18 +132,10 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                     toSet = BREED_COOLDOWN_OFF;
                 }
 
-                // Send to the server.
-                IntProperty<AgeableMob> property = VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty();
-                property.set(toSet);
-                forcedAgeProperty.set(toSet);
-                CompoundTag nbt = property.toNbt();
-
-                IntProperty<AgeableMob> ap = VanillaEntityProperties.OfAgeableMob.createAgeProperty();
-                ap.set(BREED_COOLDOWN_MAX);
-                ageProperty.set(BREED_COOLDOWN_MAX);
-                ap.writeTo(nbt);
-
-                ClientNetManager.sendUpdatedEntityPropertiesOld(e(), nbt, null);
+                if (ClientNetManager.sendUpdatedEntityProperties(e(), PropertyUpdaters.AGEABLE_MOB_SET_FORCED_AGE, toSet, BREED_COOLDOWN_MAX)) {
+                    forcedAgeProperty.set(toSet);
+                    ageProperty.set(BREED_COOLDOWN_MAX);
+                }
             }
             return super.onMouseDown(x, y, code);
         }
