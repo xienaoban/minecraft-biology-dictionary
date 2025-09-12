@@ -11,7 +11,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
@@ -52,9 +51,7 @@ public record RequestSpawnEggPacket(EntityType<?> entityType) implements Packet 
                 ItemStack stack = new ItemStack(item);
                 player.getInventory().add(stack);
                 // @see net.minecraft.server.commands.GiveCommand.giveItem
-                player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS,
-                        1F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                PlayerUtils.playLocalSound(player, SoundEvents.ITEM_PICKUP, 1F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
                 BiologyDictionary.sendCenteredWarning(player,
                         Component.translatable(Lang.TEXT_OFFER_OR_DROP, Component.translatable(item.getDescriptionId())));
             }
