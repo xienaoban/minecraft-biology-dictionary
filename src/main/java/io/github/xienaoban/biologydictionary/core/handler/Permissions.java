@@ -6,10 +6,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.Objects;
+
 public final class Permissions {
+    public static <T> void checkLegalArg(T actual, T expect) {
+        if (Objects.equals(actual, expect)) {
+            throw new IllegalArgumentException("Bad arg: expect={" + expect + "}, actual={" + actual + "}");
+        }
+    }
+
     public static void checkPlayerCreative(Player player) {
         if (PlayerUtils.isCreative(player)) { return; }
         throw new NoPermissionException(Component.translatable(Lang.TEXT_ONLY_IN_CREATIVE_MODE), "Not in creative mode");
+
     }
 
     public static void checkPlayerCreativeOrExperience(Player player, int experience) {
