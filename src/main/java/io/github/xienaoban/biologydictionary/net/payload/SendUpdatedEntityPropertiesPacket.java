@@ -62,6 +62,9 @@ public record SendUpdatedEntityPropertiesPacket(int entityId, ResourceLocation k
             LOGGER.warn(Misc.getStackToString(e));
             BiologyDictionary.sendCenteredWarning(ctx.player(), e.getGameMessage());
             return;
+        } catch (Exception e) {
+            LOGGER.warn(Misc.getStackToString(e));
+            return;
         }
 
         // Save vanilla properties to the entity.
@@ -85,6 +88,8 @@ public record SendUpdatedEntityPropertiesPacket(int entityId, ResourceLocation k
             return new SendUpdatedEntityPropertiesPacket(entityId, key, tagArgs);
         } catch (Permissions.NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
+        } catch (Exception e) {
+            LOGGER.warn(Misc.getStackToString(e));
         }
         return null;
     }

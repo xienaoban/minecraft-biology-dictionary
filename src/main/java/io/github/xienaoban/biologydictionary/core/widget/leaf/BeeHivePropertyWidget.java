@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.core.handler.PropertyUpdaters;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
@@ -143,10 +144,9 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_CLEAR));
                     return true;
                 }
-                CodecProperty<Bee, BlockPos> property = VanillaEntityProperties.OfBee.createHivePosProperty();
-                property.set(null);
-                hivePosProperty.set(null);
-                ClientNetManager.sendUpdatedEntityPropertiesOld(e(), property.toNbt(), null);
+                if (ClientNetManager.sendUpdatedEntityProperties(e(), PropertyUpdaters.BEE_CLEAR_HIVE)) {
+                    hivePosProperty.set(null);
+                }
             }
             return true;
         }

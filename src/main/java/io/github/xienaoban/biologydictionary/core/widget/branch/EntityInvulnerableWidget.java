@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.core.handler.PropertyUpdaters;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
@@ -51,11 +52,10 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                boolean inv = isInvulnerable();
-                BooleanProperty<Entity> property = VanillaEntityProperties.OfEntity.createInvulnerableProperty();
-                property.set(!inv);
-                invulnerableProperty.set(!inv);
-                ClientNetManager.sendUpdatedEntityPropertiesOld(e(), property.toNbt(), null);
+                boolean newInv = !isInvulnerable();
+                if (ClientNetManager.sendUpdatedEntityProperties(e(), PropertyUpdaters.ENTITY_SET_INVULNERABLE, newInv)) {
+                    invulnerableProperty.set(newInv);
+                }
             }
             return true;
         }

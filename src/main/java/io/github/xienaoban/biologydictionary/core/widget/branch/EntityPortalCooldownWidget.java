@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.core.handler.PropertyUpdaters;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -137,18 +138,15 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             }
             int cooldown = cooldownOpt;
             if (isMouseLeft(code)) {
-                final int toSet;
+                final int newCooldown;
                 if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
-                    toSet = 0;
+                    newCooldown = 0;
                 } else {
-                    toSet = EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY;
+                    newCooldown = EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY;
                 }
-
-                // Send to the server.
-                IntProperty<Entity> property = VanillaEntityProperties.OfEntity.createPortalCooldownProperty();
-                property.set(toSet);
-                portalCooldownProperty.set(toSet);
-                ClientNetManager.sendUpdatedEntityPropertiesOld(e(), property.toNbt(), null);
+                if (ClientNetManager.sendUpdatedEntityProperties(e(), PropertyUpdaters.ENTITY_SET_PORTAL_COOLDOWN, newCooldown)) {
+                    portalCooldownProperty.set(newCooldown);
+                }
             }
             return super.onMouseDown(x, y, code);
         }
