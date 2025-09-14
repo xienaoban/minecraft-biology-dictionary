@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.core.handler.PropertyUpdaters;
+import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -132,7 +132,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                     newForcedAge = ADULT_MIN_AGE;
                 }
 
-                if (ClientNetManager.sendUpdatedEntityProperties(e(), PropertyUpdaters.AGEABLE_MOB_SET_FORCED_AGE, newForcedAge, BABY_MIN_AGE)) {
+                if (ClientNetManager.sendUpdatedEntityProperties(e(), Skills.AGEABLE_MOB_SET_FORCED_AGE, newForcedAge, BABY_MIN_AGE)) {
                     forcedAgeProperty.set(newForcedAge);
                     ageProperty.set(BABY_MIN_AGE);
                 }

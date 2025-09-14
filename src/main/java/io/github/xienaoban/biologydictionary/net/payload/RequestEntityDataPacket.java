@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.api.EntityProperty;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;

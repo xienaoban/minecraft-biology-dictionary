@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property.builtin;
 
-import io.github.xienaoban.biologydictionary.api.EntityProperty;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 

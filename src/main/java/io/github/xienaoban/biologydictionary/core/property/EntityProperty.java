@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.api;
+package io.github.xienaoban.biologydictionary.core.property;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;

@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.core.handler.PropertyUpdaters;
+import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -132,7 +132,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                     newForcedAge = BREED_COOLDOWN_OFF;
                 }
 
-                if (ClientNetManager.sendUpdatedEntityProperties(e(), PropertyUpdaters.AGEABLE_MOB_SET_FORCED_AGE, newForcedAge, BREED_COOLDOWN_MAX)) {
+                if (ClientNetManager.sendUpdatedEntityProperties(e(), Skills.AGEABLE_MOB_SET_FORCED_AGE, newForcedAge, BREED_COOLDOWN_MAX)) {
                     forcedAgeProperty.set(newForcedAge);
                     ageProperty.set(BREED_COOLDOWN_MAX);
                 }
