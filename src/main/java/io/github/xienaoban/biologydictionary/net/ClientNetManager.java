@@ -41,7 +41,7 @@ public final class ClientNetManager {
     }
 
     public static boolean sendUpdatedEntityProperties(Entity entity, ResourceLocation key, Object... args) {
-        SendUpdatedEntityPropertiesPacket packet = SendUpdatedEntityPropertiesPacket.of(entity.getId(), key, args);
+        SendUpdatedEntityPropertiesPacket packet = SendUpdatedEntityPropertiesPacket.of(entity, key, args);
         if (packet == null) { return false; }
         ClientNetApi.send(packet);
         return true;

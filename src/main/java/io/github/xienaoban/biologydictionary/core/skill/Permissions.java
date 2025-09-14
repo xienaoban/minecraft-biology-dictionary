@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.core.handler;
+package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
@@ -23,7 +23,7 @@ public final class Permissions {
 
     public static void checkPlayerCreativeOrExperience(Player player, int experience) {
         if (PlayerUtils.isCreative(player)) { return; }
-        int exp = PlayerUtils.getExperience(player);
+        int exp = PlayerUtils.getExperiencePoints(player);
         if (exp >= experience) { return; }
         throw new NoPermissionException(Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE, experience), "No enough experience: " + exp + " < " + experience);
     }

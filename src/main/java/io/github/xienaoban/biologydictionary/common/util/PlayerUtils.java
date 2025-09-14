@@ -19,12 +19,20 @@ public final class PlayerUtils {
         return player.gameMode() == GameType.SURVIVAL;
     }
 
-    public static int getExperience(Player player) {
+    public static int getExperiencePoints(Player player) {
         return player.totalExperience;
     }
 
-    public static void addExperience(Player player, int experience) {
-        player.giveExperiencePoints(experience);
+    public static void addExperiencePoints(Player player, int experiencePoints) {
+        player.giveExperiencePoints(experiencePoints);
+    }
+
+    public static int getExperienceLevels(Player player) {
+        return player.experienceLevel;
+    }
+
+    public static void addExperienceLevels(Player player, int experienceLevels) {
+        player.giveExperienceLevels(experienceLevels);
     }
 
     public static void playLocalSound(Player player, SoundEvent soundEvent) {

@@ -7,7 +7,7 @@ import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
-import io.github.xienaoban.biologydictionary.core.handler.PropertyUpdaters;
+import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,13 +60,13 @@ public record RequestEntityHighlightingPacket(EntityType<?> entityType, float ra
             } else {
                 experience = Integer.MAX_VALUE;
             }
-            if (PlayerUtils.getExperience(player) < experience) {
+            if (PlayerUtils.getExperiencePoints(player) < experience) {
                 allowed = false;
                 PlayerUtils.showClientCenteredMessage(player, Component.translatable(Lang.TEXT_FAILED_TO_HIGHLIGHT,
                         Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE, experience)));
             } else {
                 allowed = true;
-                PropertyUpdaters.addExperienceIfNotCreative(player, -experience);
+                Skills.addExperienceIfNotCreative(player, -experience);
             }
         }
 

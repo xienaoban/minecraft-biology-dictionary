@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
-import io.github.xienaoban.biologydictionary.core.handler.PropertyUpdaters;
+import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -144,7 +144,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
                 } else {
                     newCooldown = EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY;
                 }
-                if (ClientNetManager.sendUpdatedEntityProperties(e(), PropertyUpdaters.ENTITY_SET_PORTAL_COOLDOWN, newCooldown)) {
+                if (ClientNetManager.sendUpdatedEntityProperties(e(), Skills.ENTITY_SET_PORTAL_COOLDOWN, newCooldown)) {
                     portalCooldownProperty.set(newCooldown);
                 }
             }

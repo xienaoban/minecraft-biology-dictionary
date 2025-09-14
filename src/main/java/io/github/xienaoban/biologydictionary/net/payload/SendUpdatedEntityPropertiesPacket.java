@@ -3,16 +3,15 @@ package io.github.xienaoban.biologydictionary.net.payload;
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.api.EntityProperty;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.Misc;
-import io.github.xienaoban.biologydictionary.common.util.Pair;
-import io.github.xienaoban.biologydictionary.core.handler.Permissions;
-import io.github.xienaoban.biologydictionary.core.handler.PropertyUpdaters;
+import io.github.xienaoban.biologydictionary.common.util.*;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
+import io.github.xienaoban.biologydictionary.core.skill.Permissions;
+import io.github.xienaoban.biologydictionary.core.skill.Skill;
+import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
@@ -54,8 +53,8 @@ public record SendUpdatedEntityPropertiesPacket(int entityId, ResourceLocation k
         CompoundTag vanillaNbt;
         CompoundTag extraNbt;
         try {
-            PropertyUpdaters.Handler handler = PropertyUpdaters.getHandler(key);
-            Pair<CompoundTag, CompoundTag> nbts = handler.serverReceive(args, ctx);
+            Skill skill = Skills.getSkill(key);
+            Pair<CompoundTag, CompoundTag> nbts = skill.serverReceive(ctx.server(), ctx.player(), entity, args);
             vanillaNbt = nbts.first();
             extraNbt = nbts.second();
         } catch (Permissions.NoPermissionException e) {
@@ -81,11 +80,11 @@ public record SendUpdatedEntityPropertiesPacket(int entityId, ResourceLocation k
         }
     }
 
-    public static SendUpdatedEntityPropertiesPacket of(int entityId, ResourceLocation key, Object... args) {
+    public static SendUpdatedEntityPropertiesPacket of(Entity entity, ResourceLocation key, Object... args) {
         try {
-            PropertyUpdaters.Handler handler = PropertyUpdaters.getHandler(key);
-            Tag tagArgs = handler.clientSend(args);
-            return new SendUpdatedEntityPropertiesPacket(entityId, key, tagArgs);
+            Skill skill = Skills.getSkill(key);
+            Tag tagArgs = skill.clientSend(McClientUtils.getClientPlayer(), entity, args);
+            return new SendUpdatedEntityPropertiesPacket(entity.getId(), key, tagArgs);
         } catch (Permissions.NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
         } catch (Exception e) {
