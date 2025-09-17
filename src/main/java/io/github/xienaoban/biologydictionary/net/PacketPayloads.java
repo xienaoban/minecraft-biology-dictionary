@@ -15,7 +15,7 @@ public final class PacketPayloads {
             SendCenteredMessagePacket.class,
             SendBeehiveInfoPacket.class,
             SendEntityDataPacket.class,
-            SendUpdatedEntityPropertiesPacket.class,
+            SendEntityOrientedSkillPacket.class,
             SendUpdatedEntityPropertiesOldPacket.class,
             SendEntityHighlightingPacket.class
     );

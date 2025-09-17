@@ -70,7 +70,9 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             renderTooltip(ctx,
                     tooltipTitle(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH_DESC)
+                    tooltipDescription(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH_DESC),
+                    tooltipEmpty(),
+                    tooltipBody(Lang.TEXT_ONLY_IN_CREATIVE_MODE)
             );
             return true;
         }

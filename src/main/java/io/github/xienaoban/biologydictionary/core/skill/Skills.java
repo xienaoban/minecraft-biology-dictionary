@@ -4,8 +4,8 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
+import io.github.xienaoban.biologydictionary.core.skill.impl.MobSetNoAiSkill;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -16,7 +16,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,41 +58,22 @@ public final class Skills {
         }
     });
 
-    public static final ResourceLocation MOB_SET_NO_AI = r("MOB_SET_NO_AI", new EntityOrientedSkill() {
-        @Environment(EnvType.CLIENT) @Override public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
-            boolean noAi = (boolean) args[0];
-            Permissions.checkPlayerCreative(player);
-            return ByteTag.valueOf(noAi);
-        }
-        @Override public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
-            boolean noAi = args.asBoolean().orElseThrow();
-            Permissions.checkPlayerCreative(player);
-            CompoundTag nbt = VanillaEntityProperties.OfMob.createNoAiProperty().toNbtWith(noAi);
+    public static final ResourceLocation MOB_SET_NO_AI = r("MOB_SET_NO_AI", new MobSetNoAiSkill());
 
-            // Clear the motion caused by collisions accumulated during the AI-disabled period
-            // to prevent the entity from flying around randomly.
-            CodecProperty<Entity, Vec3> motionProperty = VanillaEntityProperties.OfEntity.createMotionProperty();
-            motionProperty.set(Vec3.ZERO);
-            motionProperty.writeTo(nbt);
-
-            EntityUtils.mergeNbt(entity, nbt);
-        }
-    });
-
+    public static final int AGEABLE_MOB_SET_FORCED_AGE_EXP = 4;
     public static final ResourceLocation AGEABLE_MOB_SET_FORCED_AGE = r("AGEABLE_MOB_SET_FORCED_AGE", new EntityOrientedSkill() {
-        private static final int EXP = 4;
 
         @Environment(EnvType.CLIENT) @Override public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
             int forcedAge = (int) args[0];
             int age = (int) args[1];
-            Permissions.checkPlayerCreativeOrExperience(player, EXP);
+            Permissions.checkPlayerCreativeOrExperiencePoints(player, AGEABLE_MOB_SET_FORCED_AGE_EXP);
             return new IntArrayTag(new int[] { forcedAge, age });
         }
         @Override public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
             int[] t = args.asIntArray().orElseThrow();
             int forcedAge = t[0];
             int age = t[1];
-            Permissions.checkPlayerCreativeOrExperience(player, EXP);
+            Permissions.checkPlayerCreativeOrExperiencePoints(player, AGEABLE_MOB_SET_FORCED_AGE_EXP);
 
             CompoundTag nbt = new CompoundTag();
             IntProperty<AgeableMob> fap = VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty();
@@ -103,11 +83,12 @@ public final class Skills {
             ap.set(age);
             ap.writeTo(nbt);
 
-            addExperienceIfNotCreative(player, -EXP);
+            addExperiencePointsIfNotCreative(player, -AGEABLE_MOB_SET_FORCED_AGE_EXP);
             EntityUtils.mergeNbt(entity, nbt);
         }
     });
 
+    public static final int BEE_CLEAR_HIVE_EXP = 1;
     public static final ResourceLocation BEE_CLEAR_HIVE = r("BEE_CLEAR_HIVE", new EntityOrientedSkill() {
         @Environment(EnvType.CLIENT) @Override public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
             return ByteTag.valueOf(true);
@@ -132,9 +113,15 @@ public final class Skills {
         return res;
     }
 
-    public static void addExperienceIfNotCreative(ServerPlayer player, int experience) {
+    public static void addExperiencePointsIfNotCreative(ServerPlayer player, int experience) {
         if (PlayerUtils.isCreative(player)) { return; }
         PlayerUtils.addExperiencePoints(player, experience);
+        PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
+    }
+
+    public static void addExperienceLevelsIfNotCreative(ServerPlayer player, int experience) {
+        if (PlayerUtils.isCreative(player)) { return; }
+        PlayerUtils.addExperienceLevels(player, experience);
         PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
     }
 

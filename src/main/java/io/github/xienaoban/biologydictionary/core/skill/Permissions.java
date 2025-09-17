@@ -21,11 +21,18 @@ public final class Permissions {
 
     }
 
-    public static void checkPlayerCreativeOrExperience(Player player, int experience) {
+    public static void checkPlayerCreativeOrExperiencePoints(Player player, int experience) {
         if (PlayerUtils.isCreative(player)) { return; }
         int exp = PlayerUtils.getExperiencePoints(player);
         if (exp >= experience) { return; }
-        throw new NoPermissionException(Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE, experience), "No enough experience: " + exp + " < " + experience);
+        throw new NoPermissionException(Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_POINTS, experience), "No enough experience points: " + exp + " < " + experience);
+    }
+
+    public static void checkPlayerCreativeOrExperienceLevel(Player player, int level) {
+        if (PlayerUtils.isCreative(player)) { return; }
+        int lvl = PlayerUtils.getExperienceLevels(player);
+        if (lvl >= level) { return; }
+        throw new NoPermissionException(Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, level), "No enough experience levels: " + lvl + " < " + level);
     }
 
     public static class NoPermissionException extends RuntimeException {

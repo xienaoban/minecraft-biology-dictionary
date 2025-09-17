@@ -41,7 +41,7 @@ public final class ClientNetManager {
     }
 
     public static boolean sendEntityOrientedSkill(Entity entity, ResourceLocation key, Object... args) {
-        SendUpdatedEntityPropertiesPacket packet = SendUpdatedEntityPropertiesPacket.of(entity, key, args);
+        SendEntityOrientedSkillPacket packet = SendEntityOrientedSkillPacket.of(entity, key, args);
         if (packet == null) { return false; }
         ClientNetApi.send(packet);
         return true;

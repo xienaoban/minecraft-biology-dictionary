@@ -63,10 +63,10 @@ public record RequestEntityHighlightingPacket(EntityType<?> entityType, float ra
             if (PlayerUtils.getExperiencePoints(player) < experience) {
                 allowed = false;
                 PlayerUtils.showClientCenteredMessage(player, Component.translatable(Lang.TEXT_FAILED_TO_HIGHLIGHT,
-                        Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE, experience)));
+                        Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experience)));
             } else {
                 allowed = true;
-                Skills.addExperienceIfNotCreative(player, -experience);
+                Skills.addExperiencePointsIfNotCreative(player, -experience);
             }
         }
 

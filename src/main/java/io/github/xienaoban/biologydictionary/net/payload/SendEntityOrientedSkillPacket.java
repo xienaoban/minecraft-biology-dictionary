@@ -21,14 +21,14 @@ import net.minecraft.world.entity.Entity;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
-public record SendUpdatedEntityPropertiesPacket(int entityId, ResourceLocation key, Tag args) implements Packet {
+public record SendEntityOrientedSkillPacket(int entityId, ResourceLocation key, Tag args) implements Packet {
     public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
 
     @Override
     public CustomPacketPayload.Type<? extends Packet> type() { return META.type(); }
 
     @SuppressWarnings("unused")
-    public SendUpdatedEntityPropertiesPacket(FriendlyByteBuf buf) {
+    public SendEntityOrientedSkillPacket(FriendlyByteBuf buf) {
         this(buf.readInt(), buf.readResourceLocation(), buf.readNbt(NbtAccounter.unlimitedHeap()));
     }
 
@@ -59,11 +59,11 @@ public record SendUpdatedEntityPropertiesPacket(int entityId, ResourceLocation k
         }
     }
 
-    public static SendUpdatedEntityPropertiesPacket of(Entity entity, ResourceLocation key, Object... args) {
+    public static SendEntityOrientedSkillPacket of(Entity entity, ResourceLocation key, Object... args) {
         try {
             EntityOrientedSkill skill = Skills.getSkill(key);
             Tag tagArgs = skill.clientSend(McClientUtils.getClientPlayer(), entity, args);
-            return new SendUpdatedEntityPropertiesPacket(entity.getId(), key, tagArgs);
+            return new SendEntityOrientedSkillPacket(entity.getId(), key, tagArgs);
         } catch (Permissions.NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
         } catch (Exception e) {
