@@ -2,8 +2,11 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
+import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
+import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.impl.MobSetNoAiSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -12,6 +15,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 
 @Environment(EnvType.CLIENT)
@@ -54,6 +58,8 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
                 boolean newNoAi = !isNoAi();
                 if (ClientNetManager.sendEntityOrientedSkill(e(), Skills.MOB_SET_NO_AI, newNoAi)) {
                     setNoAi(newNoAi);
+                    BooleanProperty<Entity> inv = VanillaEntityProperties.OfEntity.getInvulnerableProperty(p());
+                    inv.set(newNoAi);
                 }
             }
             return true;
@@ -69,7 +75,10 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             renderTooltip(ctx,
                     tooltipTitle(Lang.PROPERTY_WIDGET_AI_SWITCH),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_AI_SWITCH_DESC)
+                    tooltipDescription(Lang.PROPERTY_WIDGET_AI_SWITCH_DESC),
+                    tooltipEmpty(),
+                    tooltipBody(Lang.TEXT_EXPERIENCE_LEVELS_REQUIRED, MobSetNoAiSkill.experienceLevelRequired(e())),
+                    tooltipBody(Lang.TEXT_EXPERIENCE_LEVELS_COST, MobSetNoAiSkill.experienceLevelCost(e()))
             );
             return true;
         }
