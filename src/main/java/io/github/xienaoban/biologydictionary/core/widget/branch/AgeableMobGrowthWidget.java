@@ -132,7 +132,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                     newForcedAge = ADULT_MIN_AGE;
                 }
 
-                if (ClientNetManager.sendUpdatedEntityProperties(e(), Skills.AGEABLE_MOB_SET_FORCED_AGE, newForcedAge, BABY_MIN_AGE)) {
+                if (ClientNetManager.sendEntityOrientedSkill(e(), Skills.AGEABLE_MOB_SET_FORCED_AGE, newForcedAge, BABY_MIN_AGE)) {
                     forcedAgeProperty.set(newForcedAge);
                     ageProperty.set(BABY_MIN_AGE);
                 }

@@ -6,13 +6,11 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
-import io.github.xienaoban.biologydictionary.common.util.*;
-import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skill;
+import io.github.xienaoban.biologydictionary.core.skill.EntityOrientedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,39 +48,20 @@ public record SendUpdatedEntityPropertiesPacket(int entityId, ResourceLocation k
             return;
         }
 
-        CompoundTag vanillaNbt;
-        CompoundTag extraNbt;
         try {
-            Skill skill = Skills.getSkill(key);
-            Pair<CompoundTag, CompoundTag> nbts = skill.serverReceive(ctx.server(), ctx.player(), entity, args);
-            vanillaNbt = nbts.first();
-            extraNbt = nbts.second();
+            EntityOrientedSkill skill = Skills.getSkill(key);
+            skill.serverReceive(ctx.server(), ctx.player(), entity, args);
         } catch (Permissions.NoPermissionException e) {
             LOGGER.warn(Misc.getStackToString(e));
             BiologyDictionary.sendCenteredWarning(ctx.player(), e.getGameMessage());
-            return;
         } catch (Exception e) {
             LOGGER.warn(Misc.getStackToString(e));
-            return;
-        }
-
-        // Save vanilla properties to the entity.
-        if (vanillaNbt != null) {
-            EntityUtils.mergeNbt(entity, vanillaNbt);
-        }
-
-        // Save extra properties to the entity.
-        if (extraNbt != null) {
-            for (EntityProperty<?> p : new EntityProperties<>(entity).getExtras()) {
-                p.readFrom(extraNbt);
-                p.setTo(Misc.cast(entity));
-            }
         }
     }
 
     public static SendUpdatedEntityPropertiesPacket of(Entity entity, ResourceLocation key, Object... args) {
         try {
-            Skill skill = Skills.getSkill(key);
+            EntityOrientedSkill skill = Skills.getSkill(key);
             Tag tagArgs = skill.clientSend(McClientUtils.getClientPlayer(), entity, args);
             return new SendUpdatedEntityPropertiesPacket(entity.getId(), key, tagArgs);
         } catch (Permissions.NoPermissionException e) {

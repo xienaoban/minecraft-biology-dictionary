@@ -40,7 +40,8 @@
   "tag.biologydictionary.default.enemy_patrol"         : "灾厄小队",
 
   "widget.biologydictionary.highlight"            : "感知并高亮附近的该类生物",
-  "widget.biologydictionary.highlight.desc"       : "高亮范围：%d米，消耗经验：%d点",
+  "widget.biologydictionary.highlight.left.desc"  : "左键：高亮半径%d米，消耗经验%d点",
+  "widget.biologydictionary.highlight.right.desc" : "右键：高亮半径%d米，消耗经验%d点",
   "widget.biologydictionary.offer_spawn_egg"      : "发一个刷怪蛋",
   "widget.biologydictionary.offer_spawn_egg.desc" : "仅限创造模式可用",
 

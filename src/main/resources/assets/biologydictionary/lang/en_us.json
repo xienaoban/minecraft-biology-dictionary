@@ -40,7 +40,8 @@
   "tag.biologydictionary.default.enemy_patrol"         : "Patrol",
 
   "widget.biologydictionary.highlight"            : "Highlight mobs of this type nearby",
-  "widget.biologydictionary.highlight.desc"       : "Highlight range: %dm, experience points cost: %d",
+  "widget.biologydictionary.highlight.left.desc"  : "Left click: Highlight radius %dm, experience cost %d points",
+  "widget.biologydictionary.highlight.right.desc" : "Right click: Highlight radius %dm, experience cost %d points",
   "widget.biologydictionary.offer_spawn_egg"      : "Offer a spawn egg",
   "widget.biologydictionary.offer_spawn_egg.desc" : "Available only in creative mode",
 

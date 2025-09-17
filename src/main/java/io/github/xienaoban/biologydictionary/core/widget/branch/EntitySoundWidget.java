@@ -67,7 +67,7 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean newSilent = !isSilent();
-                if (ClientNetManager.sendUpdatedEntityProperties(e(), Skills.ENTITY_SET_SOUND, newSilent)) {
+                if (ClientNetManager.sendEntityOrientedSkill(e(), Skills.ENTITY_SET_SOUND, newSilent)) {
                     silentProperty.set(newSilent);
                 }
             }

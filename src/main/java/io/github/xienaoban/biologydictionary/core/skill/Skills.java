@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.util.Pair;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
@@ -22,50 +22,50 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class Skills {
-    private static final Map<ResourceLocation, Skill> skills = new HashMap<>();
+    private static final Map<ResourceLocation, EntityOrientedSkill> entityOrientedSkills = new HashMap<>();
 
-    public static final ResourceLocation ENTITY_SET_INVULNERABLE = r("ENTITY_SET_INVULNERABLE", new Skill() {
+    public static final ResourceLocation ENTITY_SET_INVULNERABLE = r("ENTITY_SET_INVULNERABLE", new EntityOrientedSkill() {
         @Environment(EnvType.CLIENT) @Override public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
             boolean inv = (boolean) args[0];
             Permissions.checkPlayerCreative(player);
             return ByteTag.valueOf(inv);
         }
-        @Override public Pair<CompoundTag, CompoundTag> serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
+        @Override public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
             boolean inv = args.asBoolean().orElseThrow();
             Permissions.checkPlayerCreative(player);
-            return Pair.ofFirst(VanillaEntityProperties.OfEntity.createInvulnerableProperty().toNbtWith(inv));
+            EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfEntity.createInvulnerableProperty().toNbtWith(inv));
         }
     });
 
-    public static final ResourceLocation ENTITY_SET_SOUND = r("ENTITY_SET_SOUND", new Skill() {
+    public static final ResourceLocation ENTITY_SET_SOUND = r("ENTITY_SET_SOUND", new EntityOrientedSkill() {
         @Environment(EnvType.CLIENT) @Override public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
             boolean silent = (boolean) args[0];
             return ByteTag.valueOf(silent);
         }
-        @Override public Pair<CompoundTag, CompoundTag> serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
+        @Override public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
             boolean silent = args.asBoolean().orElseThrow();
-            return Pair.ofFirst(VanillaEntityProperties.OfEntity.createSilentProperty().toNbtWith(silent));
+            EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfEntity.createSilentProperty().toNbtWith(silent));
         }
     });
 
-    public static final ResourceLocation ENTITY_SET_PORTAL_COOLDOWN = r("ENTITY_SET_PORTAL_COOLDOWN", new Skill() {
+    public static final ResourceLocation ENTITY_SET_PORTAL_COOLDOWN = r("ENTITY_SET_PORTAL_COOLDOWN", new EntityOrientedSkill() {
         @Environment(EnvType.CLIENT) @Override public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
             int cooldown = (int) args[0];
             return IntTag.valueOf(cooldown);
         }
-        @Override public Pair<CompoundTag, CompoundTag> serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
+        @Override public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
             int cooldown = args.asInt().orElseThrow();
-            return Pair.ofFirst(VanillaEntityProperties.OfEntity.createPortalCooldownProperty().toNbtWith(cooldown));
+            EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfEntity.createPortalCooldownProperty().toNbtWith(cooldown));
         }
     });
 
-    public static final ResourceLocation MOB_SET_NO_AI = r("MOB_SET_NO_AI", new Skill() {
+    public static final ResourceLocation MOB_SET_NO_AI = r("MOB_SET_NO_AI", new EntityOrientedSkill() {
         @Environment(EnvType.CLIENT) @Override public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
             boolean noAi = (boolean) args[0];
             Permissions.checkPlayerCreative(player);
             return ByteTag.valueOf(noAi);
         }
-        @Override public Pair<CompoundTag, CompoundTag> serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
+        @Override public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
             boolean noAi = args.asBoolean().orElseThrow();
             Permissions.checkPlayerCreative(player);
             CompoundTag nbt = VanillaEntityProperties.OfMob.createNoAiProperty().toNbtWith(noAi);
@@ -76,11 +76,11 @@ public final class Skills {
             motionProperty.set(Vec3.ZERO);
             motionProperty.writeTo(nbt);
 
-            return Pair.ofFirst(nbt);
+            EntityUtils.mergeNbt(entity, nbt);
         }
     });
 
-    public static final ResourceLocation AGEABLE_MOB_SET_FORCED_AGE = r("AGEABLE_MOB_SET_FORCED_AGE", new Skill() {
+    public static final ResourceLocation AGEABLE_MOB_SET_FORCED_AGE = r("AGEABLE_MOB_SET_FORCED_AGE", new EntityOrientedSkill() {
         private static final int EXP = 4;
 
         @Environment(EnvType.CLIENT) @Override public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
@@ -89,7 +89,7 @@ public final class Skills {
             Permissions.checkPlayerCreativeOrExperience(player, EXP);
             return new IntArrayTag(new int[] { forcedAge, age });
         }
-        @Override public Pair<CompoundTag, CompoundTag> serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
+        @Override public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
             int[] t = args.asIntArray().orElseThrow();
             int forcedAge = t[0];
             int age = t[1];
@@ -104,28 +104,28 @@ public final class Skills {
             ap.writeTo(nbt);
 
             addExperienceIfNotCreative(player, -EXP);
-            return Pair.ofFirst(nbt);
+            EntityUtils.mergeNbt(entity, nbt);
         }
     });
 
-    public static final ResourceLocation BEE_CLEAR_HIVE = r("BEE_CLEAR_HIVE", new Skill() {
+    public static final ResourceLocation BEE_CLEAR_HIVE = r("BEE_CLEAR_HIVE", new EntityOrientedSkill() {
         @Environment(EnvType.CLIENT) @Override public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
             return ByteTag.valueOf(true);
         }
-        @Override public Pair<CompoundTag, CompoundTag> serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
+        @Override public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
             Permissions.checkLegalArg(args.asBoolean().orElseThrow(), false);
-            return Pair.ofFirst(VanillaEntityProperties.OfBee.createHivePosProperty().toNbtWith(null));
+            EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfBee.createHivePosProperty().toNbtWith(null));
         }
     });
 
     /// --------------------------------------------------------------------------------------------------------
 
-    public static void register(ResourceLocation key, Skill skill) {
-        skills.put(key, skill);
+    public static void register(ResourceLocation key, EntityOrientedSkill skill) {
+        entityOrientedSkills.put(key, skill);
     }
 
-    public static Skill getSkill(ResourceLocation key) {
-        Skill res = skills.get(key);
+    public static EntityOrientedSkill getSkill(ResourceLocation key) {
+        EntityOrientedSkill res = entityOrientedSkills.get(key);
         if (res == null) {
             throw new RuntimeException("No such key: " + key);
         }
@@ -141,7 +141,7 @@ public final class Skills {
     /**
      * Register built-in skills.
      */
-    private static ResourceLocation r(String path, Skill skill) {
+    private static ResourceLocation r(String path, EntityOrientedSkill skill) {
         ResourceLocation key = ResourceLocation.fromNamespaceAndPath(Lang.BIOLOGY_DICTIONARY, path.toLowerCase());
         register(key, skill);
         return key;

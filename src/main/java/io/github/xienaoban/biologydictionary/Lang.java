@@ -56,7 +56,8 @@ public final class Lang {
     TAG_DEFAULT_ENEMY_PATROL         = "tag.biologydictionary.default.enemy_patrol",
 
     WIDGET_ENTITY_HIGHLIGHT             = "widget.biologydictionary.highlight",
-    WIDGET_ENTITY_HIGHLIGHT_DESC        = "widget.biologydictionary.highlight.desc",
+    WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC   = "widget.biologydictionary.highlight.left.desc",
+    WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC  = "widget.biologydictionary.highlight.right.desc",
     WIDGET_ENTITY_OFFER_SPAWN_EGG       = "widget.biologydictionary.offer_spawn_egg",
     WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC  = "widget.biologydictionary.offer_spawn_egg.desc",
 
