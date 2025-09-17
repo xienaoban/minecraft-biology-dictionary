@@ -53,7 +53,7 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean newInv = !isInvulnerable();
-                if (ClientNetManager.sendUpdatedEntityProperties(e(), Skills.ENTITY_SET_INVULNERABLE, newInv)) {
+                if (ClientNetManager.sendEntityOrientedSkill(e(), Skills.ENTITY_SET_INVULNERABLE, newInv)) {
                     invulnerableProperty.set(newInv);
                 }
             }

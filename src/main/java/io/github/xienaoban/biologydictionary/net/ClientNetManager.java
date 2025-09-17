@@ -40,7 +40,7 @@ public final class ClientNetManager {
         ClientNetApi.send(new SendUpdatedEntityPropertiesOldPacket(entity.getId(), vanillaNbt, extraNbt));
     }
 
-    public static boolean sendUpdatedEntityProperties(Entity entity, ResourceLocation key, Object... args) {
+    public static boolean sendEntityOrientedSkill(Entity entity, ResourceLocation key, Object... args) {
         SendUpdatedEntityPropertiesPacket packet = SendUpdatedEntityPropertiesPacket.of(entity, key, args);
         if (packet == null) { return false; }
         ClientNetApi.send(packet);

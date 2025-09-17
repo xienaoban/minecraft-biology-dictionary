@@ -52,7 +52,7 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean newNoAi = !isNoAi();
-                if (ClientNetManager.sendUpdatedEntityProperties(e(), Skills.MOB_SET_NO_AI, newNoAi)) {
+                if (ClientNetManager.sendEntityOrientedSkill(e(), Skills.MOB_SET_NO_AI, newNoAi)) {
                     setNoAi(newNoAi);
                 }
             }

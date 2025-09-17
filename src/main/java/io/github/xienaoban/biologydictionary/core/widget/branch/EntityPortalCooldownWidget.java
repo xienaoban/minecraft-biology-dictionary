@@ -144,7 +144,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
                 } else {
                     newCooldown = EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY;
                 }
-                if (ClientNetManager.sendUpdatedEntityProperties(e(), Skills.ENTITY_SET_PORTAL_COOLDOWN, newCooldown)) {
+                if (ClientNetManager.sendEntityOrientedSkill(e(), Skills.ENTITY_SET_PORTAL_COOLDOWN, newCooldown)) {
                     portalCooldownProperty.set(newCooldown);
                 }
             }

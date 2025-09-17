@@ -132,7 +132,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                     newForcedAge = BREED_COOLDOWN_OFF;
                 }
 
-                if (ClientNetManager.sendUpdatedEntityProperties(e(), Skills.AGEABLE_MOB_SET_FORCED_AGE, newForcedAge, BREED_COOLDOWN_MAX)) {
+                if (ClientNetManager.sendEntityOrientedSkill(e(), Skills.AGEABLE_MOB_SET_FORCED_AGE, newForcedAge, BREED_COOLDOWN_MAX)) {
                     forcedAgeProperty.set(newForcedAge);
                     ageProperty.set(BREED_COOLDOWN_MAX);
                 }

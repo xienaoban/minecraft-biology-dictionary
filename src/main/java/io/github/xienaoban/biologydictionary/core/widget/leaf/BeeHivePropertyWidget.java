@@ -144,7 +144,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_CLEAR));
                     return true;
                 }
-                if (ClientNetManager.sendUpdatedEntityProperties(e(), Skills.BEE_CLEAR_HIVE)) {
+                if (ClientNetManager.sendEntityOrientedSkill(e(), Skills.BEE_CLEAR_HIVE)) {
                     hivePosProperty.set(null);
                 }
             }
