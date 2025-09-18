@@ -8,20 +8,19 @@ import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.EntityOrientedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
-public record SendEntityOrientedSkillPacket(int entityId, ResourceLocation key, Tag args) implements Packet {
+public record SendEntityOrientedSkillPacket(String skillKey, int entityId, Tag args) implements Packet {
     public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
 
     @Override
@@ -29,13 +28,13 @@ public record SendEntityOrientedSkillPacket(int entityId, ResourceLocation key, 
 
     @SuppressWarnings("unused")
     public SendEntityOrientedSkillPacket(FriendlyByteBuf buf) {
-        this(buf.readInt(), buf.readResourceLocation(), buf.readNbt(NbtAccounter.unlimitedHeap()));
+        this(buf.readUtf(), buf.readInt(), buf.readNbt(NbtAccounter.unlimitedHeap()));
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
+        buf.writeUtf(skillKey);
         buf.writeInt(entityId);
-        buf.writeResourceLocation(key);
         buf.writeNbt(args);
     }
 
@@ -49,7 +48,7 @@ public record SendEntityOrientedSkillPacket(int entityId, ResourceLocation key, 
         }
 
         try {
-            EntityOrientedSkill skill = Skills.getSkill(key);
+            EntityOrientedSkill skill = Skills.getSkill(skillKey);
             skill.serverReceive(ctx.server(), ctx.player(), entity, args);
         } catch (Permissions.NoPermissionException e) {
             LOGGER.warn(Misc.getStackToString(e));
@@ -59,11 +58,11 @@ public record SendEntityOrientedSkillPacket(int entityId, ResourceLocation key, 
         }
     }
 
-    public static SendEntityOrientedSkillPacket of(Entity entity, ResourceLocation key, Object... args) {
+    public static SendEntityOrientedSkillPacket of(String skillKey, Entity entity, Object... args) {
         try {
-            EntityOrientedSkill skill = Skills.getSkill(key);
+            EntityOrientedSkill skill = Skills.getSkill(skillKey);
             Tag tagArgs = skill.clientSend(McClientUtils.getClientPlayer(), entity, args);
-            return new SendEntityOrientedSkillPacket(entity.getId(), key, tagArgs);
+            return new SendEntityOrientedSkillPacket(skillKey, entity.getId(), tagArgs);
         } catch (Permissions.NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
         } catch (Exception e) {

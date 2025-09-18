@@ -2,17 +2,17 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import io.github.xienaoban.biologydictionary.core.skill.impl.MobSetNoAiSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -56,10 +56,12 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean newNoAi = !isNoAi();
-                if (ClientNetManager.sendEntityOrientedSkill(e(), Skills.MOB_SET_NO_AI, newNoAi)) {
+                if (MobSetNoAiSkill.activate(e(), newNoAi)) {
                     setNoAi(newNoAi);
-                    BooleanProperty<Entity> inv = VanillaEntityProperties.OfEntity.getInvulnerableProperty(p());
-                    inv.set(newNoAi);
+                    if (!PlayerUtils.isCreative(McClientUtils.getClientPlayer())) {
+                        BooleanProperty<Entity> inv = VanillaEntityProperties.OfEntity.getInvulnerableProperty(p());
+                        inv.set(newNoAi);
+                    }
                 }
             }
             return true;
@@ -77,8 +79,8 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
                     tooltipTitle(Lang.PROPERTY_WIDGET_AI_SWITCH),
                     tooltipDescription(Lang.PROPERTY_WIDGET_AI_SWITCH_DESC),
                     tooltipEmpty(),
-                    tooltipBody(Lang.TEXT_EXPERIENCE_LEVELS_REQUIRED, MobSetNoAiSkill.experienceLevelRequired(e())),
-                    tooltipBody(Lang.TEXT_EXPERIENCE_LEVELS_COST, MobSetNoAiSkill.experienceLevelCost(e()))
+                    tooltipBody(Lang.TEXT_EXPERIENCE_LEVELS_REQUIRED, MobSetNoAiSkill.experienceLevelsRequired(e())),
+                    tooltipBody(Lang.TEXT_EXPERIENCE_LEVELS_COST, MobSetNoAiSkill.experienceLevelsCost(e()))
             );
             return true;
         }
