@@ -32,7 +32,7 @@ public class MobSetNoAiSkill implements EntityOrientedSkill {
     private static final int ENEMY_EXP_LVL_COST_MIN = 5;
     private static final float ENEMY_EXP_LVL_COST_FACTOR = 0.25F;
 
-    public static int experienceLevelRequired(Entity entity) {
+    public static int experienceLevelsRequired(Entity entity) {
         if (entity instanceof Enemy) {
             return ENEMY_EXP_LVL_REQUIRED;
         } else if (entity instanceof NeutralMob) {
@@ -42,7 +42,7 @@ public class MobSetNoAiSkill implements EntityOrientedSkill {
         }
     }
 
-    public static int experienceLevelCost(Entity entity) {
+    public static int experienceLevelsCost(Entity entity) {
         if (entity instanceof Enemy) {
             return Math.max(ENEMY_EXP_LVL_COST_MIN, (int) (ENEMY_EXP_LVL_COST_FACTOR * ((LivingEntity) entity).getMaxHealth()));
         } else if (entity instanceof NeutralMob) {
@@ -52,9 +52,14 @@ public class MobSetNoAiSkill implements EntityOrientedSkill {
         }
     }
 
+    @Environment(EnvType.CLIENT)
+    public static boolean activate(Entity entity, boolean noAi) {
+        return Skills.sendEntityOrientedSkill(entity, noAi);
+    }
+
     private static void check(Player player, Entity entity) {
-        int lvlRequired = experienceLevelRequired(entity);
-        int lvlCost = experienceLevelCost(entity);
+        int lvlRequired = experienceLevelsRequired(entity);
+        int lvlCost = experienceLevelsCost(entity);
         Permissions.checkPlayerCreativeOrExperienceLevel(player, Math.max(lvlRequired, lvlCost));
     }
 
@@ -85,7 +90,7 @@ public class MobSetNoAiSkill implements EntityOrientedSkill {
             invulnerableProperty.writeTo(nbt);
         }
 
-        Skills.addExperienceLevelsIfNotCreative(player, -experienceLevelCost(entity));
+        Skills.giveExperienceLevelsIfNotCreative(player, -experienceLevelsCost(entity));
         EntityUtils.mergeNbt(entity, nbt);
     }
 }

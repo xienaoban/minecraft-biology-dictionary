@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -34,6 +35,7 @@ public final class BiologyDictionary {
 
         EntityUtils.init();
         ServerNetManager.init();
+        Skills.init();
 
         ServerEventRegistry.registerStarted(servers::add);
         ServerEventRegistry.registerStopping(servers::remove);

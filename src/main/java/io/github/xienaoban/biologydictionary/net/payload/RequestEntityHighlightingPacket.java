@@ -66,7 +66,7 @@ public record RequestEntityHighlightingPacket(EntityType<?> entityType, float ra
                         Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experience)));
             } else {
                 allowed = true;
-                Skills.addExperiencePointsIfNotCreative(player, -experience);
+                Skills.giveExperiencePointsIfNotCreative(player, -experience);
             }
         }
 

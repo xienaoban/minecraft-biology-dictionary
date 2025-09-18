@@ -6,10 +6,10 @@ import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
+import io.github.xienaoban.biologydictionary.core.skill.impl.BeeClearHiveSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -17,7 +17,6 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.Bee;
@@ -144,7 +143,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_CLEAR));
                     return true;
                 }
-                if (ClientNetManager.sendEntityOrientedSkill(e(), Skills.BEE_CLEAR_HIVE)) {
+                if (BeeClearHiveSkill.activate(e())) {
                     hivePosProperty.set(null);
                 }
             }
@@ -155,7 +154,9 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             renderTooltip(ctx,
                     tooltipTitle(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR_DESC)
+                    tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR_DESC),
+                    tooltipEmpty(),
+                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, BeeClearHiveSkill.EXPERIENCE_POINTS_COST)
             );
             return true;
         }

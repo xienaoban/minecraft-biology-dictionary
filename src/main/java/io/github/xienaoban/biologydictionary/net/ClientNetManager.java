@@ -6,7 +6,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -40,8 +39,8 @@ public final class ClientNetManager {
         ClientNetApi.send(new SendUpdatedEntityPropertiesOldPacket(entity.getId(), vanillaNbt, extraNbt));
     }
 
-    public static boolean sendEntityOrientedSkill(Entity entity, ResourceLocation key, Object... args) {
-        SendEntityOrientedSkillPacket packet = SendEntityOrientedSkillPacket.of(entity, key, args);
+    public static boolean sendEntityOrientedSkill(String skillKey, Entity entity, Object... args) {
+        SendEntityOrientedSkillPacket packet = SendEntityOrientedSkillPacket.of(skillKey, entity, args);
         if (packet == null) { return false; }
         ClientNetApi.send(packet);
         return true;

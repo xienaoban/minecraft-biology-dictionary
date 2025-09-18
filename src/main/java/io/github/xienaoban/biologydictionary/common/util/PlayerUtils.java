@@ -23,7 +23,7 @@ public final class PlayerUtils {
         return player.totalExperience;
     }
 
-    public static void addExperiencePoints(Player player, int experiencePoints) {
+    public static void giveExperiencePoints(Player player, int experiencePoints) {
         player.giveExperiencePoints(experiencePoints);
     }
 
@@ -31,7 +31,7 @@ public final class PlayerUtils {
         return player.experienceLevel;
     }
 
-    public static void addExperienceLevels(Player player, int experienceLevels) {
+    public static void giveExperienceLevels(Player player, int experienceLevels) {
         player.giveExperienceLevels(experienceLevels);
     }
 

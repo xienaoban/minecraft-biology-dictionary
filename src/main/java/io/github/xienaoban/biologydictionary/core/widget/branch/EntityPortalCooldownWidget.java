@@ -3,17 +3,16 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
+import io.github.xienaoban.biologydictionary.core.skill.impl.EntitySetPortalCooldownSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -144,7 +143,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
                 } else {
                     newCooldown = EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY;
                 }
-                if (ClientNetManager.sendEntityOrientedSkill(e(), Skills.ENTITY_SET_PORTAL_COOLDOWN, newCooldown)) {
+                if (EntitySetPortalCooldownSkill.activate(e(), newCooldown)) {
                     portalCooldownProperty.set(newCooldown);
                 }
             }
