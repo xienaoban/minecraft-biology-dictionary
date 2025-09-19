@@ -25,6 +25,7 @@ public class EntitySetInvulnerableSkill implements EntityOrientedSkill {
     public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
         boolean inv = (boolean) args[0];
         Permissions.checkPlayerCreative(player);
+        Permissions.checkTargetPlayerLowerGameMode(player, entity);
         return ByteTag.valueOf(inv);
     }
 
@@ -32,6 +33,7 @@ public class EntitySetInvulnerableSkill implements EntityOrientedSkill {
     public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
         boolean inv = args.asBoolean().orElseThrow();
         Permissions.checkPlayerCreative(player);
+        Permissions.checkTargetPlayerLowerGameMode(player, entity);
         EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfEntity.createInvulnerableProperty().toNbtWith(inv));
     }
 }

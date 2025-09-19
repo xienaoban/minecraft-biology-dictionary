@@ -7,6 +7,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 
 public final class PlayerUtils {
+    public static GameType gameMode(Player player) {
+        return player.gameMode();
+    }
+
     public static boolean isCreative(Player player) {
         return player.isCreative();
     }
@@ -16,7 +20,7 @@ public final class PlayerUtils {
     }
 
     public static boolean isSurvival(Player player) {
-        return player.gameMode() == GameType.SURVIVAL;
+        return gameMode(player) == GameType.SURVIVAL;
     }
 
     public static int getExperiencePoints(Player player) {

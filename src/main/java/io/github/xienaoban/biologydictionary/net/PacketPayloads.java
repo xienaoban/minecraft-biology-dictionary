@@ -10,13 +10,12 @@ public final class PacketPayloads {
             RequestBeehiveInfoPacket.class,
             RequestEntityDataPacket.class,
             RequestHandbookItemPacket.class,
-            RequestEntityHighlightingPacket.class,
-            RequestSpawnEggPacket.class,
             SendCenteredMessagePacket.class,
             SendBeehiveInfoPacket.class,
             SendEntityDataPacket.class,
-            SendEntityOrientedSkillPacket.class,
+            RequestCommonSkillPacket.class,
+            RequestEntityOrientedSkillPacket.class,
             SendUpdatedEntityPropertiesOldPacket.class,
-            SendEntityHighlightingPacket.class
+            ReplyHighlightEntitiesPacket.class
     );
 }

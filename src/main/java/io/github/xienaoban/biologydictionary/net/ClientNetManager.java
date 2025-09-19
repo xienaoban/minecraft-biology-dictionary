@@ -7,7 +7,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetManager {
@@ -23,14 +22,6 @@ public final class ClientNetManager {
         ClientNetApi.send(new RequestEntityDataPacket(entity.getId()));
     }
 
-    public static void requestEntityHighlighting(EntityType<?> entityType, float radius) {
-        ClientNetApi.send(new RequestEntityHighlightingPacket(entityType, radius));
-    }
-
-    public static void requestSpawnEgg(EntityType<?> entityType) {
-        ClientNetApi.send(new RequestSpawnEggPacket(entityType));
-    }
-
     public static void requestBeehiveInfo(BlockPos pos) {
         ClientNetApi.send(new RequestBeehiveInfoPacket(pos));
     }
@@ -39,8 +30,15 @@ public final class ClientNetManager {
         ClientNetApi.send(new SendUpdatedEntityPropertiesOldPacket(entity.getId(), vanillaNbt, extraNbt));
     }
 
+    public static boolean sendCommonSkill(String skillKey, Object... args) {
+        RequestCommonSkillPacket packet = RequestCommonSkillPacket.of(skillKey, args);
+        if (packet == null) { return false; }
+        ClientNetApi.send(packet);
+        return true;
+    }
+
     public static boolean sendEntityOrientedSkill(String skillKey, Entity entity, Object... args) {
-        SendEntityOrientedSkillPacket packet = SendEntityOrientedSkillPacket.of(skillKey, entity, args);
+        RequestEntityOrientedSkillPacket packet = RequestEntityOrientedSkillPacket.of(skillKey, entity, args);
         if (packet == null) { return false; }
         ClientNetApi.send(packet);
         return true;
