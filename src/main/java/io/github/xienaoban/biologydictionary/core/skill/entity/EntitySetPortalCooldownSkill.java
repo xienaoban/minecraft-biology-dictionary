@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.core.skill.impl;
+package io.github.xienaoban.biologydictionary.core.skill.entity;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;

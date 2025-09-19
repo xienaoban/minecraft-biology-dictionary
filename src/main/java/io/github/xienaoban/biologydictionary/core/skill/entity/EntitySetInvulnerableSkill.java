@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.core.skill.impl;
+package io.github.xienaoban.biologydictionary.core.skill.entity;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -14,26 +14,26 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-public class BeeClearHiveSkill implements EntityOrientedSkill {
-    public static final int EXPERIENCE_POINTS_COST = 1;
-
+public class EntitySetInvulnerableSkill implements EntityOrientedSkill {
     @Environment(EnvType.CLIENT)
-    public static boolean activate(Entity entity) {
-        return Skills.sendEntityOrientedSkill(entity);
+    public static boolean activate(Entity entity, boolean inv) {
+        return Skills.sendEntityOrientedSkill(entity, inv);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
     public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
-        return ByteTag.valueOf(true);
+        boolean inv = (boolean) args[0];
+        Permissions.checkPlayerCreative(player);
+        Permissions.checkTargetPlayerLowerGameMode(player, entity);
+        return ByteTag.valueOf(inv);
     }
 
     @Override
     public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
-        Permissions.checkLegalArg(args.asBoolean().orElseThrow(), false);
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
-        Skills.giveExperiencePointsIfNotCreative(player, -EXPERIENCE_POINTS_COST);
-        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfBee.createHivePosProperty().toNbtWith(null));
+        boolean inv = args.asBoolean().orElseThrow();
+        Permissions.checkPlayerCreative(player);
+        Permissions.checkTargetPlayerLowerGameMode(player, entity);
+        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfEntity.createInvulnerableProperty().toNbtWith(inv));
     }
 }
