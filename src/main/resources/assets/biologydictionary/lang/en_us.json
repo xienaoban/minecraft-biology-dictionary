@@ -338,6 +338,7 @@
   "text.biologydictionary.not_allowed_to_highlight_players": "Not allowed to highlight players",
   "text.biologydictionary.not_enough_experience_points": "Not enough experience: %d points required",
   "text.biologydictionary.not_enough_experience_levels": "Not enough experience: %d levels required",
+  "text.biologydictionary.no_permission_to_modify_this_player": "No permission to modify this player's data",
   "text.biologydictionary.only_in_creative_mode": "Can only be used in creative mode",
   "text.biologydictionary.experience_points_required": "Experience points required: %d",
   "text.biologydictionary.experience_levels_required": "Experience levels required: %d",

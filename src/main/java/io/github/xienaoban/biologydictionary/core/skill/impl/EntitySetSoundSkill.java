@@ -40,6 +40,7 @@ public class EntitySetSoundSkill implements EntityOrientedSkill {
     @Override
     public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
         boolean silent = (boolean) args[0];
+        Permissions.checkTargetPlayerLowerGameMode(player, entity);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, experiencePointsCost(entity));
         return ByteTag.valueOf(silent);
     }
@@ -47,6 +48,7 @@ public class EntitySetSoundSkill implements EntityOrientedSkill {
     @Override
     public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
         boolean silent = args.asBoolean().orElseThrow();
+        Permissions.checkTargetPlayerLowerGameMode(player, entity);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, experiencePointsCost(entity));
         Skills.giveExperiencePointsIfNotCreative(player, -experiencePointsCost(entity));
         EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfEntity.createSilentProperty().toNbtWith(silent));

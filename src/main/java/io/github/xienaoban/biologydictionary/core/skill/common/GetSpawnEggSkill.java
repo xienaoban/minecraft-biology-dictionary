@@ -1,44 +1,47 @@
-package io.github.xienaoban.biologydictionary.net.payload;
+package io.github.xienaoban.biologydictionary.core.skill.common;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
-import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
-import net.minecraft.network.FriendlyByteBuf;
+import io.github.xienaoban.biologydictionary.core.skill.CommonSkill;
+import io.github.xienaoban.biologydictionary.core.skill.Permissions;
+import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 
-public record RequestSpawnEggPacket(EntityType<?> entityType) implements Packet {
-    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
-
-    @Override
-    public Type<? extends Packet> type() { return META.type(); }
-
-    @SuppressWarnings("unused")
-    public RequestSpawnEggPacket(FriendlyByteBuf buf) {
-        this(EntityUtils.getEntityType(buf.readUtf()));
+public class GetSpawnEggSkill implements CommonSkill {
+    @Environment(EnvType.CLIENT)
+    public static boolean activate(EntityType<?> entityType) {
+        return Skills.sendCommonSkill(entityType);
     }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
+    public Tag clientSend(LocalPlayer player, Object... args) {
+        EntityType<?> entityType = (EntityType<?>) args[0];
+        Permissions.checkPlayerCreative(player);
         if (entityType == null) {
-            buf.writeUtf("");
+            return StringTag.valueOf("");
         } else {
-            buf.writeUtf(EntityUtils.getEntityTypeIdString(entityType));
+            return StringTag.valueOf(EntityUtils.getEntityTypeIdString(entityType));
         }
     }
 
     @Override
-    public void serverReceive(ServerNetApi.Context ctx) {
-        ServerPlayer player = ctx.player();
-
+    public void serverReceive(MinecraftServer server, ServerPlayer player, Tag args) {
+        String entityTypeId = args.asString().orElseThrow();
+        EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
+        Permissions.checkPlayerCreative(player);
         if (entityType == null) {
             BiologyDictionary.sendCenteredWarning(player, Component.translatable(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
         } else if (!PlayerUtils.isCreative(player)) {

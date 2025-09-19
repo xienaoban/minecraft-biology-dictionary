@@ -338,6 +338,7 @@
   "text.biologydictionary.not_allowed_to_highlight_players": "不支持高亮玩家",
   "text.biologydictionary.not_enough_experience_points": "经验值不足：需要%d点经验",
   "text.biologydictionary.not_enough_experience_levels": "经验值不足：需要%d级经验",
+  "text.biologydictionary.no_permission_to_modify_this_player": "无权限篡改该玩家数据",
   "text.biologydictionary.only_in_creative_mode": "只能在创造模式中使用",
   "text.biologydictionary.experience_points_required": "经验值要求：%d点及以上",
   "text.biologydictionary.experience_levels_required": "经验等级要求：%d级及以上",

@@ -20,14 +20,14 @@ import net.minecraft.world.entity.Entity;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
-public record SendEntityOrientedSkillPacket(String skillKey, int entityId, Tag args) implements Packet {
+public record RequestEntityOrientedSkillPacket(String skillKey, int entityId, Tag args) implements Packet {
     public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
 
     @Override
     public CustomPacketPayload.Type<? extends Packet> type() { return META.type(); }
 
     @SuppressWarnings("unused")
-    public SendEntityOrientedSkillPacket(FriendlyByteBuf buf) {
+    public RequestEntityOrientedSkillPacket(FriendlyByteBuf buf) {
         this(buf.readUtf(), buf.readInt(), buf.readNbt(NbtAccounter.unlimitedHeap()));
     }
 
@@ -48,7 +48,7 @@ public record SendEntityOrientedSkillPacket(String skillKey, int entityId, Tag a
         }
 
         try {
-            EntityOrientedSkill skill = Skills.getSkill(skillKey);
+            EntityOrientedSkill skill = Skills.getEntityOrientedSkill(skillKey);
             skill.serverReceive(ctx.server(), ctx.player(), entity, args);
         } catch (Permissions.NoPermissionException e) {
             LOGGER.warn(Misc.getStackToString(e));
@@ -58,11 +58,11 @@ public record SendEntityOrientedSkillPacket(String skillKey, int entityId, Tag a
         }
     }
 
-    public static SendEntityOrientedSkillPacket of(String skillKey, Entity entity, Object... args) {
+    public static RequestEntityOrientedSkillPacket of(String skillKey, Entity entity, Object... args) {
         try {
-            EntityOrientedSkill skill = Skills.getSkill(skillKey);
+            EntityOrientedSkill skill = Skills.getEntityOrientedSkill(skillKey);
             Tag tagArgs = skill.clientSend(McClientUtils.getClientPlayer(), entity, args);
-            return new SendEntityOrientedSkillPacket(skillKey, entity.getId(), tagArgs);
+            return new RequestEntityOrientedSkillPacket(skillKey, entity.getId(), tagArgs);
         } catch (Permissions.NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
         } catch (Exception e) {

@@ -1,6 +1,8 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.core.skill.common.GetSpawnEggSkill;
+import io.github.xienaoban.biologydictionary.core.skill.common.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.core.skill.impl.*;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
@@ -13,9 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class Skills {
+    private static final Map<String, CommonSkill> commonSkills = new HashMap<>();
     private static final Map<String, EntityOrientedSkill> entityOrientedSkills = new HashMap<>();
 
     public static void init() {
+        register(new HighlightEntitiesSkill());
+        register(new GetSpawnEggSkill());
+
         register(new EntitySetInvulnerableSkill());
         register(new EntitySetSoundSkill());
         register(new EntitySetPortalCooldownSkill());
@@ -24,13 +30,27 @@ public final class Skills {
         register(new BeeClearHiveSkill());
     }
 
+    public static void register(CommonSkill skill) {
+        if (commonSkills.putIfAbsent(key(skill), skill) != null) {
+            throw new RuntimeException("Duplicate skill registered: " + key(skill));
+        }
+    }
+
     public static void register(EntityOrientedSkill skill) {
         if (entityOrientedSkills.putIfAbsent(key(skill), skill) != null) {
             throw new RuntimeException("Duplicate skill registered: " + key(skill));
         }
     }
 
-    public static EntityOrientedSkill getSkill(String key) {
+    public static CommonSkill getCommonSkill(String key) {
+        CommonSkill res = commonSkills.get(key);
+        if (res == null) {
+            throw new RuntimeException("No such key: " + key);
+        }
+        return res;
+    }
+
+    public static EntityOrientedSkill getEntityOrientedSkill(String key) {
         EntityOrientedSkill res = entityOrientedSkills.get(key);
         if (res == null) {
             throw new RuntimeException("No such key: " + key);
@@ -38,11 +58,11 @@ public final class Skills {
         return res;
     }
 
-    public static String key(EntityOrientedSkill skill) {
+    public static String key(Object skill) {
         return skill.getClass().getName();
     }
 
-    public static String key(Class<? extends EntityOrientedSkill> skillClass) {
+    public static String key(Class<?> skillClass) {
         return skillClass.getName();
     }
 
@@ -56,6 +76,15 @@ public final class Skills {
         if (PlayerUtils.isCreative(player)) { return; }
         PlayerUtils.giveExperienceLevels(player, experience);
         PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
+    }
+
+    /**
+     * Use the caller class name as the skill key.
+     */
+    @Environment(EnvType.CLIENT)
+    public static boolean sendCommonSkill(Object... args) {
+        String skillKey = StackWalker.getInstance().walk(stream -> stream.skip(1).findFirst().orElseThrow().getClassName());
+        return ClientNetManager.sendCommonSkill(skillKey, args);
     }
 
     /**
