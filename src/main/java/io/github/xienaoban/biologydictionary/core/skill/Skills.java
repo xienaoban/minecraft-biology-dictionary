@@ -1,9 +1,8 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
-import io.github.xienaoban.biologydictionary.core.skill.common.GetSpawnEggSkill;
-import io.github.xienaoban.biologydictionary.core.skill.common.HighlightEntitiesSkill;
-import io.github.xienaoban.biologydictionary.core.skill.impl.*;
+import io.github.xienaoban.biologydictionary.core.skill.common.*;
+import io.github.xienaoban.biologydictionary.core.skill.entity.*;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

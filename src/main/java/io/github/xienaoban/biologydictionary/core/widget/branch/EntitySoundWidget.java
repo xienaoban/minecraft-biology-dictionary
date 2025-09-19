@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
-import io.github.xienaoban.biologydictionary.core.skill.impl.EntitySetSoundSkill;
+import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetSoundSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
