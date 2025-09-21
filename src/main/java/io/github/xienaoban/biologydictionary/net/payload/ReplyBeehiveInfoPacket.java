@@ -13,14 +13,14 @@ import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
-public record SendBeehiveInfoPacket(CompoundTag bees) implements Packet {
+public record ReplyBeehiveInfoPacket(CompoundTag bees) implements Packet {
     public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
 
     @Override
     public Type<? extends Packet> type() { return META.type(); }
 
     @SuppressWarnings("unused")
-    public SendBeehiveInfoPacket(FriendlyByteBuf buf) { this(buf.readNbt()); }
+    public ReplyBeehiveInfoPacket(FriendlyByteBuf buf) { this(buf.readNbt()); }
 
     @Override
     public void write(FriendlyByteBuf buf) { buf.writeNbt(bees); }

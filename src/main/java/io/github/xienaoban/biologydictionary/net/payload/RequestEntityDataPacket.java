@@ -27,7 +27,7 @@ public record RequestEntityDataPacket(int entityId) implements Packet {
     public void serverReceive(ServerNetApi.Context ctx) {
         Entity entity = ctx.player().level().getEntity(entityId);
 
-        SendEntityDataPacket toSend;
+        ReplyEntityDataPacket toSend;
         if (entity != null) {
             // Write vanilla NBT data.
             CompoundTag vanillaNbt = EntityUtils.getNbt(entity);
@@ -38,9 +38,9 @@ public record RequestEntityDataPacket(int entityId) implements Packet {
                 p.getFrom(Misc.cast(entity));
                 p.writeTo(extraNbt);
             }
-            toSend = new SendEntityDataPacket(true, entity.getId(), vanillaNbt, extraNbt);
+            toSend = new ReplyEntityDataPacket(true, entity.getId(), vanillaNbt, extraNbt);
         } else {
-            toSend = new SendEntityDataPacket(false, -1, null, null);
+            toSend = new ReplyEntityDataPacket(false, -1, null, null);
         }
 
         ServerNetApi.send(ctx.player(), toSend);

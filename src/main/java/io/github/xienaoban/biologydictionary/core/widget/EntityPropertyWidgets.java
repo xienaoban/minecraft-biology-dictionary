@@ -124,6 +124,8 @@ public final class EntityPropertyWidgets {
         r(AgeableMobBreedingCooldownWidget.class);
         r(AnimalInLoveWidget.class);
         r(EntityPortalCooldownWidget.class);
+        r(TamableAnimalOwnerWidget.class);
+        r(AbstractHorseOwnerWidget.class);
         r(VillagerJobSiteWidget.class);
         r(VillagerRestocksTodayWidget.class);
         r(BeeHivePropertyWidget.class);

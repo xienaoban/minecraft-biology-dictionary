@@ -27,7 +27,7 @@ public record RequestBeehiveInfoPacket(BlockPos pos) implements Packet {
         BeehiveBlockEntity entity = (BeehiveBlockEntity) ctx.player().level().getBlockEntity(pos);
         Objects.requireNonNull(entity);
         CompoundTag bees = entity.saveCustomOnly(Objects.requireNonNull(entity.getLevel()).registryAccess());
-        SendBeehiveInfoPacket toSend = new SendBeehiveInfoPacket(bees);
+        ReplyBeehiveInfoPacket toSend = new ReplyBeehiveInfoPacket(bees);
         ServerNetApi.send(ctx.player(), toSend);
     }
 }
