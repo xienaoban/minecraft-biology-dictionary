@@ -4,6 +4,9 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
+import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
+import io.github.xienaoban.biologydictionary.core.widget.UnsupportedWidgetException;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
@@ -13,28 +16,37 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
+import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public abstract class AbstractOwnerWidget<E extends Entity> extends EntityPropertyStandardWidget<E> {
+public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
     private static final int L = 11, T = 5;
+
+    private static final String OWNER_KEY = VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().name();
+
+    private static EntityProperties<Entity> verify(EntityProperties<Entity> properties) {
+        UnsupportedWidgetException.verify(properties.entity() instanceof OwnableEntity);
+        return properties;
+    }
+
+    private final EntityReferenceProperty<AbstractHorse> ownerProperty = p().getVanilla(OWNER_KEY);
 
     private UUID lastUuid = null;
     private Entity lastEntity = null;
 
-    public AbstractOwnerWidget(EntityProperties<E> properties) {
-        super(properties);
+    public EntityOwnerWidget(EntityProperties<Entity> properties) {
+        super(verify(properties));
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new OwnerBar());
     }
 
-    protected abstract EntityReference<Entity> getOwnerRef();
-
     private void updateOwnerRef() {
-        EntityReference<Entity> ref = getOwnerRef();
+        EntityReference<Entity> ref = ownerProperty.get();
         if (ref == null) {
             if (lastUuid != null) {
                 lastUuid = null;
