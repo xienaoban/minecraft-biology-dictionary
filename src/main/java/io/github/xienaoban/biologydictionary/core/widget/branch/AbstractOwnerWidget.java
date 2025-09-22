@@ -14,11 +14,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public abstract class AbstractOwnerWidget<E extends Entity> extends EntityPropertyStandardWidget<E> {
-    private static final int L = 14, T = 2;
+    private static final int L = 11, T = 5;
 
     private UUID lastUuid = null;
     private Entity lastEntity = null;
@@ -49,10 +51,21 @@ public abstract class AbstractOwnerWidget<E extends Entity> extends EntityProper
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx,
-                tooltipTitle(Lang.PROPERTY_WIDGET_TEMPT),
-                tooltipDescription(Lang.PROPERTY_WIDGET_TEMPT_DESC)
-        );
+        List<Component> list = new ArrayList<>();
+        list.add(tooltipTitle(Lang.PROPERTY_WIDGET_OWNER));
+        list.add(tooltipDescription(Lang.PROPERTY_WIDGET_OWNER_DESC));
+        list.add(tooltipEmpty());
+        if (lastUuid == null) {
+            list.add(tooltipBody(Lang.PROPERTY_WIDGET_OWNER_NONE));
+        } else {
+            list.add(tooltipBody(Lang.PROPERTY_WIDGET_OWNER_UUID, lastUuid.toString()));
+            if (lastEntity == null) {
+                list.add(tooltipBody(Lang.PROPERTY_WIDGET_OWNER_NOT_ONLINE));
+            } else {
+                list.add(tooltipBody(Lang.PROPERTY_WIDGET_OWNER_NAME, lastEntity.getName()));
+            }
+        }
+        renderTooltip(ctx, list);
         return true;
     }
 
@@ -68,11 +81,11 @@ public abstract class AbstractOwnerWidget<E extends Entity> extends EntityProper
             super.onRender(ctx);
             updateOwnerRef();
             if (lastUuid == null) {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NONE_WITH_BRACKETS), Colors.COMMON_DARK_LIGHTER_TEXT);
+                renderInnerText(ctx, Component.translatable(Lang.TEXT_NONE_WITH_BRACKETS), Colors.COMMON_LIGHT_TEXT);
             } else if (lastEntity == null) {
-                renderInnerText(ctx, Component.literal(lastUuid.toString()), Colors.COMMON_DARK_TEXT);
+                renderInnerText(ctx, Component.literal(lastUuid.toString()), Colors.COMMON_LIGHT_TEXT);
             } else {
-                renderInnerText(ctx, lastEntity.getName(), Colors.COMMON_DARK_TEXT);
+                renderInnerText(ctx, lastEntity.getName(), Colors.COMMON_LIGHT_TEXT);
             }
         }
     }
