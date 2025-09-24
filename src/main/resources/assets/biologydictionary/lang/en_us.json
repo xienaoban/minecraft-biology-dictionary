@@ -12,8 +12,11 @@
   "mode_name.biologydictionary.two_lang": "Biology Dictionary (生物辞典)",
   "author_name.biologydictionary.two_lang": "XieNaoban (蟹脑板)",
 
+  "screen.biologydictionary.player_selector": "Player Selector",
+
   "bookmark.biologydictionary.all"          : "All",
   "bookmark.biologydictionary.back_to_home" : "Back To Home",
+  "bookmark.biologydictionary.back"         : "Back",
   "bookmark.biologydictionary.about"        : "About",
 
   "tag_group.biologydictionary.default"   : "Default",
@@ -109,6 +112,8 @@
   "property_widget.biologydictionary.owner.uuid"                  : "Player UUID: %s",
   "property_widget.biologydictionary.owner.name"                  : "Player name: %s",
   "property_widget.biologydictionary.owner.not_online"            : "Player not online or not in this world",
+  "property_widget.biologydictionary.owner.gift"                  : "Gift",
+  "property_widget.biologydictionary.owner.gift.desc"             : "Gift the pet to other players",
   "property_widget.biologydictionary.job_site"                    : "Job Site",
   "property_widget.biologydictionary.job_site.desc"               : "Villagers should get close to the block to replenish goods",
   "property_widget.biologydictionary.job_site.locate"             : "Locate The Job Site",
@@ -360,6 +365,7 @@
   "text.biologydictionary.adult": "Adult",
   "text.biologydictionary.always_baby": "Not grow",
   "text.biologydictionary.never_breed": "Infertile",
+  "text.biologydictionary.not_owner_no_permission_to_gift": "Non-owners do not have the permission to gift",
   "text.biologydictionary.no_block_to_locate": "No block to locate",
   "text.biologydictionary.no_block_to_clear": "No block to clear",
   "text.biologydictionary.honey": "Honey",

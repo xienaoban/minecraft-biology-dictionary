@@ -12,8 +12,11 @@
   "mode_name.biologydictionary.two_lang": "生物辞典（Biology Dictionary）",
   "author_name.biologydictionary.two_lang": "蟹脑板（XieNaoban）",
 
+  "screen.biologydictionary.player_selector": "玩家选择器",
+
   "bookmark.biologydictionary.all"          : "所有生物",
   "bookmark.biologydictionary.back_to_home" : "返回主页",
+  "bookmark.biologydictionary.back"         : "返回",
   "bookmark.biologydictionary.about"        : "关于",
 
   "tag_group.biologydictionary.default"   : "默认分类",
@@ -109,6 +112,8 @@
   "property_widget.biologydictionary.owner.uuid"                  : "玩家UUID：%s",
   "property_widget.biologydictionary.owner.name"                  : "玩家名：%s",
   "property_widget.biologydictionary.owner.not_online"            : "玩家未上线或不在当前世界",
+  "property_widget.biologydictionary.owner.gift"                  : "赠与",
+  "property_widget.biologydictionary.owner.gift.desc"             : "将该宠物赠与其他玩家",
   "property_widget.biologydictionary.job_site"                    : "工作站点方块",
   "property_widget.biologydictionary.job_site.desc"               : "决定了村民的职业，接近方块才能补货",
   "property_widget.biologydictionary.job_site.locate"             : "定位工作站点方块",
@@ -360,6 +365,7 @@
   "text.biologydictionary.adult": "已成年",
   "text.biologydictionary.always_baby": "永不长大",
   "text.biologydictionary.never_breed": "不孕不育",
+  "text.biologydictionary.not_owner_no_permission_to_gift": "非所有者，没有赠与权限",
   "text.biologydictionary.no_block_to_locate": "没有可定位的方块",
   "text.biologydictionary.no_block_to_clear": "没有可清除的方块",
   "text.biologydictionary.honey": "蜂蜜",
