@@ -29,8 +29,11 @@ public final class Lang {
     GUI_YES = "gui.yes",
     GUI_NO = "gui.no",
 
+    SCREEN_PLAYER_SELECTOR = "screen.biologydictionary.player_selector",
+
     BOOKMARK_ALL          = "bookmark.biologydictionary.all",
     BOOKMARK_BACK_TO_HOME = "bookmark.biologydictionary.back_to_home",
+    BOOKMARK_BACK         = "bookmark.biologydictionary.back",
     BOOKMARK_ABOUT        = "bookmark.biologydictionary.about",
 
     TAG_GROUP_DEFAULT   = "tag_group.biologydictionary.default",
@@ -125,6 +128,8 @@ public final class Lang {
     PROPERTY_WIDGET_OWNER_UUID                  = "property_widget.biologydictionary.owner.uuid",
     PROPERTY_WIDGET_OWNER_NAME                  = "property_widget.biologydictionary.owner.name",
     PROPERTY_WIDGET_OWNER_NOT_ONLINE            = "property_widget.biologydictionary.owner.not_online",
+    PROPERTY_WIDGET_OWNER_GIFT                  = "property_widget.biologydictionary.owner.gift",
+    PROPERTY_WIDGET_OWNER_GIFT_DESC             = "property_widget.biologydictionary.owner.gift.desc",
     PROPERTY_WIDGET_JOB_SITE                    = "property_widget.biologydictionary.job_site",
     PROPERTY_WIDGET_JOB_SITE_DESC               = "property_widget.biologydictionary.job_site.desc",
     PROPERTY_WIDGET_JOB_SITE_LOCATE             = "property_widget.biologydictionary.job_site.locate",
@@ -169,6 +174,7 @@ public final class Lang {
     TEXT_ADULT                               = "text.biologydictionary.adult",
     TEXT_ALWAYS_BABY                         = "text.biologydictionary.always_baby",
     TEXT_NEVER_BREED                         = "text.biologydictionary.never_breed",
+    TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT     = "text.biologydictionary.not_owner_no_permission_to_gift",
     TEXT_NO_BLOCK_TO_LOCATE                  = "text.biologydictionary.no_block_to_locate",
     TEXT_NO_BLOCK_TO_CLEAR                   = "text.biologydictionary.no_block_to_clear",
     TEXT_HONEY                               = "text.biologydictionary.honey",

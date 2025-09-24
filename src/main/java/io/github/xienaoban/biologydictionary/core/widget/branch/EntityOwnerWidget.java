@@ -9,8 +9,11 @@ import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferen
 import io.github.xienaoban.biologydictionary.core.widget.UnsupportedWidgetException;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyTextBar;
+import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
+import io.github.xienaoban.biologydictionary.gui.screen.misc.PlayerSelectorScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.network.chat.Component;
@@ -26,6 +29,7 @@ import java.util.UUID;
 
 public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
     private static final int L = 11, T = 5;
+    private static final int L_GIFT = 22, T_GIFT = 4;
 
     private static final String OWNER_KEY = VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().name();
 
@@ -43,6 +47,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
         super(verify(properties));
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new OwnerBar());
+        addElementButton(new GiftButton());
     }
 
     private void updateOwnerRef() {
@@ -99,6 +104,35 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
             } else {
                 renderInnerText(ctx, lastEntity.getName(), Colors.COMMON_LIGHT_TEXT);
             }
+        }
+    }
+
+    public final class GiftButton extends EntityPropertyButton {
+        public GiftButton() {
+            super(Textures.ICONS, L_GIFT * WIDGET_WIDTH, T_GIFT * WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                if (lastEntity != McClientUtils.getClientPlayer()) {
+                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT));
+                    return true;
+                }
+                McClientUtils.setScreen(new PlayerSelectorScreen(McClientUtils.getCurrentScreen(), player -> {
+                    System.out.println(player.getName());
+                }));
+            }
+            return true;
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_OWNER_GIFT),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_OWNER_GIFT_DESC)
+            );
+            return true;
         }
     }
 }
