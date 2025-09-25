@@ -29,7 +29,8 @@ public final class Lang {
     GUI_YES = "gui.yes",
     GUI_NO = "gui.no",
 
-    SCREEN_PLAYER_SELECTOR = "screen.biologydictionary.player_selector",
+    SCREEN_PLAYER_SELECTOR      = "screen.biologydictionary.player_selector",
+    SCREEN_PLAYER_SELECTOR_DESC = "screen.biologydictionary.player_selector.desc",
 
     BOOKMARK_ALL          = "bookmark.biologydictionary.all",
     BOOKMARK_BACK_TO_HOME = "bookmark.biologydictionary.back_to_home",
@@ -159,6 +160,7 @@ public final class Lang {
     TEXT_NOT_ENOUGH_EXPERIENCE_POINTS        = "text.biologydictionary.not_enough_experience_points",
     TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS        = "text.biologydictionary.not_enough_experience_levels",
     TEXT_NO_PERMISSION_TO_MODIFY_THIS_PLAYER = "text.biologydictionary.no_permission_to_modify_this_player",
+    TEXT_PLAYER_AND_TARGET_CANNOT_SAME       = "text.biologydictionary.player_and_target_cannot_same",
     TEXT_ONLY_IN_CREATIVE_MODE               = "text.biologydictionary.only_in_creative_mode",
     TEXT_EXPERIENCE_POINTS_REQUIRED          = "text.biologydictionary.experience_points_required",
     TEXT_EXPERIENCE_LEVELS_REQUIRED          = "text.biologydictionary.experience_levels_required",

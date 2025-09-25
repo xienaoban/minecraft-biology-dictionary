@@ -13,6 +13,7 @@
   "author_name.biologydictionary.two_lang": "蟹脑板（XieNaoban）",
 
   "screen.biologydictionary.player_selector": "玩家选择器",
+  "screen.biologydictionary.player_selector.desc": "请选择一个在您附近的在线玩家。",
 
   "bookmark.biologydictionary.all"          : "所有生物",
   "bookmark.biologydictionary.back_to_home" : "返回主页",
@@ -350,6 +351,7 @@
   "text.biologydictionary.not_enough_experience_points": "经验值不足：需要%d点经验",
   "text.biologydictionary.not_enough_experience_levels": "经验值不足：需要%d级经验",
   "text.biologydictionary.no_permission_to_modify_this_player": "无权限篡改该玩家数据",
+  "text.biologydictionary.player_and_target_cannot_same": "玩家与目标玩家不能是同一人",
   "text.biologydictionary.only_in_creative_mode": "只能在创造模式中使用",
   "text.biologydictionary.experience_points_required": "经验值要求：%d点及以上",
   "text.biologydictionary.experience_levels_required": "经验等级要求：%d级及以上",

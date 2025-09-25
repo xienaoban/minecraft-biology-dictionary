@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -26,7 +27,8 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
         addBookmark(new ReturnLastScreenBookmark());
 
         List<Widget> list = new ArrayList<>();
-        list.add(new DescriptionWidget(1, Page.COLUMNS, Component.translatable(Lang.TEXT_TIME_IN_BEEHIVE)));
+        list.add(new DescriptionWidget(1, Page.COLUMNS, Component.translatable(Lang.SCREEN_PLAYER_SELECTOR_DESC)));
+        list.add(new PlayerSelectorWidget(player));
         list.addAll(
                 McClientUtils.getClientLevel().players().stream()
                         .filter(p -> p != player)
@@ -60,24 +62,31 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
     }
 
     public final class PlayerSelectorWidget extends Widget {
-        private final AbstractClientPlayer plr;
+        private final AbstractClientPlayer targetPlayer;
 
         public PlayerSelectorWidget(AbstractClientPlayer player) {
             super(1, Page.COLUMNS / 2);
-            this.plr = player;
+            this.targetPlayer = player;
         }
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            onClose();
-            callback.accept(plr);
+            if (isMouseLeft(code)) {
+                onClose();
+                callback.accept(targetPlayer);
+            }
             return true;
         }
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
-            ctx.renderText(plr.getName(), Colors.COMMON_DARK_TEXT, ctx.getZ(), getBox().getLeft() + 1, getBox().getTop() + 2.25F);
+            ScreenElementBox box = getBox();
+            if (isHovered(ctx.getMouseX(), ctx.getMouseY())) {
+                ctx.renderRectangle(0x2b90593F, ctx.getZ(), box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
+            }
+            ctx.renderPlayerFace(targetPlayer, box.getLeft() + 1F, box.getTop() + 1F);
+            ctx.renderText(targetPlayer.getName(), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), box.getLeft() + 11, box.getTop() + 3.25F);
         }
     }
 }

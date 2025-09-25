@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
+import io.github.xienaoban.biologydictionary.core.skill.entity.EntityGiftPetSkill;
 import io.github.xienaoban.biologydictionary.core.widget.UnsupportedWidgetException;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -119,9 +120,12 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT));
                     return true;
                 }
-                McClientUtils.setScreen(new PlayerSelectorScreen(McClientUtils.getCurrentScreen(), player -> {
-                    System.out.println(player.getName());
-                }));
+                McClientUtils.setScreen(new PlayerSelectorScreen(McClientUtils.getCurrentScreen(), targetPlayer -> {
+                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(null);
+                    EntityGiftPetSkill.activate(e(), targetPlayer);
+                    ownerProperty.set(new EntityReference<>(targetPlayer.getUUID()));
+                }
+                ));
             }
             return true;
         }

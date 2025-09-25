@@ -3,7 +3,6 @@ package io.github.xienaoban.biologydictionary.core.skill;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -49,19 +48,6 @@ public final class Permissions {
     public static void checkTargetPlayerLowerGameMode(Player player, Entity maybePlayer) {
         if (maybePlayer instanceof Player target) {
             checkTargetPlayerLowerGameMode(player, target);
-        }
-    }
-
-    public static class NoPermissionException extends RuntimeException {
-        private final MutableComponent gameMessage;
-
-        public NoPermissionException(MutableComponent gameMessage, String javaMessage) {
-            super("No permission to set the property: " + javaMessage);
-            this.gameMessage = gameMessage;
-        }
-
-        public MutableComponent getGameMessage() {
-            return gameMessage;
         }
     }
 }
