@@ -8,7 +8,7 @@ import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.skill.CommonSkill;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
+import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
@@ -39,7 +39,7 @@ public record RequestCommonSkillPacket(String skillKey, Tag args) implements Pac
         try {
             CommonSkill skill = Skills.getCommonSkill(skillKey);
             skill.serverReceive(ctx.server(), ctx.player(), args);
-        } catch (Permissions.NoPermissionException e) {
+        } catch (NoPermissionException e) {
             LOGGER.warn(Misc.getStackToString(e));
             BiologyDictionary.sendCenteredWarning(ctx.player(), e.getGameMessage());
         } catch (Exception e) {
@@ -52,7 +52,7 @@ public record RequestCommonSkillPacket(String skillKey, Tag args) implements Pac
             CommonSkill skill = Skills.getCommonSkill(skillKey);
             Tag tagArgs = skill.clientSend(McClientUtils.getClientPlayer(), args);
             return new RequestCommonSkillPacket(skillKey, tagArgs);
-        } catch (Permissions.NoPermissionException e) {
+        } catch (NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
         } catch (Exception e) {
             LOGGER.warn(Misc.getStackToString(e));
