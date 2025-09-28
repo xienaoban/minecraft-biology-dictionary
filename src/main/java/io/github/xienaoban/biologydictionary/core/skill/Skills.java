@@ -28,6 +28,7 @@ public final class Skills {
         register(new AgeableMobSetForcedAgeSkill());
         register(new BeeClearHiveSkill());
         register(new EntityGiftPetSkill());
+        register(new VillagerForceRestockSkill());
     }
 
     public static void register(CommonSkill skill) {

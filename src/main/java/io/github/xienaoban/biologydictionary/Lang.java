@@ -162,6 +162,7 @@ public final class Lang {
     TEXT_NO_PERMISSION_TO_MODIFY_THIS_PLAYER = "text.biologydictionary.no_permission_to_modify_this_player",
     TEXT_PLAYER_AND_TARGET_CANNOT_SAME       = "text.biologydictionary.player_and_target_cannot_same",
     TEXT_ONLY_IN_CREATIVE_MODE               = "text.biologydictionary.only_in_creative_mode",
+    TEXT_NOT_ENOUGH_ITEMS                    = "text.biologydictionary.not_enough_items",
     TEXT_EXPERIENCE_POINTS_REQUIRED          = "text.biologydictionary.experience_points_required",
     TEXT_EXPERIENCE_LEVELS_REQUIRED          = "text.biologydictionary.experience_levels_required",
     TEXT_EXPERIENCE_POINTS_COST              = "text.biologydictionary.experience_points_cost",

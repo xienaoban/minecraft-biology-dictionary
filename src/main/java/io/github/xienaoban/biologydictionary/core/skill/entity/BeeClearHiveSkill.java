@@ -31,7 +31,7 @@ public class BeeClearHiveSkill implements EntityOrientedSkill {
 
     @Override
     public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
-        Permissions.checkLegalArg(args.asBoolean().orElseThrow(), false);
+        Permissions.checkLegalArg(args.asBoolean().orElseThrow(), true);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
         Skills.giveExperiencePointsIfNotCreative(player, -EXPERIENCE_POINTS_COST);
         EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfBee.createHivePosProperty().toNbtWith(null));

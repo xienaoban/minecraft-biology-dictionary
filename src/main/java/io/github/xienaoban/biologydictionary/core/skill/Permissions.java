@@ -1,16 +1,18 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.util.InventoryUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
 public final class Permissions {
     public static <T> void checkLegalArg(T actual, T expect) {
-        if (Objects.equals(actual, expect)) {
+        if (!Objects.equals(actual, expect)) {
             throw new IllegalArgumentException("Bad arg: expect={" + expect + "}, actual={" + actual + "}");
         }
     }
@@ -41,8 +43,30 @@ public final class Permissions {
         boolean targetMode = PlayerUtils.isCreative(target);
         if (targetMode || !sourceMode) {
             throw new NoPermissionException(Component.translatable(Lang.TEXT_NO_PERMISSION_TO_MODIFY_THIS_PLAYER),
-                    "No permission to modify this player's data: source_mode=" + PlayerUtils.gameMode(player).getName() + ", target_mode=" + PlayerUtils.gameMode(target).getName());
+                    "No permission to modify this player's data: source_mode=\"" + PlayerUtils.gameMode(player).getName() + "\", target_mode=\"" + PlayerUtils.gameMode(target).getName() + "\"");
         }
+    }
+
+    public static void checkPlayerInventoryItems(Player player, ItemStack itemStack) {
+        if (!InventoryUtils.hasEnoughItems(player.getInventory(), itemStack)) {
+            throw new NoPermissionException(Component.translatable(Lang.TEXT_NOT_ENOUGH_ITEMS, itemStack.getCount(), itemStack.getItem().getName()), "Not enough items in inventory: item=\"" + itemStack.getItem() + "\"");
+        }
+    }
+
+    public static void checkPlayerCreativeOrInventoryItems(Player player, ItemStack itemStack) {
+        if (PlayerUtils.isCreative(player)) { return; }
+        checkPlayerInventoryItems(player, itemStack);
+    }
+
+    public static void checkConsumePlayerInventoryItems(Player player, ItemStack itemStack) {
+        if (!InventoryUtils.consumeItems(player.getInventory(), itemStack)) {
+            throw new NoPermissionException(Component.translatable(Lang.TEXT_NOT_ENOUGH_ITEMS, itemStack.getCount(), itemStack.getItem().getName()), "Not enough items in inventory: item=\"" + itemStack.getItem() + "\"");
+        }
+    }
+
+    public static void checkPlayerCreativeOrConsumeInventoryItems(Player player, ItemStack itemStack) {
+        if (PlayerUtils.isCreative(player)) { return; }
+        checkConsumePlayerInventoryItems(player, itemStack);
     }
 
     public static void checkTargetPlayerLowerGameMode(Player player, Entity maybePlayer) {
