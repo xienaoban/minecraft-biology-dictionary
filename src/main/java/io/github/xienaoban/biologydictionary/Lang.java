@@ -83,6 +83,8 @@ public final class Lang {
     PROPERTY_WIDGET_JUMP_STRENGTH_DESC          = "property_widget.biologydictionary.jump_strength.desc",
     PROPERTY_WIDGET_LEASHABLE                   = "property_widget.biologydictionary.leashable",
     PROPERTY_WIDGET_LEASHABLE_DESC              = "property_widget.biologydictionary.leashable.desc",
+    PROPERTY_WIDGET_SCREAMING_GOAT              = "property_widget.biologydictionary.screaming_goat",
+    PROPERTY_WIDGET_SCREAMING_GOAT_DESC         = "property_widget.biologydictionary.screaming_goat.desc",
     PROPERTY_WIDGET_BOUNDING_BOX                = "property_widget.biologydictionary.bounding_box",
     PROPERTY_WIDGET_BOUNDING_BOX_DESC           = "property_widget.biologydictionary.bounding_box.desc",
     PROPERTY_WIDGET_VARIANT                     = "property_widget.biologydictionary.variant",
