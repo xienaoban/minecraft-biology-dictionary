@@ -108,6 +108,7 @@ public final class EntityPropertyWidgets {
         r(LivingEntityMovementSpeedWidget.class);
         r(LivingEntityJumpStrengthWidget.class);
         r(EntityLeashableWidget.class);
+        r(GoatScreamingWidget.class);
         r(EntityBoundingBoxWidget.class);
         r(TurnPageTriggerWidget.class);
         r(EntityVariantStandardWidget.class);
