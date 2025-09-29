@@ -121,6 +121,8 @@
   "property_widget.biologydictionary.job_site.locate.desc"        : "Highlight the site for some time",
   "property_widget.biologydictionary.restocks_today"              : "Number Of Restocks Today",
   "property_widget.biologydictionary.restocks_today.desc"         : "Generally, villagers only restock 2 times a day during working hours",
+  "property_widget.biologydictionary.restocks_today.restock"      : "Force Restocking",
+  "property_widget.biologydictionary.restocks_today.restock.desc" : "Ask the villager to restock immediately (may need to pay with emeralds)",
   "property_widget.biologydictionary.bee_hive"                    : "Bee Hive",
   "property_widget.biologydictionary.bee_hive.desc"               : "Home of the bee",
   "property_widget.biologydictionary.bee_hive.locate"             : "Locate The Bee Hive",
@@ -371,6 +373,9 @@
   "text.biologydictionary.not_owner_no_permission_to_gift": "Non-owners do not have the permission to gift",
   "text.biologydictionary.no_block_to_locate": "No block to locate",
   "text.biologydictionary.no_block_to_clear": "No block to clear",
+  "text.biologydictionary.villager_no_job_site": "The Villager has no job site",
+  "text.biologydictionary.villager_too_far_from_job_site": "The villager is too far from the job site",
+
   "text.biologydictionary.honey": "Honey",
   "text.biologydictionary.bee_state_in_beehive": "State: %s",
   "text.biologydictionary.bee_producing_nectar": "Producing nectar",

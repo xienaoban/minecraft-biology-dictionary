@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
-import io.github.xienaoban.biologydictionary.core.skill.entity.BeeClearHiveSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.VillagerForceRestockSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -105,10 +104,8 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR_DESC),
-                    tooltipEmpty(),
-                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, BeeClearHiveSkill.EXPERIENCE_POINTS_COST)
+                    tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK_DESC)
             );
             return true;
         }

@@ -137,6 +137,8 @@ public final class Lang {
     PROPERTY_WIDGET_JOB_SITE_LOCATE_DESC        = "property_widget.biologydictionary.job_site.locate.desc",
     PROPERTY_WIDGET_RESTOCKS_TODAY              = "property_widget.biologydictionary.restocks_today",
     PROPERTY_WIDGET_RESTOCKS_TODAY_DESC         = "property_widget.biologydictionary.restocks_today.desc",
+    PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK      = "property_widget.biologydictionary.restocks_today.restock",
+    PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK_DESC = "property_widget.biologydictionary.restocks_today.restock.desc",
     PROPERTY_WIDGET_BEE_HIVE                    = "property_widget.biologydictionary.bee_hive",
     PROPERTY_WIDGET_BEE_HIVE_DESC               = "property_widget.biologydictionary.bee_hive.desc",
     PROPERTY_WIDGET_BEE_HIVE_LOCATE             = "property_widget.biologydictionary.bee_hive.locate",
@@ -180,6 +182,9 @@ public final class Lang {
     TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT     = "text.biologydictionary.not_owner_no_permission_to_gift",
     TEXT_NO_BLOCK_TO_LOCATE                  = "text.biologydictionary.no_block_to_locate",
     TEXT_NO_BLOCK_TO_CLEAR                   = "text.biologydictionary.no_block_to_clear",
+    TEXT_VILLAGER_NO_JOB_SITE                = "text.biologydictionary.villager_no_job_site",
+    TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE      = "text.biologydictionary.villager_too_far_from_job_site",
+
     TEXT_HONEY                               = "text.biologydictionary.honey",
     TEXT_BEE_STATE_IN_BEEHIVE                = "text.biologydictionary.bee_state_in_beehive",
     TEXT_BEE_PRODUCING_NECTAR                = "text.biologydictionary.bee_producing_nectar",
