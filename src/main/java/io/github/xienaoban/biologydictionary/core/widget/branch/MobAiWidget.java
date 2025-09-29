@@ -2,22 +2,21 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
-import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
+import io.github.xienaoban.biologydictionary.core.skill.entity.MobSetNoAiSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.phys.Vec3;
 
 @Environment(EnvType.CLIENT)
 public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
@@ -56,19 +55,14 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                boolean noAi = isNoAi();
-                BooleanProperty<Mob> property = VanillaEntityProperties.OfMob.createNoAiProperty();
-                property.set(!noAi);
-                setNoAi(!noAi);
-                CompoundTag nbt = property.toNbt();
-
-                // Clear the motion caused by collisions accumulated during the AI-disabled period
-                // to prevent the entity from flying around randomly.
-                CodecProperty<Entity, Vec3> motionProperty = VanillaEntityProperties.OfEntity.createMotionProperty();
-                motionProperty.set(Vec3.ZERO);
-                motionProperty.writeTo(nbt);
-
-                ClientNetManager.sendUpdatedEntityProperties(e(), nbt, null);
+                boolean newNoAi = !isNoAi();
+                if (MobSetNoAiSkill.activate(e(), newNoAi)) {
+                    setNoAi(newNoAi);
+                    if (!PlayerUtils.isCreative(McClientUtils.getClientPlayer())) {
+                        BooleanProperty<Entity> inv = VanillaEntityProperties.OfEntity.getInvulnerableProperty(p());
+                        inv.set(newNoAi);
+                    }
+                }
             }
             return true;
         }
@@ -83,7 +77,10 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             renderTooltip(ctx,
                     tooltipTitle(Lang.PROPERTY_WIDGET_AI_SWITCH),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_AI_SWITCH_DESC)
+                    tooltipDescription(Lang.PROPERTY_WIDGET_AI_SWITCH_DESC),
+                    tooltipEmpty(),
+                    tooltipBody(Lang.TEXT_EXPERIENCE_LEVELS_REQUIRED, MobSetNoAiSkill.experienceLevelsRequired(e())),
+                    tooltipBody(Lang.TEXT_EXPERIENCE_LEVELS_COST, MobSetNoAiSkill.experienceLevelsCost(e()))
             );
             return true;
         }

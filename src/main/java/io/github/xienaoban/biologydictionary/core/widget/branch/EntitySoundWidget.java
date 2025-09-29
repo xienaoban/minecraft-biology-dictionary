@@ -5,12 +5,12 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
+import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetSoundSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -48,6 +48,17 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
         }
 
         @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                boolean newSilent = !isSilent();
+                if (EntitySetSoundSkill.activate(e(), newSilent)) {
+                    silentProperty.set(newSilent);
+                }
+            }
+            return true;
+        }
+
+        @Override
         protected void onRender(ScreenRenderingContext ctx) {
             setTextureLeftOffset((isSilent() ? 1 : 0) * WIDGET_WIDTH);
             super.onRender(ctx);
@@ -57,20 +68,10 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             renderTooltip(ctx,
                     tooltipTitle(Lang.PROPERTY_WIDGET_SOUND_SWITCH),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_SWITCH_DESC)
+                    tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_SWITCH_DESC),
+                    tooltipEmpty(),
+                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, EntitySetSoundSkill.experiencePointsCost(e()))
             );
-            return true;
-        }
-
-        @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
-                boolean silent = isSilent();
-                BooleanProperty<Entity> property = VanillaEntityProperties.OfEntity.createSilentProperty();
-                property.set(!silent);
-                silentProperty.set(!silent);
-                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
-            }
             return true;
         }
     }

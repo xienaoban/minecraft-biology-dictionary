@@ -1,8 +1,6 @@
 package io.github.xienaoban.biologydictionary.common.util;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 
 public final class McUtils {
     /**
@@ -18,13 +16,5 @@ public final class McUtils {
 
     public static boolean isVanilaResourceLocation(ResourceLocation rl) {
         return ResourceLocation.DEFAULT_NAMESPACE.equals(rl.getNamespace());
-    }
-
-    public static void showClientTextBoxMessage(ServerPlayer player, Component component) {
-        player.displayClientMessage(component, false);
-    }
-
-    public static void showClientCenteredMessage(ServerPlayer player, Component component) {
-        player.displayClientMessage(component, true);
     }
 }

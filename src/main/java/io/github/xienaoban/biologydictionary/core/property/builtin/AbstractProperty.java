@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property.builtin;
 
-import io.github.xienaoban.biologydictionary.api.EntityProperty;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
@@ -30,6 +30,11 @@ public abstract class AbstractProperty<E extends Entity, T> implements EntityPro
         CompoundTag nbt = new CompoundTag();
         writeTo(nbt);
         return nbt;
+    }
+
+    public final CompoundTag toNbtWith(T newValue) {
+        value = newValue;
+        return toNbt();
     }
 
     public static final class IllegalPropertyStateException extends RuntimeException {

@@ -4,15 +4,24 @@ import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRen
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.client.ClientEventRegistry;
+import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
+import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
+
+import java.util.List;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -61,5 +70,40 @@ public final class BiologyDictionaryClient {
 
     private void tick(Minecraft client) {
         if (!client.isPaused()) ++ticks;
+    }
+
+    public static void sendCenteredMessage(Component text) {
+        if (McClientUtils.getCurrentScreen() instanceof AbstractBiologyDictionaryScreen screen) {
+            screen.sendScreenMessage(text);
+        } else {
+            McClientUtils.sendCenteredMessage(ComponentUtils.formatList(
+                    List.of(Component.translatable(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN), text),
+                    Component.empty()
+            ));
+        }
+    }
+
+    public static void sendCenteredInfo(MutableComponent text) {
+        sendCenteredMessage(text.withStyle(ChatFormatting.WHITE));
+    }
+
+    public static void sendCenteredWarning(MutableComponent text) {
+        sendCenteredMessage(text.withStyle(ChatFormatting.YELLOW));
+    }
+
+    public static void sendCenteredError(MutableComponent text) {
+        sendCenteredMessage(text.withStyle(ChatFormatting.RED));
+    }
+
+    public static void printThrowableToLoggerAndGame(Throwable throwable) {
+        String errStack = Misc.getStackToString(throwable);
+        LOGGER.error(errStack);
+        McClientUtils.sendTextBoxMessage(ComponentUtils.formatList(
+                List.of(
+                        Component.translatable(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN),
+                        Component.literal(throwable.toString()).withStyle(ChatFormatting.RED)
+                ),
+                Component.empty()
+        ));
     }
 }

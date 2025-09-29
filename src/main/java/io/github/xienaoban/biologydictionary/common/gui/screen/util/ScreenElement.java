@@ -218,6 +218,14 @@ public abstract class ScreenElement {
         return code == GLFW.GLFW_MOUSE_BUTTON_LEFT;
     }
 
+    public static boolean isMouseRight(int code) {
+        return code == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+    }
+
+    public static Component tooltipEmpty() {
+        return Component.empty();
+    }
+
     public static Component tooltipTitle(String trans) {
         return Component.translatable(trans).withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD);
     }
@@ -228,5 +236,9 @@ public abstract class ScreenElement {
 
     public static Component tooltipBody(String trans) {
         return Component.translatable(trans).withStyle(ChatFormatting.WHITE);
+    }
+
+    public static Component tooltipBody(String trans, Object... args) {
+        return Component.translatable(trans, args).withStyle(ChatFormatting.WHITE);
     }
 }

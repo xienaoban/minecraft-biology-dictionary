@@ -5,12 +5,12 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
+import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetInvulnerableSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
@@ -51,11 +51,10 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                boolean inv = isInvulnerable();
-                BooleanProperty<Entity> property = VanillaEntityProperties.OfEntity.createInvulnerableProperty();
-                property.set(!inv);
-                invulnerableProperty.set(!inv);
-                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
+                boolean newInv = !isInvulnerable();
+                if (EntitySetInvulnerableSkill.activate(e(), newInv)) {
+                    invulnerableProperty.set(newInv);
+                }
             }
             return true;
         }
@@ -70,7 +69,9 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             renderTooltip(ctx,
                     tooltipTitle(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH_DESC)
+                    tooltipDescription(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH_DESC),
+                    tooltipEmpty(),
+                    tooltipBody(Lang.TEXT_ONLY_IN_CREATIVE_MODE)
             );
             return true;
         }

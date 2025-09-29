@@ -12,6 +12,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
@@ -127,6 +128,18 @@ public final class EntityUtils {
 
     public static <E extends Entity> EntityType<E> getEntityType(ResourceLocation key) {
         return Misc.cast(BuiltInRegistries.ENTITY_TYPE.getOptional(key).orElse(null));
+    }
+
+    // ============================================================================ //
+    //                             Entity Method Utils                              //
+    // ============================================================================ //
+
+    public static void playSound(Entity entity, SoundEvent soundEvent) {
+        entity.playSound(soundEvent);
+    }
+
+    public static void playSound(Entity entity, SoundEvent soundEvent, float volume, float pitch) {
+        entity.playSound(soundEvent, volume, pitch);
     }
 
     // ============================================================================ //
