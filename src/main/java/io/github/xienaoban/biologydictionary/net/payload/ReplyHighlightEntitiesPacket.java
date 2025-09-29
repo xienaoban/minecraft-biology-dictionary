@@ -1,6 +1,5 @@
-package io.github.xienaoban.biologydictionary.net.payloads;
+package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.Const;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
@@ -8,6 +7,7 @@ import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.core.skill.common.HighlightEntitiesSkill;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -17,14 +17,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
-public record SendEntityHighlightingPacket(boolean allowed, EntityType<?> entityType, float radius) implements Packet {
+public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entityType, float radius) implements Packet {
     public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
 
     @Override
     public Type<? extends Packet> type() { return META.type(); }
 
     @SuppressWarnings("unused")
-    public SendEntityHighlightingPacket(FriendlyByteBuf buf) {
+    public ReplyHighlightEntitiesPacket(FriendlyByteBuf buf) {
         this(buf.readBoolean(), EntityUtils.getEntityType(buf.readUtf()), buf.readFloat());
     }
 
@@ -53,9 +53,9 @@ public record SendEntityHighlightingPacket(boolean allowed, EntityType<?> entity
                 continue;
             }
             ++cnt;
-            HighlightManager.highlightEntity(e, Const.HIGHLIGHT_ENTITIES_TICKS);
+            HighlightManager.highlightEntity(e, HighlightEntitiesSkill.TICKS);
         }
-        McClientUtils.showClientCenteredMessage(Component.translatable(Lang.TEXT_HIGHLIGHTED_ENTITIES,
+        McClientUtils.sendCenteredMessage(Component.translatable(Lang.TEXT_HIGHLIGHTED_ENTITIES,
                 cnt, entityType.getDescription(), radius));
     }
 }

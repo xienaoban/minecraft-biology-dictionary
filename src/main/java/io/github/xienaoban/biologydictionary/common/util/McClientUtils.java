@@ -6,12 +6,14 @@ import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 
+import java.util.Collection;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
@@ -37,6 +39,13 @@ public final class McClientUtils {
 
     public static ClientLevel getClientLevel(Minecraft client) {
         return client.level;
+    }
+
+    /**
+     * @see net.minecraft.client.gui.components.PlayerTabOverlay#getPlayerInfos()
+     */
+    public static Collection<PlayerInfo> getOnlinePlayerInfos() {
+        return getClientPlayer().connection.getListedOnlinePlayers();
     }
 
     public static boolean isFirstPerson() {
@@ -67,12 +76,12 @@ public final class McClientUtils {
         return 20;
     }
 
-    public static void showClientTextBoxMessage(Component component) {
-        Objects.requireNonNull(getClient().player).displayClientMessage(component, false);
+    public static void sendTextBoxMessage(Component text) {
+        Objects.requireNonNull(getClient().player).displayClientMessage(text, false);
     }
 
-    public static void showClientCenteredMessage(Component component) {
-        Objects.requireNonNull(getClient().player).displayClientMessage(component, true);
+    public static void sendCenteredMessage(Component text) {
+        Objects.requireNonNull(getClient().player).displayClientMessage(text, true);
     }
 
     public static void playScreenSound(SoundEvent sound, float volume, float pitch) {

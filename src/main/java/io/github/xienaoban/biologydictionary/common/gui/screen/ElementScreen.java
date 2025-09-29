@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.common.gui.screen;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -125,7 +125,7 @@ public abstract class ElementScreen extends CommonScreen {
     protected abstract void resizeBox(int width, int height);
 
     private void showExceptionMessageAndCloseScreen(Throwable throwable) {
-        Misc.printThrowableToLoggerAndGame(throwable);
+        BiologyDictionaryClient.printThrowableToLoggerAndGame(throwable);
         onClose();
     }
 

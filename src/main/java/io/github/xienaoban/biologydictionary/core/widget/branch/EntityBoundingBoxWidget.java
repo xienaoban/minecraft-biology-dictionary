@@ -5,8 +5,8 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
-import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyBar;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyTextBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -33,7 +33,7 @@ public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<
         return true;
     }
 
-    private final class BoxBar extends EntityPropertyBar {
+    private final class BoxBar extends EntityPropertyTextBar {
         private AABB lastBox;
         private Component textX, textY, textZ;
 
@@ -45,7 +45,6 @@ public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
-            renderFullBar(ctx);
             updateTexts();
             ctx.renderText(textX, 0xFFEE3D3D, 0.5F, ctx.getZ(), getBox().getLeft() + 3 + 0, getBox().getTop() + 2.25F);
             ctx.renderText(textY, 0xFF04B904, 0.5F, ctx.getZ(), getBox().getLeft() + 3 + 12, getBox().getTop() + 2.25F);

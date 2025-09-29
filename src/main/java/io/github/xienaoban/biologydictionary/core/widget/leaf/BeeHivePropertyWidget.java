@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
-import io.github.xienaoban.biologydictionary.Const;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
@@ -9,6 +8,8 @@ import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
+import io.github.xienaoban.biologydictionary.core.skill.common.HighlightEntitiesSkill;
+import io.github.xienaoban.biologydictionary.core.skill.entity.BeeClearHiveSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -16,7 +17,6 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.Bee;
@@ -114,7 +114,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_LOCATE));
                     return true;
                 }
-                HighlightManager.highlightBlock(currHivePos, Const.HIGHLIGHT_BLOCK_TICKS);
+                HighlightManager.highlightBlock(currHivePos, HighlightEntitiesSkill.BLOCK_TICKS);
                 McClientUtils.setScreen(null);
             }
             return true;
@@ -143,10 +143,9 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_CLEAR));
                     return true;
                 }
-                CodecProperty<Bee, BlockPos> property = VanillaEntityProperties.OfBee.createHivePosProperty();
-                property.set(null);
-                hivePosProperty.set(null);
-                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
+                if (BeeClearHiveSkill.activate(e())) {
+                    hivePosProperty.set(null);
+                }
             }
             return true;
         }
@@ -155,7 +154,9 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             renderTooltip(ctx,
                     tooltipTitle(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR_DESC)
+                    tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR_DESC),
+                    tooltipEmpty(),
+                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, BeeClearHiveSkill.EXPERIENCE_POINTS_COST)
             );
             return true;
         }

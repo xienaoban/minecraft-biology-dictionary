@@ -108,6 +108,7 @@ public final class EntityPropertyWidgets {
         r(LivingEntityMovementSpeedWidget.class);
         r(LivingEntityJumpStrengthWidget.class);
         r(EntityLeashableWidget.class);
+        r(GoatScreamingWidget.class);
         r(EntityBoundingBoxWidget.class);
         r(TurnPageTriggerWidget.class);
         r(EntityVariantStandardWidget.class);
@@ -124,6 +125,7 @@ public final class EntityPropertyWidgets {
         r(AgeableMobBreedingCooldownWidget.class);
         r(AnimalInLoveWidget.class);
         r(EntityPortalCooldownWidget.class);
+        r(EntityOwnerWidget.class);
         r(VillagerJobSiteWidget.class);
         r(VillagerRestocksTodayWidget.class);
         r(BeeHivePropertyWidget.class);

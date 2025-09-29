@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
-import io.github.xienaoban.biologydictionary.Const;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
@@ -8,10 +7,11 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.skill.common.GetSpawnEggSkill;
+import io.github.xienaoban.biologydictionary.core.skill.common.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -155,8 +155,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private final class EntityWidget extends Widget {
-        private static final int BUTTONS_CUT2 = (2 * Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * 2 / 3;
-        private static final int BUTTONS_CUT1 = BUTTONS_CUT2 / 2;
+        private static final int BUTTONS_CUT = (2 * Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * 2 / 3;
 
         private final Entity entity;
         private final Component name;
@@ -176,29 +175,31 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
-                ScreenElementBox box = getBox();
-                float mouseY = screenRenderingContext.getMouseY() - box.getTop();
-                if (mouseY < BUTTONS_CUT2) {
-                    int distance;
-                    if (mouseY < BUTTONS_CUT1) {
-                        distance = Const.HIGHLIGHT_ENTITIES_NEAR_DISTANCE;
-                    } else {
-                        distance = Const.HIGHLIGHT_ENTITIES_FAR_DISTANCE;
-                    }
-                    ClientNetManager.requestEntityHighlighting(entity.getType(), distance);
-                    McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
-                    onClose();
+            ScreenElementBox box = getBox();
+            float mouseY = screenRenderingContext.getMouseY() - box.getTop();
+            if (mouseY < BUTTONS_CUT) {
+                int distance;
+                if (isMouseLeft(code)) {
+                    distance = HighlightEntitiesSkill.NEAR_RADIUS;
+                } else if (isMouseRight(code)) {
+                    distance = HighlightEntitiesSkill.FAR_RADIUS;
                 } else {
+                    return true;
+                }
+                HighlightEntitiesSkill.activate(entity.getType(), distance);
+                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
+                onClose();
+            } else {
+                if (isMouseLeft(code)) {
                     if (!PlayerUtils.isCreative(player)) {
                         sendScreenMessage(Component.translatable(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
                     } else {
-                        ClientNetManager.requestSpawnEgg(entity.getType());
+                        GetSpawnEggSkill.activate(entity.getType());
                     }
                 }
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return true;
         }
 
         @Override
@@ -216,23 +217,16 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
             float midX = (box.getLeft() + box.getRight()) / 2;
             float mouseY = ctx.getMouseY() - box.getTop();
-            int colorHighlight1, colorHighlight2, colorEgg;
-            if (mouseY < BUTTONS_CUT2) {
-                if (mouseY < BUTTONS_CUT1) {
-                    colorHighlight1 = 0xd4ffffff;
-                    colorHighlight2 = 0xc2ffffff;
-                } else {
-                    colorHighlight1 = 0xc2ffffff;
-                    colorHighlight2 = 0xd4ffffff;
-                }
+            int colorHighlight, colorEgg;
+            if (mouseY < BUTTONS_CUT) {
+                colorHighlight = 0xd4ffffff;
                 colorEgg = 0xaaffffff;
             } else {
-                colorHighlight1 = colorHighlight2 = 0xaaffffff;
+                colorHighlight = 0xaaffffff;
                 colorEgg = 0xd4ffffff;
             }
-            ctx.renderRectangle(colorHighlight1, ctx.getZ(), box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getTop() + BUTTONS_CUT1);
-            ctx.renderRectangle(colorHighlight2, ctx.getZ(), box.getLeft() + 1, box.getTop() + BUTTONS_CUT1, box.getRight() - 1, box.getTop() + BUTTONS_CUT2);
-            ctx.renderRectangle(colorEgg, ctx.getZ(), box.getLeft() + 1, box.getTop() + BUTTONS_CUT2, box.getRight() - 1, box.getBottom() - 1);
+            ctx.renderRectangle(colorHighlight, ctx.getZ(), box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getTop() + BUTTONS_CUT);
+            ctx.renderRectangle(colorEgg, ctx.getZ(), box.getLeft() + 1, box.getTop() + BUTTONS_CUT, box.getRight() - 1, box.getBottom() - 1);
 
             final int wh = 10;
             final int wink = 600, cycle = 2400;
@@ -242,26 +236,18 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             else if (time < cycle / 2) { u = 0; }
             else if (time < cycle / 2 + wink) { u = 1; }
             else { u = 0; }
-            ctx.renderTexture(Textures.ICONS, (23 + u) * wh, 24 * wh, ctx.getZ(), midX - wh / 2F, box.getTop() + (BUTTONS_CUT2 - wh) / 2F, Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+            ctx.renderTexture(Textures.ICONS, (23 + u) * wh, 24 * wh, ctx.getZ(), midX - wh / 2F, box.getTop() + (BUTTONS_CUT - wh) / 2F, Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
 
             if (spawnEgg != null) {
-                ctx.renderItem(spawnEgg, 0.5F, midX - 4F, box.getTop() + BUTTONS_CUT2);
+                ctx.renderItem(spawnEgg, 0.5F, midX - 4F, box.getTop() + BUTTONS_CUT);
             }
 
             List<Component> tooltips;
-            if (mouseY < BUTTONS_CUT2) {
-                int radius;
-                int experience;
-                if (mouseY < BUTTONS_CUT1) {
-                    radius = Const.HIGHLIGHT_ENTITIES_NEAR_DISTANCE;
-                    experience = Const.HIGHLIGHT_ENTITIES_NEAR_EXP;
-                } else {
-                    radius = Const.HIGHLIGHT_ENTITIES_FAR_DISTANCE;
-                    experience = Const.HIGHLIGHT_ENTITIES_FAR_EXP;
-                }
+            if (mouseY < BUTTONS_CUT) {
                 tooltips = List.of(
                         tooltipTitle(Lang.WIDGET_ENTITY_HIGHLIGHT),
-                        Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_DESC, radius, experience).withStyle(ChatFormatting.GRAY)
+                        Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC, HighlightEntitiesSkill.NEAR_RADIUS, HighlightEntitiesSkill.NEAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
+                        Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS, HighlightEntitiesSkill.FAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY)
                 );
             } else {
                 tooltips = List.of(

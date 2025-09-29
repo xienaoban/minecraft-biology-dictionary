@@ -306,7 +306,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
                     CompoundTag v = new CompoundTag();
                     CompoundTag e = new CompoundTag();
                     writeVariantToNbt(this, v, e);
-                    ClientNetManager.sendUpdatedEntityProperties(e(), v, e);
+                    ClientNetManager.sendUpdatedEntityPropertiesOld(e(), v, e);
                 }
             }
             return super.onMouseDown(x, y, code);

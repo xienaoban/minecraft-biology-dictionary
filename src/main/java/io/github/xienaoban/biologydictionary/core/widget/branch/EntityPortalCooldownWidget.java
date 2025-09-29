@@ -6,13 +6,13 @@ import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
+import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetPortalCooldownSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -137,18 +137,15 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             }
             int cooldown = cooldownOpt;
             if (isMouseLeft(code)) {
-                final int toSet;
+                final int newCooldown;
                 if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
-                    toSet = 0;
+                    newCooldown = 0;
                 } else {
-                    toSet = EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY;
+                    newCooldown = EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY;
                 }
-
-                // Send to the server.
-                IntProperty<Entity> property = VanillaEntityProperties.OfEntity.createPortalCooldownProperty();
-                property.set(toSet);
-                portalCooldownProperty.set(toSet);
-                ClientNetManager.sendUpdatedEntityProperties(e(), property.toNbt(), null);
+                if (EntitySetPortalCooldownSkill.activate(e(), newCooldown)) {
+                    portalCooldownProperty.set(newCooldown);
+                }
             }
             return super.onMouseDown(x, y, code);
         }

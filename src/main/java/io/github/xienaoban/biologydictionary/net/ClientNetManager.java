@@ -1,13 +1,12 @@
 package io.github.xienaoban.biologydictionary.net;
 
 import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
-import io.github.xienaoban.biologydictionary.net.payloads.*;
+import io.github.xienaoban.biologydictionary.net.payload.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetManager {
@@ -23,19 +22,25 @@ public final class ClientNetManager {
         ClientNetApi.send(new RequestEntityDataPacket(entity.getId()));
     }
 
-    public static void requestEntityHighlighting(EntityType<?> entityType, float radius) {
-        ClientNetApi.send(new RequestEntityHighlightingPacket(entityType, radius));
-    }
-
-    public static void requestSpawnEgg(EntityType<?> entityType) {
-        ClientNetApi.send(new RequestSpawnEggPacket(entityType));
-    }
-
     public static void requestBeehiveInfo(BlockPos pos) {
         ClientNetApi.send(new RequestBeehiveInfoPacket(pos));
     }
 
-    public static void sendUpdatedEntityProperties(Entity entity, CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        ClientNetApi.send(new SendUpdatedEntityPropertiesPacket(entity.getId(), vanillaNbt, extraNbt));
+    public static void sendUpdatedEntityPropertiesOld(Entity entity, CompoundTag vanillaNbt, CompoundTag extraNbt) {
+        ClientNetApi.send(new SendUpdatedEntityPropertiesOldPacket(entity.getId(), vanillaNbt, extraNbt));
+    }
+
+    public static boolean sendCommonSkill(String skillKey, Object... args) {
+        RequestCommonSkillPacket packet = RequestCommonSkillPacket.of(skillKey, args);
+        if (packet == null) { return false; }
+        ClientNetApi.send(packet);
+        return true;
+    }
+
+    public static boolean sendEntityOrientedSkill(String skillKey, Entity entity, Object... args) {
+        RequestEntityOrientedSkillPacket packet = RequestEntityOrientedSkillPacket.of(skillKey, entity, args);
+        if (packet == null) { return false; }
+        ClientNetApi.send(packet);
+        return true;
     }
 }

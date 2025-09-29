@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.net.payloads;
+package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
@@ -12,14 +12,14 @@ import net.minecraft.world.entity.Entity;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 
-public record SendEntityDataPacket(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt) implements Packet {
+public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt) implements Packet {
     public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
 
     @Override
     public Type<? extends Packet> type() { return META.type(); }
 
     @SuppressWarnings("unused")
-    public SendEntityDataPacket(FriendlyByteBuf buf) {
+    public ReplyEntityDataPacket(FriendlyByteBuf buf) {
         this(buf.readBoolean(), buf.readInt(), buf.readNbt(), buf.readNbt());
     }
 
