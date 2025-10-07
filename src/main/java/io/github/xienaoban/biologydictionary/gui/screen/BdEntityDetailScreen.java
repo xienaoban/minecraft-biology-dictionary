@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
-    private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT = (int) (McClientUtils.getClientTickCountPerSecond() * 1.5);
+    private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT = (int) (ClientUtils.getClientTickCountPerSecond() * 1.5);
     private static final int CLOSE_SCREEN_DISTANCE = 10;
 
     private final Entity entity;
@@ -47,7 +47,7 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
 
         if (player.distanceToSqr(entity) > CLOSE_SCREEN_DISTANCE * CLOSE_SCREEN_DISTANCE) {
             HighlightManager.highlightEntity(entity, 4 * 20);
-            McClientUtils.sendCenteredMessage(Component.translatable(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
+            ClientUtils.sendCenteredMessage(Component.translatable(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
             onClose();
         }
 

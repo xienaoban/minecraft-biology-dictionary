@@ -5,9 +5,9 @@ import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
-import io.github.xienaoban.biologydictionary.core.skill.CommonSkill;
+import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import net.minecraft.nbt.NbtAccounter;
@@ -37,7 +37,7 @@ public record RequestCommonSkillPacket(String skillKey, Tag args) implements Pac
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
         try {
-            CommonSkill skill = Skills.getCommonSkill(skillKey);
+            GeneralSkill skill = Skills.getCommonSkill(skillKey);
             skill.serverReceive(ctx.server(), ctx.player(), args);
         } catch (NoPermissionException e) {
             LOGGER.warn(Misc.getStackToString(e));
@@ -49,8 +49,8 @@ public record RequestCommonSkillPacket(String skillKey, Tag args) implements Pac
 
     public static RequestCommonSkillPacket of(String skillKey, Object... args) {
         try {
-            CommonSkill skill = Skills.getCommonSkill(skillKey);
-            Tag tagArgs = skill.clientSend(McClientUtils.getClientPlayer(), args);
+            GeneralSkill skill = Skills.getCommonSkill(skillKey);
+            Tag tagArgs = skill.clientSend(ClientUtils.getClientPlayer(), args);
             return new RequestCommonSkillPacket(skillKey, tagArgs);
         } catch (NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());

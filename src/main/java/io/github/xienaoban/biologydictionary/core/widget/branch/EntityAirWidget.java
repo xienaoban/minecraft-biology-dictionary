@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -45,7 +45,7 @@ public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> 
             if (ctx.isDebug()) {
                 renderInnerText(ctx, Component.literal(e().getAirSupply() + "t/" + e().getMaxAirSupply() + "t"));
             } else {
-                renderInnerText(ctx, Component.literal((e().getAirSupply() / McClientUtils.getClientTickCountPerSecond()) + "s/" + (e().getMaxAirSupply() / McClientUtils.getClientTickCountPerSecond()) + "s"));
+                renderInnerText(ctx, Component.literal((e().getAirSupply() / ClientUtils.getClientTickCountPerSecond()) + "s/" + (e().getMaxAirSupply() / ClientUtils.getClientTickCountPerSecond()) + "s"));
             }
         }
     }

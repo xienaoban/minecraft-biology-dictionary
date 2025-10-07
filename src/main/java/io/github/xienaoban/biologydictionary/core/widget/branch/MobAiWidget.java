@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -58,7 +58,7 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
                 boolean newNoAi = !isNoAi();
                 if (MobSetNoAiSkill.activate(e(), newNoAi)) {
                     setNoAi(newNoAi);
-                    if (!PlayerUtils.isCreative(McClientUtils.getClientPlayer())) {
+                    if (!PlayerUtils.isCreative(ClientUtils.getClientPlayer())) {
                         BooleanProperty<Entity> inv = VanillaEntityProperties.OfEntity.getInvulnerableProperty(p());
                         inv.set(newNoAi);
                     }

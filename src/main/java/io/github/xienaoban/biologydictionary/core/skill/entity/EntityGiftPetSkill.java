@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.skill.EntityOrientedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import net.fabricmc.api.EnvType;
@@ -22,7 +22,7 @@ import net.minecraft.world.entity.OwnableEntity;
 
 import java.util.UUID;
 
-public class EntityGiftPetSkill implements EntityOrientedSkill {
+public class EntityGiftPetSkill implements EntityTargetedSkill {
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, AbstractClientPlayer targetPlayer) {
         return Skills.sendEntityOrientedSkill(entity, targetPlayer);

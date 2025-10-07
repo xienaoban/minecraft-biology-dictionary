@@ -3,12 +3,12 @@ package io.github.xienaoban.biologydictionary.core.widget.leaf;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
-import io.github.xienaoban.biologydictionary.core.skill.common.HighlightEntitiesSkill;
+import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.BeeClearHiveSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -55,7 +55,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        if (ticks % McClientUtils.getClientTickCountPerSecond() == 11) {
+        if (ticks % ClientUtils.getClientTickCountPerSecond() == 11) {
             cachedDistanceToHive = calcDistToHive();
             cachedDisLog = (float) Math.log(cachedDistanceToHive);
         }
@@ -115,7 +115,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
                     return true;
                 }
                 HighlightManager.highlightBlock(currHivePos, HighlightEntitiesSkill.BLOCK_TICKS);
-                McClientUtils.setScreen(null);
+                ClientUtils.setScreen(null);
             }
             return true;
         }

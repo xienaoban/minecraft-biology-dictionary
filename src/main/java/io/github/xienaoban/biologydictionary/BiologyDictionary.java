@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary;
 import io.github.xienaoban.biologydictionary.common.server.ServerEventRegistry;
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
@@ -54,7 +54,7 @@ public final class BiologyDictionary {
 
     public Level justGiveMeALevel() {
         if (DevUtils.isClient()) {
-            Level level = McClientUtils.getClientLevel0();
+            Level level = ClientUtils.getClientLevel0();
             if (level != null) { return level; }
         }
         for (MinecraftServer server : getServers()) {

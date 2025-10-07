@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
@@ -62,7 +62,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
             UUID uuid = ref.getUUID();
             if (!Objects.equals(uuid, lastUuid)) {
                 lastUuid = uuid;
-                lastEntity = ref.getEntity(McClientUtils.getClientLevel(), Entity.class);
+                lastEntity = ref.getEntity(ClientUtils.getClientLevel(), Entity.class);
             }
         }
     }
@@ -116,11 +116,11 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                if (lastEntity != McClientUtils.getClientPlayer()) {
+                if (lastEntity != ClientUtils.getClientPlayer()) {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT));
                     return true;
                 }
-                McClientUtils.setScreen(new PlayerSelectorScreen(McClientUtils.getCurrentScreen(), targetPlayer -> {
+                ClientUtils.setScreen(new PlayerSelectorScreen(ClientUtils.getCurrentScreen(), targetPlayer -> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(null);
                     EntityGiftPetSkill.activate(e(), targetPlayer);
                     ownerProperty.set(new EntityReference<>(targetPlayer.getUUID()));

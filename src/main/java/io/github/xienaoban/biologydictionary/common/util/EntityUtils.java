@@ -14,20 +14,19 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public final class EntityUtils {
     public static void init() {
@@ -91,11 +90,19 @@ public final class EntityUtils {
 
     @Environment(EnvType.CLIENT)
     public static <E extends Entity> E create(EntityType<E> entityType) {
-        return create(entityType, McClientUtils.getClientLevel());
+        return create(entityType, ClientUtils.getClientLevel());
     }
 
     public static <E extends Entity> E create(EntityType<E> entityType, Level level) {
-        return entityType.create(level, null);
+        return create(entityType, level, null);
+    }
+
+    public static <E extends Entity> E create(EntityType<E> entityType, Level level, EntitySpawnReason reason) {
+        return entityType.create(level, reason);
+    }
+
+    public static Optional<Entity> create(ValueInput valueInput, Level level, EntitySpawnReason reason) {
+        return EntityType.create(valueInput, level, reason);
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(E entity) {

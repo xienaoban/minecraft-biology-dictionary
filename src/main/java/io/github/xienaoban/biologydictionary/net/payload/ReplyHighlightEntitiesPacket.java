@@ -6,8 +6,8 @@ import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
-import io.github.xienaoban.biologydictionary.core.skill.common.HighlightEntitiesSkill;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -44,10 +44,10 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
     public void clientReceive(ClientNetApi.Context ctx) {
         if (!allowed) { return; }
 
-        McClientUtils.playScreenSound(SoundEvents.ENDER_DRAGON_FLAP, 0.6F, -10.0F);
+        ClientUtils.playScreenSound(SoundEvents.ENDER_DRAGON_FLAP, 0.6F, -10.0F);
         LocalPlayer player = ctx.player();
         int cnt = 0;
-        for (Entity e : McClientUtils.getClientLevel().entitiesForRendering()) {
+        for (Entity e : ClientUtils.getClientLevel().entitiesForRendering()) {
             if (e.getType() != entityType) { continue; }
             if (player.distanceToSqr(e) > radius * radius) {
                 continue;
@@ -55,7 +55,7 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
             ++cnt;
             HighlightManager.highlightEntity(e, HighlightEntitiesSkill.TICKS);
         }
-        McClientUtils.sendCenteredMessage(Component.translatable(Lang.TEXT_HIGHLIGHTED_ENTITIES,
+        ClientUtils.sendCenteredMessage(Component.translatable(Lang.TEXT_HIGHLIGHTED_ENTITIES,
                 cnt, entityType.getDescription(), radius));
     }
 }

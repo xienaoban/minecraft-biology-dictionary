@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.skill.EntityOrientedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import net.fabricmc.api.EnvType;
@@ -14,7 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-public class BeeClearHiveSkill implements EntityOrientedSkill {
+public class BeeClearHiveSkill implements EntityTargetedSkill {
     public static final int EXPERIENCE_POINTS_COST = 1;
 
     @Environment(EnvType.CLIENT)
