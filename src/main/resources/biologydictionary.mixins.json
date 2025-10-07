@@ -6,6 +6,7 @@
   "mixins": [
     "AgeableMobMixin",
     "AnimalIMixin",
+    "CustomDataIMixin",
     "EntityIMixin",
     "EntityMixin",
     "HorseIMixin",
@@ -14,7 +15,6 @@
     "TemptGoalIMixin"
   ],
   "client": [
-    "EntityRenderDispatcherIMixin",
     "GuiRendererMixin",
     "ItemInHandRendererMixin",
     "LevelRendererMixin",

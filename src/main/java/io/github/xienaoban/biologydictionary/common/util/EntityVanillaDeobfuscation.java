@@ -29,6 +29,8 @@ final class EntityVanillaDeobfuscation {
         // classes
         /**/ r(net.minecraft.world.entity.Entity.class, "net.minecraft.world.entity.Entity");
         /*--*/ r(net.minecraft.world.entity.LivingEntity.class, "net.minecraft.world.entity.LivingEntity");
+        /*----*/ r(net.minecraft.world.entity.Avatar.class, "net.minecraft.world.entity.Avatar");
+        /*------*/ r(net.minecraft.world.entity.decoration.Mannequin.class, "net.minecraft.world.entity.decoration.Mannequin");
         /*----*/ r(net.minecraft.world.entity.Mob.class, "net.minecraft.world.entity.Mob");
         /*------*/ r(net.minecraft.world.entity.PathfinderMob.class, "net.minecraft.world.entity.PathfinderMob");
         /*--------*/ r(net.minecraft.world.entity.AgeableMob.class, "net.minecraft.world.entity.AgeableMob");
@@ -79,6 +81,7 @@ final class EntityVanillaDeobfuscation {
         /*--------*/ r(net.minecraft.world.entity.animal.AbstractGolem.class, "net.minecraft.world.entity.animal.AbstractGolem");
         /*----------*/ r(net.minecraft.world.entity.animal.IronGolem.class, "net.minecraft.world.entity.animal.IronGolem");
         /*----------*/ r(net.minecraft.world.entity.animal.SnowGolem.class, "net.minecraft.world.entity.animal.SnowGolem");
+        /*----------*/ r(net.minecraft.world.entity.animal.coppergolem.CopperGolem.class, "net.minecraft.world.entity.animal.coppergolem.CopperGolem");
         /*----------*/ r(net.minecraft.world.entity.monster.Shulker.class, "net.minecraft.world.entity.monster.Shulker");
         /*--------*/ r(net.minecraft.world.entity.animal.WaterAnimal.class, "net.minecraft.world.entity.animal.WaterAnimal");
         /*----------*/ r(net.minecraft.world.entity.animal.AbstractFish.class, "net.minecraft.world.entity.animal.AbstractFish");
@@ -141,10 +144,13 @@ final class EntityVanillaDeobfuscation {
         // interfaces
         r(net.minecraft.core.component.DataComponentGetter.class, "net.minecraft.core.component.DataComponentGetter");
         r(net.minecraft.network.syncher.SyncedDataHolder.class, "net.minecraft.network.syncher.SyncedDataHolder");
+        r(net.minecraft.util.debug.DebugValueSource.class, "net.minecraft.util.debug.DebugValueSource");
         r(net.minecraft.world.Nameable.class, "net.minecraft.world.Nameable");
         r(net.minecraft.world.entity.Attackable.class, "net.minecraft.world.entity.Attackable");
+        r(net.minecraft.world.entity.ContainerUser.class, "net.minecraft.world.entity.ContainerUser");
         r(net.minecraft.world.entity.EquipmentUser.class, "net.minecraft.world.entity.EquipmentUser");
         r(net.minecraft.world.entity.HasCustomInventoryScreen.class, "net.minecraft.world.entity.HasCustomInventoryScreen");
+        r(net.minecraft.world.entity.ItemOwner.class, "net.minecraft.world.entity.ItemOwner");
         r(net.minecraft.world.entity.ItemSteerable.class, "net.minecraft.world.entity.ItemSteerable");
         r(net.minecraft.world.entity.Leashable.class, "net.minecraft.world.entity.Leashable");
         r(net.minecraft.world.entity.NeutralMob.class, "net.minecraft.world.entity.NeutralMob");

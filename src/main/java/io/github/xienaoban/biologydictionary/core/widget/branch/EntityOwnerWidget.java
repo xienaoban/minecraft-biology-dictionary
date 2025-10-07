@@ -123,7 +123,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
                 ClientUtils.setScreen(new PlayerSelectorScreen(ClientUtils.getCurrentScreen(), targetPlayer -> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(null);
                     EntityGiftPetSkill.activate(e(), targetPlayer);
-                    ownerProperty.set(new EntityReference<>(targetPlayer.getUUID()));
+                    ownerProperty.set(EntityReference.of(targetPlayer.getUUID()));
                 }
                 ));
             }

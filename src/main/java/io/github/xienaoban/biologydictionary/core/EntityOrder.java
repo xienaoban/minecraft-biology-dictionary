@@ -57,6 +57,7 @@ final class EntityOrder {
         f(EntityType.GLOW_SQUID);
         f(EntityType.STRIDER);
         f(EntityType.HAPPY_GHAST);
+        f(EntityType.COPPER_GOLEM);
 
         // neutral
         f(EntityType.IRON_GOLEM);
@@ -106,5 +107,6 @@ final class EntityOrder {
 
         // other
         f(EntityType.ARMOR_STAND);
+        f(EntityType.MANNEQUIN);
     }
 }

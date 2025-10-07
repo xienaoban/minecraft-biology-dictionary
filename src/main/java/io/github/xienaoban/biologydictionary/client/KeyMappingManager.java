@@ -7,12 +7,15 @@ import io.github.xienaoban.biologydictionary.common.client.KeyMappingRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
 public final class KeyMappingManager {
-    public static final KeyMapping OPEN_BIOLOGY_DICTIONARY_SCREEN = new KeyMapping(Lang.KEY_OPEN_HANDBOOK, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_GRAVE_ACCENT, Lang.KEY_CATEGORY);
-    public static final KeyMapping TOGGLE_DEBUG = new KeyMapping(Lang.KEY_DEBUG, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_ALT, Lang.KEY_CATEGORY);
+    public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath(Lang.BIOLOGY_DICTIONARY, Lang.KEY_CATEGORY));
+
+    public static final KeyMapping OPEN_BIOLOGY_DICTIONARY_SCREEN = new KeyMapping(Lang.KEY_OPEN_HANDBOOK, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_GRAVE_ACCENT, CATEGORY);
+    public static final KeyMapping TOGGLE_DEBUG = new KeyMapping(Lang.KEY_DEBUG, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_ALT, CATEGORY);
 
     public static void init() {
         KeyMappingRegistry.registerKeyMapping(OPEN_BIOLOGY_DICTIONARY_SCREEN);

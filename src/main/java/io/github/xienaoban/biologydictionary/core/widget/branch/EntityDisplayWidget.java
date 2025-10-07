@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.world.entity.Entity;
@@ -35,7 +36,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
         if (model == null) {
             if (entity instanceof LocalPlayer me) {
                 GameProfile profile = me.getGameProfile();
-                model = new RemotePlayer(me.clientLevel, new GameProfile(profile.getId(), profile.getName()));
+                model = new RemotePlayer((ClientLevel) me.level(), new GameProfile(profile.id(), profile.name()));
                 // to make name label invisible
                 // @see net.minecraft.client.renderer.entity.LivingEntityRenderer.shouldShowName
                 Vec3 pos = model.position();

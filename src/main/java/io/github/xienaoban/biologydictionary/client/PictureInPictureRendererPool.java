@@ -7,9 +7,12 @@ import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.mixin.PictureInPictureRendererIMixin;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.*;
 import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.resources.model.AtlasManager;
 
 import java.util.List;
 import java.util.Map;
@@ -37,13 +40,15 @@ public class PictureInPictureRendererPool<T extends PictureInPictureRenderState>
 
         for (PictureInPictureRenderer<?> pictureInPictureRenderer : list) {
             Class<? extends PictureInPictureRenderState> key = pictureInPictureRenderer.getRenderStateClass();
-
+            Minecraft client = ClientUtils.getClient();
+            AtlasManager atlasManager = client.getAtlasManager();
+            EntityRenderDispatcher entityRenderDispatcher = client.getEntityRenderDispatcher();
             Function<MultiBufferSource.BufferSource, PictureInPictureRenderer<?>> factory = switch (pictureInPictureRenderer) {
-                case GuiEntityRenderer          ignored -> buffers -> new GuiEntityRenderer(buffers, ClientUtils.getClient().getEntityRenderDispatcher());
+                case GuiEntityRenderer          ignored -> buffers -> new GuiEntityRenderer(buffers, entityRenderDispatcher);
                 case GuiSkinRenderer            ignored -> GuiSkinRenderer::new;
                 case GuiBookModelRenderer       ignored -> GuiBookModelRenderer::new;
-                case GuiBannerResultRenderer    ignored -> GuiBannerResultRenderer::new;
-                case GuiSignRenderer            ignored -> GuiSignRenderer::new;
+                case GuiBannerResultRenderer    ignored -> buffers -> new GuiBannerResultRenderer(buffers, atlasManager);
+                case GuiSignRenderer            ignored -> buffers -> new GuiSignRenderer(buffers, atlasManager);
                 case GuiProfilerChartRenderer   ignored -> GuiProfilerChartRenderer::new;
                 default -> null;
             };
