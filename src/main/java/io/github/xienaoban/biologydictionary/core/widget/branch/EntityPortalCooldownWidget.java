@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -119,7 +119,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             } else if (ctx.isDebug()) {
                 renderInnerText(ctx, Component.literal(cooldown + "t/" + maxCooldown + "t"));
             } else {
-                renderInnerText(ctx, Component.literal((cooldown / McClientUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / McClientUtils.getClientTickCountPerSecond()) + "s"));
+                renderInnerText(ctx, Component.literal((cooldown / ClientUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / ClientUtils.getClientTickCountPerSecond()) + "s"));
             }
         }
     }

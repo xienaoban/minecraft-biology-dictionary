@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
-import io.github.xienaoban.biologydictionary.core.skill.EntityOrientedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import net.fabricmc.api.EnvType;
@@ -23,7 +23,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-public class MobSetNoAiSkill implements EntityOrientedSkill {
+public class MobSetNoAiSkill implements EntityTargetedSkill {
     private static final int FRIENDLY_EXP_LVL_REQUIRED = 0;
     private static final int FRIENDLY_EXP_LVL_COST = 1;
     private static final int NEUTRAL_EXP_LVL_REQUIRED = 10;

@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.client;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.textures.GpuTexture;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.mixin.PictureInPictureRendererIMixin;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -39,7 +39,7 @@ public class PictureInPictureRendererPool<T extends PictureInPictureRenderState>
             Class<? extends PictureInPictureRenderState> key = pictureInPictureRenderer.getRenderStateClass();
 
             Function<MultiBufferSource.BufferSource, PictureInPictureRenderer<?>> factory = switch (pictureInPictureRenderer) {
-                case GuiEntityRenderer          ignored -> buffers -> new GuiEntityRenderer(buffers, McClientUtils.getClient().getEntityRenderDispatcher());
+                case GuiEntityRenderer          ignored -> buffers -> new GuiEntityRenderer(buffers, ClientUtils.getClient().getEntityRenderDispatcher());
                 case GuiSkinRenderer            ignored -> GuiSkinRenderer::new;
                 case GuiBookModelRenderer       ignored -> GuiBookModelRenderer::new;
                 case GuiBannerResultRenderer    ignored -> GuiBannerResultRenderer::new;

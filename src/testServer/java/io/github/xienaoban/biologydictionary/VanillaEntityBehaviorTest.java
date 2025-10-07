@@ -20,7 +20,7 @@ public class VanillaEntityBehaviorTest {
     @GameTest
     public void testAgeableMobAge(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        Chicken chicken = EntityType.CHICKEN.create(level, EntitySpawnReason.NATURAL);
+        Chicken chicken = EntityUtils.create(EntityType.CHICKEN, level, EntitySpawnReason.NATURAL);
         assert chicken != null;
         chicken.setBaby(true);
         helper.assertTrue(chicken.isBaby(), Component.literal("setBaby() not work?"));
@@ -36,7 +36,7 @@ public class VanillaEntityBehaviorTest {
     @GameTest
     public void testAgeableMobForcedAge(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        Chicken chicken = EntityType.CHICKEN.create(level, EntitySpawnReason.NATURAL);
+        Chicken chicken = EntityUtils.create(EntityType.CHICKEN, level, EntitySpawnReason.NATURAL);
         assert chicken != null;
         chicken.setBaby(true);
         helper.assertTrue(chicken.isBaby(), Component.literal("setBaby() not work?"));

@@ -4,11 +4,11 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
-import io.github.xienaoban.biologydictionary.core.skill.common.GetSpawnEggSkill;
-import io.github.xienaoban.biologydictionary.core.skill.common.HighlightEntitiesSkill;
+import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
+import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
@@ -54,7 +54,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private List<Widget> getEntityWidgets(List<EntityManager.EntityClassInfo> infos) {
-        ClientLevel level = McClientUtils.getClientLevel(client);
+        ClientLevel level = ClientUtils.getClientLevel(client);
         List<Widget> widgets = new ArrayList<>();
         for (EntityManager.EntityClassInfo eci : infos) {
             EntityType<?> type = eci.getType();
@@ -86,7 +86,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 List<Widget> list = getEntityWidgets(EntityManager.getInstance().getEntityClassInfos());
                 resetAndAndWidgetsOneByOne(list);
                 return true;
@@ -106,7 +106,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 ArrayList<Widget> tags = new ArrayList<>();
                 group.dfsTags((tag, depth) -> {
                     tags.add(new TagCatalog(depth, tag));
@@ -133,7 +133,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 1.5F);
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 1.5F);
                 clearAllPages();
                 List<Widget> list = getEntityWidgets(tag.getEntities());
                 resetAndAndWidgetsOneByOne(list);
@@ -187,7 +187,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     return true;
                 }
                 HighlightEntitiesSkill.activate(entity.getType(), distance);
-                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
                 onClose();
             } else {
                 if (isMouseLeft(code)) {

@@ -17,13 +17,17 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
-public final class McClientUtils {
+public final class ClientUtils {
     public static Minecraft getClient() {
         return Minecraft.getInstance();
     }
 
     public static LocalPlayer getClientPlayer() {
-        return getClient().player;
+        return getClientPlayer(getClient());
+    }
+
+    public static LocalPlayer getClientPlayer(Minecraft client) {
+        return client.player;
     }
 
     /**

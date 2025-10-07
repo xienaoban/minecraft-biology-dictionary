@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.skill.EntityOrientedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import net.fabricmc.api.EnvType;
@@ -16,7 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
 
-public class EntitySetSoundSkill implements EntityOrientedSkill {
+public class EntitySetSoundSkill implements EntityTargetedSkill {
     private static final int FRIENDLY_EXP_PT_COST = 4;
     private static final int NEUTRAL_EXP_PT_COST = 16;
     private static final int ENEMY_EXP_PT_COST = 64;

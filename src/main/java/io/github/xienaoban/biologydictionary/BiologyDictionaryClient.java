@@ -4,7 +4,7 @@ import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRen
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.client.ClientEventRegistry;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
@@ -73,10 +73,10 @@ public final class BiologyDictionaryClient {
     }
 
     public static void sendCenteredMessage(Component text) {
-        if (McClientUtils.getCurrentScreen() instanceof AbstractBiologyDictionaryScreen screen) {
+        if (ClientUtils.getCurrentScreen() instanceof AbstractBiologyDictionaryScreen screen) {
             screen.sendScreenMessage(text);
         } else {
-            McClientUtils.sendCenteredMessage(ComponentUtils.formatList(
+            ClientUtils.sendCenteredMessage(ComponentUtils.formatList(
                     List.of(Component.translatable(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN), text),
                     Component.empty()
             ));
@@ -98,7 +98,7 @@ public final class BiologyDictionaryClient {
     public static void printThrowableToLoggerAndGame(Throwable throwable) {
         String errStack = Misc.getStackToString(throwable);
         LOGGER.error(errStack);
-        McClientUtils.sendTextBoxMessage(ComponentUtils.formatList(
+        ClientUtils.sendTextBoxMessage(ComponentUtils.formatList(
                 List.of(
                         Component.translatable(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN),
                         Component.literal(throwable.toString()).withStyle(ChatFormatting.RED)

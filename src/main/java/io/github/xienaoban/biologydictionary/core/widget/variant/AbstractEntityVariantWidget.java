@@ -6,7 +6,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElemen
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -50,7 +50,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
     private int chosenIndex;
 
     private final List<BackgroundBar> backgroundBars = new ArrayList<>();
-    private final LocalPlayer player = Objects.requireNonNull(McClientUtils.getClientPlayer());
+    private final LocalPlayer player = Objects.requireNonNull(ClientUtils.getClientPlayer());
 
     public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt) {
         this(properties, variantCnt, 7, 2);

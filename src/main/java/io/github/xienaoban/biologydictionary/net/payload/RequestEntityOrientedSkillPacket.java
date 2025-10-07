@@ -6,9 +6,9 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
-import io.github.xienaoban.biologydictionary.core.skill.EntityOrientedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import net.minecraft.nbt.NbtAccounter;
@@ -48,7 +48,7 @@ public record RequestEntityOrientedSkillPacket(String skillKey, int entityId, Ta
         }
 
         try {
-            EntityOrientedSkill skill = Skills.getEntityOrientedSkill(skillKey);
+            EntityTargetedSkill skill = Skills.getEntityOrientedSkill(skillKey);
             skill.serverReceive(ctx.server(), ctx.player(), entity, args);
         } catch (NoPermissionException e) {
             LOGGER.warn(Misc.getStackToString(e));
@@ -60,8 +60,8 @@ public record RequestEntityOrientedSkillPacket(String skillKey, int entityId, Ta
 
     public static RequestEntityOrientedSkillPacket of(String skillKey, Entity entity, Object... args) {
         try {
-            EntityOrientedSkill skill = Skills.getEntityOrientedSkill(skillKey);
-            Tag tagArgs = skill.clientSend(McClientUtils.getClientPlayer(), entity, args);
+            EntityTargetedSkill skill = Skills.getEntityOrientedSkill(skillKey);
+            Tag tagArgs = skill.clientSend(ClientUtils.getClientPlayer(), entity, args);
             return new RequestEntityOrientedSkillPacket(skillKey, entity.getId(), tagArgs);
         } catch (NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());

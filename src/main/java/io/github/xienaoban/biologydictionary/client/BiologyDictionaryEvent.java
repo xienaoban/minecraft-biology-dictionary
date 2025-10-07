@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.screen.BdEntityDetailScreen;
@@ -68,8 +68,8 @@ public final class BiologyDictionaryEvent {
             BlockState blockState = player.level().getBlockState(pos);
             if (blockState.getBlock() instanceof BeehiveBlock) {
                 ClientNetManager.requestBeehiveInfo(pos);
-                McClientUtils.setScreen(client, new BeehiveScreen(pos));
-                McClientUtils.playScreenSound(client, SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
+                ClientUtils.setScreen(client, new BeehiveScreen(pos));
+                ClientUtils.playScreenSound(client, SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
                 return;
             }
             target = null;
@@ -79,19 +79,19 @@ public final class BiologyDictionaryEvent {
         }
 
         if (target == null) {
-            McClientUtils.setScreen(client, new BdHomeScreen());
+            ClientUtils.setScreen(client, new BdHomeScreen());
         } else {
             EntityProperties<Entity> properties = new EntityProperties<>(target);
             BDC.setHitEntity(target);
             BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target);
             try {
-                McClientUtils.setScreen(client, new BdEntityDetailScreen(properties));
+                ClientUtils.setScreen(client, new BdEntityDetailScreen(properties));
             } catch (RuntimeException e) {
                 BiologyDictionaryClient.printThrowableToLoggerAndGame(e);
                 return;
             }
         }
-        McClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
+        ClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
     }
 }

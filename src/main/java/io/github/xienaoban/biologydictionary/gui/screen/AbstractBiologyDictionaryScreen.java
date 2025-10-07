@@ -6,7 +6,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.biologydictionary.gui.component.CenteredMessage;
@@ -37,15 +37,15 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private static final int PAGE_MID_MARGIN = 12, PAGE_TOP_MARGIN = 28;
 
     public static AbstractBiologyDictionaryScreen current() {
-        return McClientUtils.getCurrentScreen();
+        return ClientUtils.getCurrentScreen();
     }
 
     public static AbstractBiologyDictionaryScreen current(Minecraft client) {
-        return McClientUtils.getCurrentScreen(client);
+        return ClientUtils.getCurrentScreen(client);
     }
 
     // Replace the `@Nullable minecraft` in class `Screen`. This `minecraft` must not be null.
-    protected final Minecraft client = Objects.requireNonNull(McClientUtils.getClient());
+    protected final Minecraft client = Objects.requireNonNull(ClientUtils.getClient());
     protected final LocalPlayer player = Objects.requireNonNull(client.player);
 
     private final Bookmark[] bookmarks = new Bookmark[10];
@@ -75,7 +75,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     private void check() {
         if (EntityManager.getInstance() == null) {
-            McClientUtils.sendTextBoxMessage(Component.literal("Failed to init EntityManager??").withStyle(ChatFormatting.RED));
+            ClientUtils.sendTextBoxMessage(Component.literal("Failed to init EntityManager??").withStyle(ChatFormatting.RED));
             throw new RuntimeException("Failed to init EntityManager??");
         }
     }
@@ -352,8 +352,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                McClientUtils.setScreen(client, new BdHomeScreen());
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                ClientUtils.setScreen(client, new BdHomeScreen());
                 return true;
             }
             return super.onMouseDown(x, y, code);
@@ -368,8 +368,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                McClientUtils.setScreen(client, new BdAboutScreen());
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                ClientUtils.setScreen(client, new BdAboutScreen());
                 return true;
             }
             return super.onMouseDown(x, y, code);
@@ -487,7 +487,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                McClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
+                ClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
                 turn();
                 return true;
             }

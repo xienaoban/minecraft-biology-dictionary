@@ -8,7 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-public interface EntityOrientedSkill {
+public interface EntityTargetedSkill {
     @Environment(EnvType.CLIENT)
     Tag clientSend(LocalPlayer player, Entity entity, Object... args);
     void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args);

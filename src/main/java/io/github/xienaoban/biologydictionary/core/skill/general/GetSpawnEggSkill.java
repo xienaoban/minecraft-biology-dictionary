@@ -1,10 +1,10 @@
-package io.github.xienaoban.biologydictionary.core.skill.common;
+package io.github.xienaoban.biologydictionary.core.skill.general;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
-import io.github.xienaoban.biologydictionary.core.skill.CommonSkill;
+import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import net.fabricmc.api.EnvType;
@@ -20,7 +20,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 
-public class GetSpawnEggSkill implements CommonSkill {
+public class GetSpawnEggSkill implements GeneralSkill {
     @Environment(EnvType.CLIENT)
     public static boolean activate(EntityType<?> entityType) {
         return Skills.sendCommonSkill(entityType);

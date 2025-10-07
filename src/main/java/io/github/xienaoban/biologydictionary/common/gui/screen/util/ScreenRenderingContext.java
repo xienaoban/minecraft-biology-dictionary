@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.common.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -60,7 +60,7 @@ public final class ScreenRenderingContext {
     private boolean debug;
 
     public ScreenRenderingContext(Screen screen) {
-        this.client = Objects.requireNonNull(McClientUtils.getClient());
+        this.client = Objects.requireNonNull(ClientUtils.getClient());
         this.screen = screen;
         this.debug = false;
     }

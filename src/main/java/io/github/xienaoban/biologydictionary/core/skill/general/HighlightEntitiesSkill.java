@@ -1,9 +1,9 @@
-package io.github.xienaoban.biologydictionary.core.skill.common;
+package io.github.xienaoban.biologydictionary.core.skill.general;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
-import io.github.xienaoban.biologydictionary.core.skill.CommonSkill;
+import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.fabricmc.api.EnvType;
@@ -20,7 +20,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 
-public class HighlightEntitiesSkill implements CommonSkill {
+public class HighlightEntitiesSkill implements GeneralSkill {
     public static final int TICKS = 12 * 20;
     public static final int NEAR_RADIUS = 20;
     public static final int NEAR_EXPERIENCE_POINTS_COST = 1;

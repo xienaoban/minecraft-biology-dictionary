@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public final class DevUtils {
+    public static final String MINECRAFT_PACKAGE = "net.minecraft";
+
     private static String modVersion = null;
 
     public static String getModVersion(String modId) {
@@ -26,6 +28,21 @@ public final class DevUtils {
     }
 
     /**
+     * It supports both obfuscated and deobfuscated Minecraft classes.
+     */
+    public static boolean isVanillaClass(Class<?> clazz) {
+        return isVanillaClass(clazz.getPackageName());
+    }
+
+    public static boolean isVanillaClass(String clazzName) {
+        return clazzName.startsWith(MINECRAFT_PACKAGE);
+    }
+
+    public static boolean isVanilaResourceLocation(ResourceLocation rl) {
+        return ResourceLocation.DEFAULT_NAMESPACE.equals(rl.getNamespace());
+    }
+
+    /**
      * For class names, let vanilla classes be in front of mod classes.
      * - net.minecraft.Entity < mod.id.Entity
      */
@@ -33,8 +50,8 @@ public final class DevUtils {
         return (t1, t2) -> {
             String s1 = getter.apply(t1);
             String s2 = getter.apply(t2);
-            boolean isVanilla1 = McUtils.isVanillaClass(s1);
-            boolean isVanilla2 = McUtils.isVanillaClass(s2);
+            boolean isVanilla1 = isVanillaClass(s1);
+            boolean isVanilla2 = isVanillaClass(s2);
             if (isVanilla1 == isVanilla2) {
                 return s1.compareTo(s2);
             }
@@ -50,8 +67,8 @@ public final class DevUtils {
         return (t1, t2) -> {
             ResourceLocation rl1 = getter.apply(t1);
             ResourceLocation rl2 = getter.apply(t2);
-            boolean isVanilla1 = McUtils.isVanilaResourceLocation(rl1);
-            boolean isVanilla2 = McUtils.isVanilaResourceLocation(rl2);
+            boolean isVanilla1 = isVanilaResourceLocation(rl1);
+            boolean isVanilla2 = isVanilaResourceLocation(rl2);
             if (isVanilla1 == isVanilla2) {
                 return rl1.getPath().compareTo(rl2.getPath());
             }

@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.ChatFormatting;
@@ -29,7 +29,7 @@ public class BeehiveScreen extends ElementScreen {
     private static final int MAX_HONEY_CNT = BeehiveBlock.MAX_HONEY_LEVELS;
     private static final int MAX_BEE_CNT = BeehiveBlockEntity.MAX_OCCUPANTS;
 
-    protected final Minecraft client = McClientUtils.getClient();
+    protected final Minecraft client = ClientUtils.getClient();
 
     private final BlockPos pos;
     private final Level level;
@@ -46,9 +46,9 @@ public class BeehiveScreen extends ElementScreen {
     private int passedClientTickCount = 0;
 
     public BeehiveScreen(BlockPos pos) {
-        super(McClientUtils.getClientLevel().getBlockState(pos).getBlock().getName());
+        super(ClientUtils.getClientLevel().getBlockState(pos).getBlock().getName());
         this.pos = pos;
-        this.level = McClientUtils.getClientLevel();
+        this.level = ClientUtils.getClientLevel();
         this.entity = (BeehiveBlockEntity) this.level.getBlockEntity(pos);
         Objects.requireNonNull(this.entity);
 

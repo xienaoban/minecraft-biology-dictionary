@@ -3,7 +3,8 @@ package io.github.xienaoban.biologydictionary.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.github.xienaoban.biologydictionary.common.client.RenderingRegistry;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -14,7 +15,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.storage.TagValueInput;
@@ -52,7 +52,7 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
             default -> null;
         };
         if (hudPos == null) return;
-        long curTime = McClientUtils.getGameTimeMillis(tickDelta);
+        long curTime = ClientUtils.getGameTimeMillis(tickDelta);
         long diffTime = Math.min(50, curTime - lastTime);
         lastTime = curTime;
         for (int i = 0; i < 2; ++i) {
@@ -91,7 +91,7 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
         if (nbt == null || nbt.isEmpty()) entity = null;
         else {
             ValueInput tagIn = TagValueInput.create(ProblemReporter.DISCARDING, player.registryAccess(), nbt);
-            Optional<Entity> optionalEntity = EntityType.create(tagIn, player.level(), null);
+            Optional<Entity> optionalEntity = EntityUtils.create(tagIn, player.level(), null);
             if (optionalEntity.isEmpty()) entity = null;
             else {
                 entity = (LivingEntity) optionalEntity.get();

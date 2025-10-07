@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
-import io.github.xienaoban.biologydictionary.core.skill.common.*;
+import io.github.xienaoban.biologydictionary.core.skill.general.*;
 import io.github.xienaoban.biologydictionary.core.skill.entity.*;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class Skills {
-    private static final Map<String, CommonSkill> commonSkills = new HashMap<>();
-    private static final Map<String, EntityOrientedSkill> entityOrientedSkills = new HashMap<>();
+    private static final Map<String, GeneralSkill> commonSkills = new HashMap<>();
+    private static final Map<String, EntityTargetedSkill> entityOrientedSkills = new HashMap<>();
 
     public static void init() {
         register(new HighlightEntitiesSkill());
@@ -31,28 +31,28 @@ public final class Skills {
         register(new VillagerForceRestockSkill());
     }
 
-    public static void register(CommonSkill skill) {
+    public static void register(GeneralSkill skill) {
         if (commonSkills.putIfAbsent(key(skill), skill) != null) {
             throw new RuntimeException("Duplicate skill registered: " + key(skill));
         }
     }
 
-    public static void register(EntityOrientedSkill skill) {
+    public static void register(EntityTargetedSkill skill) {
         if (entityOrientedSkills.putIfAbsent(key(skill), skill) != null) {
             throw new RuntimeException("Duplicate skill registered: " + key(skill));
         }
     }
 
-    public static CommonSkill getCommonSkill(String key) {
-        CommonSkill res = commonSkills.get(key);
+    public static GeneralSkill getCommonSkill(String key) {
+        GeneralSkill res = commonSkills.get(key);
         if (res == null) {
             throw new RuntimeException("No such key: " + key);
         }
         return res;
     }
 
-    public static EntityOrientedSkill getEntityOrientedSkill(String key) {
-        EntityOrientedSkill res = entityOrientedSkills.get(key);
+    public static EntityTargetedSkill getEntityOrientedSkill(String key) {
+        EntityTargetedSkill res = entityOrientedSkills.get(key);
         if (res == null) {
             throw new RuntimeException("No such key: " + key);
         }
