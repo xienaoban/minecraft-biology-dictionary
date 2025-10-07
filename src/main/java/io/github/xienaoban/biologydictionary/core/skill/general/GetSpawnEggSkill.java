@@ -26,6 +26,7 @@ public class GetSpawnEggSkill implements GeneralSkill {
         return Skills.sendCommonSkill(entityType);
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public Tag clientSend(LocalPlayer player, Object... args) {
         EntityType<?> entityType = (EntityType<?>) args[0];

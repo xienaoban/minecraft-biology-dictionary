@@ -10,6 +10,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -153,16 +154,16 @@ public class BeehiveScreen extends ElementScreen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)
-                || client.options.keyInventory.matches(keyCode, scanCode)) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyEvent)
+                || client.options.keyInventory.matches(keyEvent)) {
             onClose();
             return true;
-        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
+        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyEvent)) {
             screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyEvent);
     }
 
     @Override
@@ -188,7 +189,7 @@ public class BeehiveScreen extends ElementScreen {
             // @see net.minecraft.server.commands.data.DataCommands.register
             beeInfo.entity.setCustomName(null);
             CompoundTag newTag = EntityUtils.getNbt(beeInfo.entity);
-            EntityUtils.setNbt(beeInfo.entity, newTag.merge(occupant.entityData().copyTag()));
+            EntityUtils.setNbt(beeInfo.entity, newTag.merge(occupant.entityData().copyTagWithoutId()));
 
             beeInfo.ticksInHive = occupant.ticksInHive();
             beeInfo.minTicksInHive = occupant.minTicksInHive();

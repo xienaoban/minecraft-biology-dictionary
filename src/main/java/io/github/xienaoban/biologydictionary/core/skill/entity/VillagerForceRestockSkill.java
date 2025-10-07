@@ -53,7 +53,7 @@ public class VillagerForceRestockSkill implements EntityTargetedSkill {
             throw new NoPermissionException(Component.translatable(Lang.TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE), "Too far away from the job site");
         }
     }
-
+    @Environment(EnvType.CLIENT)
     @Override
     public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
         Integer restocksToday = (Integer) args[0];

@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core;
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
+import io.github.xienaoban.biologydictionary.mixin.CustomDataIMixin;
 import io.github.xienaoban.biologydictionary.mixin.MinecraftMixin;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -43,7 +44,8 @@ public final class BiologyDictionaryItem {
     public static boolean isBook(ItemStack stack) {
         if (stack == null || !stack.is(Items.WRITABLE_BOOK)) return false;
         CustomData cd = stack.get(DataComponents.CUSTOM_DATA);
-        return cd != null && cd.contains(ID);
+        // [TODO] remove "(Object)"
+        return cd != null && ((CustomDataIMixin) (Object) cd).getTag().contains(ID);
     }
 
     private static ItemStack createWritableBook() {

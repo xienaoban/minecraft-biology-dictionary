@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.common.util.ListenerList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 
 @Environment(EnvType.CLIENT)
@@ -18,6 +18,6 @@ public final class RenderingRegistry {
 
     @FunctionalInterface
     public interface RenderingListener {
-        void run(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LocalPlayer player, int light);
+        void run(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light);
     }
 }

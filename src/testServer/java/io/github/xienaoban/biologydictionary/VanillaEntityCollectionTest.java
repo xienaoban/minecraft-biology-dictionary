@@ -43,7 +43,7 @@ public class VanillaEntityCollectionTest {
             String storedName = EntityUtils.getDeobfuscatedName(clazz);
             if (!Objects.equals(realName, storedName)) {
                 success.set(false);
-                LOGGER.error("Needed \"" + realName + "\" but got \"" + storedName + "\".");
+                LOGGER.error("Needed \"{}\" but got \"{}\".", realName, storedName);
             }
             return true;
         });

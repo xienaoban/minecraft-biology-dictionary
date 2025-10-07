@@ -122,11 +122,15 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
     }
 
     public String getMethodRetType(String name) {
-        return getFullyQualifiedType(methodTypes.get(name).returnType());
+        MethodTypes mt = methodTypes.get(name);
+        if (mt == null) { return null; }
+        return getFullyQualifiedType(mt.returnType());
     }
 
     public String getMethodArgType(String name, int argIdx) {
-        return getFullyQualifiedType(methodTypes.get(name).argumentTypes().get(argIdx));
+        MethodTypes mt = methodTypes.get(name);
+        if (mt == null) { return null; }
+        return getFullyQualifiedType(mt.argumentTypes().get(argIdx));
     }
 
     @Override

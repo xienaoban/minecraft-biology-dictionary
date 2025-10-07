@@ -5,6 +5,9 @@ import io.github.xienaoban.biologydictionary.mixin.HorseIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -237,6 +240,30 @@ public final class EntityUtils {
         }
 
         return tag;
+    }
+
+    // ============================================================================ //
+    //                            Entity Renderer Utils                             //
+    // ============================================================================ //
+
+    @Environment(EnvType.CLIENT)
+    public static <E extends Entity, S extends EntityRenderState> EntityRenderer<E, S> getRenderer(EntityRenderDispatcher renderDispatcher, E entity) {
+        return Misc.cast(renderDispatcher.getRenderer(entity));
+    }
+
+    public static <E extends Entity, S extends EntityRenderState> EntityRenderState createRenderState(EntityRenderer<E, S> renderer) {
+        return renderer.createRenderState();
+    }
+
+    public static <E extends Entity, S extends EntityRenderState> void extractRenderState(EntityRenderer<E, S> renderer, E entity, S renderState) {
+        renderer.extractRenderState(entity, renderState, 1F);
+    }
+
+    public static <E extends Entity, S extends EntityRenderState> S createAndExtractRenderState(EntityRenderDispatcher renderDispatcher, E entity) {
+        EntityRenderer<? super E, S> renderer = getRenderer(renderDispatcher, entity);
+        S renderState = renderer.createRenderState();
+        extractRenderState(renderer, entity, renderState);
+        return renderState;
     }
 
     // ============================================================================ //

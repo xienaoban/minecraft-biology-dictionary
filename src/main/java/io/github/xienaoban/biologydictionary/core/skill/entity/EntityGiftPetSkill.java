@@ -51,6 +51,6 @@ public class EntityGiftPetSkill implements EntityTargetedSkill {
             throw new NoPermissionException(Component.translatable(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_SAME),
                     "The player and the target player cannot be the same person: player=\"" + player.getName().getString() + "\"");
         }
-        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().toNbtWith(new EntityReference<>(uuid)));
+        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().toNbtWith(EntityReference.of(uuid)));
     }
 }

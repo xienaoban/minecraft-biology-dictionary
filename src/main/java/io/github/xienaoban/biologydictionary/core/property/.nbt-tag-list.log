@@ -39,6 +39,17 @@ NBT tags of entity class net.minecraft.world.entity.LivingEntity:
  - !"last_hurt_by_mob": [FuncTag{caller="this.lastHurtByMob", reader="null", storer="store", optional="null", type="null", hasGetter=false, hasPutter=true}, FuncTag{caller="EntityReference", reader="read", storer="null", optional="null", type="EntityReference<?>", hasGetter=true, hasPutter=false}]
  - !"last_hurt_by_player": [FuncTag{caller="this.lastHurtByPlayer", reader="null", storer="store", optional="null", type="null", hasGetter=false, hasPutter=true}, FuncTag{caller="EntityReference", reader="read", storer="null", optional="null", type="EntityReference<?>", hasGetter=true, hasPutter=false}]
 
+NBT tags of entity class net.minecraft.world.entity.Avatar:
+
+NBT tags of entity class net.minecraft.world.entity.decoration.Mannequin:
+ - "description": CodecTag{codec="ComponentSerialization.CODEC", type="Component", hasGetter=true, hasPutter=true}
+ - "hide_description": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
+ - "immovable": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
+ - "profile": CodecTag{codec="ResolvableProfile.CODEC", type="ResolvableProfile", hasGetter=true, hasPutter=true}
+ - !"hidden_layers": [CodecTag{codec="net.minecraft.world.entity.decoration.Mannequin.LAYERS_CODEC", type="null", hasGetter=true, hasPutter=true}]
+ - !"main_hand": [CodecTag{codec="HumanoidArm.CODEC", type="null", hasGetter=true, hasPutter=true}]
+ - !"pose": [CodecTag{codec="net.minecraft.world.entity.decoration.Mannequin.POSE_CODEC", type="null", hasGetter=true, hasPutter=true}]
+
 NBT tags of entity class net.minecraft.world.entity.Mob:
  - "CanPickUpLoot": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
  - "DeathLootTable": CodecTag{codec="LootTable.KEY_CODEC", type="ResourceKey<LootTable>", hasGetter=true, hasPutter=true}
@@ -228,6 +239,10 @@ NBT tags of entity class net.minecraft.world.entity.animal.IronGolem:
 
 NBT tags of entity class net.minecraft.world.entity.animal.SnowGolem:
  - "Pumpkin": BuiltinTag{type="boolean", hasGetter=true, hasPutter=true}
+
+NBT tags of entity class net.minecraft.world.entity.animal.coppergolem.CopperGolem:
+ - "next_weather_age": BuiltinTag{type="long", hasGetter=true, hasPutter=true}
+ - "weather_state": CodecTag{codec="WeatheringCopper.WeatherState.CODEC", type="WeatheringCopper.WeatherState", hasGetter=true, hasPutter=true}
 
 NBT tags of entity class net.minecraft.world.entity.monster.Shulker:
  - "AttachFace": CodecTag{codec="Direction.LEGACY_ID_CODEC", type="Direction", hasGetter=true, hasPutter=true}

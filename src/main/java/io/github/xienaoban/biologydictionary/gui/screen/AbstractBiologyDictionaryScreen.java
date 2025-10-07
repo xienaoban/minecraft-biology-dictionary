@@ -18,6 +18,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -159,17 +160,17 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)
-                || client.options.keyInventory.matches(keyCode, scanCode)) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyEvent)
+                || client.options.keyInventory.matches(keyEvent)) {
             onClose();
             return true;
-        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
+        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyEvent)) {
             screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
             sendScreenMessage(Component.literal("Debug mode " + (screenRenderingContext.isDebug() ? "on" : "off")));
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyEvent);
     }
 
     public Bookmark getBookmark(int idx) {

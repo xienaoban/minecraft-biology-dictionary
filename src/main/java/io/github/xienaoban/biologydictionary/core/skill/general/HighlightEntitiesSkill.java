@@ -35,6 +35,7 @@ public class HighlightEntitiesSkill implements GeneralSkill {
         return Skills.sendCommonSkill(entityType, radius);
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public Tag clientSend(LocalPlayer player, Object... args) {
         EntityType<?> entityType = (EntityType<?>) args[0];
