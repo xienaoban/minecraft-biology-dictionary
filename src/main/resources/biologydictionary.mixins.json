@@ -15,11 +15,9 @@
     "TemptGoalIMixin"
   ],
   "client": [
-    "GuiRendererMixin",
     "ItemInHandRendererMixin",
     "LevelRendererMixin",
-    "MinecraftMixin",
-    "PictureInPictureRendererIMixin"
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1
