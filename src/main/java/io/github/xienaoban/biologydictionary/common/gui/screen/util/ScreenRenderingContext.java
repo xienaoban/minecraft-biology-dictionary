@@ -447,6 +447,10 @@ public final class ScreenRenderingContext {
             entityRenderState = EntityUtils.createRenderState(entityRenderer);
         }
         entityRenderer.extractRenderState(entity, entityRenderState, 1F);
+        entityRenderState.lightCoords = 15728880;
+        entityRenderState.hitboxesRenderState = null;
+        entityRenderState.shadowPieces.clear();
+        entityRenderState.outlineColor = 0;
         getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);
 
         getGuiGraphics().disableScissor();
