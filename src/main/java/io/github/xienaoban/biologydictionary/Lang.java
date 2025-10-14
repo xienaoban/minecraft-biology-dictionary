@@ -155,6 +155,7 @@ public final class Lang {
     TEXT_MOD_NOT_INSTALLED                   = "text.biologydictionary.mod_not_installed",
     TEXT_CLICK_ME_TO_DOWNLOAD                = "text.biologydictionary.click_me_to_download",
     TEXT_INFO_FROM_THIS_MOD                  = "text.biologydictionary.info_from_this_mod",
+    TEXT_NO_BIOLOGY_DICTIONARY_BOOK          = "text.biologydictionary.no_biology_dictionary_book",
     TEXT_TARGET_ENTITY_TOO_FAR               = "text.biologydictionary.target_entity_too_far",
     TEXT_HIGHLIGHTED_ENTITIES                = "text.biologydictionary.highlighted_entities",
     TEXT_FAILED_TO_HIGHLIGHT                 = "text.biologydictionary.failed_to_highlight",
@@ -172,6 +173,7 @@ public final class Lang {
     TEXT_EXPERIENCE_POINTS_COST              = "text.biologydictionary.experience_points_cost",
     TEXT_EXPERIENCE_LEVELS_COST              = "text.biologydictionary.experience_levels_cost",
     TEXT_OFFER_OR_DROP                       = "text.biologydictionary.offer_or_drop",
+
     TEXT_NO_DATA_WITH_BRACKETS               = "text.biologydictionary.no_data_with_brackets",
     TEXT_NONE_WITH_BRACKETS                  = "text.biologydictionary.none_with_brackets",
     TEXT_EMPTY_WITH_BRACKETS                 = "text.biologydictionary.empty_with_brackets",

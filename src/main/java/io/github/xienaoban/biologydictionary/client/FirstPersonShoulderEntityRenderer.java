@@ -2,7 +2,6 @@ package io.github.xienaoban.biologydictionary.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import io.github.xienaoban.biologydictionary.common.client.RenderingRegistry;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
@@ -23,30 +22,25 @@ import net.minecraft.world.entity.animal.Parrot;
 import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
-public final class FirstPersonShoulderEntityRenderer implements RenderingRegistry.RenderingListener {
-    public static void init() {
-        RenderingRegistry.registerFirstPersonRendering(new FirstPersonShoulderEntityRenderer());
-    }
-
+public final class FirstPersonShoulderEntityRenderer {
     private static final int NULL_VARIANT = -2333333;
     private static final float HEAD_ROT_SPEED = 0.02F;
 
-    private final int[] lrData = { NULL_VARIANT, NULL_VARIANT };
-    private final LivingEntity[] entities = new LivingEntity[2];
-    private final EntityRenderer<Entity, EntityRenderState>[] entityRenderers = Misc.cast(new EntityRenderer[2]);
-    private final EntityRenderState[] entityRenderStates = new EntityRenderState[2];
-    private final float[] nextYHeadRot = new float[2];
-    private final float[] nextXHeadRot = new float[2];
-    private final long[] lastHeadYawTime = new long[2];
-    private final long[] nextHeadYawTime = new long[2];
-    private long lastTime;
+    private static final int[] lrData = { NULL_VARIANT, NULL_VARIANT };
+    private static final LivingEntity[] entities = new LivingEntity[2];
+    private static final EntityRenderer<Entity, EntityRenderState>[] entityRenderers = Misc.cast(new EntityRenderer[2]);
+    private static final EntityRenderState[] entityRenderStates = new EntityRenderState[2];
+    private static final float[] nextYHeadRot = new float[2];
+    private static final float[] nextXHeadRot = new float[2];
+    private static final long[] lastHeadYawTime = new long[2];
+    private static final long[] nextHeadYawTime = new long[2];
+    private static long lastTime;
 
     /**
      * @see net.minecraft.client.renderer.ItemInHandRenderer#renderHandsWithItems(float, com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.SubmitNodeCollector, net.minecraft.client.player.LocalPlayer, int)
      * @see net.minecraft.client.renderer.ItemInHandRenderer#renderPlayerArm(com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.SubmitNodeCollector, int, float, float, net.minecraft.world.entity.HumanoidArm)
      */
-    @Override
-    public void run(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
+    public static void run(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
         String tmp = "BOTTOM";
         HudPosition hudPos = switch (tmp) {
             case "TOP" -> HudPosition.TOP;
@@ -90,7 +84,7 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
         }
     }
 
-    private void update(EntityRenderDispatcher entityRenderDispatcher, LocalPlayer player, Optional<Parrot.Variant> optionalVariant, int index) {
+    private static void update(EntityRenderDispatcher entityRenderDispatcher, LocalPlayer player, Optional<Parrot.Variant> optionalVariant, int index) {
         int variantId = optionalVariant.map(Parrot.Variant::getId).orElse(NULL_VARIANT);
         if (lrData[index] == variantId) return;
         lrData[index] = variantId;
@@ -124,7 +118,7 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
         entityRenderStates[index] = entityRenderState;
     }
 
-    private void extract(int index) {
+    private static void extract(int index) {
         EntityRenderState entityRenderState = entityRenderStates[index];
         EntityUtils.extractRenderState(entityRenderers[index], entities[index], entityRenderState);
 
@@ -136,7 +130,7 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
         entityRenderState.nameTag = null;
     }
 
-    public void clear() {
+    public static void clear() {
         lrData[0] = lrData[1] = NULL_VARIANT;
         entities[0] = entities[1] = null;
         entityRenderers[0] = entityRenderers[1] = null;
