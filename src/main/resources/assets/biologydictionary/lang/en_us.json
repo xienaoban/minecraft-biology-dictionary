@@ -139,6 +139,7 @@
   "text.biologydictionary.mod_not_installed": "It means that you have not installed the mod `Biology Dictionary` if you see this text. You may download this mod at: ",
   "text.biologydictionary.click_me_to_download": "Click me to download!",
   "text.biologydictionary.info_from_this_mod": "[Biology Dictionary] ",
+  "text.biologydictionary.no_biology_dictionary_book": "No Biology Dictionary Book in inventory！",
   "text.biologydictionary.target_entity_too_far": "The target entity is too far from you!",
   "text.biologydictionary.highlighted_entities": "Sensed %d %s within %d meters!",
   "text.biologydictionary.failed_to_highlight": "Failed to highlight: %s",
@@ -156,6 +157,7 @@
   "text.biologydictionary.experience_points_cost": "Experience points cost: %d",
   "text.biologydictionary.experience_levels_cost": "Experience levels cost: %d",
   "text.biologydictionary.offer_or_drop": "%s is offered to you",
+
   "text.biologydictionary.no_data_with_brackets": "(No Data)",
   "text.biologydictionary.none_with_brackets": "(None)",
   "text.biologydictionary.empty_with_brackets": "(Empty)",

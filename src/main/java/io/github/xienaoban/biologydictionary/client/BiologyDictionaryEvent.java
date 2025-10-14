@@ -1,8 +1,12 @@
 package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.InventoryUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.screen.BdEntityDetailScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.BdHomeScreen;
@@ -10,9 +14,11 @@ import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.BeehiveBlock;
@@ -27,21 +33,21 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 @Environment(EnvType.CLIENT)
 public final class BiologyDictionaryEvent {
     public static void openBookScreen(Minecraft client) {
+        LocalPlayer player = ClientUtils.getClientPlayer(client);
         try {
-            tryOpenBookScreen(client);
+            resetHit();
+            if (isCreativeOrHasBook(player)) {
+                tryOpenBookScreen(client, player);
+            } else {
+                ClientUtils.sendCenteredMessage(Component.translatable(Lang.TEXT_NO_BIOLOGY_DICTIONARY_BOOK).withStyle(ChatFormatting.YELLOW));
+            }
         } catch (Throwable e) {
-            BDC.setHitEntity(null);
-            BDC.setHitBlock(null);
-            BDC.setHitEntityProperties(null);
+            resetHit();
             LOGGER.error("Failed to open Biology Dictionary screen: {}", Misc.getStackToString(e));
         }
     }
 
-    public static void tryOpenBookScreen(Minecraft client) {
-        LocalPlayer player = client.player;
-        BDC.setHitEntity(null);
-        BDC.setHitBlock(null);
-        BDC.setHitEntityProperties(null);
+    private static void tryOpenBookScreen(Minecraft client, LocalPlayer player) {
         if (player == null) {
             LOGGER.error("Client player is null. Fail to open the Bole Screen.");
             return;
@@ -93,5 +99,20 @@ public final class BiologyDictionaryEvent {
             }
         }
         ClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
+    }
+
+    private static void resetHit() {
+        BDC.setHitEntity(null);
+        BDC.setHitBlock(null);
+        BDC.setHitEntityProperties(null);
+    }
+
+    private static boolean hasBook(LocalPlayer player) {
+        return InventoryUtils.hasEnoughItems(player.getInventory(), BiologyDictionaryItem.createBook(),
+                (is1, is2) -> BiologyDictionaryItem.isBook(is2));
+    }
+
+    private static boolean isCreativeOrHasBook(LocalPlayer player) {
+        return PlayerUtils.isCreative(player) || hasBook(player);
     }
 }

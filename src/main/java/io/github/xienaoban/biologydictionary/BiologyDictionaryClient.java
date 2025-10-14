@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary;
 
-import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRenderer;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.client.ClientEventRegistry;
@@ -46,7 +45,6 @@ public final class BiologyDictionaryClient {
         ClientEventRegistry.registerEndTick(this::tick);
 
         EntityPropertyWidgets.init();
-        FirstPersonShoulderEntityRenderer.init();
         KeyMappingManager.init();
         ClientNetManager.init();
         HighlightManager.init();
