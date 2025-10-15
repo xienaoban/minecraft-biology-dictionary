@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.RenderUtils;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -40,12 +41,8 @@ public final class HighlightRenderer {
     private static void submitEntity(EntityRenderDispatcher entityRenderDispatcher, Entity entity, Vec3 camera,
                                      PoseStack poseStack, LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector) {
         EntityRenderState entityRenderState = EntityUtils.createAndExtractRenderState(entityRenderDispatcher, entity);
-        entityRenderState.lightCoords = 15728880;
-        entityRenderState.hitboxesRenderState = null;
-        entityRenderState.shadowPieces.clear();
+        RenderUtils.renderBodyOnly(entityRenderState);
         entityRenderState.outlineColor = Colors.HIGHLIGHT_DEFAULT_COLOR;
-        entityRenderState.leashStates = null;
-        entityRenderState.nameTag = null;
         entityRenderDispatcher.submit(
                         entityRenderState,
                         levelRenderState.cameraRenderState,

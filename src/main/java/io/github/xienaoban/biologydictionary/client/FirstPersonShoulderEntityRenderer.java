@@ -5,21 +5,26 @@ import com.mojang.math.Axis;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.RenderUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Parrot;
 
 import java.util.Optional;
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @Environment(EnvType.CLIENT)
 public final class FirstPersonShoulderEntityRenderer {
@@ -36,11 +41,30 @@ public final class FirstPersonShoulderEntityRenderer {
     private static final long[] nextHeadYawTime = new long[2];
     private static long lastTime;
 
+    private static boolean banned = false;
+
+    public static void clear() {
+        lrData[0] = lrData[1] = NULL_VARIANT;
+        entities[0] = entities[1] = null;
+        entityRenderers[0] = entityRenderers[1] = null;
+        entityRenderStates[0] = entityRenderStates[1] = null;
+    }
+
+    public static void run(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
+        if (banned) { return; }
+        try {
+            run0(client, entityRenderDispatcher, tickDelta, poseStack, submitNodeCollector, player, light);
+        } catch (Exception e) {
+            banned = true;
+            LOGGER.error("Failed to render parrots on shoulders: {}", Misc.getStackToString(e));
+        }
+    }
+
     /**
      * @see net.minecraft.client.renderer.ItemInHandRenderer#renderHandsWithItems(float, com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.SubmitNodeCollector, net.minecraft.client.player.LocalPlayer, int)
      * @see net.minecraft.client.renderer.ItemInHandRenderer#renderPlayerArm(com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.SubmitNodeCollector, int, float, float, net.minecraft.world.entity.HumanoidArm)
      */
-    public static void run(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
+    private static void run0(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
         String tmp = "BOTTOM";
         HudPosition hudPos = switch (tmp) {
             case "TOP" -> HudPosition.TOP;
@@ -49,9 +73,24 @@ public final class FirstPersonShoulderEntityRenderer {
             default -> null;
         };
         if (hudPos == null) return;
+
+        if (player.getShoulderParrotLeft().isEmpty() && player.getShoulderParrotRight().isEmpty()) {
+            return;
+        }
+
         long curTime = ClientUtils.getGameTimeMillis(tickDelta);
         long diffTime = Math.min(50, curTime - lastTime);
         lastTime = curTime;
+
+        PoseStack ps = new PoseStack();
+        // @see net.minecraft.client.renderer.ItemInHandRenderer.renderHandsWithItems
+        float xp = Mth.lerp(tickDelta, player.xBobO, player.xBob);
+        float yp = Mth.lerp(tickDelta, player.yBobO, player.yBob);
+        ps.mulPose(Axis.XP.rotationDegrees((player.getViewXRot(tickDelta) - xp) * 0.1F));
+        ps.mulPose(Axis.YP.rotationDegrees((player.getViewYRot(tickDelta) - yp) * 0.1F));
+
+        CameraRenderState camera = client.gameRenderer.getLevelRenderState().cameraRenderState;
+
         for (int i = 0; i < 2; ++i) {
             update(entityRenderDispatcher, player,
                     (i == 0 ? player.getShoulderParrotLeft() : player.getShoulderParrotRight()), i);
@@ -69,18 +108,18 @@ public final class FirstPersonShoulderEntityRenderer {
                 entity.setYHeadRot(entity.getYHeadRot() + yHeadRotDiff);
                 entity.setXRot(    entity.getXRot()     + xRotDiff);
             }
-            int pos = i * -2 + 1;
-            poseStack.pushPose();
-            poseStack.mulPose(Axis.XP.rotation(hudPos.xRot()));
-            poseStack.mulPose(Axis.YP.rotation(hudPos.yRot()));
-            poseStack.mulPose(Axis.ZP.rotation(hudPos.zRot()));
-            poseStack.translate(pos * hudPos.xPos(), hudPos.yPos() + player.getXRot() * hudPos.yOffset(), hudPos.zPos());
-
             extract(i);
-            // [TODO]
-            // entityRenderDispatcher.submit(entityRenderStates[i], );
+            EntityRenderState entityRenderState = entityRenderStates[i];
+            entityRenderState.lightCoords = light;
 
-            poseStack.popPose();
+            int pos = i * -2 + 1;
+            ps.pushPose();
+            ps.mulPose(Axis.XP.rotation(hudPos.xRot()));
+            ps.mulPose(Axis.YP.rotation(hudPos.yRot()));
+            ps.mulPose(Axis.ZP.rotation(hudPos.zRot()));
+            ps.translate(pos * hudPos.xPos(), hudPos.yPos() + player.getXRot() * hudPos.yOffset(), hudPos.zPos());
+            entityRenderDispatcher.submit(entityRenderState, camera, 0, 0, 0, ps, submitNodeCollector);
+            ps.popPose();
         }
     }
 
@@ -121,20 +160,7 @@ public final class FirstPersonShoulderEntityRenderer {
     private static void extract(int index) {
         EntityRenderState entityRenderState = entityRenderStates[index];
         EntityUtils.extractRenderState(entityRenderers[index], entities[index], entityRenderState);
-
-        entityRenderState.lightCoords = 15728880;
-        entityRenderState.hitboxesRenderState = null;
-        entityRenderState.shadowPieces.clear();
-        entityRenderState.outlineColor = 0;
-        entityRenderState.leashStates = null;
-        entityRenderState.nameTag = null;
-    }
-
-    public static void clear() {
-        lrData[0] = lrData[1] = NULL_VARIANT;
-        entities[0] = entities[1] = null;
-        entityRenderers[0] = entityRenderers[1] = null;
-        entityRenderStates[0] = entityRenderStates[1] = null;
+        RenderUtils.renderBodyOnly(entityRenderState);
     }
 
     private record HudPosition(float xRot, float yRot, float zRot, double xPos, double yPos, double zPos, float yOffset) {
