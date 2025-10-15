@@ -256,14 +256,19 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity, S extends EntityRenderState> void extractRenderState(EntityRenderer<E, S> renderer, E entity, S renderState) {
-        renderer.extractRenderState(entity, renderState, 1F);
+        extractRenderState(renderer, entity, renderState, 1F);
     }
 
-    public static <E extends Entity, S extends EntityRenderState> S createAndExtractRenderState(EntityRenderDispatcher renderDispatcher, E entity) {
-        EntityRenderer<? super E, S> renderer = getRenderer(renderDispatcher, entity);
-        S renderState = renderer.createRenderState();
-        extractRenderState(renderer, entity, renderState);
-        return renderState;
+    public static <E extends Entity, S extends EntityRenderState> void extractRenderState(EntityRenderer<E, S> renderer, E entity, S renderState, float tickDelta) {
+        renderer.extractRenderState(entity, renderState, tickDelta);
+    }
+
+    public static <E extends Entity, S extends EntityRenderState> S createRenderState(EntityRenderDispatcher renderDispatcher, E entity) {
+        return createRenderState(renderDispatcher, entity, 1F);
+    }
+
+    public static <E extends Entity, S extends EntityRenderState> S createRenderState(EntityRenderDispatcher renderDispatcher, E entity, float tickDelta) {
+        return Misc.cast(renderDispatcher.extractEntity(entity, tickDelta));
     }
 
     // ============================================================================ //

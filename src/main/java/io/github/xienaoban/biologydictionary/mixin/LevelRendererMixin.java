@@ -1,9 +1,14 @@
 package io.github.xienaoban.biologydictionary.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.HighlightRenderer;
+import net.minecraft.client.Camera;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.state.LevelRenderState;
 import org.spongepowered.asm.mixin.Final;
@@ -15,12 +20,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
-    @Shadow
-    @Final private EntityRenderDispatcher entityRenderDispatcher;
+    @Shadow @Final private Minecraft minecraft;
+
+    @Shadow @Final private EntityRenderDispatcher entityRenderDispatcher;
+
+    @Inject(method = "extractVisibleEntities(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/culling/Frustum;Lnet/minecraft/client/DeltaTracker;Lnet/minecraft/client/renderer/state/LevelRenderState;)V",
+            at = @At(value = "TAIL"))
+    private void setGlowing(Camera camera, Frustum frustum, DeltaTracker deltaTracker, LevelRenderState levelRenderState, CallbackInfo ci) {
+        if (HighlightManager.hasAnyHighlighted()) {
+            levelRenderState.haveGlowingEntities = true;
+        }
+    }
 
     @Inject(method = "submitEntities(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/state/LevelRenderState;Lnet/minecraft/client/renderer/SubmitNodeCollector;)V",
             at = @At(value = "TAIL"))
     private void submitHighlight(PoseStack poseStack, LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector, CallbackInfo ci) {
-        HighlightRenderer.submit(entityRenderDispatcher, poseStack, levelRenderState, submitNodeCollector);
+        HighlightRenderer.submit(minecraft, entityRenderDispatcher, poseStack, levelRenderState, submitNodeCollector);
     }
 }
