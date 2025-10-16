@@ -22,7 +22,7 @@ import net.minecraft.world.entity.OwnableEntity;
 
 import java.util.UUID;
 
-public class EntityGiftPetSkill implements EntityTargetedSkill {
+public class EntityGiftPetSkill implements EntityTargetedSkill<Entity> {
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, AbstractClientPlayer targetPlayer) {
         return Skills.sendEntityOrientedSkill(entity, targetPlayer);

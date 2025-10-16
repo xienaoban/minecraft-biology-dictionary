@@ -15,19 +15,18 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.Entity;
 
-public class AgeableMobSetForcedAgeSkill implements EntityTargetedSkill {
+public class AgeableMobSetForcedAgeSkill implements EntityTargetedSkill<AgeableMob> {
     public static final int EXPERIENCE_POINTS_COST = 8;
 
     @Environment(EnvType.CLIENT)
-    public static boolean activate(Entity entity, int forcedAge, int age) {
+    public static boolean activate(AgeableMob entity, int forcedAge, int age) {
         return Skills.sendEntityOrientedSkill(entity, forcedAge, age);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
+    public Tag clientSend(LocalPlayer player, AgeableMob entity, Object... args) {
         int forcedAge = (int) args[0];
         int age = (int) args[1];
         Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
@@ -35,7 +34,7 @@ public class AgeableMobSetForcedAgeSkill implements EntityTargetedSkill {
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
+    public void serverReceive(MinecraftServer server, ServerPlayer player, AgeableMob entity, Tag args) {
         int[] t = args.asIntArray().orElseThrow();
         int forcedAge = t[0];
         int age = t[1];

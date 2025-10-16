@@ -14,7 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-public class EntitySetPortalCooldownSkill implements EntityTargetedSkill {
+public class EntitySetPortalCooldownSkill implements EntityTargetedSkill<Entity> {
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, int cooldown) {
         return Skills.sendEntityOrientedSkill(entity, cooldown);

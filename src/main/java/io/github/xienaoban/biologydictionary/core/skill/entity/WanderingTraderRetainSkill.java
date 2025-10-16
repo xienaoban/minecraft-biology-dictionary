@@ -20,7 +20,7 @@ import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class WanderingTraderRetainSkill implements EntityTargetedSkill {
+public class WanderingTraderRetainSkill implements EntityTargetedSkill<WanderingTrader> {
     public static final int STAY_TICKS = 2 * 60 * 20;
 
     @Environment(EnvType.CLIENT)
@@ -30,13 +30,13 @@ public class WanderingTraderRetainSkill implements EntityTargetedSkill {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
+    public Tag clientSend(LocalPlayer player, WanderingTrader entity, Object... args) {
         Permissions.checkPlayerCreativeOrInventoryItems(player, new ItemStack(Items.WATER_BUCKET, 1));
         return ByteTag.valueOf(false);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
+    public void serverReceive(MinecraftServer server, ServerPlayer player, WanderingTrader entity, Tag args) {
         Permissions.checkLegalArg(args.asBoolean().orElseThrow(), false);
         Permissions.checkPlayerCreativeOrInventoryItems(player, new ItemStack(Items.WATER_BUCKET, 1));
         Permissions.checkPlayerCreativeOrConsumeInventoryItems(player, new ItemStack(Items.WATER_BUCKET, 1));
