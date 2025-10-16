@@ -14,7 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-public class EntitySetInvulnerableSkill implements EntityTargetedSkill {
+public class EntitySetInvulnerableSkill implements EntityTargetedSkill<Entity> {
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, boolean inv) {
         return Skills.sendEntityOrientedSkill(entity, inv);

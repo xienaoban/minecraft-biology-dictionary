@@ -17,13 +17,13 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-public class MobSetNoAiSkill implements EntityTargetedSkill {
+public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
     private static final int FRIENDLY_EXP_LVL_REQUIRED = 0;
     private static final int FRIENDLY_EXP_LVL_COST = 1;
     private static final int NEUTRAL_EXP_LVL_REQUIRED = 10;
@@ -32,7 +32,7 @@ public class MobSetNoAiSkill implements EntityTargetedSkill {
     private static final int ENEMY_EXP_LVL_COST_MIN = 5;
     private static final float ENEMY_EXP_LVL_COST_FACTOR = 0.25F;
 
-    public static int experienceLevelsRequired(Entity entity) {
+    public static int experienceLevelsRequired(Mob entity) {
         if (entity instanceof Enemy) {
             return ENEMY_EXP_LVL_REQUIRED;
         } else if (entity instanceof NeutralMob) {
@@ -42,9 +42,9 @@ public class MobSetNoAiSkill implements EntityTargetedSkill {
         }
     }
 
-    public static int experienceLevelsCost(Entity entity) {
+    public static int experienceLevelsCost(Mob entity) {
         if (entity instanceof Enemy) {
-            return Math.max(ENEMY_EXP_LVL_COST_MIN, (int) (ENEMY_EXP_LVL_COST_FACTOR * ((LivingEntity) entity).getMaxHealth()));
+            return Math.max(ENEMY_EXP_LVL_COST_MIN, (int) (ENEMY_EXP_LVL_COST_FACTOR * entity.getMaxHealth()));
         } else if (entity instanceof NeutralMob) {
             return NEUTRAL_EXP_LVL_COST;
         } else {
@@ -53,11 +53,11 @@ public class MobSetNoAiSkill implements EntityTargetedSkill {
     }
 
     @Environment(EnvType.CLIENT)
-    public static boolean activate(Entity entity, boolean noAi) {
+    public static boolean activate(Mob entity, boolean noAi) {
         return Skills.sendEntityOrientedSkill(entity, noAi);
     }
 
-    private static void check(Player player, Entity entity) {
+    private static void check(Player player, Mob entity) {
         int lvlRequired = experienceLevelsRequired(entity);
         int lvlCost = experienceLevelsCost(entity);
         Permissions.checkPlayerCreativeOrExperienceLevel(player, Math.max(lvlRequired, lvlCost));
@@ -65,14 +65,14 @@ public class MobSetNoAiSkill implements EntityTargetedSkill {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
+    public Tag clientSend(LocalPlayer player, Mob entity, Object... args) {
         boolean noAi = (boolean) args[0];
         check(player, entity);
         return ByteTag.valueOf(noAi);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
+    public void serverReceive(MinecraftServer server, ServerPlayer player, Mob entity, Tag args) {
         boolean noAi = args.asBoolean().orElseThrow();
         check(player, entity);
         CompoundTag nbt = VanillaEntityProperties.OfMob.createNoAiProperty().toNbtWith(noAi);

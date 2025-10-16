@@ -12,25 +12,25 @@ import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.Bee;
 
-public class BeeClearHiveSkill implements EntityTargetedSkill {
+public class BeeClearHiveSkill implements EntityTargetedSkill<Bee> {
     public static final int EXPERIENCE_POINTS_COST = 1;
 
     @Environment(EnvType.CLIENT)
-    public static boolean activate(Entity entity) {
+    public static boolean activate(Bee entity) {
         return Skills.sendEntityOrientedSkill(entity);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
+    public Tag clientSend(LocalPlayer player, Bee entity, Object... args) {
         Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
         return ByteTag.valueOf(true);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
+    public void serverReceive(MinecraftServer server, ServerPlayer player, Bee entity, Tag args) {
         Permissions.checkLegalArg(args.asBoolean().orElseThrow(), true);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
         Skills.giveExperiencePointsIfNotCreative(player, -EXPERIENCE_POINTS_COST);

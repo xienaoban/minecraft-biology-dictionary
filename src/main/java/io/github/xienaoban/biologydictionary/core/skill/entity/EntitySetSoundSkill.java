@@ -16,7 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
 
-public class EntitySetSoundSkill implements EntityTargetedSkill {
+public class EntitySetSoundSkill implements EntityTargetedSkill<Entity> {
     private static final int FRIENDLY_EXP_PT_COST = 4;
     private static final int NEUTRAL_EXP_PT_COST = 16;
     private static final int ENEMY_EXP_PT_COST = 64;
