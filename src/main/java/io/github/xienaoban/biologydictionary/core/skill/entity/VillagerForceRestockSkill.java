@@ -68,8 +68,7 @@ public class VillagerForceRestockSkill implements EntityTargetedSkill {
 
     @Override
     public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
-        boolean verify = args.asBoolean().orElseThrow();
-        Permissions.checkLegalArg(verify, true);
+        Permissions.checkLegalArg(args.asBoolean().orElseThrow(), true);
 
         Villager villager = (Villager) entity;
 

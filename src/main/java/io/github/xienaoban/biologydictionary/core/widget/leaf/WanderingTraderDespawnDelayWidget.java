@@ -5,8 +5,10 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
+import io.github.xienaoban.biologydictionary.core.skill.entity.WanderingTraderRetainSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
@@ -15,6 +17,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.entity.npc.WanderingTraderSpawner;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWidget<WanderingTrader> {
     private static final int L = 6, T = 6;
@@ -31,6 +35,7 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
 
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new DespawnDelayBar());
+        addElementButton(new RetainButton());
     }
 
     @Override
@@ -82,6 +87,39 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
             } else {
                 renderInnerText(ctx, Component.literal((delay / 20 / 60) + "min/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
             }
+        }
+    }
+
+    private final class RetainButton extends EntityPropertyButton {
+        private final ItemStack waterBucket = new ItemStack(Items.WATER_BUCKET);
+
+        public RetainButton() {
+            super(null, -1, -1);
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                if (WanderingTraderRetainSkill.activate(e())) {
+                    despawnDelayProperty.set(despawnDelayProperty.get() + WanderingTraderRetainSkill.STAY_TICKS);
+                }
+            }
+            return true;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            // super.onRender(ctx);
+            renderItem(ctx, waterBucket, 1);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            renderTooltip(ctx,
+                    tooltipTitle(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN),
+                    tooltipDescription(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN_DESC)
+            );
+            return true;
         }
     }
 }

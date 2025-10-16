@@ -144,6 +144,16 @@ public final class ScreenRenderingContext {
         }
     }
 
+    public void renderRightAlignedText(Component component, int color, float z, float x, float y) {
+        renderText(component, color, z, x - calcTextWidth(component), y);
+    }
+
+    public void renderRightAlignedText(Component component, int color, float size, float z, float x, float y) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            renderRightAlignedText(component, color, z, x / size, y / size);
+        }
+    }
+
     //=======================================================================================
     // Rendering geometries.
     //=======================================================================================

@@ -29,6 +29,7 @@ public final class Skills {
         register(new BeeClearHiveSkill());
         register(new EntityGiftPetSkill());
         register(new VillagerForceRestockSkill());
+        register(new WanderingTraderRetainSkill());
     }
 
     public static void register(GeneralSkill skill) {
