@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -13,7 +12,6 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
-import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
@@ -90,15 +88,10 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
-            ctx.renderItem(emerald, 0.75F, box.getLeft() - 2, box.getTop() - 2);
+            // super.onRender(ctx);
             Integer numI = restocksTodayProperty.get();
-            if (numI != null) {
-                int num = numI;
-                int price = Math.max(0, num - 3 + 1) * 2;
-                ctx.renderCenteredText(Component.literal(String.valueOf(price)), Colors.GRAY, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2F + 0.5F,  box.getTop() + 2F+ 0.5F);
-                ctx.renderCenteredText(Component.literal(String.valueOf(price)), Colors.WHITE, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2F,  box.getTop() + 2F);
-            }
+            Integer price = (numI == null ? null : Math.max(0, numI - 3 + 1) * 2);
+            renderItem(ctx, emerald, price);
         }
 
         @Override

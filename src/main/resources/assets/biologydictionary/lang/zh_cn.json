@@ -133,6 +133,8 @@
   "property_widget.biologydictionary.bee_hive.clear.desc"         : "放下对原蜂巢的执念，重新寻找蜂巢（可能还是同一个）",
   "property_widget.biologydictionary.despawn_delay"               : "离开倒计时",
   "property_widget.biologydictionary.despawn_delay.desc"          : "要交易、拴绳的赶紧，到点就跑了",
+  "property_widget.biologydictionary.despawn_delay.retain"        : "挽留",
+  "property_widget.biologydictionary.despawn_delay.retain.desc"   : "喝口（桶）水，再待2分钟呗",
 
   "text.biologydictionary.mod_name_is": "模组名：",
   "text.biologydictionary.author_is": "作者：",

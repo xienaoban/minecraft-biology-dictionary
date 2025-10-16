@@ -149,6 +149,8 @@ public final class Lang {
     PROPERTY_WIDGET_BEE_HIVE_CLEAR_DESC         = "property_widget.biologydictionary.bee_hive.clear.desc",
     PROPERTY_WIDGET_DESPAWN_DELAY               = "property_widget.biologydictionary.despawn_delay",
     PROPERTY_WIDGET_DESPAWN_DELAY_DESC          = "property_widget.biologydictionary.despawn_delay.desc",
+    PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN        = "property_widget.biologydictionary.despawn_delay.retain",
+    PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN_DESC   = "property_widget.biologydictionary.despawn_delay.retain.desc",
 
     TEXT_MOD_NAME_IS                         = "text.biologydictionary.mod_name_is",
     TEXT_AUTHOR_IS                           = "text.biologydictionary.author_is",

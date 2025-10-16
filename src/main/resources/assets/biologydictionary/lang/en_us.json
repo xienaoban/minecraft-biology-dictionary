@@ -133,6 +133,8 @@
   "property_widget.biologydictionary.bee_hive.clear.desc"         : "The bee will try to find another hive (may be the same one)",
   "property_widget.biologydictionary.despawn_delay"               : "Despawn Delay",
   "property_widget.biologydictionary.despawn_delay.desc"          : "Disappears when the time comes",
+  "property_widget.biologydictionary.despawn_delay.retain"        : "Persuade to stay",
+  "property_widget.biologydictionary.despawn_delay.retain.desc"   : "Have a sip of water and stay for 2 more minutes",
 
   "text.biologydictionary.mod_name_is": "Mod name: ",
   "text.biologydictionary.author_is": "Author: ",
