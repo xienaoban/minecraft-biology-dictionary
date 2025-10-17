@@ -388,5 +388,8 @@
   "minecraft.wither_friends"                  : "凋灵的盟友",
   "minecraft.zombies"                         : "僵尸类",
 
+  "modmenu.nameTranslation.biologydictionary": "生物辞典",
+  "modmenu.descriptionTranslation.biologydictionary": "展示或修改生物的属性与状态。",
+
   "": ""
 }
