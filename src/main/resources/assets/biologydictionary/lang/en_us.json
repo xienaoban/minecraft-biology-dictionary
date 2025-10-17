@@ -388,5 +388,8 @@
   "minecraft.wither_friends"                  : "Wither Friends",
   "minecraft.zombies"                         : "Zombies",
 
+  "modmenu.nameTranslation.biologydictionary": "Biology Dictionary",
+  "modmenu.descriptionTranslation.biologydictionary": "To display or modify the properties and states of mobs.",
+
   "": ""
 }
