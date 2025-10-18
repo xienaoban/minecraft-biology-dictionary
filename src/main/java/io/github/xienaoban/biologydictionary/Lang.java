@@ -83,6 +83,8 @@ public final class Lang {
     PROPERTY_WIDGET_JUMP_STRENGTH_DESC          = "property_widget.biologydictionary.jump_strength.desc",
     PROPERTY_WIDGET_LEASHABLE                   = "property_widget.biologydictionary.leashable",
     PROPERTY_WIDGET_LEASHABLE_DESC              = "property_widget.biologydictionary.leashable.desc",
+    PROPERTY_WIDGET_EAT_GRASS                   = "property_widget.biologydictionary.eat_grass",
+    PROPERTY_WIDGET_EAT_GRASS_DESC              = "property_widget.biologydictionary.eat_grass.desc",
     PROPERTY_WIDGET_SCREAMING_GOAT              = "property_widget.biologydictionary.screaming_goat",
     PROPERTY_WIDGET_SCREAMING_GOAT_DESC         = "property_widget.biologydictionary.screaming_goat.desc",
     PROPERTY_WIDGET_BOUNDING_BOX                = "property_widget.biologydictionary.bounding_box",
@@ -175,6 +177,7 @@ public final class Lang {
     TEXT_EXPERIENCE_POINTS_COST              = "text.biologydictionary.experience_points_cost",
     TEXT_EXPERIENCE_LEVELS_COST              = "text.biologydictionary.experience_levels_cost",
     TEXT_OFFER_OR_DROP                       = "text.biologydictionary.offer_or_drop",
+    TEXT_TARGET_ENTITY_NO_ABILITY            = "text.biologydictionary.target_entity_no_ability",
 
     TEXT_NO_DATA_WITH_BRACKETS               = "text.biologydictionary.no_data_with_brackets",
     TEXT_NONE_WITH_BRACKETS                  = "text.biologydictionary.none_with_brackets",
@@ -188,6 +191,7 @@ public final class Lang {
     TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT     = "text.biologydictionary.not_owner_no_permission_to_gift",
     TEXT_NO_BLOCK_TO_LOCATE                  = "text.biologydictionary.no_block_to_locate",
     TEXT_NO_BLOCK_TO_CLEAR                   = "text.biologydictionary.no_block_to_clear",
+    TEXT_SHEEP_NO_GRASS_UNDER_FEET           = "text.biologydictionary.sheep_no_grass_under_feet",
     TEXT_VILLAGER_NO_JOB_SITE                = "text.biologydictionary.villager_no_job_site",
     TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE      = "text.biologydictionary.villager_too_far_from_job_site",
 

@@ -121,6 +121,7 @@ public final class EntityPropertyWidgets {
         r(MobAiWidget.class);
         r(EntityInvulnerableWidget.class);
         r(EntitySoundWidget.class);
+        r(SheepEatGrassWidget.class);
         r(AgeableMobGrowthWidget.class);
         r(AgeableMobBreedingCooldownWidget.class);
         r(AnimalInLoveWidget.class);

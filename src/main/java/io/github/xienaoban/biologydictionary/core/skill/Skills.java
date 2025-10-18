@@ -15,7 +15,7 @@ import java.util.Map;
 
 public final class Skills {
     private static final Map<String, GeneralSkill> commonSkills = new HashMap<>();
-    private static final Map<String, EntityTargetedSkill> entityOrientedSkills = new HashMap<>();
+    private static final Map<String, EntityTargetedSkill<?>> entityOrientedSkills = new HashMap<>();
 
     public static void init() {
         register(new HighlightEntitiesSkill());
@@ -25,6 +25,7 @@ public final class Skills {
         register(new EntitySetSoundSkill());
         register(new EntitySetPortalCooldownSkill());
         register(new MobSetNoAiSkill());
+        register(new SheepForceEatGrassSkill());
         register(new AgeableMobSetForcedAgeSkill());
         register(new BeeClearHiveSkill());
         register(new EntityGiftPetSkill());
@@ -38,7 +39,7 @@ public final class Skills {
         }
     }
 
-    public static void register(EntityTargetedSkill skill) {
+    public static void register(EntityTargetedSkill<?> skill) {
         if (entityOrientedSkills.putIfAbsent(key(skill), skill) != null) {
             throw new RuntimeException("Duplicate skill registered: " + key(skill));
         }
@@ -52,8 +53,8 @@ public final class Skills {
         return res;
     }
 
-    public static EntityTargetedSkill getEntityOrientedSkill(String key) {
-        EntityTargetedSkill res = entityOrientedSkills.get(key);
+    public static EntityTargetedSkill<? extends Entity> getEntityOrientedSkill(String key) {
+        EntityTargetedSkill<?> res = entityOrientedSkills.get(key);
         if (res == null) {
             throw new RuntimeException("No such key: " + key);
         }

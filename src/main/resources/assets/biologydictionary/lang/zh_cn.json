@@ -67,6 +67,8 @@
   "property_widget.biologydictionary.jump_strength.desc"          : "一般都能跳1米以上",
   "property_widget.biologydictionary.leashable"                   : "是否可被纤绳牵引",
   "property_widget.biologydictionary.leashable.desc"              : "敌对生物通常不可被牵引",
+  "property_widget.biologydictionary.eat_grass"                   : "立即吃草",
+  "property_widget.biologydictionary.eat_grass.desc"              : "让绵羊立刻乖乖低头吃草",
   "property_widget.biologydictionary.screaming_goat"              : "是否为尖叫山羊",
   "property_widget.biologydictionary.screaming_goat.desc"         : "呃啊啊啊啊啊啊啊啊！！！！！！",
   "property_widget.biologydictionary.bounding_box"                : "碰撞箱（X Y Z）",
@@ -159,6 +161,7 @@
   "text.biologydictionary.experience_points_cost": "经验值消耗：%d点",
   "text.biologydictionary.experience_levels_cost": "经验等级消耗：%d级",
   "text.biologydictionary.offer_or_drop": "%s已发放到你的背包",
+  "text.biologydictionary.target_entity_no_ability": "目标生物无此能力：%s",
 
   "text.biologydictionary.no_data_with_brackets": "（无数据）",
   "text.biologydictionary.none_with_brackets": "（无）",
@@ -172,6 +175,7 @@
   "text.biologydictionary.not_owner_no_permission_to_gift": "非所有者，没有赠与权限",
   "text.biologydictionary.no_block_to_locate": "没有可定位的方块",
   "text.biologydictionary.no_block_to_clear": "没有可清除的方块",
+  "text.biologydictionary.sheep_no_grass_under_feet": "脚下无草可吃",
   "text.biologydictionary.villager_no_job_site": "该村民无工作站点",
   "text.biologydictionary.villager_too_far_from_job_site": "该村民离工作站点太远了",
 
