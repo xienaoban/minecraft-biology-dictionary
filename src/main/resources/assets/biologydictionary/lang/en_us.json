@@ -67,6 +67,8 @@
   "property_widget.biologydictionary.jump_strength.desc"          : "Generally more than 1 meter",
   "property_widget.biologydictionary.leashable"                   : "Is Leashable",
   "property_widget.biologydictionary.leashable.desc"              : "Hostile mobs are usually not leashable",
+  "property_widget.biologydictionary.eat_grass"                   : "Eat Grass Now",
+  "property_widget.biologydictionary.eat_grass.desc"              : "Force the sheep eat grass at once",
   "property_widget.biologydictionary.screaming_goat"              : "Is Screaming Goat",
   "property_widget.biologydictionary.screaming_goat.desc"         : "Ahhhhhh!!!!!!!!!",
   "property_widget.biologydictionary.bounding_box"                : "Bounding Box (X Y Z)",
@@ -159,6 +161,7 @@
   "text.biologydictionary.experience_points_cost": "Experience points cost: %d",
   "text.biologydictionary.experience_levels_cost": "Experience levels cost: %d",
   "text.biologydictionary.offer_or_drop": "%s is offered to you",
+  "text.biologydictionary.target_entity_no_ability": "The target entity has no ability: %s",
 
   "text.biologydictionary.no_data_with_brackets": "(No Data)",
   "text.biologydictionary.none_with_brackets": "(None)",
@@ -172,6 +175,7 @@
   "text.biologydictionary.not_owner_no_permission_to_gift": "Non-owners do not have the permission to gift",
   "text.biologydictionary.no_block_to_locate": "No block to locate",
   "text.biologydictionary.no_block_to_clear": "No block to clear",
+  "text.biologydictionary.sheep_no_grass_under_feet": "No grass under the beet to eat",
   "text.biologydictionary.villager_no_job_site": "The Villager has no job site",
   "text.biologydictionary.villager_too_far_from_job_site": "The villager is too far from the job site",
 

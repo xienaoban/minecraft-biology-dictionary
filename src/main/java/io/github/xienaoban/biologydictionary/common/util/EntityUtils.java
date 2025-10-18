@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.common.util;
 
 import io.github.xienaoban.biologydictionary.mixin.EntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.HorseIMixin;
+import io.github.xienaoban.biologydictionary.mixin.MobIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -18,6 +19,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.horse.Horse;
@@ -169,9 +173,9 @@ public final class EntityUtils {
 
     public static CompoundTag getNbt(Entity entity) {
         TagValueOutput tagOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
-        // A bug in 1.21.8: If leash the mob and then cancel the leash,
+        // TODO: A bug in 1.21.8: If leash the mob and then cancel the leash,
         // `this.writeLeashData(valueOutput, this.leashData);` will fail.
-        // Let's see if Mojang will fix it. todo
+        // Let's see if Mojang will fix it.
         entity.saveWithoutId(tagOut);
         return tagOut.buildResult();
     }
@@ -277,6 +281,43 @@ public final class EntityUtils {
 
     public static void setInWater(Entity entity, boolean inWater) {
         ((EntityIMixin) entity).setWasTouchingWater(inWater);
+    }
+
+    public static GoalSelector getGoalSelector(Mob entity) {
+        return ((MobIMixin) entity).getGoalSelector();
+    }
+
+    public static WrappedGoal getWrappedGoal(Mob entity, Class<? extends Goal> goalClass) {
+        for (WrappedGoal wrappedGoal : getGoalSelector(entity).getAvailableGoals()) {
+            if (wrappedGoal.getGoal().getClass() == goalClass) {
+                return wrappedGoal;
+            }
+        }
+        return null;
+    }
+
+    public static List<WrappedGoal> getWrappedGoals(Mob entity, Class<? extends Goal> goalClass) {
+        List<WrappedGoal> res = new ArrayList<>();
+        for (WrappedGoal wrappedGoal : getGoalSelector(entity).getAvailableGoals()) {
+            if (wrappedGoal.getGoal().getClass() == goalClass) {
+                res.add(wrappedGoal);
+            }
+        }
+        return res;
+    }
+
+    public static <G extends Goal> G getGoal(Mob entity, Class<G> goalClass) {
+        WrappedGoal wrappedGoal = getWrappedGoal(entity, goalClass);
+        if (wrappedGoal == null) { return null; }
+        return Misc.cast(wrappedGoal.getGoal());
+    }
+
+    public static <G extends Goal> List<G> getGoals(Mob entity, Class<G> goalClass) {
+        List<G> res = new ArrayList<>();
+        for (WrappedGoal wrappedGoal : getWrappedGoals(entity, goalClass)) {
+            res.add(Misc.cast(wrappedGoal.getGoal()));
+        }
+        return res;
     }
 
     /**

@@ -11,7 +11,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.world.entity.animal.goat.Goat;
 
 public class GoatScreamingWidget extends EntityPropertyStandardWidget<Goat> {
-    private static final int L = 19, T = 2;
+    private static final int L = 20, T = 2;
 
     private final boolean screaming = e().isScreamingGoat();
 
