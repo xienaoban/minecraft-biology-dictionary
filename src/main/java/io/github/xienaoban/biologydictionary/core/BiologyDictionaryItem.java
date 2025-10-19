@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.server.ItemRegistry;
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.mixin.CustomDataIMixin;
 import io.github.xienaoban.biologydictionary.mixin.MinecraftMixin;
@@ -11,12 +12,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.network.Filterable;
+import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.WritableBookContent;
+import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
@@ -36,6 +42,41 @@ public final class BiologyDictionaryItem {
     public static final String ID = BiologyDictionary.MOD_ID;
 
     private static final CompoundTag ID_TAG = initIdTag();
+
+    public static void init() {
+        ItemRegistry.register(CreativeModeTabs.TOOLS_AND_UTILITIES, createBook());
+    }
+
+    /**
+     * The probability of the trade offer decreases as the in-game time progresses.
+     * After 2 real-world days have passed, or approximately 10 spawns of wandering
+     * traders, the probability will stabilize at 20%.
+     * <p>
+     * On average, a wandering trader will spawn approximately every 14.325 in-game
+     * days (286.5 minutes).
+     * <p>
+     * real_world_days = 2
+     * total_ticks = 2 * 24 * 60 * 60 * 20 = 3456000
+     * ticks_per_game_day = 20 * 60 * 20 = 24000
+     * game_days = 3456000 / 24000 = 144
+     * spawn_count = 144 / 14.325 = 10
+     *
+     * @see net.minecraft.world.entity.npc.VillagerTrades
+     */
+    public static void addToWanderingTraderTrades(WanderingTrader entity) {
+        final int maxTicks = 2 * 24 * 60 * 60 * 20;
+        int r = entity.getRandom().nextInt(maxTicks + (maxTicks >> 2));
+        int t = (int) Math.min(entity.level().getDayTime(), maxTicks);
+        if (r < t) { return; }
+
+        final int cost = 64;
+        final int maxUses = 3;
+        final int villagerXp = 0;
+        final float priceMultiplier = 0.05F;
+        MerchantOffers offers = entity.getOffers();
+        MerchantOffer offer = new MerchantOffer(new ItemCost(Items.EMERALD, cost), createBook(), maxUses, villagerXp, priceMultiplier);
+        offers.add(offer);
+    }
 
     public static ItemStack createBook() {
         return createWritableBook();

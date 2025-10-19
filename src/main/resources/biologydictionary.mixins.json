@@ -12,7 +12,8 @@
     "HorseIMixin",
     "MobEffectInstanceIMixin",
     "MobIMixin",
-    "TemptGoalIMixin"
+    "TemptGoalIMixin",
+    "WanderingTraderMixin"
   ],
   "client": [
     "ItemInHandRendererMixin",

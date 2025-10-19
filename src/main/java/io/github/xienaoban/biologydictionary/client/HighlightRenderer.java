@@ -2,7 +2,6 @@ package io.github.xienaoban.biologydictionary.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.RenderUtils;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import net.minecraft.client.DeltaTracker;
@@ -50,7 +49,7 @@ public final class HighlightRenderer {
                                      Vec3 camera, PoseStack poseStack,
                                      LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector) {
         float tickDelta = deltaTracker.getGameTimeDeltaPartialTick(!tickRateManager.isEntityFrozen(entity));
-        EntityRenderState entityRenderState = EntityUtils.createRenderState(entityRenderDispatcher, entity, tickDelta);
+        EntityRenderState entityRenderState = RenderUtils.createRenderState(entityRenderDispatcher, entity, tickDelta);
         RenderUtils.renderBodyOnly(entityRenderState);
         entityRenderState.outlineColor = Colors.HIGHLIGHT_DEFAULT_COLOR;
         entityRenderDispatcher.submit(

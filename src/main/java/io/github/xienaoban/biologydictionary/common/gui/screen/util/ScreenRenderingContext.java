@@ -7,7 +7,7 @@ import io.github.xienaoban.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.common.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.RenderUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -449,12 +449,12 @@ public final class ScreenRenderingContext {
         Vector3f vector3f = new Vector3f(0F, entity.getBbHeight() / internalOffset + 0.0625F * sc, 0F);
 
         EntityRenderDispatcher entityRenderDispatcher = getClient().getEntityRenderDispatcher();
-        EntityRenderer<Entity, EntityRenderState> entityRenderer = EntityUtils.getRenderer(entityRenderDispatcher, entity);
+        EntityRenderer<Entity, EntityRenderState> entityRenderer = RenderUtils.getRenderer(entityRenderDispatcher, entity);
         EntityRenderState entityRenderState;
         if (cache != null && cache.entityRenderState != null) {
             entityRenderState = cache.entityRenderState;
         } else {
-            entityRenderState = EntityUtils.createRenderState(entityRenderer);
+            entityRenderState = RenderUtils.createRenderState(entityRenderer);
         }
         entityRenderer.extractRenderState(entity, entityRenderState, 1F);
         entityRenderState.lightCoords = 15728880;

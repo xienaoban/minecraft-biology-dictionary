@@ -149,8 +149,8 @@ public final class FirstPersonShoulderEntityRenderer {
             entity.yBodyRotO = 0;
             entity.setSpeed(0);
 
-            entityRenderer = EntityUtils.getRenderer(entityRenderDispatcher, entity);
-            entityRenderState = EntityUtils.createRenderState(entityRenderer);
+            entityRenderer = RenderUtils.getRenderer(entityRenderDispatcher, entity);
+            entityRenderState = RenderUtils.createRenderState(entityRenderer);
         }
         entities[index] = entity;
         entityRenderers[index] = entityRenderer;
@@ -159,7 +159,7 @@ public final class FirstPersonShoulderEntityRenderer {
 
     private static void extract(int index) {
         EntityRenderState entityRenderState = entityRenderStates[index];
-        EntityUtils.extractRenderState(entityRenderers[index], entities[index], entityRenderState);
+        RenderUtils.extractRenderState(entityRenderers[index], entities[index], entityRenderState);
         RenderUtils.renderBodyOnly(entityRenderState);
     }
 

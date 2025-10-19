@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.common.server.ServerEventRegistry;
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
@@ -35,6 +36,7 @@ public final class BiologyDictionary {
 
         EntityUtils.init();
         ServerNetManager.init();
+        BiologyDictionaryItem.init();
         Skills.init();
 
         ServerEventRegistry.registerStarted(servers::add);
