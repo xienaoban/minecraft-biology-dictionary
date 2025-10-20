@@ -5,19 +5,17 @@ import io.github.xienaoban.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -109,10 +107,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
      */
     protected abstract Component getVariantName(V variant);
 
-    /**
-     * No attention.
-     */
-    protected abstract void writeVariantToNbt(VariantElement element, CompoundTag vanillaNbt, CompoundTag extraNbt);
+    protected abstract boolean activeSkill(V variant);
 
     protected boolean isAllowedToChoose() { return player.isCreative(); }
 
@@ -297,16 +292,14 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 if (isAllowedToChoose()) {
-                    chosenIndex = index;
-                    E m = p().getModel();
-                    if (m != null) {
-                        p().setNoUpdateCooldown();
-                        setVariantClient(m, getChosenVariant());
+                    if (activeSkill(getVariant())) {
+                        chosenIndex = index;
+                        E m = p().getModel();
+                        if (m != null) {
+                            p().setNoUpdateCooldown();
+                            setVariantClient(m, getChosenVariant());
+                        }
                     }
-                    CompoundTag v = new CompoundTag();
-                    CompoundTag e = new CompoundTag();
-                    writeVariantToNbt(this, v, e);
-                    ClientNetManager.sendUpdatedEntityPropertiesOld(e(), v, e);
                 }
             }
             return super.onMouseDown(x, y, code);

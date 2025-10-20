@@ -70,10 +70,6 @@ public final class VanillaEntityProperties {
         void create(Map<String, EntityProperty<?>> map);
     }
 
-    static {
-        init();
-    }
-
     private static void r(Class<? extends Entity> clazz, Creator registry) {
         registries.put(clazz, registry);
     }
@@ -92,7 +88,7 @@ public final class VanillaEntityProperties {
         }
     }
 
-    private static void init() {
+    static void init() {
         r(Entity.class, new OfEntity());
         r(LivingEntity.class, new OfLivingEntity());
         r(Avatar.class, new OfAvatar());

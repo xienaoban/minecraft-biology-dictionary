@@ -30,7 +30,9 @@ public interface EntityProperty<E extends Entity> {
      *
      * @param entity Minecraft entity
      */
-    default void getFrom(E entity) {}
+    default void getFrom(E entity) {
+        throw new AssertionError();
+    }
 
     /**
      * Write the property value to the entity.
@@ -39,5 +41,7 @@ public interface EntityProperty<E extends Entity> {
      *
      * @param entity Minecraft entity
      */
-    default void setTo(E entity) {}
+    default void setTo(E entity) {
+        throw new AssertionError();
+    }
 }

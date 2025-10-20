@@ -245,7 +245,7 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
         TimelineEntry[] timeline;
         if (e().isBaby()) {
             timeline = BABY_ZERO;
-        } else if (e().getVillagerData().profession() == VillagerProfession.NONE) {
+        } else if (e().getVillagerData().profession() == VillagerProfession.NONE) { // TODO:
             timeline = ADULT_WITHOUT_JOB_ZERO;
         } else {
             timeline = ADULT_WITH_JOB_ZERO;

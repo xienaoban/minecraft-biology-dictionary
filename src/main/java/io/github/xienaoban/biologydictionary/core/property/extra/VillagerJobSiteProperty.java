@@ -14,7 +14,6 @@ public class VillagerJobSiteProperty extends GlobalPosProperty<Villager> {
 
     @Override
     public void getFrom(Villager entity) {
-        super.getFrom(entity);
         Optional<GlobalPos> globalPos = entity.getBrain().getMemory(MemoryModuleType.JOB_SITE);
         set(globalPos.orElse(null));
     }

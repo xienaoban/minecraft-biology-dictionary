@@ -18,7 +18,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 /**
  * @see net.minecraft.world.entity.variant.VariantUtils
  */
-public class VariantProperty<E extends Entity, T> extends AbstractProperty<E, Holder<T>> {
+public final class VariantProperty<E extends Entity, T> extends AbstractProperty<E, Holder<T>> {
     private final ResourceKey<Registry<T>> resourceKey;
 
     public VariantProperty(ResourceKey<Registry<T>> resourceKey) {
@@ -35,7 +35,7 @@ public class VariantProperty<E extends Entity, T> extends AbstractProperty<E, Ho
         Optional<Holder<T>> o1 = nbt.read(name(), ResourceLocation.CODEC)
                 .map(resourceLocation -> ResourceKey.create(resourceKey, resourceLocation))
                 .flatMap(key -> {
-                    Level level = BD.justGiveMeALevel();
+                    Level level = BD.justGiveMeALevel(); // TODO: Thread local level
                     if (level == null) { return Optional.empty(); }
                     return level.registryAccess().get(key);
                 });
