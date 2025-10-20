@@ -50,8 +50,8 @@ public record RequestCommonSkillPacket(String skillKey, Tag args) implements Pac
     public static RequestCommonSkillPacket of(String skillKey, Object... args) {
         try {
             GeneralSkill skill = Skills.getCommonSkill(skillKey);
-            Tag tagArgs = skill.clientSend(ClientUtils.getClientPlayer(), args);
-            return new RequestCommonSkillPacket(skillKey, tagArgs);
+            Tag nbtArgs = skill.clientSend(ClientUtils.getClientPlayer(), args);
+            return new RequestCommonSkillPacket(skillKey, nbtArgs);
         } catch (NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
         } catch (Exception e) {

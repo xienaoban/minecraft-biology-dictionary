@@ -61,8 +61,8 @@ public record RequestEntityOrientedSkillPacket(String skillKey, int entityId, Ta
     public static RequestEntityOrientedSkillPacket of(String skillKey, Entity entity, Object... args) {
         try {
             EntityTargetedSkill<?> skill = Skills.getEntityOrientedSkill(skillKey);
-            Tag tagArgs = skill.clientSend(ClientUtils.getClientPlayer(), Misc.cast(entity), args);
-            return new RequestEntityOrientedSkillPacket(skillKey, entity.getId(), tagArgs);
+            Tag nbtArgs = skill.clientSend(ClientUtils.getClientPlayer(), Misc.cast(entity), args);
+            return new RequestEntityOrientedSkillPacket(skillKey, entity.getId(), nbtArgs);
         } catch (NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
         } catch (Exception e) {

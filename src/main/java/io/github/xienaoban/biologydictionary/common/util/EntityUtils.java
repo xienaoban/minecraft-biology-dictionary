@@ -158,28 +158,28 @@ public final class EntityUtils {
     // ============================================================================ //
 
     /**
-     * NBT uses {@code tag.contains(key) == false} to represent null tag, rather than
-     * using {@code tag[key] = null}.
-     * Therefore, merging NBT cannot handle cases where the tag is null.
-     * So we have to remove the key from NBT to represent the null tag.
+     * NBT uses {@code nbt.contains(key) == false} to represent null nbt, rather than
+     * using {@code nbt[key] = null}.
+     * Therefore, merging NBT cannot handle cases where the nbt is null.
+     * So we have to remove the key from NBT to represent the null nbt.
      *
-     * @deprecated Just use {@code tag[key] = new CompoundTag()} to represent null.
+     * @deprecated Just use {@code nbt[key] = new CompoundTag()} to represent null.
      */
     @Deprecated
     public static final String NBT_TO_RM_KEY = ".biologydictionary-remove$";
 
     public static CompoundTag getNbt(Entity entity) {
-        TagValueOutput tagOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
+        TagValueOutput nbtOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
         // TODO: A bug in 1.21.8: If leash the mob and then cancel the leash,
         // `this.writeLeashData(valueOutput, this.leashData);` will fail.
         // Let's see if Mojang will fix it.
-        entity.saveWithoutId(tagOut);
-        return tagOut.buildResult();
+        entity.saveWithoutId(nbtOut);
+        return nbtOut.buildResult();
     }
 
     public static void setNbt(Entity entity, CompoundTag nbt) {
-        TagValueInput tagIn = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, entity.registryAccess(), nbt);
-        entity.load(tagIn);
+        TagValueInput nbtIn = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, entity.registryAccess(), nbt);
+        entity.load(nbtIn);
     }
 
     public static void mergeNbt(Entity entity, CompoundTag nbt) {
@@ -194,8 +194,8 @@ public final class EntityUtils {
         ListTag list = (ListTag) nbt.get(NBT_TO_RM_KEY);
         if (list != null) {
             nbt.remove(NBT_TO_RM_KEY);
-            for (Tag tag : list) {
-                String key = ((StringTag) tag).value();
+            for (Tag nbt2 : list) {
+                String key = ((StringTag) nbt2).value();
                 nbt.remove(key);
             }
         }
@@ -212,35 +212,35 @@ public final class EntityUtils {
     }
 
     public static CompoundTag getNbtToDisplay(Entity entity) {
-        CompoundTag tag = EntityUtils.getNbt(entity);
-        return adaptNbtToDisplay(entity, tag);
+        CompoundTag nbt = EntityUtils.getNbt(entity);
+        return adaptNbtToDisplay(entity, nbt);
     }
 
-    public static CompoundTag adaptNbtToDisplay(Entity entity, CompoundTag tag) {
-        tag.remove("AngryAt");
-        tag.remove("CustomName");
-        tag.remove("CustomNameVisible");
-        tag.remove("Dimension");
-        tag.remove("HurtTime");
-        tag.remove("Pos");
-        tag.remove("Rotation");
+    public static CompoundTag adaptNbtToDisplay(Entity entity, CompoundTag nbt) {
+        nbt.remove("AngryAt");
+        nbt.remove("CustomName");
+        nbt.remove("CustomNameVisible");
+        nbt.remove("Dimension");
+        nbt.remove("HurtTime");
+        nbt.remove("Pos");
+        nbt.remove("Rotation");
 
         if (entity instanceof LivingEntity) {
-            tag.remove("Brain");
-            tag.remove("SleepingX");
-            tag.remove("SleepingY");
-            tag.remove("SleepingZ");
+            nbt.remove("Brain");
+            nbt.remove("SleepingX");
+            nbt.remove("SleepingY");
+            nbt.remove("SleepingZ");
         }
 
         if (entity instanceof AbstractClientPlayer) {
-            tag.remove("Inventory");
+            nbt.remove("Inventory");
         } else if (entity instanceof Dolphin) {
-            tag.remove("GotFish");
+            nbt.remove("GotFish");
         } else if (entity instanceof Camel) {
-            tag.remove("LastPoseTick");
+            nbt.remove("LastPoseTick");
         }
 
-        return tag;
+        return nbt;
     }
 
     // ============================================================================ //

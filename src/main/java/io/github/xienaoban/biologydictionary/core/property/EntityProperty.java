@@ -43,8 +43,8 @@ public interface EntityProperty<E extends Entity> {
      * @see Entity#readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput
      */
     default void setTo(E entity) {
-        CompoundTag tag = new CompoundTag();
-        writeTo(tag);
-        EntityUtils.mergeNbt(entity, tag);
+        CompoundTag nbt = new CompoundTag();
+        writeTo(nbt);
+        EntityUtils.mergeNbt(entity, nbt);
     }
 }
