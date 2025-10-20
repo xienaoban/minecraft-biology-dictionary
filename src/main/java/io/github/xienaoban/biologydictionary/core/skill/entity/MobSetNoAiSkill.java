@@ -72,18 +72,18 @@ public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
     public void serverReceive(MinecraftServer server, ServerPlayer player, Mob entity, Tag args) {
         boolean noAi = args.asBoolean().orElseThrow();
         check(player, entity);
-        CompoundTag tag = VanillaEntityProperties.OfMob.createNoAiProperty().withVal(noAi).toTag();
+        CompoundTag nbt = VanillaEntityProperties.OfMob.createNoAiProperty().withVal(noAi).toTag();
 
         // Clear the motion caused by collisions accumulated during the AI-disabled period
         // to prevent the entity from flying around randomly.
-        VanillaEntityProperties.OfEntity.createMotionProperty().withVal(Vec3.ZERO).writeTo(tag);
+        VanillaEntityProperties.OfEntity.createMotionProperty().withVal(Vec3.ZERO).writeTo(nbt);
 
         // Set the entity without AI to be invulnerable to avoid disrupting the balance of Survival Mode.
         if (!PlayerUtils.isCreative(player)) {
-            VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(noAi).writeTo(tag);
+            VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(noAi).writeTo(nbt);
         }
 
         Skills.giveExperienceLevelsIfNotCreative(player, -experienceLevelsCost(entity));
-        EntityUtils.mergeNbt(entity, tag);
+        EntityUtils.mergeNbt(entity, nbt);
     }
 }

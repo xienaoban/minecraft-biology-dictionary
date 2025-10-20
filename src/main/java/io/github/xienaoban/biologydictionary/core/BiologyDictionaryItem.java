@@ -41,7 +41,7 @@ public final class BiologyDictionaryItem {
     // Any writable book with this nbt key will be recognized as a biology dictionary.
     public static final String ID = BiologyDictionary.MOD_ID;
 
-    private static final CompoundTag ID_TAG = initIdTag();
+    private static final CompoundTag ID_NBT = initIdNbt();
 
     public static void init() {
         ItemRegistry.register(CreativeModeTabs.TOOLS_AND_UTILITIES, createBook());
@@ -92,7 +92,7 @@ public final class BiologyDictionaryItem {
     private static ItemStack createWritableBook() {
         ItemStack stack = new ItemStack(Items.WRITABLE_BOOK);
 
-        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(ID_TAG));
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(ID_NBT));
         stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of("biologydictionary:handbook"), List.of()));
         stack.set(DataComponents.ITEM_NAME, Component.translatable(Lang.BIOLOGY_DICTIONARY_TITLE).withStyle(
                 Style.EMPTY.withColor(TextColor.parseColor("aqua").getOrThrow())
@@ -110,10 +110,10 @@ public final class BiologyDictionaryItem {
         return stack;
     }
 
-    private static CompoundTag initIdTag() {
-        CompoundTag tag = new CompoundTag();
-        tag.putString(ID, DevUtils.getModVersion(BiologyDictionary.MOD_ID));
-        return tag;
+    private static CompoundTag initIdNbt() {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putString(ID, DevUtils.getModVersion(BiologyDictionary.MOD_ID));
+        return nbt;
     }
 
     private static String createWritablePageString() {

@@ -108,8 +108,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             if (isMouseLeft(code)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 ArrayList<Widget> tags = new ArrayList<>();
-                group.dfsTags((tag, depth) -> {
-                    tags.add(new TagCatalog(depth, tag));
+                group.dfsTags((nbt, depth) -> {
+                    tags.add(new TagCatalog(depth, nbt));
                     return true;
                 });
                 tags.addFirst(new DescriptionWidget(1, Page.COLUMNS, group.getDescription()));

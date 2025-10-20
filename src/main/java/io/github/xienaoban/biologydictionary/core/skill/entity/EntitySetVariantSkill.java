@@ -40,7 +40,7 @@ public class EntitySetVariantSkill implements EntityTargetedSkill<Entity> {
 
         ListTag res = new ListTag();
         res.add(IntTag.valueOf(variantHandlerIdx));
-        res.add(variantHandler.variantToTag(variant));
+        res.add(variantHandler.variantToNbt(variant));
         return res;
     }
 
@@ -51,7 +51,7 @@ public class EntitySetVariantSkill implements EntityTargetedSkill<Entity> {
 
         EntityVariantPropertyBundle.VariantHandler<Entity, Object> variantHandler
                 = Misc.cast(EntityVariantPropertyBundle.getEntries(entity).get(variantHandlerIdx));
-        Object variant = variantHandler.tagToVariant(tmp.getLast());
+        Object variant = variantHandler.nbtToVariant(tmp.getLast());
 
         Permissions.checkPlayerCreative(player);
 

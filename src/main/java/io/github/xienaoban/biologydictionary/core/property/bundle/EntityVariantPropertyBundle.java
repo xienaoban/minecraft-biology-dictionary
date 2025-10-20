@@ -63,8 +63,8 @@ public final class EntityVariantPropertyBundle {
         List<V> getVariants();
         V getVariant(E entity);
         void setVariant(E entity, V variant);
-        Tag variantToTag(V variant);
-        V tagToVariant(Tag tag);
+        Tag variantToNbt(V variant);
+        V nbtToVariant(Tag nbt);
         String getVariantName(V variant);
     }
 
@@ -82,13 +82,13 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        default Tag variantToTag(V variant) {
+        default Tag variantToNbt(V variant) {
             return createProperty().withVal(variant).toTag();
         }
 
         @Override
-        default V tagToVariant(Tag tag) {
-            return createProperty().withTag((CompoundTag) tag).getVal();
+        default V nbtToVariant(Tag nbt) {
+            return createProperty().withTag((CompoundTag) nbt).getVal();
         }
     }
 
@@ -167,13 +167,13 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToTag(Holder<VillagerType> variant) {
+        public Tag variantToNbt(Holder<VillagerType> variant) {
             return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).withVal(variant).toTag();
         }
 
         @Override
-        public Holder<VillagerType> tagToVariant(Tag tag) {
-            return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).withTag((CompoundTag) tag).getVal();
+        public Holder<VillagerType> nbtToVariant(Tag nbt) {
+            return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).withTag((CompoundTag) nbt).getVal();
         }
 
         @Override
@@ -210,13 +210,13 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToTag(net.minecraft.world.entity.animal.horse.Variant variant) {
+        public Tag variantToNbt(net.minecraft.world.entity.animal.horse.Variant variant) {
             return IntTag.valueOf(variant.getId());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.horse.Variant tagToVariant(Tag tag) {
-            return net.minecraft.world.entity.animal.horse.Variant.byId(tag.asInt().orElse(0));
+        public net.minecraft.world.entity.animal.horse.Variant nbtToVariant(Tag nbt) {
+            return net.minecraft.world.entity.animal.horse.Variant.byId(nbt.asInt().orElse(0));
         }
 
         @Override
@@ -244,13 +244,13 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToTag(net.minecraft.world.entity.animal.horse.Markings variant) {
+        public Tag variantToNbt(net.minecraft.world.entity.animal.horse.Markings variant) {
             return IntTag.valueOf(variant.getId());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.horse.Markings tagToVariant(Tag tag) {
-            return net.minecraft.world.entity.animal.horse.Markings.byId(tag.asInt().orElse(0));
+        public net.minecraft.world.entity.animal.horse.Markings nbtToVariant(Tag nbt) {
+            return net.minecraft.world.entity.animal.horse.Markings.byId(nbt.asInt().orElse(0));
         }
 
         @Override
@@ -279,13 +279,13 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToTag(Panda.Gene variant) {
+        public Tag variantToNbt(Panda.Gene variant) {
             return VanillaEntityProperties.OfPanda.createMainGeneProperty().withVal(variant).toTag();
         }
 
         @Override
-        public Panda.Gene tagToVariant(Tag tag) {
-            return VanillaEntityProperties.OfPanda.createMainGeneProperty().withTag((CompoundTag) tag).getVal();
+        public Panda.Gene nbtToVariant(Tag nbt) {
+            return VanillaEntityProperties.OfPanda.createMainGeneProperty().withTag((CompoundTag) nbt).getVal();
         }
 
         @Override
@@ -307,13 +307,13 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToTag(Panda.Gene variant) {
+        public Tag variantToNbt(Panda.Gene variant) {
             return VanillaEntityProperties.OfPanda.createHiddenGeneProperty().withVal(variant).toTag();
         }
 
         @Override
-        public Panda.Gene tagToVariant(Tag tag) {
-            return VanillaEntityProperties.OfPanda.createHiddenGeneProperty().withTag((CompoundTag) tag).getVal();
+        public Panda.Gene nbtToVariant(Tag nbt) {
+            return VanillaEntityProperties.OfPanda.createHiddenGeneProperty().withTag((CompoundTag) nbt).getVal();
         }
     }
 }
