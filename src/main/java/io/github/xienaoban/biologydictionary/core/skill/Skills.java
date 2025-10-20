@@ -21,6 +21,7 @@ public final class Skills {
         register(new HighlightEntitiesSkill());
         register(new GetSpawnEggSkill());
 
+        register(new EntitySetVariantSkill());
         register(new EntitySetInvulnerableSkill());
         register(new EntitySetSoundSkill());
         register(new EntitySetPortalCooldownSkill());

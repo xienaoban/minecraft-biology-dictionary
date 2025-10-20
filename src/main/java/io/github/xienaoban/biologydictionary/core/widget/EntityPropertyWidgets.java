@@ -111,8 +111,7 @@ public final class EntityPropertyWidgets {
         r(GoatScreamingWidget.class);
         r(EntityBoundingBoxWidget.class);
         r(TurnPageTriggerWidget.class);
-        r(EntityVariantStandardWidget.class);
-        r(HorseVariantWidget.class);
+        r(EntityStandardVariantWidget.class);
         r(HorseMarkingsWidget.class);
         r(PandaMainGeneWidget.class);
         r(PandaHiddenGeneWidget.class);

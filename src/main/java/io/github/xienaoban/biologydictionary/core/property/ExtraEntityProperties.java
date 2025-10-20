@@ -17,17 +17,13 @@ final class ExtraEntityProperties {
 
     static final Map<Class<? extends Entity>, List<Creator>> registries = new HashMap<>();
 
-    private static MethodHandles.Lookup lookup;
-
     @FunctionalInterface
     interface Creator {
         EntityProperty<?> create();
     }
 
-    static {
-        lookup = MethodHandles.lookup();
+    static void init() {
         registerBuiltIn();
-        lookup = null;
     }
 
     static void r(Class<? extends EntityProperty<? extends Entity>> propertyClazz) {
@@ -38,7 +34,7 @@ final class ExtraEntityProperties {
                 throw new AssertionError(propertyClazz + " must be started with \"" + entityClazz.getSimpleName() + "\"!");
             }
 
-            MethodHandle constructor = lookup.findConstructor(propertyClazz, MethodType.methodType(void.class));
+            MethodHandle constructor = MethodHandles.lookup().findConstructor(propertyClazz, MethodType.methodType(void.class));
             registries.computeIfAbsent(entityClazz, c -> new ArrayList<>())
                     .add(() -> {
                         try {
