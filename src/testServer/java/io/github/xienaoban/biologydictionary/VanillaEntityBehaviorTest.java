@@ -2,7 +2,6 @@ package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
@@ -41,9 +40,7 @@ public class VanillaEntityBehaviorTest {
         chicken.setBaby(true);
         helper.assertTrue(chicken.isBaby(), Component.literal("setBaby() not work?"));
 
-        IntProperty<AgeableMob> forcedAgeProperty = VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty();
-        forcedAgeProperty.set(AgeableMob.BABY_START_AGE);
-        EntityUtils.mergeNbt(chicken, forcedAgeProperty.toNbt());
+        VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty().withVal(AgeableMob.BABY_START_AGE).setTo(chicken);
         helper.assertTrue(chicken.getForcedAge() == AgeableMob.BABY_START_AGE, Component.literal("Fail to set NBT of forcedAge?"));
 
         helper.getLevel().addFreshEntity(chicken);

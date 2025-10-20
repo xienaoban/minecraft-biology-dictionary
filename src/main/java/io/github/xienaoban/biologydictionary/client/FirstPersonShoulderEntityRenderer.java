@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -137,8 +136,7 @@ public final class FirstPersonShoulderEntityRenderer {
         }
         else {
             Parrot parrot = EntityUtils.create(EntityType.PARROT, player.level());
-            CompoundTag nbt = VanillaEntityProperties.OfParrot.createVariantProperty().toNbtWith(optionalVariant.get());
-            EntityUtils.mergeNbt(parrot, nbt);
+            VanillaEntityProperties.OfParrot.createVariantProperty().withVal(optionalVariant.get()).setTo(parrot);
 
             entity = parrot;
             entity.setYRot(0);

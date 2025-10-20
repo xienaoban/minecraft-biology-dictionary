@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property;
 
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
@@ -25,23 +26,25 @@ public interface EntityProperty<E extends Entity> {
 
     /**
      * Read the property value from the entity.
-     * This method is only used by extra property to read the server-side entity member variables. Because values of
-     * vanilla properties are read automatically through {@link Entity#addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput)}.
+     * The default implementation is based on vanilla properties.
      *
      * @param entity Minecraft entity
+     * @see Entity#addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput
      */
     default void getFrom(E entity) {
-        throw new AssertionError();
+        readFrom(EntityUtils.getNbt(entity));
     }
 
     /**
      * Write the property value to the entity.
-     * This method is only used by extra property to write the server-side entity member variables. Because values of
-     * vanilla properties are written automatically through {@link Entity#readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput)}.
+     * The default implementation is based on vanilla properties.
      *
      * @param entity Minecraft entity
+     * @see Entity#readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput
      */
     default void setTo(E entity) {
-        throw new AssertionError();
+        CompoundTag tag = new CompoundTag();
+        writeTo(tag);
+        EntityUtils.mergeNbt(entity, tag);
     }
 }

@@ -46,13 +46,13 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        Integer ageOpt = ageProperty.get();
+        Integer ageOpt = ageProperty.getVal();
         if (ageOpt == null) {
             return;
         }
         int age = ageOpt;
         if (age > BREED_COOLDOWN_OFF) {
-            ageProperty.set(age - 1);
+            ageProperty.setVal(age - 1);
         }
     }
 
@@ -72,8 +72,8 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer ageOpt = ageProperty.get();
-            Integer forcedAgeOpt = forcedAgeProperty.get();
+            Integer ageOpt = ageProperty.getVal();
+            Integer forcedAgeOpt = forcedAgeProperty.getVal();
             if (ageOpt == null || forcedAgeOpt == null) {
                 updatePercent(0);
                 super.onRender(ctx);
@@ -113,7 +113,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            Integer forcedAgeOpt = forcedAgeProperty.get();
+            Integer forcedAgeOpt = forcedAgeProperty.getVal();
             if (forcedAgeOpt == null) {
                 return true;
             }
@@ -132,8 +132,8 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                 }
 
                 if (AgeableMobSetForcedAgeSkill.activate(e(), newForcedAge, BREED_COOLDOWN_MAX)) {
-                    forcedAgeProperty.set(newForcedAge);
-                    ageProperty.set(BREED_COOLDOWN_MAX);
+                    forcedAgeProperty.setVal(newForcedAge);
+                    ageProperty.setVal(BREED_COOLDOWN_MAX);
                 }
             }
             return super.onMouseDown(x, y, code);
@@ -145,7 +145,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                 // Treat adult as locked as it will never change state.
                 setTextureLeftOffset(10);
             } else {
-                Integer forcedAge = forcedAgeProperty.get();
+                Integer forcedAge = forcedAgeProperty.getVal();
                 if (forcedAge != null && forcedAge > BREED_COOLDOWN_OFF) {
                     setTextureLeftOffset(10);
                 } else {

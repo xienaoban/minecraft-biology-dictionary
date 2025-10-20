@@ -15,7 +15,6 @@ public final class PacketPayloads {
             ReplyEntityDataPacket.class,
             RequestCommonSkillPacket.class,
             RequestEntityOrientedSkillPacket.class,
-            SendUpdatedEntityPropertiesOldPacket.class,
             ReplyHighlightEntitiesPacket.class
     );
 }

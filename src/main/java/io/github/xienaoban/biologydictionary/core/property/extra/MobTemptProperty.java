@@ -22,7 +22,7 @@ public final class MobTemptProperty extends ItemStackListProperty<Mob> {
     public void getFrom(Mob entity) {
         List<Predicate<ItemStack>> predicates = getPredicates(entity);
         if (predicates.isEmpty()) {
-            set(Collections.emptyList());
+            setVal(Collections.emptyList());
         } else {
             List<ItemStack> res = new ArrayList<>();
             for (Item item : BuiltInRegistries.ITEM) {
@@ -35,7 +35,7 @@ public final class MobTemptProperty extends ItemStackListProperty<Mob> {
                 }
             }
             res.sort(Comparator.comparingInt(o -> BuiltInRegistries.ITEM.getId(o.getItem())));
-            set(res);
+            setVal(res);
         }
     }
 

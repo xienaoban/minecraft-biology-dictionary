@@ -74,12 +74,12 @@ public class VillagerForceRestockSkill implements EntityTargetedSkill<Villager> 
 
         restocksTodayProperty.readFrom(EntityUtils.getNbt(entity));
         jobSiteProperty.getFrom(entity);
-        Integer restocksToday = restocksTodayProperty.get();
-        GlobalPos jobSite = jobSiteProperty.get();
+        Integer restocksToday = restocksTodayProperty.getVal();
+        GlobalPos jobSite = jobSiteProperty.getVal();
         checkVillagerHasJobSite(restocksToday, jobSite);
         checkVillagerCloseToJobSite(entity, jobSite);
 
-        int emeralds = emeraldsNeeded(restocksTodayProperty.get());
+        int emeralds = emeraldsNeeded(restocksTodayProperty.getVal());
         Permissions.checkPlayerCreativeOrInventoryItems(player, new ItemStack(Items.EMERALD, emeralds));
         Permissions.checkPlayerCreativeOrConsumeInventoryItems(player, new ItemStack(Items.EMERALD, emeralds));
 

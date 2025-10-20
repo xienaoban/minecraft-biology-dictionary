@@ -10,13 +10,13 @@ public final class ByteArrayProperty<E extends Entity> extends AbstractProperty<
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        set(nbt.getByteArray(name()).orElse(null));
+        setVal(nbt.getByteArray(name()).orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        if (get() != null) {
-            nbt.putByteArray(name(), get());
+        if (getVal() != null) {
+            nbt.putByteArray(name(), getVal());
         } else {
             throw new IllegalPropertyStateException("array type must not be null");
         }

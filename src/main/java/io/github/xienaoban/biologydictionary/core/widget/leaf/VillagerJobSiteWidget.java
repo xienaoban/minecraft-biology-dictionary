@@ -42,7 +42,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
     }
 
     private float calcDistToJobSite() {
-        GlobalPos jobSitePos = jobSiteProperty.get();
+        GlobalPos jobSitePos = jobSiteProperty.getVal();
         if (jobSitePos == null) { return NO_DIS; }
         if (jobSitePos.dimension() != e().level().dimension()) { return NO_DIS; }
         Vec3 entityPos = e().position();
@@ -61,7 +61,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        GlobalPos currJobSitePos = jobSiteProperty.get();
+        GlobalPos currJobSitePos = jobSiteProperty.getVal();
         if (currJobSitePos != lastJobSitePos) {
             lastJobSitePos = currJobSitePos;
             cachedDistanceToJobSite = calcDistToJobSite();
@@ -106,7 +106,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                GlobalPos currJobSitePos = jobSiteProperty.get();
+                GlobalPos currJobSitePos = jobSiteProperty.getVal();
                 if (currJobSitePos == null) {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_LOCATE));
                     return true;

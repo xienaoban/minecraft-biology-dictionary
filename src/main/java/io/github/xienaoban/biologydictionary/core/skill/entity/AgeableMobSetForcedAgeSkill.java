@@ -2,7 +2,6 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
@@ -41,12 +40,8 @@ public class AgeableMobSetForcedAgeSkill implements EntityTargetedSkill<AgeableM
         Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
 
         CompoundTag nbt = new CompoundTag();
-        IntProperty<AgeableMob> fap = VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty();
-        fap.set(forcedAge);
-        fap.writeTo(nbt);
-        IntProperty<AgeableMob> ap = VanillaEntityProperties.OfAgeableMob.createAgeProperty();
-        ap.set(age);
-        ap.writeTo(nbt);
+        VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty().withVal(forcedAge).writeTo(nbt);
+        VanillaEntityProperties.OfAgeableMob.createAgeProperty().withVal(age).writeTo(nbt);
 
         Skills.giveExperiencePointsIfNotCreative(player, -EXPERIENCE_POINTS_COST);
         EntityUtils.mergeNbt(entity, nbt);
