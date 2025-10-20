@@ -46,8 +46,8 @@ public class WanderingTraderRetainSkill implements EntityTargetedSkill<Wandering
         EntityUtils.playSound(entity, SoundEvents.WANDERING_TRADER_DRINK_MILK);
 
         IntProperty<WanderingTrader> property = VanillaEntityProperties.OfWanderingTrader.createDespawnDelayProperty();
-        property.readFrom(EntityUtils.getNbt(entity));
-        property.set(property.get() + STAY_TICKS);
-        EntityUtils.mergeNbt(entity, property.toNbt());
+        property.getFrom(entity);
+        property.setVal(property.getVal() + STAY_TICKS);
+        property.setTo(entity);
     }
 }

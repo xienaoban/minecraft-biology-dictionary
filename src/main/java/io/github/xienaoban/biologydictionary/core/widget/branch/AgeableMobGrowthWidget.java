@@ -42,13 +42,13 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        Integer ageOpt = ageProperty.get();
+        Integer ageOpt = ageProperty.getVal();
         if (ageOpt == null) {
             return;
         }
         int age = ageOpt;
         if (age < ADULT_MIN_AGE) {
-            ageProperty.set(age + 1);
+            ageProperty.setVal(age + 1);
         }
     }
 
@@ -68,8 +68,8 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer ageOpt = ageProperty.get();
-            Integer forcedAgeOpt = forcedAgeProperty.get();
+            Integer ageOpt = ageProperty.getVal();
+            Integer forcedAgeOpt = forcedAgeProperty.getVal();
             if (ageOpt == null || forcedAgeOpt == null) {
                 if (isAdultClient()) {
                     updatePercent(1F);
@@ -113,7 +113,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            Integer forcedAgeOpt = forcedAgeProperty.get();
+            Integer forcedAgeOpt = forcedAgeProperty.getVal();
             if (forcedAgeOpt == null) {
                 return true;
             }
@@ -132,8 +132,8 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                 }
 
                 if (AgeableMobSetForcedAgeSkill.activate(e(), newForcedAge, BABY_MIN_AGE)) {
-                    forcedAgeProperty.set(newForcedAge);
-                    ageProperty.set(BABY_MIN_AGE);
+                    forcedAgeProperty.setVal(newForcedAge);
+                    ageProperty.setVal(BABY_MIN_AGE);
                 }
             }
             return super.onMouseDown(x, y, code);
@@ -145,7 +145,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                 // Treat adult as locked as it will never change state.
                 setTextureLeftOffset(10);
             } else {
-                Integer forcedAge = forcedAgeProperty.get();
+                Integer forcedAge = forcedAgeProperty.getVal();
                 if (forcedAge != null && forcedAge < ADULT_MIN_AGE) {
                     setTextureLeftOffset(10);
                 } else {

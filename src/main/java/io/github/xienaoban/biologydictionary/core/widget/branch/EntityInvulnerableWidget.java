@@ -29,7 +29,7 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
     }
 
     private boolean isInvulnerable() {
-        Boolean inv = invulnerableProperty.get();
+        Boolean inv = invulnerableProperty.getVal();
         return inv != null && inv;
     }
 
@@ -53,7 +53,7 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
             if (isMouseLeft(code)) {
                 boolean newInv = !isInvulnerable();
                 if (EntitySetInvulnerableSkill.activate(e(), newInv)) {
-                    invulnerableProperty.set(newInv);
+                    invulnerableProperty.setVal(newInv);
                 }
             }
             return true;

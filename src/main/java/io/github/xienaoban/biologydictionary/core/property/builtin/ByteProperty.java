@@ -10,13 +10,13 @@ public final class ByteProperty<E extends Entity> extends AbstractProperty<E, By
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        set(nbt.getByte(name()).orElse(null));
+        setVal(nbt.getByte(name()).orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        if (get() != null) {
-            nbt.putByte(name(), get());
+        if (getVal() != null) {
+            nbt.putByte(name(), getVal());
         } else {
             throw new IllegalPropertyStateException("primitive type must not be null");
         }

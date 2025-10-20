@@ -46,7 +46,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
     }
 
     private float calcDistToHive() {
-        BlockPos hivePos = hivePosProperty.get();
+        BlockPos hivePos = hivePosProperty.getVal();
         if (hivePos == null) { return NO_DIS; }
         Vec3 entityPos = e().position();
         return (float) entityPos.distanceTo(hivePos.getCenter());
@@ -64,7 +64,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        BlockPos currHivePos = hivePosProperty.get();
+        BlockPos currHivePos = hivePosProperty.getVal();
         if (currHivePos != lastHivePos) {
             lastHivePos = currHivePos;
             cachedDistanceToHive = calcDistToHive();
@@ -109,7 +109,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                BlockPos currHivePos = hivePosProperty.get();
+                BlockPos currHivePos = hivePosProperty.getVal();
                 if (currHivePos == null) {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_LOCATE));
                     return true;
@@ -138,13 +138,13 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                BlockPos currHivePos = hivePosProperty.get();
+                BlockPos currHivePos = hivePosProperty.getVal();
                 if (currHivePos == null) {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_CLEAR));
                     return true;
                 }
                 if (BeeClearHiveSkill.activate(e())) {
-                    hivePosProperty.set(null);
+                    hivePosProperty.setVal(null);
                 }
             }
             return true;

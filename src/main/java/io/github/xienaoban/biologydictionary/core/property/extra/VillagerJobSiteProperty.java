@@ -15,13 +15,13 @@ public class VillagerJobSiteProperty extends GlobalPosProperty<Villager> {
     @Override
     public void getFrom(Villager entity) {
         Optional<GlobalPos> globalPos = entity.getBrain().getMemory(MemoryModuleType.JOB_SITE);
-        set(globalPos.orElse(null));
+        setVal(globalPos.orElse(null));
     }
 
     @Override
     public void setTo(Villager entity) {
         super.setTo(entity);
         // TODO: the villager won't find new job site anymore
-        entity.getBrain().setMemory(MemoryModuleType.JOB_SITE, get());
+        entity.getBrain().setMemory(MemoryModuleType.JOB_SITE, getVal());
     }
 }

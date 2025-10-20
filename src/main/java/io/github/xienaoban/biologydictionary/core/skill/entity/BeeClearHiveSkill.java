@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.core.skill.entity;
 
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
@@ -34,6 +33,6 @@ public class BeeClearHiveSkill implements EntityTargetedSkill<Bee> {
         Permissions.checkLegalArg(args.asBoolean().orElseThrow(), true);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
         Skills.giveExperiencePointsIfNotCreative(player, -EXPERIENCE_POINTS_COST);
-        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfBee.createHivePosProperty().toNbtWith(null));
+        VanillaEntityProperties.OfBee.createHivePosProperty().withVal(null).setTo(entity);
     }
 }

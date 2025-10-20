@@ -52,7 +52,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
     }
 
     private void updateOwnerRef() {
-        EntityReference<Entity> ref = ownerProperty.get();
+        EntityReference<Entity> ref = ownerProperty.getVal();
         if (ref == null) {
             if (lastUuid != null) {
                 lastUuid = null;
@@ -123,7 +123,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
                 ClientUtils.setScreen(new PlayerSelectorScreen(ClientUtils.getCurrentScreen(), targetPlayer -> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(null);
                     EntityGiftPetSkill.activate(e(), targetPlayer);
-                    ownerProperty.set(EntityReference.of(targetPlayer.getUUID()));
+                    ownerProperty.setVal(EntityReference.of(targetPlayer.getUUID()));
                 }
                 ));
             }

@@ -5,7 +5,6 @@ import io.github.xienaoban.biologydictionary.net.payload.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
@@ -24,10 +23,6 @@ public final class ClientNetManager {
 
     public static void requestBeehiveInfo(BlockPos pos) {
         ClientNetApi.send(new RequestBeehiveInfoPacket(pos));
-    }
-
-    public static void sendUpdatedEntityPropertiesOld(Entity entity, CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        ClientNetApi.send(new SendUpdatedEntityPropertiesOldPacket(entity.getId(), vanillaNbt, extraNbt));
     }
 
     public static boolean sendCommonSkill(String skillKey, Object... args) {

@@ -51,7 +51,7 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer numI = restocksTodayProperty.get();
+            Integer numI = restocksTodayProperty.getVal();
             if (numI == null) {
                 updatePercent(0);
                 super.onRender(ctx);
@@ -77,10 +77,10 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 VillagerJobSiteProperty jboSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
-                Integer r = restocksTodayProperty.get();
-                GlobalPos j = jboSiteProperty.get();
+                Integer r = restocksTodayProperty.getVal();
+                GlobalPos j = jboSiteProperty.getVal();
                 if (VillagerForceRestockSkill.activate(e(), r, j)) {
-                    restocksTodayProperty.set(r + 1);
+                    restocksTodayProperty.setVal(r + 1);
                 }
             }
             return true;
@@ -89,7 +89,7 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             // super.onRender(ctx);
-            Integer numI = restocksTodayProperty.get();
+            Integer numI = restocksTodayProperty.getVal();
             Integer price = (numI == null ? null : Math.max(0, numI - 3 + 1) * 2);
             renderItem(ctx, emerald, price);
         }

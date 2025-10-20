@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.core.skill.entity;
 
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
@@ -51,6 +50,6 @@ public class EntitySetSoundSkill implements EntityTargetedSkill<Entity> {
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, experiencePointsCost(entity));
         Skills.giveExperiencePointsIfNotCreative(player, -experiencePointsCost(entity));
-        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfEntity.createSilentProperty().toNbtWith(silent));
+        VanillaEntityProperties.OfEntity.createSilentProperty().withVal(silent).setTo(entity);
     }
 }

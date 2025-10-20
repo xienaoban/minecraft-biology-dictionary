@@ -39,16 +39,16 @@ public final class VariantProperty<E extends Entity, T> extends AbstractProperty
                     if (level == null) { return Optional.empty(); }
                     return level.registryAccess().get(key);
                 });
-        set(o1.orElse(null));
+        setVal(o1.orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        if (get() != null && get().unwrapKey().isPresent()) {
-            ResourceKey<?> resourceKey = get().unwrapKey().get();
+        if (getVal() != null && getVal().unwrapKey().isPresent()) {
+            ResourceKey<?> resourceKey = getVal().unwrapKey().get();
             nbt.store(name(), ResourceLocation.CODEC, resourceKey.location());
         } else {
-            LOGGER.warn("Unknown variant key: {}", get());
+            LOGGER.warn("Unknown variant key: {}", getVal());
         }
     }
 }

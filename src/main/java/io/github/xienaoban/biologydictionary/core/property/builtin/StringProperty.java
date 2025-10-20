@@ -10,13 +10,13 @@ public final class StringProperty<E extends Entity> extends AbstractProperty<E, 
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        set(nbt.getString(name()).orElse(null));
+        setVal(nbt.getString(name()).orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        if (get() != null) {
-            nbt.putString(name(), get());
+        if (getVal() != null) {
+            nbt.putString(name(), getVal());
         } else {
             nbt.put(name(), new CompoundTag());
         }

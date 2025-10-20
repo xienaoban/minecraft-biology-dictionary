@@ -33,13 +33,13 @@ public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        Integer mL = moistnessProperty.get();
+        Integer mL = moistnessProperty.getVal();
         if (mL == null) {
             return;
         }
         int m = mL;
         if (m > 0 && !e().isInWaterOrRain() && !e().isNoAi()) {
-            moistnessProperty.set(m - 1);
+            moistnessProperty.setVal(m - 1);
         }
     }
 
@@ -60,7 +60,7 @@ public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer mL = moistnessProperty.get();
+            Integer mL = moistnessProperty.getVal();
             if (mL == null) {
                 updatePercent(0);
                 super.onRender(ctx);

@@ -37,13 +37,13 @@ public final class AnimalInLoveWidget extends EntityPropertyStandardWidget<Anima
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        Integer inLoveOpt = inLoveProperty.get();
+        Integer inLoveOpt = inLoveProperty.getVal();
         if (inLoveOpt == null) {
             return;
         }
         int age = inLoveOpt;
         if (age > 0) {
-            inLoveProperty.set(age - 1);
+            inLoveProperty.setVal(age - 1);
         }
     }
 
@@ -63,7 +63,7 @@ public final class AnimalInLoveWidget extends EntityPropertyStandardWidget<Anima
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer inLoveOpt = inLoveProperty.get();
+            Integer inLoveOpt = inLoveProperty.getVal();
             if (inLoveOpt == null) {
                 updatePercent(0);
                 super.onRender(ctx);

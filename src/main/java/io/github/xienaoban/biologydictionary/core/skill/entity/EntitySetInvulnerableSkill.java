@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.core.skill.entity;
 
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
@@ -34,6 +33,6 @@ public class EntitySetInvulnerableSkill implements EntityTargetedSkill<Entity> {
         boolean inv = args.asBoolean().orElseThrow();
         Permissions.checkPlayerCreative(player);
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
-        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfEntity.createInvulnerableProperty().toNbtWith(inv));
+        VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(inv).setTo(entity);
     }
 }

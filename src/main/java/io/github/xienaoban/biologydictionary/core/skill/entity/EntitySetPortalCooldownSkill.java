@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.core.skill.entity;
 
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
@@ -32,6 +31,6 @@ public class EntitySetPortalCooldownSkill implements EntityTargetedSkill<Entity>
     public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
         int cooldown = args.asInt().orElseThrow();
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
-        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfEntity.createPortalCooldownProperty().toNbtWith(cooldown));
+        VanillaEntityProperties.OfEntity.createPortalCooldownProperty().withVal(cooldown).setTo(entity);
     }
 }

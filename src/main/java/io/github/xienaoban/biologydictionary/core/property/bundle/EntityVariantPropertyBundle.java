@@ -69,26 +69,26 @@ public final class EntityVariantPropertyBundle {
     }
 
     public interface PropertyVariantHandler<E extends Entity, V> extends VariantHandler<E, V> {
-        AbstractProperty<?, V> createProperty();
+        AbstractProperty<? super E, V> createProperty();
 
         @Override
         default V getVariant(E entity) {
-            return createProperty().toValWith(EntityUtils.getNbt(entity));
+            return createProperty().withEntity(entity).getVal();
         }
 
         @Override
         default void setVariant(E entity, V variant) {
-            EntityUtils.mergeNbt(entity, createProperty().toNbtWith(variant));
+            createProperty().withVal(variant).setTo(entity);
         }
 
         @Override
         default Tag variantToTag(V variant) {
-            return createProperty().toNbtWith(variant);
+            return createProperty().withVal(variant).toTag();
         }
 
         @Override
         default V tagToVariant(Tag tag) {
-            return createProperty().toValWith((CompoundTag) tag);
+            return createProperty().withTag((CompoundTag) tag).getVal();
         }
     }
 
@@ -168,12 +168,12 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public Tag variantToTag(Holder<VillagerType> variant) {
-            return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).toNbtWith(variant);
+            return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).withVal(variant).toTag();
         }
 
         @Override
         public Holder<VillagerType> tagToVariant(Tag tag) {
-            return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).toValWith((CompoundTag) tag);
+            return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).withTag((CompoundTag) tag).getVal();
         }
 
         @Override
@@ -280,12 +280,12 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public Tag variantToTag(Panda.Gene variant) {
-            return VanillaEntityProperties.OfPanda.createMainGeneProperty().toNbtWith(variant);
+            return VanillaEntityProperties.OfPanda.createMainGeneProperty().withVal(variant).toTag();
         }
 
         @Override
         public Panda.Gene tagToVariant(Tag tag) {
-            return VanillaEntityProperties.OfPanda.createMainGeneProperty().toValWith((CompoundTag) tag);
+            return VanillaEntityProperties.OfPanda.createMainGeneProperty().withTag((CompoundTag) tag).getVal();
         }
 
         @Override
@@ -308,12 +308,12 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public Tag variantToTag(Panda.Gene variant) {
-            return VanillaEntityProperties.OfPanda.createHiddenGeneProperty().toNbtWith(variant);
+            return VanillaEntityProperties.OfPanda.createHiddenGeneProperty().withVal(variant).toTag();
         }
 
         @Override
         public Panda.Gene tagToVariant(Tag tag) {
-            return VanillaEntityProperties.OfPanda.createHiddenGeneProperty().toValWith((CompoundTag) tag);
+            return VanillaEntityProperties.OfPanda.createHiddenGeneProperty().withTag((CompoundTag) tag).getVal();
         }
     }
 }

@@ -34,12 +34,12 @@ public class CodecProperty<E extends Entity, T> extends AbstractProperty<E, T> {
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        set(nbt.read(name(), codec).orElse(null));
+        setVal(nbt.read(name(), codec).orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        T v = get();
+        T v = getVal();
         if (v != null) {
             nbt.store(name(), codec, v);
         } else {

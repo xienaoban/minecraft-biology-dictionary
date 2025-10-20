@@ -60,7 +60,7 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
                     setNoAi(newNoAi);
                     if (!PlayerUtils.isCreative(ClientUtils.getClientPlayer())) {
                         BooleanProperty<Entity> inv = VanillaEntityProperties.OfEntity.getInvulnerableProperty(p());
-                        inv.set(newNoAi);
+                        inv.setVal(newNoAi);
                     }
                 }
             }

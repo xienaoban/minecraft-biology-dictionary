@@ -10,13 +10,13 @@ public final class ShortProperty<E extends Entity> extends AbstractProperty<E, S
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        set(nbt.getShort(name()).orElse(null));
+        setVal(nbt.getShort(name()).orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        if (get() != null) {
-            nbt.putShort(name(), get());
+        if (getVal() != null) {
+            nbt.putShort(name(), getVal());
         } else {
             throw new IllegalPropertyStateException("primitive type must not be null");
         }

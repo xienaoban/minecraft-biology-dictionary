@@ -3,8 +3,6 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
-import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.Skills;
@@ -16,7 +14,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
@@ -75,22 +72,18 @@ public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
     public void serverReceive(MinecraftServer server, ServerPlayer player, Mob entity, Tag args) {
         boolean noAi = args.asBoolean().orElseThrow();
         check(player, entity);
-        CompoundTag nbt = VanillaEntityProperties.OfMob.createNoAiProperty().toNbtWith(noAi);
+        CompoundTag tag = VanillaEntityProperties.OfMob.createNoAiProperty().withVal(noAi).toTag();
 
         // Clear the motion caused by collisions accumulated during the AI-disabled period
         // to prevent the entity from flying around randomly.
-        CodecProperty<Entity, Vec3> motionProperty = VanillaEntityProperties.OfEntity.createMotionProperty();
-        motionProperty.set(Vec3.ZERO);
-        motionProperty.writeTo(nbt);
+        VanillaEntityProperties.OfEntity.createMotionProperty().withVal(Vec3.ZERO).writeTo(tag);
 
         // Set the entity without AI to be invulnerable to avoid disrupting the balance of Survival Mode.
         if (!PlayerUtils.isCreative(player)) {
-            BooleanProperty<Entity> invulnerableProperty = VanillaEntityProperties.OfEntity.createInvulnerableProperty();
-            invulnerableProperty.set(noAi);
-            invulnerableProperty.writeTo(nbt);
+            VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(noAi).writeTo(tag);
         }
 
         Skills.giveExperienceLevelsIfNotCreative(player, -experienceLevelsCost(entity));
-        EntityUtils.mergeNbt(entity, nbt);
+        EntityUtils.mergeNbt(entity, tag);
     }
 }

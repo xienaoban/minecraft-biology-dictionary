@@ -39,7 +39,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        List<MobEffectInstance> effects = activeEffectsProperty.get();
+        List<MobEffectInstance> effects = activeEffectsProperty.getVal();
         if (effects == null || effects.isEmpty()) {
             return;
         }
@@ -57,7 +57,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         list.add(tooltipTitle(Lang.PROPERTY_WIDGET_EFFECTS));
         list.add(tooltipDescription(Lang.PROPERTY_WIDGET_EFFECTS_DESC));
         list.add(Component.empty());
-        List<MobEffectInstance> effects = activeEffectsProperty.get();
+        List<MobEffectInstance> effects = activeEffectsProperty.getVal();
         if (effects == null || effects.isEmpty()) {
             list.add(tooltipBody(Lang.TEXT_EMPTY_WITH_BRACKETS));
         } else {
@@ -100,7 +100,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             Component text = null;
-            List<MobEffectInstance> effects = activeEffectsProperty.get();
+            List<MobEffectInstance> effects = activeEffectsProperty.getVal();
             if (effects == null) {
                 text = Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS);
             } else if (effects.isEmpty()) {
@@ -131,7 +131,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         @Override
         protected void onResize(int width, int height) {
             super.onResize(width, height);
-            List<MobEffectInstance> effects = activeEffectsProperty.get();
+            List<MobEffectInstance> effects = activeEffectsProperty.getVal();
             int size = effects == null ? 0 : effects.size();
             updateGap(size);
         }

@@ -41,13 +41,13 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        Integer delayI = despawnDelayProperty.get();
+        Integer delayI = despawnDelayProperty.getVal();
         if (delayI == null) {
             return;
         }
         int delay = delayI;
         if (delay > 0) {
-            despawnDelayProperty.set(delay - 1);
+            despawnDelayProperty.setVal(delay - 1);
         }
     }
 
@@ -67,7 +67,7 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer delayI = despawnDelayProperty.get();
+            Integer delayI = despawnDelayProperty.getVal();
             if (delayI == null) {
                 updatePercent(0);
                 super.onRender(ctx);
@@ -101,7 +101,7 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 if (WanderingTraderRetainSkill.activate(e())) {
-                    despawnDelayProperty.set(despawnDelayProperty.get() + WanderingTraderRetainSkill.STAY_TICKS);
+                    despawnDelayProperty.setVal(despawnDelayProperty.getVal() + WanderingTraderRetainSkill.STAY_TICKS);
                 }
             }
             return true;

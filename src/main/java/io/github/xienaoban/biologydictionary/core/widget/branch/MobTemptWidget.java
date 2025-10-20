@@ -52,7 +52,7 @@ public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
             super.onRender(ctx);
             renderFullBar(ctx);
             Component text = null;
-            List<ItemStack> tempts = temptProperty.get();
+            List<ItemStack> tempts = temptProperty.getVal();
             if (tempts == null) {
                 text = Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS);
             } else if (tempts.isEmpty()) {
@@ -79,7 +79,7 @@ public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
         @Override
         protected void onResize(int width, int height) {
             super.onResize(width, height);
-            List<ItemStack> tempts = temptProperty.get();
+            List<ItemStack> tempts = temptProperty.getVal();
             int size = tempts == null ? 0 : tempts.size();
             updateGap(size);
         }
