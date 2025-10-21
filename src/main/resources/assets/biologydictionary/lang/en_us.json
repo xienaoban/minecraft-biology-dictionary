@@ -272,6 +272,10 @@
   "variant.minecraft.rabbit.salt"            : "Salt",
   "variant.minecraft.rabbit.evil"            : "Evil",
 
+  "variant.minecraft.salmon.small"  : "Small",
+  "variant.minecraft.salmon.medium" : "Medium",
+  "variant.minecraft.salmon.large"  : "Large",
+
   "variant.minecraft.trader_llama.creamy" : "Creamy",
   "variant.minecraft.trader_llama.white"  : "White",
   "variant.minecraft.trader_llama.brown"  : "Brown",

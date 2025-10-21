@@ -1,9 +1,11 @@
 package io.github.xienaoban.biologydictionary.core.property.bundle;
 
+import com.mojang.serialization.Codec;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
+import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.VariantProperty;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -14,6 +16,7 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Panda;
@@ -35,11 +38,12 @@ public final class EntityVariantPropertyBundle {
     private static final Bundle<VariantHandler<?, ?>> BUNDLE = new Bundle<>();
 
     public static void init() {
-        register(StandardVariantHandler.PATTERN);
+        register(STANDARD_PATTERN);
 
         register(EntityType.VILLAGER, new VillagerTypeHandler());
         register(EntityType.HORSE, new HorseVariantHandler(), new HorseMarkingsHandler());
         register(EntityType.PANDA, new PandaMainGeneHandler(), new PandaHiddenGeneHandler());
+        register(EntityType.TRADER_LLAMA, new CodecVariantHandler(VanillaEntityProperties.OfLlama.createVariantProperty()));
     }
 
     public static void register(Function<Entity, VariantHandler<?, ?>> pattern) {
@@ -92,36 +96,52 @@ public final class EntityVariantPropertyBundle {
         }
     }
 
-    public record StandardVariantHandler(ResourceKey<Registry<Object>> key, List<Holder<Object>> variants)
-            implements EntityVariantPropertyBundle.PropertyVariantHandler<Entity, Holder<Object>> {
+    static final Function<Entity, VariantHandler<?, ?>> STANDARD_PATTERN = entity -> {
+        Class<? extends Entity> entityClass = entity.getClass();
+        if (!EntityUtils.isVanillaEntity(entityClass)) { return null; }
+        String fullName = EntityUtils.getDeobfuscatedName(entity.getClass());
+        String simpleName = fullName.substring(fullName.lastIndexOf('.') + 1);
 
-        static final Function<Entity, EntityVariantPropertyBundle.VariantHandler<?, ?>> PATTERN = entity -> {
-            Class<? extends Entity> entityClass = entity.getClass();
-            if (!EntityUtils.isVanillaEntity(entityClass)) { return null; }
-            String fullName = EntityUtils.getDeobfuscatedName(entity.getClass());
-            String simpleName = fullName.substring(fullName.lastIndexOf('.') + 1);
-
+        for (String variantType : new String[] {"Variant", "Type"}) {
             try {
                 Class<?> ofEntity = Class.forName(VanillaEntityProperties.class.getName() + "$Of" + simpleName);
-                Method creator = ofEntity.getDeclaredMethod("createVariantProperty");
-                @SuppressWarnings("all")
-                VariantProperty<Entity, Object> property = (VariantProperty<Entity, Object>) creator.invoke(null);
+                Method creator = ofEntity.getDeclaredMethod("create" + variantType + "Property");
 
-                ResourceKey<Registry<Object>> key = property.getResourceKey();
-                Optional<Registry<Object>> optional = entity.registryAccess().lookup(key);
-                if (optional.isEmpty()) { return null; }
-                Registry<Object> registry = optional.get();
-                List<Holder<Object>> variants = registry.registryKeySet().stream()
-                        .map(registry::getOrThrow)
-                        .map(k -> (Holder<Object>) k)
-                        .toList();
+                if (VariantProperty.class.isAssignableFrom(creator.getReturnType())) {
+                    @SuppressWarnings("all")
+                    VariantProperty<Entity, Object> property = (VariantProperty<Entity, Object>) creator.invoke(null);
 
-                return new StandardVariantHandler(key, variants);
+                    ResourceKey<Registry<Object>> key = property.getResourceKey();
+                    Optional<Registry<Object>> optional = entity.registryAccess().lookup(key);
+                    if (optional.isPresent()) {
+                        Registry<Object> registry = optional.get();
+                        List<Holder<Object>> variants = registry.registryKeySet().stream()
+                                .map(registry::getOrThrow)
+                                .map(k -> (Holder<Object>) k)
+                                .toList();
+                        return new StandardVariantHandler(key, variants);
+                    }
+                } else if (CodecProperty.class.isAssignableFrom(creator.getReturnType())) {
+                    @SuppressWarnings("all")
+                    CodecProperty<Entity, Enum<?>> property = (CodecProperty<Entity, Enum<?>>) creator.invoke(null);
+                    if (property.getClazz().isEnum()) {
+                        return new CodecVariantHandler(property);
+                    }
+                }
             } catch (Exception e) {
                 LOGGER.debug("Entity `{}` has no variant: {}", entity.getType().toString(), e.toString());
-                return null;
             }
-        };
+        }
+        return null;
+    };
+
+    public record StandardVariantHandler(ResourceKey<Registry<Object>> key, List<Holder<Object>> variants)
+            implements PropertyVariantHandler<Entity, Holder<Object>> {
+
+        @Override
+        public AbstractProperty<Entity, Holder<Object>> createProperty() {
+            return new VariantProperty<>(key);
+        }
 
         @Override
         public List<Holder<Object>> getVariants() { return variants; }
@@ -139,14 +159,36 @@ public final class EntityVariantPropertyBundle {
                 return res;
             }).orElse("unknown");
         }
+    }
+
+    public record CodecVariantHandler(String propertyName, Class<Enum<?>> variantClazz, Codec<Enum<?>> codec)
+            implements PropertyVariantHandler<Entity, Enum<?>> {
+
+        public CodecVariantHandler(CodecProperty<? extends Entity, ? extends Enum<?>> property) {
+            this(property.name(), Misc.cast(property.getClazz()), Misc.cast(property.getCodec()));
+        }
 
         @Override
-        public AbstractProperty<Entity, Holder<Object>> createProperty() {
-            return new VariantProperty<>(key);
+        public AbstractProperty<? super Entity, Enum<?>> createProperty() {
+            return new CodecProperty<>(propertyName, variantClazz, codec);
+        }
+
+        @Override
+        public List<Enum<?>> getVariants() {
+            return Arrays.asList(variantClazz.getEnumConstants());
+        }
+
+        @Override
+        public String getVariantName(Enum<?> variant) {
+            if (variant instanceof StringRepresentable sr) {
+                return sr.getSerializedName();
+            } else {
+            return variant.name().toLowerCase();
+            }
         }
     }
 
-    public static final class VillagerTypeHandler implements EntityVariantPropertyBundle.VariantHandler<Villager, Holder<VillagerType>> {
+    public static final class VillagerTypeHandler implements VariantHandler<Villager, Holder<VillagerType>> {
 
         @Override
         public boolean isStandard() { return false; }
@@ -191,8 +233,7 @@ public final class EntityVariantPropertyBundle {
         }
     }
 
-    public static final class HorseVariantHandler
-            implements EntityVariantPropertyBundle.VariantHandler<Horse, Variant> {
+    public static final class HorseVariantHandler implements VariantHandler<Horse, Variant> {
 
         @Override
         public List<net.minecraft.world.entity.animal.horse.Variant> getVariants() {
@@ -225,8 +266,7 @@ public final class EntityVariantPropertyBundle {
         }
     }
 
-    public static final class HorseMarkingsHandler
-            implements EntityVariantPropertyBundle.VariantHandler<Horse, Markings> {
+    public static final class HorseMarkingsHandler implements VariantHandler<Horse, Markings> {
 
         @Override
         public List<net.minecraft.world.entity.animal.horse.Markings> getVariants() {
@@ -259,7 +299,8 @@ public final class EntityVariantPropertyBundle {
         }
     }
 
-    public static sealed class PandaMainGeneHandler implements EntityVariantPropertyBundle.VariantHandler<Panda, Panda.Gene> permits PandaHiddenGeneHandler {
+    public static sealed class PandaMainGeneHandler
+            implements VariantHandler<Panda, Panda.Gene> permits PandaHiddenGeneHandler {
         @Override
         public boolean isStandard() { return false; }
 
