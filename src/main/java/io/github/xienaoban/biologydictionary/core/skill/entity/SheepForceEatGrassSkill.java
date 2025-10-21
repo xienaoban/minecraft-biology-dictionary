@@ -35,6 +35,7 @@ public class SheepForceEatGrassSkill implements EntityTargetedSkill<Sheep> {
                 || level.getBlockState(blockPos.below()).is(Blocks.GRASS_BLOCK);
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public Tag clientSend(LocalPlayer player, Sheep entity, Object... args) {
         Permissions.checkPlayerCreativeOrExperiencePoints(player, EXP_COST);

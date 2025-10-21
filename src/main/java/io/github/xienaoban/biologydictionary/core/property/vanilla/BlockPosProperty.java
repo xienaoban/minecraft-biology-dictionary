@@ -6,6 +6,6 @@ import net.minecraft.world.entity.Entity;
 
 public class BlockPosProperty<E extends Entity> extends CodecProperty<E, BlockPos> {
     public BlockPosProperty(String propertyName) {
-        super(propertyName, BlockPos.CODEC);
+        super(propertyName, BlockPos.class, BlockPos.CODEC);
     }
 }
