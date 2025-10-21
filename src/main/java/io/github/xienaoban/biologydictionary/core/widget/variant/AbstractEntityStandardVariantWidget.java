@@ -13,14 +13,14 @@ public abstract class AbstractEntityStandardVariantWidget<E extends Entity, V> e
 
     protected static <E extends Entity, V> EntityProperties<E> verify(EntityProperties<E> properties, int variantHandlerIdx) {
         E entity = properties.entity();
-        List<EntityVariantPropertyBundle.VariantHandler<E, V>> list = EntityVariantPropertyBundle.getEntries(entity);
+        List<EntityVariantPropertyBundle.VariantHandler<E, V>> list = EntityVariantPropertyBundle.getHandlers(entity);
         UnsupportedWidgetException.verify(list.size() > variantHandlerIdx);
         UnsupportedWidgetException.verify(list.get(variantHandlerIdx).isStandard());
         return properties;
     }
 
     protected static <E extends Entity, V> EntityVariantPropertyBundle.VariantHandler<E, V> getVariantHandler(E entity, int variantHandlerIdx) {
-        List<EntityVariantPropertyBundle.VariantHandler<E, V>> list = EntityVariantPropertyBundle.getEntries(entity);
+        List<EntityVariantPropertyBundle.VariantHandler<E, V>> list = EntityVariantPropertyBundle.getHandlers(entity);
         return list.get(variantHandlerIdx);
     }
 

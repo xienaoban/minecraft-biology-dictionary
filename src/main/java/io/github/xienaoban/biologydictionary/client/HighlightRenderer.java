@@ -71,7 +71,8 @@ public final class HighlightRenderer {
                                     Vec3 camera, PoseStack poseStack,
                                     LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector) {
         poseStack.pushPose();
-        poseStack.translate(blockPos.getX() - camera.x(), blockPos.getY() - camera.y(), blockPos.getZ() - camera.z());
+        poseStack.translate(blockPos.getX() - camera.x() + 0.001F, blockPos.getY() - camera.y() + 0.001F, blockPos.getZ() - camera.z() + 0.001F);
+        poseStack.scale(0.998F, 0.998F, 0.998F);
 
         submitNodeCollector.submitBlock(poseStack, blockState, 15728880, OverlayTexture.NO_OVERLAY, Colors.HIGHLIGHT_DEFAULT_COLOR);
 
