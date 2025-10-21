@@ -272,6 +272,10 @@
   "variant.minecraft.rabbit.salt"            : "盐色",
   "variant.minecraft.rabbit.evil"            : "邪恶",
 
+  "variant.minecraft.salmon.small"  : "小",
+  "variant.minecraft.salmon.medium" : "中",
+  "variant.minecraft.salmon.large"  : "大",
+
   "variant.minecraft.trader_llama.creamy" : "奶油色",
   "variant.minecraft.trader_llama.white"  : "白色",
   "variant.minecraft.trader_llama.brown"  : "棕色",
