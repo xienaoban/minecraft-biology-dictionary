@@ -9,6 +9,6 @@ import net.minecraft.world.entity.EntityReference;
  */
 public class EntityReferenceProperty<E extends Entity> extends CodecProperty<E, EntityReference<Entity>> {
     public EntityReferenceProperty(String propertyName) {
-        super(propertyName, EntityReference.codec());
+        super(propertyName, EntityReference.class, EntityReference.codec());
     }
 }

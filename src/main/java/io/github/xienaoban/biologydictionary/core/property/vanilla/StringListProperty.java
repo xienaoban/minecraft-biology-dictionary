@@ -8,6 +8,6 @@ import java.util.List;
 
 public final class StringListProperty<E extends Entity> extends CodecProperty<E, List<String>> {
     public StringListProperty(String propertyName) {
-        super(propertyName, Codec.STRING.listOf());
+        super(propertyName, List.class, Codec.STRING.listOf());
     }
 }

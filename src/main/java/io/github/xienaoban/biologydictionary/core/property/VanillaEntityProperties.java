@@ -3,6 +3,8 @@ package io.github.xienaoban.biologydictionary.core.property;
 import io.github.xienaoban.biologydictionary.core.property.builtin.*;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.VariantProperty;
+import io.github.xienaoban.biologydictionary.mixin.ArmadilloStateIMixin;
+import io.github.xienaoban.biologydictionary.mixin.EntityIMixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
@@ -241,7 +243,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, Component> createCustomNameProperty() {
-            return new CodecProperty<>("CustomName", ComponentSerialization.CODEC);
+            return new CodecProperty<>("CustomName", Component.class, ComponentSerialization.CODEC);
         }
 
         public static CodecProperty<Entity, Component> getCustomNameProperty(EntityProperties<?> ep) {
@@ -289,7 +291,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, Vec3> createMotionProperty() {
-            return new CodecProperty<>("Motion", Vec3.CODEC);
+            return new CodecProperty<>("Motion", Vec3.class, Vec3.CODEC);
         }
 
         public static CodecProperty<Entity, Vec3> getMotionProperty(EntityProperties<?> ep) {
@@ -321,7 +323,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, Vec3> createPosProperty() {
-            return new CodecProperty<>("Pos", Vec3.CODEC);
+            return new CodecProperty<>("Pos", Vec3.class, Vec3.CODEC);
         }
 
         public static CodecProperty<Entity, Vec3> getPosProperty(EntityProperties<?> ep) {
@@ -329,7 +331,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, Vec2> createRotationProperty() {
-            return new CodecProperty<>("Rotation", Vec2.CODEC);
+            return new CodecProperty<>("Rotation", Vec2.class, Vec2.CODEC);
         }
 
         public static CodecProperty<Entity, Vec2> getRotationProperty(EntityProperties<?> ep) {
@@ -345,7 +347,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, List<String>> createTagsProperty() {
-            return new CodecProperty<>("Tags", CodecProperty.emptyCodec() /* net.minecraft.world.entity.Entity.TAG_LIST_CODEC */);
+            return new CodecProperty<>("Tags", List.class, EntityIMixin.getTagListCodec());
         }
 
         public static CodecProperty<Entity, List<String>> getTagsProperty(EntityProperties<?> ep) {
@@ -361,7 +363,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, UUID> createUuidProperty() {
-            return new CodecProperty<>("UUID", UUIDUtil.CODEC);
+            return new CodecProperty<>("UUID", UUID.class, UUIDUtil.CODEC);
         }
 
         public static CodecProperty<Entity, UUID> getUuidProperty(EntityProperties<?> ep) {
@@ -369,7 +371,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, CustomData> createDataProperty() {
-            return new CodecProperty<>("data", CustomData.CODEC);
+            return new CodecProperty<>("data", CustomData.class, CustomData.CODEC);
         }
 
         public static CodecProperty<Entity, CustomData> getDataProperty(EntityProperties<?> ep) {
@@ -489,7 +491,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<LivingEntity, List<MobEffectInstance>> createActiveEffectsProperty() {
-            return new CodecProperty<>("active_effects", MobEffectInstance.CODEC.listOf());
+            return new CodecProperty<>("active_effects", List.class, MobEffectInstance.CODEC.listOf());
         }
 
         public static CodecProperty<LivingEntity, List<MobEffectInstance>> getActiveEffectsProperty(EntityProperties<?> ep) {
@@ -497,7 +499,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<LivingEntity, List<AttributeInstance.Packed>> createAttributesProperty() {
-            return new CodecProperty<>("attributes", AttributeInstance.Packed.LIST_CODEC);
+            return new CodecProperty<>("attributes", List.class, AttributeInstance.Packed.LIST_CODEC);
         }
 
         public static CodecProperty<LivingEntity, List<AttributeInstance.Packed>> getAttributesProperty(EntityProperties<?> ep) {
@@ -505,7 +507,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<LivingEntity, net.minecraft.world.entity.EntityEquipment> createEquipmentProperty() {
-            return new CodecProperty<>("equipment", net.minecraft.world.entity.EntityEquipment.CODEC);
+            return new CodecProperty<>("equipment", net.minecraft.world.entity.EntityEquipment.class, net.minecraft.world.entity.EntityEquipment.CODEC);
         }
 
         public static CodecProperty<LivingEntity, net.minecraft.world.entity.EntityEquipment> getEquipmentProperty(EntityProperties<?> ep) {
@@ -537,7 +539,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<LivingEntity, Waypoint.Icon> createLocatorBarIconProperty() {
-            return new CodecProperty<>("locator_bar_icon", Waypoint.Icon.CODEC);
+            return new CodecProperty<>("locator_bar_icon", Waypoint.Icon.class, Waypoint.Icon.CODEC);
         }
 
         public static CodecProperty<LivingEntity, Waypoint.Icon> getLocatorBarIconProperty(EntityProperties<?> ep) {
@@ -545,7 +547,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<LivingEntity, BlockPos> createSleepingPosProperty() {
-            return new CodecProperty<>("sleeping_pos", BlockPos.CODEC);
+            return new CodecProperty<>("sleeping_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<LivingEntity, BlockPos> getSleepingPosProperty(EntityProperties<?> ep) {
@@ -597,7 +599,7 @@ public final class VanillaEntityProperties {
     public static final class OfMannequin implements Creator {
 
         public static CodecProperty<Mannequin, Component> createDescriptionProperty() {
-            return new CodecProperty<>("description", ComponentSerialization.CODEC);
+            return new CodecProperty<>("description", Component.class, ComponentSerialization.CODEC);
         }
 
         public static CodecProperty<Mannequin, Component> getDescriptionProperty(EntityProperties<?> ep) {
@@ -645,7 +647,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Mannequin, ResolvableProfile> createProfileProperty() {
-            return new CodecProperty<>("profile", ResolvableProfile.CODEC);
+            return new CodecProperty<>("profile", ResolvableProfile.class, ResolvableProfile.CODEC);
         }
 
         public static CodecProperty<Mannequin, ResolvableProfile> getProfileProperty(EntityProperties<?> ep) {
@@ -684,7 +686,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Mob, ResourceKey<LootTable>> createDeathLootTableProperty() {
-            return new CodecProperty<>("DeathLootTable", LootTable.KEY_CODEC);
+            return new CodecProperty<>("DeathLootTable", ResourceKey.class, LootTable.KEY_CODEC);
         }
 
         public static CodecProperty<Mob, ResourceKey<LootTable>> getDeathLootTableProperty(EntityProperties<?> ep) {
@@ -724,7 +726,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Mob, net.minecraft.world.entity.DropChances> createDropChancesProperty() {
-            return new CodecProperty<>("drop_chances", net.minecraft.world.entity.DropChances.CODEC);
+            return new CodecProperty<>("drop_chances", net.minecraft.world.entity.DropChances.class, net.minecraft.world.entity.DropChances.CODEC);
         }
 
         public static CodecProperty<Mob, net.minecraft.world.entity.DropChances> getDropChancesProperty(EntityProperties<?> ep) {
@@ -732,7 +734,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Mob, BlockPos> createHomePosProperty() {
-            return new CodecProperty<>("home_pos", BlockPos.CODEC);
+            return new CodecProperty<>("home_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Mob, BlockPos> getHomePosProperty(EntityProperties<?> ep) {
@@ -957,7 +959,7 @@ public final class VanillaEntityProperties {
     public static final class OfCat implements Creator {
 
         public static CodecProperty<Cat, DyeColor> createCollarColorProperty() {
-            return new CodecProperty<>("CollarColor", DyeColor.LEGACY_ID_CODEC);
+            return new CodecProperty<>("CollarColor", DyeColor.class, DyeColor.LEGACY_ID_CODEC);
         }
 
         public static CodecProperty<Cat, DyeColor> getCollarColorProperty(EntityProperties<?> ep) {
@@ -1002,7 +1004,7 @@ public final class VanillaEntityProperties {
     public static final class OfParrot implements Creator {
 
         public static CodecProperty<Parrot, Parrot.Variant> createVariantProperty() {
-            return new CodecProperty<>("Variant", Parrot.Variant.LEGACY_CODEC);
+            return new CodecProperty<>("Variant", Parrot.Variant.class, Parrot.Variant.LEGACY_CODEC);
         }
 
         public static CodecProperty<Parrot, Parrot.Variant> getVariantProperty(EntityProperties<?> ep) {
@@ -1028,7 +1030,7 @@ public final class VanillaEntityProperties {
     public static final class OfWolf implements Creator {
 
         public static CodecProperty<Wolf, DyeColor> createCollarColorProperty() {
-            return new CodecProperty<>("CollarColor", DyeColor.LEGACY_ID_CODEC);
+            return new CodecProperty<>("CollarColor", DyeColor.class, DyeColor.LEGACY_ID_CODEC);
         }
 
         public static CodecProperty<Wolf, DyeColor> getCollarColorProperty(EntityProperties<?> ep) {
@@ -1105,7 +1107,7 @@ public final class VanillaEntityProperties {
     public static final class OfMushroomCow implements Creator {
 
         public static CodecProperty<MushroomCow, MushroomCow.Variant> createTypeProperty() {
-            return new CodecProperty<>("Type", MushroomCow.Variant.CODEC);
+            return new CodecProperty<>("Type", MushroomCow.Variant.class, MushroomCow.Variant.CODEC);
         }
 
         public static CodecProperty<MushroomCow, MushroomCow.Variant> getTypeProperty(EntityProperties<?> ep) {
@@ -1113,7 +1115,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<MushroomCow, SuspiciousStewEffects> createStewEffectsProperty() {
-            return new CodecProperty<>("stew_effects", SuspiciousStewEffects.CODEC);
+            return new CodecProperty<>("stew_effects", SuspiciousStewEffects.class, SuspiciousStewEffects.CODEC);
         }
 
         public static CodecProperty<MushroomCow, SuspiciousStewEffects> getStewEffectsProperty(EntityProperties<?> ep) {
@@ -1182,7 +1184,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Bee, BlockPos> createFlowerPosProperty() {
-            return new CodecProperty<>("flower_pos", BlockPos.CODEC);
+            return new CodecProperty<>("flower_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Bee, BlockPos> getFlowerPosProperty(EntityProperties<?> ep) {
@@ -1190,7 +1192,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Bee, BlockPos> createHivePosProperty() {
-            return new CodecProperty<>("hive_pos", BlockPos.CODEC);
+            return new CodecProperty<>("hive_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Bee, BlockPos> getHivePosProperty(EntityProperties<?> ep) {
@@ -1291,7 +1293,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Fox, Fox.Variant> createTypeProperty() {
-            return new CodecProperty<>("Type", Fox.Variant.CODEC);
+            return new CodecProperty<>("Type", Fox.Variant.class, Fox.Variant.CODEC);
         }
 
         public static CodecProperty<Fox, Fox.Variant> getTypeProperty(EntityProperties<?> ep) {
@@ -1361,7 +1363,7 @@ public final class VanillaEntityProperties {
     public static final class OfPanda implements Creator {
 
         public static CodecProperty<Panda, Panda.Gene> createHiddenGeneProperty() {
-            return new CodecProperty<>("HiddenGene", Panda.Gene.CODEC);
+            return new CodecProperty<>("HiddenGene", Panda.Gene.class, Panda.Gene.CODEC);
         }
 
         public static CodecProperty<Panda, Panda.Gene> getHiddenGeneProperty(EntityProperties<?> ep) {
@@ -1369,7 +1371,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Panda, Panda.Gene> createMainGeneProperty() {
-            return new CodecProperty<>("MainGene", Panda.Gene.CODEC);
+            return new CodecProperty<>("MainGene", Panda.Gene.class, Panda.Gene.CODEC);
         }
 
         public static CodecProperty<Panda, Panda.Gene> getMainGeneProperty(EntityProperties<?> ep) {
@@ -1438,7 +1440,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Rabbit, Rabbit.Variant> createRabbitTypeProperty() {
-            return new CodecProperty<>("RabbitType", Rabbit.Variant.LEGACY_CODEC);
+            return new CodecProperty<>("RabbitType", Rabbit.Variant.class, Rabbit.Variant.LEGACY_CODEC);
         }
 
         public static CodecProperty<Rabbit, Rabbit.Variant> getRabbitTypeProperty(EntityProperties<?> ep) {
@@ -1470,7 +1472,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Turtle, BlockPos> createHomePosProperty() {
-            return new CodecProperty<>("home_pos", BlockPos.CODEC);
+            return new CodecProperty<>("home_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Turtle, BlockPos> getHomePosProperty(EntityProperties<?> ep) {
@@ -1502,7 +1504,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Armadillo, Armadillo.ArmadilloState> createStateProperty() {
-            return new CodecProperty<>("state", CodecProperty.emptyCodec() /* Armadillo.ArmadilloState.CODEC */);
+            return new CodecProperty<>("state", Armadillo.ArmadilloState.class, ArmadilloStateIMixin.getCodec());
         }
 
         public static CodecProperty<Armadillo, Armadillo.ArmadilloState> getStateProperty(EntityProperties<?> ep) {
@@ -1534,7 +1536,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Axolotl, Axolotl.Variant> createVariantProperty() {
-            return new CodecProperty<>("Variant", Axolotl.Variant.LEGACY_CODEC);
+            return new CodecProperty<>("Variant", Axolotl.Variant.class, Axolotl.Variant.LEGACY_CODEC);
         }
 
         public static CodecProperty<Axolotl, Axolotl.Variant> getVariantProperty(EntityProperties<?> ep) {
@@ -1749,7 +1751,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Llama, Llama.Variant> createVariantProperty() {
-            return new CodecProperty<>("Variant", Llama.Variant.LEGACY_CODEC);
+            return new CodecProperty<>("Variant", Llama.Variant.class, Llama.Variant.LEGACY_CODEC);
         }
 
         public static CodecProperty<Llama, Llama.Variant> getVariantProperty(EntityProperties<?> ep) {
@@ -1879,7 +1881,7 @@ public final class VanillaEntityProperties {
     public static final class OfSheep implements Creator {
 
         public static CodecProperty<Sheep, DyeColor> createColorProperty() {
-            return new CodecProperty<>("Color", DyeColor.LEGACY_ID_CODEC);
+            return new CodecProperty<>("Color", DyeColor.class, DyeColor.LEGACY_ID_CODEC);
         }
 
         public static CodecProperty<Sheep, DyeColor> getColorProperty(EntityProperties<?> ep) {
@@ -1979,7 +1981,7 @@ public final class VanillaEntityProperties {
     public static final class OfAbstractVillager implements Creator {
 
         public static CodecProperty<AbstractVillager, MerchantOffers> createOffersProperty() {
-            return new CodecProperty<>("Offers", MerchantOffers.CODEC);
+            return new CodecProperty<>("Offers", MerchantOffers.class, MerchantOffers.CODEC);
         }
 
         public static CodecProperty<AbstractVillager, MerchantOffers> getOffersProperty(EntityProperties<?> ep) {
@@ -2025,7 +2027,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Villager, GossipContainer> createGossipsProperty() {
-            return new CodecProperty<>("Gossips", GossipContainer.CODEC);
+            return new CodecProperty<>("Gossips", GossipContainer.class, GossipContainer.CODEC);
         }
 
         public static CodecProperty<Villager, GossipContainer> getGossipsProperty(EntityProperties<?> ep) {
@@ -2057,7 +2059,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Villager, net.minecraft.world.entity.npc.VillagerData> createVillagerDataProperty() {
-            return new CodecProperty<>("VillagerData", net.minecraft.world.entity.npc.VillagerData.CODEC);
+            return new CodecProperty<>("VillagerData", net.minecraft.world.entity.npc.VillagerData.class, net.minecraft.world.entity.npc.VillagerData.CODEC);
         }
 
         public static CodecProperty<Villager, net.minecraft.world.entity.npc.VillagerData> getVillagerDataProperty(EntityProperties<?> ep) {
@@ -2097,7 +2099,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<WanderingTrader, BlockPos> createWanderTargetProperty() {
-            return new CodecProperty<>("wander_target", BlockPos.CODEC);
+            return new CodecProperty<>("wander_target", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<WanderingTrader, BlockPos> getWanderTargetProperty(EntityProperties<?> ep) {
@@ -2189,7 +2191,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<CopperGolem, WeatheringCopper.WeatherState> createWeatherStateProperty() {
-            return new CodecProperty<>("weather_state", WeatheringCopper.WeatherState.CODEC);
+            return new CodecProperty<>("weather_state", WeatheringCopper.WeatherState.class, WeatheringCopper.WeatherState.CODEC);
         }
 
         public static CodecProperty<CopperGolem, WeatheringCopper.WeatherState> getWeatherStateProperty(EntityProperties<?> ep) {
@@ -2214,7 +2216,7 @@ public final class VanillaEntityProperties {
     public static final class OfShulker implements Creator {
 
         public static CodecProperty<Shulker, Direction> createAttachFaceProperty() {
-            return new CodecProperty<>("AttachFace", Direction.LEGACY_ID_CODEC);
+            return new CodecProperty<>("AttachFace", Direction.class, Direction.LEGACY_ID_CODEC);
         }
 
         public static CodecProperty<Shulker, Direction> getAttachFaceProperty(EntityProperties<?> ep) {
@@ -2318,7 +2320,7 @@ public final class VanillaEntityProperties {
     public static final class OfSalmon implements Creator {
 
         public static CodecProperty<Salmon, Salmon.Variant> createTypeProperty() {
-            return new CodecProperty<>("type", Salmon.Variant.CODEC);
+            return new CodecProperty<>("type", Salmon.Variant.class, Salmon.Variant.CODEC);
         }
 
         public static CodecProperty<Salmon, Salmon.Variant> getTypeProperty(EntityProperties<?> ep) {
@@ -2341,7 +2343,7 @@ public final class VanillaEntityProperties {
     public static final class OfTropicalFish implements Creator {
 
         public static CodecProperty<TropicalFish, TropicalFish.Variant> createVariantProperty() {
-            return new CodecProperty<>("Variant", TropicalFish.Variant.CODEC);
+            return new CodecProperty<>("Variant", TropicalFish.Variant.class, TropicalFish.Variant.CODEC);
         }
 
         public static CodecProperty<TropicalFish, TropicalFish.Variant> getVariantProperty(EntityProperties<?> ep) {
@@ -2419,7 +2421,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Allay, Allay.Data> createListenerProperty() {
-            return new CodecProperty<>("listener", Allay.Data.CODEC);
+            return new CodecProperty<>("listener", Allay.Data.class, Allay.Data.CODEC);
         }
 
         public static CodecProperty<Allay, Allay.Data> getListenerProperty(EntityProperties<?> ep) {
@@ -2631,7 +2633,7 @@ public final class VanillaEntityProperties {
     public static final class OfEnderMan implements Creator {
 
         public static CodecProperty<EnderMan, BlockState> createCarriedBlockStateProperty() {
-            return new CodecProperty<>("carriedBlockState", BlockState.CODEC);
+            return new CodecProperty<>("carriedBlockState", BlockState.class, BlockState.CODEC);
         }
 
         public static CodecProperty<EnderMan, BlockState> getCarriedBlockStateProperty(EntityProperties<?> ep) {
@@ -2737,7 +2739,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<PatrollingMonster, BlockPos> createPatrolTargetProperty() {
-            return new CodecProperty<>("patrol_target", BlockPos.CODEC);
+            return new CodecProperty<>("patrol_target", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<PatrollingMonster, BlockPos> getPatrolTargetProperty(EntityProperties<?> ep) {
@@ -3002,7 +3004,7 @@ public final class VanillaEntityProperties {
     public static final class OfVex implements Creator {
 
         public static CodecProperty<Vex, BlockPos> createBoundPosProperty() {
-            return new CodecProperty<>("bound_pos", BlockPos.CODEC);
+            return new CodecProperty<>("bound_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Vex, BlockPos> getBoundPosProperty(EntityProperties<?> ep) {
@@ -3147,7 +3149,7 @@ public final class VanillaEntityProperties {
     public static final class OfZombieVillager implements Creator {
 
         public static CodecProperty<ZombieVillager, UUID> createConversionPlayerProperty() {
-            return new CodecProperty<>("ConversionPlayer", UUIDUtil.CODEC);
+            return new CodecProperty<>("ConversionPlayer", UUID.class, UUIDUtil.CODEC);
         }
 
         public static CodecProperty<ZombieVillager, UUID> getConversionPlayerProperty(EntityProperties<?> ep) {
@@ -3163,7 +3165,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<ZombieVillager, GossipContainer> createGossipsProperty() {
-            return new CodecProperty<>("Gossips", GossipContainer.CODEC);
+            return new CodecProperty<>("Gossips", GossipContainer.class, GossipContainer.CODEC);
         }
 
         public static CodecProperty<ZombieVillager, GossipContainer> getGossipsProperty(EntityProperties<?> ep) {
@@ -3171,7 +3173,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<ZombieVillager, MerchantOffers> createOffersProperty() {
-            return new CodecProperty<>("Offers", MerchantOffers.CODEC);
+            return new CodecProperty<>("Offers", MerchantOffers.class, MerchantOffers.CODEC);
         }
 
         public static CodecProperty<ZombieVillager, MerchantOffers> getOffersProperty(EntityProperties<?> ep) {
@@ -3179,7 +3181,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<ZombieVillager, VillagerData> createVillagerDataProperty() {
-            return new CodecProperty<>("VillagerData", VillagerData.CODEC);
+            return new CodecProperty<>("VillagerData", VillagerData.class, VillagerData.CODEC);
         }
 
         public static CodecProperty<ZombieVillager, VillagerData> getVillagerDataProperty(EntityProperties<?> ep) {
@@ -3238,7 +3240,7 @@ public final class VanillaEntityProperties {
     public static final class OfCreaking implements Creator {
 
         public static CodecProperty<Creaking, BlockPos> createHomePosProperty() {
-            return new CodecProperty<>("home_pos", BlockPos.CODEC);
+            return new CodecProperty<>("home_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Creaking, BlockPos> getHomePosProperty(EntityProperties<?> ep) {
@@ -3349,18 +3351,18 @@ public final class VanillaEntityProperties {
     public static final class OfWarden implements Creator {
 
         public static CodecProperty<Warden, net.minecraft.world.entity.monster.warden.AngerManagement> createAngerProperty() {
-            return new CodecProperty<>("anger", net.minecraft.world.entity.monster.warden.AngerManagement.codec(Objects::nonNull));
+            return new CodecProperty<>("anger", net.minecraft.world.entity.monster.warden.AngerManagement.class, net.minecraft.world.entity.monster.warden.AngerManagement.codec(Objects::nonNull));
         }
 
         public static CodecProperty<Warden, net.minecraft.world.entity.monster.warden.AngerManagement> getAngerProperty(EntityProperties<?> ep) {
             return g(ep, "anger");
         }
 
-        public static CodecProperty<Warden, net.minecraft.world.entity.monster.warden.Warden.Data> createListenerProperty() {
-            return new CodecProperty<>("listener", net.minecraft.world.entity.monster.warden.Warden.Data.CODEC);
+        public static CodecProperty<Warden, Warden.Data> createListenerProperty() {
+            return new CodecProperty<>("listener", Warden.Data.class, Warden.Data.CODEC);
         }
 
-        public static CodecProperty<Warden, net.minecraft.world.entity.monster.warden.Warden.Data> getListenerProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Warden, Warden.Data> getListenerProperty(EntityProperties<?> ep) {
             return g(ep, "listener");
         }
 
@@ -3473,7 +3475,7 @@ public final class VanillaEntityProperties {
     public static final class OfPhantom implements Creator {
 
         public static CodecProperty<Phantom, BlockPos> createAnchorPosProperty() {
-            return new CodecProperty<>("anchor_pos", BlockPos.CODEC);
+            return new CodecProperty<>("anchor_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Phantom, BlockPos> getAnchorPosProperty(EntityProperties<?> ep) {
@@ -3588,7 +3590,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<ArmorStand, ArmorStand.ArmorStandPose> createPoseProperty() {
-            return new CodecProperty<>("Pose", ArmorStand.ArmorStandPose.CODEC);
+            return new CodecProperty<>("Pose", ArmorStand.ArmorStandPose.class, ArmorStand.ArmorStandPose.CODEC);
         }
 
         public static CodecProperty<ArmorStand, ArmorStand.ArmorStandPose> getPoseProperty(EntityProperties<?> ep) {

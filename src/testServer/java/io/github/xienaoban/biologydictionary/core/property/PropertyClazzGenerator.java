@@ -193,7 +193,7 @@ public class PropertyClazzGenerator {
             case CodecTagInfo codecTagInfo:
                 returnRawType = CodecProperty.class.getSimpleName();
                 returnType = returnRawType + "<" + entityClazz.getSimpleName() + ", " + codecTagInfo.typeString() + ">";
-                arguments += ", " + codecTagInfo.codec();
+                arguments += ", " + removeGenerics(codecTagInfo.typeString()) + ".class, " + codecTagInfo.codec();
                 break;
             case FuncTagInfo funcTagInfo:
                 String caller = funcTagInfo.caller();
@@ -268,5 +268,11 @@ public class PropertyClazzGenerator {
     private static String toLowerCamelCase(String s) {
         s = toUpperCamelCase(s);
         return Character.toLowerCase(s.charAt(0)) + s.substring(1);
+    }
+
+    private static String removeGenerics(String clazzName) {
+        int i = clazzName.indexOf('<');
+        if (i == -1) { return clazzName; }
+        return clazzName.substring(0, i);
     }
 }
