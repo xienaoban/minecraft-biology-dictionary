@@ -54,8 +54,8 @@ public final class EntityVariantPropertyBundle {
         BUNDLE.register(entityType, variantHandlers);
     }
 
-    public static <E extends Entity, V> List<VariantHandler<E, V>> getEntries(E entity) {
-        return Misc.cast(BUNDLE.getEntries(entity));
+    public static <E extends Entity, V> List<VariantHandler<E, V>> getHandlers(E entity) {
+        return Misc.cast(BUNDLE.getHandlers(entity));
     }
 
     public interface VariantHandler<E extends Entity, V> {

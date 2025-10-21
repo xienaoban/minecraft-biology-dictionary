@@ -8,27 +8,28 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public final class Bundle<EN> {
-    private final List<Function<Entity, EN>> patterns = new ArrayList<>();
-    private final Map<EntityType<?>, List<EN>> cache = new ConcurrentHashMap<>();
+public final class Bundle<H> {
+    private final List<Function<Entity, H>> patterns = new ArrayList<>();
+    private final Map<EntityType<?>, List<H>> cache = new ConcurrentHashMap<>();
 
-    void register(Function<Entity, EN> pattern) {
+    void register(Function<Entity, H> pattern) {
         patterns.add(pattern);
     }
 
-    void register(EntityType<?> entityType, EN... entries) {
+    @SafeVarargs
+    final void register(EntityType<?> entityType, H... handlers) {
         cache.computeIfAbsent(entityType, ignored -> new ArrayList<>())
-                .addAll(Arrays.asList(entries));
+                .addAll(Arrays.asList(handlers));
     }
 
-    List<EN> getEntries(Entity entity) {
+    List<H> getHandlers(Entity entity) {
         return cache.computeIfAbsent(EntityUtils.getEntityType(entity), ignored -> {
-            // Cache the entry if the entity matches the pattern.
-            List<EN> res = new ArrayList<>();
-            for (Function<Entity, EN> pattern : patterns) {
-                EN entry = pattern.apply(entity);
-                if (entry != null) {
-                    res.add(entry);
+            // Cache the handler if the entity matches the pattern.
+            List<H> res = new ArrayList<>();
+            for (Function<Entity, H> pattern : patterns) {
+                H handler = pattern.apply(entity);
+                if (handler != null) {
+                    res.add(handler);
                 }
             }
             return res;

@@ -34,7 +34,7 @@ public class EntitySetVariantSkill implements EntityTargetedSkill<Entity> {
         Object variant = args[1];
 
         EntityVariantPropertyBundle.VariantHandler<Entity, Object> variantHandler
-                = Misc.cast(EntityVariantPropertyBundle.getEntries(entity).get(variantHandlerIdx));
+                = Misc.cast(EntityVariantPropertyBundle.getHandlers(entity).get(variantHandlerIdx));
 
         Permissions.checkPlayerCreative(player);
 
@@ -50,7 +50,7 @@ public class EntitySetVariantSkill implements EntityTargetedSkill<Entity> {
         int variantHandlerIdx = tmp.getFirst().asInt().orElseThrow();
 
         EntityVariantPropertyBundle.VariantHandler<Entity, Object> variantHandler
-                = Misc.cast(EntityVariantPropertyBundle.getEntries(entity).get(variantHandlerIdx));
+                = Misc.cast(EntityVariantPropertyBundle.getHandlers(entity).get(variantHandlerIdx));
         Object variant = variantHandler.nbtToVariant(tmp.getLast());
 
         Permissions.checkPlayerCreative(player);
