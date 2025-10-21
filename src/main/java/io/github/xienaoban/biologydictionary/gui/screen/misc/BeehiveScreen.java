@@ -20,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -129,7 +130,7 @@ public class BeehiveScreen extends ElementScreen {
                 ctx.renderCenteredText(bee.entity.getCustomName(), color, 0.5F, ctx.getZ(), x, beeTop - 2);
             }
             if (ctx.getMouseX() > x - 10 && ctx.getMouseX() < x + 10 && ctx.getMouseY() > beeTop && ctx.getMouseY() < y) {
-                List<Component> texts = List.of(
+                List<Component> texts = Arrays.asList(
                         bee.entity.getName(),
                         Component.translatable(Lang.TEXT_BEE_STATE_IN_BEEHIVE, Component.translatable(bee.entity.hasNectar() ? Lang.TEXT_BEE_PRODUCING_NECTAR : Lang.TEXT_BEE_RESTING)).withStyle(ChatFormatting.GRAY),
                         Component.translatable(Lang.TEXT_TIME_IN_BEEHIVE, (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s").withStyle(ChatFormatting.GRAY)
