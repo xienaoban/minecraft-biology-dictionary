@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -125,7 +126,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
         public TagCatalog(int depth, EntityManager.Tag tag) {
             super(depth, ComponentUtils.formatList(
-                    List.of(tag.getText(), Component.literal("(" + tag.getEntities().size() + ")")),
+                    Arrays.asList(tag.getText(), Component.literal("(" + tag.getEntities().size() + ")")),
                     Component.literal(" ")));
             this.tag = tag;
         }
@@ -244,13 +245,13 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
             List<Component> tooltips;
             if (mouseY < BUTTONS_CUT) {
-                tooltips = List.of(
+                tooltips = Arrays.asList(
                         tooltipTitle(Lang.WIDGET_ENTITY_HIGHLIGHT),
                         Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC, HighlightEntitiesSkill.NEAR_RADIUS, HighlightEntitiesSkill.NEAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
                         Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS, HighlightEntitiesSkill.FAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY)
                 );
             } else {
-                tooltips = List.of(
+                tooltips = Arrays.asList(
                         tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG),
                         tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC)
                 );

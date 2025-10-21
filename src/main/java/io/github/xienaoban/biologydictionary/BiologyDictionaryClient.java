@@ -21,7 +21,7 @@ import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -79,7 +79,7 @@ public final class BiologyDictionaryClient {
             screen.sendScreenMessage(text);
         } else {
             ClientUtils.sendCenteredMessage(ComponentUtils.formatList(
-                    List.of(Component.translatable(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN), text),
+                    Arrays.asList(Component.translatable(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN), text),
                     Component.empty()
             ));
         }
@@ -101,7 +101,7 @@ public final class BiologyDictionaryClient {
         String errStack = Misc.getStackToString(throwable);
         LOGGER.error(errStack);
         ClientUtils.sendTextBoxMessage(ComponentUtils.formatList(
-                List.of(
+                Arrays.asList(
                         Component.translatable(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN),
                         Component.literal(throwable.toString()).withStyle(ChatFormatting.RED)
                 ),

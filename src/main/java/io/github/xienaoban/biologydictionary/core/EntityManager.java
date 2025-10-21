@@ -90,7 +90,7 @@ public final class EntityManager {
     private final TagGroup classTags     = new TagGroup(Lang.TAG_GROUP_CLASS,     Component.translatable(Lang.TAG_GROUP_CLASS_DESC));
     private final TagGroup interfaceTags = new TagGroup(Lang.TAG_GROUP_INTERFACE, Component.translatable(Lang.TAG_GROUP_INTERFACE_DESC));
 
-    private final List<TagGroup> tagGroups = new ArrayList<>(List.of(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
+    private final List<TagGroup> tagGroups = new ArrayList<>(Arrays.asList(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
 
     private EntityManager(Level level) {
         EntityOrder.map.get(null);

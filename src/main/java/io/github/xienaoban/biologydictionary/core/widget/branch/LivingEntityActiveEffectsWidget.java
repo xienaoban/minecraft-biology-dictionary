@@ -21,6 +21,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -67,7 +68,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
                 maxW = Math.max(maxW, ctx.calcTextWidth(name));
             }
             for (MobEffectInstance effect : effects) {
-                Component name = ComponentUtils.formatList(List.of(
+                Component name = ComponentUtils.formatList(Arrays.asList(
                         effect.getEffect().value().getDisplayName(),
                         Component.literal(String.valueOf(effect.getAmplifier() + 1))),
                         Component.empty());
@@ -82,7 +83,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
                 }
                 int w = ctx.calcTextWidth(name) + ctx.calcTextWidth(time);
                 Component dot = Component.literal(".".repeat(Math.max(0, (maxW + 40 - w) / 2))).withStyle(ChatFormatting.DARK_GRAY);
-                list.add(ComponentUtils.formatList(List.of(name, dot, time), Component.literal(" ")));
+                list.add(ComponentUtils.formatList(Arrays.asList(name, dot, time), Component.literal(" ")));
             }
         }
         renderTooltip(ctx, list);
