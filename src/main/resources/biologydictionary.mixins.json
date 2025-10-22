@@ -13,6 +13,7 @@
     "HorseIMixin",
     "MobEffectInstanceIMixin",
     "MobIMixin",
+    "ServerPlayerIMixin",
     "TemptGoalIMixin",
     "WanderingTraderMixin"
   ],

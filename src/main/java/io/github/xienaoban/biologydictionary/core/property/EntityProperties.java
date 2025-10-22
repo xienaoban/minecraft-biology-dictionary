@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.property;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -21,6 +22,7 @@ public final class EntityProperties<E extends Entity> {
         ExtraEntityProperties.init();
 
         EntityVariantPropertyBundle.init();
+        EntityInventoryPropertyBundle.init();
     }
 
     private final E entity;

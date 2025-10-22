@@ -82,10 +82,10 @@ public final class BiologyDictionaryItem {
         return createWritableBook();
     }
 
+    @SuppressWarnings("all")
     public static boolean isBook(ItemStack stack) {
         if (stack == null || !stack.is(Items.WRITABLE_BOOK)) return false;
         CustomData cd = stack.get(DataComponents.CUSTOM_DATA);
-        // [TODO] remove "(Object)"
         return cd != null && ((CustomDataIMixin) (Object) cd).getTag().contains(ID);
     }
 

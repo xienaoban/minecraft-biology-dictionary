@@ -14,6 +14,7 @@
 
   "screen.biologydictionary.player_selector": "Player Selector",
   "screen.biologydictionary.player_selector.desc": "Please select an online player near you.",
+  "screen.biologydictionary.stealing" : "Stealing",
 
   "bookmark.biologydictionary.all"          : "All",
   "bookmark.biologydictionary.back_to_home" : "Back To Home",
