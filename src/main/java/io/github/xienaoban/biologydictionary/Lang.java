@@ -31,6 +31,7 @@ public final class Lang {
 
     SCREEN_PLAYER_SELECTOR      = "screen.biologydictionary.player_selector",
     SCREEN_PLAYER_SELECTOR_DESC = "screen.biologydictionary.player_selector.desc",
+    SCREEN_STEALING             = "screen.biologydictionary.stealing",
 
     BOOKMARK_ALL          = "bookmark.biologydictionary.all",
     BOOKMARK_BACK_TO_HOME = "bookmark.biologydictionary.back_to_home",

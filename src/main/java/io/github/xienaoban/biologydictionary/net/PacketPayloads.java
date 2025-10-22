@@ -8,14 +8,15 @@ import java.util.List;
 
 public final class PacketPayloads {
     public static final List<Class<? extends Packet>> LIST = Arrays.asList(
-            RequestBeehiveInfoPacket.class,
-            RequestEntityDataPacket.class,
-            RequestHandbookItemPacket.class,
             SendCenteredMessagePacket.class,
-            ReplyBeehiveInfoPacket.class,
+            RequestEntityDataPacket.class,
             ReplyEntityDataPacket.class,
+            RequestHandbookItemPacket.class,
             RequestCommonSkillPacket.class,
             RequestEntityOrientedSkillPacket.class,
-            ReplyHighlightEntitiesPacket.class
+            ReplyHighlightEntitiesPacket.class,
+            ReplyInventoryStealingScreenPacket.class,
+            RequestBeehiveInfoPacket.class,
+            ReplyBeehiveInfoPacket.class
     );
 }

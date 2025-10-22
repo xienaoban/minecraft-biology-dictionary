@@ -14,6 +14,7 @@
 
   "screen.biologydictionary.player_selector": "玩家选择器",
   "screen.biologydictionary.player_selector.desc": "请选择一个在您附近的在线玩家。",
+  "screen.biologydictionary.stealing" : "偷窃",
 
   "bookmark.biologydictionary.all"          : "所有生物",
   "bookmark.biologydictionary.back_to_home" : "返回主页",
