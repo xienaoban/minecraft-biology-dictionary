@@ -2,23 +2,24 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+/**
+ * @see net.minecraft.world.inventory.HorseInventoryMenu
+ */
 public class InventoryStealingMenu extends AbstractContainerMenu {
-    private final Player player;
-    private final Inventory inventory;
-    private final Entity entity;
-    private final Container container;
-    private final EntityInventoryPropertyBundle.InventoryHandler<Entity> handler;
+    final Inventory inventory;
+    final LivingEntity entity;
+    final Container container;
+    final EntityInventoryPropertyBundle.InventoryHandler<LivingEntity> handler;
 
-    public InventoryStealingMenu(int containerId, Player player, Inventory inventory, Entity entity, Container container) {
+    public InventoryStealingMenu(int containerId, Inventory inventory, LivingEntity entity, Container container) {
         super(null, containerId);
-        this.player = player;
         this.inventory = inventory;
         this.entity = entity;
         this.container = container;
@@ -26,8 +27,10 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
         container.startOpen(inventory.player);
 
-        for (int i = 0; i < container.getContainerSize(); ++i) {
-            this.addSlot(new Slot(container, i, 80 + (i / 3) * 18, 18 + (i % 3) * 18));
+        final int size = container.getContainerSize();
+        final int mod = (size % 2 == 0 && size <= 10) ? 2 : 3;
+        for (int i = 0; i < size; ++i) {
+            this.addSlot(new Slot(container, i, 80 + (i / mod) * 18, 18 + (i % mod) * 18));
         }
 
         this.addStandardInventorySlots(inventory, 8, 84);

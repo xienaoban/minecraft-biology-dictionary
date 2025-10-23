@@ -38,8 +38,9 @@ public class LivingEntityStealInventorySkill implements EntityTargetedSkill<Livi
     public void serverReceive(MinecraftServer server, ServerPlayer player, LivingEntity entity, Tag args) {
         Permissions.checkLegalArg(args.asBoolean().orElseThrow(), false);
         Container container = EntityInventoryPropertyBundle.getContainerOrEmpty(entity);
-        int counter = PlayerUtils.openContainerInventoryMenu(player, (counter1, inventory1, player1)
-                -> new InventoryStealingMenu(counter1, player1, inventory1, entity, container));
-        ServerNetManager.replyInventoryStealingScreen(player, counter, entity, container);
+        PlayerUtils.openContainerInventoryMenu(player, (counter, inventory, player1) -> {
+            ServerNetManager.replyInventoryStealingScreen(player, counter, entity, container);
+            return new InventoryStealingMenu(counter, inventory, entity, container);
+        });
     }
 }

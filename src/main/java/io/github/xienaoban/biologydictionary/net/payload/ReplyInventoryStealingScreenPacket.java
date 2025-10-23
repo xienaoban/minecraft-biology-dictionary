@@ -54,7 +54,7 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
         }
 
         SimpleContainer container = new SimpleContainer(containerSize);
-        InventoryStealingMenu menu = new InventoryStealingMenu(counter, ctx.player(), ctx.player().getInventory(), entity, container);
+        InventoryStealingMenu menu = new InventoryStealingMenu(counter, ctx.player().getInventory(), livingEntity, container);
         ctx.player().containerMenu = menu;
         ctx.client().setScreen(new InventoryStealingScreen(menu, ctx.player().getInventory(), livingEntity));
     }
