@@ -45,8 +45,8 @@ public final class EntityInventoryPropertyBundle {
     }
 
     public static final Function<Entity, InventoryHandler<?>> CARRIER_PATTERN = entity -> {
-        if (entity instanceof InventoryCarrier inventoryCarrier) {
-            return (InventoryHandler<Entity>) entity1 -> inventoryCarrier.getInventory();
+        if (entity instanceof InventoryCarrier) {
+            return (InventoryHandler<Entity>) e -> ((InventoryCarrier) e).getInventory();
         }
         return null;
     };

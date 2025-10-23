@@ -63,6 +63,8 @@ public final class PlayerUtils {
 
     /**
      * This method only opens the menu. Send the relative packet yourself!
+     *
+     * @see net.minecraft.server.level.ServerPlayer#openHorseInventory(net.minecraft.world.entity.animal.horse.AbstractHorse, net.minecraft.world.Container)
      */
     public static int openContainerInventoryMenu(ServerPlayer player, MenuConstructor menuConstructor) {
         ServerPlayerIMixin mixinPlayer = (ServerPlayerIMixin) player;
@@ -72,10 +74,10 @@ public final class PlayerUtils {
 
         mixinPlayer.invokeNextContainerCounter();
         int counter = mixinPlayer.getContainerCounter();
-        AbstractContainerMenu abstractContainerMenu
+        AbstractContainerMenu menu
                 = menuConstructor.createMenu(mixinPlayer.getContainerCounter(), player.getInventory(), player);
-        player.containerMenu = Objects.requireNonNull(abstractContainerMenu);
-        mixinPlayer.invokeInitMenu(abstractContainerMenu);
+        player.containerMenu = Objects.requireNonNull(menu);
+        mixinPlayer.invokeInitMenu(menu);
         return counter;
     }
 }
