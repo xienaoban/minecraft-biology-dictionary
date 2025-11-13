@@ -10,7 +10,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
 public final class MobTemptProperty extends ItemStackListProperty<Mob> {
@@ -37,6 +40,11 @@ public final class MobTemptProperty extends ItemStackListProperty<Mob> {
             res.sort(Comparator.comparingInt(o -> BuiltInRegistries.ITEM.getId(o.getItem())));
             setVal(res);
         }
+    }
+
+    @Override
+    public void setTo(Mob entity) {
+        throw new UnsupportedOperationException();
     }
 
     private static @NotNull List<Predicate<ItemStack>> getPredicates(Mob entity) {

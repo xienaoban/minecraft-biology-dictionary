@@ -29,7 +29,7 @@ public interface EntityProperty<E extends Entity> {
      * The default implementation is based on vanilla properties.
      *
      * @param entity Minecraft entity
-     * @see Entity#addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput
+     * @see Entity#addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput)
      */
     default void getFrom(E entity) {
         readFrom(EntityUtils.getNbt(entity));
