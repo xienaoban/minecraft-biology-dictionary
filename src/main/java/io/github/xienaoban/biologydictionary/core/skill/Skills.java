@@ -26,6 +26,7 @@ public final class Skills {
         register(new EntitySetSoundSkill());
         register(new EntitySetPortalCooldownSkill());
         register(new MobSetNoAiSkill());
+        register(new MobForcePersistentSkill());
         register(new LivingEntityStealInventorySkill());
         register(new SheepForceEatGrassSkill());
         register(new AgeableMobSetForcedAgeSkill());

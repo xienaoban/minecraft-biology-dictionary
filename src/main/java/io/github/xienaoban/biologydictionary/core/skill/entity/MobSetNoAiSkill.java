@@ -74,9 +74,13 @@ public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
         check(player, entity);
         CompoundTag nbt = VanillaEntityProperties.OfMob.createNoAiProperty().withVal(noAi).toTag();
 
-        // Clear the motion caused by collisions accumulated during the AI-disabled period
-        // to prevent the entity from flying around randomly.
-        VanillaEntityProperties.OfEntity.createMotionProperty().withVal(Vec3.ZERO).writeTo(nbt);
+        if (noAi) {
+            VanillaEntityProperties.OfMob.createPersistenceRequiredProperty().withVal(true).writeTo(nbt);
+        } else {
+            // Clear the motion caused by collisions accumulated during the AI-disabled period
+            // to prevent the entity from flying around randomly.
+            VanillaEntityProperties.OfEntity.createMotionProperty().withVal(Vec3.ZERO).writeTo(nbt);
+        }
 
         // Set the entity without AI to be invulnerable to avoid disrupting the balance of Survival Mode.
         if (!PlayerUtils.isCreative(player)) {

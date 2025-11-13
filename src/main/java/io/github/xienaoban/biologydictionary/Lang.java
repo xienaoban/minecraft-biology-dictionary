@@ -1,10 +1,22 @@
 package io.github.xienaoban.biologydictionary;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+
 /**
  * Translation keys for languages.
  */
 public final class Lang {
     private Lang() {}
+
+    public static String keyYesOrNo(boolean v) {
+        return v ? GUI_YES : GUI_NO;
+    }
+
+    public static MutableComponent textYesOrNo(boolean v) {
+        return Component.translatable(keyYesOrNo(v));
+    }
+
     public static final String
     __START__ = "",
 
@@ -114,6 +126,14 @@ public final class Lang {
     PROPERTY_WIDGET_SOUND_DESC                  = "property_widget.biologydictionary.sound.desc",
     PROPERTY_WIDGET_SOUND_SWITCH                = "property_widget.biologydictionary.sound.switch",
     PROPERTY_WIDGET_SOUND_SWITCH_DESC           = "property_widget.biologydictionary.sound.switch.desc",
+    PROPERTY_WIDGET_PERSISTENCE                 = "property_widget.biologydictionary.persistence",
+    PROPERTY_WIDGET_PERSISTENCE_DESC            = "property_widget.biologydictionary.persistence.desc",
+    PROPERTY_WIDGET_PERSISTENCE_FORCED          = "property_widget.biologydictionary.persistence.forced",
+    PROPERTY_WIDGET_PERSISTENCE_FORCED_DESC     = "property_widget.biologydictionary.persistence.forced.desc",
+    PROPERTY_WIDGET_PERSISTENCE_FINAL           = "property_widget.biologydictionary.persistence.final",
+    PROPERTY_WIDGET_PERSISTENCE_FINAL_DESC      = "property_widget.biologydictionary.persistence.final.desc",
+    PROPERTY_WIDGET_PERSISTENCE_FINAL_FORCED    = "property_widget.biologydictionary.persistence.final.forced",
+    PROPERTY_WIDGET_PERSISTENCE_FINAL_NATURAL   = "property_widget.biologydictionary.persistence.final.natural",
     PROPERTY_WIDGET_GROWTH                      = "property_widget.biologydictionary.growth",
     PROPERTY_WIDGET_GROWTH_DESC                 = "property_widget.biologydictionary.growth.desc",
     PROPERTY_WIDGET_GROWTH_LOCK                 = "property_widget.biologydictionary.growth.lock",
@@ -185,6 +205,7 @@ public final class Lang {
     TEXT_EMPTY_WITH_BRACKETS                 = "text.biologydictionary.empty_with_brackets",
     TEXT_INFINITY                            = "text.biologydictionary.infinity",
     TEXT_INFINITY_CHARACTER                  = "text.biologydictionary.infinity_character",
+    TEXT_CUSTOM_NAME_FORCE_PERSISTENT        = "text.biologydictionary.custom_name_force_persistent",
     TEXT_BABY                                = "text.biologydictionary.baby",
     TEXT_ADULT                               = "text.biologydictionary.adult",
     TEXT_ALWAYS_BABY                         = "text.biologydictionary.always_baby",

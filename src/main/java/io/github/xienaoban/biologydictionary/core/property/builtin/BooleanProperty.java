@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.property.builtin;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
-public final class BooleanProperty<E extends Entity> extends AbstractProperty<E, Boolean> {
+public class BooleanProperty<E extends Entity> extends AbstractProperty<E, Boolean> {
     public BooleanProperty(String propertyName) {
         super(propertyName);
     }

@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.property.builtin;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
-public final class LongProperty<E extends Entity> extends AbstractProperty<E, Long> {
+public class LongProperty<E extends Entity> extends AbstractProperty<E, Long> {
     public LongProperty(String propertyName) {
         super(propertyName);
     }
