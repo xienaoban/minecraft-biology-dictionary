@@ -64,7 +64,7 @@ import java.util.*;
 
 public final class VanillaEntityProperties {
 
-    static final Map<Class<? extends Entity>, Creator> registries = new HashMap<>();
+    static final Map<Class<? extends Entity>, Creator> registry = new HashMap<>();
 
     @FunctionalInterface
     interface Creator {
@@ -72,8 +72,8 @@ public final class VanillaEntityProperties {
         void create(Map<String, EntityProperty<?>> map);
     }
 
-    private static void r(Class<? extends Entity> clazz, Creator registry) {
-        registries.put(clazz, registry);
+    private static void r(Class<? extends Entity> clazz, Creator creator) {
+        registry.put(clazz, creator);
     }
 
     private static <EP extends EntityProperty<?>> EP g(EntityProperties<?> ep, String key) {

@@ -8,6 +8,8 @@ import net.minecraft.world.entity.npc.Villager;
 import java.util.Optional;
 
 public class VillagerJobSiteProperty extends GlobalPosProperty<Villager> {
+    public static final Factory<Villager> FACTORY = VillagerJobSiteProperty::new;
+
     public VillagerJobSiteProperty() {
         super(VillagerJobSiteProperty.class.getSimpleName());
     }

@@ -8,6 +8,8 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.world.entity.animal.Panda;
 
 public sealed class PandaMainGeneWidget extends AbstractEntityStandardVariantWidget<Panda, Panda.Gene> permits PandaHiddenGeneWidget {
+    public static final Factory<Panda> FACTORY = PandaMainGeneWidget::new;
+
     private static final int VH_IDX = 0;
 
     public PandaMainGeneWidget(EntityProperties<Panda> properties) {

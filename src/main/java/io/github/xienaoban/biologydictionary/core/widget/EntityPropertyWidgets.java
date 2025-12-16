@@ -11,126 +11,108 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.*;
 
 @Environment(EnvType.CLIENT)
 public final class EntityPropertyWidgets {
 
-    private static final Map<Class<? extends Entity>, List<Registry>> registries = new HashMap<>();
+    private static final Map<Class<? extends Entity>, List<Entry>> registry = new HashMap<>();
 
     private static int orderIndex;
     private static Set<Class<?>> visited;
-    private static MethodHandles.Lookup lookup;
+
+    private static void registerBuiltIn() {
+        r(EntityDisplayWidget.class, EntityDisplayWidget.FACTORY);
+        r(LivingEntityHealthWidget.class, LivingEntityHealthWidget.FACTORY);
+        r(EntityAirWidget.class, EntityAirWidget.FACTORY);
+        r(DolphinMoistnessWidget.class, DolphinMoistnessWidget.FACTORY);
+        r(LivingEntityActiveEffectsWidget.class, LivingEntityActiveEffectsWidget.FACTORY);
+        r(AnimalFoodWidget.class, AnimalFoodWidget.FACTORY);
+        r(MobTemptWidget.class, MobTemptWidget.FACTORY);
+        r(LivingEntityMovementSpeedWidget.class, LivingEntityMovementSpeedWidget.FACTORY);
+        r(LivingEntityJumpStrengthWidget.class, LivingEntityJumpStrengthWidget.FACTORY);
+        r(EntityLeashableWidget.class, EntityLeashableWidget.FACTORY);
+        r(GoatScreamingWidget.class, GoatScreamingWidget.FACTORY);
+        r(EntityBoundingBoxWidget.class, EntityBoundingBoxWidget.FACTORY);
+        r(TurnPageTriggerWidget.class, TurnPageTriggerWidget.FACTORY);
+        r(EntityStandardVariantWidget.class, EntityStandardVariantWidget.FACTORY);
+        r(HorseMarkingsWidget.class, HorseMarkingsWidget.FACTORY);
+        r(PandaMainGeneWidget.class, PandaMainGeneWidget.FACTORY);
+        r(PandaHiddenGeneWidget.class, PandaHiddenGeneWidget.FACTORY);
+        r(VillagerTypeWidget.class, VillagerTypeWidget.FACTORY);
+        r(VillagerScheduleWidget.class, VillagerScheduleWidget.FACTORY);
+        r(MobAiWidget.class, MobAiWidget.FACTORY);
+        r(EntityInvulnerableWidget.class, EntityInvulnerableWidget.FACTORY);
+        r(EntitySoundWidget.class, EntitySoundWidget.FACTORY);
+        r(MobPersistenceWidget.class, MobPersistenceWidget.FACTORY);
+        r(LivingEntityInventoryWidget.class, LivingEntityInventoryWidget.FACTORY);
+        r(SheepEatGrassWidget.class, SheepEatGrassWidget.FACTORY);
+        r(AgeableMobGrowthWidget.class, AgeableMobGrowthWidget.FACTORY);
+        r(AgeableMobBreedingCooldownWidget.class, AgeableMobBreedingCooldownWidget.FACTORY);
+        r(AnimalInLoveWidget.class, AnimalInLoveWidget.FACTORY);
+        r(EntityPortalCooldownWidget.class, EntityPortalCooldownWidget.FACTORY);
+        r(EntityOwnerWidget.class, EntityOwnerWidget.FACTORY);
+        r(VillagerJobSiteWidget.class, VillagerJobSiteWidget.FACTORY);
+        r(VillagerRestocksTodayWidget.class, VillagerRestocksTodayWidget.FACTORY);
+        r(BeeHivePropertyWidget.class, BeeHivePropertyWidget.FACTORY);
+        r(WanderingTraderDespawnDelayWidget.class, WanderingTraderDespawnDelayWidget.FACTORY);
+    }
 
     public static void init() {
         orderIndex = 0;
         visited = new HashSet<>();
-        lookup = MethodHandles.lookup();
         registerBuiltIn();
         orderIndex = -1;
         visited = null;
-        lookup = null;
     }
 
-    private record Registry(int order, Class<? extends EntityPropertyWidget<?>> clazz, MethodHandle creator) {
-        public static final Comparator<Registry> CMP = Comparator.comparingInt(Registry::order);
+    private record Entry(int order, Class<? extends EntityPropertyWidget<?>> clazz,
+                         EntityPropertyWidget.Factory<?> factory) {
+        public static final Comparator<Entry> CMP = Comparator.comparingInt(Entry::order);
 
         public EntityPropertyWidget<?> create(EntityProperties<?> properties) {
-            try {
-                return (EntityPropertyWidget<?>) creator.invoke(properties);
-            } catch (RuntimeException e) {
-                throw e;
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
+            return factory.create(Misc.cast(properties));
         }
     }
 
     public static List<EntityPropertyWidget<?>> getWidgets(EntityProperties<?> properties) {
-        List<Registry> registries = new ArrayList<>(16);
-        for (var clazz : EntityUtils.topDown(properties.entity())) {
-            registries.addAll(getRegistries(clazz));
+        List<Entry> entries = new ArrayList<>(16);
+        for (Class<? extends Entity> clazz : EntityUtils.topDown(properties.entity())) {
+            entries.addAll(getEntries(clazz));
         }
-        registries.sort(Registry.CMP);
+        entries.sort(Entry.CMP);
 
-        List<EntityPropertyWidget<?>> res = new ArrayList<>(registries.size());
-        for (var registry : registries) {
-            try {
-                res.add(registry.create(properties));
-            } catch (UnsupportedWidgetException ignored) {
-                // Verification failed. This widget doesn't fit the entity.
+        List<EntityPropertyWidget<?>> res = new ArrayList<>(entries.size());
+        for (Entry entry : entries) {
+            EntityPropertyWidget<?> widget = entry.create(properties);
+            if (widget != null) {
+                res.add(entry.create(properties));
             }
         }
         return res;
     }
 
-    private static <E extends Entity> void r(Class<? extends EntityPropertyWidget<E>> widgetClazz) {
+    private static <E extends Entity> void r(Class<? extends EntityPropertyWidget<E>> widgetClazz,
+                                             EntityPropertyWidget.Factory<?> widgetFactory) {
         if (!visited.add(widgetClazz)) {
             throw new IllegalStateException(widgetClazz + " is already registered!");
         }
 
-        final Class<E> entityClazz;
-        final MethodHandle createWidget;
-        try {
-            entityClazz = Misc.cast(Misc.getClazzGeneric(widgetClazz, EntityPropertyWidget.class, 0)
-                    .asSubclass(Entity.class));
-            if (!widgetClazz.getSimpleName().startsWith(entityClazz.getSimpleName())
-                    && Misc.cast(widgetClazz) != TurnPageTriggerWidget.class) {
-                throw new AssertionError(widgetClazz + " must be started with \"" + entityClazz.getSimpleName() + "\"!");
-            }
-
-            // Get the constructor of the widget class.
-            createWidget = lookup.findConstructor(widgetClazz, MethodType.methodType(void.class, EntityProperties.class));
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to register " + widgetClazz, e);
+        Class<?> tmp = Misc.getClazzGeneric(widgetClazz, EntityPropertyWidget.class, 0);
+        final Class<E> entityClazz = Misc.cast(tmp.asSubclass(Entity.class));
+        if (!widgetClazz.getSimpleName().startsWith(entityClazz.getSimpleName())
+                && Misc.cast(widgetClazz) != TurnPageTriggerWidget.class) {
+            throw new AssertionError(widgetClazz + " must be started with \""
+                    + entityClazz.getSimpleName() + "\"!");
         }
 
         // Register it.
-        Registry registry = new Registry(++orderIndex, widgetClazz, createWidget);
-        registries.computeIfAbsent(entityClazz, clazz -> new ArrayList<>()).add(registry);
+        Entry entry = new Entry(++orderIndex, widgetClazz, widgetFactory);
+        EntityPropertyWidgets.registry.computeIfAbsent(entityClazz,
+                clazz -> new ArrayList<>()).add(entry);
     }
 
-    private static List<Registry> getRegistries(Class<? extends Entity> clazz) {
-        return registries.getOrDefault(clazz, Collections.emptyList());
-    }
-
-    private static void registerBuiltIn() {
-        r(EntityDisplayWidget.class);
-        r(LivingEntityHealthWidget.class);
-        r(EntityAirWidget.class);
-        r(DolphinMoistnessWidget.class);
-        r(LivingEntityActiveEffectsWidget.class);
-        r(AnimalFoodWidget.class);
-        r(MobTemptWidget.class);
-        r(LivingEntityMovementSpeedWidget.class);
-        r(LivingEntityJumpStrengthWidget.class);
-        r(EntityLeashableWidget.class);
-        r(GoatScreamingWidget.class);
-        r(EntityBoundingBoxWidget.class);
-        r(TurnPageTriggerWidget.class);
-        r(EntityStandardVariantWidget.class);
-        r(HorseMarkingsWidget.class);
-        r(PandaMainGeneWidget.class);
-        r(PandaHiddenGeneWidget.class);
-        r(VillagerTypeWidget.class);
-        r(VillagerScheduleWidget.class);
-        r(MobAiWidget.class);
-        r(EntityInvulnerableWidget.class);
-        r(EntitySoundWidget.class);
-        r(MobPersistenceWidget.class);
-        r(LivingEntityInventoryWidget.class);
-        r(SheepEatGrassWidget.class);
-        r(AgeableMobGrowthWidget.class);
-        r(AgeableMobBreedingCooldownWidget.class);
-        r(AnimalInLoveWidget.class);
-        r(EntityPortalCooldownWidget.class);
-        r(EntityOwnerWidget.class);
-        r(VillagerJobSiteWidget.class);
-        r(VillagerRestocksTodayWidget.class);
-        r(BeeHivePropertyWidget.class);
-        r(WanderingTraderDespawnDelayWidget.class);
+    private static List<Entry> getEntries(Class<? extends Entity> clazz) {
+        return registry.getOrDefault(clazz, Collections.emptyList());
     }
 }

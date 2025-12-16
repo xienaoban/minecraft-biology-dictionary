@@ -18,6 +18,8 @@ import net.minecraft.world.entity.Mob;
 
 @Environment(EnvType.CLIENT)
 public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
+    public static final Factory<Mob> FACTORY = MobAiWidget::new;
+
     private static final int L = 18, T = 1;
 
     public MobAiWidget(EntityProperties<Mob> properties) {

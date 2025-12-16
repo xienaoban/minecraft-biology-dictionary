@@ -15,6 +15,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 
 public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
+    public static final Factory<Sheep> FACTORY = SheepEatGrassWidget::new;
+
     private static final int L = 19, T = 2;
     private static final int L_GRASS = 21, T_GRASS = 4;
 

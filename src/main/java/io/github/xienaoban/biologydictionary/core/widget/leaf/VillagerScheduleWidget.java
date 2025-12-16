@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<Villager> {
+    public static final Factory<Villager> FACTORY = VillagerScheduleWidget::new;
+
     private static final int L = 11, T = 4;
     private static final int AW = 4;
 

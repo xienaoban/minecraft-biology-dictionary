@@ -14,6 +14,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 public class EntitySetPortalCooldownSkill implements EntityTargetedSkill<Entity> {
+    public static final int ENTITY_PORTAL_COOLDOWN_INFINITY = 303;
+
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, int cooldown) {
         return Skills.sendEntityOrientedSkill(entity, cooldown);

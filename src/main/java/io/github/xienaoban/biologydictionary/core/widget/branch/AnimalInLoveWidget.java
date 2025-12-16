@@ -18,6 +18,8 @@ import net.minecraft.world.entity.animal.Animal;
 
 @Environment(EnvType.CLIENT)
 public final class AnimalInLoveWidget extends EntityPropertyStandardWidget<Animal> {
+    public static final Factory<Animal> FACTORY = AnimalInLoveWidget::new;
+
     private static final int L = 6, T = 3;
 
     private static final int IN_LOVE_MAX_TIME = 600;

@@ -21,6 +21,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWidget<WanderingTrader> {
+    public static final Factory<WanderingTrader> FACTORY = WanderingTraderDespawnDelayWidget::new;
+
     private static final int L = 6, T = 6;
 
     /**

@@ -10,6 +10,8 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerType;
 
 public final class VillagerTypeWidget extends AbstractEntityStandardVariantWidget<Villager, Holder<VillagerType>> {
+    public static final Factory<Villager> FACTORY = VillagerTypeWidget::new;
+
     private static final int VH_IDX = 0;
 
     public VillagerTypeWidget(EntityProperties<Villager> properties) {

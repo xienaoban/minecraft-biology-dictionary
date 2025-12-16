@@ -17,6 +17,8 @@ import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntityInvulnerableWidget::new;
+
     private static final int L = 19, T = 1;
 
     private final BooleanProperty<Entity> invulnerableProperty = VanillaEntityProperties.OfEntity.getInvulnerableProperty(p());

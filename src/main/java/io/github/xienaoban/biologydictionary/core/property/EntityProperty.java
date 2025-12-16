@@ -47,4 +47,9 @@ public interface EntityProperty<E extends Entity> {
         writeTo(nbt);
         EntityUtils.mergeNbt(entity, nbt);
     }
+
+    @FunctionalInterface
+    interface Factory<E extends Entity> {
+        EntityProperty<E> create();
+    }
 }

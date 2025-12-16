@@ -16,6 +16,8 @@ import net.minecraft.world.phys.AABB;
 
 @Environment(EnvType.CLIENT)
 public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntityBoundingBoxWidget::new;
+
     private static final int L = 11, T = 1;
 
     public EntityBoundingBoxWidget(EntityProperties<Entity> properties) {

@@ -12,6 +12,8 @@ import net.minecraft.world.entity.animal.horse.Markings;
 
 @Environment(EnvType.CLIENT)
 public final class HorseMarkingsWidget extends AbstractEntityStandardVariantWidget<Horse, Markings> {
+    public static final Factory<Horse> FACTORY = HorseMarkingsWidget::new;
+
     private static final int VH_IDX = 1;
 
     public HorseMarkingsWidget(EntityProperties<Horse> properties) {

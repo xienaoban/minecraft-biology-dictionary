@@ -2,8 +2,8 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import net.fabricmc.api.EnvType;
@@ -23,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
  */
 @Environment(EnvType.CLIENT)
 public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntityDisplayWidget::new;
 
     private static RC calculateRowsAndColumns(Entity entity) {
         AABB box = entity.getBoundingBox();

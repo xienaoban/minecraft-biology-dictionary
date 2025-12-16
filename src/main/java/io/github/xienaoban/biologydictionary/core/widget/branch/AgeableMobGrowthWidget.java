@@ -20,6 +20,8 @@ import net.minecraft.world.entity.AgeableMob;
 
 @Environment(EnvType.CLIENT)
 public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<AgeableMob> {
+    public static final Factory<AgeableMob> FACTORY = AgeableMobGrowthWidget::new;
+
     private static final int L = 1, T = 4;
 
     private static final int BABY_MIN_AGE = AgeableMob.BABY_START_AGE;

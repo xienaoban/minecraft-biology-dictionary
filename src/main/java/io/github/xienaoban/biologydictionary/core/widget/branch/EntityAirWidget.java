@@ -16,6 +16,8 @@ import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntityAirWidget::new;
+
     private static final int L = 6, T = 1;
 
     public EntityAirWidget(EntityProperties<Entity> properties) {

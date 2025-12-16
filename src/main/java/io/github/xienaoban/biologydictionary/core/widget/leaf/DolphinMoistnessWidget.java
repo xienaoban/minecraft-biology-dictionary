@@ -14,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.Dolphin;
 
 public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin> {
+    public static final Factory<Dolphin> FACTORY = DolphinMoistnessWidget::new;
+
     private static final int L = 6, T = 2;
 
     /**

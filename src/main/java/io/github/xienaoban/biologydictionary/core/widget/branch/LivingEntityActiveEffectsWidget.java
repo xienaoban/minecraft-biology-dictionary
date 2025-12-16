@@ -26,6 +26,8 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidget<LivingEntity> {
+    public static final Factory<LivingEntity> FACTORY = LivingEntityActiveEffectsWidget::new;
+
     private static final int L = 11, T = 3;
 
     private final CodecProperty<LivingEntity, List<MobEffectInstance>> activeEffectsProperty

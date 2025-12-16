@@ -21,6 +21,8 @@ import net.minecraft.world.entity.AgeableMob;
 
 @Environment(EnvType.CLIENT)
 public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStandardWidget<AgeableMob> {
+    public static final Factory<AgeableMob> FACTORY = AgeableMobBreedingCooldownWidget::new;
+
     private static final int L = 6, T = 4;
 
     /**

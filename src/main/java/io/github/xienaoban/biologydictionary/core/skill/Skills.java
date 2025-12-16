@@ -17,7 +17,7 @@ public final class Skills {
     private static final Map<String, GeneralSkill> commonSkills = new HashMap<>();
     private static final Map<String, EntityTargetedSkill<?>> entityOrientedSkills = new HashMap<>();
 
-    public static void init() {
+    private static void registerBuiltIn() {
         register(new HighlightEntitiesSkill());
         register(new GetSpawnEggSkill());
 
@@ -34,6 +34,10 @@ public final class Skills {
         register(new EntityGiftPetSkill());
         register(new VillagerForceRestockSkill());
         register(new WanderingTraderRetainSkill());
+    }
+
+    public static void init() {
+        registerBuiltIn();
     }
 
     public static void register(GeneralSkill skill) {
