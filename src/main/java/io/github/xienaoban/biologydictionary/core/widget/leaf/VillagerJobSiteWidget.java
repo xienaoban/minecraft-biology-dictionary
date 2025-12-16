@@ -21,13 +21,15 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.phys.Vec3;
 
 public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager> {
+    public static final Factory<Villager> FACTORY = VillagerJobSiteWidget::new;
+
     private static final int L = 1, T = 5;
 
     private static final float NO_DIS = Float.MIN_VALUE;
     private static final float MAX_DIS = 16F;
     private static final float MAX_DIS_LOG = (float) Math.log(MAX_DIS);
 
-    VillagerJobSiteProperty jobSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
+    private final VillagerJobSiteProperty jobSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
 
     private GlobalPos lastJobSitePos = null;
     private float cachedDistanceToJobSite = NO_DIS;

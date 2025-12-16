@@ -18,7 +18,9 @@ import net.minecraft.world.entity.Mob;
 
 @Environment(EnvType.CLIENT)
 public class MobPersistenceWidget extends EntityPropertyStandardWidget<Mob> {
-    private static final int L = 19, T = 1;
+    public static final Factory<Mob> FACTORY = MobPersistenceWidget::new;
+
+    private static final int L = 6, T = 6;
 
     private final BooleanProperty<Mob> persistenceRequiredProperty = VanillaEntityProperties.OfMob.getPersistenceRequiredProperty(p());
     private final MobNaturalPersistenceProperty naturalPersistenceProperty = p().getExtra(MobNaturalPersistenceProperty.class);

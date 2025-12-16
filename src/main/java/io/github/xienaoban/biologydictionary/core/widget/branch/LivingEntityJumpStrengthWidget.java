@@ -3,20 +3,35 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 @Environment(EnvType.CLIENT)
 public final class LivingEntityJumpStrengthWidget extends AbstractLivingEntityAttributeWidget<LivingEntity> {
+    public static final Holder<Attribute> ATTR = Attributes.JUMP_STRENGTH;
+
+    public static final Factory<LivingEntity> FACTORY = new Factory<>() {
+        @Override
+        protected Holder<Attribute> getAttribute() { return ATTR; }
+
+        @Override
+        protected EntityPropertyWidget<LivingEntity> create1(EntityProperties<LivingEntity> properties) {
+            return new LivingEntityJumpStrengthWidget(properties);
+        }
+    };
+
     private static final int L = 18, T = 2;
 
     public LivingEntityJumpStrengthWidget(EntityProperties<LivingEntity> properties) {
-        super(properties, Attributes.JUMP_STRENGTH);
+        super(properties, ATTR);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
     }
 

@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public final class MobTemptProperty extends ItemStackListProperty<Mob> {
+    public static final Factory<Mob> FACTORY = MobTemptProperty::new;
+
     public MobTemptProperty() {
         super(MobTemptProperty.class.getSimpleName());
     }

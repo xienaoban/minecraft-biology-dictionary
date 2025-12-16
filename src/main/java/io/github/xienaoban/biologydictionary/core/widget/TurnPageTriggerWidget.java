@@ -5,6 +5,8 @@ import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import net.minecraft.world.entity.Entity;
 
 public final class TurnPageTriggerWidget extends EntityPropertyWidget<Entity> {
+    public static final Factory<Entity> FACTORY = TurnPageTriggerWidget::new;
+
     public TurnPageTriggerWidget(EntityProperties<Entity> properties) {
         super(properties, 1, 1);
     }

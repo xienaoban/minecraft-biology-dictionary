@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntityGiftPetSkill;
-import io.github.xienaoban.biologydictionary.core.widget.UnsupportedWidgetException;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -29,15 +28,17 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
+    public static final Factory<Entity> FACTORY = properties -> {
+        if (properties.entity() instanceof OwnableEntity) {
+            return new EntityOwnerWidget(properties);
+        }
+        return null;
+    };
+
     private static final int L = 11, T = 5;
     private static final int L_GIFT = 22, T_GIFT = 4;
 
     private static final String OWNER_KEY = VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().name();
-
-    private static EntityProperties<Entity> verify(EntityProperties<Entity> properties) {
-        UnsupportedWidgetException.verify(properties.entity() instanceof OwnableEntity);
-        return properties;
-    }
 
     private final EntityReferenceProperty<AbstractHorse> ownerProperty = p().getVanilla(OWNER_KEY);
 
@@ -45,7 +46,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
     private Entity lastEntity = null;
 
     public EntityOwnerWidget(EntityProperties<Entity> properties) {
-        super(verify(properties));
+        super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new OwnerBar());
         addElementButton(new GiftButton());

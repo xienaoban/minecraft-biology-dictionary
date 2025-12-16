@@ -4,6 +4,8 @@ import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProper
 import net.minecraft.world.entity.Mob;
 
 public class MobNaturalPersistenceProperty extends BooleanProperty<Mob> {
+    public static final Factory<Mob> FACTORY = MobNaturalPersistenceProperty::new;
+
     public MobNaturalPersistenceProperty() {
         super(MobNaturalPersistenceProperty.class.getSimpleName());
     }

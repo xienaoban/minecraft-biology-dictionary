@@ -15,6 +15,8 @@ import net.minecraft.world.entity.LivingEntity;
 
 @Environment(EnvType.CLIENT)
 public final class LivingEntityHealthWidget extends EntityPropertyStandardWidget<LivingEntity> {
+    public static final Factory<LivingEntity> FACTORY = LivingEntityHealthWidget::new;
+
     private static final int L = 1, T = 1;
 
     public LivingEntityHealthWidget(EntityProperties<LivingEntity> properties) {

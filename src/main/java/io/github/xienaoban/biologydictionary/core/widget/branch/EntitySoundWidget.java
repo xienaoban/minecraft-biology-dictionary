@@ -17,6 +17,8 @@ import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntitySoundWidget::new;
+
     private static final int L = 20, T = 1;
 
     private final BooleanProperty<Entity> silentProperty = VanillaEntityProperties.OfEntity.getSilentProperty(p());

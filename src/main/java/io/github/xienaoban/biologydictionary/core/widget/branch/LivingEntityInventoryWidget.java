@@ -13,6 +13,8 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.world.entity.LivingEntity;
 
 public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<LivingEntity> {
+    public static final Factory<LivingEntity> FACTORY = LivingEntityInventoryWidget::new;
+
     private static final int L = 20, T = 1;
 
     public LivingEntityInventoryWidget(EntityProperties<LivingEntity> properties) {

@@ -20,6 +20,8 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
+    public static final Factory<Mob> FACTORY = MobTemptWidget::new;
+
     private static final int L = 14, T = 2;
 
     private final MobTemptProperty temptProperty = p().getExtra(MobTemptProperty.class);

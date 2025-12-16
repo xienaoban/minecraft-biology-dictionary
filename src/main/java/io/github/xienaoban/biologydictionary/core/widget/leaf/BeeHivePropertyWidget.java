@@ -8,8 +8,8 @@ import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
-import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.BeeClearHiveSkill;
+import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -23,12 +23,13 @@ import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.phys.Vec3;
 
 public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
+    public static final Factory<Bee> FACTORY = BeeHivePropertyWidget::new;
+
     private static final int L = 1, T = 6;
 
     private static final float NO_DIS = Float.MIN_VALUE;
     private static final float MAX_DIS = /* Bee.TOO_FAR_DISTANCE */ 48F;
     private static final float MAX_DIS_LOG = (float) Math.log(MAX_DIS);
-
 
     private final CodecProperty<Bee, BlockPos> hivePosProperty = VanillaEntityProperties.OfBee.getHivePosProperty(p());
 

@@ -41,4 +41,9 @@ public abstract class EntityPropertyWidget<E extends Entity> extends Widget {
     }
 
     public record RC(int rows, int columns) {}
+
+    @FunctionalInterface
+    public interface Factory<E extends Entity> {
+        EntityPropertyWidget<E> create(EntityProperties<E> properties);
+    }
 }

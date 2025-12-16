@@ -28,6 +28,8 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntityPortalCooldownWidget::new;
+
     private static final int L = 1, T = 3;
 
     private final IntProperty<Entity> portalCooldownProperty = VanillaEntityProperties.OfEntity.getPortalCooldownProperty(p());
@@ -50,7 +52,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
         }
 
         int cooldown = cooldownOpt;
-        if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+        if (cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
             // do nothing
         } else if (isClientEntityInNetherPortal()) {
             portalCooldownProperty.setVal(e().getDimensionChangingDelay());
@@ -110,7 +112,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             int cooldown = cooldownOpt;
             updatePercent((float) cooldown / (float) maxCooldown);
             super.onRender(ctx);
-            if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+            if (cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
                 if (ctx.isDebug()) {
                     renderInnerText(ctx, Component.translatable(Lang.TEXT_INFINITY));
                 } else {
@@ -138,10 +140,10 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             int cooldown = cooldownOpt;
             if (isMouseLeft(code)) {
                 final int newCooldown;
-                if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+                if (cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
                     newCooldown = 0;
                 } else {
-                    newCooldown = EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY;
+                    newCooldown = EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY;
                 }
                 if (EntitySetPortalCooldownSkill.activate(e(), newCooldown)) {
                     portalCooldownProperty.setVal(newCooldown);
@@ -153,7 +155,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             Integer cooldown = portalCooldownProperty.getVal();
-            if (cooldown != null && cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+            if (cooldown != null && cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
                 setTextureLeftOffset(10);
             } else {
                 setTextureLeftOffset(0);

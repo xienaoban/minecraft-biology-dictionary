@@ -3,8 +3,8 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.widget.UnsupportedWidgetException;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
+import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import net.fabricmc.api.EnvType;
@@ -16,12 +16,25 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractLivingEntityAttributeWidget<E extends LivingEntity> extends EntityPropertyStandardWidget<E> {
+
+    public static abstract class Factory<E extends LivingEntity> implements EntityPropertyStandardWidget.Factory<E> {
+        @Override
+        public final EntityPropertyWidget<E> create(EntityProperties<E> properties) {
+            if (properties.entity().getAttributes().hasAttribute(getAttribute())) {
+                return create1(properties);
+            }
+            return null;
+        }
+
+        protected abstract Holder<Attribute> getAttribute();
+        protected abstract EntityPropertyWidget<E> create1(EntityProperties<E> properties);
+    }
+
     private final Holder<Attribute> attribute;
 
     public AbstractLivingEntityAttributeWidget(EntityProperties<E> properties, Holder<Attribute> attribute) {
         super(properties, Page.COLUMNS / 4);
         this.attribute = attribute;
-        UnsupportedWidgetException.verify(e().getAttributes().hasAttribute(attribute));
     }
 
     protected abstract double calcValue(double attr);

@@ -20,6 +20,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Villager> {
+    public static final Factory<Villager> FACTORY = VillagerRestocksTodayWidget::new;
+
     private static final int L = 6, T = 5;
 
     private static final int MAX_RESTOCK_TODAY = 2;
