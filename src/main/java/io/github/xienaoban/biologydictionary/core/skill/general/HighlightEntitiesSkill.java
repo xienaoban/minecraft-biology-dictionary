@@ -4,7 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -32,7 +32,7 @@ public class HighlightEntitiesSkill implements GeneralSkill {
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(EntityType<?> entityType, float radius) {
-        return Skills.sendCommonSkill(entityType, radius);
+        return PlayerSkills.sendCommonSkill(entityType, radius);
     }
 
     @Environment(EnvType.CLIENT)
@@ -83,7 +83,7 @@ public class HighlightEntitiesSkill implements GeneralSkill {
                         Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experience)));
             } else {
                 allowed = true;
-                Skills.giveExperiencePointsIfNotCreative(player, -experience);
+                PlayerSkills.giveExperiencePointsIfNotCreative(player, -experience);
             }
         }
 

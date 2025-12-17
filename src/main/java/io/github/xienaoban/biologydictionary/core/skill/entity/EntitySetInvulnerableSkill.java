@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -16,7 +16,7 @@ import net.minecraft.world.entity.Entity;
 public class EntitySetInvulnerableSkill implements EntityTargetedSkill<Entity> {
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, boolean inv) {
-        return Skills.sendEntityOrientedSkill(entity, inv);
+        return PlayerSkills.sendEntityTargetedSkill(entity, inv);
     }
 
     @Environment(EnvType.CLIENT)

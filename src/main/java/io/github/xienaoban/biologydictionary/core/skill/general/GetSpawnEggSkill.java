@@ -6,7 +6,7 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -23,7 +23,7 @@ import net.minecraft.world.item.SpawnEggItem;
 public class GetSpawnEggSkill implements GeneralSkill {
     @Environment(EnvType.CLIENT)
     public static boolean activate(EntityType<?> entityType) {
-        return Skills.sendCommonSkill(entityType);
+        return PlayerSkills.sendCommonSkill(entityType);
     }
 
     @Environment(EnvType.CLIENT)

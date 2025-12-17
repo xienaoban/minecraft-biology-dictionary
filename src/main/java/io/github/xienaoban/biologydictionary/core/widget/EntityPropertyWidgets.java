@@ -16,54 +16,56 @@ import java.util.*;
 @Environment(EnvType.CLIENT)
 public final class EntityPropertyWidgets {
 
-    private static final Map<Class<? extends Entity>, List<Entry>> registry = new HashMap<>();
-
-    private static int orderIndex;
-    private static Set<Class<?>> visited;
-
-    private static void registerBuiltIn() {
-        r(EntityDisplayWidget.class, EntityDisplayWidget.FACTORY);
-        r(LivingEntityHealthWidget.class, LivingEntityHealthWidget.FACTORY);
-        r(EntityAirWidget.class, EntityAirWidget.FACTORY);
-        r(DolphinMoistnessWidget.class, DolphinMoistnessWidget.FACTORY);
-        r(LivingEntityActiveEffectsWidget.class, LivingEntityActiveEffectsWidget.FACTORY);
-        r(AnimalFoodWidget.class, AnimalFoodWidget.FACTORY);
-        r(MobTemptWidget.class, MobTemptWidget.FACTORY);
-        r(LivingEntityMovementSpeedWidget.class, LivingEntityMovementSpeedWidget.FACTORY);
-        r(LivingEntityJumpStrengthWidget.class, LivingEntityJumpStrengthWidget.FACTORY);
-        r(EntityLeashableWidget.class, EntityLeashableWidget.FACTORY);
-        r(GoatScreamingWidget.class, GoatScreamingWidget.FACTORY);
-        r(EntityBoundingBoxWidget.class, EntityBoundingBoxWidget.FACTORY);
-        r(TurnPageTriggerWidget.class, TurnPageTriggerWidget.FACTORY);
-        r(EntityStandardVariantWidget.class, EntityStandardVariantWidget.FACTORY);
-        r(HorseMarkingsWidget.class, HorseMarkingsWidget.FACTORY);
-        r(PandaMainGeneWidget.class, PandaMainGeneWidget.FACTORY);
-        r(PandaHiddenGeneWidget.class, PandaHiddenGeneWidget.FACTORY);
-        r(VillagerTypeWidget.class, VillagerTypeWidget.FACTORY);
-        r(VillagerScheduleWidget.class, VillagerScheduleWidget.FACTORY);
-        r(MobAiWidget.class, MobAiWidget.FACTORY);
-        r(EntityInvulnerableWidget.class, EntityInvulnerableWidget.FACTORY);
-        r(EntitySoundWidget.class, EntitySoundWidget.FACTORY);
-        r(MobPersistenceWidget.class, MobPersistenceWidget.FACTORY);
-        r(LivingEntityInventoryWidget.class, LivingEntityInventoryWidget.FACTORY);
-        r(SheepEatGrassWidget.class, SheepEatGrassWidget.FACTORY);
-        r(AgeableMobGrowthWidget.class, AgeableMobGrowthWidget.FACTORY);
-        r(AgeableMobBreedingCooldownWidget.class, AgeableMobBreedingCooldownWidget.FACTORY);
-        r(AnimalInLoveWidget.class, AnimalInLoveWidget.FACTORY);
-        r(EntityPortalCooldownWidget.class, EntityPortalCooldownWidget.FACTORY);
-        r(EntityOwnerWidget.class, EntityOwnerWidget.FACTORY);
-        r(VillagerJobSiteWidget.class, VillagerJobSiteWidget.FACTORY);
-        r(VillagerRestocksTodayWidget.class, VillagerRestocksTodayWidget.FACTORY);
-        r(BeeHivePropertyWidget.class, BeeHivePropertyWidget.FACTORY);
-        r(WanderingTraderDespawnDelayWidget.class, WanderingTraderDespawnDelayWidget.FACTORY);
+    public static void registerBuiltIn(Registrar registrar) {
+        registrar.register(EntityDisplayWidget.class, EntityDisplayWidget.FACTORY);
+        registrar.register(LivingEntityHealthWidget.class, LivingEntityHealthWidget.FACTORY);
+        registrar.register(EntityAirWidget.class, EntityAirWidget.FACTORY);
+        registrar.register(DolphinMoistnessWidget.class, DolphinMoistnessWidget.FACTORY);
+        registrar.register(LivingEntityActiveEffectsWidget.class, LivingEntityActiveEffectsWidget.FACTORY);
+        registrar.register(AnimalFoodWidget.class, AnimalFoodWidget.FACTORY);
+        registrar.register(MobTemptWidget.class, MobTemptWidget.FACTORY);
+        registrar.register(LivingEntityMovementSpeedWidget.class, LivingEntityMovementSpeedWidget.FACTORY);
+        registrar.register(LivingEntityJumpStrengthWidget.class, LivingEntityJumpStrengthWidget.FACTORY);
+        registrar.register(EntityLeashableWidget.class, EntityLeashableWidget.FACTORY);
+        registrar.register(GoatScreamingWidget.class, GoatScreamingWidget.FACTORY);
+        registrar.register(EntityBoundingBoxWidget.class, EntityBoundingBoxWidget.FACTORY);
+        registrar.register(TurnPageTriggerWidget.class, TurnPageTriggerWidget.FACTORY);
+        registrar.register(EntityStandardVariantWidget.class, EntityStandardVariantWidget.FACTORY);
+        registrar.register(HorseMarkingsWidget.class, HorseMarkingsWidget.FACTORY);
+        registrar.register(PandaMainGeneWidget.class, PandaMainGeneWidget.FACTORY);
+        registrar.register(PandaHiddenGeneWidget.class, PandaHiddenGeneWidget.FACTORY);
+        registrar.register(VillagerTypeWidget.class, VillagerTypeWidget.FACTORY);
+        registrar.register(VillagerScheduleWidget.class, VillagerScheduleWidget.FACTORY);
+        registrar.register(MobAiWidget.class, MobAiWidget.FACTORY);
+        registrar.register(EntityInvulnerableWidget.class, EntityInvulnerableWidget.FACTORY);
+        registrar.register(EntitySoundWidget.class, EntitySoundWidget.FACTORY);
+        registrar.register(MobPersistenceWidget.class, MobPersistenceWidget.FACTORY);
+        registrar.register(LivingEntityInventoryWidget.class, LivingEntityInventoryWidget.FACTORY);
+        registrar.register(SheepEatGrassWidget.class, SheepEatGrassWidget.FACTORY);
+        registrar.register(AgeableMobGrowthWidget.class, AgeableMobGrowthWidget.FACTORY);
+        registrar.register(AgeableMobBreedingCooldownWidget.class, AgeableMobBreedingCooldownWidget.FACTORY);
+        registrar.register(AnimalInLoveWidget.class, AnimalInLoveWidget.FACTORY);
+        registrar.register(EntityPortalCooldownWidget.class, EntityPortalCooldownWidget.FACTORY);
+        registrar.register(EntityOwnerWidget.class, EntityOwnerWidget.FACTORY);
+        registrar.register(VillagerJobSiteWidget.class, VillagerJobSiteWidget.FACTORY);
+        registrar.register(VillagerRestocksTodayWidget.class, VillagerRestocksTodayWidget.FACTORY);
+        registrar.register(BeeHivePropertyWidget.class, BeeHivePropertyWidget.FACTORY);
+        registrar.register(WanderingTraderDespawnDelayWidget.class, WanderingTraderDespawnDelayWidget.FACTORY);
     }
 
+    private static final Map<Class<? extends Entity>, List<Entry>> registry = new HashMap<>();
+
     public static void init() {
-        orderIndex = 0;
-        visited = new HashSet<>();
-        registerBuiltIn();
-        orderIndex = -1;
-        visited = null;
+        Registrar registrar = new Registrar() {
+            private int orderIndex = 0;
+            private final Set<Class<?>> visited = new HashSet<>();
+
+            @Override
+            public <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz, EntityPropertyWidget.Factory<?> widgetFactory) {
+                register0(widgetClazz, widgetFactory, ++orderIndex, visited);
+            }
+        };
+        registerBuiltIn(registrar);
     }
 
     private record Entry(int order, Class<? extends EntityPropertyWidget<?>> clazz,
@@ -92,8 +94,9 @@ public final class EntityPropertyWidgets {
         return res;
     }
 
-    private static <E extends Entity> void r(Class<? extends EntityPropertyWidget<E>> widgetClazz,
-                                             EntityPropertyWidget.Factory<?> widgetFactory) {
+    private static <E extends Entity> void register0(Class<? extends EntityPropertyWidget<E>> widgetClazz,
+                                                    EntityPropertyWidget.Factory<?> widgetFactory,
+                                                    int orderIndex, Set<Class<?>> visited) {
         if (!visited.add(widgetClazz)) {
             throw new IllegalStateException(widgetClazz + " is already registered!");
         }
@@ -107,12 +110,18 @@ public final class EntityPropertyWidgets {
         }
 
         // Register it.
-        Entry entry = new Entry(++orderIndex, widgetClazz, widgetFactory);
+        Entry entry = new Entry(orderIndex, widgetClazz, widgetFactory);
         EntityPropertyWidgets.registry.computeIfAbsent(entityClazz,
                 clazz -> new ArrayList<>()).add(entry);
     }
 
     private static List<Entry> getEntries(Class<? extends Entity> clazz) {
         return registry.getOrDefault(clazz, Collections.emptyList());
+    }
+
+    @FunctionalInterface
+    public interface Registrar {
+        <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz,
+                                         EntityPropertyWidget.Factory<?> widgetFactory);
     }
 }

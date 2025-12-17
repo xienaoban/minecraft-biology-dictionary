@@ -4,7 +4,7 @@ import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingMenu;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.fabricmc.api.EnvType;
@@ -22,7 +22,7 @@ public class LivingEntityStealInventorySkill implements EntityTargetedSkill<Livi
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity) {
-        return Skills.sendEntityOrientedSkill(entity);
+        return PlayerSkills.sendEntityTargetedSkill(entity);
     }
 
     @Environment(EnvType.CLIENT)

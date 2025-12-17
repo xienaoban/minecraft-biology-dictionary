@@ -4,7 +4,7 @@ import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -24,7 +24,7 @@ public class EntitySetVariantSkill implements EntityTargetedSkill<Entity> {
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, int variantHandlerIdx, Object variant) {
-        return Skills.sendEntityOrientedSkill(entity, variantHandlerIdx, variant);
+        return PlayerSkills.sendEntityTargetedSkill(entity, variantHandlerIdx, variant);
     }
 
     @Environment(EnvType.CLIENT)

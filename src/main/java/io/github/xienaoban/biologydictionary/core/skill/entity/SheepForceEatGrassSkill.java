@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -22,7 +22,7 @@ public class SheepForceEatGrassSkill implements EntityTargetedSkill<Sheep> {
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Sheep entity) {
-        return Skills.sendEntityOrientedSkill(entity);
+        return PlayerSkills.sendEntityTargetedSkill(entity);
     }
 
     /**
@@ -46,7 +46,7 @@ public class SheepForceEatGrassSkill implements EntityTargetedSkill<Sheep> {
     public void serverReceive(MinecraftServer server, ServerPlayer player, Sheep entity, Tag args) {
         Permissions.checkLegalArg(args.asBoolean().orElseThrow(), false);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, EXP_COST);
-        Skills.giveExperiencePointsIfNotCreative(player, -EXP_COST);
+        PlayerSkills.giveExperiencePointsIfNotCreative(player, -EXP_COST);
         Permissions.checkMobHasGoalAndStart(entity, EatBlockGoal.class);
     }
 }
