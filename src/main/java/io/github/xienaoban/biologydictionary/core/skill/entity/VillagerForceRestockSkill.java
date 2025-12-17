@@ -8,7 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSite
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -30,7 +30,7 @@ public class VillagerForceRestockSkill implements EntityTargetedSkill<Villager> 
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Villager entity, Integer restocksToday, GlobalPos jobSite) {
-        return Skills.sendEntityOrientedSkill(entity, restocksToday, jobSite);
+        return PlayerSkills.sendEntityTargetedSkill(entity, restocksToday, jobSite);
     }
 
     /**

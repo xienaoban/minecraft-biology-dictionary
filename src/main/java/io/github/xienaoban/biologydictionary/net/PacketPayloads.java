@@ -13,7 +13,7 @@ public final class PacketPayloads {
             ReplyEntityDataPacket.class,
             RequestHandbookItemPacket.class,
             RequestCommonSkillPacket.class,
-            RequestEntityOrientedSkillPacket.class,
+            RequestEntityTargetedSkillPacket.class,
             ReplyHighlightEntitiesPacket.class,
             ReplyInventoryStealingScreenPacket.class,
             RequestBeehiveInfoPacket.class,

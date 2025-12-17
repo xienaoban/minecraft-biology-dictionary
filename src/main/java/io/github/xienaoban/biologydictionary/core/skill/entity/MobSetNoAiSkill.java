@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -51,7 +51,7 @@ public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Mob entity, boolean noAi) {
-        return Skills.sendEntityOrientedSkill(entity, noAi);
+        return PlayerSkills.sendEntityTargetedSkill(entity, noAi);
     }
 
     private static void check(Player player, Mob entity) {
@@ -87,7 +87,7 @@ public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
             VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(noAi).writeTo(nbt);
         }
 
-        Skills.giveExperienceLevelsIfNotCreative(player, -experienceLevelsCost(entity));
+        PlayerSkills.giveExperienceLevelsIfNotCreative(player, -experienceLevelsCost(entity));
         EntityUtils.mergeNbt(entity, nbt);
     }
 }

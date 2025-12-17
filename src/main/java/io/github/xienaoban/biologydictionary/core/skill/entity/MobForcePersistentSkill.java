@@ -4,7 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -28,7 +28,7 @@ public class MobForcePersistentSkill implements EntityTargetedSkill<Mob> {
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Mob entity, boolean persistent) {
-        return Skills.sendEntityOrientedSkill(entity, persistent);
+        return PlayerSkills.sendEntityTargetedSkill(entity, persistent);
     }
 
     @Override

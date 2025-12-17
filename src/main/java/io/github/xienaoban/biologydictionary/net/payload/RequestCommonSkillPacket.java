@@ -1,15 +1,13 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
-import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -37,7 +35,7 @@ public record RequestCommonSkillPacket(String skillKey, Tag args) implements Pac
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
         try {
-            GeneralSkill skill = Skills.getCommonSkill(skillKey);
+            GeneralSkill skill = PlayerSkills.getCommonSkill(skillKey);
             skill.serverReceive(ctx.server(), ctx.player(), args);
         } catch (NoPermissionException e) {
             LOGGER.warn(Misc.getStackToString(e));
@@ -45,18 +43,5 @@ public record RequestCommonSkillPacket(String skillKey, Tag args) implements Pac
         } catch (Exception e) {
             LOGGER.warn(Misc.getStackToString(e));
         }
-    }
-
-    public static RequestCommonSkillPacket of(String skillKey, Object... args) {
-        try {
-            GeneralSkill skill = Skills.getCommonSkill(skillKey);
-            Tag nbtArgs = skill.clientSend(ClientUtils.getClientPlayer(), args);
-            return new RequestCommonSkillPacket(skillKey, nbtArgs);
-        } catch (NoPermissionException e) {
-            BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
-        } catch (Exception e) {
-            LOGGER.warn(Misc.getStackToString(e));
-        }
-        return null;
     }
 }

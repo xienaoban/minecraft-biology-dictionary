@@ -13,25 +13,33 @@ import java.util.Map;
 
 final class ExtraEntityProperties {
 
+    public static void registerBuiltIn(Registrar registrar) {
+        registrar.register(MobTemptProperty.class, MobTemptProperty.FACTORY);
+        registrar.register(MobNaturalPersistenceProperty.class, MobNaturalPersistenceProperty.FACTORY);
+        registrar.register(VillagerJobSiteProperty.class, VillagerJobSiteProperty.FACTORY);
+    }
+
     static final Map<Class<? extends Entity>, List<EntityProperty.Factory<?>>> registry = new HashMap<>();
 
-    private static void registerBuiltIn() {
-        r(MobTemptProperty.class, MobTemptProperty.FACTORY);
-        r(MobNaturalPersistenceProperty.class, MobNaturalPersistenceProperty.FACTORY);
-        r(VillagerJobSiteProperty.class, VillagerJobSiteProperty.FACTORY);
-    }
-
     static void init() {
-        registerBuiltIn();
+        Registrar registrar = ExtraEntityProperties::register0;
+        registerBuiltIn(registrar);
     }
 
-    static void r(Class<? extends EntityProperty<? extends Entity>> propertyClazz, EntityProperty.Factory<?> factory) {
-        final Class<? extends Entity> entityClazz = Misc.getClazzGeneric(propertyClazz, EntityProperty.class, 0)
-                .asSubclass(Entity.class);
+    private static void register0(Class<? extends EntityProperty<? extends Entity>> propertyClazz,
+                                  EntityProperty.Factory<?> factory) {
+        final Class<? extends Entity> entityClazz
+                = Misc.getClazzGeneric(propertyClazz, EntityProperty.class, 0).asSubclass(Entity.class);
         if (!propertyClazz.getSimpleName().startsWith(entityClazz.getSimpleName())) {
             throw new AssertionError(propertyClazz + " must be started with \""
                     + entityClazz.getSimpleName() + "\"!");
         }
         registry.computeIfAbsent(entityClazz, c -> new ArrayList<>()).add(factory);
+    }
+
+    @FunctionalInterface
+    public interface Registrar {
+        void register(Class<? extends EntityProperty<? extends Entity>> propertyClazz,
+                      EntityProperty.Factory<?> factory);
     }
 }

@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -18,7 +18,7 @@ public class BeeClearHiveSkill implements EntityTargetedSkill<Bee> {
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Bee entity) {
-        return Skills.sendEntityOrientedSkill(entity);
+        return PlayerSkills.sendEntityTargetedSkill(entity);
     }
 
     @Environment(EnvType.CLIENT)
@@ -32,7 +32,7 @@ public class BeeClearHiveSkill implements EntityTargetedSkill<Bee> {
     public void serverReceive(MinecraftServer server, ServerPlayer player, Bee entity, Tag args) {
         Permissions.checkLegalArg(args.asBoolean().orElseThrow(), true);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
-        Skills.giveExperiencePointsIfNotCreative(player, -EXPERIENCE_POINTS_COST);
+        PlayerSkills.giveExperiencePointsIfNotCreative(player, -EXPERIENCE_POINTS_COST);
         VanillaEntityProperties.OfBee.createHivePosProperty().withVal(null).setTo(entity);
     }
 }

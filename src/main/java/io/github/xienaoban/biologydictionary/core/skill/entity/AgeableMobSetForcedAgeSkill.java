@@ -4,7 +4,7 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -20,7 +20,7 @@ public class AgeableMobSetForcedAgeSkill implements EntityTargetedSkill<AgeableM
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(AgeableMob entity, int forcedAge, int age) {
-        return Skills.sendEntityOrientedSkill(entity, forcedAge, age);
+        return PlayerSkills.sendEntityTargetedSkill(entity, forcedAge, age);
     }
 
     @Environment(EnvType.CLIENT)
@@ -43,7 +43,7 @@ public class AgeableMobSetForcedAgeSkill implements EntityTargetedSkill<AgeableM
         VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty().withVal(forcedAge).writeTo(nbt);
         VanillaEntityProperties.OfAgeableMob.createAgeProperty().withVal(age).writeTo(nbt);
 
-        Skills.giveExperiencePointsIfNotCreative(player, -EXPERIENCE_POINTS_COST);
+        PlayerSkills.giveExperiencePointsIfNotCreative(player, -EXPERIENCE_POINTS_COST);
         EntityUtils.mergeNbt(entity, nbt);
     }
 }

@@ -6,7 +6,7 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -25,7 +25,7 @@ public class WanderingTraderRetainSkill implements EntityTargetedSkill<Wandering
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity) {
-        return Skills.sendEntityOrientedSkill(entity);
+        return PlayerSkills.sendEntityTargetedSkill(entity);
     }
 
     @Environment(EnvType.CLIENT)

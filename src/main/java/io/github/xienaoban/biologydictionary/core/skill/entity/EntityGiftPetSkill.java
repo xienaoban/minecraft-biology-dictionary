@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -25,7 +25,7 @@ import java.util.UUID;
 public class EntityGiftPetSkill implements EntityTargetedSkill<Entity> {
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, AbstractClientPlayer targetPlayer) {
-        return Skills.sendEntityOrientedSkill(entity, targetPlayer);
+        return PlayerSkills.sendEntityTargetedSkill(entity, targetPlayer);
     }
 
     @Environment(EnvType.CLIENT)

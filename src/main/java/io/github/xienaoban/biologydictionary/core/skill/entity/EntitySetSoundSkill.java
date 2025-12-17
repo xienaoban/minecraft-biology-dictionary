@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -32,7 +32,7 @@ public class EntitySetSoundSkill implements EntityTargetedSkill<Entity> {
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, boolean silent) {
-        return Skills.sendEntityOrientedSkill(entity, silent);
+        return PlayerSkills.sendEntityTargetedSkill(entity, silent);
     }
 
     @Environment(EnvType.CLIENT)
@@ -49,7 +49,7 @@ public class EntitySetSoundSkill implements EntityTargetedSkill<Entity> {
         boolean silent = args.asBoolean().orElseThrow();
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, experiencePointsCost(entity));
-        Skills.giveExperiencePointsIfNotCreative(player, -experiencePointsCost(entity));
+        PlayerSkills.giveExperiencePointsIfNotCreative(player, -experiencePointsCost(entity));
         VanillaEntityProperties.OfEntity.createSilentProperty().withVal(silent).setTo(entity);
     }
 }

@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.net.payload.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
@@ -25,17 +26,11 @@ public final class ClientNetManager {
         ClientNetApi.send(new RequestBeehiveInfoPacket(pos));
     }
 
-    public static boolean sendCommonSkill(String skillKey, Object... args) {
-        RequestCommonSkillPacket packet = RequestCommonSkillPacket.of(skillKey, args);
-        if (packet == null) { return false; }
-        ClientNetApi.send(packet);
-        return true;
+    public static void sendCommonSkill(String skillKey, Tag nbtArgs) {
+        ClientNetApi.send(new RequestCommonSkillPacket(skillKey, nbtArgs));
     }
 
-    public static boolean sendEntityOrientedSkill(String skillKey, Entity entity, Object... args) {
-        RequestEntityOrientedSkillPacket packet = RequestEntityOrientedSkillPacket.of(skillKey, entity, args);
-        if (packet == null) { return false; }
-        ClientNetApi.send(packet);
-        return true;
+    public static void sendEntityTargetedSkill(String skillKey, Entity entity, Tag nbtArgs) {
+        ClientNetApi.send(new RequestEntityTargetedSkillPacket(skillKey, entity.getId(), nbtArgs));
     }
 }
