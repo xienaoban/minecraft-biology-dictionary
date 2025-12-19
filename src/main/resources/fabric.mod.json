@@ -1,37 +1,40 @@
 {
-  "schemaVersion": 1,
-  "id": "biologydictionary",
-  "version": "${version}",
-  "name": "Biology Dictionary",
-  "description": "To display or modify the properties and states of mobs.",
-  "authors": [
-    "XieNaoban"
-  ],
-  "contact": {
-    "homepage": "https://modrinth.com/mod/biologydictionary",
-    "repo": "https://github.com/xienaoban/minecraft-biology-dictionary",
-    "sources": "https://github.com/xienaoban/minecraft-biology-dictionary",
-    "issues": "https://github.com/xienaoban/minecraft-biology-dictionary/issues",
-    "website": "https://xienaoban.github.io"
-  },
-  "license": "LGPL-3.0",
-  "icon": "assets/biologydictionary/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "client": [
-      "io.github.xienaoban.biologydictionary.common.ClientModInitializer"
+    "schemaVersion": 1,
+    "id": "biologydictionary",
+    "version": "${version}",
+    "name": "Biology Dictionary",
+    "description": "To display or modify the properties and states of mobs.",
+    "authors": [
+        "XieNaoban"
     ],
-    "main": [
-      "io.github.xienaoban.biologydictionary.common.ModInitializer"
-    ]
-  },
-  "mixins": [
-    "biologydictionary.mixins.json"
-  ],
-  "depends": {
-    "minecraft": "${minecraft_version}",
-    "fabricloader": ">=${loader_version}",
-    "fabric-api": "*",
-    "java": ">=21"
-  }
+    "contact": {
+        "homepage": "https://modrinth.com/mod/biologydictionary",
+        "sources": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "repo": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "issues": "https://github.com/xienaoban/minecraft-biology-dictionary/issues",
+        "website": "https://xienaoban.github.io"
+    },
+    "license": "LGPL-3.0",
+    "icon": "assets/biologydictionary/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "io.github.xienaoban.biologydictionary.common.ModInitializer"
+        ],
+        "client": [
+            "io.github.xienaoban.biologydictionary.common.ClientModInitializer"
+        ]
+    },
+    "mixins": [
+        "biologydictionary.mixins.json"
+    ],
+    "depends": {
+        "minecraft": "${minecraft_version}",
+        "fabricloader": ">=${loader_version}",
+        "fabric-api": "*",
+        "java": ">=21"
+    },
+    "suggests": {
+        "another-mod": "*"
+    }
 }
