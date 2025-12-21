@@ -16,6 +16,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
@@ -56,7 +57,7 @@ public class VanillaEntityCollectionTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            LOGGER.info("Deobfuscation batch has been written to {}.", path);
+            LOGGER.info("Deobfuscation batch has been written to {}.", Paths.get(path).toAbsolutePath().normalize().toString());
             helper.fail(Component.literal("Some entities are not covered by the deobfuscation map."));
         }
     }

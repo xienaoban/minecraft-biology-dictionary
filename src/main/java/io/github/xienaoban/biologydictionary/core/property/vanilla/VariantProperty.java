@@ -5,7 +5,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.variant.VariantUtils;
 import net.minecraft.world.level.Level;
@@ -32,7 +32,7 @@ public final class VariantProperty<E extends Entity, T> extends AbstractProperty
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        Optional<Holder<T>> o1 = nbt.read(name(), ResourceLocation.CODEC)
+        Optional<Holder<T>> o1 = nbt.read(name(), Identifier.CODEC)
                 .map(resourceLocation -> ResourceKey.create(resourceKey, resourceLocation))
                 .flatMap(key -> {
                     Level level = BD.justGiveMeALevel(); // TODO: Thread local level
@@ -46,7 +46,7 @@ public final class VariantProperty<E extends Entity, T> extends AbstractProperty
     public void writeTo(CompoundTag nbt) {
         if (getVal() != null && getVal().unwrapKey().isPresent()) {
             ResourceKey<?> resourceKey = getVal().unwrapKey().get();
-            nbt.store(name(), ResourceLocation.CODEC, resourceKey.location());
+            nbt.store(name(), Identifier.CODEC, resourceKey.identifier());
         } else {
             LOGGER.warn("Unknown variant key: {}", getVal());
         }

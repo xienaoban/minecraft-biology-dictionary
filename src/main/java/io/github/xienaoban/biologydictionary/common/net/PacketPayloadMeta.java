@@ -5,7 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -51,7 +51,7 @@ public record PacketPayloadMeta<T extends Packet>(CustomPacketPayload.Type<T> ty
         }
         String path = className.substring(0, className.length() - classEnd.length())
                 .replaceAll("([A-Z]+)", "_$1").substring(1).toLowerCase();
-        return new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MOD_ID, path));
+        return new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MOD_ID, path));
     }
 
     private static <T extends Packet> StreamCodec<FriendlyByteBuf, T> generateCodec(Class<T> clazz, MethodHandles.Lookup lookup) throws NoSuchMethodException, IllegalAccessException {

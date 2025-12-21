@@ -11,7 +11,7 @@ import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.entity.animal.bee.Bee;
 
 public class BeeClearHiveSkill implements EntityTargetedSkill<Bee> {
     public static final int EXPERIENCE_POINTS_COST = 1;

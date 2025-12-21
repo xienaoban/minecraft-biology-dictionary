@@ -31,9 +31,10 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
@@ -227,7 +228,7 @@ public final class ScreenRenderingContext {
      *         (int) textureLeft, (int) textureTop, (int) (textureRight - textureLeft), (int) (textureBottom - textureTop),
      *         (int) texture.width(), (int) texture.height());
      * }
-     * @see net.minecraft.client.gui.GuiGraphics#submitBlit(RenderPipeline, GpuTextureView, int, int, int, int, float, float, float, float, int)
+     * @see net.minecraft.client.gui.GuiGraphics#submitBlit(com.mojang.blaze3d.pipeline.RenderPipeline, com.mojang.blaze3d.textures.GpuTextureView, com.mojang.blaze3d.textures.GpuSampler, int, int, int, int, float, float, float, float, int)
      */
     public void renderTexture(TextureInfo texture,
                               float textureLeft, float textureTop, float textureRight, float textureBottom,
@@ -244,8 +245,8 @@ public final class ScreenRenderingContext {
                 vertexConsumer.addVertexWith2DPose(pose, x1, y0).setUv(u1, v0).setColor(-1);
             }
         }
-
-        TextureSetup gpuTextureView = TextureSetup.singleTexture(getClient().getTextureManager().getTexture(texture.location()).getTextureView());
+        AbstractTexture abstractTexture = getClient().getTextureManager().getTexture(texture.location());
+        TextureSetup gpuTextureView = TextureSetup.singleTexture(abstractTexture.getTextureView(), abstractTexture.getSampler());
         float uvLeft = textureLeft / texture.width();
         float uvTop = textureTop / texture.height();
         float uvRight = textureRight / texture.width();
@@ -278,7 +279,7 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.screens.inventory.EffectsInInventory#renderIcons(net.minecraft.client.gui.GuiGraphics, int, int, java.lang.Iterable, boolean)
      */
     public void renderSprite(Holder<MobEffect> effect, float left, float top) {
-        ResourceLocation resourceLocation = Gui.getMobEffectSprite(effect);
+        Identifier resourceLocation = Gui.getMobEffectSprite(effect);
         RenderPipeline renderPipeline = RenderPipelines.GUI_TEXTURED;
         getGuiGraphics().blitSprite(renderPipeline, resourceLocation, (int) left, (int) top, 18, 18);
     }
@@ -330,7 +331,7 @@ public final class ScreenRenderingContext {
      * The only difference is that we give the argument {@code size}
      * to calculate the real gui width and gui height.
      *
-     * @see net.minecraft.client.gui.GuiGraphics#renderTooltip(net.minecraft.client.gui.Font, java.util.List, int, int, net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner, net.minecraft.resources.ResourceLocation)
+     * @see net.minecraft.client.gui.GuiGraphics#renderTooltip(net.minecraft.client.gui.Font, java.util.List, int, int, net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner, net.minecraft.resources.Identifier)
      */
     private void renderTooltip(List<Component> texts,
                                float x, float y, float size
@@ -338,7 +339,7 @@ public final class ScreenRenderingContext {
         Font font = getFont();
         List<ClientTooltipComponent> list = texts.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
         ClientTooltipPositioner clientTooltipPositioner = DefaultTooltipPositioner.INSTANCE;
-        ResourceLocation resourceLocation = null;
+        Identifier resourceLocation = null;
 
         int width = 0;
         int height = list.size() == 1 ? -2 : 0;
@@ -458,7 +459,6 @@ public final class ScreenRenderingContext {
         }
         entityRenderer.extractRenderState(entity, entityRenderState, 1F);
         entityRenderState.lightCoords = 15728880;
-        entityRenderState.hitboxesRenderState = null;
         entityRenderState.shadowPieces.clear();
         entityRenderState.outlineColor = 0;
         getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);

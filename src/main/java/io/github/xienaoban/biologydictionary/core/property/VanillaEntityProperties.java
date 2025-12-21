@@ -22,14 +22,37 @@ import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.animal.allay.Allay;
 import net.minecraft.world.entity.animal.armadillo.Armadillo;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
+import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.entity.animal.camel.Camel;
-import net.minecraft.world.entity.animal.coppergolem.CopperGolem;
+import net.minecraft.world.entity.animal.chicken.Chicken;
+import net.minecraft.world.entity.animal.cow.AbstractCow;
+import net.minecraft.world.entity.animal.cow.Cow;
+import net.minecraft.world.entity.animal.cow.MushroomCow;
+import net.minecraft.world.entity.animal.dolphin.Dolphin;
+import net.minecraft.world.entity.animal.feline.Cat;
+import net.minecraft.world.entity.animal.feline.Ocelot;
+import net.minecraft.world.entity.animal.fish.*;
+import net.minecraft.world.entity.animal.fox.Fox;
+import net.minecraft.world.entity.animal.golem.AbstractGolem;
+import net.minecraft.world.entity.animal.golem.CopperGolem;
 import net.minecraft.world.entity.animal.frog.Frog;
 import net.minecraft.world.entity.animal.frog.Tadpole;
 import net.minecraft.world.entity.animal.goat.Goat;
-import net.minecraft.world.entity.animal.horse.*;
+import net.minecraft.world.entity.animal.equine.*;
+import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.golem.SnowGolem;
+import net.minecraft.world.entity.animal.happyghast.HappyGhast;
+import net.minecraft.world.entity.animal.panda.Panda;
+import net.minecraft.world.entity.animal.parrot.Parrot;
+import net.minecraft.world.entity.animal.parrot.ShoulderRidingEntity;
+import net.minecraft.world.entity.animal.pig.Pig;
+import net.minecraft.world.entity.animal.polarbear.PolarBear;
+import net.minecraft.world.entity.animal.rabbit.Rabbit;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.animal.sniffer.Sniffer;
+import net.minecraft.world.entity.animal.squid.GlowSquid;
+import net.minecraft.world.entity.animal.squid.Squid;
+import net.minecraft.world.entity.animal.turtle.Turtle;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
@@ -39,14 +62,19 @@ import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.monster.breeze.Breeze;
 import net.minecraft.world.entity.monster.creaking.Creaking;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
+import net.minecraft.world.entity.monster.illager.*;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
+import net.minecraft.world.entity.monster.skeleton.*;
+import net.minecraft.world.entity.monster.spider.CaveSpider;
+import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.entity.monster.warden.Warden;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerData;
-import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.monster.zombie.*;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerData;
+import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.component.CustomData;
@@ -966,11 +994,11 @@ public final class VanillaEntityProperties {
             return g(ep, "CollarColor");
         }
 
-        public static VariantProperty<Cat, net.minecraft.world.entity.animal.CatVariant> createVariantProperty() {
+        public static VariantProperty<Cat, net.minecraft.world.entity.animal.feline.CatVariant> createVariantProperty() {
             return new VariantProperty<>(Registries.CAT_VARIANT);
         }
 
-        public static VariantProperty<Cat, net.minecraft.world.entity.animal.CatVariant> getVariantProperty(EntityProperties<?> ep) {
+        public static VariantProperty<Cat, net.minecraft.world.entity.animal.feline.CatVariant> getVariantProperty(EntityProperties<?> ep) {
             return g(ep, "variant");
         }
 
@@ -1082,11 +1110,11 @@ public final class VanillaEntityProperties {
      */
     public static final class OfCow implements Creator {
 
-        public static VariantProperty<Cow, net.minecraft.world.entity.animal.CowVariant> createVariantProperty() {
+        public static VariantProperty<Cow, net.minecraft.world.entity.animal.cow.CowVariant> createVariantProperty() {
             return new VariantProperty<>(Registries.COW_VARIANT);
         }
 
-        public static VariantProperty<Cow, net.minecraft.world.entity.animal.CowVariant> getVariantProperty(EntityProperties<?> ep) {
+        public static VariantProperty<Cow, net.minecraft.world.entity.animal.cow.CowVariant> getVariantProperty(EntityProperties<?> ep) {
             return g(ep, "variant");
         }
 
@@ -1232,11 +1260,11 @@ public final class VanillaEntityProperties {
             return g(ep, "IsChickenJockey");
         }
 
-        public static VariantProperty<Chicken, net.minecraft.world.entity.animal.ChickenVariant> createVariantProperty() {
+        public static VariantProperty<Chicken, net.minecraft.world.entity.animal.chicken.ChickenVariant> createVariantProperty() {
             return new VariantProperty<>(Registries.CHICKEN_VARIANT);
         }
 
-        public static VariantProperty<Chicken, net.minecraft.world.entity.animal.ChickenVariant> getVariantProperty(EntityProperties<?> ep) {
+        public static VariantProperty<Chicken, net.minecraft.world.entity.animal.chicken.ChickenVariant> getVariantProperty(EntityProperties<?> ep) {
             return g(ep, "variant");
         }
 
@@ -1393,11 +1421,11 @@ public final class VanillaEntityProperties {
      */
     public static final class OfPig implements Creator {
 
-        public static VariantProperty<Pig, net.minecraft.world.entity.animal.PigVariant> createVariantProperty() {
+        public static VariantProperty<Pig, net.minecraft.world.entity.animal.pig.PigVariant> createVariantProperty() {
             return new VariantProperty<>(Registries.PIG_VARIANT);
         }
 
-        public static VariantProperty<Pig, net.minecraft.world.entity.animal.PigVariant> getVariantProperty(EntityProperties<?> ep) {
+        public static VariantProperty<Pig, net.minecraft.world.entity.animal.pig.PigVariant> getVariantProperty(EntityProperties<?> ep) {
             return g(ep, "variant");
         }
 
@@ -2058,11 +2086,11 @@ public final class VanillaEntityProperties {
             return g(ep, "RestocksToday");
         }
 
-        public static CodecProperty<Villager, net.minecraft.world.entity.npc.VillagerData> createVillagerDataProperty() {
-            return new CodecProperty<>("VillagerData", net.minecraft.world.entity.npc.VillagerData.class, net.minecraft.world.entity.npc.VillagerData.CODEC);
+        public static CodecProperty<Villager, net.minecraft.world.entity.npc.villager.VillagerData> createVillagerDataProperty() {
+            return new CodecProperty<>("VillagerData", net.minecraft.world.entity.npc.villager.VillagerData.class, net.minecraft.world.entity.npc.villager.VillagerData.CODEC);
         }
 
-        public static CodecProperty<Villager, net.minecraft.world.entity.npc.VillagerData> getVillagerDataProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Villager, net.minecraft.world.entity.npc.villager.VillagerData> getVillagerDataProperty(EntityProperties<?> ep) {
             return g(ep, "VillagerData");
         }
 
