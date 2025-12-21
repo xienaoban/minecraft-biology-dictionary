@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.common.util;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Comparator;
 import java.util.Optional;
@@ -38,8 +38,8 @@ public final class DevUtils {
         return clazzName.startsWith(MINECRAFT_PACKAGE);
     }
 
-    public static boolean isVanilaResourceLocation(ResourceLocation rl) {
-        return ResourceLocation.DEFAULT_NAMESPACE.equals(rl.getNamespace());
+    public static boolean isVanilaResourceLocation(Identifier rl) {
+        return Identifier.DEFAULT_NAMESPACE.equals(rl.getNamespace());
     }
 
     /**
@@ -60,13 +60,13 @@ public final class DevUtils {
     }
 
     /**
-     * For ResourceLocation names, let vanilla locations be in front of mod locations.
+     * For Identifier names, let vanilla locations be in front of mod locations.
      * - "minecraft:entity" < "mod-id:entity"
      */
-    public static <T> Comparator<T> getResourceLocationComparator(Function<T, ResourceLocation> getter) {
+    public static <T> Comparator<T> getResourceLocationComparator(Function<T, Identifier> getter) {
         return (t1, t2) -> {
-            ResourceLocation rl1 = getter.apply(t1);
-            ResourceLocation rl2 = getter.apply(t2);
+            Identifier rl1 = getter.apply(t1);
+            Identifier rl2 = getter.apply(t2);
             boolean isVanilla1 = isVanilaResourceLocation(rl1);
             boolean isVanilla2 = isVanilaResourceLocation(rl2);
             if (isVanilla1 == isVanilla2) {

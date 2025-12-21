@@ -12,16 +12,16 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
-import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.camel.Camel;
-import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.animal.dolphin.Dolphin;
+import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
@@ -113,11 +113,11 @@ public final class EntityUtils {
         return Misc.cast(entity.getType());
     }
 
-    public static ResourceLocation getEntityTypeId(Entity entity) {
+    public static Identifier getEntityTypeId(Entity entity) {
         return getEntityTypeId(entity.getType());
     }
 
-    public static ResourceLocation getEntityTypeId(EntityType<?> entityType) {
+    public static Identifier getEntityTypeId(EntityType<?> entityType) {
         return EntityType.getKey(entityType);
     }
 
@@ -134,10 +134,10 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(ResourceKey<EntityType<?>> key) {
-        return getEntityType(key.location());
+        return getEntityType(key.identifier());
     }
 
-    public static <E extends Entity> EntityType<E> getEntityType(ResourceLocation key) {
+    public static <E extends Entity> EntityType<E> getEntityType(Identifier key) {
         return Misc.cast(BuiltInRegistries.ENTITY_TYPE.getOptional(key).orElse(null));
     }
 
@@ -296,8 +296,8 @@ public final class EntityUtils {
     }
 
     public static void setVariantAndMarkings(Horse entity,
-                                             net.minecraft.world.entity.animal.horse.Variant variant,
-                                             net.minecraft.world.entity.animal.horse.Markings markings) {
+                                             net.minecraft.world.entity.animal.equine.Variant variant,
+                                             net.minecraft.world.entity.animal.equine.Markings markings) {
         ((HorseIMixin) entity).invokeSetVariantAndMarkings(variant, markings);
     }
 }

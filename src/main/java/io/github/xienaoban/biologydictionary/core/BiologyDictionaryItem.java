@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.network.Filterable;
-import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -61,7 +61,7 @@ public final class BiologyDictionaryItem {
      * game_days = 3456000 / 24000 = 144
      * spawn_count = 144 / 14.325 = 10
      *
-     * @see net.minecraft.world.entity.npc.VillagerTrades
+     * @see net.minecraft.world.entity.npc.villager.VillagerTrades
      */
     public static void addToWanderingTraderTrades(WanderingTrader entity) {
         final int maxTicks = 2 * 24 * 60 * 60 * 20;

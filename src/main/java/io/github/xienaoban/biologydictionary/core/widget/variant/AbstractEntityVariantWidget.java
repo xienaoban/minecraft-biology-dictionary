@@ -17,7 +17,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
@@ -137,7 +137,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     public final String getVariantNameKeyPrefix() {
         // variant.minecraft.cat.xxxx
-        ResourceLocation rl = EntityUtils.getEntityTypeId(e());
+        Identifier rl = EntityUtils.getEntityTypeId(e());
         return "variant." + rl.getNamespace() + "." + rl.getPath() + ".";
     }
 

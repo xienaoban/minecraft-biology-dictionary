@@ -6,8 +6,8 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.core.Holder;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerType;
 
 public final class VillagerTypeWidget extends AbstractEntityStandardVariantWidget<Villager, Holder<VillagerType>> {
     public static final Factory<Villager> FACTORY = VillagerTypeWidget::new;

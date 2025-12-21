@@ -15,16 +15,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.Panda;
-import net.minecraft.world.entity.animal.horse.Horse;
-import net.minecraft.world.entity.animal.horse.Markings;
-import net.minecraft.world.entity.animal.horse.Variant;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.entity.animal.panda.Panda;
+import net.minecraft.world.entity.animal.equine.Horse;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerType;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -149,9 +147,9 @@ public final class EntityVariantPropertyBundle {
         @Override
         public String getVariantName(Holder<Object> variant) {
             return variant.unwrapKey().map(resourceKey -> {
-                ResourceLocation rl = resourceKey.location();
+                Identifier rl = resourceKey.identifier();
                 String res;
-                if (ResourceLocation.DEFAULT_NAMESPACE.equals(rl.getNamespace())) {
+                if (Identifier.DEFAULT_NAMESPACE.equals(rl.getNamespace())) {
                     res = rl.getPath();
                 } else {
                     res = rl.getNamespace() + '.' + rl.getPath();
@@ -221,9 +219,9 @@ public final class EntityVariantPropertyBundle {
         @Override
         public String getVariantName(Holder<VillagerType> variant) {
             return variant.unwrapKey().map(resourceKey -> {
-                ResourceLocation rl = resourceKey.location();
+                Identifier rl = resourceKey.identifier();
                 String res;
-                if (ResourceLocation.DEFAULT_NAMESPACE.equals(rl.getNamespace())) {
+                if (Identifier.DEFAULT_NAMESPACE.equals(rl.getNamespace())) {
                     res = rl.getPath();
                 } else {
                     res = rl.getNamespace() + '.' + rl.getPath();
@@ -233,68 +231,68 @@ public final class EntityVariantPropertyBundle {
         }
     }
 
-    public static final class HorseVariantHandler implements VariantHandler<Horse, Variant> {
+    public static final class HorseVariantHandler implements VariantHandler<Horse, net.minecraft.world.entity.animal.equine.Variant> {
 
         @Override
-        public List<net.minecraft.world.entity.animal.horse.Variant> getVariants() {
-            return Arrays.asList(net.minecraft.world.entity.animal.horse.Variant.values());
+        public List<net.minecraft.world.entity.animal.equine.Variant> getVariants() {
+            return Arrays.asList(net.minecraft.world.entity.animal.equine.Variant.values());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.horse.Variant getVariant(Horse entity) {
+        public net.minecraft.world.entity.animal.equine.Variant getVariant(Horse entity) {
             return entity.getVariant();
         }
 
         @Override
-        public void setVariant(Horse entity, net.minecraft.world.entity.animal.horse.Variant variant) {
+        public void setVariant(Horse entity, net.minecraft.world.entity.animal.equine.Variant variant) {
             EntityUtils.setVariantAndMarkings(entity, variant, entity.getMarkings());
         }
 
         @Override
-        public Tag variantToNbt(net.minecraft.world.entity.animal.horse.Variant variant) {
+        public Tag variantToNbt(net.minecraft.world.entity.animal.equine.Variant variant) {
             return IntTag.valueOf(variant.getId());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.horse.Variant nbtToVariant(Tag nbt) {
-            return net.minecraft.world.entity.animal.horse.Variant.byId(nbt.asInt().orElse(0));
+        public net.minecraft.world.entity.animal.equine.Variant nbtToVariant(Tag nbt) {
+            return net.minecraft.world.entity.animal.equine.Variant.byId(nbt.asInt().orElse(0));
         }
 
         @Override
-        public String getVariantName(net.minecraft.world.entity.animal.horse.Variant variant) {
+        public String getVariantName(net.minecraft.world.entity.animal.equine.Variant variant) {
             return variant.getSerializedName();
         }
     }
 
-    public static final class HorseMarkingsHandler implements VariantHandler<Horse, Markings> {
+    public static final class HorseMarkingsHandler implements VariantHandler<Horse, net.minecraft.world.entity.animal.equine.Markings> {
 
         @Override
-        public List<net.minecraft.world.entity.animal.horse.Markings> getVariants() {
-            return Arrays.asList(net.minecraft.world.entity.animal.horse.Markings.values());
+        public List<net.minecraft.world.entity.animal.equine.Markings> getVariants() {
+            return Arrays.asList(net.minecraft.world.entity.animal.equine.Markings.values());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.horse.Markings getVariant(Horse entity) {
+        public net.minecraft.world.entity.animal.equine.Markings getVariant(Horse entity) {
             return entity.getMarkings();
         }
 
         @Override
-        public void setVariant(Horse entity, net.minecraft.world.entity.animal.horse.Markings variant) {
+        public void setVariant(Horse entity, net.minecraft.world.entity.animal.equine.Markings variant) {
             EntityUtils.setVariantAndMarkings(entity, entity.getVariant(), variant);
         }
 
         @Override
-        public Tag variantToNbt(net.minecraft.world.entity.animal.horse.Markings variant) {
+        public Tag variantToNbt(net.minecraft.world.entity.animal.equine.Markings variant) {
             return IntTag.valueOf(variant.getId());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.horse.Markings nbtToVariant(Tag nbt) {
-            return net.minecraft.world.entity.animal.horse.Markings.byId(nbt.asInt().orElse(0));
+        public net.minecraft.world.entity.animal.equine.Markings nbtToVariant(Tag nbt) {
+            return net.minecraft.world.entity.animal.equine.Markings.byId(nbt.asInt().orElse(0));
         }
 
         @Override
-        public String getVariantName(net.minecraft.world.entity.animal.horse.Markings variant) {
+        public String getVariantName(net.minecraft.world.entity.animal.equine.Markings variant) {
             return "markings." + variant.name().toLowerCase();
         }
     }

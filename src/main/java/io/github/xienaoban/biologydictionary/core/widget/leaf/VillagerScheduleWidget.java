@@ -11,10 +11,9 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraft.world.entity.schedule.Schedule;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -31,7 +30,7 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
     private static final int ZERO_TIME = 18000;
 
     /**
-     * @see Schedule
+     * @see net.minecraft.world.entity.schedule.Schedule
      */
     private static final TimelineEntry[] EMPTY = {
             new TimelineEntry(0, Activity.IDLE),

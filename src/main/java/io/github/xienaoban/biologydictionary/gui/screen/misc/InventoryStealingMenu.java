@@ -92,7 +92,7 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         return (handler == null || handler.getContainer(entity) == this.container)
             && container.stillValid(player)
             && entity.isAlive()
-            && player.canInteractWithEntity(entity, 4.0);
+            && player.isWithinEntityInteractionRange(entity, 4.0);
     }
 
     @Override

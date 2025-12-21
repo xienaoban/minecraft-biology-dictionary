@@ -39,6 +39,7 @@ loom {
         testServer {
             server()
             source sourceSets.testServer
+            vmArg "--enable-native-access=ALL-UNNAMED"
             vmArg "-Dfabric-api.gametest"
             vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
             runDir "build/testServer"

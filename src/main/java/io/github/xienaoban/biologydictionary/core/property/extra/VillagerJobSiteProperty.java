@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.property.extra;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.GlobalPosProperty;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 
 import java.util.Optional;
 
