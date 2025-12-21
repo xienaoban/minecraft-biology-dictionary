@@ -91,8 +91,9 @@ public final class FirstPersonShoulderEntityRenderer {
         CameraRenderState camera = client.gameRenderer.getLevelRenderState().cameraRenderState;
 
         for (int i = 0; i < 2; ++i) {
-            update(entityRenderDispatcher, player,
-                    (i == 0 ? player.getShoulderParrotLeft() : player.getShoulderParrotRight()), i);
+            Optional<Parrot.Variant> optionalVariant
+                    = (i == 0 ? player.getShoulderParrotLeft() : player.getShoulderParrotRight());
+            update(entityRenderDispatcher, player, optionalVariant.orElse(null), i);
             LivingEntity entity = entities[i];
             if (entity == null) continue;
             if (curTime > nextHeadYawTime[i]) {
@@ -122,8 +123,8 @@ public final class FirstPersonShoulderEntityRenderer {
         }
     }
 
-    private static void update(EntityRenderDispatcher entityRenderDispatcher, LocalPlayer player, Optional<Parrot.Variant> optionalVariant, int index) {
-        int variantId = optionalVariant.map(Parrot.Variant::getId).orElse(NULL_VARIANT);
+    private static void update(EntityRenderDispatcher entityRenderDispatcher, LocalPlayer player, Parrot.Variant variant, int index) {
+        int variantId = variant == null ? NULL_VARIANT : variant.getId();
         if (lrData[index] == variantId) return;
         lrData[index] = variantId;
         LivingEntity entity;
@@ -136,7 +137,7 @@ public final class FirstPersonShoulderEntityRenderer {
         }
         else {
             Parrot parrot = EntityUtils.create(EntityType.PARROT, player.level());
-            VanillaEntityProperties.OfParrot.createVariantProperty().withVal(optionalVariant.get()).setTo(parrot);
+            VanillaEntityProperties.OfParrot.createVariantProperty().withVal(variant).setTo(parrot);
 
             entity = parrot;
             entity.setYRot(0);

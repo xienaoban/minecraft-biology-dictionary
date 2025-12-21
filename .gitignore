@@ -102,7 +102,6 @@ $RECYCLE.BIN/
 # Gradle
 .gradle/
 build/
-out/
 classes/
 
 # Ignore Gradle GUI config

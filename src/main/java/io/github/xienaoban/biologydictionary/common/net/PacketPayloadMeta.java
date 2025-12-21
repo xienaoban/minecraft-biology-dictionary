@@ -73,13 +73,13 @@ public record PacketPayloadMeta<T extends Packet>(CustomPacketPayload.Type<T> ty
         return codec;
     }
 
-    private static <T extends Packet> ClientReceiver<T> generateClientReceiver(Class<T> clazz) throws IllegalAccessException {
+    private static <T extends Packet> ClientReceiver<T> generateClientReceiver(Class<T> clazz) {
         Optional<Method> m = Arrays.stream(clazz.getDeclaredMethods()).filter(method -> "clientReceive".equals(method.getName())).findAny();
         if (m.isEmpty()) return null;
         return Packet::clientReceive;
     }
 
-    private static <T extends Packet> ServerReceiver<T> generateServerReceiver(Class<T> clazz) throws IllegalAccessException {
+    private static <T extends Packet> ServerReceiver<T> generateServerReceiver(Class<T> clazz) {
         Optional<Method> m = Arrays.stream(clazz.getDeclaredMethods()).filter(method -> "serverReceive".equals(method.getName())).findAny();
         if (m.isEmpty()) return null;
         return Packet::serverReceive;

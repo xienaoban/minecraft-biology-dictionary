@@ -127,7 +127,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
             int i = -1;
             for (MobEffectInstance effect : effects) {
                 ++i;
-                ctx.renderSprite(effect.getEffect(), 0.444444F, getBox().getLeft() + 0.05F + i * gap, getBox().getTop());
+                ctx.renderEffect(effect.getEffect(), 0.444444F, getBox().getLeft() + 0.05F + i * gap, getBox().getTop());
             }
         }
 

@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary.common.gui.screen.util;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.common.gui.screen.CommonScreen;
@@ -25,7 +24,6 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositione
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -51,8 +49,8 @@ import java.util.Objects;
 public final class ScreenRenderingContext {
     private final Screen screen;
 
-    Minecraft client;
-    GuiGraphics guiGraphics;
+    private final Minecraft client;
+    private GuiGraphics guiGraphics;
     private float mouseX, mouseY;
     private float tickDelta;
     private boolean debug;
@@ -98,10 +96,6 @@ public final class ScreenRenderingContext {
     }
     public GuiGraphics.ScissorStack getScissorStack() { return getGuiGraphics().scissorStack; }
     public GuiRenderState getGuiRenderState() { return getGuiGraphics().guiRenderState; }
-
-    public MultiBufferSource.BufferSource getBufferSource() {
-        return null;
-    }
 
     public ScaleRAII scaleOnce(float size) {
         return new ScaleRAII(this, size);
@@ -275,18 +269,17 @@ public final class ScreenRenderingContext {
     }
 
     /**
-     * @see net.minecraft.client.gui.screens.inventory.EffectsInInventory#renderEffects(GuiGraphics, int, int)
-     * @see net.minecraft.client.gui.screens.inventory.EffectsInInventory#renderIcons(net.minecraft.client.gui.GuiGraphics, int, int, java.lang.Iterable, boolean)
+     * @see net.minecraft.client.gui.screens.inventory.EffectsInInventory#renderEffects(net.minecraft.client.gui.GuiGraphics, java.util.Collection, int, int, int, int, int)
      */
-    public void renderSprite(Holder<MobEffect> effect, float left, float top) {
+    public void renderEffect(Holder<MobEffect> effect, float left, float top) {
         Identifier resourceLocation = Gui.getMobEffectSprite(effect);
         RenderPipeline renderPipeline = RenderPipelines.GUI_TEXTURED;
         getGuiGraphics().blitSprite(renderPipeline, resourceLocation, (int) left, (int) top, 18, 18);
     }
 
-    public void renderSprite(Holder<MobEffect> effect, float size, float left, float top) {
+    public void renderEffect(Holder<MobEffect> effect, float size, float left, float top) {
         try (ScaleRAII ignored = scaleOnce(size)) {
-            renderSprite(effect, left / size, top / size);
+            renderEffect(effect, left / size, top / size);
         }
     }
 
@@ -339,7 +332,6 @@ public final class ScreenRenderingContext {
         Font font = getFont();
         List<ClientTooltipComponent> list = texts.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
         ClientTooltipPositioner clientTooltipPositioner = DefaultTooltipPositioner.INSTANCE;
-        Identifier resourceLocation = null;
 
         int width = 0;
         int height = list.size() == 1 ? -2 : 0;
@@ -356,7 +348,7 @@ public final class ScreenRenderingContext {
         int p = vector2ic.x();
         int q = vector2ic.y();
         getPose().pushMatrix();
-        TooltipRenderUtil.renderTooltipBackground(getGuiGraphics(), p, q, width, height, resourceLocation);
+        TooltipRenderUtil.renderTooltipBackground(getGuiGraphics(), p, q, width, height, null);
         int r = q;
 
         for (int s = 0; s < list.size(); s++) {
@@ -404,7 +396,6 @@ public final class ScreenRenderingContext {
      * }
      *
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
-     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(GuiGraphics, int, int, int, int, float, Vector3f, Quaternionf, Quaternionf, LivingEntity)
      */
     private void renderEntity(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset) {

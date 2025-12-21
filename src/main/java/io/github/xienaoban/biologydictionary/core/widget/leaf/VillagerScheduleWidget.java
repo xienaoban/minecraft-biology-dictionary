@@ -30,7 +30,7 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
     private static final int ZERO_TIME = 18000;
 
     /**
-     * @see net.minecraft.world.entity.schedule.Schedule
+     * @see net.minecraft.world.timeline.Timelines#bootstrap(net.minecraft.data.worldgen.BootstrapContext)
      */
     private static final TimelineEntry[] EMPTY = {
             new TimelineEntry(0, Activity.IDLE),
