@@ -112,7 +112,7 @@ public final class EntityManager {
                 if (o.isEmpty()) continue;
                 entityClassInfo = o.get();
             } catch (Exception e) {
-                LOGGER.error("Cannot init EntityClassInfo of\"" + EntityType.getKey(entityType) + "\": " + e);
+                LOGGER.error("Cannot init EntityClassInfo of\"{}\": {}", EntityType.getKey(entityType), e);
                 throw e;
             }
             infos.put(entityClassInfo.getType(), entityClassInfo);

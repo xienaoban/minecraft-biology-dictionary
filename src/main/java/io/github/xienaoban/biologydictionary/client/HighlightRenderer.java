@@ -41,7 +41,7 @@ public final class HighlightRenderer {
 
     /**
      * @see net.minecraft.client.renderer.LevelRenderer#submitEntities(com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.state.LevelRenderState, net.minecraft.client.renderer.SubmitNodeCollector)
-     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(net.minecraft.client.gui.GuiGraphics, int, int, int, int, float, org.joml.Vector3f, org.joml.Quaternionf, org.joml.Quaternionf, net.minecraft.world.entity.LivingEntity)
+     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
      * @see net.minecraft.client.renderer.LevelRenderer#extractEntity(net.minecraft.world.entity.Entity, float)
      */
     private static void submitEntity(Entity entity, EntityRenderDispatcher entityRenderDispatcher,
@@ -65,7 +65,7 @@ public final class HighlightRenderer {
 
     /**
      * @see net.minecraft.client.renderer.LevelRenderer#submitBlockEntities(com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.state.LevelRenderState, net.minecraft.client.renderer.SubmitNodeStorage)
-     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(net.minecraft.client.gui.GuiGraphics, int, int, int, int, float, org.joml.Vector3f, org.joml.Quaternionf, org.joml.Quaternionf, net.minecraft.world.entity.LivingEntity)
+     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
      */
     private static void submitBlock(BlockPos blockPos, BlockState blockState,
                                     Vec3 camera, PoseStack poseStack,

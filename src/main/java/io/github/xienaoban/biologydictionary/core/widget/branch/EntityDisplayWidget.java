@@ -46,7 +46,6 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
                 model = EntityUtils.create(EntityType.ARMOR_STAND, entity.level());
             }
         }
-        assert model != null;
         updateCompoundTag(entity, model);
         return model;
     }

@@ -37,7 +37,7 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
     }
 
     /**
-     * @see net.minecraft.client.multiplayer.ClientPacketListener#handleHorseScreenOpen(net.minecraft.network.protocol.game.ClientboundHorseScreenOpenPacket)
+     * @see net.minecraft.client.multiplayer.ClientPacketListener#handleMountScreenOpen(net.minecraft.network.protocol.game.ClientboundMountScreenOpenPacket)
      */
     @Environment(EnvType.CLIENT)
     @Override

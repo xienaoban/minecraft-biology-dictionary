@@ -32,7 +32,7 @@ public class LivingEntityStealInventorySkill implements EntityTargetedSkill<Livi
     }
 
     /**
-     * @see net.minecraft.server.level.ServerPlayer#openHorseInventory(net.minecraft.world.entity.animal.horse.AbstractHorse, net.minecraft.world.Container)
+     * @see net.minecraft.server.level.ServerPlayer#openHorseInventory(net.minecraft.world.entity.animal.equine.AbstractHorse, net.minecraft.world.Container)
      */
     @Override
     public void serverReceive(MinecraftServer server, ServerPlayer player, LivingEntity entity, Tag args) {

@@ -407,7 +407,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                 pk = pj.merge(pi);
             }
             if (pk == null) {
-                LOGGER.debug("Conflict of \"" + nbtTagName + "\": " + pi + " vs " + pj);
+                LOGGER.debug("Conflict of \"{}\": {} vs {}", nbtTagName, pi, pj);
                 addConflict(nbtTagName, pi);
                 addConflict(nbtTagName, pj);
                 nbtTags.remove(nbtTagName);
