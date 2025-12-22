@@ -10,15 +10,6 @@ import java.util.List;
 
 public abstract class AbstractEntityStandardVariantWidget<E extends Entity, V> extends AbstractEntityVariantWidget<E, V> {
 
-    protected static <E extends Entity, V> EntityProperties<E> verify(EntityProperties<E> properties, int variantHandlerIdx) {
-        E entity = properties.entity();
-        List<EntityVariantPropertyBundle.VariantHandler<E, V>> list = EntityVariantPropertyBundle.getHandlers(entity);
-        // TODO
-        // UnsupportedWidgetException.verify(list.size() > variantHandlerIdx);
-        // UnsupportedWidgetException.verify(list.get(variantHandlerIdx).isStandard());
-        return properties;
-    }
-
     protected static <E extends Entity, V> EntityVariantPropertyBundle.VariantHandler<E, V> getVariantHandler(E entity, int variantHandlerIdx) {
         List<EntityVariantPropertyBundle.VariantHandler<E, V>> list = EntityVariantPropertyBundle.getHandlers(entity);
         return list.get(variantHandlerIdx);

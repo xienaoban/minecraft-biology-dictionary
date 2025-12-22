@@ -137,8 +137,8 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     public final String getVariantNameKeyPrefix() {
         // variant.minecraft.cat.xxxx
-        Identifier rl = EntityUtils.getEntityTypeId(e());
-        return "variant." + rl.getNamespace() + "." + rl.getPath() + ".";
+        Identifier id = EntityUtils.getEntityTypeId(e());
+        return "variant." + id.getNamespace() + "." + id.getPath() + ".";
     }
 
     protected final void setVariantElementWidthFix(float widthFix) {

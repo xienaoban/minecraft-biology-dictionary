@@ -92,7 +92,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     protected void render(ScreenRenderingContext ctx) {
-        renderBlurredBackground(ctx);
+        renderTransparentBackground(ctx);
         ctx.renderTexture(Textures.BOOK,
                 BOOK_TEXTURE_LEFT, BOOK_TEXTURE_TOP, BOOK_TEXTURE_RIGHT, BOOK_TEXTURE_BOTTOM,
                 getZ(),
@@ -171,6 +171,11 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
             return true;
         }
         return super.keyPressed(keyEvent);
+    }
+
+    @Override
+    public boolean isInGameUi() {
+        return true;
     }
 
     public Bookmark getBookmark(int idx) {
