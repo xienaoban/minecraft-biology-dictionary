@@ -38,8 +38,8 @@ public final class DevUtils {
         return clazzName.startsWith(MINECRAFT_PACKAGE);
     }
 
-    public static boolean isVanilaResourceLocation(Identifier rl) {
-        return Identifier.DEFAULT_NAMESPACE.equals(rl.getNamespace());
+    public static boolean isVanilaResourceLocation(Identifier id) {
+        return Identifier.DEFAULT_NAMESPACE.equals(id.getNamespace());
     }
 
     /**
@@ -65,12 +65,12 @@ public final class DevUtils {
      */
     public static <T> Comparator<T> getResourceLocationComparator(Function<T, Identifier> getter) {
         return (t1, t2) -> {
-            Identifier rl1 = getter.apply(t1);
-            Identifier rl2 = getter.apply(t2);
-            boolean isVanilla1 = isVanilaResourceLocation(rl1);
-            boolean isVanilla2 = isVanilaResourceLocation(rl2);
+            Identifier id1 = getter.apply(t1);
+            Identifier id2 = getter.apply(t2);
+            boolean isVanilla1 = isVanilaResourceLocation(id1);
+            boolean isVanilla2 = isVanilaResourceLocation(id2);
             if (isVanilla1 == isVanilla2) {
-                return rl1.getPath().compareTo(rl2.getPath());
+                return id1.getPath().compareTo(id2.getPath());
             }
             return isVanilla1 ? -1 : 1;
         };

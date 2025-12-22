@@ -114,13 +114,7 @@ public final class ScreenRenderingContext {
     }
 
     public void renderText(Component component, int color, float z, float x, float y) {
-        if (z != getZ()) {
-            try (ScaleRAII ignored = scaleOnce(1F, z)) {
-                getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
-            }
-        } else {
-            getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
-        }
+        getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
     }
 
     public void renderText(Component component, int color, float size, float z, float x, float y) {
@@ -272,9 +266,9 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.screens.inventory.EffectsInInventory#renderEffects(net.minecraft.client.gui.GuiGraphics, java.util.Collection, int, int, int, int, int)
      */
     public void renderEffect(Holder<MobEffect> effect, float left, float top) {
-        Identifier resourceLocation = Gui.getMobEffectSprite(effect);
+        Identifier id = Gui.getMobEffectSprite(effect);
         RenderPipeline renderPipeline = RenderPipelines.GUI_TEXTURED;
-        getGuiGraphics().blitSprite(renderPipeline, resourceLocation, (int) left, (int) top, 18, 18);
+        getGuiGraphics().blitSprite(renderPipeline, id, (int) left, (int) top, 18, 18);
     }
 
     public void renderEffect(Holder<MobEffect> effect, float size, float left, float top) {
@@ -432,7 +426,6 @@ public final class ScreenRenderingContext {
         }
 
         int x0 = Mth.ceil(left), y0 = Mth.ceil(top), x1 = Mth.floor(right), y1 = Mth.floor(bottom);
-        getGuiGraphics().enableScissor(x0, y0, x1, y1);
         Quaternionf quaternionf = new Quaternionf().rotateX(rotateY * 20F * (float) (Math.PI / 180F));
         Quaternionf quaternionf2 = new Quaternionf().rotateY((float) Math.PI - rotateX * 20F * (float) (Math.PI / 180F));
         Quaternionf quaternionf3 = new Quaternionf().rotateZ((float) Math.PI);
@@ -453,8 +446,6 @@ public final class ScreenRenderingContext {
         entityRenderState.shadowPieces.clear();
         entityRenderState.outlineColor = 0;
         getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);
-
-        getGuiGraphics().disableScissor();
 
         if (isDebug() && width > 0 && height > 0) {
             final int color = 0xFFAAAAAA;

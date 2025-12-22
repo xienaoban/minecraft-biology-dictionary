@@ -147,12 +147,12 @@ public final class EntityVariantPropertyBundle {
         @Override
         public String getVariantName(Holder<Object> variant) {
             return variant.unwrapKey().map(resourceKey -> {
-                Identifier rl = resourceKey.identifier();
+                Identifier id = resourceKey.identifier();
                 String res;
-                if (Identifier.DEFAULT_NAMESPACE.equals(rl.getNamespace())) {
-                    res = rl.getPath();
+                if (Identifier.DEFAULT_NAMESPACE.equals(id.getNamespace())) {
+                    res = id.getPath();
                 } else {
-                    res = rl.getNamespace() + '.' + rl.getPath();
+                    res = id.getNamespace() + '.' + id.getPath();
                 }
                 return res;
             }).orElse("unknown");
@@ -219,12 +219,12 @@ public final class EntityVariantPropertyBundle {
         @Override
         public String getVariantName(Holder<VillagerType> variant) {
             return variant.unwrapKey().map(resourceKey -> {
-                Identifier rl = resourceKey.identifier();
+                Identifier id = resourceKey.identifier();
                 String res;
-                if (Identifier.DEFAULT_NAMESPACE.equals(rl.getNamespace())) {
-                    res = rl.getPath();
+                if (Identifier.DEFAULT_NAMESPACE.equals(id.getNamespace())) {
+                    res = id.getPath();
                 } else {
-                    res = rl.getNamespace() + '.' + rl.getPath();
+                    res = id.getNamespace() + '.' + id.getPath();
                 }
                 return res;
             }).orElse("unknown");

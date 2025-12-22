@@ -72,7 +72,7 @@ public class BeehiveScreen extends ElementScreen {
         long lastMills = mills;
         mills = System.currentTimeMillis();
         int diff = (int) (mills - lastMills);
-        renderBlurredBackground(ctx);
+        renderTransparentBackground(ctx);
         ctx.getGuiGraphics().pose().pushMatrix();
         int w = (width - 128) >> 1;
         int h = (height - 128) >> 1;
