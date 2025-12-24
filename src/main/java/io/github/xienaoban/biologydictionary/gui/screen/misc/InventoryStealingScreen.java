@@ -26,31 +26,33 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
     private float xMouse;
     private float yMouse;
 
-    public InventoryStealingScreen(InventoryStealingMenu abstractContainerMenu, Inventory inventory, LivingEntity entity) {
-        super(abstractContainerMenu, inventory, Component.translatable(Lang.SCREEN_STEALING));
+    public InventoryStealingScreen(InventoryStealingMenu menu, Inventory inventory, LivingEntity entity) {
+        super(menu, inventory, Component.translatable(Lang.SCREEN_STEALING));
         this.entity = entity;
         this.containerSize = menu.container.getContainerSize();
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float f, int i, int j) {
-        int k = (this.width - this.imageWidth) / 2;
-        int l = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HORSE_INVENTORY_LOCATION, k, l, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
+    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
+        int left = (this.width - this.imageWidth) / 2;
+        int top = (this.height - this.imageHeight) / 2;
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HORSE_INVENTORY_LOCATION, left, top, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
 
         if (this.containerSize % 2 == 0 && this.containerSize <= 10) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, CHEST_SLOTS_SPRITE, 90, 54, 0, 0, k + 79, l + 17, this.containerSize / 2 * 18, 18 * 2);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, CHEST_SLOTS_SPRITE, 90, 54, 0, 0, left + 79, top + 17, this.containerSize / 2 * 18, 18 * 2);
         } else {
             int c = this.containerSize / 3;
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, CHEST_SLOTS_SPRITE, 90, 54, 0, 0, k + 79, l + 17, c * 18, 3 * 18);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, CHEST_SLOTS_SPRITE, 90, 54, 0, 0, left + 79, top + 17, c * 18, 3 * 18);
             if (this.containerSize % 3 != 0) {
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, CHEST_SLOTS_SPRITE, 90, 54, 0, 0, k + 79, l + 17, (c + 1) * 18, (this.containerSize % 3) * 18);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, CHEST_SLOTS_SPRITE, 90, 54, 0, 0, left + 79, top + 17, (c + 1) * 18, (this.containerSize % 3) * 18);
             }
         }
 
-        if (this.entity instanceof LivingEntity livingEntity) {
-            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, k + 26, l + 18, k + 78, l + 70, 17, 0.25F, this.xMouse, this.yMouse, livingEntity);
+        for (int i = 0; i < InventoryStealingMenu.EQUIPMENT_SLOTS; i++) {
+            drawSlot(guiGraphics, left + 7 - 19, top + 17 + i * 18);
         }
+
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 26, top + 18, left + 78, top + 70, 17, 0.25F, this.xMouse, this.yMouse, this.entity);
     }
 
     private void drawSlot(GuiGraphics guiGraphics, int i, int j) {

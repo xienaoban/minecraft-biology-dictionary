@@ -248,12 +248,16 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 tooltips = Arrays.asList(
                         tooltipTitle(Lang.WIDGET_ENTITY_HIGHLIGHT),
                         Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC, HighlightEntitiesSkill.NEAR_RADIUS, HighlightEntitiesSkill.NEAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
-                        Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS, HighlightEntitiesSkill.FAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY)
+                        Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS, HighlightEntitiesSkill.FAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
+                        Component.empty(),
+                        Component.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY)
                 );
             } else {
                 tooltips = Arrays.asList(
                         tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG),
-                        tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC)
+                        tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC),
+                        Component.empty(),
+                        Component.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY)
                 );
             }
 
