@@ -135,7 +135,7 @@ src/main/java/io/github/xienaoban/biologydictionary/
 
 - Avoid using the `this.` qualifier in code unless explicitly necessary. Follow the code style of existing code in the project.
 - Do not modify any existing code without a valid justification.
-- All temporary files generated during development (i.e., files that will not be committed to Git in the end) must be stored in the dedicated directory `./.claude/tmp/`. Do not scatter temporary files arbitrarily across the project.
+- All temporary files generated during development (i.e., files that will not be committed to Git in the end) must be stored in the dedicated directory `./.claude/tmp/`. Do not scatter temporary files arbitrarily across the project. Especially pay attention to the output directory when executing `unzip`, `tar -xf`, `jar -xf` and so on.
 - Minecraft's first-party source code can be found in the Loom cache archive: `.gradle/loom-cache/minecraftMaven/net/minecraft/minecraft-merged-xxx/<mc-version>-xxx/minecraft-merged-xxx-<mc-version>-xxx-sources.jar`.
 - Minecraft's first-party source code is obtained via decompilation. You don't need to follow its code style or local variable naming conventions — however, you should reference its class names, method names, and member variable names.
 - Prioritize consulting and referencing Minecraft's official first-party code over searching for solutions online.
