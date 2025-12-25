@@ -53,14 +53,14 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
             default -> EMPTY_ARMOR_SLOT_HORSE_ARMOR;
         };
         int left = 8 - 19, top = 0;
-        addSlot(new EntityEquipmentSlot(entity, EquipmentSlot.HEAD,     left, top += 18, EMPTY_ARMOR_SLOT_HELMET));
-        addSlot(new EntityEquipmentSlot(entity, EquipmentSlot.CHEST,    left, top += 18, EMPTY_ARMOR_SLOT_CHESTPLATE));
-        addSlot(new EntityEquipmentSlot(entity, EquipmentSlot.LEGS,     left, top += 18, EMPTY_ARMOR_SLOT_LEGGINGS));
-        addSlot(new EntityEquipmentSlot(entity, EquipmentSlot.FEET,     left, top += 18, EMPTY_ARMOR_SLOT_BOOTS));
-        addSlot(new EntityEquipmentSlot(entity, EquipmentSlot.MAINHAND, left, top += 18, EMPTY_ARMOR_SLOT_SWORD));
-        addSlot(new EntityEquipmentSlot(entity, EquipmentSlot.OFFHAND,  left, top += 18, EMPTY_ARMOR_SLOT_SHIELD));
-        addSlot(new EntityEquipmentSlot(entity, EquipmentSlot.SADDLE,   left, top += 18, EMPTY_ARMOR_SLOT_SADDLE));
-        addSlot(new EntityEquipmentSlot(entity, EquipmentSlot.BODY,     left, top += 18, emptyBodySlot));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.HEAD,     left, top += 18, EMPTY_ARMOR_SLOT_HELMET));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.CHEST,    left, top += 18, EMPTY_ARMOR_SLOT_CHESTPLATE));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.LEGS,     left, top += 18, EMPTY_ARMOR_SLOT_LEGGINGS));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.FEET,     left, top += 18, EMPTY_ARMOR_SLOT_BOOTS));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.MAINHAND, left, top += 18, EMPTY_ARMOR_SLOT_SWORD));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.OFFHAND,  left, top += 18, EMPTY_ARMOR_SLOT_SHIELD));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.SADDLE,   left, top += 18, EMPTY_ARMOR_SLOT_SADDLE));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.BODY,     left, top += 18, emptyBodySlot));
 
         final int size = container.getContainerSize();
         final int mod = (size % 2 == 0 && size <= 10) ? 2 : 3;
@@ -135,91 +135,107 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         super.removed(player);
         container.stopOpen(player);
     }
-}
 
-class EntityEquipmentContainer implements ContainerSingleItem {
-    private final LivingEntity entity;
-    private final EquipmentSlot equipmentSlot;
+    /**
+     * Container wrapper for entity equipment slots
+     */
+    class EntityEquipmentContainer implements ContainerSingleItem {
+        private final EquipmentSlot equipmentSlot;
 
-    EntityEquipmentContainer(LivingEntity entity, EquipmentSlot equipmentSlot) {
-        this.entity = entity;
-        this.equipmentSlot = equipmentSlot;
+        EntityEquipmentContainer(EquipmentSlot equipmentSlot) {
+            this.equipmentSlot = equipmentSlot;
+        }
+
+        @Override
+        public ItemStack getTheItem() {
+            return entity.getItemBySlot(equipmentSlot);
+        }
+
+        @Override
+        public void setTheItem(ItemStack stack) {
+            entity.setItemSlot(equipmentSlot, stack);
+        }
+
+        @Override
+        public ItemStack splitTheItem(int amount) {
+            // Get the current item and split it correctly
+            ItemStack current = getTheItem();
+            if (current.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+            // For equipment slots, we always take the entire item
+            ItemStack result = current.copy();
+            setTheItem(ItemStack.EMPTY);
+            return result;
+        }
+
+        @Override
+        public int getMaxStackSize() {
+            return 1;
+        }
+
+        @Override
+        public void setChanged() {
+        }
+
+        @Override
+        public boolean stillValid(Player player) {
+            return entity.isAlive() && player.isWithinEntityInteractionRange(entity, 4.0);
+        }
     }
 
-    @Override
-    public ItemStack getTheItem() {
-        return entity.getItemBySlot(equipmentSlot);
-    }
+    /**
+     * Slot wrapper for entity equipment
+     * @see net.minecraft.world.inventory.ArmorSlot
+     */
+    class EntityEquipmentSlot extends Slot {
+        private final EquipmentSlot slot;
+        @Nullable
+        private final Identifier emptyIcon;
 
-    @Override
-    public void setTheItem(ItemStack stack) {
-        entity.setItemSlot(equipmentSlot, stack);
-    }
+        EntityEquipmentSlot(EquipmentSlot equipmentSlot, int x, int y, @Nullable Identifier emptyIcon) {
+            super(new EntityEquipmentContainer(equipmentSlot), 0, x, y);
+            this.slot = equipmentSlot;
+            this.emptyIcon = emptyIcon;
+        }
 
-    @Override
-    public int getMaxStackSize() {
-        return 1;
-    }
+        @Override
+        public void setByPlayer(ItemStack newStack, ItemStack oldStack) {
+            entity.onEquipItem(slot, oldStack, newStack);
+            super.setByPlayer(newStack, oldStack);
+        }
 
-    @Override
-    public void setChanged() {
-    }
+        @Override
+        public int getMaxStackSize() {
+            return 1;
+        }
 
-    @Override
-    public boolean stillValid(Player player) {
-        return entity.isAlive() && player.isWithinEntityInteractionRange(entity, 4.0);
-    }
-}
+        @Override
+        public boolean mayPlace(ItemStack stack) {
+            // return entity.isEquippableInSlot(stack, slot);
+            return false;
+        }
 
-class EntityEquipmentSlot extends Slot {
-    private final LivingEntity owner;
-    private final EquipmentSlot slot;
-    @Nullable
-    private final Identifier emptyIcon;
+        @Override
+        public boolean mayPickup(Player player) {
+            // ItemStack itemStack = getItem();
+            // if (!itemStack.isEmpty() && !player.isCreative() && EnchantmentHelper.has(itemStack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
+            //     return false;
+            // }
+            // return super.mayPickup(player);
+            return false;
+        }
 
-    EntityEquipmentSlot(LivingEntity entity, EquipmentSlot equipmentSlot, int x, int y, @Nullable Identifier emptyIcon) {
-        super(new EntityEquipmentContainer(entity, equipmentSlot), 0, x, y);
-        this.owner = entity;
-        this.slot = equipmentSlot;
-        this.emptyIcon = emptyIcon;
-    }
+        @Override
+        public boolean isActive() {
+            // return entity.canUseSlot(slot);
+            return true;
+        }
 
-    @Override
-    public void setByPlayer(ItemStack newStack, ItemStack oldStack) {
-        owner.onEquipItem(slot, oldStack, newStack);
-        super.setByPlayer(newStack, oldStack);
-    }
-
-    @Override
-    public int getMaxStackSize() {
-        return 1;
-    }
-
-    @Override
-    public boolean mayPlace(ItemStack stack) {
-        // return owner.isEquippableInSlot(stack, slot);
-        return false;
-    }
-
-    @Override
-    public boolean mayPickup(Player player) {
-        // ItemStack itemStack = getItem();
-        // if (!itemStack.isEmpty() && !player.isCreative() && EnchantmentHelper.has(itemStack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
-        //     return false;
-        // }
-        // return super.mayPickup(player);
-        return false;
-    }
-
-    @Override
-    public boolean isActive() {
-        // return owner.canUseSlot(slot);
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public Identifier getNoItemIcon() {
-        return emptyIcon;
+        @Nullable
+        @Override
+        public Identifier getNoItemIcon() {
+            return emptyIcon;
+        }
     }
 }
