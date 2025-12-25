@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,7 +20,6 @@ import net.minecraft.world.entity.player.Inventory;
 public class InventoryStealingScreen extends AbstractContainerScreen<InventoryStealingMenu> {
     private static final Identifier SLOT_SPRITE = Identifier.withDefaultNamespace("container/slot");
     private static final Identifier CHEST_SLOTS_SPRITE = Identifier.withDefaultNamespace("container/horse/chest_slots");
-    private static final Identifier HORSE_INVENTORY_LOCATION = Identifier.withDefaultNamespace("textures/gui/container/horse.png");
 
     private final LivingEntity entity;
     private final int containerSize;
@@ -28,6 +28,8 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
 
     public InventoryStealingScreen(InventoryStealingMenu menu, Inventory inventory, LivingEntity entity) {
         super(menu, inventory, Component.translatable(Lang.SCREEN_STEALING));
+        this.imageWidth = 234;
+        this.imageHeight = 194;
         this.entity = entity;
         this.containerSize = menu.container.getContainerSize();
     }
@@ -36,7 +38,7 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
     protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
         int left = (this.width - this.imageWidth) / 2;
         int top = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HORSE_INVENTORY_LOCATION, left, top, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Textures.STEALING_INVENTORY.location(), left, top, 0.0F, 0.0F, this.imageWidth, this.imageHeight, (int) Textures.STEALING_INVENTORY.width(), (int) Textures.STEALING_INVENTORY.height());
 
         if (this.containerSize % 2 == 0 && this.containerSize <= 10) {
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, CHEST_SLOTS_SPRITE, 90, 54, 0, 0, left + 79, top + 17, this.containerSize / 2 * 18, 18 * 2);
@@ -48,11 +50,7 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
             }
         }
 
-        for (int i = 0; i < InventoryStealingMenu.EQUIPMENT_SLOTS; i++) {
-            drawSlot(guiGraphics, left + 7 - 19, top + 17 + i * 18);
-        }
-
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 26, top + 18, left + 78, top + 70, 17, 0.25F, this.xMouse, this.yMouse, this.entity);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 8, top + 18, left + 60, top + 70, 17, 0.25F, this.xMouse, this.yMouse, this.entity);
     }
 
     private void drawSlot(GuiGraphics guiGraphics, int i, int j) {

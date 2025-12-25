@@ -23,4 +23,5 @@ public final class Textures {
     public static final TextureInfo BOOK = new TextureInfo(my("textures/gui/book.png"), 512, 256);
     public static final TextureInfo ICONS = new TextureInfo(my("textures/gui/icons.png"), 256, 256);
     public static final TextureInfo BEEHIVE = new TextureInfo(my("textures/gui/beehive.png"), 256, 256);
+    public static final TextureInfo STEALING_INVENTORY = new TextureInfo(my("textures/gui/stealing_inventory.png"), 256, 256);
 }
