@@ -207,6 +207,8 @@ public final class Lang {
     TEXT_EXPERIENCE_LEVELS_COST              = "text.biologydictionary.experience_levels_cost",
     TEXT_OFFER_OR_DROP                       = "text.biologydictionary.offer_or_drop",
     TEXT_TARGET_ENTITY_NO_ABILITY            = "text.biologydictionary.target_entity_no_ability",
+    TEXT_STEALING_DETECTED                   = "text.biologydictionary.stealing_detected",
+    TEXT_ENTITY_LOOKING_AT_YOU              = "text.biologydictionary.entity_looking_at_you",
 
     TEXT_NO_DATA_WITH_BRACKETS               = "text.biologydictionary.no_data_with_brackets",
     TEXT_NONE_WITH_BRACKETS                  = "text.biologydictionary.none_with_brackets",

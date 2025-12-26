@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
@@ -13,6 +14,7 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyTextBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -68,6 +70,11 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
+                // Check if entity is looking at the player before opening the screen
+                if (InventoryStealingScreen.isPlayerCaughtByEntity(e(), ClientUtils.getClientPlayer())) {
+                    BiologyDictionaryClient.sendCenteredWarning(Component.translatable(Lang.TEXT_ENTITY_LOOKING_AT_YOU));
+                    return true;
+                }
                 LivingEntityStealInventorySkill.activate(e());
             }
             return true;

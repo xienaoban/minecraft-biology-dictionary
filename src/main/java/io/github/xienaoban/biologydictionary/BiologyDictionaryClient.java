@@ -78,10 +78,7 @@ public final class BiologyDictionaryClient {
         if (ClientUtils.getCurrentScreen() instanceof AbstractBiologyDictionaryScreen screen) {
             screen.sendScreenMessage(text);
         } else {
-            ClientUtils.sendCenteredMessage(ComponentUtils.formatList(
-                    Arrays.asList(Component.translatable(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN), text),
-                    Component.empty()
-            ));
+            ClientUtils.sendCenteredMessage(text);
         }
     }
 

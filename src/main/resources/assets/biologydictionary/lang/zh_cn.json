@@ -179,6 +179,8 @@
   "text.biologydictionary.experience_levels_cost": "经验等级消耗：%d级",
   "text.biologydictionary.offer_or_drop": "%s已发放到你的背包",
   "text.biologydictionary.target_entity_no_ability": "目标生物无此能力：%s",
+  "text.biologydictionary.stealing_detected": "你被发现了！",
+  "text.biologydictionary.entity_looking_at_you": "目标生物正看着你呢！",
 
   "text.biologydictionary.no_data_with_brackets": "（无数据）",
   "text.biologydictionary.none_with_brackets": "（无）",
