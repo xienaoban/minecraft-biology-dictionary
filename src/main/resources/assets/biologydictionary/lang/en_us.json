@@ -179,6 +179,8 @@
   "text.biologydictionary.experience_levels_cost": "Experience levels cost: %d",
   "text.biologydictionary.offer_or_drop": "%s is offered to you",
   "text.biologydictionary.target_entity_no_ability": "The target mob has no ability: %s",
+  "text.biologydictionary.stealing_detected": "You've been spotted!",
+  "text.biologydictionary.entity_looking_at_you": "The target is looking right at you!",
 
   "text.biologydictionary.no_data_with_brackets": "(No Data)",
   "text.biologydictionary.none_with_brackets": "(None)",

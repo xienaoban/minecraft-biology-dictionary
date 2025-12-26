@@ -16,6 +16,7 @@ public final class PacketPayloads {
             RequestEntityTargetedSkillPacket.class,
             ReplyHighlightEntitiesPacket.class,
             ReplyInventoryStealingScreenPacket.class,
+            SendStealingDetectedPacket.class,
             RequestBeehiveInfoPacket.class,
             ReplyBeehiveInfoPacket.class
     );

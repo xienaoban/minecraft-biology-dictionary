@@ -33,4 +33,8 @@ public final class ClientNetManager {
     public static void sendEntityTargetedSkill(String skillKey, Entity entity, Tag nbtArgs) {
         ClientNetApi.send(new RequestEntityTargetedSkillPacket(skillKey, entity.getId(), nbtArgs));
     }
+
+    public static void sendStealingDetected(Entity entity) {
+        ClientNetApi.send(new SendStealingDetectedPacket(entity.getId()));
+    }
 }
