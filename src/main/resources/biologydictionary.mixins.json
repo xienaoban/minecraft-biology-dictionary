@@ -4,6 +4,7 @@
     "package": "io.github.xienaoban.biologydictionary.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
+        "AbstractHorseMixin",
         "AgeableMobMixin",
         "AnimalIMixin",
         "ArmadilloStateIMixin",

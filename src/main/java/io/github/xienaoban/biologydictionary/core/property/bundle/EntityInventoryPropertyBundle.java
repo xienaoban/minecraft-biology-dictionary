@@ -1,19 +1,46 @@
 package io.github.xienaoban.biologydictionary.core.property.bundle;
 
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.mixin.AbstractHorseMixin;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.npc.InventoryCarrier;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 import java.util.function.Function;
 
 public final class EntityInventoryPropertyBundle {
+
+    public static final Function<Entity, InventoryHandler<?>> PLAYER_PATTERN = entity -> {
+        if (entity instanceof Player) {
+            return (InventoryHandler<Entity>) e -> ((Player) e).getInventory();
+        }
+        return null;
+    };
+
+    public static final Function<Entity, InventoryHandler<?>> CARRIER_PATTERN = entity -> {
+        if (entity instanceof InventoryCarrier) {
+            return (InventoryHandler<Entity>) e -> ((InventoryCarrier) e).getInventory();
+        }
+        return null;
+    };
+
+    public static final Function<Entity, InventoryHandler<?>> ABSTRACT_HORSE_PATTERN = entity -> {
+        if (entity instanceof AbstractHorse) {
+            return (InventoryHandler<Entity>) e -> ((AbstractHorseMixin) e).getInventory();
+        }
+        return null;
+    };
+
     private static final Bundle<InventoryHandler<?>> BUNDLE = new Bundle<>();
 
     public static void init() {
+        register(PLAYER_PATTERN);
         register(CARRIER_PATTERN);
+        register(ABSTRACT_HORSE_PATTERN);
     }
 
     public static void register(Function<Entity, InventoryHandler<?>> pattern) {
@@ -43,11 +70,4 @@ public final class EntityInventoryPropertyBundle {
     public interface InventoryHandler<E extends Entity> {
         Container getContainer(E entity);
     }
-
-    public static final Function<Entity, InventoryHandler<?>> CARRIER_PATTERN = entity -> {
-        if (entity instanceof InventoryCarrier) {
-            return (InventoryHandler<Entity>) e -> ((InventoryCarrier) e).getInventory();
-        }
-        return null;
-    };
 }

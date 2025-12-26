@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
  */
 public class InventoryStealingMenu extends AbstractContainerMenu {
     public static final int EQUIPMENT_SLOTS = EquipmentSlot.values().length;
+    public static final int MAX_SLOTS = 4 * 9;
 
     private static final Identifier EMPTY_ARMOR_SLOT_SWORD          = Identifier.withDefaultNamespace("container/slot/sword");
     private static final Identifier EMPTY_ARMOR_SLOT_SHIELD         = Identifier.withDefaultNamespace("container/slot/shield");
@@ -36,6 +37,23 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
     private static final Identifier EMPTY_ARMOR_SLOT_HORSE_ARMOR    = Identifier.withDefaultNamespace("container/slot/horse_armor");
     private static final Identifier EMPTY_ARMOR_SLOT_LLAMA_ARMOR    = Identifier.withDefaultNamespace("container/slot/llama_armor");
     private static final Identifier EMPTY_ARMOR_SLOT_NAUTILUS_ARMOR = Identifier.withDefaultNamespace("container/slot/nautilus_armor_inventory");
+
+    static int calculateMod(int size) {
+        if (size > MAX_SLOTS) {
+            return 9;
+        }
+        int mod;
+        if (size % 4 == 0) {
+            mod = 4;
+        } else if (size % 3 == 0) {
+            mod = 3;
+        } else if (size % 2 == 0) {
+            mod = 2;
+        } else {
+            return 9;
+        }
+        return size / mod;
+    }
 
     final Inventory inventory;
     final LivingEntity entity;
@@ -61,25 +79,16 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         addSlot(new EntityEquipmentSlot(EquipmentSlot.HEAD,     left, top, EMPTY_ARMOR_SLOT_HELMET));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.CHEST,    left + wh, top, EMPTY_ARMOR_SLOT_CHESTPLATE));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.LEGS,     left, top += wh, EMPTY_ARMOR_SLOT_LEGGINGS));
-        addSlot(new EntityEquipmentSlot(EquipmentSlot.FEET,     left + 18, top, EMPTY_ARMOR_SLOT_BOOTS));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.FEET,     left + wh, top, EMPTY_ARMOR_SLOT_BOOTS));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.SADDLE,   left, top += wh, EMPTY_ARMOR_SLOT_SADDLE));
-        addSlot(new EntityEquipmentSlot(EquipmentSlot.BODY,     left + 18, top, emptyBodySlot));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.BODY,     left + wh, top, emptyBodySlot));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.MAINHAND, left, top += wh + 4, EMPTY_ARMOR_SLOT_SWORD));
-        addSlot(new EntityEquipmentSlot(EquipmentSlot.OFFHAND,  left + 18, top, EMPTY_ARMOR_SLOT_SHIELD));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.OFFHAND,  left + wh, top, EMPTY_ARMOR_SLOT_SHIELD));
 
-        final int size = container.getContainerSize();
-        final int mod;
-        if (size % 4 == 0) {
-            mod = 4;
-        } else if (size % 3 == 0) {
-            mod = 3;
-        } else if (size % 2 == 0) {
-            mod = 2;
-        } else {
-            mod = 4;
-        }
+        final int size = Math.min(container.getContainerSize(), MAX_SLOTS);
+        final int mod = calculateMod(size);
         for (int i = 0; i < size; ++i) {
-            this.addSlot(new Slot(container, i, 66 + (i / mod) * 18, 18 + (i % mod) * 18));
+            this.addSlot(new Slot(container, i, 66 + (i % mod) * wh, 18 + (i / mod) * wh));
         }
 
         this.addStandardInventorySlots(inventory, 66, 112);
@@ -94,28 +103,17 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
             ItemStack itemStack2 = slot.getItem();
-            itemStack = itemStack2.copy();
-            int containerEnd = EQUIPMENT_SLOTS + container.getContainerSize();
+            int containerEnd = EQUIPMENT_SLOTS + Math.min(container.getContainerSize(), MAX_SLOTS);
             if (index < containerEnd) {
-                if (!this.moveItemStackTo(itemStack2, containerEnd, this.slots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (this.getSlot(1).mayPlace(itemStack2) && !this.getSlot(1).hasItem()) {
-                if (!this.moveItemStackTo(itemStack2, 1, 2, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (this.getSlot(0).mayPlace(itemStack2) && !this.getSlot(0).hasItem()) {
-                if (!this.moveItemStackTo(itemStack2, 0, 1, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (container.getContainerSize() == 0 || !this.moveItemStackTo(itemStack2, 2, containerEnd, false)) {
+                return ItemStack.EMPTY;
+            } else {
                 int k = containerEnd + 27;
                 int m = k + 9;
                 if (index >= k && index < m) {
                     if (!this.moveItemStackTo(itemStack2, containerEnd, k, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (index >= containerEnd && index < k) {
+                } else if (index < k) {
                     if (!this.moveItemStackTo(itemStack2, k, m, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -125,15 +123,9 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
                 return ItemStack.EMPTY;
             }
-
-            if (itemStack2.isEmpty()) {
-                slot.setByPlayer(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
         }
 
-        return itemStack;
+        return ItemStack.EMPTY;
     }
 
     @Override
