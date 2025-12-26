@@ -40,13 +40,13 @@ public final class EntityPropertyWidgets {
         registrar.register(EntityInvulnerableWidget.class, EntityInvulnerableWidget.FACTORY);
         registrar.register(EntitySoundWidget.class, EntitySoundWidget.FACTORY);
         registrar.register(MobPersistenceWidget.class, MobPersistenceWidget.FACTORY);
-        registrar.register(LivingEntityInventoryWidget.class, LivingEntityInventoryWidget.FACTORY);
         registrar.register(SheepEatGrassWidget.class, SheepEatGrassWidget.FACTORY);
         registrar.register(AgeableMobGrowthWidget.class, AgeableMobGrowthWidget.FACTORY);
         registrar.register(AgeableMobBreedingCooldownWidget.class, AgeableMobBreedingCooldownWidget.FACTORY);
         registrar.register(AnimalInLoveWidget.class, AnimalInLoveWidget.FACTORY);
         registrar.register(EntityPortalCooldownWidget.class, EntityPortalCooldownWidget.FACTORY);
         registrar.register(EntityOwnerWidget.class, EntityOwnerWidget.FACTORY);
+        registrar.register(LivingEntityInventoryWidget.class, LivingEntityInventoryWidget.FACTORY);
         registrar.register(VillagerJobSiteWidget.class, VillagerJobSiteWidget.FACTORY);
         registrar.register(VillagerRestocksTodayWidget.class, VillagerRestocksTodayWidget.FACTORY);
         registrar.register(BeeHivePropertyWidget.class, BeeHivePropertyWidget.FACTORY);

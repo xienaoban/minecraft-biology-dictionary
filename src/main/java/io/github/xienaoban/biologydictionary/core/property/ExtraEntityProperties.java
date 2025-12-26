@@ -1,9 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.property;
 
 import io.github.xienaoban.biologydictionary.common.util.Misc;
-import io.github.xienaoban.biologydictionary.core.property.extra.MobNaturalPersistenceProperty;
-import io.github.xienaoban.biologydictionary.core.property.extra.MobTemptProperty;
-import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
+import io.github.xienaoban.biologydictionary.core.property.extra.*;
 import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
@@ -14,8 +12,9 @@ import java.util.Map;
 final class ExtraEntityProperties {
 
     public static void registerBuiltIn(Registrar registrar) {
-        registrar.register(MobTemptProperty.class, MobTemptProperty.FACTORY);
+        registrar.register(EntityInventorySizeProperty.class, EntityInventorySizeProperty.FACTORY);
         registrar.register(MobNaturalPersistenceProperty.class, MobNaturalPersistenceProperty.FACTORY);
+        registrar.register(MobTemptProperty.class, MobTemptProperty.FACTORY);
         registrar.register(VillagerJobSiteProperty.class, VillagerJobSiteProperty.FACTORY);
     }
 
