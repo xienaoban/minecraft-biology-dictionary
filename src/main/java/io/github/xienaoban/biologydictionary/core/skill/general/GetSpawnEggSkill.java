@@ -53,7 +53,7 @@ public class GetSpawnEggSkill implements GeneralSkill {
                 BiologyDictionary.sendCenteredWarning(player, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
             } else {
                 ItemStack stack = new ItemStack(item);
-                player.getInventory().add(stack);
+                PlayerUtils.getInventory(player).add(stack);
                 // @see net.minecraft.server.commands.GiveCommand.giveItem
                 PlayerUtils.playLocalSound(player, SoundEvents.ITEM_PICKUP, 1F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
                 BiologyDictionary.sendCenteredWarning(player,

@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -72,7 +73,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
 
     private boolean isClientEntityInNetherPortal() {
         Entity entity = e();
-        Level level = entity.level();
+        Level level = EntityUtils.getLevel(entity);
         BlockPos pos = entity.blockPosition();
         AABB box = entity.getBoundingBox();
         final int x = pos.getX(), y = pos.getY(), z = pos.getZ();

@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.net.payload;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
@@ -30,7 +31,7 @@ public record SendStealingDetectedPacket(int entityId) implements Packet {
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
         ServerPlayer player = ctx.player();
-        ServerLevel level = player.level();
+        ServerLevel level = (ServerLevel) EntityUtils.getLevel(player);
 
         Entity entity = level.getEntity(entityId);
         if (entity instanceof LivingEntity livingEntity) {

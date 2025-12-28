@@ -37,7 +37,7 @@ public class VillagerForceRestockSkill implements EntityTargetedSkill<Villager> 
      * @see net.minecraft.world.entity.ai.behavior.WorkAtPoi#canStillUse(ServerLevel, Villager, long)
      */
      private static boolean isCloseEnoughToJobSite(Villager entity, GlobalPos jobSite) {
-        return jobSite.dimension() == entity.level().dimension()
+        return jobSite.dimension() == EntityUtils.getLevel(entity).dimension()
                 && jobSite.pos().closerToCenterThan(entity.position(), 1.73);
     }
 

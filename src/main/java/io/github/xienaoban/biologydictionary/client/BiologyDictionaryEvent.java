@@ -2,10 +2,7 @@ package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.InventoryUtils;
-import io.github.xienaoban.biologydictionary.common.util.Misc;
-import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.common.util.*;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.screen.BdEntityDetailScreen;
@@ -71,7 +68,7 @@ public final class BiologyDictionaryEvent {
         } else if (hit.getType() == HitResult.Type.BLOCK) {
             BlockPos pos = ((BlockHitResult) hit).getBlockPos();
             BDC.setHitBlock(pos);
-            BlockState blockState = player.level().getBlockState(pos);
+            BlockState blockState = EntityUtils.getLevel(player).getBlockState(pos);
             if (blockState.getBlock() instanceof BeehiveBlock) {
                 ClientNetManager.requestBeehiveInfo(pos);
                 ClientUtils.setScreen(client, new BeehiveScreen(pos));
@@ -108,7 +105,7 @@ public final class BiologyDictionaryEvent {
     }
 
     private static boolean hasBook(LocalPlayer player) {
-        return InventoryUtils.hasEnoughItems(player.getInventory(), BiologyDictionaryItem.createBook(),
+        return InventoryUtils.hasEnoughItems(PlayerUtils.getInventory(player), BiologyDictionaryItem.createBook(),
                 (is1, is2) -> BiologyDictionaryItem.isBook(is2));
     }
 

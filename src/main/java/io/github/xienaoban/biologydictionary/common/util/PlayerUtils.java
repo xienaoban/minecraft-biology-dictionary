@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuConstructor;
@@ -27,6 +28,10 @@ public final class PlayerUtils {
 
     public static boolean isSurvival(Player player) {
         return gameMode(player) == GameType.SURVIVAL;
+    }
+
+    public static Inventory getInventory(Player player) {
+        return player.getInventory();
     }
 
     public static int getExperiencePoints(Player player) {
@@ -77,7 +82,7 @@ public final class PlayerUtils {
         mixinPlayer.invokeNextContainerCounter();
         int counter = mixinPlayer.getContainerCounter();
         AbstractContainerMenu menu
-                = menuConstructor.createMenu(mixinPlayer.getContainerCounter(), player.getInventory(), player);
+                = menuConstructor.createMenu(mixinPlayer.getContainerCounter(), getInventory(player), player);
         player.containerMenu = Objects.requireNonNull(menu);
         mixinPlayer.invokeInitMenu(menu);
         return counter;

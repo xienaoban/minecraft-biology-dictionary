@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.skill.entity;
 
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
@@ -29,7 +30,7 @@ public class SheepForceEatGrassSkill implements EntityTargetedSkill<Sheep> {
      * @see net.minecraft.world.entity.ai.goal.EatBlockGoal#tick()
      */
     public static boolean isGrassOrGrassBlock(Sheep entity) {
-        Level level = entity.level();
+        Level level = EntityUtils.getLevel(entity);
         BlockPos blockPos = entity.blockPosition();
         return level.getBlockState(blockPos).is(BlockTags.EDIBLE_FOR_SHEEP)
                 || level.getBlockState(blockPos.below()).is(Blocks.GRASS_BLOCK);

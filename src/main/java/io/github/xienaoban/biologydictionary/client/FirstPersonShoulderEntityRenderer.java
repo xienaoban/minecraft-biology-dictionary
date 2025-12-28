@@ -136,7 +136,7 @@ public final class FirstPersonShoulderEntityRenderer {
             entityRenderState = null;
         }
         else {
-            Parrot parrot = EntityUtils.create(EntityType.PARROT, player.level());
+            Parrot parrot = EntityUtils.create(EntityType.PARROT, EntityUtils.getLevel(player));
             VanillaEntityProperties.OfParrot.createVariantProperty().withVal(variant).setTo(parrot);
 
             entity = parrot;

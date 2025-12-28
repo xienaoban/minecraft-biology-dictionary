@@ -1,12 +1,12 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -38,7 +38,7 @@ public record RequestEntityDataPacket(int entityId) implements Packet {
                 p.getFrom(Misc.cast(entity));
                 p.writeTo(extraNbt);
             }
-            toSend = new ReplyEntityDataPacket(true, entity.getId(), vanillaNbt, extraNbt);
+            toSend = new ReplyEntityDataPacket(true, EntityUtils.getId(entity), vanillaNbt, extraNbt);
         } else {
             toSend = new ReplyEntityDataPacket(false, -1, null, null);
         }

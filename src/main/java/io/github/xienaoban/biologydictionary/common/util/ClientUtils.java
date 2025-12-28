@@ -98,4 +98,12 @@ public final class ClientUtils {
     public static void playScreenSound(Minecraft client, SoundEvent sound, float volume, float pitch) {
         client.getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));
     }
+
+    /**
+     * Get the current partial tick for rendering interpolation.
+     * This can be used for smooth entity rotation calculations.
+     */
+    public static float getPartialTick() {
+        return getClient().getDeltaTracker().getGameTimeDeltaPartialTick(false);
+    }
 }
