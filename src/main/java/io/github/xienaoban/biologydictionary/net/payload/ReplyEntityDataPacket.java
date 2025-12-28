@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.net.payload;
 import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -38,7 +39,7 @@ public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag v
 
         Entity entity = BDC.getHitEntity();
         EntityProperties<?> properties = BDC.getHitEntityProperties();
-        if (entity == null || entity.getId() != entityId || properties == null) return;
+        if (entity == null || EntityUtils.getId(entity) != entityId || properties == null) return;
         properties.update(vanillaNbt, extraNbt);
     }
 }

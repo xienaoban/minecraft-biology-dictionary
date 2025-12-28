@@ -52,7 +52,7 @@ public final class Permissions {
     }
 
     public static void checkPlayerInventoryItems(Player player, ItemStack itemStack) {
-        if (!InventoryUtils.hasEnoughItems(player.getInventory(), itemStack)) {
+        if (!InventoryUtils.hasEnoughItems(PlayerUtils.getInventory(player), itemStack)) {
             throw new NoPermissionException(Component.translatable(Lang.TEXT_NOT_ENOUGH_ITEMS, itemStack.getCount(), itemStack.getItem().getName()), "Not enough items in inventory: item=\"" + itemStack.getItem() + "\"");
         }
     }
@@ -63,7 +63,7 @@ public final class Permissions {
     }
 
     public static void checkConsumePlayerInventoryItems(Player player, ItemStack itemStack) {
-        if (!InventoryUtils.consumeItems(player.getInventory(), itemStack)) {
+        if (!InventoryUtils.consumeItems(PlayerUtils.getInventory(player), itemStack)) {
             throw new NoPermissionException(Component.translatable(Lang.TEXT_NOT_ENOUGH_ITEMS, itemStack.getCount(), itemStack.getItem().getName()), "Not enough items in inventory: item=\"" + itemStack.getItem() + "\"");
         }
     }

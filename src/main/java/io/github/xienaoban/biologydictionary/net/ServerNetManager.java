@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.net;
 
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.net.payload.SendCenteredMessagePacket;
 import io.github.xienaoban.biologydictionary.net.payload.ReplyHighlightEntitiesPacket;
 import io.github.xienaoban.biologydictionary.net.payload.ReplyInventoryStealingScreenPacket;
@@ -24,6 +25,6 @@ public final class ServerNetManager {
     }
 
     public static void replyInventoryStealingScreen(ServerPlayer player, int counter, Entity entity, Container container) {
-        ServerNetApi.send(player, new ReplyInventoryStealingScreenPacket(counter, entity.getId(), container.getContainerSize()));
+        ServerNetApi.send(player, new ReplyInventoryStealingScreenPacket(counter, EntityUtils.getId(entity), container.getContainerSize()));
     }
 }

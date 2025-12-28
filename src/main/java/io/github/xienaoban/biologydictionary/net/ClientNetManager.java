@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.net;
 
 import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.net.payload.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -19,7 +20,7 @@ public final class ClientNetManager {
     }
 
     public static void requestEntityData(Entity entity) {
-        ClientNetApi.send(new RequestEntityDataPacket(entity.getId()));
+        ClientNetApi.send(new RequestEntityDataPacket(EntityUtils.getId(entity)));
     }
 
     public static void requestBeehiveInfo(BlockPos pos) {
@@ -31,10 +32,10 @@ public final class ClientNetManager {
     }
 
     public static void sendEntityTargetedSkill(String skillKey, Entity entity, Tag nbtArgs) {
-        ClientNetApi.send(new RequestEntityTargetedSkillPacket(skillKey, entity.getId(), nbtArgs));
+        ClientNetApi.send(new RequestEntityTargetedSkillPacket(skillKey, EntityUtils.getId(entity), nbtArgs));
     }
 
     public static void sendStealingDetected(Entity entity) {
-        ClientNetApi.send(new SendStealingDetectedPacket(entity.getId()));
+        ClientNetApi.send(new SendStealingDetectedPacket(EntityUtils.getId(entity)));
     }
 }

@@ -145,6 +145,14 @@ public final class EntityUtils {
     //                             Entity Method Utils                              //
     // ============================================================================ //
 
+    public static Level getLevel(Entity entity) {
+        return entity.level();
+    }
+
+    public static int getId(Entity entity) {
+        return entity.getId();
+    }
+
     public static void playSound(Entity entity, SoundEvent soundEvent) {
         entity.playSound(soundEvent);
     }

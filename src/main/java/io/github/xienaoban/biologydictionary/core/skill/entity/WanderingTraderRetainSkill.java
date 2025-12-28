@@ -41,7 +41,7 @@ public class WanderingTraderRetainSkill implements EntityTargetedSkill<Wandering
         Permissions.checkPlayerCreativeOrInventoryItems(player, new ItemStack(Items.WATER_BUCKET, 1));
         Permissions.checkPlayerCreativeOrConsumeInventoryItems(player, new ItemStack(Items.WATER_BUCKET, 1));
         if (!PlayerUtils.isCreative(player)) {
-            player.getInventory().add(new ItemStack(Items.BUCKET, 1));
+            PlayerUtils.getInventory(player).add(new ItemStack(Items.BUCKET, 1));
         }
         EntityUtils.playSound(entity, SoundEvents.WANDERING_TRADER_DRINK_MILK);
 

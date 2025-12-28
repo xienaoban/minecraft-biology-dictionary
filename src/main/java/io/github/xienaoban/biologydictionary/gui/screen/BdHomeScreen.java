@@ -168,7 +168,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         public EntityWidget(Entity entity) {
             super(2, 2);
             this.entity = entity;
-            EntityType<?> type = entity.getType();
+            EntityType<?> type = EntityUtils.getEntityType(entity);
             this.name = type.getDescription();
             Item item = SpawnEggItem.byId(type);
             this.spawnEgg = item == null ? null : new ItemStack(item);
@@ -187,7 +187,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 } else {
                     return true;
                 }
-                HighlightEntitiesSkill.activate(entity.getType(), distance);
+                HighlightEntitiesSkill.activate(EntityUtils.getEntityType(entity), distance);
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
                 onClose();
             } else {
@@ -195,7 +195,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     if (!PlayerUtils.isCreative(player)) {
                         sendScreenMessage(Component.translatable(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
                     } else {
-                        GetSpawnEggSkill.activate(entity.getType());
+                        GetSpawnEggSkill.activate(EntityUtils.getEntityType(entity));
                     }
                 }
                 return true;

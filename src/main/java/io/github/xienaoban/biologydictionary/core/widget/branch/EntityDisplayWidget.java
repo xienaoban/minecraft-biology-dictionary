@@ -33,7 +33,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     }
 
     private static Entity createModelEntity(Entity entity) {
-        Entity model = EntityUtils.create(entity.getType(), entity.level());
+        Entity model = EntityUtils.create(EntityUtils.getEntityType(entity), EntityUtils.getLevel(entity));
         if (model == null) {
             if (entity instanceof LocalPlayer me) {
                 GameProfile profile = me.getGameProfile();
@@ -43,7 +43,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
                 Vec3 pos = model.position();
                 model.setPos(pos.x(), pos.y() - 4097, pos.z());
             } else {
-                model = EntityUtils.create(EntityType.ARMOR_STAND, entity.level());
+                model = EntityUtils.create(EntityType.ARMOR_STAND, EntityUtils.getLevel(entity));
             }
         }
         updateCompoundTag(entity, model);
