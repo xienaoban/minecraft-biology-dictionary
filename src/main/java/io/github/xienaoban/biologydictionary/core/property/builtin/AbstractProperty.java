@@ -18,23 +18,33 @@ public abstract class AbstractProperty<E extends Entity, T> implements EntityPro
         return propertyName;
     }
 
-    public final T get() {
+    public final T getVal() {
         return value;
     }
 
-    public final void set(T newValue) {
+    public final void setVal(T newValue) {
         value = newValue;
     }
 
-    public final CompoundTag toNbt() {
+    public final AbstractProperty<E, T> withVal(T newValue) {
+        setVal(newValue);
+        return this;
+    }
+
+    public final AbstractProperty<E, T> withEntity(E entity) {
+        getFrom(entity);
+        return this;
+    }
+
+    public final AbstractProperty<E, T> withTag(CompoundTag nbt) {
+        readFrom(nbt);
+        return this;
+    }
+
+    public final CompoundTag toTag() {
         CompoundTag nbt = new CompoundTag();
         writeTo(nbt);
         return nbt;
-    }
-
-    public final CompoundTag toNbtWith(T newValue) {
-        value = newValue;
-        return toNbt();
     }
 
     public static final class IllegalPropertyStateException extends RuntimeException {

@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary;
 
+import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.McUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,6 +16,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
@@ -33,7 +34,7 @@ public class VanillaEntityCollectionTest {
             Class<? extends Entity> clazz = cur.getClazz();
 
             // skip non-vanilla classes
-            if (!McUtils.isVanillaClass(clazz)) {
+            if (!DevUtils.isVanillaClass(clazz)) {
                 LOGGER.info("Skipped non-vanilla class for deobfuscation: \"{}\".", clazz.getName());
                 return true;
             }
@@ -43,7 +44,7 @@ public class VanillaEntityCollectionTest {
             String storedName = EntityUtils.getDeobfuscatedName(clazz);
             if (!Objects.equals(realName, storedName)) {
                 success.set(false);
-                LOGGER.error("Needed \"" + realName + "\" but got \"" + storedName + "\".");
+                LOGGER.error("Needed \"{}\" but got \"{}\".", realName, storedName);
             }
             return true;
         });
@@ -56,7 +57,7 @@ public class VanillaEntityCollectionTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            LOGGER.info("Deobfuscation batch has been written to {}.", path);
+            LOGGER.info("Deobfuscation batch has been written to {}.", Paths.get(path).toAbsolutePath().normalize().toString());
             helper.fail(Component.literal("Some entities are not covered by the deobfuscation map."));
         }
     }
@@ -76,7 +77,7 @@ public class VanillaEntityCollectionTest {
 
             // skip non-vanilla classes
             Class<?> clazz = classInfo.getClazz();
-            if (!McUtils.isVanillaClass(clazz)) {
+            if (!DevUtils.isVanillaClass(clazz)) {
                 LOGGER.info("Skipped non-vanilla class for order: \"{}\".", clazz.getName());
                 continue;
             }
@@ -99,13 +100,13 @@ public class VanillaEntityCollectionTest {
             Class<?> clazz = cur.getClazz();
 
             // skip non-vanilla classes
-            if (!McUtils.isVanillaClass(clazz)) return true;
+            if (!DevUtils.isVanillaClass(clazz)) return true;
 
             out.println(space + "/*" + "-".repeat(depth * 2) + "*/ "
                     + "r(" + clazz.getName().replace('$', '.') + ".class, \""
                     + clazz.getName() + "\");");
             for (Class<?> interfaze : clazz.getInterfaces()) {
-                if (McUtils.isVanillaClass(interfaze)) {
+                if (DevUtils.isVanillaClass(interfaze)) {
                     interfazes.add(interfaze);
                 }
             }

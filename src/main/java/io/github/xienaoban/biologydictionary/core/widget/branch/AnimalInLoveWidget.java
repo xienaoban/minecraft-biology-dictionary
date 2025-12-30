@@ -18,6 +18,8 @@ import net.minecraft.world.entity.animal.Animal;
 
 @Environment(EnvType.CLIENT)
 public final class AnimalInLoveWidget extends EntityPropertyStandardWidget<Animal> {
+    public static final Factory<Animal> FACTORY = AnimalInLoveWidget::new;
+
     private static final int L = 6, T = 3;
 
     private static final int IN_LOVE_MAX_TIME = 600;
@@ -37,13 +39,13 @@ public final class AnimalInLoveWidget extends EntityPropertyStandardWidget<Anima
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        Integer inLoveOpt = inLoveProperty.get();
+        Integer inLoveOpt = inLoveProperty.getVal();
         if (inLoveOpt == null) {
             return;
         }
         int age = inLoveOpt;
         if (age > 0) {
-            inLoveProperty.set(age - 1);
+            inLoveProperty.setVal(age - 1);
         }
     }
 
@@ -63,7 +65,7 @@ public final class AnimalInLoveWidget extends EntityPropertyStandardWidget<Anima
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer inLoveOpt = inLoveProperty.get();
+            Integer inLoveOpt = inLoveProperty.getVal();
             if (inLoveOpt == null) {
                 updatePercent(0);
                 super.onRender(ctx);

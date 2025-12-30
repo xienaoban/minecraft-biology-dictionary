@@ -6,6 +6,6 @@ import net.minecraft.world.entity.Entity;
 
 public class GlobalPosProperty<E extends Entity> extends CodecProperty<E, GlobalPos> {
     public GlobalPosProperty(String propertyName) {
-        super(propertyName, GlobalPos.CODEC);
+        super(propertyName, GlobalPos.class, GlobalPos.CODEC);
     }
 }

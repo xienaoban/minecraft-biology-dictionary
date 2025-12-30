@@ -2,6 +2,8 @@ package io.github.xienaoban.biologydictionary.core.property;
 
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
+import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
@@ -12,8 +14,13 @@ import java.util.Map;
 
 @SuppressWarnings("rawtypes")
 public final class EntityProperties<E extends Entity> {
+    public static void init() {
+        VanillaEntityProperties.init();
+        ExtraEntityProperties.init();
 
-    public static final int ENTITY_PORTAL_COOLDOWN_INFINITY = 303;
+        EntityVariantPropertyBundle.init();
+        EntityInventoryPropertyBundle.init();
+    }
 
     private final E entity;
 
@@ -27,18 +34,18 @@ public final class EntityProperties<E extends Entity> {
     public EntityProperties(E entity) {
         this.entity = entity;
 
-        final var vRegs = VanillaEntityProperties.registries;
-        final var eRegs = ExtraEntityProperties.registries;
+        final var vReg = VanillaEntityProperties.registry;
+        final var eReg = ExtraEntityProperties.registry;
 
         Map<String, EntityProperty<?>> vMap = new HashMap<>();
         Map<Class<? extends EntityProperty>, EntityProperty<?>> eMap = new HashMap<>();
         for (var clazz : EntityUtils.topDown(entity)) {
-            VanillaEntityProperties.Creator vc = vRegs.getOrDefault(clazz, null);
+            VanillaEntityProperties.Creator vc = vReg.getOrDefault(clazz, null);
             if (vc != null) {
                 vc.create(vMap);
             }
 
-            for (ExtraEntityProperties.Creator ec : eRegs.getOrDefault(clazz, Collections.emptyList())) {
+            for (EntityProperty.Factory ec : eReg.getOrDefault(clazz, Collections.emptyList())) {
                 EntityProperty<?> p = ec.create();
                 eMap.put(p.getClass(), p);
             }

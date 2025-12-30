@@ -1,27 +1,32 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "io.github.xienaoban.biologydictionary.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "AgeableMobMixin",
-    "AnimalIMixin",
-    "EntityIMixin",
-    "EntityMixin",
-    "HorseIMixin",
-    "MobEffectInstanceIMixin",
-    "MobIMixin",
-    "TemptGoalIMixin"
-  ],
-  "client": [
-    "EntityRenderDispatcherIMixin",
-    "GuiRendererMixin",
-    "ItemInHandRendererMixin",
-    "LevelRendererMixin",
-    "MinecraftMixin",
-    "PictureInPictureRendererIMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+    "required": true,
+    "minVersion": "0.8",
+    "package": "io.github.xienaoban.biologydictionary.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "AbstractHorseMixin",
+        "AgeableMobMixin",
+        "AnimalIMixin",
+        "ArmadilloStateIMixin",
+        "CustomDataIMixin",
+        "EntityIMixin",
+        "EntityMixin",
+        "HorseIMixin",
+        "MobEffectInstanceIMixin",
+        "MobIMixin",
+        "ServerPlayerIMixin",
+        "TemptGoalIMixin",
+        "WanderingTraderMixin"
+    ],
+    "client": [
+        "ItemInHandRendererMixin",
+        "LevelRendererMixin",
+        "MinecraftMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "overwrites": {
+        "requireAnnotations": true
+    }
 }

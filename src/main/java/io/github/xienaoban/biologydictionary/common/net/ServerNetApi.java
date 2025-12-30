@@ -9,44 +9,27 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
-
 public final class ServerNetApi {
-    public static <T extends Packet> void register(Class<T> clazz) {
-        try {
-            @SuppressWarnings("unchecked")
-            PacketPayloadMeta<T> meta = (PacketPayloadMeta<T>) clazz.getField("META").get(null);
-            CustomPacketPayload.Type<T> type = meta.type();
-            StreamCodec<FriendlyByteBuf, T> codec = meta.codec();
-            PacketPayloadMeta.ServerReceiver<T> serverReceiver = meta.serverReceiver();
-            PacketPayloadMeta.ClientReceiver<T> clientReceiver = meta.clientReceiver();
 
-            if (clientReceiver != null) {
-                PayloadTypeRegistry.playS2C().register(type, codec);
-            }
+    public static <T extends Packet> void register(Class<T> clazz, Packet.Factory<T> factory) {
+        PacketUtil.registerType(clazz);
 
-            if (serverReceiver != null) {
-                PayloadTypeRegistry.playC2S().register(type, codec);
-                ServerPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
-                    try {
-                        serverReceiver.receive(payload, new ServerNetApi.Context(context.server(), context.player(), context.responseSender()));
-                    } catch (Throwable e) {
-                        StringWriter sw = new StringWriter();
-                        PrintWriter pw = new PrintWriter(sw);
-                        e.printStackTrace(pw);
-                        LOGGER.error(sw.toString());
-                    }
-                });
-            }
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
+        CustomPacketPayload.Type<T> type = PacketUtil.getType(clazz);
+        StreamCodec<FriendlyByteBuf, T> codec = PacketUtil.generateCodec(factory);
+
+        // Always register s2c as you are not able to see "hasClientReceiver" on the server.
+        PayloadTypeRegistry.playS2C().register(type, codec);
+
+        if (PacketUtil.hasServerReceiver(clazz)) {
+            PayloadTypeRegistry.playC2S().register(type, codec);
+            ServerPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
+                Context ctx = new Context(context.server(), context.player(), context.responseSender());
+                payload.serverReceive(ctx);
+            });
         }
     }
 
-    public static <T extends Packet> void send(ServerPlayer player, T payload) {
+    public static void send(ServerPlayer player, Packet payload) {
         ServerPlayNetworking.send(player, payload);
     }
 

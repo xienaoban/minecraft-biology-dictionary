@@ -17,6 +17,8 @@ import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntityInvulnerableWidget::new;
+
     private static final int L = 19, T = 1;
 
     private final BooleanProperty<Entity> invulnerableProperty = VanillaEntityProperties.OfEntity.getInvulnerableProperty(p());
@@ -29,7 +31,7 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
     }
 
     private boolean isInvulnerable() {
-        Boolean inv = invulnerableProperty.get();
+        Boolean inv = invulnerableProperty.getVal();
         return inv != null && inv;
     }
 
@@ -53,7 +55,7 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
             if (isMouseLeft(code)) {
                 boolean newInv = !isInvulnerable();
                 if (EntitySetInvulnerableSkill.activate(e(), newInv)) {
-                    invulnerableProperty.set(newInv);
+                    invulnerableProperty.setVal(newInv);
                 }
             }
             return true;

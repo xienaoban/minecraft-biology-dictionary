@@ -5,20 +5,22 @@ import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -29,7 +31,7 @@ public class BeehiveScreen extends ElementScreen {
     private static final int MAX_HONEY_CNT = BeehiveBlock.MAX_HONEY_LEVELS;
     private static final int MAX_BEE_CNT = BeehiveBlockEntity.MAX_OCCUPANTS;
 
-    protected final Minecraft client = McClientUtils.getClient();
+    protected final Minecraft client = ClientUtils.getClient();
 
     private final BlockPos pos;
     private final Level level;
@@ -46,9 +48,9 @@ public class BeehiveScreen extends ElementScreen {
     private int passedClientTickCount = 0;
 
     public BeehiveScreen(BlockPos pos) {
-        super(McClientUtils.getClientLevel().getBlockState(pos).getBlock().getName());
+        super(ClientUtils.getClientLevel().getBlockState(pos).getBlock().getName());
         this.pos = pos;
-        this.level = McClientUtils.getClientLevel();
+        this.level = ClientUtils.getClientLevel();
         this.entity = (BeehiveBlockEntity) this.level.getBlockEntity(pos);
         Objects.requireNonNull(this.entity);
 
@@ -70,7 +72,7 @@ public class BeehiveScreen extends ElementScreen {
         long lastMills = mills;
         mills = System.currentTimeMillis();
         int diff = (int) (mills - lastMills);
-        renderBlurredBackground(ctx);
+        renderTransparentBackground(ctx);
         ctx.getGuiGraphics().pose().pushMatrix();
         int w = (width - 128) >> 1;
         int h = (height - 128) >> 1;
@@ -128,7 +130,7 @@ public class BeehiveScreen extends ElementScreen {
                 ctx.renderCenteredText(bee.entity.getCustomName(), color, 0.5F, ctx.getZ(), x, beeTop - 2);
             }
             if (ctx.getMouseX() > x - 10 && ctx.getMouseX() < x + 10 && ctx.getMouseY() > beeTop && ctx.getMouseY() < y) {
-                List<Component> texts = List.of(
+                List<Component> texts = Arrays.asList(
                         bee.entity.getName(),
                         Component.translatable(Lang.TEXT_BEE_STATE_IN_BEEHIVE, Component.translatable(bee.entity.hasNectar() ? Lang.TEXT_BEE_PRODUCING_NECTAR : Lang.TEXT_BEE_RESTING)).withStyle(ChatFormatting.GRAY),
                         Component.translatable(Lang.TEXT_TIME_IN_BEEHIVE, (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s").withStyle(ChatFormatting.GRAY)
@@ -153,16 +155,16 @@ public class BeehiveScreen extends ElementScreen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)
-                || client.options.keyInventory.matches(keyCode, scanCode)) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyEvent)
+                || client.options.keyInventory.matches(keyEvent)) {
             onClose();
             return true;
-        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
+        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyEvent)) {
             screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyEvent);
     }
 
     @Override
@@ -188,7 +190,7 @@ public class BeehiveScreen extends ElementScreen {
             // @see net.minecraft.server.commands.data.DataCommands.register
             beeInfo.entity.setCustomName(null);
             CompoundTag newTag = EntityUtils.getNbt(beeInfo.entity);
-            EntityUtils.setNbt(beeInfo.entity, newTag.merge(occupant.entityData().copyTag()));
+            EntityUtils.setNbt(beeInfo.entity, newTag.merge(occupant.entityData().copyTagWithoutId()));
 
             beeInfo.ticksInHive = occupant.ticksInHive();
             beeInfo.minTicksInHive = occupant.minTicksInHive();

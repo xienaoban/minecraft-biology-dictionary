@@ -21,11 +21,11 @@ public record Result<T>(T get) {
 
     public static <T> Result<T> merge(T t1, T t2) {
         if (t1 == null) {
-            return Result.of(t2);
+            return of(t2);
         } else if (t2 == null) {
-            return Result.of(t1);
+            return of(t1);
         } else if (Objects.equals(t1, t2)){
-            return Result.of(t1);
+            return of(t1);
         } else {
             return null;
         }

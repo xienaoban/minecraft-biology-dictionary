@@ -4,7 +4,7 @@ import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRen
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.client.ClientEventRegistry;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
@@ -21,7 +21,7 @@ import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -42,11 +42,13 @@ public final class BiologyDictionaryClient {
         hitEntityProperties = null;
 
         ClientEventRegistry.registerWorldConnected(client -> EntityManager.init());
-        ClientEventRegistry.registerWorldDisconnecting(client -> EntityManager.destroy());
+        ClientEventRegistry.registerWorldDisconnecting(client -> {
+            FirstPersonShoulderEntityRenderer.clear();
+            EntityManager.destroy();
+        });
         ClientEventRegistry.registerEndTick(this::tick);
 
         EntityPropertyWidgets.init();
-        FirstPersonShoulderEntityRenderer.init();
         KeyMappingManager.init();
         ClientNetManager.init();
         HighlightManager.init();
@@ -73,13 +75,10 @@ public final class BiologyDictionaryClient {
     }
 
     public static void sendCenteredMessage(Component text) {
-        if (McClientUtils.getCurrentScreen() instanceof AbstractBiologyDictionaryScreen screen) {
+        if (ClientUtils.getCurrentScreen() instanceof AbstractBiologyDictionaryScreen screen) {
             screen.sendScreenMessage(text);
         } else {
-            McClientUtils.sendCenteredMessage(ComponentUtils.formatList(
-                    List.of(Component.translatable(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN), text),
-                    Component.empty()
-            ));
+            ClientUtils.sendCenteredMessage(text);
         }
     }
 
@@ -98,8 +97,8 @@ public final class BiologyDictionaryClient {
     public static void printThrowableToLoggerAndGame(Throwable throwable) {
         String errStack = Misc.getStackToString(throwable);
         LOGGER.error(errStack);
-        McClientUtils.sendTextBoxMessage(ComponentUtils.formatList(
-                List.of(
+        ClientUtils.sendTextBoxMessage(ComponentUtils.formatList(
+                Arrays.asList(
                         Component.translatable(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN),
                         Component.literal(throwable.toString()).withStyle(ChatFormatting.RED)
                 ),

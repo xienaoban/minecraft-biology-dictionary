@@ -11,10 +11,9 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraft.world.entity.schedule.Schedule;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -22,6 +21,8 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<Villager> {
+    public static final Factory<Villager> FACTORY = VillagerScheduleWidget::new;
+
     private static final int L = 11, T = 4;
     private static final int AW = 4;
 
@@ -29,7 +30,7 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
     private static final int ZERO_TIME = 18000;
 
     /**
-     * @see Schedule
+     * @see net.minecraft.world.timeline.Timelines#bootstrap(net.minecraft.data.worldgen.BootstrapContext)
      */
     private static final TimelineEntry[] EMPTY = {
             new TimelineEntry(0, Activity.IDLE),
@@ -245,7 +246,8 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
         TimelineEntry[] timeline;
         if (e().isBaby()) {
             timeline = BABY_ZERO;
-        } else if (e().getVillagerData().profession() == VillagerProfession.NONE) {
+        } else if (Objects.equals(VillagerProfession.NONE,
+                e().getVillagerData().profession().unwrapKey().orElse(VillagerProfession.NONE))) {
             timeline = ADULT_WITHOUT_JOB_ZERO;
         } else {
             timeline = ADULT_WITH_JOB_ZERO;

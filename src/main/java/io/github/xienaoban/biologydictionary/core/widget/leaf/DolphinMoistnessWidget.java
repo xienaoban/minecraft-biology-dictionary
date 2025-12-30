@@ -11,9 +11,11 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.animal.Dolphin;
+import net.minecraft.world.entity.animal.dolphin.Dolphin;
 
 public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin> {
+    public static final Factory<Dolphin> FACTORY = DolphinMoistnessWidget::new;
+
     private static final int L = 6, T = 2;
 
     /**
@@ -33,13 +35,13 @@ public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        Integer mL = moistnessProperty.get();
+        Integer mL = moistnessProperty.getVal();
         if (mL == null) {
             return;
         }
         int m = mL;
         if (m > 0 && !e().isInWaterOrRain() && !e().isNoAi()) {
-            moistnessProperty.set(m - 1);
+            moistnessProperty.setVal(m - 1);
         }
     }
 
@@ -60,7 +62,7 @@ public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer mL = moistnessProperty.get();
+            Integer mL = moistnessProperty.getVal();
             if (mL == null) {
                 updatePercent(0);
                 super.onRender(ctx);

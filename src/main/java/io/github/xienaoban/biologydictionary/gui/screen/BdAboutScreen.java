@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.DebugScreen;
@@ -12,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
@@ -26,7 +27,7 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private void initWidgets() {
-        List<Widget> widgets = List.of(
+        List<Widget> widgets = Arrays.asList(
                 new ModNameAuthorNameWidget(),
                 new GetBookItemWidget(),
                 new OpenDebugScreenWidget()
@@ -43,10 +44,10 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             ctx.renderCenteredText(
-                    ComponentUtils.formatList(List.of(Component.translatable(Lang.TEXT_MOD_NAME_IS).withStyle(ChatFormatting.BOLD), Component.translatable(Lang.MOD_NAME_TWO_LANG)), Component.empty()),
+                    ComponentUtils.formatList(Arrays.asList(Component.translatable(Lang.TEXT_MOD_NAME_IS).withStyle(ChatFormatting.BOLD), Component.translatable(Lang.MOD_NAME_TWO_LANG)), Component.empty()),
                     Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
             ctx.renderCenteredText(
-                    ComponentUtils.formatList(List.of(Component.translatable(Lang.TEXT_AUTHOR_IS).withStyle(ChatFormatting.BOLD), Component.translatable(Lang.AUTHOR_NAME_TWO_LANG)), Component.empty()),
+                    ComponentUtils.formatList(Arrays.asList(Component.translatable(Lang.TEXT_AUTHOR_IS).withStyle(ChatFormatting.BOLD), Component.translatable(Lang.AUTHOR_NAME_TWO_LANG)), Component.empty()),
                     Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 12);
         }
     }
@@ -89,7 +90,7 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (screenRenderingContext.isDebug()) {
-                McClientUtils.setScreen(client, new DebugScreen());
+                ClientUtils.setScreen(client, new DebugScreen());
                 return true;
             }
             return false;

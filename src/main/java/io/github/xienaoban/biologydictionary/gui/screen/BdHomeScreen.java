@@ -4,11 +4,11 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
-import io.github.xienaoban.biologydictionary.core.skill.common.GetSpawnEggSkill;
-import io.github.xienaoban.biologydictionary.core.skill.common.HighlightEntitiesSkill;
+import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
+import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
@@ -21,12 +21,13 @@ import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -54,7 +55,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private List<Widget> getEntityWidgets(List<EntityManager.EntityClassInfo> infos) {
-        ClientLevel level = McClientUtils.getClientLevel(client);
+        ClientLevel level = ClientUtils.getClientLevel(client);
         List<Widget> widgets = new ArrayList<>();
         for (EntityManager.EntityClassInfo eci : infos) {
             EntityType<?> type = eci.getType();
@@ -86,7 +87,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 List<Widget> list = getEntityWidgets(EntityManager.getInstance().getEntityClassInfos());
                 resetAndAndWidgetsOneByOne(list);
                 return true;
@@ -106,10 +107,10 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 ArrayList<Widget> tags = new ArrayList<>();
-                group.dfsTags((tag, depth) -> {
-                    tags.add(new TagCatalog(depth, tag));
+                group.dfsTags((nbt, depth) -> {
+                    tags.add(new TagCatalog(depth, nbt));
                     return true;
                 });
                 tags.addFirst(new DescriptionWidget(1, Page.COLUMNS, group.getDescription()));
@@ -125,7 +126,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
         public TagCatalog(int depth, EntityManager.Tag tag) {
             super(depth, ComponentUtils.formatList(
-                    List.of(tag.getText(), Component.literal("(" + tag.getEntities().size() + ")")),
+                    Arrays.asList(tag.getText(), Component.literal("(" + tag.getEntities().size() + ")")),
                     Component.literal(" ")));
             this.tag = tag;
         }
@@ -133,7 +134,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 1.5F);
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 1.5F);
                 clearAllPages();
                 List<Widget> list = getEntityWidgets(tag.getEntities());
                 resetAndAndWidgetsOneByOne(list);
@@ -167,7 +168,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         public EntityWidget(Entity entity) {
             super(2, 2);
             this.entity = entity;
-            EntityType<?> type = entity.getType();
+            EntityType<?> type = EntityUtils.getEntityType(entity);
             this.name = type.getDescription();
             Item item = SpawnEggItem.byId(type);
             this.spawnEgg = item == null ? null : new ItemStack(item);
@@ -186,15 +187,15 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 } else {
                     return true;
                 }
-                HighlightEntitiesSkill.activate(entity.getType(), distance);
-                McClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
+                HighlightEntitiesSkill.activate(EntityUtils.getEntityType(entity), distance);
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
                 onClose();
             } else {
                 if (isMouseLeft(code)) {
                     if (!PlayerUtils.isCreative(player)) {
                         sendScreenMessage(Component.translatable(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
                     } else {
-                        GetSpawnEggSkill.activate(entity.getType());
+                        GetSpawnEggSkill.activate(EntityUtils.getEntityType(entity));
                     }
                 }
                 return true;
@@ -244,15 +245,19 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
             List<Component> tooltips;
             if (mouseY < BUTTONS_CUT) {
-                tooltips = List.of(
+                tooltips = Arrays.asList(
                         tooltipTitle(Lang.WIDGET_ENTITY_HIGHLIGHT),
                         Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC, HighlightEntitiesSkill.NEAR_RADIUS, HighlightEntitiesSkill.NEAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
-                        Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS, HighlightEntitiesSkill.FAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY)
+                        Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS, HighlightEntitiesSkill.FAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
+                        Component.empty(),
+                        Component.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY)
                 );
             } else {
-                tooltips = List.of(
+                tooltips = Arrays.asList(
                         tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG),
-                        tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC)
+                        tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC),
+                        Component.empty(),
+                        Component.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY)
                 );
             }
 

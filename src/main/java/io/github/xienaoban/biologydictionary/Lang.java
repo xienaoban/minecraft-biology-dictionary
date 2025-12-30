@@ -1,10 +1,22 @@
 package io.github.xienaoban.biologydictionary;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+
 /**
  * Translation keys for languages.
  */
 public final class Lang {
     private Lang() {}
+
+    public static String keyYesOrNo(boolean v) {
+        return v ? GUI_YES : GUI_NO;
+    }
+
+    public static MutableComponent textYesOrNo(boolean v) {
+        return Component.translatable(keyYesOrNo(v));
+    }
+
     public static final String
     __START__ = "",
 
@@ -31,6 +43,7 @@ public final class Lang {
 
     SCREEN_PLAYER_SELECTOR      = "screen.biologydictionary.player_selector",
     SCREEN_PLAYER_SELECTOR_DESC = "screen.biologydictionary.player_selector.desc",
+    SCREEN_STEALING             = "screen.biologydictionary.stealing",
 
     BOOKMARK_ALL          = "bookmark.biologydictionary.all",
     BOOKMARK_BACK_TO_HOME = "bookmark.biologydictionary.back_to_home",
@@ -83,6 +96,8 @@ public final class Lang {
     PROPERTY_WIDGET_JUMP_STRENGTH_DESC          = "property_widget.biologydictionary.jump_strength.desc",
     PROPERTY_WIDGET_LEASHABLE                   = "property_widget.biologydictionary.leashable",
     PROPERTY_WIDGET_LEASHABLE_DESC              = "property_widget.biologydictionary.leashable.desc",
+    PROPERTY_WIDGET_EAT_GRASS                   = "property_widget.biologydictionary.eat_grass",
+    PROPERTY_WIDGET_EAT_GRASS_DESC              = "property_widget.biologydictionary.eat_grass.desc",
     PROPERTY_WIDGET_SCREAMING_GOAT              = "property_widget.biologydictionary.screaming_goat",
     PROPERTY_WIDGET_SCREAMING_GOAT_DESC         = "property_widget.biologydictionary.screaming_goat.desc",
     PROPERTY_WIDGET_BOUNDING_BOX                = "property_widget.biologydictionary.bounding_box",
@@ -111,6 +126,14 @@ public final class Lang {
     PROPERTY_WIDGET_SOUND_DESC                  = "property_widget.biologydictionary.sound.desc",
     PROPERTY_WIDGET_SOUND_SWITCH                = "property_widget.biologydictionary.sound.switch",
     PROPERTY_WIDGET_SOUND_SWITCH_DESC           = "property_widget.biologydictionary.sound.switch.desc",
+    PROPERTY_WIDGET_PERSISTENCE                 = "property_widget.biologydictionary.persistence",
+    PROPERTY_WIDGET_PERSISTENCE_DESC            = "property_widget.biologydictionary.persistence.desc",
+    PROPERTY_WIDGET_PERSISTENCE_FORCED          = "property_widget.biologydictionary.persistence.forced",
+    PROPERTY_WIDGET_PERSISTENCE_FORCED_DESC     = "property_widget.biologydictionary.persistence.forced.desc",
+    PROPERTY_WIDGET_PERSISTENCE_FINAL           = "property_widget.biologydictionary.persistence.final",
+    PROPERTY_WIDGET_PERSISTENCE_FINAL_DESC      = "property_widget.biologydictionary.persistence.final.desc",
+    PROPERTY_WIDGET_PERSISTENCE_FINAL_FORCED    = "property_widget.biologydictionary.persistence.final.forced",
+    PROPERTY_WIDGET_PERSISTENCE_FINAL_NATURAL   = "property_widget.biologydictionary.persistence.final.natural",
     PROPERTY_WIDGET_GROWTH                      = "property_widget.biologydictionary.growth",
     PROPERTY_WIDGET_GROWTH_DESC                 = "property_widget.biologydictionary.growth.desc",
     PROPERTY_WIDGET_GROWTH_LOCK                 = "property_widget.biologydictionary.growth.lock",
@@ -149,12 +172,23 @@ public final class Lang {
     PROPERTY_WIDGET_BEE_HIVE_CLEAR_DESC         = "property_widget.biologydictionary.bee_hive.clear.desc",
     PROPERTY_WIDGET_DESPAWN_DELAY               = "property_widget.biologydictionary.despawn_delay",
     PROPERTY_WIDGET_DESPAWN_DELAY_DESC          = "property_widget.biologydictionary.despawn_delay.desc",
+    PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN        = "property_widget.biologydictionary.despawn_delay.retain",
+    PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN_DESC   = "property_widget.biologydictionary.despawn_delay.retain.desc",
+    PROPERTY_WIDGET_INVENTORY                   = "property_widget.biologydictionary.inventory",
+    PROPERTY_WIDGET_INVENTORY_DESC1             = "property_widget.biologydictionary.inventory.desc1",
+    PROPERTY_WIDGET_INVENTORY_DESC2             = "property_widget.biologydictionary.inventory.desc2",
+    PROPERTY_WIDGET_INVENTORY_STEAL             = "property_widget.biologydictionary.inventory.steal",
+    PROPERTY_WIDGET_INVENTORY_STEAL_DESC1       = "property_widget.biologydictionary.inventory.steal.desc1",
+    PROPERTY_WIDGET_INVENTORY_STEAL_DESC2       = "property_widget.biologydictionary.inventory.steal.desc2",
+    PROPERTY_WIDGET_INVENTORY_STEAL_CREATIVE    = "property_widget.biologydictionary.inventory.steal.creative",
+    PROPERTY_WIDGET_INVENTORY_STEAL_SURVIVAL    = "property_widget.biologydictionary.inventory.steal.survival",
 
     TEXT_MOD_NAME_IS                         = "text.biologydictionary.mod_name_is",
     TEXT_AUTHOR_IS                           = "text.biologydictionary.author_is",
     TEXT_MOD_NOT_INSTALLED                   = "text.biologydictionary.mod_not_installed",
     TEXT_CLICK_ME_TO_DOWNLOAD                = "text.biologydictionary.click_me_to_download",
     TEXT_INFO_FROM_THIS_MOD                  = "text.biologydictionary.info_from_this_mod",
+    TEXT_NO_BIOLOGY_DICTIONARY_BOOK          = "text.biologydictionary.no_biology_dictionary_book",
     TEXT_TARGET_ENTITY_TOO_FAR               = "text.biologydictionary.target_entity_too_far",
     TEXT_HIGHLIGHTED_ENTITIES                = "text.biologydictionary.highlighted_entities",
     TEXT_FAILED_TO_HIGHLIGHT                 = "text.biologydictionary.failed_to_highlight",
@@ -172,11 +206,16 @@ public final class Lang {
     TEXT_EXPERIENCE_POINTS_COST              = "text.biologydictionary.experience_points_cost",
     TEXT_EXPERIENCE_LEVELS_COST              = "text.biologydictionary.experience_levels_cost",
     TEXT_OFFER_OR_DROP                       = "text.biologydictionary.offer_or_drop",
+    TEXT_TARGET_ENTITY_NO_ABILITY            = "text.biologydictionary.target_entity_no_ability",
+    TEXT_STEALING_DETECTED                   = "text.biologydictionary.stealing_detected",
+    TEXT_ENTITY_LOOKING_AT_YOU              = "text.biologydictionary.entity_looking_at_you",
+
     TEXT_NO_DATA_WITH_BRACKETS               = "text.biologydictionary.no_data_with_brackets",
     TEXT_NONE_WITH_BRACKETS                  = "text.biologydictionary.none_with_brackets",
     TEXT_EMPTY_WITH_BRACKETS                 = "text.biologydictionary.empty_with_brackets",
     TEXT_INFINITY                            = "text.biologydictionary.infinity",
     TEXT_INFINITY_CHARACTER                  = "text.biologydictionary.infinity_character",
+    TEXT_CUSTOM_NAME_FORCE_PERSISTENT        = "text.biologydictionary.custom_name_force_persistent",
     TEXT_BABY                                = "text.biologydictionary.baby",
     TEXT_ADULT                               = "text.biologydictionary.adult",
     TEXT_ALWAYS_BABY                         = "text.biologydictionary.always_baby",
@@ -184,6 +223,7 @@ public final class Lang {
     TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT     = "text.biologydictionary.not_owner_no_permission_to_gift",
     TEXT_NO_BLOCK_TO_LOCATE                  = "text.biologydictionary.no_block_to_locate",
     TEXT_NO_BLOCK_TO_CLEAR                   = "text.biologydictionary.no_block_to_clear",
+    TEXT_SHEEP_NO_GRASS_UNDER_FEET           = "text.biologydictionary.sheep_no_grass_under_feet",
     TEXT_VILLAGER_NO_JOB_SITE                = "text.biologydictionary.villager_no_job_site",
     TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE      = "text.biologydictionary.villager_too_far_from_job_site",
 

@@ -114,7 +114,10 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
     }
 
     private String getFullyQualifiedType0(String type) {
-        return fullyQualifiedTypes.getOrDefault(type, currPackageName + '.' + type);
+        return fullyQualifiedTypes.computeIfAbsent(type, t -> {
+            addImport(t, currPackageName + '.' + t);
+            return t;
+        });
     }
 
     public String getFieldType(String name) {
@@ -122,11 +125,15 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
     }
 
     public String getMethodRetType(String name) {
-        return getFullyQualifiedType(methodTypes.get(name).returnType());
+        MethodTypes mt = methodTypes.get(name);
+        if (mt == null) { return null; }
+        return getFullyQualifiedType(mt.returnType());
     }
 
     public String getMethodArgType(String name, int argIdx) {
-        return getFullyQualifiedType(methodTypes.get(name).argumentTypes().get(argIdx));
+        MethodTypes mt = methodTypes.get(name);
+        if (mt == null) { return null; }
+        return getFullyQualifiedType(mt.argumentTypes().get(argIdx));
     }
 
     @Override

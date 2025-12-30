@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -11,13 +10,9 @@ import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import java.util.Objects;
 
 public record RequestBeehiveInfoPacket(BlockPos pos) implements Packet {
-    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
+    public static final Packet.Factory<RequestBeehiveInfoPacket> FACTORY = RequestBeehiveInfoPacket::new;
 
-    @Override
-    public Type<? extends Packet> type() { return META.type(); }
-
-    @SuppressWarnings("unused")
-    public RequestBeehiveInfoPacket(FriendlyByteBuf buf) { this(buf.readBlockPos()); }
+    private RequestBeehiveInfoPacket(FriendlyByteBuf buf) { this(buf.readBlockPos()); }
 
     @Override
     public void write(FriendlyByteBuf buf) { buf.writeBlockPos(pos); }

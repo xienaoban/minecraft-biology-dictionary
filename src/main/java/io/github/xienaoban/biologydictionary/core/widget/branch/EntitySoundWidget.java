@@ -17,6 +17,8 @@ import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntitySoundWidget::new;
+
     private static final int L = 20, T = 1;
 
     private final BooleanProperty<Entity> silentProperty = VanillaEntityProperties.OfEntity.getSilentProperty(p());
@@ -29,7 +31,7 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
     }
 
     private boolean isSilent() {
-        Boolean silent = silentProperty.get();
+        Boolean silent = silentProperty.getVal();
         return silent != null && silent;
     }
 
@@ -52,7 +54,7 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
             if (isMouseLeft(code)) {
                 boolean newSilent = !isSilent();
                 if (EntitySetSoundSkill.activate(e(), newSilent)) {
-                    silentProperty.set(newSilent);
+                    silentProperty.setVal(newSilent);
                 }
             }
             return true;

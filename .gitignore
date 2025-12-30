@@ -1,6 +1,5 @@
 # User-specific stuff
 .idea/
-
 *.iml
 *.ipr
 *.iws
@@ -100,8 +99,10 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-.gradle
+# Gradle
+.gradle/
 build/
+classes/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -116,3 +117,25 @@ run/
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
+
+# Eclipse
+*.launch
+
+# Vscode
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# Macos
+*.DS_Store
+
+# Java
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
+
+# AI
+.claude/

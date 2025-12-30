@@ -94,7 +94,7 @@ public enum TagMap {
     private final String getter;
     private final String putter;
 
-    private TagMap(int value, String idName, Class<?> tagClazz, Class<?> dataClass, String getter, String putter) {
+    TagMap(int value, String idName, Class<?> tagClazz, Class<?> dataClass, String getter, String putter) {
         this.id = value;
         this.idName = idName;
         this.tagClazz = tagClazz;

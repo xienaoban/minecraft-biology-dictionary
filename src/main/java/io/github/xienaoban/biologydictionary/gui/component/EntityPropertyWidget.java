@@ -7,6 +7,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -32,7 +33,7 @@ public abstract class EntityPropertyWidget<E extends Entity> extends Widget {
     public final EntityProperties<E> p() { return properties; }
 
     protected void renderTooltip(ScreenRenderingContext ctx, Component... texts) {
-        ctx.renderComponentTooltip(List.of(texts), 0.5F, getBox().getLeft(), getBox().getBottom() + 1);
+        ctx.renderComponentTooltip(Arrays.asList(texts), 0.5F, getBox().getLeft(), getBox().getBottom() + 1);
     }
 
     protected void renderTooltip(ScreenRenderingContext ctx, List<Component> texts) {
@@ -40,4 +41,9 @@ public abstract class EntityPropertyWidget<E extends Entity> extends Widget {
     }
 
     public record RC(int rows, int columns) {}
+
+    @FunctionalInterface
+    public interface Factory<E extends Entity> {
+        EntityPropertyWidget<E> create(EntityProperties<E> properties);
+    }
 }

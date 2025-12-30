@@ -1,10 +1,9 @@
 package io.github.xienaoban.biologydictionary.core.skill.entity;
 
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.skill.EntityOrientedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -14,10 +13,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-public class EntitySetInvulnerableSkill implements EntityOrientedSkill {
+public class EntitySetInvulnerableSkill implements EntityTargetedSkill<Entity> {
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, boolean inv) {
-        return Skills.sendEntityOrientedSkill(entity, inv);
+        return PlayerSkills.sendEntityTargetedSkill(entity, inv);
     }
 
     @Environment(EnvType.CLIENT)
@@ -34,6 +33,6 @@ public class EntitySetInvulnerableSkill implements EntityOrientedSkill {
         boolean inv = args.asBoolean().orElseThrow();
         Permissions.checkPlayerCreative(player);
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
-        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfEntity.createInvulnerableProperty().toNbtWith(inv));
+        VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(inv).setTo(entity);
     }
 }

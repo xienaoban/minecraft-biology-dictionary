@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.property;
 import io.github.xienaoban.biologydictionary.core.property.builtin.*;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.VariantProperty;
+import io.github.xienaoban.biologydictionary.mixin.EntityIMixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
@@ -16,48 +17,97 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.gossip.GossipContainer;
 import net.minecraft.world.entity.ambient.AmbientCreature;
 import net.minecraft.world.entity.ambient.Bat;
-import net.minecraft.world.entity.animal.*;
+import net.minecraft.world.entity.animal.AgeableWaterCreature;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.allay.Allay;
 import net.minecraft.world.entity.animal.armadillo.Armadillo;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
+import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.entity.animal.camel.Camel;
+import net.minecraft.world.entity.animal.camel.CamelHusk;
+import net.minecraft.world.entity.animal.chicken.Chicken;
+import net.minecraft.world.entity.animal.chicken.ChickenVariant;
+import net.minecraft.world.entity.animal.cow.AbstractCow;
+import net.minecraft.world.entity.animal.cow.Cow;
+import net.minecraft.world.entity.animal.cow.CowVariant;
+import net.minecraft.world.entity.animal.cow.MushroomCow;
+import net.minecraft.world.entity.animal.dolphin.Dolphin;
+import net.minecraft.world.entity.animal.equine.*;
+import net.minecraft.world.entity.animal.feline.Cat;
+import net.minecraft.world.entity.animal.feline.CatVariant;
+import net.minecraft.world.entity.animal.feline.Ocelot;
+import net.minecraft.world.entity.animal.fish.*;
+import net.minecraft.world.entity.animal.fox.Fox;
 import net.minecraft.world.entity.animal.frog.Frog;
+import net.minecraft.world.entity.animal.frog.FrogVariant;
 import net.minecraft.world.entity.animal.frog.Tadpole;
 import net.minecraft.world.entity.animal.goat.Goat;
-import net.minecraft.world.entity.animal.horse.*;
+import net.minecraft.world.entity.animal.golem.AbstractGolem;
+import net.minecraft.world.entity.animal.golem.CopperGolem;
+import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.golem.SnowGolem;
+import net.minecraft.world.entity.animal.happyghast.HappyGhast;
+import net.minecraft.world.entity.animal.nautilus.AbstractNautilus;
+import net.minecraft.world.entity.animal.nautilus.Nautilus;
+import net.minecraft.world.entity.animal.nautilus.ZombieNautilus;
+import net.minecraft.world.entity.animal.nautilus.ZombieNautilusVariant;
+import net.minecraft.world.entity.animal.panda.Panda;
+import net.minecraft.world.entity.animal.parrot.Parrot;
+import net.minecraft.world.entity.animal.parrot.ShoulderRidingEntity;
+import net.minecraft.world.entity.animal.pig.Pig;
+import net.minecraft.world.entity.animal.pig.PigVariant;
+import net.minecraft.world.entity.animal.polarbear.PolarBear;
+import net.minecraft.world.entity.animal.rabbit.Rabbit;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.animal.sniffer.Sniffer;
+import net.minecraft.world.entity.animal.squid.GlowSquid;
+import net.minecraft.world.entity.animal.squid.Squid;
+import net.minecraft.world.entity.animal.turtle.Turtle;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.animal.wolf.WolfVariant;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.decoration.Mannequin;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.monster.breeze.Breeze;
 import net.minecraft.world.entity.monster.creaking.Creaking;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
+import net.minecraft.world.entity.monster.illager.*;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
+import net.minecraft.world.entity.monster.skeleton.*;
+import net.minecraft.world.entity.monster.spider.CaveSpider;
+import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.entity.monster.warden.Warden;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.monster.zombie.*;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerData;
+import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.component.SuspiciousStewEffects;
 import net.minecraft.world.item.trading.MerchantOffers;
+import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.waypoints.Waypoint;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class VanillaEntityProperties {
 
-    static final Map<Class<? extends Entity>, Creator> registries = new HashMap<>();
+    static final Map<Class<? extends Entity>, Creator> registry = new HashMap<>();
 
     @FunctionalInterface
     interface Creator {
@@ -65,12 +115,8 @@ public final class VanillaEntityProperties {
         void create(Map<String, EntityProperty<?>> map);
     }
 
-    static {
-        init();
-    }
-
-    private static void r(Class<? extends Entity> clazz, Creator registry) {
-        registries.put(clazz, registry);
+    private static void r(Class<? extends Entity> clazz, Creator creator) {
+        registry.put(clazz, creator);
     }
 
     private static <EP extends EntityProperty<?>> EP g(EntityProperties<?> ep, String key) {
@@ -87,9 +133,11 @@ public final class VanillaEntityProperties {
         }
     }
 
-    private static void init() {
+    static void init() {
         r(Entity.class, new OfEntity());
         r(LivingEntity.class, new OfLivingEntity());
+        r(Avatar.class, new OfAvatar());
+        r(Mannequin.class, new OfMannequin());
         r(Mob.class, new OfMob());
         r(PathfinderMob.class, new OfPathfinderMob());
         r(AgeableMob.class, new OfAgeableMob());
@@ -100,28 +148,22 @@ public final class VanillaEntityProperties {
         r(Animal.class, new OfAnimal());
         r(TamableAnimal.class, new OfTamableAnimal());
         r(Cat.class, new OfCat());
+        r(AbstractNautilus.class, new OfAbstractNautilus());
+        r(Nautilus.class, new OfNautilus());
+        r(ZombieNautilus.class, new OfZombieNautilus());
         r(ShoulderRidingEntity.class, new OfShoulderRidingEntity());
         r(Parrot.class, new OfParrot());
         r(Wolf.class, new OfWolf());
+        r(Armadillo.class, new OfArmadillo());
+        r(Axolotl.class, new OfAxolotl());
+        r(Bee.class, new OfBee());
+        r(Chicken.class, new OfChicken());
         r(AbstractCow.class, new OfAbstractCow());
         r(Cow.class, new OfCow());
         r(MushroomCow.class, new OfMushroomCow());
-        r(Bee.class, new OfBee());
-        r(Chicken.class, new OfChicken());
-        r(Fox.class, new OfFox());
-        r(HappyGhast.class, new OfHappyGhast());
-        r(Ocelot.class, new OfOcelot());
-        r(Panda.class, new OfPanda());
-        r(Pig.class, new OfPig());
-        r(PolarBear.class, new OfPolarBear());
-        r(Rabbit.class, new OfRabbit());
-        r(Turtle.class, new OfTurtle());
-        r(Armadillo.class, new OfArmadillo());
-        r(Axolotl.class, new OfAxolotl());
-        r(Frog.class, new OfFrog());
-        r(Goat.class, new OfGoat());
         r(AbstractHorse.class, new OfAbstractHorse());
         r(Camel.class, new OfCamel());
+        r(CamelHusk.class, new OfCamelHusk());
         r(AbstractChestedHorse.class, new OfAbstractChestedHorse());
         r(Donkey.class, new OfDonkey());
         r(Llama.class, new OfLlama());
@@ -130,17 +172,24 @@ public final class VanillaEntityProperties {
         r(Horse.class, new OfHorse());
         r(SkeletonHorse.class, new OfSkeletonHorse());
         r(ZombieHorse.class, new OfZombieHorse());
+        r(Ocelot.class, new OfOcelot());
+        r(Fox.class, new OfFox());
+        r(Frog.class, new OfFrog());
+        r(Goat.class, new OfGoat());
+        r(HappyGhast.class, new OfHappyGhast());
+        r(Panda.class, new OfPanda());
+        r(Pig.class, new OfPig());
+        r(PolarBear.class, new OfPolarBear());
+        r(Rabbit.class, new OfRabbit());
         r(Sheep.class, new OfSheep());
         r(Sniffer.class, new OfSniffer());
+        r(Turtle.class, new OfTurtle());
         r(Strider.class, new OfStrider());
         r(Hoglin.class, new OfHoglin());
         r(AbstractVillager.class, new OfAbstractVillager());
         r(Villager.class, new OfVillager());
         r(WanderingTrader.class, new OfWanderingTrader());
-        r(AbstractGolem.class, new OfAbstractGolem());
-        r(IronGolem.class, new OfIronGolem());
-        r(SnowGolem.class, new OfSnowGolem());
-        r(Shulker.class, new OfShulker());
+        r(Allay.class, new OfAllay());
         r(WaterAnimal.class, new OfWaterAnimal());
         r(AbstractFish.class, new OfAbstractFish());
         r(AbstractSchoolingFish.class, new OfAbstractSchoolingFish());
@@ -149,14 +198,13 @@ public final class VanillaEntityProperties {
         r(TropicalFish.class, new OfTropicalFish());
         r(Pufferfish.class, new OfPufferfish());
         r(Tadpole.class, new OfTadpole());
-        r(Allay.class, new OfAllay());
+        r(AbstractGolem.class, new OfAbstractGolem());
+        r(CopperGolem.class, new OfCopperGolem());
+        r(IronGolem.class, new OfIronGolem());
+        r(SnowGolem.class, new OfSnowGolem());
+        r(Shulker.class, new OfShulker());
         r(Monster.class, new OfMonster());
         r(WitherBoss.class, new OfWitherBoss());
-        r(AbstractSkeleton.class, new OfAbstractSkeleton());
-        r(Bogged.class, new OfBogged());
-        r(Skeleton.class, new OfSkeleton());
-        r(Stray.class, new OfStray());
-        r(WitherSkeleton.class, new OfWitherSkeleton());
         r(Blaze.class, new OfBlaze());
         r(Creeper.class, new OfCreeper());
         r(EnderMan.class, new OfEnderMan());
@@ -166,30 +214,36 @@ public final class VanillaEntityProperties {
         r(ElderGuardian.class, new OfElderGuardian());
         r(PatrollingMonster.class, new OfPatrollingMonster());
         r(Raider.class, new OfRaider());
+        r(Ravager.class, new OfRavager());
+        r(Witch.class, new OfWitch());
         r(AbstractIllager.class, new OfAbstractIllager());
         r(Pillager.class, new OfPillager());
         r(SpellcasterIllager.class, new OfSpellcasterIllager());
         r(Evoker.class, new OfEvoker());
         r(Illusioner.class, new OfIllusioner());
         r(Vindicator.class, new OfVindicator());
-        r(Ravager.class, new OfRavager());
-        r(Witch.class, new OfWitch());
         r(Silverfish.class, new OfSilverfish());
-        r(Spider.class, new OfSpider());
-        r(CaveSpider.class, new OfCaveSpider());
         r(Vex.class, new OfVex());
         r(Zoglin.class, new OfZoglin());
-        r(Zombie.class, new OfZombie());
-        r(Drowned.class, new OfDrowned());
-        r(Husk.class, new OfHusk());
-        r(ZombieVillager.class, new OfZombieVillager());
-        r(ZombifiedPiglin.class, new OfZombifiedPiglin());
         r(Breeze.class, new OfBreeze());
         r(Creaking.class, new OfCreaking());
         r(AbstractPiglin.class, new OfAbstractPiglin());
         r(Piglin.class, new OfPiglin());
         r(PiglinBrute.class, new OfPiglinBrute());
+        r(AbstractSkeleton.class, new OfAbstractSkeleton());
+        r(Bogged.class, new OfBogged());
+        r(Parched.class, new OfParched());
+        r(Skeleton.class, new OfSkeleton());
+        r(Stray.class, new OfStray());
+        r(WitherSkeleton.class, new OfWitherSkeleton());
+        r(Spider.class, new OfSpider());
+        r(CaveSpider.class, new OfCaveSpider());
         r(Warden.class, new OfWarden());
+        r(Zombie.class, new OfZombie());
+        r(Drowned.class, new OfDrowned());
+        r(Husk.class, new OfHusk());
+        r(ZombieVillager.class, new OfZombieVillager());
+        r(ZombifiedPiglin.class, new OfZombifiedPiglin());
         r(AmbientCreature.class, new OfAmbientCreature());
         r(Bat.class, new OfBat());
         r(EnderDragon.class, new OfEnderDragon());
@@ -237,7 +291,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, Component> createCustomNameProperty() {
-            return new CodecProperty<>("CustomName", ComponentSerialization.CODEC);
+            return new CodecProperty<>("CustomName", Component.class, ComponentSerialization.CODEC);
         }
 
         public static CodecProperty<Entity, Component> getCustomNameProperty(EntityProperties<?> ep) {
@@ -285,7 +339,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, Vec3> createMotionProperty() {
-            return new CodecProperty<>("Motion", Vec3.CODEC);
+            return new CodecProperty<>("Motion", Vec3.class, Vec3.CODEC);
         }
 
         public static CodecProperty<Entity, Vec3> getMotionProperty(EntityProperties<?> ep) {
@@ -317,7 +371,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, Vec3> createPosProperty() {
-            return new CodecProperty<>("Pos", Vec3.CODEC);
+            return new CodecProperty<>("Pos", Vec3.class, Vec3.CODEC);
         }
 
         public static CodecProperty<Entity, Vec3> getPosProperty(EntityProperties<?> ep) {
@@ -325,7 +379,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, Vec2> createRotationProperty() {
-            return new CodecProperty<>("Rotation", Vec2.CODEC);
+            return new CodecProperty<>("Rotation", Vec2.class, Vec2.CODEC);
         }
 
         public static CodecProperty<Entity, Vec2> getRotationProperty(EntityProperties<?> ep) {
@@ -341,7 +395,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, List<String>> createTagsProperty() {
-            return new CodecProperty<>("Tags", CodecProperty.emptyCodec() /* net.minecraft.world.entity.Entity.TAG_LIST_CODEC */);
+            return new CodecProperty<>("Tags", List.class, EntityIMixin.getTagListCodec());
         }
 
         public static CodecProperty<Entity, List<String>> getTagsProperty(EntityProperties<?> ep) {
@@ -357,7 +411,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, UUID> createUuidProperty() {
-            return new CodecProperty<>("UUID", UUIDUtil.CODEC);
+            return new CodecProperty<>("UUID", UUID.class, UUIDUtil.CODEC);
         }
 
         public static CodecProperty<Entity, UUID> getUuidProperty(EntityProperties<?> ep) {
@@ -365,7 +419,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, CustomData> createDataProperty() {
-            return new CodecProperty<>("data", CustomData.CODEC);
+            return new CodecProperty<>("data", CustomData.class, CustomData.CODEC);
         }
 
         public static CodecProperty<Entity, CustomData> getDataProperty(EntityProperties<?> ep) {
@@ -406,7 +460,7 @@ public final class VanillaEntityProperties {
      *  - "Team": String
      *  - "active_effects": List<MobEffectInstance>
      *  - "attributes": List<AttributeInstance.Packed>
-     *  - "equipment": net.minecraft.world.entity.EntityEquipment
+     *  - "equipment": EntityEquipment
      *  - "last_hurt_by_player_memory_time": int
      *  - "locator_bar_icon": Waypoint.Icon
      *  - "sleeping_pos": BlockPos
@@ -485,7 +539,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<LivingEntity, List<MobEffectInstance>> createActiveEffectsProperty() {
-            return new CodecProperty<>("active_effects", MobEffectInstance.CODEC.listOf());
+            return new CodecProperty<>("active_effects", List.class, MobEffectInstance.CODEC.listOf());
         }
 
         public static CodecProperty<LivingEntity, List<MobEffectInstance>> getActiveEffectsProperty(EntityProperties<?> ep) {
@@ -493,18 +547,18 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<LivingEntity, List<AttributeInstance.Packed>> createAttributesProperty() {
-            return new CodecProperty<>("attributes", AttributeInstance.Packed.LIST_CODEC);
+            return new CodecProperty<>("attributes", List.class, AttributeInstance.Packed.LIST_CODEC);
         }
 
         public static CodecProperty<LivingEntity, List<AttributeInstance.Packed>> getAttributesProperty(EntityProperties<?> ep) {
             return g(ep, "attributes");
         }
 
-        public static CodecProperty<LivingEntity, net.minecraft.world.entity.EntityEquipment> createEquipmentProperty() {
-            return new CodecProperty<>("equipment", net.minecraft.world.entity.EntityEquipment.CODEC);
+        public static CodecProperty<LivingEntity, EntityEquipment> createEquipmentProperty() {
+            return new CodecProperty<>("equipment", EntityEquipment.class, EntityEquipment.CODEC);
         }
 
-        public static CodecProperty<LivingEntity, net.minecraft.world.entity.EntityEquipment> getEquipmentProperty(EntityProperties<?> ep) {
+        public static CodecProperty<LivingEntity, EntityEquipment> getEquipmentProperty(EntityProperties<?> ep) {
             return g(ep, "equipment");
         }
 
@@ -533,7 +587,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<LivingEntity, Waypoint.Icon> createLocatorBarIconProperty() {
-            return new CodecProperty<>("locator_bar_icon", Waypoint.Icon.CODEC);
+            return new CodecProperty<>("locator_bar_icon", Waypoint.Icon.class, Waypoint.Icon.CODEC);
         }
 
         public static CodecProperty<LivingEntity, Waypoint.Icon> getLocatorBarIconProperty(EntityProperties<?> ep) {
@@ -541,7 +595,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<LivingEntity, BlockPos> createSleepingPosProperty() {
-            return new CodecProperty<>("sleeping_pos", BlockPos.CODEC);
+            return new CodecProperty<>("sleeping_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<LivingEntity, BlockPos> getSleepingPosProperty(EntityProperties<?> ep) {
@@ -565,13 +619,105 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.Avatar
+     */
+    public static final class OfAvatar implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "description": Component
+     *  - "hide_description": boolean
+     *  - "immovable": boolean
+     *  - "profile": ResolvableProfile
+     * [Attention] Some properties cannot be recognized yet:
+     *  - "hidden_layers": [null]
+     *  - "main_hand": [null]
+     *  - "pose": [null]
+     *
+     * @see net.minecraft.world.entity.decoration.Mannequin
+     */
+    public static final class OfMannequin implements Creator {
+
+        public static CodecProperty<Mannequin, Component> createDescriptionProperty() {
+            return new CodecProperty<>("description", Component.class, ComponentSerialization.CODEC);
+        }
+
+        public static CodecProperty<Mannequin, Component> getDescriptionProperty(EntityProperties<?> ep) {
+            return g(ep, "description");
+        }
+
+        public static UnsupportedProperty<Mannequin> createHiddenLayersProperty() {
+            return new UnsupportedProperty<>("hidden_layers");
+        }
+
+        public static UnsupportedProperty<Mannequin> getHiddenLayersProperty(EntityProperties<?> ep) {
+            return g(ep, "hidden_layers");
+        }
+
+        public static BooleanProperty<Mannequin> createHideDescriptionProperty() {
+            return new BooleanProperty<>("hide_description");
+        }
+
+        public static BooleanProperty<Mannequin> getHideDescriptionProperty(EntityProperties<?> ep) {
+            return g(ep, "hide_description");
+        }
+
+        public static BooleanProperty<Mannequin> createImmovableProperty() {
+            return new BooleanProperty<>("immovable");
+        }
+
+        public static BooleanProperty<Mannequin> getImmovableProperty(EntityProperties<?> ep) {
+            return g(ep, "immovable");
+        }
+
+        public static UnsupportedProperty<Mannequin> createMainHandProperty() {
+            return new UnsupportedProperty<>("main_hand");
+        }
+
+        public static UnsupportedProperty<Mannequin> getMainHandProperty(EntityProperties<?> ep) {
+            return g(ep, "main_hand");
+        }
+
+        public static UnsupportedProperty<Mannequin> createPoseProperty() {
+            return new UnsupportedProperty<>("pose");
+        }
+
+        public static UnsupportedProperty<Mannequin> getPoseProperty(EntityProperties<?> ep) {
+            return g(ep, "pose");
+        }
+
+        public static CodecProperty<Mannequin, ResolvableProfile> createProfileProperty() {
+            return new CodecProperty<>("profile", ResolvableProfile.class, ResolvableProfile.CODEC);
+        }
+
+        public static CodecProperty<Mannequin, ResolvableProfile> getProfileProperty(EntityProperties<?> ep) {
+            return g(ep, "profile");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createDescriptionProperty(), createHiddenLayersProperty(), createHideDescriptionProperty(), createImmovableProperty(), createMainHandProperty(), createPoseProperty(), createProfileProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
      *  - "CanPickUpLoot": boolean
      *  - "DeathLootTable": ResourceKey<LootTable>
      *  - "DeathLootTableSeed": long
      *  - "LeftHanded": boolean
      *  - "NoAI": boolean
      *  - "PersistenceRequired": boolean
-     *  - "drop_chances": net.minecraft.world.entity.DropChances
+     *  - "drop_chances": DropChances
      *  - "home_pos": BlockPos
      *  - "home_radius": int
      *
@@ -588,7 +734,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Mob, ResourceKey<LootTable>> createDeathLootTableProperty() {
-            return new CodecProperty<>("DeathLootTable", LootTable.KEY_CODEC);
+            return new CodecProperty<>("DeathLootTable", ResourceKey.class, LootTable.KEY_CODEC);
         }
 
         public static CodecProperty<Mob, ResourceKey<LootTable>> getDeathLootTableProperty(EntityProperties<?> ep) {
@@ -627,16 +773,16 @@ public final class VanillaEntityProperties {
             return g(ep, "PersistenceRequired");
         }
 
-        public static CodecProperty<Mob, net.minecraft.world.entity.DropChances> createDropChancesProperty() {
-            return new CodecProperty<>("drop_chances", net.minecraft.world.entity.DropChances.CODEC);
+        public static CodecProperty<Mob, DropChances> createDropChancesProperty() {
+            return new CodecProperty<>("drop_chances", DropChances.class, DropChances.CODEC);
         }
 
-        public static CodecProperty<Mob, net.minecraft.world.entity.DropChances> getDropChancesProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Mob, DropChances> getDropChancesProperty(EntityProperties<?> ep) {
             return g(ep, "drop_chances");
         }
 
         public static CodecProperty<Mob, BlockPos> createHomePosProperty() {
-            return new CodecProperty<>("home_pos", BlockPos.CODEC);
+            return new CodecProperty<>("home_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Mob, BlockPos> getHomePosProperty(EntityProperties<?> ep) {
@@ -723,7 +869,7 @@ public final class VanillaEntityProperties {
      *  - "GotFish": boolean
      *  - "Moistness": int
      *
-     * @see net.minecraft.world.entity.animal.Dolphin
+     * @see net.minecraft.world.entity.animal.dolphin.Dolphin
      */
     public static final class OfDolphin implements Creator {
 
@@ -753,7 +899,7 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *
-     * @see net.minecraft.world.entity.animal.Squid
+     * @see net.minecraft.world.entity.animal.squid.Squid
      */
     public static final class OfSquid implements Creator {
 
@@ -768,7 +914,7 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "DarkTicksRemaining": int
      *
-     * @see net.minecraft.world.entity.GlowSquid
+     * @see net.minecraft.world.entity.animal.squid.GlowSquid
      */
     public static final class OfGlowSquid implements Creator {
 
@@ -854,25 +1000,25 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *  - "CollarColor": DyeColor
-     *  - "variant": net.minecraft.world.entity.animal.CatVariant
+     *  - "variant": CatVariant
      *
-     * @see net.minecraft.world.entity.animal.Cat
+     * @see net.minecraft.world.entity.animal.feline.Cat
      */
     public static final class OfCat implements Creator {
 
         public static CodecProperty<Cat, DyeColor> createCollarColorProperty() {
-            return new CodecProperty<>("CollarColor", DyeColor.LEGACY_ID_CODEC);
+            return new CodecProperty<>("CollarColor", DyeColor.class, DyeColor.LEGACY_ID_CODEC);
         }
 
         public static CodecProperty<Cat, DyeColor> getCollarColorProperty(EntityProperties<?> ep) {
             return g(ep, "CollarColor");
         }
 
-        public static VariantProperty<Cat, net.minecraft.world.entity.animal.CatVariant> createVariantProperty() {
+        public static VariantProperty<Cat, CatVariant> createVariantProperty() {
             return new VariantProperty<>(Registries.CAT_VARIANT);
         }
 
-        public static VariantProperty<Cat, net.minecraft.world.entity.animal.CatVariant> getVariantProperty(EntityProperties<?> ep) {
+        public static VariantProperty<Cat, CatVariant> getVariantProperty(EntityProperties<?> ep) {
             return g(ep, "variant");
         }
 
@@ -886,7 +1032,58 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *
-     * @see net.minecraft.world.entity.animal.ShoulderRidingEntity
+     * @see net.minecraft.world.entity.animal.nautilus.AbstractNautilus
+     */
+    public static final class OfAbstractNautilus implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.animal.nautilus.Nautilus
+     */
+    public static final class OfNautilus implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "variant": ZombieNautilusVariant
+     *
+     * @see net.minecraft.world.entity.animal.nautilus.ZombieNautilus
+     */
+    public static final class OfZombieNautilus implements Creator {
+
+        public static VariantProperty<ZombieNautilus, ZombieNautilusVariant> createVariantProperty() {
+            return new VariantProperty<>(Registries.ZOMBIE_NAUTILUS_VARIANT);
+        }
+
+        public static VariantProperty<ZombieNautilus, ZombieNautilusVariant> getVariantProperty(EntityProperties<?> ep) {
+            return g(ep, "variant");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createVariantProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.animal.parrot.ShoulderRidingEntity
      */
     public static final class OfShoulderRidingEntity implements Creator {
 
@@ -901,12 +1098,12 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "Variant": Parrot.Variant
      *
-     * @see net.minecraft.world.entity.animal.Parrot
+     * @see net.minecraft.world.entity.animal.parrot.Parrot
      */
     public static final class OfParrot implements Creator {
 
         public static CodecProperty<Parrot, Parrot.Variant> createVariantProperty() {
-            return new CodecProperty<>("Variant", Parrot.Variant.LEGACY_CODEC);
+            return new CodecProperty<>("Variant", Parrot.Variant.class, Parrot.Variant.LEGACY_CODEC);
         }
 
         public static CodecProperty<Parrot, Parrot.Variant> getVariantProperty(EntityProperties<?> ep) {
@@ -923,7 +1120,7 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *  - "CollarColor": DyeColor
-     *  - "variant": net.minecraft.world.entity.animal.wolf.WolfVariant
+     *  - "variant": WolfVariant
      * [Attention] Some properties cannot be recognized yet:
      *  - "sound_variant": [null]
      *
@@ -932,7 +1129,7 @@ public final class VanillaEntityProperties {
     public static final class OfWolf implements Creator {
 
         public static CodecProperty<Wolf, DyeColor> createCollarColorProperty() {
-            return new CodecProperty<>("CollarColor", DyeColor.LEGACY_ID_CODEC);
+            return new CodecProperty<>("CollarColor", DyeColor.class, DyeColor.LEGACY_ID_CODEC);
         }
 
         public static CodecProperty<Wolf, DyeColor> getCollarColorProperty(EntityProperties<?> ep) {
@@ -947,11 +1144,11 @@ public final class VanillaEntityProperties {
             return g(ep, "sound_variant");
         }
 
-        public static VariantProperty<Wolf, net.minecraft.world.entity.animal.wolf.WolfVariant> createVariantProperty() {
+        public static VariantProperty<Wolf, WolfVariant> createVariantProperty() {
             return new VariantProperty<>(Registries.WOLF_VARIANT);
         }
 
-        public static VariantProperty<Wolf, net.minecraft.world.entity.animal.wolf.WolfVariant> getVariantProperty(EntityProperties<?> ep) {
+        public static VariantProperty<Wolf, WolfVariant> getVariantProperty(EntityProperties<?> ep) {
             return g(ep, "variant");
         }
 
@@ -964,69 +1161,64 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
+     *  - "scute_time": int
+     *  - "state": Armadillo.ArmadilloState
      *
-     * @see net.minecraft.world.entity.animal.AbstractCow
+     * @see net.minecraft.world.entity.animal.armadillo.Armadillo
      */
-    public static final class OfAbstractCow implements Creator {
+    public static final class OfArmadillo implements Creator {
+
+        public static IntProperty<Armadillo> createScuteTimeProperty() {
+            return new IntProperty<>("scute_time");
+        }
+
+        public static IntProperty<Armadillo> getScuteTimeProperty(EntityProperties<?> ep) {
+            return g(ep, "scute_time");
+        }
+
+        public static UnsupportedProperty<Armadillo> createStateProperty() {
+            return new UnsupportedProperty<>("state");
+        }
+
+        public static UnsupportedProperty<Armadillo> getStateProperty(EntityProperties<?> ep) {
+            return g(ep, "state");
+        }
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
+            p(map, createScuteTimeProperty(), createStateProperty());
         }
     }
 
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
-     *  - "variant": net.minecraft.world.entity.animal.CowVariant
+     *  - "FromBucket": boolean
+     *  - "Variant": Axolotl.Variant
      *
-     * @see net.minecraft.world.entity.animal.Cow
+     * @see net.minecraft.world.entity.animal.axolotl.Axolotl
      */
-    public static final class OfCow implements Creator {
+    public static final class OfAxolotl implements Creator {
 
-        public static VariantProperty<Cow, net.minecraft.world.entity.animal.CowVariant> createVariantProperty() {
-            return new VariantProperty<>(Registries.COW_VARIANT);
+        public static BooleanProperty<Axolotl> createFromBucketProperty() {
+            return new BooleanProperty<>("FromBucket");
         }
 
-        public static VariantProperty<Cow, net.minecraft.world.entity.animal.CowVariant> getVariantProperty(EntityProperties<?> ep) {
-            return g(ep, "variant");
+        public static BooleanProperty<Axolotl> getFromBucketProperty(EntityProperties<?> ep) {
+            return g(ep, "FromBucket");
+        }
+
+        public static CodecProperty<Axolotl, Axolotl.Variant> createVariantProperty() {
+            return new CodecProperty<>("Variant", Axolotl.Variant.class, Axolotl.Variant.LEGACY_CODEC);
+        }
+
+        public static CodecProperty<Axolotl, Axolotl.Variant> getVariantProperty(EntityProperties<?> ep) {
+            return g(ep, "Variant");
         }
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createVariantProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "Type": MushroomCow.Variant
-     *  - "stew_effects": SuspiciousStewEffects
-     *
-     * @see net.minecraft.world.entity.animal.MushroomCow
-     */
-    public static final class OfMushroomCow implements Creator {
-
-        public static CodecProperty<MushroomCow, MushroomCow.Variant> createTypeProperty() {
-            return new CodecProperty<>("Type", MushroomCow.Variant.CODEC);
-        }
-
-        public static CodecProperty<MushroomCow, MushroomCow.Variant> getTypeProperty(EntityProperties<?> ep) {
-            return g(ep, "Type");
-        }
-
-        public static CodecProperty<MushroomCow, SuspiciousStewEffects> createStewEffectsProperty() {
-            return new CodecProperty<>("stew_effects", SuspiciousStewEffects.CODEC);
-        }
-
-        public static CodecProperty<MushroomCow, SuspiciousStewEffects> getStewEffectsProperty(EntityProperties<?> ep) {
-            return g(ep, "stew_effects");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createTypeProperty(), createStewEffectsProperty());
+            p(map, createFromBucketProperty(), createVariantProperty());
         }
     }
 
@@ -1041,7 +1233,7 @@ public final class VanillaEntityProperties {
      *  - "flower_pos": BlockPos
      *  - "hive_pos": BlockPos
      *
-     * @see net.minecraft.world.entity.animal.Bee
+     * @see net.minecraft.world.entity.animal.bee.Bee
      */
     public static final class OfBee implements Creator {
 
@@ -1086,7 +1278,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Bee, BlockPos> createFlowerPosProperty() {
-            return new CodecProperty<>("flower_pos", BlockPos.CODEC);
+            return new CodecProperty<>("flower_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Bee, BlockPos> getFlowerPosProperty(EntityProperties<?> ep) {
@@ -1094,7 +1286,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Bee, BlockPos> createHivePosProperty() {
-            return new CodecProperty<>("hive_pos", BlockPos.CODEC);
+            return new CodecProperty<>("hive_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Bee, BlockPos> getHivePosProperty(EntityProperties<?> ep) {
@@ -1112,9 +1304,9 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "EggLayTime": int
      *  - "IsChickenJockey": boolean
-     *  - "variant": net.minecraft.world.entity.animal.ChickenVariant
+     *  - "variant": ChickenVariant
      *
-     * @see net.minecraft.world.entity.animal.Chicken
+     * @see net.minecraft.world.entity.animal.chicken.Chicken
      */
     public static final class OfChicken implements Creator {
 
@@ -1134,11 +1326,11 @@ public final class VanillaEntityProperties {
             return g(ep, "IsChickenJockey");
         }
 
-        public static VariantProperty<Chicken, net.minecraft.world.entity.animal.ChickenVariant> createVariantProperty() {
+        public static VariantProperty<Chicken, ChickenVariant> createVariantProperty() {
             return new VariantProperty<>(Registries.CHICKEN_VARIANT);
         }
 
-        public static VariantProperty<Chicken, net.minecraft.world.entity.animal.ChickenVariant> getVariantProperty(EntityProperties<?> ep) {
+        public static VariantProperty<Chicken, ChickenVariant> getVariantProperty(EntityProperties<?> ep) {
             return g(ep, "variant");
         }
 
@@ -1151,171 +1343,10 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
-     *  - "Crouching": boolean
-     *  - "Sitting": boolean
-     *  - "Sleeping": boolean
-     *  - "Type": Fox.Variant
-     * [Attention] Some properties cannot be recognized yet:
-     *  - "Trusted": [null]
      *
-     * @see net.minecraft.world.entity.animal.Fox
+     * @see net.minecraft.world.entity.animal.cow.AbstractCow
      */
-    public static final class OfFox implements Creator {
-
-        public static BooleanProperty<Fox> createCrouchingProperty() {
-            return new BooleanProperty<>("Crouching");
-        }
-
-        public static BooleanProperty<Fox> getCrouchingProperty(EntityProperties<?> ep) {
-            return g(ep, "Crouching");
-        }
-
-        public static BooleanProperty<Fox> createSittingProperty() {
-            return new BooleanProperty<>("Sitting");
-        }
-
-        public static BooleanProperty<Fox> getSittingProperty(EntityProperties<?> ep) {
-            return g(ep, "Sitting");
-        }
-
-        public static BooleanProperty<Fox> createSleepingProperty() {
-            return new BooleanProperty<>("Sleeping");
-        }
-
-        public static BooleanProperty<Fox> getSleepingProperty(EntityProperties<?> ep) {
-            return g(ep, "Sleeping");
-        }
-
-        public static UnsupportedProperty<Fox> createTrustedProperty() {
-            return new UnsupportedProperty<>("Trusted");
-        }
-
-        public static UnsupportedProperty<Fox> getTrustedProperty(EntityProperties<?> ep) {
-            return g(ep, "Trusted");
-        }
-
-        public static CodecProperty<Fox, Fox.Variant> createTypeProperty() {
-            return new CodecProperty<>("Type", Fox.Variant.CODEC);
-        }
-
-        public static CodecProperty<Fox, Fox.Variant> getTypeProperty(EntityProperties<?> ep) {
-            return g(ep, "Type");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createCrouchingProperty(), createSittingProperty(), createSleepingProperty(), createTrustedProperty(), createTypeProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "still_timeout": int
-     *
-     * @see net.minecraft.world.entity.animal.HappyGhast
-     */
-    public static final class OfHappyGhast implements Creator {
-
-        public static IntProperty<HappyGhast> createStillTimeoutProperty() {
-            return new IntProperty<>("still_timeout");
-        }
-
-        public static IntProperty<HappyGhast> getStillTimeoutProperty(EntityProperties<?> ep) {
-            return g(ep, "still_timeout");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createStillTimeoutProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "Trusting": boolean
-     *
-     * @see net.minecraft.world.entity.animal.Ocelot
-     */
-    public static final class OfOcelot implements Creator {
-
-        public static BooleanProperty<Ocelot> createTrustingProperty() {
-            return new BooleanProperty<>("Trusting");
-        }
-
-        public static BooleanProperty<Ocelot> getTrustingProperty(EntityProperties<?> ep) {
-            return g(ep, "Trusting");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createTrustingProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "HiddenGene": Panda.Gene
-     *  - "MainGene": Panda.Gene
-     *
-     * @see net.minecraft.world.entity.animal.Panda
-     */
-    public static final class OfPanda implements Creator {
-
-        public static CodecProperty<Panda, Panda.Gene> createHiddenGeneProperty() {
-            return new CodecProperty<>("HiddenGene", Panda.Gene.CODEC);
-        }
-
-        public static CodecProperty<Panda, Panda.Gene> getHiddenGeneProperty(EntityProperties<?> ep) {
-            return g(ep, "HiddenGene");
-        }
-
-        public static CodecProperty<Panda, Panda.Gene> createMainGeneProperty() {
-            return new CodecProperty<>("MainGene", Panda.Gene.CODEC);
-        }
-
-        public static CodecProperty<Panda, Panda.Gene> getMainGeneProperty(EntityProperties<?> ep) {
-            return g(ep, "MainGene");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createHiddenGeneProperty(), createMainGeneProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "variant": net.minecraft.world.entity.animal.PigVariant
-     *
-     * @see net.minecraft.world.entity.animal.Pig
-     */
-    public static final class OfPig implements Creator {
-
-        public static VariantProperty<Pig, net.minecraft.world.entity.animal.PigVariant> createVariantProperty() {
-            return new VariantProperty<>(Registries.PIG_VARIANT);
-        }
-
-        public static VariantProperty<Pig, net.minecraft.world.entity.animal.PigVariant> getVariantProperty(EntityProperties<?> ep) {
-            return g(ep, "variant");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createVariantProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.animal.PolarBear
-     */
-    public static final class OfPolarBear implements Creator {
+    public static final class OfAbstractCow implements Creator {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
@@ -1326,145 +1357,17 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
-     *  - "MoreCarrotTicks": int
-     *  - "RabbitType": Rabbit.Variant
+     *  - "variant": CowVariant
      *
-     * @see net.minecraft.world.entity.animal.Rabbit
+     * @see net.minecraft.world.entity.animal.cow.Cow
      */
-    public static final class OfRabbit implements Creator {
+    public static final class OfCow implements Creator {
 
-        public static IntProperty<Rabbit> createMoreCarrotTicksProperty() {
-            return new IntProperty<>("MoreCarrotTicks");
+        public static VariantProperty<Cow, CowVariant> createVariantProperty() {
+            return new VariantProperty<>(Registries.COW_VARIANT);
         }
 
-        public static IntProperty<Rabbit> getMoreCarrotTicksProperty(EntityProperties<?> ep) {
-            return g(ep, "MoreCarrotTicks");
-        }
-
-        public static CodecProperty<Rabbit, Rabbit.Variant> createRabbitTypeProperty() {
-            return new CodecProperty<>("RabbitType", Rabbit.Variant.LEGACY_CODEC);
-        }
-
-        public static CodecProperty<Rabbit, Rabbit.Variant> getRabbitTypeProperty(EntityProperties<?> ep) {
-            return g(ep, "RabbitType");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createMoreCarrotTicksProperty(), createRabbitTypeProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "has_egg": boolean
-     *  - "home_pos": BlockPos
-     *
-     * @see net.minecraft.world.entity.animal.Turtle
-     */
-    public static final class OfTurtle implements Creator {
-
-        public static BooleanProperty<Turtle> createHasEggProperty() {
-            return new BooleanProperty<>("has_egg");
-        }
-
-        public static BooleanProperty<Turtle> getHasEggProperty(EntityProperties<?> ep) {
-            return g(ep, "has_egg");
-        }
-
-        public static CodecProperty<Turtle, BlockPos> createHomePosProperty() {
-            return new CodecProperty<>("home_pos", BlockPos.CODEC);
-        }
-
-        public static CodecProperty<Turtle, BlockPos> getHomePosProperty(EntityProperties<?> ep) {
-            return g(ep, "home_pos");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createHasEggProperty(), createHomePosProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "scute_time": int
-     *  - "state": Armadillo.ArmadilloState
-     *
-     * @see net.minecraft.world.entity.animal.armadillo.Armadillo
-     */
-    public static final class OfArmadillo implements Creator {
-
-        public static IntProperty<Armadillo> createScuteTimeProperty() {
-            return new IntProperty<>("scute_time");
-        }
-
-        public static IntProperty<Armadillo> getScuteTimeProperty(EntityProperties<?> ep) {
-            return g(ep, "scute_time");
-        }
-
-        public static CodecProperty<Armadillo, Armadillo.ArmadilloState> createStateProperty() {
-            return new CodecProperty<>("state", CodecProperty.emptyCodec() /* Armadillo.ArmadilloState.CODEC */);
-        }
-
-        public static CodecProperty<Armadillo, Armadillo.ArmadilloState> getStateProperty(EntityProperties<?> ep) {
-            return g(ep, "state");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createScuteTimeProperty(), createStateProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "FromBucket": boolean
-     *  - "Variant": Axolotl.Variant
-     *
-     * @see net.minecraft.world.entity.animal.axolotl.Axolotl
-     */
-    public static final class OfAxolotl implements Creator {
-
-        public static BooleanProperty<Axolotl> createFromBucketProperty() {
-            return new BooleanProperty<>("FromBucket");
-        }
-
-        public static BooleanProperty<Axolotl> getFromBucketProperty(EntityProperties<?> ep) {
-            return g(ep, "FromBucket");
-        }
-
-        public static CodecProperty<Axolotl, Axolotl.Variant> createVariantProperty() {
-            return new CodecProperty<>("Variant", Axolotl.Variant.LEGACY_CODEC);
-        }
-
-        public static CodecProperty<Axolotl, Axolotl.Variant> getVariantProperty(EntityProperties<?> ep) {
-            return g(ep, "Variant");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createFromBucketProperty(), createVariantProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "variant": net.minecraft.world.entity.animal.frog.FrogVariant
-     *
-     * @see net.minecraft.world.entity.animal.frog.Frog
-     */
-    public static final class OfFrog implements Creator {
-
-        public static VariantProperty<Frog, net.minecraft.world.entity.animal.frog.FrogVariant> createVariantProperty() {
-            return new VariantProperty<>(Registries.FROG_VARIANT);
-        }
-
-        public static VariantProperty<Frog, net.minecraft.world.entity.animal.frog.FrogVariant> getVariantProperty(EntityProperties<?> ep) {
+        public static VariantProperty<Cow, CowVariant> getVariantProperty(EntityProperties<?> ep) {
             return g(ep, "variant");
         }
 
@@ -1477,41 +1380,32 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
-     *  - "HasLeftHorn": boolean
-     *  - "HasRightHorn": boolean
-     *  - "IsScreamingGoat": boolean
+     *  - "Type": MushroomCow.Variant
+     *  - "stew_effects": SuspiciousStewEffects
      *
-     * @see net.minecraft.world.entity.animal.goat.Goat
+     * @see net.minecraft.world.entity.animal.cow.MushroomCow
      */
-    public static final class OfGoat implements Creator {
+    public static final class OfMushroomCow implements Creator {
 
-        public static BooleanProperty<Goat> createHasLeftHornProperty() {
-            return new BooleanProperty<>("HasLeftHorn");
+        public static CodecProperty<MushroomCow, MushroomCow.Variant> createTypeProperty() {
+            return new CodecProperty<>("Type", MushroomCow.Variant.class, MushroomCow.Variant.CODEC);
         }
 
-        public static BooleanProperty<Goat> getHasLeftHornProperty(EntityProperties<?> ep) {
-            return g(ep, "HasLeftHorn");
+        public static CodecProperty<MushroomCow, MushroomCow.Variant> getTypeProperty(EntityProperties<?> ep) {
+            return g(ep, "Type");
         }
 
-        public static BooleanProperty<Goat> createHasRightHornProperty() {
-            return new BooleanProperty<>("HasRightHorn");
+        public static CodecProperty<MushroomCow, SuspiciousStewEffects> createStewEffectsProperty() {
+            return new CodecProperty<>("stew_effects", SuspiciousStewEffects.class, SuspiciousStewEffects.CODEC);
         }
 
-        public static BooleanProperty<Goat> getHasRightHornProperty(EntityProperties<?> ep) {
-            return g(ep, "HasRightHorn");
-        }
-
-        public static BooleanProperty<Goat> createIsScreamingGoatProperty() {
-            return new BooleanProperty<>("IsScreamingGoat");
-        }
-
-        public static BooleanProperty<Goat> getIsScreamingGoatProperty(EntityProperties<?> ep) {
-            return g(ep, "IsScreamingGoat");
+        public static CodecProperty<MushroomCow, SuspiciousStewEffects> getStewEffectsProperty(EntityProperties<?> ep) {
+            return g(ep, "stew_effects");
         }
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createHasLeftHornProperty(), createHasRightHornProperty(), createIsScreamingGoatProperty());
+            p(map, createTypeProperty(), createStewEffectsProperty());
         }
     }
 
@@ -1524,7 +1418,7 @@ public final class VanillaEntityProperties {
      *  - "Tame": boolean
      *  - "Temper": int
      *
-     * @see net.minecraft.world.entity.animal.horse.AbstractHorse
+     * @see net.minecraft.world.entity.animal.equine.AbstractHorse
      */
     public static final class OfAbstractHorse implements Creator {
 
@@ -1600,9 +1494,23 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.animal.camel.CamelHusk
+     */
+    public static final class OfCamelHusk implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
      *  - "ChestedHorse": boolean
      *
-     * @see net.minecraft.world.entity.animal.horse.AbstractChestedHorse
+     * @see net.minecraft.world.entity.animal.equine.AbstractChestedHorse
      */
     public static final class OfAbstractChestedHorse implements Creator {
 
@@ -1624,7 +1532,7 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *
-     * @see net.minecraft.world.entity.animal.horse.Donkey
+     * @see net.minecraft.world.entity.animal.equine.Donkey
      */
     public static final class OfDonkey implements Creator {
 
@@ -1640,7 +1548,7 @@ public final class VanillaEntityProperties {
      *  - "Strength": int
      *  - "Variant": Llama.Variant
      *
-     * @see net.minecraft.world.entity.animal.horse.Llama
+     * @see net.minecraft.world.entity.animal.equine.Llama
      */
     public static final class OfLlama implements Creator {
 
@@ -1653,7 +1561,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Llama, Llama.Variant> createVariantProperty() {
-            return new CodecProperty<>("Variant", Llama.Variant.LEGACY_CODEC);
+            return new CodecProperty<>("Variant", Llama.Variant.class, Llama.Variant.LEGACY_CODEC);
         }
 
         public static CodecProperty<Llama, Llama.Variant> getVariantProperty(EntityProperties<?> ep) {
@@ -1671,7 +1579,7 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "DespawnDelay": int
      *
-     * @see net.minecraft.world.entity.animal.horse.TraderLlama
+     * @see net.minecraft.world.entity.animal.equine.TraderLlama
      */
     public static final class OfTraderLlama implements Creator {
 
@@ -1693,7 +1601,7 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *
-     * @see net.minecraft.world.entity.animal.horse.Mule
+     * @see net.minecraft.world.entity.animal.equine.Mule
      */
     public static final class OfMule implements Creator {
 
@@ -1708,7 +1616,7 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "Variant": int
      *
-     * @see net.minecraft.world.entity.animal.horse.Horse
+     * @see net.minecraft.world.entity.animal.equine.Horse
      */
     public static final class OfHorse implements Creator {
 
@@ -1732,7 +1640,7 @@ public final class VanillaEntityProperties {
      *  - "SkeletonTrap": boolean
      *  - "SkeletonTrapTime": int
      *
-     * @see net.minecraft.world.entity.animal.horse.SkeletonHorse
+     * @see net.minecraft.world.entity.animal.equine.SkeletonHorse
      */
     public static final class OfSkeletonHorse implements Creator {
 
@@ -1762,13 +1670,284 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *
-     * @see net.minecraft.world.entity.animal.horse.ZombieHorse
+     * @see net.minecraft.world.entity.animal.equine.ZombieHorse
      */
     public static final class OfZombieHorse implements Creator {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
             p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "Trusting": boolean
+     *
+     * @see net.minecraft.world.entity.animal.feline.Ocelot
+     */
+    public static final class OfOcelot implements Creator {
+
+        public static BooleanProperty<Ocelot> createTrustingProperty() {
+            return new BooleanProperty<>("Trusting");
+        }
+
+        public static BooleanProperty<Ocelot> getTrustingProperty(EntityProperties<?> ep) {
+            return g(ep, "Trusting");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createTrustingProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "Crouching": boolean
+     *  - "Sitting": boolean
+     *  - "Sleeping": boolean
+     *  - "Type": Fox.Variant
+     * [Attention] Some properties cannot be recognized yet:
+     *  - "Trusted": [null]
+     *
+     * @see net.minecraft.world.entity.animal.fox.Fox
+     */
+    public static final class OfFox implements Creator {
+
+        public static BooleanProperty<Fox> createCrouchingProperty() {
+            return new BooleanProperty<>("Crouching");
+        }
+
+        public static BooleanProperty<Fox> getCrouchingProperty(EntityProperties<?> ep) {
+            return g(ep, "Crouching");
+        }
+
+        public static BooleanProperty<Fox> createSittingProperty() {
+            return new BooleanProperty<>("Sitting");
+        }
+
+        public static BooleanProperty<Fox> getSittingProperty(EntityProperties<?> ep) {
+            return g(ep, "Sitting");
+        }
+
+        public static BooleanProperty<Fox> createSleepingProperty() {
+            return new BooleanProperty<>("Sleeping");
+        }
+
+        public static BooleanProperty<Fox> getSleepingProperty(EntityProperties<?> ep) {
+            return g(ep, "Sleeping");
+        }
+
+        public static UnsupportedProperty<Fox> createTrustedProperty() {
+            return new UnsupportedProperty<>("Trusted");
+        }
+
+        public static UnsupportedProperty<Fox> getTrustedProperty(EntityProperties<?> ep) {
+            return g(ep, "Trusted");
+        }
+
+        public static CodecProperty<Fox, Fox.Variant> createTypeProperty() {
+            return new CodecProperty<>("Type", Fox.Variant.class, Fox.Variant.CODEC);
+        }
+
+        public static CodecProperty<Fox, Fox.Variant> getTypeProperty(EntityProperties<?> ep) {
+            return g(ep, "Type");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createCrouchingProperty(), createSittingProperty(), createSleepingProperty(), createTrustedProperty(), createTypeProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "variant": FrogVariant
+     *
+     * @see net.minecraft.world.entity.animal.frog.Frog
+     */
+    public static final class OfFrog implements Creator {
+
+        public static VariantProperty<Frog, FrogVariant> createVariantProperty() {
+            return new VariantProperty<>(Registries.FROG_VARIANT);
+        }
+
+        public static VariantProperty<Frog, FrogVariant> getVariantProperty(EntityProperties<?> ep) {
+            return g(ep, "variant");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createVariantProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "HasLeftHorn": boolean
+     *  - "HasRightHorn": boolean
+     *  - "IsScreamingGoat": boolean
+     *
+     * @see net.minecraft.world.entity.animal.goat.Goat
+     */
+    public static final class OfGoat implements Creator {
+
+        public static BooleanProperty<Goat> createHasLeftHornProperty() {
+            return new BooleanProperty<>("HasLeftHorn");
+        }
+
+        public static BooleanProperty<Goat> getHasLeftHornProperty(EntityProperties<?> ep) {
+            return g(ep, "HasLeftHorn");
+        }
+
+        public static BooleanProperty<Goat> createHasRightHornProperty() {
+            return new BooleanProperty<>("HasRightHorn");
+        }
+
+        public static BooleanProperty<Goat> getHasRightHornProperty(EntityProperties<?> ep) {
+            return g(ep, "HasRightHorn");
+        }
+
+        public static BooleanProperty<Goat> createIsScreamingGoatProperty() {
+            return new BooleanProperty<>("IsScreamingGoat");
+        }
+
+        public static BooleanProperty<Goat> getIsScreamingGoatProperty(EntityProperties<?> ep) {
+            return g(ep, "IsScreamingGoat");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createHasLeftHornProperty(), createHasRightHornProperty(), createIsScreamingGoatProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "still_timeout": int
+     *
+     * @see net.minecraft.world.entity.animal.happyghast.HappyGhast
+     */
+    public static final class OfHappyGhast implements Creator {
+
+        public static IntProperty<HappyGhast> createStillTimeoutProperty() {
+            return new IntProperty<>("still_timeout");
+        }
+
+        public static IntProperty<HappyGhast> getStillTimeoutProperty(EntityProperties<?> ep) {
+            return g(ep, "still_timeout");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createStillTimeoutProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "HiddenGene": Panda.Gene
+     *  - "MainGene": Panda.Gene
+     *
+     * @see net.minecraft.world.entity.animal.panda.Panda
+     */
+    public static final class OfPanda implements Creator {
+
+        public static CodecProperty<Panda, Panda.Gene> createHiddenGeneProperty() {
+            return new CodecProperty<>("HiddenGene", Panda.Gene.class, Panda.Gene.CODEC);
+        }
+
+        public static CodecProperty<Panda, Panda.Gene> getHiddenGeneProperty(EntityProperties<?> ep) {
+            return g(ep, "HiddenGene");
+        }
+
+        public static CodecProperty<Panda, Panda.Gene> createMainGeneProperty() {
+            return new CodecProperty<>("MainGene", Panda.Gene.class, Panda.Gene.CODEC);
+        }
+
+        public static CodecProperty<Panda, Panda.Gene> getMainGeneProperty(EntityProperties<?> ep) {
+            return g(ep, "MainGene");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createHiddenGeneProperty(), createMainGeneProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "variant": PigVariant
+     *
+     * @see net.minecraft.world.entity.animal.pig.Pig
+     */
+    public static final class OfPig implements Creator {
+
+        public static VariantProperty<Pig, PigVariant> createVariantProperty() {
+            return new VariantProperty<>(Registries.PIG_VARIANT);
+        }
+
+        public static VariantProperty<Pig, PigVariant> getVariantProperty(EntityProperties<?> ep) {
+            return g(ep, "variant");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createVariantProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.animal.polarbear.PolarBear
+     */
+    public static final class OfPolarBear implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "MoreCarrotTicks": int
+     *  - "RabbitType": Rabbit.Variant
+     *
+     * @see net.minecraft.world.entity.animal.rabbit.Rabbit
+     */
+    public static final class OfRabbit implements Creator {
+
+        public static IntProperty<Rabbit> createMoreCarrotTicksProperty() {
+            return new IntProperty<>("MoreCarrotTicks");
+        }
+
+        public static IntProperty<Rabbit> getMoreCarrotTicksProperty(EntityProperties<?> ep) {
+            return g(ep, "MoreCarrotTicks");
+        }
+
+        public static CodecProperty<Rabbit, Rabbit.Variant> createRabbitTypeProperty() {
+            return new CodecProperty<>("RabbitType", Rabbit.Variant.class, Rabbit.Variant.LEGACY_CODEC);
+        }
+
+        public static CodecProperty<Rabbit, Rabbit.Variant> getRabbitTypeProperty(EntityProperties<?> ep) {
+            return g(ep, "RabbitType");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createMoreCarrotTicksProperty(), createRabbitTypeProperty());
         }
     }
 
@@ -1783,7 +1962,7 @@ public final class VanillaEntityProperties {
     public static final class OfSheep implements Creator {
 
         public static CodecProperty<Sheep, DyeColor> createColorProperty() {
-            return new CodecProperty<>("Color", DyeColor.LEGACY_ID_CODEC);
+            return new CodecProperty<>("Color", DyeColor.class, DyeColor.LEGACY_ID_CODEC);
         }
 
         public static CodecProperty<Sheep, DyeColor> getColorProperty(EntityProperties<?> ep) {
@@ -1815,6 +1994,38 @@ public final class VanillaEntityProperties {
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
             p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "has_egg": boolean
+     *  - "home_pos": BlockPos
+     *
+     * @see net.minecraft.world.entity.animal.turtle.Turtle
+     */
+    public static final class OfTurtle implements Creator {
+
+        public static BooleanProperty<Turtle> createHasEggProperty() {
+            return new BooleanProperty<>("has_egg");
+        }
+
+        public static BooleanProperty<Turtle> getHasEggProperty(EntityProperties<?> ep) {
+            return g(ep, "has_egg");
+        }
+
+        public static CodecProperty<Turtle, BlockPos> createHomePosProperty() {
+            return new CodecProperty<>("home_pos", BlockPos.class, BlockPos.CODEC);
+        }
+
+        public static CodecProperty<Turtle, BlockPos> getHomePosProperty(EntityProperties<?> ep) {
+            return g(ep, "home_pos");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createHasEggProperty(), createHomePosProperty());
         }
     }
 
@@ -1878,12 +2089,12 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "Offers": MerchantOffers
      *
-     * @see net.minecraft.world.entity.npc.AbstractVillager
+     * @see net.minecraft.world.entity.npc.villager.AbstractVillager
      */
     public static final class OfAbstractVillager implements Creator {
 
         public static CodecProperty<AbstractVillager, MerchantOffers> createOffersProperty() {
-            return new CodecProperty<>("Offers", MerchantOffers.CODEC);
+            return new CodecProperty<>("Offers", MerchantOffers.class, MerchantOffers.CODEC);
         }
 
         public static CodecProperty<AbstractVillager, MerchantOffers> getOffersProperty(EntityProperties<?> ep) {
@@ -1905,10 +2116,10 @@ public final class VanillaEntityProperties {
      *  - "LastGossipDecay": long
      *  - "LastRestock": long
      *  - "RestocksToday": int
-     *  - "VillagerData": net.minecraft.world.entity.npc.VillagerData
+     *  - "VillagerData": VillagerData
      *  - "Xp": int
      *
-     * @see net.minecraft.world.entity.npc.Villager
+     * @see net.minecraft.world.entity.npc.villager.Villager
      */
     public static final class OfVillager implements Creator {
 
@@ -1929,7 +2140,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Villager, GossipContainer> createGossipsProperty() {
-            return new CodecProperty<>("Gossips", GossipContainer.CODEC);
+            return new CodecProperty<>("Gossips", GossipContainer.class, GossipContainer.CODEC);
         }
 
         public static CodecProperty<Villager, GossipContainer> getGossipsProperty(EntityProperties<?> ep) {
@@ -1960,11 +2171,11 @@ public final class VanillaEntityProperties {
             return g(ep, "RestocksToday");
         }
 
-        public static CodecProperty<Villager, net.minecraft.world.entity.npc.VillagerData> createVillagerDataProperty() {
-            return new CodecProperty<>("VillagerData", net.minecraft.world.entity.npc.VillagerData.CODEC);
+        public static CodecProperty<Villager, VillagerData> createVillagerDataProperty() {
+            return new CodecProperty<>("VillagerData", VillagerData.class, VillagerData.CODEC);
         }
 
-        public static CodecProperty<Villager, net.minecraft.world.entity.npc.VillagerData> getVillagerDataProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Villager, VillagerData> getVillagerDataProperty(EntityProperties<?> ep) {
             return g(ep, "VillagerData");
         }
 
@@ -1988,7 +2199,7 @@ public final class VanillaEntityProperties {
      *  - "DespawnDelay": int
      *  - "wander_target": BlockPos
      *
-     * @see net.minecraft.world.entity.npc.WanderingTrader
+     * @see net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader
      */
     public static final class OfWanderingTrader implements Creator {
 
@@ -2001,7 +2212,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<WanderingTrader, BlockPos> createWanderTargetProperty() {
-            return new CodecProperty<>("wander_target", BlockPos.CODEC);
+            return new CodecProperty<>("wander_target", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<WanderingTrader, BlockPos> getWanderTargetProperty(EntityProperties<?> ep) {
@@ -2017,101 +2228,32 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
+     *  - "DuplicationCooldown": int
+     *  - "listener": Data
      *
-     * @see net.minecraft.world.entity.animal.AbstractGolem
+     * @see net.minecraft.world.entity.animal.allay.Allay
      */
-    public static final class OfAbstractGolem implements Creator {
+    public static final class OfAllay implements Creator {
 
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "PlayerCreated": boolean
-     *
-     * @see net.minecraft.world.entity.animal.IronGolem
-     */
-    public static final class OfIronGolem implements Creator {
-
-        public static BooleanProperty<IronGolem> createPlayerCreatedProperty() {
-            return new BooleanProperty<>("PlayerCreated");
+        public static IntProperty<Allay> createDuplicationCooldownProperty() {
+            return new IntProperty<>("DuplicationCooldown");
         }
 
-        public static BooleanProperty<IronGolem> getPlayerCreatedProperty(EntityProperties<?> ep) {
-            return g(ep, "PlayerCreated");
+        public static IntProperty<Allay> getDuplicationCooldownProperty(EntityProperties<?> ep) {
+            return g(ep, "DuplicationCooldown");
+        }
+
+        public static CodecProperty<Allay, VibrationSystem.Data> createListenerProperty() {
+            return new CodecProperty<>("listener", VibrationSystem.Data.class, VibrationSystem.Data.CODEC);
+        }
+
+        public static CodecProperty<Allay, VibrationSystem.Data> getListenerProperty(EntityProperties<?> ep) {
+            return g(ep, "listener");
         }
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createPlayerCreatedProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "Pumpkin": boolean
-     *
-     * @see net.minecraft.world.entity.animal.SnowGolem
-     */
-    public static final class OfSnowGolem implements Creator {
-
-        public static BooleanProperty<SnowGolem> createPumpkinProperty() {
-            return new BooleanProperty<>("Pumpkin");
-        }
-
-        public static BooleanProperty<SnowGolem> getPumpkinProperty(EntityProperties<?> ep) {
-            return g(ep, "Pumpkin");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createPumpkinProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "AttachFace": Direction
-     *  - "Color": byte
-     *  - "Peek": byte
-     *
-     * @see net.minecraft.world.entity.monster.Shulker
-     */
-    public static final class OfShulker implements Creator {
-
-        public static CodecProperty<Shulker, Direction> createAttachFaceProperty() {
-            return new CodecProperty<>("AttachFace", Direction.LEGACY_ID_CODEC);
-        }
-
-        public static CodecProperty<Shulker, Direction> getAttachFaceProperty(EntityProperties<?> ep) {
-            return g(ep, "AttachFace");
-        }
-
-        public static ByteProperty<Shulker> createColorProperty() {
-            return new ByteProperty<>("Color");
-        }
-
-        public static ByteProperty<Shulker> getColorProperty(EntityProperties<?> ep) {
-            return g(ep, "Color");
-        }
-
-        public static ByteProperty<Shulker> createPeekProperty() {
-            return new ByteProperty<>("Peek");
-        }
-
-        public static ByteProperty<Shulker> getPeekProperty(EntityProperties<?> ep) {
-            return g(ep, "Peek");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createAttachFaceProperty(), createColorProperty(), createPeekProperty());
+            p(map, createDuplicationCooldownProperty(), createListenerProperty());
         }
     }
 
@@ -2119,7 +2261,7 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *
-     * @see net.minecraft.world.entity.animal.WaterAnimal
+     * @see net.minecraft.world.entity.animal.fish.WaterAnimal
      */
     public static final class OfWaterAnimal implements Creator {
 
@@ -2134,7 +2276,7 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "FromBucket": boolean
      *
-     * @see net.minecraft.world.entity.animal.AbstractFish
+     * @see net.minecraft.world.entity.animal.fish.AbstractFish
      */
     public static final class OfAbstractFish implements Creator {
 
@@ -2156,7 +2298,7 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *
-     * @see net.minecraft.world.entity.animal.AbstractSchoolingFish
+     * @see net.minecraft.world.entity.animal.fish.AbstractSchoolingFish
      */
     public static final class OfAbstractSchoolingFish implements Creator {
 
@@ -2170,7 +2312,7 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *
-     * @see net.minecraft.world.entity.animal.Cod
+     * @see net.minecraft.world.entity.animal.fish.Cod
      */
     public static final class OfCod implements Creator {
 
@@ -2185,12 +2327,12 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "type": Salmon.Variant
      *
-     * @see net.minecraft.world.entity.animal.Salmon
+     * @see net.minecraft.world.entity.animal.fish.Salmon
      */
     public static final class OfSalmon implements Creator {
 
         public static CodecProperty<Salmon, Salmon.Variant> createTypeProperty() {
-            return new CodecProperty<>("type", Salmon.Variant.CODEC);
+            return new CodecProperty<>("type", Salmon.Variant.class, Salmon.Variant.CODEC);
         }
 
         public static CodecProperty<Salmon, Salmon.Variant> getTypeProperty(EntityProperties<?> ep) {
@@ -2208,12 +2350,12 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "Variant": TropicalFish.Variant
      *
-     * @see net.minecraft.world.entity.animal.TropicalFish
+     * @see net.minecraft.world.entity.animal.fish.TropicalFish
      */
     public static final class OfTropicalFish implements Creator {
 
         public static CodecProperty<TropicalFish, TropicalFish.Variant> createVariantProperty() {
-            return new CodecProperty<>("Variant", TropicalFish.Variant.CODEC);
+            return new CodecProperty<>("Variant", TropicalFish.Variant.class, TropicalFish.Variant.CODEC);
         }
 
         public static CodecProperty<TropicalFish, TropicalFish.Variant> getVariantProperty(EntityProperties<?> ep) {
@@ -2231,7 +2373,7 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "PuffState": int
      *
-     * @see net.minecraft.world.entity.animal.Pufferfish
+     * @see net.minecraft.world.entity.animal.fish.Pufferfish
      */
     public static final class OfPufferfish implements Creator {
 
@@ -2275,32 +2417,133 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
-     *  - "DuplicationCooldown": int
-     *  - "listener": net.minecraft.world.entity.animal.allay.Data
      *
-     * @see net.minecraft.world.entity.animal.allay.Allay
+     * @see net.minecraft.world.entity.animal.golem.AbstractGolem
      */
-    public static final class OfAllay implements Creator {
+    public static final class OfAbstractGolem implements Creator {
 
-        public static IntProperty<Allay> createDuplicationCooldownProperty() {
-            return new IntProperty<>("DuplicationCooldown");
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "next_weather_age": long
+     *  - "weather_state": WeatheringCopper.WeatherState
+     *
+     * @see net.minecraft.world.entity.animal.golem.CopperGolem
+     */
+    public static final class OfCopperGolem implements Creator {
+
+        public static LongProperty<CopperGolem> createNextWeatherAgeProperty() {
+            return new LongProperty<>("next_weather_age");
         }
 
-        public static IntProperty<Allay> getDuplicationCooldownProperty(EntityProperties<?> ep) {
-            return g(ep, "DuplicationCooldown");
+        public static LongProperty<CopperGolem> getNextWeatherAgeProperty(EntityProperties<?> ep) {
+            return g(ep, "next_weather_age");
         }
 
-        public static CodecProperty<Allay, net.minecraft.world.entity.animal.allay.Allay.Data> createListenerProperty() {
-            return new CodecProperty<>("listener", net.minecraft.world.entity.animal.allay.Allay.Data.CODEC);
+        public static CodecProperty<CopperGolem, WeatheringCopper.WeatherState> createWeatherStateProperty() {
+            return new CodecProperty<>("weather_state", WeatheringCopper.WeatherState.class, WeatheringCopper.WeatherState.CODEC);
         }
 
-        public static CodecProperty<Allay, net.minecraft.world.entity.animal.allay.Allay.Data> getListenerProperty(EntityProperties<?> ep) {
-            return g(ep, "listener");
+        public static CodecProperty<CopperGolem, WeatheringCopper.WeatherState> getWeatherStateProperty(EntityProperties<?> ep) {
+            return g(ep, "weather_state");
         }
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createDuplicationCooldownProperty(), createListenerProperty());
+            p(map, createNextWeatherAgeProperty(), createWeatherStateProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "PlayerCreated": boolean
+     *
+     * @see net.minecraft.world.entity.animal.golem.IronGolem
+     */
+    public static final class OfIronGolem implements Creator {
+
+        public static BooleanProperty<IronGolem> createPlayerCreatedProperty() {
+            return new BooleanProperty<>("PlayerCreated");
+        }
+
+        public static BooleanProperty<IronGolem> getPlayerCreatedProperty(EntityProperties<?> ep) {
+            return g(ep, "PlayerCreated");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createPlayerCreatedProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "Pumpkin": boolean
+     *
+     * @see net.minecraft.world.entity.animal.golem.SnowGolem
+     */
+    public static final class OfSnowGolem implements Creator {
+
+        public static BooleanProperty<SnowGolem> createPumpkinProperty() {
+            return new BooleanProperty<>("Pumpkin");
+        }
+
+        public static BooleanProperty<SnowGolem> getPumpkinProperty(EntityProperties<?> ep) {
+            return g(ep, "Pumpkin");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createPumpkinProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "AttachFace": Direction
+     *  - "Color": byte
+     *  - "Peek": byte
+     *
+     * @see net.minecraft.world.entity.monster.Shulker
+     */
+    public static final class OfShulker implements Creator {
+
+        public static CodecProperty<Shulker, Direction> createAttachFaceProperty() {
+            return new CodecProperty<>("AttachFace", Direction.class, Direction.LEGACY_ID_CODEC);
+        }
+
+        public static CodecProperty<Shulker, Direction> getAttachFaceProperty(EntityProperties<?> ep) {
+            return g(ep, "AttachFace");
+        }
+
+        public static ByteProperty<Shulker> createColorProperty() {
+            return new ByteProperty<>("Color");
+        }
+
+        public static ByteProperty<Shulker> getColorProperty(EntityProperties<?> ep) {
+            return g(ep, "Color");
+        }
+
+        public static ByteProperty<Shulker> createPeekProperty() {
+            return new ByteProperty<>("Peek");
+        }
+
+        public static ByteProperty<Shulker> getPeekProperty(EntityProperties<?> ep) {
+            return g(ep, "Peek");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createAttachFaceProperty(), createColorProperty(), createPeekProperty());
         }
     }
 
@@ -2338,94 +2581,6 @@ public final class VanillaEntityProperties {
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
             p(map, createInvulProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.AbstractSkeleton
-     */
-    public static final class OfAbstractSkeleton implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "sheared": boolean
-     *
-     * @see net.minecraft.world.entity.monster.Bogged
-     */
-    public static final class OfBogged implements Creator {
-
-        public static BooleanProperty<Bogged> createShearedProperty() {
-            return new BooleanProperty<>("sheared");
-        }
-
-        public static BooleanProperty<Bogged> getShearedProperty(EntityProperties<?> ep) {
-            return g(ep, "sheared");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createShearedProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "StrayConversionTime": int
-     *
-     * @see net.minecraft.world.entity.monster.Skeleton
-     */
-    public static final class OfSkeleton implements Creator {
-
-        public static IntProperty<Skeleton> createStrayConversionTimeProperty() {
-            return new IntProperty<>("StrayConversionTime");
-        }
-
-        public static IntProperty<Skeleton> getStrayConversionTimeProperty(EntityProperties<?> ep) {
-            return g(ep, "StrayConversionTime");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createStrayConversionTimeProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.Stray
-     */
-    public static final class OfStray implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.WitherSkeleton
-     */
-    public static final class OfWitherSkeleton implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
         }
     }
 
@@ -2503,7 +2658,7 @@ public final class VanillaEntityProperties {
     public static final class OfEnderMan implements Creator {
 
         public static CodecProperty<EnderMan, BlockState> createCarriedBlockStateProperty() {
-            return new CodecProperty<>("carriedBlockState", BlockState.CODEC);
+            return new CodecProperty<>("carriedBlockState", BlockState.class, BlockState.CODEC);
         }
 
         public static CodecProperty<EnderMan, BlockState> getCarriedBlockStateProperty(EntityProperties<?> ep) {
@@ -2609,7 +2764,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<PatrollingMonster, BlockPos> createPatrolTargetProperty() {
-            return new CodecProperty<>("patrol_target", BlockPos.CODEC);
+            return new CodecProperty<>("patrol_target", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<PatrollingMonster, BlockPos> getPatrolTargetProperty(EntityProperties<?> ep) {
@@ -2660,108 +2815,6 @@ public final class VanillaEntityProperties {
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
             p(map, createCanJoinRaidProperty(), createRaidIdProperty(), createWaveProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.AbstractIllager
-     */
-    public static final class OfAbstractIllager implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.Pillager
-     */
-    public static final class OfPillager implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "SpellTicks": int
-     *
-     * @see net.minecraft.world.entity.monster.SpellcasterIllager
-     */
-    public static final class OfSpellcasterIllager implements Creator {
-
-        public static IntProperty<SpellcasterIllager> createSpellTicksProperty() {
-            return new IntProperty<>("SpellTicks");
-        }
-
-        public static IntProperty<SpellcasterIllager> getSpellTicksProperty(EntityProperties<?> ep) {
-            return g(ep, "SpellTicks");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createSpellTicksProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.Evoker
-     */
-    public static final class OfEvoker implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.Illusioner
-     */
-    public static final class OfIllusioner implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "Johnny": boolean
-     *
-     * @see net.minecraft.world.entity.monster.Vindicator
-     */
-    public static final class OfVindicator implements Creator {
-
-        public static BooleanProperty<Vindicator> createJohnnyProperty() {
-            return new BooleanProperty<>("Johnny");
-        }
-
-        public static BooleanProperty<Vindicator> getJohnnyProperty(EntityProperties<?> ep) {
-            return g(ep, "Johnny");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createJohnnyProperty());
         }
     }
 
@@ -2824,37 +2877,111 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *
+     * @see net.minecraft.world.entity.monster.illager.AbstractIllager
+     */
+    public static final class OfAbstractIllager implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.illager.Pillager
+     */
+    public static final class OfPillager implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "SpellTicks": int
+     *
+     * @see net.minecraft.world.entity.monster.illager.SpellcasterIllager
+     */
+    public static final class OfSpellcasterIllager implements Creator {
+
+        public static IntProperty<SpellcasterIllager> createSpellTicksProperty() {
+            return new IntProperty<>("SpellTicks");
+        }
+
+        public static IntProperty<SpellcasterIllager> getSpellTicksProperty(EntityProperties<?> ep) {
+            return g(ep, "SpellTicks");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createSpellTicksProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.illager.Evoker
+     */
+    public static final class OfEvoker implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.illager.Illusioner
+     */
+    public static final class OfIllusioner implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "Johnny": boolean
+     *
+     * @see net.minecraft.world.entity.monster.illager.Vindicator
+     */
+    public static final class OfVindicator implements Creator {
+
+        public static BooleanProperty<Vindicator> createJohnnyProperty() {
+            return new BooleanProperty<>("Johnny");
+        }
+
+        public static BooleanProperty<Vindicator> getJohnnyProperty(EntityProperties<?> ep) {
+            return g(ep, "Johnny");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createJohnnyProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
      * @see net.minecraft.world.entity.monster.Silverfish
      */
     public static final class OfSilverfish implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.Spider
-     */
-    public static final class OfSpider implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.CaveSpider
-     */
-    public static final class OfCaveSpider implements Creator {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
@@ -2874,7 +3001,7 @@ public final class VanillaEntityProperties {
     public static final class OfVex implements Creator {
 
         public static CodecProperty<Vex, BlockPos> createBoundPosProperty() {
-            return new CodecProperty<>("bound_pos", BlockPos.CODEC);
+            return new CodecProperty<>("bound_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Vex, BlockPos> getBoundPosProperty(EntityProperties<?> ep) {
@@ -2929,166 +3056,6 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
-     *  - "CanBreakDoors": boolean
-     *  - "DrownedConversionTime": int
-     *  - "InWaterTime": int
-     *  - "IsBaby": boolean
-     *
-     * @see net.minecraft.world.entity.monster.Zombie
-     */
-    public static final class OfZombie implements Creator {
-
-        public static BooleanProperty<Zombie> createCanBreakDoorsProperty() {
-            return new BooleanProperty<>("CanBreakDoors");
-        }
-
-        public static BooleanProperty<Zombie> getCanBreakDoorsProperty(EntityProperties<?> ep) {
-            return g(ep, "CanBreakDoors");
-        }
-
-        public static IntProperty<Zombie> createDrownedConversionTimeProperty() {
-            return new IntProperty<>("DrownedConversionTime");
-        }
-
-        public static IntProperty<Zombie> getDrownedConversionTimeProperty(EntityProperties<?> ep) {
-            return g(ep, "DrownedConversionTime");
-        }
-
-        public static IntProperty<Zombie> createInWaterTimeProperty() {
-            return new IntProperty<>("InWaterTime");
-        }
-
-        public static IntProperty<Zombie> getInWaterTimeProperty(EntityProperties<?> ep) {
-            return g(ep, "InWaterTime");
-        }
-
-        public static BooleanProperty<Zombie> createIsBabyProperty() {
-            return new BooleanProperty<>("IsBaby");
-        }
-
-        public static BooleanProperty<Zombie> getIsBabyProperty(EntityProperties<?> ep) {
-            return g(ep, "IsBaby");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createCanBreakDoorsProperty(), createDrownedConversionTimeProperty(), createInWaterTimeProperty(), createIsBabyProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.Drowned
-     */
-    public static final class OfDrowned implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.Husk
-     */
-    public static final class OfHusk implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "ConversionPlayer": UUID
-     *  - "ConversionTime": int
-     *  - "Gossips": GossipContainer
-     *  - "Offers": MerchantOffers
-     *  - "VillagerData": VillagerData
-     *  - "Xp": int
-     *
-     * @see net.minecraft.world.entity.monster.ZombieVillager
-     */
-    public static final class OfZombieVillager implements Creator {
-
-        public static CodecProperty<ZombieVillager, UUID> createConversionPlayerProperty() {
-            return new CodecProperty<>("ConversionPlayer", UUIDUtil.CODEC);
-        }
-
-        public static CodecProperty<ZombieVillager, UUID> getConversionPlayerProperty(EntityProperties<?> ep) {
-            return g(ep, "ConversionPlayer");
-        }
-
-        public static IntProperty<ZombieVillager> createConversionTimeProperty() {
-            return new IntProperty<>("ConversionTime");
-        }
-
-        public static IntProperty<ZombieVillager> getConversionTimeProperty(EntityProperties<?> ep) {
-            return g(ep, "ConversionTime");
-        }
-
-        public static CodecProperty<ZombieVillager, GossipContainer> createGossipsProperty() {
-            return new CodecProperty<>("Gossips", GossipContainer.CODEC);
-        }
-
-        public static CodecProperty<ZombieVillager, GossipContainer> getGossipsProperty(EntityProperties<?> ep) {
-            return g(ep, "Gossips");
-        }
-
-        public static CodecProperty<ZombieVillager, MerchantOffers> createOffersProperty() {
-            return new CodecProperty<>("Offers", MerchantOffers.CODEC);
-        }
-
-        public static CodecProperty<ZombieVillager, MerchantOffers> getOffersProperty(EntityProperties<?> ep) {
-            return g(ep, "Offers");
-        }
-
-        public static CodecProperty<ZombieVillager, net.minecraft.world.entity.npc.VillagerData> createVillagerDataProperty() {
-            return new CodecProperty<>("VillagerData", net.minecraft.world.entity.npc.VillagerData.CODEC);
-        }
-
-        public static CodecProperty<ZombieVillager, net.minecraft.world.entity.npc.VillagerData> getVillagerDataProperty(EntityProperties<?> ep) {
-            return g(ep, "VillagerData");
-        }
-
-        public static IntProperty<ZombieVillager> createXpProperty() {
-            return new IntProperty<>("Xp");
-        }
-
-        public static IntProperty<ZombieVillager> getXpProperty(EntityProperties<?> ep) {
-            return g(ep, "Xp");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createConversionPlayerProperty(), createConversionTimeProperty(), createGossipsProperty(), createOffersProperty(), createVillagerDataProperty(), createXpProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.ZombifiedPiglin
-     */
-    public static final class OfZombifiedPiglin implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
      *
      * @see net.minecraft.world.entity.monster.breeze.Breeze
      */
@@ -3110,7 +3077,7 @@ public final class VanillaEntityProperties {
     public static final class OfCreaking implements Creator {
 
         public static CodecProperty<Creaking, BlockPos> createHomePosProperty() {
-            return new CodecProperty<>("home_pos", BlockPos.CODEC);
+            return new CodecProperty<>("home_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Creaking, BlockPos> getHomePosProperty(EntityProperties<?> ep) {
@@ -3213,32 +3180,322 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
-     *  - "anger": net.minecraft.world.entity.monster.warden.AngerManagement
-     *  - "listener": net.minecraft.world.entity.monster.warden.Data
+     *
+     * @see net.minecraft.world.entity.monster.skeleton.AbstractSkeleton
+     */
+    public static final class OfAbstractSkeleton implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "sheared": boolean
+     *
+     * @see net.minecraft.world.entity.monster.skeleton.Bogged
+     */
+    public static final class OfBogged implements Creator {
+
+        public static BooleanProperty<Bogged> createShearedProperty() {
+            return new BooleanProperty<>("sheared");
+        }
+
+        public static BooleanProperty<Bogged> getShearedProperty(EntityProperties<?> ep) {
+            return g(ep, "sheared");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createShearedProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.skeleton.Parched
+     */
+    public static final class OfParched implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "StrayConversionTime": int
+     *
+     * @see net.minecraft.world.entity.monster.skeleton.Skeleton
+     */
+    public static final class OfSkeleton implements Creator {
+
+        public static IntProperty<Skeleton> createStrayConversionTimeProperty() {
+            return new IntProperty<>("StrayConversionTime");
+        }
+
+        public static IntProperty<Skeleton> getStrayConversionTimeProperty(EntityProperties<?> ep) {
+            return g(ep, "StrayConversionTime");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createStrayConversionTimeProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.skeleton.Stray
+     */
+    public static final class OfStray implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.skeleton.WitherSkeleton
+     */
+    public static final class OfWitherSkeleton implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.spider.Spider
+     */
+    public static final class OfSpider implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.spider.CaveSpider
+     */
+    public static final class OfCaveSpider implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "anger": AngerManagement
+     *  - "listener": Data
      *
      * @see net.minecraft.world.entity.monster.warden.Warden
      */
     public static final class OfWarden implements Creator {
 
-        public static CodecProperty<Warden, net.minecraft.world.entity.monster.warden.AngerManagement> createAngerProperty() {
-            return new CodecProperty<>("anger", net.minecraft.world.entity.monster.warden.AngerManagement.codec(Objects::nonNull));
+        public static UnsupportedProperty<Warden> createAngerProperty() {
+            return new UnsupportedProperty<>("anger");
         }
 
-        public static CodecProperty<Warden, net.minecraft.world.entity.monster.warden.AngerManagement> getAngerProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<Warden> getAngerProperty(EntityProperties<?> ep) {
             return g(ep, "anger");
         }
 
-        public static CodecProperty<Warden, net.minecraft.world.entity.monster.warden.Warden.Data> createListenerProperty() {
-            return new CodecProperty<>("listener", net.minecraft.world.entity.monster.warden.Warden.Data.CODEC);
+        public static CodecProperty<Warden, VibrationSystem.Data> createListenerProperty() {
+            return new CodecProperty<>("listener", VibrationSystem.Data.class, VibrationSystem.Data.CODEC);
         }
 
-        public static CodecProperty<Warden, net.minecraft.world.entity.monster.warden.Warden.Data> getListenerProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Warden, VibrationSystem.Data> getListenerProperty(EntityProperties<?> ep) {
             return g(ep, "listener");
         }
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAngerProperty(), createListenerProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "CanBreakDoors": boolean
+     *  - "DrownedConversionTime": int
+     *  - "InWaterTime": int
+     *  - "IsBaby": boolean
+     *
+     * @see net.minecraft.world.entity.monster.zombie.Zombie
+     */
+    public static final class OfZombie implements Creator {
+
+        public static BooleanProperty<Zombie> createCanBreakDoorsProperty() {
+            return new BooleanProperty<>("CanBreakDoors");
+        }
+
+        public static BooleanProperty<Zombie> getCanBreakDoorsProperty(EntityProperties<?> ep) {
+            return g(ep, "CanBreakDoors");
+        }
+
+        public static IntProperty<Zombie> createDrownedConversionTimeProperty() {
+            return new IntProperty<>("DrownedConversionTime");
+        }
+
+        public static IntProperty<Zombie> getDrownedConversionTimeProperty(EntityProperties<?> ep) {
+            return g(ep, "DrownedConversionTime");
+        }
+
+        public static IntProperty<Zombie> createInWaterTimeProperty() {
+            return new IntProperty<>("InWaterTime");
+        }
+
+        public static IntProperty<Zombie> getInWaterTimeProperty(EntityProperties<?> ep) {
+            return g(ep, "InWaterTime");
+        }
+
+        public static BooleanProperty<Zombie> createIsBabyProperty() {
+            return new BooleanProperty<>("IsBaby");
+        }
+
+        public static BooleanProperty<Zombie> getIsBabyProperty(EntityProperties<?> ep) {
+            return g(ep, "IsBaby");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createCanBreakDoorsProperty(), createDrownedConversionTimeProperty(), createInWaterTimeProperty(), createIsBabyProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.zombie.Drowned
+     */
+    public static final class OfDrowned implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.zombie.Husk
+     */
+    public static final class OfHusk implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "ConversionPlayer": UUID
+     *  - "ConversionTime": int
+     *  - "Gossips": GossipContainer
+     *  - "Offers": MerchantOffers
+     *  - "VillagerData": VillagerData
+     *  - "Xp": int
+     *
+     * @see net.minecraft.world.entity.monster.zombie.ZombieVillager
+     */
+    public static final class OfZombieVillager implements Creator {
+
+        public static CodecProperty<ZombieVillager, UUID> createConversionPlayerProperty() {
+            return new CodecProperty<>("ConversionPlayer", UUID.class, UUIDUtil.CODEC);
+        }
+
+        public static CodecProperty<ZombieVillager, UUID> getConversionPlayerProperty(EntityProperties<?> ep) {
+            return g(ep, "ConversionPlayer");
+        }
+
+        public static IntProperty<ZombieVillager> createConversionTimeProperty() {
+            return new IntProperty<>("ConversionTime");
+        }
+
+        public static IntProperty<ZombieVillager> getConversionTimeProperty(EntityProperties<?> ep) {
+            return g(ep, "ConversionTime");
+        }
+
+        public static CodecProperty<ZombieVillager, GossipContainer> createGossipsProperty() {
+            return new CodecProperty<>("Gossips", GossipContainer.class, GossipContainer.CODEC);
+        }
+
+        public static CodecProperty<ZombieVillager, GossipContainer> getGossipsProperty(EntityProperties<?> ep) {
+            return g(ep, "Gossips");
+        }
+
+        public static CodecProperty<ZombieVillager, MerchantOffers> createOffersProperty() {
+            return new CodecProperty<>("Offers", MerchantOffers.class, MerchantOffers.CODEC);
+        }
+
+        public static CodecProperty<ZombieVillager, MerchantOffers> getOffersProperty(EntityProperties<?> ep) {
+            return g(ep, "Offers");
+        }
+
+        public static CodecProperty<ZombieVillager, VillagerData> createVillagerDataProperty() {
+            return new CodecProperty<>("VillagerData", VillagerData.class, VillagerData.CODEC);
+        }
+
+        public static CodecProperty<ZombieVillager, VillagerData> getVillagerDataProperty(EntityProperties<?> ep) {
+            return g(ep, "VillagerData");
+        }
+
+        public static IntProperty<ZombieVillager> createXpProperty() {
+            return new IntProperty<>("Xp");
+        }
+
+        public static IntProperty<ZombieVillager> getXpProperty(EntityProperties<?> ep) {
+            return g(ep, "Xp");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createConversionPlayerProperty(), createConversionTimeProperty(), createGossipsProperty(), createOffersProperty(), createVillagerDataProperty(), createXpProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.zombie.ZombifiedPiglin
+     */
+    public static final class OfZombifiedPiglin implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
         }
     }
 
@@ -3345,7 +3602,7 @@ public final class VanillaEntityProperties {
     public static final class OfPhantom implements Creator {
 
         public static CodecProperty<Phantom, BlockPos> createAnchorPosProperty() {
-            return new CodecProperty<>("anchor_pos", BlockPos.CODEC);
+            return new CodecProperty<>("anchor_pos", BlockPos.class, BlockPos.CODEC);
         }
 
         public static CodecProperty<Phantom, BlockPos> getAnchorPosProperty(EntityProperties<?> ep) {
@@ -3460,7 +3717,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<ArmorStand, ArmorStand.ArmorStandPose> createPoseProperty() {
-            return new CodecProperty<>("Pose", ArmorStand.ArmorStandPose.CODEC);
+            return new CodecProperty<>("Pose", ArmorStand.ArmorStandPose.class, ArmorStand.ArmorStandPose.CODEC);
         }
 
         public static CodecProperty<ArmorStand, ArmorStand.ArmorStandPose> getPoseProperty(EntityProperties<?> ep) {

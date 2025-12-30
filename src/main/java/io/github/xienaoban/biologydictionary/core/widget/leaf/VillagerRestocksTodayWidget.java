@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -13,15 +12,16 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
-import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Villager> {
+    public static final Factory<Villager> FACTORY = VillagerRestocksTodayWidget::new;
+
     private static final int L = 6, T = 5;
 
     private static final int MAX_RESTOCK_TODAY = 2;
@@ -53,7 +53,7 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer numI = restocksTodayProperty.get();
+            Integer numI = restocksTodayProperty.getVal();
             if (numI == null) {
                 updatePercent(0);
                 super.onRender(ctx);
@@ -79,10 +79,10 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 VillagerJobSiteProperty jboSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
-                Integer r = restocksTodayProperty.get();
-                GlobalPos j = jboSiteProperty.get();
+                Integer r = restocksTodayProperty.getVal();
+                GlobalPos j = jboSiteProperty.getVal();
                 if (VillagerForceRestockSkill.activate(e(), r, j)) {
-                    restocksTodayProperty.set(r + 1);
+                    restocksTodayProperty.setVal(r + 1);
                 }
             }
             return true;
@@ -90,15 +90,10 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
-            ctx.renderItem(emerald, 0.75F, box.getLeft() - 2, box.getTop() - 2);
-            Integer numI = restocksTodayProperty.get();
-            if (numI != null) {
-                int num = numI;
-                int price = Math.max(0, num - 3 + 1) * 2;
-                ctx.renderCenteredText(Component.literal(String.valueOf(price)), Colors.GRAY, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2F + 0.5F,  box.getTop() + 2F+ 0.5F);
-                ctx.renderCenteredText(Component.literal(String.valueOf(price)), Colors.WHITE, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2F,  box.getTop() + 2F);
-            }
+            // super.onRender(ctx);
+            Integer numI = restocksTodayProperty.getVal();
+            Integer price = (numI == null ? null : Math.max(0, numI - 3 + 1) * 2);
+            renderItem(ctx, emerald, price);
         }
 
         @Override

@@ -2,12 +2,11 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntityGiftPetSkill;
-import io.github.xienaoban.biologydictionary.core.widget.UnsupportedWidgetException;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -21,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.OwnableEntity;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +28,17 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
+    public static final Factory<Entity> FACTORY = properties -> {
+        if (properties.entity() instanceof OwnableEntity) {
+            return new EntityOwnerWidget(properties);
+        }
+        return null;
+    };
+
     private static final int L = 11, T = 5;
     private static final int L_GIFT = 22, T_GIFT = 4;
 
     private static final String OWNER_KEY = VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().name();
-
-    private static EntityProperties<Entity> verify(EntityProperties<Entity> properties) {
-        UnsupportedWidgetException.verify(properties.entity() instanceof OwnableEntity);
-        return properties;
-    }
 
     private final EntityReferenceProperty<AbstractHorse> ownerProperty = p().getVanilla(OWNER_KEY);
 
@@ -45,14 +46,14 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
     private Entity lastEntity = null;
 
     public EntityOwnerWidget(EntityProperties<Entity> properties) {
-        super(verify(properties));
+        super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new OwnerBar());
         addElementButton(new GiftButton());
     }
 
     private void updateOwnerRef() {
-        EntityReference<Entity> ref = ownerProperty.get();
+        EntityReference<Entity> ref = ownerProperty.getVal();
         if (ref == null) {
             if (lastUuid != null) {
                 lastUuid = null;
@@ -62,7 +63,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
             UUID uuid = ref.getUUID();
             if (!Objects.equals(uuid, lastUuid)) {
                 lastUuid = uuid;
-                lastEntity = ref.getEntity(McClientUtils.getClientLevel(), Entity.class);
+                lastEntity = ref.getEntity(ClientUtils.getClientLevel(), Entity.class);
             }
         }
     }
@@ -116,14 +117,14 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                if (lastEntity != McClientUtils.getClientPlayer()) {
+                if (lastEntity != ClientUtils.getClientPlayer()) {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT));
                     return true;
                 }
-                McClientUtils.setScreen(new PlayerSelectorScreen(McClientUtils.getCurrentScreen(), targetPlayer -> {
+                ClientUtils.setScreen(new PlayerSelectorScreen(ClientUtils.getCurrentScreen(), targetPlayer -> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(null);
                     EntityGiftPetSkill.activate(e(), targetPlayer);
-                    ownerProperty.set(new EntityReference<>(targetPlayer.getUUID()));
+                    ownerProperty.setVal(EntityReference.of(targetPlayer.getUUID()));
                 }
                 ));
             }

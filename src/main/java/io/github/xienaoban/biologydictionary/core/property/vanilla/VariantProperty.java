@@ -5,7 +5,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.variant.VariantUtils;
 import net.minecraft.world.level.Level;
@@ -18,7 +18,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 /**
  * @see net.minecraft.world.entity.variant.VariantUtils
  */
-public class VariantProperty<E extends Entity, T> extends AbstractProperty<E, Holder<T>> {
+public final class VariantProperty<E extends Entity, T> extends AbstractProperty<E, Holder<T>> {
     private final ResourceKey<Registry<T>> resourceKey;
 
     public VariantProperty(ResourceKey<Registry<T>> resourceKey) {
@@ -32,23 +32,23 @@ public class VariantProperty<E extends Entity, T> extends AbstractProperty<E, Ho
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        Optional<Holder<T>> o1 = nbt.read(name(), ResourceLocation.CODEC)
+        Optional<Holder<T>> o1 = nbt.read(name(), Identifier.CODEC)
                 .map(resourceLocation -> ResourceKey.create(resourceKey, resourceLocation))
                 .flatMap(key -> {
-                    Level level = BD.justGiveMeALevel();
+                    Level level = BD.justGiveMeALevel(); // TODO: Thread local level
                     if (level == null) { return Optional.empty(); }
                     return level.registryAccess().get(key);
                 });
-        set(o1.orElse(null));
+        setVal(o1.orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        if (get() != null && get().unwrapKey().isPresent()) {
-            ResourceKey<?> resourceKey = get().unwrapKey().get();
-            nbt.store(name(), ResourceLocation.CODEC, resourceKey.location());
+        if (getVal() != null && getVal().unwrapKey().isPresent()) {
+            ResourceKey<?> resourceKey = getVal().unwrapKey().get();
+            nbt.store(name(), Identifier.CODEC, resourceKey.identifier());
         } else {
-            LOGGER.warn("Unknown variant key: {}", get());
+            LOGGER.warn("Unknown variant key: {}", getVal());
         }
     }
 }
