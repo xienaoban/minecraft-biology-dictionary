@@ -12,19 +12,15 @@ import net.minecraft.server.level.ServerPlayer;
 public final class ServerNetApi {
 
     public static <T extends Packet> void register(Class<T> clazz, Packet.Factory<T> factory) {
-        boolean hasClientReceiver = PacketUtil.hasClientReceiver(clazz);
-        boolean hasServerReceiver = PacketUtil.hasServerReceiver(clazz);
-
         PacketUtil.registerType(clazz);
 
         CustomPacketPayload.Type<T> type = PacketUtil.getType(clazz);
         StreamCodec<FriendlyByteBuf, T> codec = PacketUtil.generateCodec(factory);
 
-        if (hasClientReceiver) {
-            PayloadTypeRegistry.playS2C().register(type, codec);
-        }
+        // Always register s2c as you are not able to see "hasClientReceiver" on the server.
+        PayloadTypeRegistry.playS2C().register(type, codec);
 
-        if (hasServerReceiver) {
+        if (PacketUtil.hasServerReceiver(clazz)) {
             PayloadTypeRegistry.playC2S().register(type, codec);
             ServerPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
                 Context ctx = new Context(context.server(), context.player(), context.responseSender());

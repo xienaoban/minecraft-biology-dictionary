@@ -61,7 +61,7 @@ public final class EntityPropertyWidgets {
             private final Set<Class<?>> visited = new HashSet<>();
 
             @Override
-            public <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz, EntityPropertyWidget.Factory<?> widgetFactory) {
+            public <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz, EntityPropertyWidget.Factory<E> widgetFactory) {
                 register0(widgetClazz, widgetFactory, ++orderIndex, visited);
             }
         };
@@ -103,11 +103,6 @@ public final class EntityPropertyWidgets {
 
         Class<?> tmp = Misc.getClazzGeneric(widgetClazz, EntityPropertyWidget.class, 0);
         final Class<E> entityClazz = Misc.cast(tmp.asSubclass(Entity.class));
-        if (!widgetClazz.getSimpleName().startsWith(entityClazz.getSimpleName())
-                && Misc.cast(widgetClazz) != TurnPageTriggerWidget.class) {
-            throw new AssertionError(widgetClazz + " must be started with \""
-                    + entityClazz.getSimpleName() + "\"!");
-        }
 
         // Register it.
         Entry entry = new Entry(orderIndex, widgetClazz, widgetFactory);
@@ -122,6 +117,6 @@ public final class EntityPropertyWidgets {
     @FunctionalInterface
     public interface Registrar {
         <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz,
-                                         EntityPropertyWidget.Factory<?> widgetFactory);
+                                         EntityPropertyWidget.Factory<E> widgetFactory);
     }
 }

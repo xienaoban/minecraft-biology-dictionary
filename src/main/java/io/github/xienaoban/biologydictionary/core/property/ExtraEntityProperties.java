@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class ExtraEntityProperties {
+public final class ExtraEntityProperties {
 
     public static void registerBuiltIn(Registrar registrar) {
         registrar.register(EntityInventorySizeProperty.class, EntityInventorySizeProperty.FACTORY);
@@ -29,16 +29,12 @@ final class ExtraEntityProperties {
                                   EntityProperty.Factory<?> factory) {
         final Class<? extends Entity> entityClazz
                 = Misc.getClazzGeneric(propertyClazz, EntityProperty.class, 0).asSubclass(Entity.class);
-        if (!propertyClazz.getSimpleName().startsWith(entityClazz.getSimpleName())) {
-            throw new AssertionError(propertyClazz + " must be started with \""
-                    + entityClazz.getSimpleName() + "\"!");
-        }
         registry.computeIfAbsent(entityClazz, c -> new ArrayList<>()).add(factory);
     }
 
     @FunctionalInterface
     public interface Registrar {
-        void register(Class<? extends EntityProperty<? extends Entity>> propertyClazz,
-                      EntityProperty.Factory<?> factory);
+        <E extends Entity> void register(Class<? extends EntityProperty<E>> propertyClazz,
+                      EntityProperty.Factory<E> factory);
     }
 }
