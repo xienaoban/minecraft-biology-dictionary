@@ -8,6 +8,6 @@ import java.util.List;
 
 public class ItemStackWithSlotListProperty<E extends Entity> extends CodecProperty<E, List<ItemStackWithSlot>> {
     public ItemStackWithSlotListProperty(String propertyName) {
-        super(propertyName, ItemStackWithSlot.CODEC.listOf());
+        super(propertyName, List.class, ItemStackWithSlot.CODEC.listOf());
     }
 }

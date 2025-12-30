@@ -20,6 +20,8 @@ import java.util.Comparator;
 
 @Environment(EnvType.CLIENT)
 public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal> {
+    public static final Factory<Animal> FACTORY = AnimalFoodWidget::new;
+
     private static final int L = 11, T = 2;
 
     private final ItemStack[] foods;

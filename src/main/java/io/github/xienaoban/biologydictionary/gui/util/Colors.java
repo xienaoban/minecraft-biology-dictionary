@@ -15,4 +15,5 @@ public final class Colors {
 
     public static final int SCREEN_MESSAGE_DEFAULT_COLOR = 0x00FFFF00;
 
+    public static final int HIGHLIGHT_DEFAULT_COLOR = WHITE;
 }

@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.common.util;
 
 import io.github.xienaoban.biologydictionary.mixin.EntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.HorseIMixin;
+import io.github.xienaoban.biologydictionary.mixin.MobIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -11,23 +12,25 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Dolphin;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.camel.Camel;
-import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.animal.dolphin.Dolphin;
+import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public final class EntityUtils {
     public static void init() {
@@ -91,22 +94,30 @@ public final class EntityUtils {
 
     @Environment(EnvType.CLIENT)
     public static <E extends Entity> E create(EntityType<E> entityType) {
-        return create(entityType, McClientUtils.getClientLevel());
+        return create(entityType, ClientUtils.getClientLevel());
     }
 
     public static <E extends Entity> E create(EntityType<E> entityType, Level level) {
-        return entityType.create(level, null);
+        return create(entityType, level, null);
+    }
+
+    public static <E extends Entity> E create(EntityType<E> entityType, Level level, EntitySpawnReason reason) {
+        return entityType.create(level, reason);
+    }
+
+    public static Optional<Entity> create(ValueInput valueInput, Level level, EntitySpawnReason reason) {
+        return EntityType.create(valueInput, level, reason);
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(E entity) {
         return Misc.cast(entity.getType());
     }
 
-    public static ResourceLocation getEntityTypeId(Entity entity) {
+    public static Identifier getEntityTypeId(Entity entity) {
         return getEntityTypeId(entity.getType());
     }
 
-    public static ResourceLocation getEntityTypeId(EntityType<?> entityType) {
+    public static Identifier getEntityTypeId(EntityType<?> entityType) {
         return EntityType.getKey(entityType);
     }
 
@@ -123,16 +134,24 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(ResourceKey<EntityType<?>> key) {
-        return getEntityType(key.location());
+        return getEntityType(key.identifier());
     }
 
-    public static <E extends Entity> EntityType<E> getEntityType(ResourceLocation key) {
+    public static <E extends Entity> EntityType<E> getEntityType(Identifier key) {
         return Misc.cast(BuiltInRegistries.ENTITY_TYPE.getOptional(key).orElse(null));
     }
 
     // ============================================================================ //
     //                             Entity Method Utils                              //
     // ============================================================================ //
+
+    public static Level getLevel(Entity entity) {
+        return entity.level();
+    }
+
+    public static int getId(Entity entity) {
+        return entity.getId();
+    }
 
     public static void playSound(Entity entity, SoundEvent soundEvent) {
         entity.playSound(soundEvent);
@@ -147,28 +166,28 @@ public final class EntityUtils {
     // ============================================================================ //
 
     /**
-     * NBT uses {@code tag.contains(key) == false} to represent null tag, rather than
-     * using {@code tag[key] = null}.
-     * Therefore, merging NBT cannot handle cases where the tag is null.
-     * So we have to remove the key from NBT to represent the null tag.
+     * NBT uses {@code nbt.contains(key) == false} to represent null nbt, rather than
+     * using {@code nbt[key] = null}.
+     * Therefore, merging NBT cannot handle cases where the nbt is null.
+     * So we have to remove the key from NBT to represent the null nbt.
      *
-     * @deprecated Just use {@code tag[key] = new CompoundTag()} to represent null.
+     * @deprecated Just use {@code nbt[key] = new CompoundTag()} to represent null.
      */
     @Deprecated
     public static final String NBT_TO_RM_KEY = ".biologydictionary-remove$";
 
     public static CompoundTag getNbt(Entity entity) {
-        TagValueOutput tagOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
-        // A bug in 1.21.8: If leash the mob and then cancel the leash,
+        TagValueOutput nbtOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
+        // TODO: A bug in 1.21.8: If leash the mob and then cancel the leash,
         // `this.writeLeashData(valueOutput, this.leashData);` will fail.
-        // Let's see if Mojang will fix it. todo
-        entity.saveWithoutId(tagOut);
-        return tagOut.buildResult();
+        // Let's see if Mojang will fix it.
+        entity.saveWithoutId(nbtOut);
+        return nbtOut.buildResult();
     }
 
     public static void setNbt(Entity entity, CompoundTag nbt) {
-        TagValueInput tagIn = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, entity.registryAccess(), nbt);
-        entity.load(tagIn);
+        TagValueInput nbtIn = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, entity.registryAccess(), nbt);
+        entity.load(nbtIn);
     }
 
     public static void mergeNbt(Entity entity, CompoundTag nbt) {
@@ -183,8 +202,8 @@ public final class EntityUtils {
         ListTag list = (ListTag) nbt.get(NBT_TO_RM_KEY);
         if (list != null) {
             nbt.remove(NBT_TO_RM_KEY);
-            for (Tag tag : list) {
-                String key = ((StringTag) tag).value();
+            for (Tag nbt2 : list) {
+                String key = ((StringTag) nbt2).value();
                 nbt.remove(key);
             }
         }
@@ -201,35 +220,35 @@ public final class EntityUtils {
     }
 
     public static CompoundTag getNbtToDisplay(Entity entity) {
-        CompoundTag tag = EntityUtils.getNbt(entity);
-        return adaptNbtToDisplay(entity, tag);
+        CompoundTag nbt = EntityUtils.getNbt(entity);
+        return adaptNbtToDisplay(entity, nbt);
     }
 
-    public static CompoundTag adaptNbtToDisplay(Entity entity, CompoundTag tag) {
-        tag.remove("AngryAt");
-        tag.remove("CustomName");
-        tag.remove("CustomNameVisible");
-        tag.remove("Dimension");
-        tag.remove("HurtTime");
-        tag.remove("Pos");
-        tag.remove("Rotation");
+    public static CompoundTag adaptNbtToDisplay(Entity entity, CompoundTag nbt) {
+        nbt.remove("AngryAt");
+        nbt.remove("CustomName");
+        nbt.remove("CustomNameVisible");
+        nbt.remove("Dimension");
+        nbt.remove("HurtTime");
+        nbt.remove("Pos");
+        nbt.remove("Rotation");
 
         if (entity instanceof LivingEntity) {
-            tag.remove("Brain");
-            tag.remove("SleepingX");
-            tag.remove("SleepingY");
-            tag.remove("SleepingZ");
+            nbt.remove("Brain");
+            nbt.remove("SleepingX");
+            nbt.remove("SleepingY");
+            nbt.remove("SleepingZ");
         }
 
         if (entity instanceof AbstractClientPlayer) {
-            tag.remove("Inventory");
+            nbt.remove("Inventory");
         } else if (entity instanceof Dolphin) {
-            tag.remove("GotFish");
+            nbt.remove("GotFish");
         } else if (entity instanceof Camel) {
-            tag.remove("LastPoseTick");
+            nbt.remove("LastPoseTick");
         }
 
-        return tag;
+        return nbt;
     }
 
     // ============================================================================ //
@@ -240,6 +259,43 @@ public final class EntityUtils {
         ((EntityIMixin) entity).setWasTouchingWater(inWater);
     }
 
+    public static GoalSelector getGoalSelector(Mob entity) {
+        return ((MobIMixin) entity).getGoalSelector();
+    }
+
+    public static WrappedGoal getWrappedGoal(Mob entity, Class<? extends Goal> goalClass) {
+        for (WrappedGoal wrappedGoal : getGoalSelector(entity).getAvailableGoals()) {
+            if (wrappedGoal.getGoal().getClass() == goalClass) {
+                return wrappedGoal;
+            }
+        }
+        return null;
+    }
+
+    public static List<WrappedGoal> getWrappedGoals(Mob entity, Class<? extends Goal> goalClass) {
+        List<WrappedGoal> res = new ArrayList<>();
+        for (WrappedGoal wrappedGoal : getGoalSelector(entity).getAvailableGoals()) {
+            if (wrappedGoal.getGoal().getClass() == goalClass) {
+                res.add(wrappedGoal);
+            }
+        }
+        return res;
+    }
+
+    public static <G extends Goal> G getGoal(Mob entity, Class<G> goalClass) {
+        WrappedGoal wrappedGoal = getWrappedGoal(entity, goalClass);
+        if (wrappedGoal == null) { return null; }
+        return Misc.cast(wrappedGoal.getGoal());
+    }
+
+    public static <G extends Goal> List<G> getGoals(Mob entity, Class<G> goalClass) {
+        List<G> res = new ArrayList<>();
+        for (WrappedGoal wrappedGoal : getWrappedGoals(entity, goalClass)) {
+            res.add(Misc.cast(wrappedGoal.getGoal()));
+        }
+        return res;
+    }
+
     /**
      * Can be used in client side.
      */
@@ -248,8 +304,8 @@ public final class EntityUtils {
     }
 
     public static void setVariantAndMarkings(Horse entity,
-                                             net.minecraft.world.entity.animal.horse.Variant variant,
-                                             net.minecraft.world.entity.animal.horse.Markings markings) {
+                                             net.minecraft.world.entity.animal.equine.Variant variant,
+                                             net.minecraft.world.entity.animal.equine.Markings markings) {
         ((HorseIMixin) entity).invokeSetVariantAndMarkings(variant, markings);
     }
 }

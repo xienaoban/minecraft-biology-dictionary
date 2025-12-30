@@ -35,6 +35,7 @@ final class EntityOrder {
         f(EntityType.LLAMA);
         f(EntityType.TRADER_LLAMA);
         f(EntityType.CAMEL);
+        f(EntityType.CAMEL_HUSK);
         f(EntityType.POLAR_BEAR);
         f(EntityType.PANDA);
         f(EntityType.SNIFFER);
@@ -55,8 +56,11 @@ final class EntityOrder {
         f(EntityType.TURTLE);
         f(EntityType.SQUID);
         f(EntityType.GLOW_SQUID);
+        f(EntityType.NAUTILUS);
+        f(EntityType.ZOMBIE_NAUTILUS);
         f(EntityType.STRIDER);
         f(EntityType.HAPPY_GHAST);
+        f(EntityType.COPPER_GOLEM);
 
         // neutral
         f(EntityType.IRON_GOLEM);
@@ -70,6 +74,7 @@ final class EntityOrder {
         f(EntityType.CREEPER);
         f(EntityType.SKELETON);
         f(EntityType.STRAY);
+        f(EntityType.PARCHED);
         f(EntityType.BOGGED);
         f(EntityType.WITHER_SKELETON);
         f(EntityType.ENDERMAN);
@@ -106,5 +111,6 @@ final class EntityOrder {
 
         // other
         f(EntityType.ARMOR_STAND);
+        f(EntityType.MANNEQUIN);
     }
 }

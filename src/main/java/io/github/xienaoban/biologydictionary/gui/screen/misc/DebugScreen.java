@@ -1,7 +1,8 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -10,6 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,9 +27,11 @@ public class DebugScreen extends Screen {
 
     public DebugScreen() {
         super(Component.literal("Debug"));
-        Minecraft client = McClientUtils.getClient();
-        entities.add(EntityType.COW.create(client.level, null));
-        entities.add(EntityType.HORSE.create(client.level, null));
+        Minecraft client = ClientUtils.getClient();
+        ClientLevel level = ClientUtils.getClientLevel(client);
+
+        entities.add(EntityUtils.create(EntityType.COW, level));
+        entities.add(EntityUtils.create(EntityType.HORSE, level));
     }
 
     @Override
@@ -36,7 +40,7 @@ public class DebugScreen extends Screen {
         ScreenRenderingContext ctx = new ScreenRenderingContext(this);
         ctx.update(guiGraphics, mouseX, mouseY, f);
 
-        Minecraft client = McClientUtils.getClient();
+        Minecraft client = ClientUtils.getClient();
         ModelPart flag = client.getEntityModels().bakeLayer(ModelLayers.STANDING_BANNER_FLAG).getChild("flag");
         DyeColor dyeColor = DyeColor.ORANGE;
         BannerPatternLayers resultBannerPatterns = BannerPatternLayers.EMPTY;
@@ -45,7 +49,7 @@ public class DebugScreen extends Screen {
         int top;
         left = width / 2 - 100;
         top = height / 2;
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 26, top + 8, left + 75, top + 78, 30, 0.0625F, mouseX, mouseY, client.player);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 26, top + 8, left + 75, top + 78, 30, 0.0625F, mouseX, mouseY, ClientUtils.getClientPlayer(client));
         // guiGraphics.submitBannerPatternRenderState(flag, dyeColor, resultBannerPatterns, left, top, left + 20, top + 40);
         left = width / 2;
         top = height / 2;

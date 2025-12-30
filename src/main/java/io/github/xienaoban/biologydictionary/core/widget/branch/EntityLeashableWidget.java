@@ -15,6 +15,8 @@ import net.minecraft.world.entity.Leashable;
 
 @Environment(EnvType.CLIENT)
 public final class EntityLeashableWidget extends EntityPropertyStandardWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntityLeashableWidget::new;
+
     private static final int L = 17, T = 1;
 
     private final boolean leashable;

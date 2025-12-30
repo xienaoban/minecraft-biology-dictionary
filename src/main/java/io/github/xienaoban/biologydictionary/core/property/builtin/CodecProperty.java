@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.property.builtin;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
+import io.github.xienaoban.biologydictionary.common.util.Misc;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
@@ -25,21 +26,26 @@ public class CodecProperty<E extends Entity, T> extends AbstractProperty<E, T> {
         return (Codec<T>) EMPTY_CODEC;
     }
 
+    private final Class<T> clazz;
     private final Codec<T> codec;
 
-    public CodecProperty(String propertyName, Codec<T> codec) {
+    public CodecProperty(String propertyName, Class<?> clazz, Codec<T> codec) {
         super(propertyName);
+        this.clazz = Misc.cast(clazz);
         this.codec = codec;
     }
 
+    public Class<T> getClazz() { return clazz; }
+    public Codec<T> getCodec() { return codec; }
+
     @Override
     public void readFrom(CompoundTag nbt) {
-        set(nbt.read(name(), codec).orElse(null));
+        setVal(nbt.read(name(), codec).orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        T v = get();
+        T v = getVal();
         if (v != null) {
             nbt.store(name(), codec, v);
         } else {

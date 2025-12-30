@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.mixin;
 
-import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetPortalCooldownSkill;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,14 +15,14 @@ public class EntityMixin {
 
     @Inject(method = "setPortalCooldown()V", at = @At(value = "HEAD"), cancellable = true)
     private void lockSetPortalCooldown(CallbackInfo ci) {
-        if (portalCooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+        if (portalCooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
             ci.cancel();
         }
     }
 
     @Inject(method = "processPortalCooldown()V", at = @At(value = "HEAD"), cancellable = true)
     private void lockTickPortalCooldown(CallbackInfo ci) {
-        if (portalCooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+        if (portalCooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
             ci.cancel();
         }
     }

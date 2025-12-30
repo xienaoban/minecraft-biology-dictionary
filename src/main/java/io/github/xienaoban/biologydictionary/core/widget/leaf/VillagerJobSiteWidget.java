@@ -3,11 +3,11 @@ package io.github.xienaoban.biologydictionary.core.widget.leaf;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
-import io.github.xienaoban.biologydictionary.core.skill.common.HighlightEntitiesSkill;
+import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -17,17 +17,19 @@ import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionar
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.phys.Vec3;
 
 public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager> {
+    public static final Factory<Villager> FACTORY = VillagerJobSiteWidget::new;
+
     private static final int L = 1, T = 5;
 
     private static final float NO_DIS = Float.MIN_VALUE;
     private static final float MAX_DIS = 16F;
     private static final float MAX_DIS_LOG = (float) Math.log(MAX_DIS);
 
-    VillagerJobSiteProperty jobSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
+    private final VillagerJobSiteProperty jobSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
 
     private GlobalPos lastJobSitePos = null;
     private float cachedDistanceToJobSite = NO_DIS;
@@ -42,7 +44,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
     }
 
     private float calcDistToJobSite() {
-        GlobalPos jobSitePos = jobSiteProperty.get();
+        GlobalPos jobSitePos = jobSiteProperty.getVal();
         if (jobSitePos == null) { return NO_DIS; }
         if (jobSitePos.dimension() != e().level().dimension()) { return NO_DIS; }
         Vec3 entityPos = e().position();
@@ -52,7 +54,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        if (ticks % McClientUtils.getClientTickCountPerSecond() == 11) {
+        if (ticks % ClientUtils.getClientTickCountPerSecond() == 11) {
             cachedDistanceToJobSite = calcDistToJobSite();
             cachedDisLog = (float) Math.log(cachedDistanceToJobSite);
         }
@@ -61,7 +63,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        GlobalPos currJobSitePos = jobSiteProperty.get();
+        GlobalPos currJobSitePos = jobSiteProperty.getVal();
         if (currJobSitePos != lastJobSitePos) {
             lastJobSitePos = currJobSitePos;
             cachedDistanceToJobSite = calcDistToJobSite();
@@ -106,13 +108,13 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                GlobalPos currJobSitePos = jobSiteProperty.get();
+                GlobalPos currJobSitePos = jobSiteProperty.getVal();
                 if (currJobSitePos == null) {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_LOCATE));
                     return true;
                 }
                 HighlightManager.highlightBlock(currJobSitePos.pos(), HighlightEntitiesSkill.BLOCK_TICKS);
-                McClientUtils.setScreen(null);
+                ClientUtils.setScreen(null);
             }
             return true;
         }

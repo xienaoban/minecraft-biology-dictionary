@@ -7,7 +7,7 @@ import io.github.xienaoban.biologydictionary.common.util.Misc;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,8 +16,8 @@ import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.AgeableWaterCreature;
 import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.animal.allay.Allay;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.level.Level;
@@ -90,7 +90,7 @@ public final class EntityManager {
     private final TagGroup classTags     = new TagGroup(Lang.TAG_GROUP_CLASS,     Component.translatable(Lang.TAG_GROUP_CLASS_DESC));
     private final TagGroup interfaceTags = new TagGroup(Lang.TAG_GROUP_INTERFACE, Component.translatable(Lang.TAG_GROUP_INTERFACE_DESC));
 
-    private final List<TagGroup> tagGroups = new ArrayList<>(List.of(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
+    private final List<TagGroup> tagGroups = new ArrayList<>(Arrays.asList(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
 
     private EntityManager(Level level) {
         EntityOrder.map.get(null);
@@ -112,7 +112,7 @@ public final class EntityManager {
                 if (o.isEmpty()) continue;
                 entityClassInfo = o.get();
             } catch (Exception e) {
-                LOGGER.error("Cannot init EntityClassInfo of\"" + EntityType.getKey(entityType) + "\": " + e);
+                LOGGER.error("Cannot init EntityClassInfo of\"{}\": {}", EntityType.getKey(entityType), e);
                 throw e;
             }
             infos.put(entityClassInfo.getType(), entityClassInfo);
@@ -134,11 +134,11 @@ public final class EntityManager {
             else if (oa != null || ob != null) {
                 return oa == null ? 1 : -1;
             }
-            ResourceLocation la = a.getLocation();
-            ResourceLocation lb = b.getLocation();
+            Identifier la = a.getLocation();
+            Identifier lb = b.getLocation();
             int cmp = la.getNamespace().compareTo(lb.getNamespace());
             if (cmp != 0) {
-                if (la.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE)) {
+                if (la.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
                     return 1;
                 }
                 return cmp;
@@ -327,7 +327,7 @@ public final class EntityManager {
     }
 
     public boolean isVanillaEntity(EntityType<?> entityType) {
-        return ResourceLocation.DEFAULT_NAMESPACE
+        return Identifier.DEFAULT_NAMESPACE
                 .equals(getEntityClassInfo(entityType).getLocation().getNamespace());
     }
 
@@ -401,7 +401,7 @@ public final class EntityManager {
         public Class<? extends Entity> getClazz() { return clazz; }
         // public Entity getInstance() { return instance; }
         public Vec3 getBox() { return box; }
-        public ResourceLocation getLocation() { return EntityType.getKey(getType()); }
+        public Identifier getLocation() { return EntityType.getKey(getType()); }
         public String getStringId() { return getLocation().toString(); }
 
         public List<Tag> getTags() { return tags; }

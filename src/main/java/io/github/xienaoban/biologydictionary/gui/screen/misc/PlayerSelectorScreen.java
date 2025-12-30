@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
@@ -30,7 +30,7 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
         list.add(new DescriptionWidget(1, Page.COLUMNS, Component.translatable(Lang.SCREEN_PLAYER_SELECTOR_DESC)));
         list.add(new PlayerSelectorWidget(player));
         list.addAll(
-                McClientUtils.getClientLevel().players().stream()
+                ClientUtils.getClientLevel().players().stream()
                         .filter(p -> p != player)
                         .sorted(Comparator.comparing(o -> o.getName().getString()))
                         .map(PlayerSelectorWidget::new)
@@ -43,7 +43,7 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
     public void onClose() {
         super.onClose();
         if (lastScreen != null) {
-            McClientUtils.setScreen(lastScreen);
+            ClientUtils.setScreen(lastScreen);
         }
     }
 

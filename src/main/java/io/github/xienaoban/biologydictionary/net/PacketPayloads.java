@@ -3,19 +3,26 @@ package io.github.xienaoban.biologydictionary.net;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.net.payload.*;
 
-import java.util.List;
-
 public final class PacketPayloads {
-    public static final List<Class<? extends Packet>> LIST = List.of(
-            RequestBeehiveInfoPacket.class,
-            RequestEntityDataPacket.class,
-            RequestHandbookItemPacket.class,
-            SendCenteredMessagePacket.class,
-            ReplyBeehiveInfoPacket.class,
-            ReplyEntityDataPacket.class,
-            RequestCommonSkillPacket.class,
-            RequestEntityOrientedSkillPacket.class,
-            SendUpdatedEntityPropertiesOldPacket.class,
-            ReplyHighlightEntitiesPacket.class
-    );
+
+    private PacketPayloads() {}
+
+    public static void registerBuiltIn(Registrar registrar) {
+        registrar.register(SendCenteredMessagePacket.class, SendCenteredMessagePacket.FACTORY);
+        registrar.register(RequestEntityDataPacket.class, RequestEntityDataPacket.FACTORY);
+        registrar.register(ReplyEntityDataPacket.class, ReplyEntityDataPacket.FACTORY);
+        registrar.register(RequestHandbookItemPacket.class, RequestHandbookItemPacket.FACTORY);
+        registrar.register(RequestCommonSkillPacket.class, RequestCommonSkillPacket.FACTORY);
+        registrar.register(RequestEntityTargetedSkillPacket.class, RequestEntityTargetedSkillPacket.FACTORY);
+        registrar.register(ReplyHighlightEntitiesPacket.class, ReplyHighlightEntitiesPacket.FACTORY);
+        registrar.register(ReplyInventoryStealingScreenPacket.class, ReplyInventoryStealingScreenPacket.FACTORY);
+        registrar.register(SendStealingDetectedPacket.class, SendStealingDetectedPacket.FACTORY);
+        registrar.register(RequestBeehiveInfoPacket.class, RequestBeehiveInfoPacket.FACTORY);
+        registrar.register(ReplyBeehiveInfoPacket.class, ReplyBeehiveInfoPacket.FACTORY);
+    }
+
+    @FunctionalInterface
+    public interface Registrar {
+        <T extends Packet> void register(Class<T> packetClass, Packet.Factory<T> factory);
+    }
 }

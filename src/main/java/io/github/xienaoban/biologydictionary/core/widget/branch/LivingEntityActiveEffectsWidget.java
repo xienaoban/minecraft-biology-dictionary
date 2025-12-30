@@ -21,10 +21,13 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidget<LivingEntity> {
+    public static final Factory<LivingEntity> FACTORY = LivingEntityActiveEffectsWidget::new;
+
     private static final int L = 11, T = 3;
 
     private final CodecProperty<LivingEntity, List<MobEffectInstance>> activeEffectsProperty
@@ -39,7 +42,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        List<MobEffectInstance> effects = activeEffectsProperty.get();
+        List<MobEffectInstance> effects = activeEffectsProperty.getVal();
         if (effects == null || effects.isEmpty()) {
             return;
         }
@@ -57,7 +60,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         list.add(tooltipTitle(Lang.PROPERTY_WIDGET_EFFECTS));
         list.add(tooltipDescription(Lang.PROPERTY_WIDGET_EFFECTS_DESC));
         list.add(Component.empty());
-        List<MobEffectInstance> effects = activeEffectsProperty.get();
+        List<MobEffectInstance> effects = activeEffectsProperty.getVal();
         if (effects == null || effects.isEmpty()) {
             list.add(tooltipBody(Lang.TEXT_EMPTY_WITH_BRACKETS));
         } else {
@@ -67,7 +70,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
                 maxW = Math.max(maxW, ctx.calcTextWidth(name));
             }
             for (MobEffectInstance effect : effects) {
-                Component name = ComponentUtils.formatList(List.of(
+                Component name = ComponentUtils.formatList(Arrays.asList(
                         effect.getEffect().value().getDisplayName(),
                         Component.literal(String.valueOf(effect.getAmplifier() + 1))),
                         Component.empty());
@@ -82,7 +85,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
                 }
                 int w = ctx.calcTextWidth(name) + ctx.calcTextWidth(time);
                 Component dot = Component.literal(".".repeat(Math.max(0, (maxW + 40 - w) / 2))).withStyle(ChatFormatting.DARK_GRAY);
-                list.add(ComponentUtils.formatList(List.of(name, dot, time), Component.literal(" ")));
+                list.add(ComponentUtils.formatList(Arrays.asList(name, dot, time), Component.literal(" ")));
             }
         }
         renderTooltip(ctx, list);
@@ -100,7 +103,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             Component text = null;
-            List<MobEffectInstance> effects = activeEffectsProperty.get();
+            List<MobEffectInstance> effects = activeEffectsProperty.getVal();
             if (effects == null) {
                 text = Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS);
             } else if (effects.isEmpty()) {
@@ -124,14 +127,14 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
             int i = -1;
             for (MobEffectInstance effect : effects) {
                 ++i;
-                ctx.renderSprite(effect.getEffect(), 0.444444F, getBox().getLeft() + 0.05F + i * gap, getBox().getTop());
+                ctx.renderEffect(effect.getEffect(), 0.444444F, getBox().getLeft() + 0.05F + i * gap, getBox().getTop());
             }
         }
 
         @Override
         protected void onResize(int width, int height) {
             super.onResize(width, height);
-            List<MobEffectInstance> effects = activeEffectsProperty.get();
+            List<MobEffectInstance> effects = activeEffectsProperty.getVal();
             int size = effects == null ? 0 : effects.size();
             updateGap(size);
         }

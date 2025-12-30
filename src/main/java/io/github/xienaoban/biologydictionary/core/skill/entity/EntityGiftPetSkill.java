@@ -3,9 +3,9 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.skill.EntityOrientedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -22,10 +22,10 @@ import net.minecraft.world.entity.OwnableEntity;
 
 import java.util.UUID;
 
-public class EntityGiftPetSkill implements EntityOrientedSkill {
+public class EntityGiftPetSkill implements EntityTargetedSkill<Entity> {
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, AbstractClientPlayer targetPlayer) {
-        return Skills.sendEntityOrientedSkill(entity, targetPlayer);
+        return PlayerSkills.sendEntityTargetedSkill(entity, targetPlayer);
     }
 
     @Environment(EnvType.CLIENT)
@@ -51,6 +51,8 @@ public class EntityGiftPetSkill implements EntityOrientedSkill {
             throw new NoPermissionException(Component.translatable(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_SAME),
                     "The player and the target player cannot be the same person: player=\"" + player.getName().getString() + "\"");
         }
-        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().toNbtWith(new EntityReference<>(uuid)));
+        // Cannot use Property.setTo() here as it's arg should be TamableAnimal.
+        // But we only need the entity be OwnableEntity.
+        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().withVal(EntityReference.of(uuid)).toTag());
     }
 }

@@ -1,10 +1,9 @@
 package io.github.xienaoban.biologydictionary.core.skill.entity;
 
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.skill.EntityOrientedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.Skills;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -16,7 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
 
-public class EntitySetSoundSkill implements EntityOrientedSkill {
+public class EntitySetSoundSkill implements EntityTargetedSkill<Entity> {
     private static final int FRIENDLY_EXP_PT_COST = 4;
     private static final int NEUTRAL_EXP_PT_COST = 16;
     private static final int ENEMY_EXP_PT_COST = 64;
@@ -33,7 +32,7 @@ public class EntitySetSoundSkill implements EntityOrientedSkill {
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, boolean silent) {
-        return Skills.sendEntityOrientedSkill(entity, silent);
+        return PlayerSkills.sendEntityTargetedSkill(entity, silent);
     }
 
     @Environment(EnvType.CLIENT)
@@ -50,7 +49,7 @@ public class EntitySetSoundSkill implements EntityOrientedSkill {
         boolean silent = args.asBoolean().orElseThrow();
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, experiencePointsCost(entity));
-        Skills.giveExperiencePointsIfNotCreative(player, -experiencePointsCost(entity));
-        EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfEntity.createSilentProperty().toNbtWith(silent));
+        PlayerSkills.giveExperiencePointsIfNotCreative(player, -experiencePointsCost(entity));
+        VanillaEntityProperties.OfEntity.createSilentProperty().withVal(silent).setTo(entity);
     }
 }

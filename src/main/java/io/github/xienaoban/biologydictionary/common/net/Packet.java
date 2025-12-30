@@ -16,4 +16,14 @@ public interface Packet extends CustomPacketPayload {
     default void serverReceive(ServerNetApi.Context ctx) {
         throw new AssertionError("Not implemented!");
     }
+
+    @Override
+    default CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return PacketUtil.getType(getClass());
+    }
+
+    @FunctionalInterface
+    interface Factory<T extends Packet> {
+        T create(FriendlyByteBuf buf);
+    }
 }

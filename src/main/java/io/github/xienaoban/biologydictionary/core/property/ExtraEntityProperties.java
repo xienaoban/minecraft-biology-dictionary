@@ -1,61 +1,40 @@
 package io.github.xienaoban.biologydictionary.core.property;
 
 import io.github.xienaoban.biologydictionary.common.util.Misc;
-import io.github.xienaoban.biologydictionary.core.property.extra.MobTemptProperty;
-import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
+import io.github.xienaoban.biologydictionary.core.property.extra.*;
 import net.minecraft.world.entity.Entity;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class ExtraEntityProperties {
+public final class ExtraEntityProperties {
 
-    static final Map<Class<? extends Entity>, List<Creator>> registries = new HashMap<>();
+    public static void registerBuiltIn(Registrar registrar) {
+        registrar.register(EntityInventorySizeProperty.class, EntityInventorySizeProperty.FACTORY);
+        registrar.register(MobNaturalPersistenceProperty.class, MobNaturalPersistenceProperty.FACTORY);
+        registrar.register(MobTemptProperty.class, MobTemptProperty.FACTORY);
+        registrar.register(VillagerJobSiteProperty.class, VillagerJobSiteProperty.FACTORY);
+    }
 
-    private static MethodHandles.Lookup lookup;
+    static final Map<Class<? extends Entity>, List<EntityProperty.Factory<?>>> registry = new HashMap<>();
+
+    static void init() {
+        Registrar registrar = ExtraEntityProperties::register0;
+        registerBuiltIn(registrar);
+    }
+
+    private static void register0(Class<? extends EntityProperty<? extends Entity>> propertyClazz,
+                                  EntityProperty.Factory<?> factory) {
+        final Class<? extends Entity> entityClazz
+                = Misc.getClazzGeneric(propertyClazz, EntityProperty.class, 0).asSubclass(Entity.class);
+        registry.computeIfAbsent(entityClazz, c -> new ArrayList<>()).add(factory);
+    }
 
     @FunctionalInterface
-    interface Creator {
-        EntityProperty<?> create();
-    }
-
-    static {
-        lookup = MethodHandles.lookup();
-        registerBuiltIn();
-        lookup = null;
-    }
-
-    static void r(Class<? extends EntityProperty<? extends Entity>> propertyClazz) {
-        try {
-            final Class<? extends Entity> entityClazz= Misc.getClazzGeneric(propertyClazz, EntityProperty.class, 0)
-                    .asSubclass(Entity.class);
-            if (!propertyClazz.getSimpleName().startsWith(entityClazz.getSimpleName())) {
-                throw new AssertionError(propertyClazz + " must be started with \"" + entityClazz.getSimpleName() + "\"!");
-            }
-
-            MethodHandle constructor = lookup.findConstructor(propertyClazz, MethodType.methodType(void.class));
-            registries.computeIfAbsent(entityClazz, c -> new ArrayList<>())
-                    .add(() -> {
-                        try {
-                            return (EntityProperty<?>) constructor.invoke();
-                        } catch (RuntimeException e) {
-                            throw e;
-                        } catch (Throwable e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-        } catch (NoSuchMethodException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void registerBuiltIn() {
-        r(VillagerJobSiteProperty.class);
-        r(MobTemptProperty.class);
+    public interface Registrar {
+        <E extends Entity> void register(Class<? extends EntityProperty<E>> propertyClazz,
+                      EntityProperty.Factory<E> factory);
     }
 }

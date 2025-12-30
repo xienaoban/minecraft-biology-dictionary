@@ -2,17 +2,18 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -22,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
  */
 @Environment(EnvType.CLIENT)
 public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntityDisplayWidget::new;
 
     private static RC calculateRowsAndColumns(Entity entity) {
         AABB box = entity.getBoundingBox();
@@ -31,20 +33,19 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     }
 
     private static Entity createModelEntity(Entity entity) {
-        Entity model = EntityUtils.create(entity.getType(), entity.level());
+        Entity model = EntityUtils.create(EntityUtils.getEntityType(entity), EntityUtils.getLevel(entity));
         if (model == null) {
             if (entity instanceof LocalPlayer me) {
                 GameProfile profile = me.getGameProfile();
-                model = new RemotePlayer(me.clientLevel, new GameProfile(profile.getId(), profile.getName()));
+                model = new RemotePlayer((ClientLevel) me.level(), new GameProfile(profile.id(), profile.name()));
                 // to make name label invisible
                 // @see net.minecraft.client.renderer.entity.LivingEntityRenderer.shouldShowName
                 Vec3 pos = model.position();
                 model.setPos(pos.x(), pos.y() - 4097, pos.z());
             } else {
-                model = EntityUtils.create(EntityType.ARMOR_STAND, entity.level());
+                model = EntityUtils.create(EntityType.ARMOR_STAND, EntityUtils.getLevel(entity));
             }
         }
-        assert model != null;
         updateCompoundTag(entity, model);
         return model;
     }
@@ -76,7 +77,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        if (ticks % McClientUtils.getClientTickCountPerSecond() == 15 && p().isNotInNoUpdateCooldown()) {
+        if (ticks % ClientUtils.getClientTickCountPerSecond() == 15 && p().isNotInNoUpdateCooldown()) {
             updateCompoundTag(e(), model);
         }
     }

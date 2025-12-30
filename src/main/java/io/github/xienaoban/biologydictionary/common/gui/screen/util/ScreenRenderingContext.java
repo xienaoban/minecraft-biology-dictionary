@@ -1,20 +1,18 @@
 package io.github.xienaoban.biologydictionary.common.gui.screen.util;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.common.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.RenderUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.GuiSpriteManager;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
@@ -26,17 +24,15 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositione
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
@@ -53,14 +49,14 @@ import java.util.Objects;
 public final class ScreenRenderingContext {
     private final Screen screen;
 
-    Minecraft client;
-    GuiGraphics guiGraphics;
+    private final Minecraft client;
+    private GuiGraphics guiGraphics;
     private float mouseX, mouseY;
     private float tickDelta;
     private boolean debug;
 
     public ScreenRenderingContext(Screen screen) {
-        this.client = Objects.requireNonNull(McClientUtils.getClient());
+        this.client = Objects.requireNonNull(ClientUtils.getClient());
         this.screen = screen;
         this.debug = false;
     }
@@ -99,12 +95,7 @@ public final class ScreenRenderingContext {
         return getGuiGraphics().pose();
     }
     public GuiGraphics.ScissorStack getScissorStack() { return getGuiGraphics().scissorStack; }
-    public GuiSpriteManager getSpriteManager() { return client.getGuiSprites(); }
     public GuiRenderState getGuiRenderState() { return getGuiGraphics().guiRenderState; }
-
-    public MultiBufferSource.BufferSource getBufferSource() {
-        return null;
-    }
 
     public ScaleRAII scaleOnce(float size) {
         return new ScaleRAII(this, size);
@@ -123,13 +114,7 @@ public final class ScreenRenderingContext {
     }
 
     public void renderText(Component component, int color, float z, float x, float y) {
-        if (z != getZ()) {
-            try (ScaleRAII ignored = scaleOnce(1F, z)) {
-                getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
-            }
-        } else {
-            getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
-        }
+        getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
     }
 
     public void renderText(Component component, int color, float size, float z, float x, float y) {
@@ -145,6 +130,16 @@ public final class ScreenRenderingContext {
     public void renderCenteredText(Component component, int color, float size, float z, float x, float y) {
         try (ScaleRAII ignored = scaleOnce(size)) {
             renderCenteredText(component, color, z, x / size, y / size);
+        }
+    }
+
+    public void renderRightAlignedText(Component component, int color, float z, float x, float y) {
+        renderText(component, color, z, x - calcTextWidth(component), y);
+    }
+
+    public void renderRightAlignedText(Component component, int color, float size, float z, float x, float y) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            renderRightAlignedText(component, color, z, x / size, y / size);
         }
     }
 
@@ -191,11 +186,11 @@ public final class ScreenRenderingContext {
                               int color,
                               float z, float x0, float y0, float x1, float y1) implements GuiElementRenderState {
             @Override
-            public void buildVertices(VertexConsumer vertexConsumer, float f) {
-                vertexConsumer.addVertexWith2DPose(pose, x0, y0, z + f).setColor(color);
-                vertexConsumer.addVertexWith2DPose(pose, x0, y1, z + f).setColor(color);
-                vertexConsumer.addVertexWith2DPose(pose, x1, y1, z + f).setColor(color);
-                vertexConsumer.addVertexWith2DPose(pose, x1, y0, z + f).setColor(color);
+            public void buildVertices(VertexConsumer vertexConsumer) {
+                vertexConsumer.addVertexWith2DPose(pose, x0, y0).setColor(color);
+                vertexConsumer.addVertexWith2DPose(pose, x0, y1).setColor(color);
+                vertexConsumer.addVertexWith2DPose(pose, x1, y1).setColor(color);
+                vertexConsumer.addVertexWith2DPose(pose, x1, y0).setColor(color);
             }
         }
         Matrix3x2f pose = new Matrix3x2f(getPose());
@@ -221,7 +216,7 @@ public final class ScreenRenderingContext {
      *         (int) textureLeft, (int) textureTop, (int) (textureRight - textureLeft), (int) (textureBottom - textureTop),
      *         (int) texture.width(), (int) texture.height());
      * }
-     * @see net.minecraft.client.gui.GuiGraphics#submitBlit(RenderPipeline, GpuTextureView, int, int, int, int, float, float, float, float, int)
+     * @see net.minecraft.client.gui.GuiGraphics#submitBlit(com.mojang.blaze3d.pipeline.RenderPipeline, com.mojang.blaze3d.textures.GpuTextureView, com.mojang.blaze3d.textures.GpuSampler, int, int, int, int, float, float, float, float, int)
      */
     public void renderTexture(TextureInfo texture,
                               float textureLeft, float textureTop, float textureRight, float textureBottom,
@@ -231,15 +226,15 @@ public final class ScreenRenderingContext {
                             float u0, float v0, float u1, float v1,
                             float z, float x0, float y0, float x1, float y1) implements GuiElementRenderState {
             @Override
-            public void buildVertices(VertexConsumer vertexConsumer, float f) {
-                vertexConsumer.addVertexWith2DPose(pose, x0, y0, z + f).setUv(u0, v0).setColor(-1);
-                vertexConsumer.addVertexWith2DPose(pose, x0, y1, z + f).setUv(u0, v1).setColor(-1);
-                vertexConsumer.addVertexWith2DPose(pose, x1, y1, z + f).setUv(u1, v1).setColor(-1);
-                vertexConsumer.addVertexWith2DPose(pose, x1, y0, z + f).setUv(u1, v0).setColor(-1);
+            public void buildVertices(VertexConsumer vertexConsumer) {
+                vertexConsumer.addVertexWith2DPose(pose, x0, y0).setUv(u0, v0).setColor(-1);
+                vertexConsumer.addVertexWith2DPose(pose, x0, y1).setUv(u0, v1).setColor(-1);
+                vertexConsumer.addVertexWith2DPose(pose, x1, y1).setUv(u1, v1).setColor(-1);
+                vertexConsumer.addVertexWith2DPose(pose, x1, y0).setUv(u1, v0).setColor(-1);
             }
         }
-
-        TextureSetup gpuTextureView = TextureSetup.singleTexture(getClient().getTextureManager().getTexture(texture.location()).getTextureView());
+        AbstractTexture abstractTexture = getClient().getTextureManager().getTexture(texture.location());
+        TextureSetup gpuTextureView = TextureSetup.singleTexture(abstractTexture.getTextureView(), abstractTexture.getSampler());
         float uvLeft = textureLeft / texture.width();
         float uvTop = textureTop / texture.height();
         float uvRight = textureRight / texture.width();
@@ -268,20 +263,17 @@ public final class ScreenRenderingContext {
     }
 
     /**
-     * @see net.minecraft.client.gui.screens.inventory.EffectsInInventory#renderEffects(GuiGraphics, int, int)
-     * @see net.minecraft.client.gui.screens.inventory.EffectsInInventory#renderIcons(net.minecraft.client.gui.GuiGraphics, int, int, java.lang.Iterable, boolean)
+     * @see net.minecraft.client.gui.screens.inventory.EffectsInInventory#renderEffects(net.minecraft.client.gui.GuiGraphics, java.util.Collection, int, int, int, int, int)
      */
-    public void renderSprite(Holder<MobEffect> effect, float left, float top) {
-        ResourceLocation resourceLocation = Gui.getMobEffectSprite(effect);
-        TextureAtlasSprite textureAtlasSprite = getSpriteManager().getSprite(resourceLocation);
-        GuiSpriteScaling guiSpriteScaling = getSpriteManager().getSpriteScaling(textureAtlasSprite);
+    public void renderEffect(Holder<MobEffect> effect, float left, float top) {
+        Identifier id = Gui.getMobEffectSprite(effect);
         RenderPipeline renderPipeline = RenderPipelines.GUI_TEXTURED;
-        getGuiGraphics().blitSprite(RenderPipelines.GUI_TEXTURED, resourceLocation, (int) left, (int) top, 18, 18);
+        getGuiGraphics().blitSprite(renderPipeline, id, (int) left, (int) top, 18, 18);
     }
 
-    public void renderSprite(Holder<MobEffect> effect, float size, float left, float top) {
+    public void renderEffect(Holder<MobEffect> effect, float size, float left, float top) {
         try (ScaleRAII ignored = scaleOnce(size)) {
-            renderSprite(effect, left / size, top / size);
+            renderEffect(effect, left / size, top / size);
         }
     }
 
@@ -326,7 +318,7 @@ public final class ScreenRenderingContext {
      * The only difference is that we give the argument {@code size}
      * to calculate the real gui width and gui height.
      *
-     * @see net.minecraft.client.gui.GuiGraphics#renderTooltip(net.minecraft.client.gui.Font, java.util.List, int, int, net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner, net.minecraft.resources.ResourceLocation)
+     * @see net.minecraft.client.gui.GuiGraphics#renderTooltip(net.minecraft.client.gui.Font, java.util.List, int, int, net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner, net.minecraft.resources.Identifier)
      */
     private void renderTooltip(List<Component> texts,
                                float x, float y, float size
@@ -334,7 +326,6 @@ public final class ScreenRenderingContext {
         Font font = getFont();
         List<ClientTooltipComponent> list = texts.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
         ClientTooltipPositioner clientTooltipPositioner = DefaultTooltipPositioner.INSTANCE;
-        ResourceLocation resourceLocation = null;
 
         int width = 0;
         int height = list.size() == 1 ? -2 : 0;
@@ -351,7 +342,7 @@ public final class ScreenRenderingContext {
         int p = vector2ic.x();
         int q = vector2ic.y();
         getPose().pushMatrix();
-        TooltipRenderUtil.renderTooltipBackground(getGuiGraphics(), p, q, width, height, resourceLocation);
+        TooltipRenderUtil.renderTooltipBackground(getGuiGraphics(), p, q, width, height, null);
         int r = q;
 
         for (int s = 0; s < list.size(); s++) {
@@ -399,7 +390,6 @@ public final class ScreenRenderingContext {
      * }
      *
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
-     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventory(GuiGraphics, int, int, int, int, float, Vector3f, Quaternionf, Quaternionf, LivingEntity)
      */
     private void renderEntity(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset) {
@@ -436,7 +426,6 @@ public final class ScreenRenderingContext {
         }
 
         int x0 = Mth.ceil(left), y0 = Mth.ceil(top), x1 = Mth.floor(right), y1 = Mth.floor(bottom);
-        getGuiGraphics().enableScissor(x0, y0, x1, y1);
         Quaternionf quaternionf = new Quaternionf().rotateX(rotateY * 20F * (float) (Math.PI / 180F));
         Quaternionf quaternionf2 = new Quaternionf().rotateY((float) Math.PI - rotateX * 20F * (float) (Math.PI / 180F));
         Quaternionf quaternionf3 = new Quaternionf().rotateZ((float) Math.PI);
@@ -445,17 +434,18 @@ public final class ScreenRenderingContext {
         Vector3f vector3f = new Vector3f(0F, entity.getBbHeight() / internalOffset + 0.0625F * sc, 0F);
 
         EntityRenderDispatcher entityRenderDispatcher = getClient().getEntityRenderDispatcher();
-        EntityRenderer<Entity, EntityRenderState> entityRenderer = Misc.cast(entityRenderDispatcher.getRenderer(entity));
+        EntityRenderer<Entity, EntityRenderState> entityRenderer = RenderUtils.getRenderer(entityRenderDispatcher, entity);
         EntityRenderState entityRenderState;
         if (cache != null && cache.entityRenderState != null) {
             entityRenderState = cache.entityRenderState;
         } else {
-            entityRenderState = entityRenderer.createRenderState();
+            entityRenderState = RenderUtils.createRenderState(entityRenderer);
         }
         entityRenderer.extractRenderState(entity, entityRenderState, 1F);
+        entityRenderState.lightCoords = 15728880;
+        entityRenderState.shadowPieces.clear();
+        entityRenderState.outlineColor = 0;
         getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);
-
-        getGuiGraphics().disableScissor();
 
         if (isDebug() && width > 0 && height > 0) {
             final int color = 0xFFAAAAAA;
@@ -479,9 +469,12 @@ public final class ScreenRenderingContext {
         renderPlayerFace(player, left, top, 8F);
     }
 
+    /**
+     * @see net.minecraft.client.gui.components.PlayerTabOverlay#render(net.minecraft.client.gui.GuiGraphics, int, net.minecraft.world.scores.Scoreboard, net.minecraft.world.scores.Objective)
+     */
     public void renderPlayerFace(AbstractClientPlayer player, float left, float top, float size) {
-        boolean ud = LivingEntityRenderer.isEntityUpsideDown(player);
-        PlayerFaceRenderer.draw(getGuiGraphics(), player.getSkin().texture(), (int) left, (int) top, (int) size, /* show hat */ true, ud, -1);
+        boolean ud = AvatarRenderer.isPlayerUpsideDown(player);
+        PlayerFaceRenderer.draw(getGuiGraphics(), player.getSkin().body().texturePath(), (int) left, (int) top, (int) size, /* show hat */ true, ud, -1);
     }
 
     private static ScreenRectangle getBounds(float x0, float y0, float x1, float y1, Matrix3x2f matrix3x2f, @Nullable ScreenRectangle screenRectangle) {

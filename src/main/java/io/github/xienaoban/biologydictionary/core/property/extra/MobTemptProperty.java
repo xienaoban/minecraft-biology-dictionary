@@ -1,31 +1,33 @@
 package io.github.xienaoban.biologydictionary.core.property.extra;
 
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.ItemStackListProperty;
-import io.github.xienaoban.biologydictionary.mixin.MobIMixin;
 import io.github.xienaoban.biologydictionary.mixin.TemptGoalIMixin;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
-import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
 public final class MobTemptProperty extends ItemStackListProperty<Mob> {
+    public static final Factory<Mob> FACTORY = MobTemptProperty::new;
+
     public MobTemptProperty() {
         super(MobTemptProperty.class.getSimpleName());
     }
 
     @Override
     public void getFrom(Mob entity) {
-        super.getFrom(entity);
         List<Predicate<ItemStack>> predicates = getPredicates(entity);
         if (predicates.isEmpty()) {
-            set(Collections.emptyList());
+            setVal(Collections.emptyList());
         } else {
             List<ItemStack> res = new ArrayList<>();
             for (Item item : BuiltInRegistries.ITEM) {
@@ -38,22 +40,22 @@ public final class MobTemptProperty extends ItemStackListProperty<Mob> {
                 }
             }
             res.sort(Comparator.comparingInt(o -> BuiltInRegistries.ITEM.getId(o.getItem())));
-            set(res);
+            setVal(res);
         }
     }
 
-    private static @NotNull List<Predicate<ItemStack>> getPredicates(Mob entity) {
-        GoalSelector goalSelector = ((MobIMixin) entity).getGoalSelector();
-        Set<WrappedGoal> goals = goalSelector.getAvailableGoals();
+    @Override
+    public void setTo(Mob entity) {
+        throw new UnsupportedOperationException();
+    }
 
+    private static @NotNull List<Predicate<ItemStack>> getPredicates(Mob entity) {
         // TODO: cache this
         // Pigs have two TemptGoal!
         List<Predicate<ItemStack>> predicates = new ArrayList<>();
-        for (WrappedGoal wrappedGoal : goals) {
-            if (wrappedGoal.getGoal() instanceof TemptGoal temptGoal) {
-                Predicate<ItemStack> items = ((TemptGoalIMixin) temptGoal).getItems();
-                predicates.add(items);
-            }
+        for (TemptGoal temptGoal : EntityUtils.getGoals(entity, TemptGoal.class)) {
+            Predicate<ItemStack> items = ((TemptGoalIMixin) temptGoal).getItems();
+            predicates.add(items);
         }
         return predicates;
     }

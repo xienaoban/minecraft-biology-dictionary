@@ -2,7 +2,8 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -28,6 +29,8 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntityPortalCooldownWidget::new;
+
     private static final int L = 1, T = 3;
 
     private final IntProperty<Entity> portalCooldownProperty = VanillaEntityProperties.OfEntity.getPortalCooldownProperty(p());
@@ -44,18 +47,18 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
-        Integer cooldownOpt = portalCooldownProperty.get();
+        Integer cooldownOpt = portalCooldownProperty.getVal();
         if (cooldownOpt == null) {
             return;
         }
 
         int cooldown = cooldownOpt;
-        if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+        if (cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
             // do nothing
         } else if (isClientEntityInNetherPortal()) {
-            portalCooldownProperty.set(e().getDimensionChangingDelay());
+            portalCooldownProperty.setVal(e().getDimensionChangingDelay());
         } else {
-            portalCooldownProperty.set(Math.max(0, cooldown - 1));
+            portalCooldownProperty.setVal(Math.max(0, cooldown - 1));
         }
     }
 
@@ -70,7 +73,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
 
     private boolean isClientEntityInNetherPortal() {
         Entity entity = e();
-        Level level = entity.level();
+        Level level = EntityUtils.getLevel(entity);
         BlockPos pos = entity.blockPosition();
         AABB box = entity.getBoundingBox();
         final int x = pos.getX(), y = pos.getY(), z = pos.getZ();
@@ -99,7 +102,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer cooldownOpt = portalCooldownProperty.get();
+            Integer cooldownOpt = portalCooldownProperty.getVal();
             if (cooldownOpt == null) {
                 updatePercent(0);
                 super.onRender(ctx);
@@ -110,7 +113,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             int cooldown = cooldownOpt;
             updatePercent((float) cooldown / (float) maxCooldown);
             super.onRender(ctx);
-            if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+            if (cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
                 if (ctx.isDebug()) {
                     renderInnerText(ctx, Component.translatable(Lang.TEXT_INFINITY));
                 } else {
@@ -119,7 +122,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             } else if (ctx.isDebug()) {
                 renderInnerText(ctx, Component.literal(cooldown + "t/" + maxCooldown + "t"));
             } else {
-                renderInnerText(ctx, Component.literal((cooldown / McClientUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / McClientUtils.getClientTickCountPerSecond()) + "s"));
+                renderInnerText(ctx, Component.literal((cooldown / ClientUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / ClientUtils.getClientTickCountPerSecond()) + "s"));
             }
         }
     }
@@ -131,20 +134,20 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            Integer cooldownOpt = portalCooldownProperty.get();
+            Integer cooldownOpt = portalCooldownProperty.getVal();
             if (cooldownOpt == null) {
                 return true;
             }
             int cooldown = cooldownOpt;
             if (isMouseLeft(code)) {
                 final int newCooldown;
-                if (cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+                if (cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
                     newCooldown = 0;
                 } else {
-                    newCooldown = EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY;
+                    newCooldown = EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY;
                 }
                 if (EntitySetPortalCooldownSkill.activate(e(), newCooldown)) {
-                    portalCooldownProperty.set(newCooldown);
+                    portalCooldownProperty.setVal(newCooldown);
                 }
             }
             return super.onMouseDown(x, y, code);
@@ -152,8 +155,8 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            Integer cooldown = portalCooldownProperty.get();
-            if (cooldown != null && cooldown == EntityProperties.ENTITY_PORTAL_COOLDOWN_INFINITY) {
+            Integer cooldown = portalCooldownProperty.getVal();
+            if (cooldown != null && cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
                 setTextureLeftOffset(10);
             } else {
                 setTextureLeftOffset(0);

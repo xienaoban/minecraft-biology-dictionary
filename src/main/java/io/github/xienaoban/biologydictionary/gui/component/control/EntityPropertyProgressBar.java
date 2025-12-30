@@ -14,14 +14,14 @@ public class EntityPropertyProgressBar extends EntityPropertyBar {
         percent = 0;
     }
 
+    public final void updatePercent(float zeroToOne) {
+        percent = Math.min(Math.max(zeroToOne, 0.0F), 1.0F);
+    }
+
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
         renderFullBar(ctx);
         renderProgressBar(ctx, percent);
-    }
-
-    public void updatePercent(float zeroToOne) {
-        percent = Math.min(Math.max(zeroToOne, 0.0F), 1.0F);
     }
 }

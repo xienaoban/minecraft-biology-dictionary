@@ -2,48 +2,68 @@ package io.github.xienaoban.biologydictionary.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import io.github.xienaoban.biologydictionary.common.client.RenderingRegistry;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.RenderUtils;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ProblemReporter;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.entity.animal.parrot.Parrot;
 
 import java.util.Optional;
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @Environment(EnvType.CLIENT)
-public final class FirstPersonShoulderEntityRenderer implements RenderingRegistry.RenderingListener {
-    public static void init() {
-        RenderingRegistry.registerFirstPersonRendering(new FirstPersonShoulderEntityRenderer());
-    }
-
+public final class FirstPersonShoulderEntityRenderer {
+    private static final int NULL_VARIANT = -2333333;
     private static final float HEAD_ROT_SPEED = 0.02F;
 
-    private final CompoundTag[] nbts = new CompoundTag[2];
-    private final LivingEntity[] entities = new LivingEntity[2];
-    private final float[] nextYHeadRot = new float[2];
-    private final float[] nextXHeadRot = new float[2];
-    private final long[] lastHeadYawTime = new long[2];
-    private final long[] nextHeadYawTime = new long[2];
-    private long lastTime;
+    private static final int[] lrData = { NULL_VARIANT, NULL_VARIANT };
+    private static final LivingEntity[] entities = new LivingEntity[2];
+    private static final EntityRenderer<Entity, EntityRenderState>[] entityRenderers = Misc.cast(new EntityRenderer[2]);
+    private static final EntityRenderState[] entityRenderStates = new EntityRenderState[2];
+    private static final float[] nextYHeadRot = new float[2];
+    private static final float[] nextXHeadRot = new float[2];
+    private static final long[] lastHeadYawTime = new long[2];
+    private static final long[] nextHeadYawTime = new long[2];
+    private static long lastTime;
+
+    private static boolean banned = false;
+
+    public static void clear() {
+        lrData[0] = lrData[1] = NULL_VARIANT;
+        entities[0] = entities[1] = null;
+        entityRenderers[0] = entityRenderers[1] = null;
+        entityRenderStates[0] = entityRenderStates[1] = null;
+    }
+
+    public static void run(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
+        if (banned) { return; }
+        try {
+            run0(client, entityRenderDispatcher, tickDelta, poseStack, submitNodeCollector, player, light);
+        } catch (Exception e) {
+            banned = true;
+            LOGGER.error("Failed to render parrots on shoulders: {}", Misc.getStackToString(e));
+        }
+    }
 
     /**
-     * @see ItemInHandRenderer#renderPlayerArm(PoseStack, MultiBufferSource, int, float, float, HumanoidArm)
-     * @see EntityRenderDispatcher#render(Entity, double, double, double, float, PoseStack, MultiBufferSource, int, EntityRenderer)
+     * @see net.minecraft.client.renderer.ItemInHandRenderer#renderHandsWithItems(float, com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.SubmitNodeCollector, net.minecraft.client.player.LocalPlayer, int)
+     * @see net.minecraft.client.renderer.ItemInHandRenderer#renderPlayerArm(com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.SubmitNodeCollector, int, float, float, net.minecraft.world.entity.HumanoidArm)
      */
-    @Override
-    public void run(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LocalPlayer player, int light) {
+    private static void run0(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
         String tmp = "BOTTOM";
         HudPosition hudPos = switch (tmp) {
             case "TOP" -> HudPosition.TOP;
@@ -52,11 +72,28 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
             default -> null;
         };
         if (hudPos == null) return;
-        long curTime = McClientUtils.getGameTimeMillis(tickDelta);
+
+        if (player.getShoulderParrotLeft().isEmpty() && player.getShoulderParrotRight().isEmpty()) {
+            return;
+        }
+
+        long curTime = ClientUtils.getGameTimeMillis(tickDelta);
         long diffTime = Math.min(50, curTime - lastTime);
         lastTime = curTime;
+
+        PoseStack ps = new PoseStack();
+        // @see net.minecraft.client.renderer.ItemInHandRenderer.renderHandsWithItems
+        float xp = Mth.lerp(tickDelta, player.xBobO, player.xBob);
+        float yp = Mth.lerp(tickDelta, player.yBobO, player.yBob);
+        ps.mulPose(Axis.XP.rotationDegrees((player.getViewXRot(tickDelta) - xp) * 0.1F));
+        ps.mulPose(Axis.YP.rotationDegrees((player.getViewYRot(tickDelta) - yp) * 0.1F));
+
+        CameraRenderState camera = client.gameRenderer.getLevelRenderState().cameraRenderState;
+
         for (int i = 0; i < 2; ++i) {
-            update(player, i == 0 ? player.getShoulderEntityLeft() : player.getShoulderEntityRight(), i);
+            Optional<Parrot.Variant> optionalVariant
+                    = (i == 0 ? player.getShoulderParrotLeft() : player.getShoulderParrotRight());
+            update(entityRenderDispatcher, player, optionalVariant.orElse(null), i);
             LivingEntity entity = entities[i];
             if (entity == null) continue;
             if (curTime > nextHeadYawTime[i]) {
@@ -71,45 +108,58 @@ public final class FirstPersonShoulderEntityRenderer implements RenderingRegistr
                 entity.setYHeadRot(entity.getYHeadRot() + yHeadRotDiff);
                 entity.setXRot(    entity.getXRot()     + xRotDiff);
             }
+            extract(i);
+            EntityRenderState entityRenderState = entityRenderStates[i];
+            entityRenderState.lightCoords = light;
+
             int pos = i * -2 + 1;
-            poseStack.pushPose();
-            poseStack.mulPose(Axis.XP.rotation(hudPos.xRot()));
-            poseStack.mulPose(Axis.YP.rotation(hudPos.yRot()));
-            poseStack.mulPose(Axis.ZP.rotation(hudPos.zRot()));
-            poseStack.translate(pos * hudPos.xPos(), hudPos.yPos() + player.getXRot() * hudPos.yOffset(), hudPos.zPos());
-            entityRenderDispatcher.setRenderShadow(false);
-            entityRenderDispatcher.render(entity, 0, 0, 0, 1.0F, poseStack, bufferSource, light);
-            entityRenderDispatcher.setRenderShadow(true);
-            poseStack.popPose();
+            ps.pushPose();
+            ps.mulPose(Axis.XP.rotation(hudPos.xRot()));
+            ps.mulPose(Axis.YP.rotation(hudPos.yRot()));
+            ps.mulPose(Axis.ZP.rotation(hudPos.zRot()));
+            ps.translate(pos * hudPos.xPos(), hudPos.yPos() + player.getXRot() * hudPos.yOffset(), hudPos.zPos());
+            entityRenderDispatcher.submit(entityRenderState, camera, 0, 0, 0, ps, submitNodeCollector);
+            ps.popPose();
         }
     }
 
-    private void update(LocalPlayer player, CompoundTag nbt, int index) {
-        if (nbts[index] == nbt) return;
-        nbts[index] = nbt;
+    private static void update(EntityRenderDispatcher entityRenderDispatcher, LocalPlayer player, Parrot.Variant variant, int index) {
+        int variantId = variant == null ? NULL_VARIANT : variant.getId();
+        if (lrData[index] == variantId) return;
+        lrData[index] = variantId;
         LivingEntity entity;
-        if (nbt == null || nbt.isEmpty()) entity = null;
+        EntityRenderer<Entity, EntityRenderState> entityRenderer;
+        EntityRenderState entityRenderState;
+        if (variantId == NULL_VARIANT) {
+            entity = null;
+            entityRenderer = null;
+            entityRenderState = null;
+        }
         else {
-            ValueInput tagIn = TagValueInput.create(ProblemReporter.DISCARDING, player.registryAccess(), nbt);
-            Optional<Entity> optionalEntity = EntityType.create(tagIn, player.level(), null);
-            if (optionalEntity.isEmpty()) entity = null;
-            else {
-                entity = (LivingEntity) optionalEntity.get();
-                entity.setYRot(0);
-                entity.setYHeadRot(0);
-                entity.setYBodyRot(0);
-                entity.yRotO = 0;
-                entity.yHeadRotO = 0;
-                entity.yBodyRotO = 0;
-                entity.setSpeed(0);
-            }
+            Parrot parrot = EntityUtils.create(EntityType.PARROT, EntityUtils.getLevel(player));
+            VanillaEntityProperties.OfParrot.createVariantProperty().withVal(variant).setTo(parrot);
+
+            entity = parrot;
+            entity.setYRot(0);
+            entity.setYHeadRot(0);
+            entity.setYBodyRot(0);
+            entity.yRotO = 0;
+            entity.yHeadRotO = 0;
+            entity.yBodyRotO = 0;
+            entity.setSpeed(0);
+
+            entityRenderer = RenderUtils.getRenderer(entityRenderDispatcher, entity);
+            entityRenderState = RenderUtils.createRenderState(entityRenderer);
         }
         entities[index] = entity;
+        entityRenderers[index] = entityRenderer;
+        entityRenderStates[index] = entityRenderState;
     }
 
-    public void clear() {
-        nbts[0] = nbts[1] = null;
-        entities[0] = entities[1] = null;
+    private static void extract(int index) {
+        EntityRenderState entityRenderState = entityRenderStates[index];
+        RenderUtils.extractRenderState(entityRenderers[index], entities[index], entityRenderState);
+        RenderUtils.renderBodyOnly(entityRenderState);
     }
 
     private record HudPosition(float xRot, float yRot, float zRot, double xPos, double yPos, double zPos, float yOffset) {

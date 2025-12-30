@@ -1,10 +1,14 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.InventoryUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -48,7 +52,7 @@ public final class Permissions {
     }
 
     public static void checkPlayerInventoryItems(Player player, ItemStack itemStack) {
-        if (!InventoryUtils.hasEnoughItems(player.getInventory(), itemStack)) {
+        if (!InventoryUtils.hasEnoughItems(PlayerUtils.getInventory(player), itemStack)) {
             throw new NoPermissionException(Component.translatable(Lang.TEXT_NOT_ENOUGH_ITEMS, itemStack.getCount(), itemStack.getItem().getName()), "Not enough items in inventory: item=\"" + itemStack.getItem() + "\"");
         }
     }
@@ -59,7 +63,7 @@ public final class Permissions {
     }
 
     public static void checkConsumePlayerInventoryItems(Player player, ItemStack itemStack) {
-        if (!InventoryUtils.consumeItems(player.getInventory(), itemStack)) {
+        if (!InventoryUtils.consumeItems(PlayerUtils.getInventory(player), itemStack)) {
             throw new NoPermissionException(Component.translatable(Lang.TEXT_NOT_ENOUGH_ITEMS, itemStack.getCount(), itemStack.getItem().getName()), "Not enough items in inventory: item=\"" + itemStack.getItem() + "\"");
         }
     }
@@ -73,5 +77,13 @@ public final class Permissions {
         if (maybePlayer instanceof Player target) {
             checkTargetPlayerLowerGameMode(player, target);
         }
+    }
+
+    public static void checkMobHasGoalAndStart(Mob entity, Class<? extends Goal> goalClass) {
+        WrappedGoal goal = EntityUtils.getWrappedGoal(entity, goalClass);
+        if (goal == null) {
+            throw new NoPermissionException(Component.translatable(Lang.TEXT_TARGET_ENTITY_NO_ABILITY, goalClass.getSimpleName()), "There's no goal \"" + goalClass + "\" in entity \"" + entity + "\"");
+        }
+        goal.start();
     }
 }

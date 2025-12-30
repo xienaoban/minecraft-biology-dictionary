@@ -1,7 +1,8 @@
 package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.common.client.ClientEventRegistry;
-import io.github.xienaoban.biologydictionary.common.util.McClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -67,7 +68,7 @@ public final class HighlightManager {
     }
 
     public static void highlightBlock(BlockPos blockPos, int durationTicks) {
-        highlightBlock(McClientUtils.getClientLevel(), blockPos, durationTicks);
+        highlightBlock(ClientUtils.getClientLevel(), blockPos, durationTicks);
     }
 
     public static void highlightBlock(ClientLevel level, BlockPos blockPos, int durationTicks) {
@@ -115,7 +116,7 @@ public final class HighlightManager {
 
         @Override
         protected boolean onCheckEnd(Context ctx) {
-            return (entity.level() != ctx.level)
+            return (EntityUtils.getLevel(entity) != ctx.level)
                     || (!entity.isAlive());
         }
     }
