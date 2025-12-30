@@ -4,7 +4,6 @@ import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingMenu;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingScreen;
@@ -13,19 +12,14 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int containerSize) implements Packet {
-    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
+    public static final Packet.Factory<ReplyInventoryStealingScreenPacket> FACTORY = ReplyInventoryStealingScreenPacket::new;
 
-    @Override
-    public CustomPacketPayload.Type<? extends Packet> type() { return META.type(); }
-
-    @SuppressWarnings("unused")
-    public ReplyInventoryStealingScreenPacket(FriendlyByteBuf buf) {
+    private ReplyInventoryStealingScreenPacket(FriendlyByteBuf buf) {
         this(buf.readInt(), buf.readInt(), buf.readInt());
     }
 

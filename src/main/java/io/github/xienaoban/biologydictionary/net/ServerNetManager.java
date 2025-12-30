@@ -12,8 +12,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 public final class ServerNetManager {
+
     public static void init() {
-        PacketPayloads.LIST.forEach(ServerNetApi::register);
+        PacketPayloads.registerBuiltIn(ServerNetApi::register);
     }
 
     public static void sendCenteredMessage(ServerPlayer player, Component message) {

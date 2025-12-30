@@ -4,7 +4,6 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
@@ -18,13 +17,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entityType, float radius) implements Packet {
-    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
+    public static final Packet.Factory<ReplyHighlightEntitiesPacket> FACTORY = ReplyHighlightEntitiesPacket::new;
 
-    @Override
-    public Type<? extends Packet> type() { return META.type(); }
-
-    @SuppressWarnings("unused")
-    public ReplyHighlightEntitiesPacket(FriendlyByteBuf buf) {
+    private ReplyHighlightEntitiesPacket(FriendlyByteBuf buf) {
         this(buf.readBoolean(), EntityUtils.getEntityType(buf.readUtf()), buf.readFloat());
     }
 

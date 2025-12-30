@@ -11,8 +11,9 @@ import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetManager {
+
     public static void init() {
-        PacketPayloads.LIST.forEach(ClientNetApi::register);
+        PacketPayloads.registerBuiltIn(ClientNetApi::register);
     }
 
     public static void requestBookItem() {

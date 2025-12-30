@@ -2,7 +2,6 @@ package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import net.fabricmc.api.EnvType;
@@ -14,13 +13,9 @@ import net.minecraft.world.entity.Entity;
 import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 
 public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt) implements Packet {
-    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
+    public static final Packet.Factory<ReplyEntityDataPacket> FACTORY = ReplyEntityDataPacket::new;
 
-    @Override
-    public Type<? extends Packet> type() { return META.type(); }
-
-    @SuppressWarnings("unused")
-    public ReplyEntityDataPacket(FriendlyByteBuf buf) {
+    private ReplyEntityDataPacket(FriendlyByteBuf buf) {
         this(buf.readBoolean(), buf.readInt(), buf.readNbt(), buf.readNbt());
     }
 

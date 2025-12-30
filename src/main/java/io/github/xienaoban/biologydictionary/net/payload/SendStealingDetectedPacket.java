@@ -1,11 +1,9 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -13,13 +11,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 public record SendStealingDetectedPacket(int entityId) implements Packet {
-    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
+    public static final Packet.Factory<SendStealingDetectedPacket> FACTORY = SendStealingDetectedPacket::new;
 
-    @Override
-    public CustomPacketPayload.Type<? extends Packet> type() { return META.type(); }
-
-    @SuppressWarnings("unused")
-    public SendStealingDetectedPacket(FriendlyByteBuf buf) {
+    private SendStealingDetectedPacket(FriendlyByteBuf buf) {
         this(buf.readInt());
     }
 
