@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
@@ -12,13 +11,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 
 public record RequestEntityDataPacket(int entityId) implements Packet {
-    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
+    public static final Packet.Factory<RequestEntityDataPacket> FACTORY = RequestEntityDataPacket::new;
 
-    @Override
-    public Type<? extends Packet> type() { return META.type(); }
-
-    @SuppressWarnings("unused")
-    public RequestEntityDataPacket(FriendlyByteBuf buf) { this(buf.readInt()); }
+    private RequestEntityDataPacket(FriendlyByteBuf buf) { this(buf.readInt()); }
 
     @Override
     public void write(FriendlyByteBuf buf) { buf.writeInt(entityId); }

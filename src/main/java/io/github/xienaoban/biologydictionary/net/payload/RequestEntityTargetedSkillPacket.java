@@ -3,7 +3,6 @@ package io.github.xienaoban.biologydictionary.net.payload;
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
@@ -13,19 +12,14 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public record RequestEntityTargetedSkillPacket(String skillKey, int entityId, Tag args) implements Packet {
-    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
+    public static final Packet.Factory<RequestEntityTargetedSkillPacket> FACTORY = RequestEntityTargetedSkillPacket::new;
 
-    @Override
-    public CustomPacketPayload.Type<? extends Packet> type() { return META.type(); }
-
-    @SuppressWarnings("unused")
-    public RequestEntityTargetedSkillPacket(FriendlyByteBuf buf) {
+    private RequestEntityTargetedSkillPacket(FriendlyByteBuf buf) {
         this(buf.readUtf(), buf.readInt(), buf.readNbt(NbtAccounter.unlimitedHeap()));
     }
 

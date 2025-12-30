@@ -2,7 +2,6 @@ package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.PacketPayloadMeta;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
@@ -11,18 +10,13 @@ import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public record RequestCommonSkillPacket(String skillKey, Tag args) implements Packet {
-    public static final PacketPayloadMeta<?> META = PacketPayloadMeta.create();
+    public static final Packet.Factory<RequestCommonSkillPacket> FACTORY = RequestCommonSkillPacket::new;
 
-    @Override
-    public CustomPacketPayload.Type<? extends Packet> type() { return META.type(); }
-
-    @SuppressWarnings("unused")
-    public RequestCommonSkillPacket(FriendlyByteBuf buf) {
+    private RequestCommonSkillPacket(FriendlyByteBuf buf) {
         this(buf.readUtf(), buf.readNbt(NbtAccounter.unlimitedHeap()));
     }
 
