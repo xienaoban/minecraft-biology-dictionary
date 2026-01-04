@@ -23,6 +23,14 @@ public final class Lang {
     BIOLOGY_DICTIONARY = "biologydictionary",
     PACKAGE = "io.github.xienaoban.biologydictionary",
 
+    CONFIG_FILE = "biologydictionary.yml",
+
+    // Translation Keys
+    GUI_OK     = "gui.ok",
+    GUI_CANCEL = "gui.cancel",
+    GUI_YES    = "gui.yes",
+    GUI_NO     = "gui.no",
+
     BIOLOGY_DICTIONARY_TITLE = "title.biologydictionary",
     BIOLOGY_DICTIONARY_DESCRIPTION = "description.biologydictionary",
     AUTHOR = "author.biologydictionary",
@@ -35,11 +43,12 @@ public final class Lang {
 
     ACTIVITY_PREFIX = "activity.minecraft.",
 
-    // Translation Keys
-    GUI_OK = "gui.ok",
-    GUI_CANCEL = "gui.cancel",
-    GUI_YES = "gui.yes",
-    GUI_NO = "gui.no",
+    CONFIG_PREFIX          = "config.biologydictionary.",
+    CONFIG_TITLE           = "config.biologydictionary.title",
+    CONFIG_CATEGORY_SERVER = "config.biologydictionary.category.server",
+    CONFIG_CATEGORY_CLIENT = "config.biologydictionary.category.client",
+    CONFIG_ENTRY_PREFIX    = "config.biologydictionary.entry.",
+    CONFIG_TOOLTIP_SUFFIX  = ".tooltip",
 
     SCREEN_PLAYER_SELECTOR      = "screen.biologydictionary.player_selector",
     SCREEN_PLAYER_SELECTOR_DESC = "screen.biologydictionary.player_selector.desc",

@@ -12,6 +12,10 @@
   "mode_name.biologydictionary.two_lang": "Biology Dictionary (生物辞典)",
   "author_name.biologydictionary.two_lang": "XieNaoban (蟹脑板)",
 
+  "config.biologydictionary.title": "Biology Dictionary Configuration",
+  "config.biologydictionary.category.server": "Server",
+  "config.biologydictionary.category.client": "Client",
+
   "screen.biologydictionary.player_selector": "Player Selector",
   "screen.biologydictionary.player_selector.desc": "Please select an online player near you.",
   "screen.biologydictionary.stealing" : "Stealing",

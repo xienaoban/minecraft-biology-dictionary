@@ -12,6 +12,10 @@
   "mode_name.biologydictionary.two_lang": "生物辞典（Biology Dictionary）",
   "author_name.biologydictionary.two_lang": "蟹脑板（XieNaoban）",
 
+  "config.biologydictionary.title": "生物辞典配置",
+  "config.biologydictionary.category.server": "服务端",
+  "config.biologydictionary.category.client": "客户端",
+
   "screen.biologydictionary.player_selector": "玩家选择器",
   "screen.biologydictionary.player_selector.desc": "请选择一个在您附近的在线玩家。",
   "screen.biologydictionary.stealing" : "偷窃",
