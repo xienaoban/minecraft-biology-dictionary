@@ -15,6 +15,10 @@
   "config.biologydictionary.title": "Biology Dictionary Configuration",
   "config.biologydictionary.category.server": "Server",
   "config.biologydictionary.category.client": "Client",
+  "config.biologydictionary.entry.bannedPlayerSkills": "Banned Player Skills",
+  "config.biologydictionary.entry.bannedPlayerSkills.tooltip": "A list of skill IDs that are not allowed for players.",
+  "config.biologydictionary.entry.firstPersonShoulderEntityPosition": "First Person Shoulder Entity Position",
+  "config.biologydictionary.entry.firstPersonShoulderEntityPosition.tooltip": "Position of entities riding on your shoulder in first person view.",
 
   "screen.biologydictionary.player_selector": "Player Selector",
   "screen.biologydictionary.player_selector.desc": "Please select an online player near you.",
@@ -422,6 +426,11 @@
 
   "modmenu.nameTranslation.biologydictionary": "Biology Dictionary",
   "modmenu.descriptionTranslation.biologydictionary": "To display or modify the properties and states of mobs.",
+
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.NONE": "None",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.TOP": "Top",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.SIDES": "Sides",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.BOTTOM": "Bottom",
 
   "": ""
 }

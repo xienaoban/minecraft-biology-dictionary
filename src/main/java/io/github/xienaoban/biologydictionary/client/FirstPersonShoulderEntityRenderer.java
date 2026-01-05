@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.common.util.RenderUtils;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -64,12 +65,11 @@ public final class FirstPersonShoulderEntityRenderer {
      * @see net.minecraft.client.renderer.ItemInHandRenderer#renderPlayerArm(com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.SubmitNodeCollector, int, float, float, net.minecraft.world.entity.HumanoidArm)
      */
     private static void run0(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
-        String tmp = "BOTTOM";
-        HudPosition hudPos = switch (tmp) {
-            case "TOP" -> HudPosition.TOP;
-            case "BOTTOM" -> HudPosition.BOTTOM;
-            case "SIDES" -> HudPosition.SIDES;
-            default -> null;
+        HudPosition hudPos = switch (ConfigsManager.getClient().getFirstPersonShoulderEntityPosition()) {
+            case NONE -> null;
+            case TOP -> HudPosition.TOP;
+            case BOTTOM -> HudPosition.BOTTOM;
+            case SIDES -> HudPosition.SIDES;
         };
         if (hudPos == null) return;
 

@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -70,14 +70,16 @@ public class ClothConfigScreenProvider {
         return builder.build();
     }
 
+    @SuppressWarnings("unchecked")
     private static void addConfigEntry(me.shedaniel.clothconfig2.api.ConfigCategory category, ConfigEntryBuilder entryBuilder,
                                        Field field, ConfigEntry annotation, Object categoryObject) {
         String fieldName = field.getName();
+        Class<?> fieldType = field.getType();
+
         String entryKey = Lang.CONFIG_ENTRY_PREFIX + fieldName;
         String tooltipKey = entryKey + Lang.CONFIG_TOOLTIP_SUFFIX;
-
-        Class<?> fieldType = field.getType();
         Component fieldText = Component.translatable(entryKey);
+        Component tooltipText = Component.translatable(tooltipKey);
 
         try {
             field.setAccessible(true);
@@ -107,25 +109,34 @@ public class ClothConfigScreenProvider {
                     throw new RuntimeException("Unsupported field type: " + fieldType);
                 }
                 if (annotation.min() != Double.MIN_VALUE) {
-                    builderNum.setMin(Misc.convertValue(annotation.min(), fieldType));
+                    builderNum.setMin(Misc.convertNumber(annotation.min(), fieldType));
                 }
                 if (annotation.max() != Double.MAX_VALUE) {
-                    builderNum.setMax(Misc.convertValue(annotation.max(), fieldType));
+                    builderNum.setMax(Misc.convertNumber(annotation.max(), fieldType));
                 }
                 builder = builderNum;
             } else if (fieldType == String.class) {
                 builder = entryBuilder.startStrField(fieldText, (String) currentValue);
             } else if (fieldType.isEnum()) {
-                builder = entryBuilder.startEnumSelector(fieldText, Misc.cast(fieldType), Misc.cast(currentValue));
+                builder = entryBuilder.startEnumSelector(fieldText, Misc.cast(fieldType), Misc.cast(currentValue))
+                        .setEnumNameProvider(e -> Component.translatable("enum." + e.getClass().getName().replace('$', '.') + "." + e.name()));
+            } else if (List.class.isAssignableFrom(fieldType)) {
+                // Only support string list!
+                builder = entryBuilder.startStrList(fieldText, (List<String>) currentValue);
+            } else if (Set.class.isAssignableFrom(fieldType)) {
+                // Only support string set!
+                List<String> currentList = ((Set<?>) currentValue).stream().map(String::valueOf).sorted().toList();
+                List<String> defaultList = ((Set<?>) defaultValue).stream().map(String::valueOf).sorted().toList();
+                category.addEntry(entryBuilder.startStrList(fieldText, currentList).setDefaultValue(defaultList)
+                        .setSaveConsumer(strings -> save(field, categoryObject, Set.copyOf(strings)))
+                        .setTooltip(tooltipText).build());
+                return;
             } else {
                 throw new RuntimeException("Unsupported field type: " + fieldType);
             }
 
-            category.addEntry(setEntryGeneric(
-                    Misc.cast(builder),
-                    Misc.convertValue(defaultValue, fieldType),
-                    createSaveConsumer(field, categoryObject),
-                    Component.translatable(tooltipKey)
+            category.addEntry(setEntryGeneric(builder, defaultValue,
+                    createSaveConsumer(field, categoryObject), tooltipText
             ).build());
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Failed to read config field value", e);
@@ -157,13 +168,15 @@ public class ClothConfigScreenProvider {
      * Create a save consumer for regular fields.
      */
     private static <T> java.util.function.Consumer<T> createSaveConsumer(Field field, Object categoryObject) {
-        return newValue -> {
-            try {
-                field.set(categoryObject, newValue);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Failed to set config value", e);
-            }
-        };
+        return newValue -> save(field, categoryObject, newValue);
+    }
+
+    private static void save(Field field, Object categoryObject, Object newValue) {
+        try {
+            field.set(categoryObject, newValue);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Failed to set config value", e);
+        }
     }
 
     /**

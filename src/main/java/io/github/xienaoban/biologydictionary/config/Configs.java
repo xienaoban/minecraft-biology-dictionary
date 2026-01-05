@@ -5,6 +5,8 @@ import io.github.xienaoban.biologydictionary.config.annotation.Config;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
 
+import java.util.Set;
+
 /**
  * Main configuration data class for Biology Dictionary.
  * Uses annotations for automatic YAML serialization and Cloth Config generation.
@@ -23,7 +25,11 @@ public final class Configs {
      */
     public static class ServerConfigs {
         @ConfigEntry
-        boolean enableDebugMode = false;
+        Set<String> bannedPlayerSkills = Set.of();
+
+        public Set<String> getBannedPlayerSkills() {
+            return bannedPlayerSkills;
+        }
     }
 
     /**
@@ -33,6 +39,10 @@ public final class Configs {
     public static class ClientConfigs {
         @ConfigEntry
         FirstPersonShoulderEntityPosition firstPersonShoulderEntityPosition = FirstPersonShoulderEntityPosition.BOTTOM;
+
+        public FirstPersonShoulderEntityPosition getFirstPersonShoulderEntityPosition() {
+            return firstPersonShoulderEntityPosition;
+        }
     }
 
     public ServerConfigs getServer() {
@@ -44,6 +54,6 @@ public final class Configs {
     }
 
     public enum FirstPersonShoulderEntityPosition {
-        TOP, SIDES, BOTTOM,
+        NONE, BOTTOM, SIDES, TOP
     }
 }
