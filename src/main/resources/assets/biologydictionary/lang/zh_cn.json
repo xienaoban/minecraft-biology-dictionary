@@ -15,6 +15,10 @@
   "config.biologydictionary.title": "生物辞典配置",
   "config.biologydictionary.category.server": "服务端",
   "config.biologydictionary.category.client": "客户端",
+  "config.biologydictionary.entry.bannedPlayerSkills": "玩家技能禁用列表",
+  "config.biologydictionary.entry.bannedPlayerSkills.tooltip": "禁止玩家使用的技能ID列表。",
+  "config.biologydictionary.entry.firstPersonShoulderEntityPosition": "第一人称肩宠位置",
+  "config.biologydictionary.entry.firstPersonShoulderEntityPosition.tooltip": "第一人称下玩家肩膀上生物在屏幕上的显示位置。",
 
   "screen.biologydictionary.player_selector": "玩家选择器",
   "screen.biologydictionary.player_selector.desc": "请选择一个在您附近的在线玩家。",
@@ -422,6 +426,11 @@
 
   "modmenu.nameTranslation.biologydictionary": "生物辞典",
   "modmenu.descriptionTranslation.biologydictionary": "展示或修改生物的属性与状态。",
+
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.NONE": "不显示",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.TOP": "顶部",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.SIDES": "两侧",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.BOTTOM": "底部",
 
   "": ""
 }

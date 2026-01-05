@@ -16,8 +16,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Manages configuration lifecycle for Biology Dictionary.
@@ -123,6 +122,7 @@ public final class ConfigsManager {
             Yaml yaml = new Yaml();
             Map<String, Object> data = yaml.load(input);
 
+            boolean allGood = true;
             if (data != null) {
                 // Iterate through fields annotated with @ConfigCategory
                 for (Field categoryField : INSTANCE.getClass().getDeclaredFields()) {
@@ -132,13 +132,17 @@ public final class ConfigsManager {
                         if (categoryData != null) {
                             categoryField.setAccessible(true);
                             Object categoryObject = categoryField.get(INSTANCE);
-                            loadConfigCategoryFromMap(categoryData, categoryObject);
+                            allGood = loadConfigCategoryFromMap(categoryData, categoryObject);
                         }
                     }
                 }
             }
-
             LOGGER.info("Configuration loaded from {}", configPath);
+
+            if (!allGood) {
+                LOGGER.warn("Not all the configuration entries are legal. Refresh the configuration file.");
+                save();
+            }
         } catch (IOException | IllegalAccessException e) {
             LOGGER.error("Failed to load configuration", e);
             save(); // Create default config on error
@@ -149,15 +153,20 @@ public final class ConfigsManager {
      * Convert config object to Map using reflection to avoid type tags in YAML.
      */
     private static Map<String, Object> saveConfigCategoryToMap(Object configObject) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>();
         for (Field field : configObject.getClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(ConfigEntry.class)) {
                 try {
                     field.setAccessible(true);
                     Object value = field.get(configObject);
+
+                    // special cases
                     if (value instanceof Enum<?> e) {
                         value = e.name();
+                    } else if (value instanceof Set<?> s) {
+                        value = s.stream().sorted().toList();
                     }
+
                     map.put(field.getName(), value);
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
@@ -167,18 +176,31 @@ public final class ConfigsManager {
         return map;
     }
 
-    private static void loadConfigCategoryFromMap(Map<?, ?> dataMap, Object configObject) {
+    private static boolean loadConfigCategoryFromMap(Map<?, ?> dataMap, Object configObject) {
+        boolean allGood = true;
         for (Map.Entry<?, ?> entry : dataMap.entrySet()) {
             try {
                 Field field = configObject.getClass().getDeclaredField((String) entry.getKey());
                 field.setAccessible(true);
-                Object convertedValue = Misc.convertValue(entry.getValue(), field.getType());
+                Class<?> fieldType = field.getType();
+                Object convertedValue = Misc.convertNumber(entry.getValue(), fieldType);
+
+                // special cases
+                if (Enum.class.isAssignableFrom(fieldType)) {
+                    convertedValue = Enum.valueOf(fieldType.asSubclass(Enum.class), (String) convertedValue);
+                } else if (Set.class.isAssignableFrom(fieldType)) {
+                    convertedValue = Set.copyOf((Collection<?>) convertedValue);
+                }
+
                 field.set(configObject, convertedValue);
-            } catch (NoSuchFieldException e) {
-                LOGGER.warn("Unknown or deprecated entry: {}", entry.getKey());
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
+            } catch (NoSuchFieldException | RuntimeException e) {
+                allGood = false;
+                LOGGER.warn("Bad configuration entry {}: {}", entry.getKey(), entry.getValue());
+                LOGGER.warn(Misc.getStackToString(e));
             }
         }
+        return allGood;
     }
 }

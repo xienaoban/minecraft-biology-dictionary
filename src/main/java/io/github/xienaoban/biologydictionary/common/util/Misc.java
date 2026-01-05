@@ -23,14 +23,8 @@ public final class Misc {
      * Convert value to match the target field type.
      * SnakeYAML parses numbers as Double, but fields may be int, float, etc.
      */
-    public static <T> T convertValue(Object value, Class<?> targetType) {
-        if (targetType.isAssignableFrom(value.getClass())) {
-            return cast(value);
-        }
-        if (targetType == boolean.class && value instanceof Boolean) {
-            return cast(value);
-        }
-        if (value instanceof Number n) {
+    public static <T> T convertNumber(Object value, Class<?> targetType) {
+        if (targetType != value.getClass() && value instanceof Number n) {
             Number res;
             if (targetType == byte.class || targetType == Byte.class) {
                 res = n.byteValue();
@@ -49,10 +43,7 @@ public final class Misc {
             }
             return cast(res);
         }
-        if (Enum.class.isAssignableFrom(targetType) && value instanceof String s) {
-            return cast(Enum.valueOf(Misc.cast(targetType), s));
-        }
-        throw new IllegalArgumentException("Cannot convert " + value.getClass() + " to type " + targetType);
+        return cast(value);
     }
 
     public static Class<?> getClazzGeneric(Class<?> targetClazz, Class<?> sourceClazz, int sourceGenericIdx) {
