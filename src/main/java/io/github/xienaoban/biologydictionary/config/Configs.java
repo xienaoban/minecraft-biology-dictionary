@@ -10,18 +10,14 @@ import java.util.Set;
 /**
  * Main configuration data class for Biology Dictionary.
  * Uses annotations for automatic YAML serialization and Cloth Config generation.
+ * <p>
+ * I'm not going to use @Environment(EnvType.CLIENT) here, or things will get too complicated.
  */
 @Config(Lang.CONFIG_TITLE)
 public final class Configs {
-    @ConfigCategory(Lang.CONFIG_CATEGORY_SERVER)
-    private final ServerConfigs server = new ServerConfigs();
-
-    @ConfigCategory(Lang.CONFIG_CATEGORY_CLIENT)
-    private final ClientConfigs client = new ClientConfigs();
-
     /**
      * Server-side configuration options.
-     * These settings are used when running a local server or singleplayer.
+     * These settings are used when running a server or singleplayer.
      */
     public static class ServerConfigs {
         @ConfigEntry
@@ -44,6 +40,12 @@ public final class Configs {
             return firstPersonShoulderEntityPosition;
         }
     }
+
+    @ConfigCategory(Lang.CONFIG_CATEGORY_SERVER)
+    private final ServerConfigs server = new ServerConfigs();
+
+    @ConfigCategory(Lang.CONFIG_CATEGORY_CLIENT)
+    private final ClientConfigs client = new ClientConfigs();
 
     public ServerConfigs getServer() {
         return server;

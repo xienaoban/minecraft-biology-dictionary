@@ -43,6 +43,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
     private void initBookmarks() {
         addBookmarkFromLast(new OpenBdAboutScreenBookmark());
+        addBookmarkFromLast(new OpenBdConfigScreenBookmark());
         addBookmark(new AllEntitiesBookmark());
         for (EntityManager.TagGroup group : EntityManager.getInstance().getTagGroups()) {
             addBookmark(new TagGroupBookmark(group));

@@ -1,10 +1,12 @@
 package io.github.xienaoban.biologydictionary.config;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
-import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -30,7 +32,7 @@ public final class ConfigsManager {
     private ConfigsManager() {} // Utility class
 
     /**
-     * Get the configuration instance.
+     * Get the local configuration instance.
      */
     public static Configs getInstance() {
         return INSTANCE;
@@ -45,8 +47,10 @@ public final class ConfigsManager {
     }
 
     /**
-     * Get the client configuration.
+     * Get the active client configuration.
+     * Not like the server configs, it never changes.
      */
+    @Environment(EnvType.CLIENT)
     public static Configs.ClientConfigs getClient() {
         return clientConfigs;
     }
@@ -55,6 +59,7 @@ public final class ConfigsManager {
      * Set remote server configuration from server.
      * Called when receiving config packet from server.
      */
+    @Environment(EnvType.CLIENT)
     public static void setRemoteServerConfigs(Configs.ServerConfigs remoteConfigs) {
         serverConfigs = remoteConfigs;
         LOGGER.info("Using remote server configs");
@@ -64,13 +69,14 @@ public final class ConfigsManager {
      * Reset to local server configuration.
      * Called when disconnecting from a server or in singleplayer.
      */
+    @Environment(EnvType.CLIENT)
     public static void setLocalServerConfigs() {
         serverConfigs = INSTANCE.getServer();
         LOGGER.info("Using local server configs");
     }
 
     private static Path getConfigPath() {
-        return FabricLoader.getInstance().getConfigDir().resolve(Lang.CONFIG_FILE);
+        return DevUtils.getConfigDir().resolve(Lang.CONFIG_FILE);
     }
 
     /**
