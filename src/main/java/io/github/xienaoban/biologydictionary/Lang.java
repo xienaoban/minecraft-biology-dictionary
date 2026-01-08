@@ -57,6 +57,7 @@ public final class Lang {
     BOOKMARK_ALL          = "bookmark.biologydictionary.all",
     BOOKMARK_BACK_TO_HOME = "bookmark.biologydictionary.back_to_home",
     BOOKMARK_BACK         = "bookmark.biologydictionary.back",
+    BOOKMARK_CONFIG       = "bookmark.biologydictionary.config",
     BOOKMARK_ABOUT        = "bookmark.biologydictionary.about",
 
     TAG_GROUP_DEFAULT   = "tag_group.biologydictionary.default",

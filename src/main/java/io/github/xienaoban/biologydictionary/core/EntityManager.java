@@ -165,6 +165,9 @@ public final class EntityManager {
         }
     }
 
+    /**
+     * @see net.minecraft.tags.EntityTypeTags
+     */
     private void initMcTagTagGroups() {
         TagGroup tags = mcTagTags;
         BuiltInRegistries.ENTITY_TYPE.getTags()

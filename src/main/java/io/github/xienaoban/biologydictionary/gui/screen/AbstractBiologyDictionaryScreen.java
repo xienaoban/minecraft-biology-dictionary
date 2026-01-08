@@ -366,6 +366,22 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
     }
 
+    public final class OpenBdConfigScreenBookmark extends Bookmark {
+        public OpenBdConfigScreenBookmark() {
+            super(Component.translatable(Lang.BOOKMARK_CONFIG));
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                ClientUtils.setScreen(client, new BdConfigScreen());
+                return true;
+            }
+            return super.onMouseDown(x, y, code);
+        }
+    }
+
     public final class OpenBdAboutScreenBookmark extends Bookmark {
         public OpenBdAboutScreenBookmark() {
             super(Component.translatable(Lang.BOOKMARK_ABOUT));
