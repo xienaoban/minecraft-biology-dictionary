@@ -60,11 +60,11 @@ public final class Lang {
     BOOKMARK_CONFIG       = "bookmark.biologydictionary.config",
     BOOKMARK_ABOUT        = "bookmark.biologydictionary.about",
 
-    TAG_GROUP_DEFAULT   = "tag_group.biologydictionary.default",
-    TAG_GROUP_TAG       = "tag_group.biologydictionary.tag",
-    TAG_GROUP_CLASS     = "tag_group.biologydictionary.class",
-    TAG_GROUP_INTERFACE = "tag_group.biologydictionary.interface",
-    TAG_GROUP_MODS      = "tag_group.biologydictionary.mod",
+    TAG_GROUP_DEFAULT        = "tag_group.biologydictionary.default",
+    TAG_GROUP_TAG            = "tag_group.biologydictionary.tag",
+    TAG_GROUP_CLASS          = "tag_group.biologydictionary.class",
+    TAG_GROUP_INTERFACE      = "tag_group.biologydictionary.interface",
+    TAG_GROUP_MODS           = "tag_group.biologydictionary.mod",
     TAG_GROUP_DEFAULT_DESC   = "tag_group.biologydictionary.default.desc",
     TAG_GROUP_TAG_DESC       = "tag_group.biologydictionary.tag.desc",
     TAG_GROUP_CLASS_DESC     = "tag_group.biologydictionary.class.desc",
@@ -192,6 +192,10 @@ public final class Lang {
     PROPERTY_WIDGET_INVENTORY_STEAL_DESC2       = "property_widget.biologydictionary.inventory.steal.desc2",
     PROPERTY_WIDGET_INVENTORY_STEAL_CREATIVE    = "property_widget.biologydictionary.inventory.steal.creative",
     PROPERTY_WIDGET_INVENTORY_STEAL_SURVIVAL    = "property_widget.biologydictionary.inventory.steal.survival",
+
+    TEXT_OPEN_LOCAL_CONFIGS_SCREEN  = "text.biologydictionary.open_local_configs_screen",
+    TEXT_LOCAL_CONFIGS_DESC         = "text.biologydictionary.local_configs_desc",
+    TEXT_SERVER_CONFIGS_DESC        = "text.biologydictionary.server_configs_desc",
 
     TEXT_MOD_NAME_IS                         = "text.biologydictionary.mod_name_is",
     TEXT_AUTHOR_IS                           = "text.biologydictionary.author_is",
