@@ -101,7 +101,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
             super(1, Page.COLUMNS);
             this.configName = entryInfo.getName();
             this.value = entryInfo.getValue();
-            this.configText = Component.translatable(Lang.CONFIG_ENTRY_PREFIX + configName);// todo: extract func
+            this.configText = Component.translatable(Configs.getConfigNameTranslationKey(configName));
             this.valueText = formatValue(value);
             setSelectable(false);
             setHoverable(false);
@@ -132,10 +132,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
             return switch (value) {
                 case null -> Component.translatable(Lang.TEXT_NONE_WITH_BRACKETS);
                 case Boolean b -> Component.translatable(b ? Lang.GUI_YES : Lang.GUI_NO);
-                case Enum<?> e -> {
-                    String enumKey = "enum." + e.getClass().getName().replace('$', '.') + "." + e.name(); // todo: extract func
-                    yield Component.translatable(enumKey); // todo: extract func
-                }
+                case Enum<?> e -> Component.translatable(Configs.getEnumValueTranslationKey(e));
                 case Collection<?> s -> Component.literal(String.valueOf(s.size()));
                 default -> Component.literal(String.valueOf(value));
             };

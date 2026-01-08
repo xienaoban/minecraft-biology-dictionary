@@ -332,10 +332,10 @@
   "variant.minecraft.wolf.chestnut" : "栗色",
   "variant.minecraft.wolf.striped"  : "条纹",
 
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.NONE": "不显示",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.TOP": "顶部",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.SIDES": "两侧",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.BOTTOM": "底部",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "不显示",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "顶部",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.SIDES": "两侧",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.BOTTOM": "底部",
 
   "modmenu.nameTranslation.biologydictionary": "生物辞典",
   "modmenu.descriptionTranslation.biologydictionary": "展示或修改生物的属性与状态。",

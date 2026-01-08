@@ -79,7 +79,7 @@ public class ClothConfigScreenProvider {
         String fieldName = field.getName();
         Class<?> fieldType = field.getType();
 
-        String entryKey = Lang.CONFIG_ENTRY_PREFIX + fieldName;
+        String entryKey = Configs.getConfigNameTranslationKey(fieldName);
         String tooltipKey = entryKey + Lang.CONFIG_TOOLTIP_SUFFIX;
         Component fieldText = Component.translatable(entryKey);
         Component tooltipText = Component.translatable(tooltipKey);
@@ -122,7 +122,7 @@ public class ClothConfigScreenProvider {
                 builder = entryBuilder.startStrField(fieldText, (String) currentValue);
             } else if (fieldType.isEnum()) {
                 builder = entryBuilder.startEnumSelector(fieldText, Misc.cast(fieldType), Misc.cast(currentValue))
-                        .setEnumNameProvider(e -> Component.translatable("enum." + e.getClass().getName().replace('$', '.') + "." + e.name()));
+                        .setEnumNameProvider(e -> Component.translatable(Configs.getEnumValueTranslationKey(e)));
             } else if (List.class.isAssignableFrom(fieldType)) {
                 // Only support string list!
                 builder = entryBuilder.startStrList(fieldText, (List<String>) currentValue);
