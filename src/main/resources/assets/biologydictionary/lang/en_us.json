@@ -332,10 +332,10 @@
   "variant.minecraft.wolf.chestnut" : "Chestnut",
   "variant.minecraft.wolf.striped"  : "Striped",
 
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.NONE": "None",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.TOP": "Top",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.SIDES": "Sides",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.FirstPersonShoulderEntityPosition.BOTTOM": "Bottom",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "None",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "Top",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.SIDES": "Sides",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.BOTTOM": "Bottom",
 
   "modmenu.nameTranslation.biologydictionary": "Biology Dictionary",
   "modmenu.descriptionTranslation.biologydictionary": "To display or modify the properties and states of mobs.",

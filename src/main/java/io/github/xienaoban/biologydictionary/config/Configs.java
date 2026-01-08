@@ -42,6 +42,10 @@ public final class Configs {
         public FirstPersonShoulderEntityPosition getFirstPersonShoulderEntityPosition() {
             return firstPersonShoulderEntityPosition;
         }
+
+        public enum FirstPersonShoulderEntityPosition {
+            NONE, BOTTOM, SIDES, TOP
+        }
     }
 
     @ConfigCategory(Lang.CONFIG_CATEGORY_SERVER)
@@ -58,9 +62,17 @@ public final class Configs {
         return client;
     }
 
-    public enum FirstPersonShoulderEntityPosition {
-        NONE, BOTTOM, SIDES, TOP
+    // ==================== Translation Key Utilities ====================
+
+    public static String getConfigNameTranslationKey(String fieldName) {
+        return Lang.CONFIG_ENTRY_PREFIX + fieldName;
     }
+
+    public static String getEnumValueTranslationKey(Enum<?> enumValue) {
+        return "enum." + enumValue.getClass().getName().replace('$', '.') + "." + enumValue.name();
+    }
+
+    // ==================== Config Entry Traversal ====================
 
     /**
      * Iterate through all config entries in this configs instance.
