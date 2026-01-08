@@ -164,6 +164,10 @@
   "property_widget.biologydictionary.despawn_delay.retain"        : "Persuade to stay",
   "property_widget.biologydictionary.despawn_delay.retain.desc"   : "Have a sip of water and stay for 2 more minutes",
 
+  "text.biologydictionary.open_local_configs_screen": "Open Local Configs Screen",
+  "text.biologydictionary.local_configs_desc"       : "Local Client & Server Configs:",
+  "text.biologydictionary.server_configs_desc"      : "Current Server Configs:",
+
   "text.biologydictionary.mod_name_is": "Mod name: ",
   "text.biologydictionary.author_is": "Author: ",
   "text.biologydictionary.mod_not_installed": "It means that you have not installed the mod `Biology Dictionary` if you see this text. You may download this mod at: ",

@@ -164,6 +164,10 @@
   "property_widget.biologydictionary.despawn_delay.retain"        : "挽留",
   "property_widget.biologydictionary.despawn_delay.retain.desc"   : "喝口（桶）水，再待2分钟呗",
 
+  "text.biologydictionary.open_local_configs_screen": "打开本地配置界面",
+  "text.biologydictionary.local_configs_desc"  : "本地客户端、服务端配置：",
+  "text.biologydictionary.server_configs_desc" : "当前服务端配置：",
+
   "text.biologydictionary.mod_name_is": "模组名：",
   "text.biologydictionary.author_is": "作者：",
   "text.biologydictionary.mod_not_installed": "如果您看到了此段文字，说明您本地并未安装“生物辞典”模组，您可以前往以下网址下载本模组：",
