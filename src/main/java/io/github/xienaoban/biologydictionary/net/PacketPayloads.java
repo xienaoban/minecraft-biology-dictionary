@@ -19,6 +19,8 @@ public final class PacketPayloads {
         registrar.register(SendStealingDetectedPacket.class, SendStealingDetectedPacket.FACTORY);
         registrar.register(RequestBeehiveInfoPacket.class, RequestBeehiveInfoPacket.FACTORY);
         registrar.register(ReplyBeehiveInfoPacket.class, ReplyBeehiveInfoPacket.FACTORY);
+        registrar.register(RequestServerConfigsPacket.class, RequestServerConfigsPacket.FACTORY);
+        registrar.register(ReplyServerConfigsPacket.class, ReplyServerConfigsPacket.FACTORY);
     }
 
     @FunctionalInterface

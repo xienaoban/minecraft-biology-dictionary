@@ -1,7 +1,11 @@
 package io.github.xienaoban.biologydictionary.common.util;
 
 import io.github.xienaoban.biologydictionary.mixin.ServerPlayerIMixin;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSoundEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -55,9 +59,45 @@ public final class PlayerUtils {
     }
 
     public static void playLocalSound(Player player, SoundEvent soundEvent, float volume, float pitch) {
-        // TODO
-        player.level().playLocalSound(player, soundEvent, SoundSource.UI, volume, pitch);
-        // player.playNotifySound(soundEvent, SoundSource.UI, volume, pitch);
+        // We have two choices.
+        playLocalSoundOnEntity(player, soundEvent, volume, pitch);
+        // playLocalSoundAt(player, soundEvent, player.getX(), player.getY(), player.getZ(), volume, pitch);
+    }
+
+    public static void playLocalSoundOnEntity(Player player, SoundEvent soundEvent, float volume, float pitch) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            // On server side, send sound entity packet that follows the player
+            Holder<SoundEvent> soundHolder = BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent);
+            long seed = player.level().getRandom().nextLong();
+            ClientboundSoundEntityPacket packet = new ClientboundSoundEntityPacket(
+                    soundHolder,
+                    SoundSource.UI,
+                    player,  // Entity, not entity ID
+                    volume, pitch, seed
+            );
+            serverPlayer.connection.send(packet);
+        } else {
+            // On client side, play locally
+            player.level().playLocalSound(player, soundEvent, SoundSource.UI, volume, pitch);
+        }
+    }
+
+    public static void playLocalSoundAt(Player player, SoundEvent soundEvent, double x, double y, double z, float volume, float pitch) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            // On server side, send sound packet at fixed position
+            Holder<SoundEvent> soundHolder = BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent);
+            long seed = player.level().getRandom().nextLong();
+            ClientboundSoundPacket packet = new ClientboundSoundPacket(
+                    soundHolder,
+                    SoundSource.UI,
+                    x, y, z,
+                    volume, pitch, seed
+            );
+            serverPlayer.connection.send(packet);
+        } else {
+            // On client side, play locally at position
+            player.level().playSound(player, x, y, z, soundEvent, SoundSource.UI, volume, pitch);
+        }
     }
 
     public static void showClientTextBoxMessage(Player player, Component component) {

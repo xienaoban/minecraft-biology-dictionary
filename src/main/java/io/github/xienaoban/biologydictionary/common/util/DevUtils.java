@@ -5,9 +5,11 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.resources.Identifier;
 
+import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public final class DevUtils {
     public static final String MINECRAFT_PACKAGE = "net.minecraft";
@@ -25,6 +27,14 @@ public final class DevUtils {
 
     public static boolean isClient() {
         return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
+    }
+
+    public static <T> T clientOnly(Supplier<T> supplier) {
+        return isClient() ? supplier.get() : null;
+    }
+
+    public static Path getConfigDir() {
+        return FabricLoader.getInstance().getConfigDir();
     }
 
     /**

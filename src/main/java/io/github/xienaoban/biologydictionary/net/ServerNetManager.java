@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.net.payload.SendCenteredMessagePacket;
 import io.github.xienaoban.biologydictionary.net.payload.ReplyHighlightEntitiesPacket;
 import io.github.xienaoban.biologydictionary.net.payload.ReplyInventoryStealingScreenPacket;
+import io.github.xienaoban.biologydictionary.net.payload.ReplyServerConfigsPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -27,5 +28,9 @@ public final class ServerNetManager {
 
     public static void replyInventoryStealingScreen(ServerPlayer player, int counter, Entity entity, Container container) {
         ServerNetApi.send(player, new ReplyInventoryStealingScreenPacket(counter, EntityUtils.getId(entity), container.getContainerSize()));
+    }
+
+    public static void replyServerConfigs(ServerPlayer player, String serverConfigsYaml) {
+        ServerNetApi.send(player, new ReplyServerConfigsPacket(serverConfigsYaml));
     }
 }

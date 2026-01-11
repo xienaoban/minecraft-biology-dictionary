@@ -23,6 +23,14 @@ public final class Lang {
     BIOLOGY_DICTIONARY = "biologydictionary",
     PACKAGE = "io.github.xienaoban.biologydictionary",
 
+    CONFIG_FILE = "biologydictionary.yml",
+
+    // Translation Keys
+    GUI_OK     = "gui.ok",
+    GUI_CANCEL = "gui.cancel",
+    GUI_YES    = "gui.yes",
+    GUI_NO     = "gui.no",
+
     BIOLOGY_DICTIONARY_TITLE = "title.biologydictionary",
     BIOLOGY_DICTIONARY_DESCRIPTION = "description.biologydictionary",
     AUTHOR = "author.biologydictionary",
@@ -35,11 +43,12 @@ public final class Lang {
 
     ACTIVITY_PREFIX = "activity.minecraft.",
 
-    // Translation Keys
-    GUI_OK = "gui.ok",
-    GUI_CANCEL = "gui.cancel",
-    GUI_YES = "gui.yes",
-    GUI_NO = "gui.no",
+    CONFIG_PREFIX          = "config.biologydictionary.",
+    CONFIG_TITLE           = "config.biologydictionary.title",
+    CONFIG_CATEGORY_SERVER = "config.biologydictionary.category.server",
+    CONFIG_CATEGORY_CLIENT = "config.biologydictionary.category.client",
+    CONFIG_ENTRY_PREFIX    = "config.biologydictionary.entry.",
+    CONFIG_TOOLTIP_SUFFIX  = ".tooltip",
 
     SCREEN_PLAYER_SELECTOR      = "screen.biologydictionary.player_selector",
     SCREEN_PLAYER_SELECTOR_DESC = "screen.biologydictionary.player_selector.desc",
@@ -48,13 +57,14 @@ public final class Lang {
     BOOKMARK_ALL          = "bookmark.biologydictionary.all",
     BOOKMARK_BACK_TO_HOME = "bookmark.biologydictionary.back_to_home",
     BOOKMARK_BACK         = "bookmark.biologydictionary.back",
+    BOOKMARK_CONFIG       = "bookmark.biologydictionary.config",
     BOOKMARK_ABOUT        = "bookmark.biologydictionary.about",
 
-    TAG_GROUP_DEFAULT   = "tag_group.biologydictionary.default",
-    TAG_GROUP_TAG       = "tag_group.biologydictionary.tag",
-    TAG_GROUP_CLASS     = "tag_group.biologydictionary.class",
-    TAG_GROUP_INTERFACE = "tag_group.biologydictionary.interface",
-    TAG_GROUP_MODS      = "tag_group.biologydictionary.mod",
+    TAG_GROUP_DEFAULT        = "tag_group.biologydictionary.default",
+    TAG_GROUP_TAG            = "tag_group.biologydictionary.tag",
+    TAG_GROUP_CLASS          = "tag_group.biologydictionary.class",
+    TAG_GROUP_INTERFACE      = "tag_group.biologydictionary.interface",
+    TAG_GROUP_MODS           = "tag_group.biologydictionary.mod",
     TAG_GROUP_DEFAULT_DESC   = "tag_group.biologydictionary.default.desc",
     TAG_GROUP_TAG_DESC       = "tag_group.biologydictionary.tag.desc",
     TAG_GROUP_CLASS_DESC     = "tag_group.biologydictionary.class.desc",
@@ -183,6 +193,10 @@ public final class Lang {
     PROPERTY_WIDGET_INVENTORY_STEAL_CREATIVE    = "property_widget.biologydictionary.inventory.steal.creative",
     PROPERTY_WIDGET_INVENTORY_STEAL_SURVIVAL    = "property_widget.biologydictionary.inventory.steal.survival",
 
+    TEXT_OPEN_LOCAL_CONFIGS_SCREEN  = "text.biologydictionary.open_local_configs_screen",
+    TEXT_LOCAL_CONFIGS_DESC         = "text.biologydictionary.local_configs_desc",
+    TEXT_SERVER_CONFIGS_DESC        = "text.biologydictionary.server_configs_desc",
+
     TEXT_MOD_NAME_IS                         = "text.biologydictionary.mod_name_is",
     TEXT_AUTHOR_IS                           = "text.biologydictionary.author_is",
     TEXT_MOD_NOT_INSTALLED                   = "text.biologydictionary.mod_not_installed",
@@ -194,6 +208,7 @@ public final class Lang {
     TEXT_FAILED_TO_HIGHLIGHT                 = "text.biologydictionary.failed_to_highlight",
     TEXT_UNKNOWN_ENTITY_ID                   = "text.biologydictionary.unknown_entity_id",
     TEXT_UNKNOWN_ENTITY_TYPE                 = "text.biologydictionary.unknown_entity_type",
+    TEXT_SKILL_BANNED                        = "text.biologydictionary.skill_banned",
     TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS    = "text.biologydictionary.not_allowed_to_highlight_players",
     TEXT_NOT_ENOUGH_EXPERIENCE_POINTS        = "text.biologydictionary.not_enough_experience_points",
     TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS        = "text.biologydictionary.not_enough_experience_levels",

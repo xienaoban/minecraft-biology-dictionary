@@ -19,6 +19,33 @@ public final class Misc {
         return sw.toString();
     }
 
+    /**
+     * Convert value to match the target field type.
+     * SnakeYAML parses numbers as Double, but fields may be int, float, etc.
+     */
+    public static <T> T convertNumber(Object value, Class<?> targetType) {
+        if (targetType != value.getClass() && value instanceof Number n) {
+            Number res;
+            if (targetType == byte.class || targetType == Byte.class) {
+                res = n.byteValue();
+            } else if (targetType == short.class || targetType == Short.class) {
+                res = n.shortValue();
+            } else if (targetType == int.class || targetType == Integer.class) {
+                res = n.intValue();
+            } else if (targetType == long.class || targetType == Long.class) {
+                res = n.longValue();
+            } else if (targetType == float.class || targetType == Float.class) {
+                res = n.floatValue();
+            } else if (targetType == double.class || targetType == Double.class) {
+                res = n.doubleValue();
+            } else {
+                throw new IllegalArgumentException("Cannot convert " + value.getClass() + " to type " + targetType);
+            }
+            return cast(res);
+        }
+        return cast(value);
+    }
+
     public static Class<?> getClazzGeneric(Class<?> targetClazz, Class<?> sourceClazz, int sourceGenericIdx) {
         record ResOrIdx(Class<?> res, int idx) {
             static ResOrIdx of(Class<?> res) {
