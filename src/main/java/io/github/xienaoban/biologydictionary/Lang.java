@@ -208,6 +208,7 @@ public final class Lang {
     TEXT_FAILED_TO_HIGHLIGHT                 = "text.biologydictionary.failed_to_highlight",
     TEXT_UNKNOWN_ENTITY_ID                   = "text.biologydictionary.unknown_entity_id",
     TEXT_UNKNOWN_ENTITY_TYPE                 = "text.biologydictionary.unknown_entity_type",
+    TEXT_SKILL_BANNED                        = "text.biologydictionary.skill_banned",
     TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS    = "text.biologydictionary.not_allowed_to_highlight_players",
     TEXT_NOT_ENOUGH_EXPERIENCE_POINTS        = "text.biologydictionary.not_enough_experience_points",
     TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS        = "text.biologydictionary.not_enough_experience_levels",

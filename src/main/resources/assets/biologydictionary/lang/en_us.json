@@ -179,6 +179,7 @@
   "text.biologydictionary.failed_to_highlight": "Failed to highlight: %s",
   "text.biologydictionary.unknown_entity_id": "Unknown entity ID",
   "text.biologydictionary.unknown_entity_type": "Unknown entity type",
+  "text.biologydictionary.skill_banned": "The skill is banned by the server: %s",
   "text.biologydictionary.not_allowed_to_highlight_players": "Not allowed to highlight players",
   "text.biologydictionary.not_enough_experience_points": "Not enough experience: %d points required",
   "text.biologydictionary.not_enough_experience_levels": "Not enough experience: %d levels required",

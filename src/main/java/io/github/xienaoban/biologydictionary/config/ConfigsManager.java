@@ -28,7 +28,7 @@ import java.util.*;
  */
 public final class ConfigsManager {
     private static final Configs INSTANCE = new Configs();
-    private static Configs.ServerConfigs serverConfigs = INSTANCE.getServer();
+    private static volatile Configs.ServerConfigs serverConfigs = INSTANCE.getServer();
     private static final Configs.ClientConfigs clientConfigs = INSTANCE.getClient();
 
     private ConfigsManager() {} // Utility class

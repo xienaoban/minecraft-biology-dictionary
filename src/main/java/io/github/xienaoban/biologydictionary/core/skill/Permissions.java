@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.InventoryUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
@@ -15,6 +16,13 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Objects;
 
 public final class Permissions {
+
+    public static void checkSkillNotBanned(String skillClassName) {
+        if (ConfigsManager.getServer().getBannedPlayerSkills().contains(skillClassName)) {
+            throw new NoPermissionException(Component.translatable(Lang.TEXT_SKILL_BANNED, skillClassName), "Skill is banned by server config: " + skillClassName);
+        }
+    }
+
     public static <T> void checkLegalArg(T actual, T expect) {
         if (!Objects.equals(actual, expect)) {
             throw new IllegalArgumentException("Bad arg: expect={" + expect + "}, actual={" + actual + "}");
