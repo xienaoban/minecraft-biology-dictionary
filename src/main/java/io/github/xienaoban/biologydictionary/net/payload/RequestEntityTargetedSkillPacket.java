@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
+import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
@@ -40,6 +41,7 @@ public record RequestEntityTargetedSkillPacket(String skillKey, int entityId, Ta
         }
 
         try {
+            Permissions.checkSkillNotBanned(skillKey);
             EntityTargetedSkill<?> skill = PlayerSkills.getEntityTargetedSkill(skillKey);
             skill.serverReceive(ctx.server(), ctx.player(), Misc.cast(entity), args);
         } catch (NoPermissionException e) {

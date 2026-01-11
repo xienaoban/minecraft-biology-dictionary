@@ -179,6 +179,7 @@
   "text.biologydictionary.failed_to_highlight": "高亮失败：%s",
   "text.biologydictionary.unknown_entity_id": "未知生物ID",
   "text.biologydictionary.unknown_entity_type": "未知生物类型",
+  "text.biologydictionary.skill_banned": "此技能已被服务器禁用：%s",
   "text.biologydictionary.not_allowed_to_highlight_players": "不支持高亮玩家",
   "text.biologydictionary.not_enough_experience_points": "经验值不足：需要%d点经验",
   "text.biologydictionary.not_enough_experience_levels": "经验值不足：需要%d级经验",
