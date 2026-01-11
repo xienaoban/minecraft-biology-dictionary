@@ -133,6 +133,11 @@ public final class PlayerSkills {
     public static boolean sendEntityTargetedSkill(Entity entity, Object... args) {
         try {
             String skillKey = StackWalker.getInstance().walk(stream -> stream.skip(1).findFirst().orElseThrow().getClassName());
+
+            // To avoid delayed refresh of client-side configurations,
+            // this validation is not performed on the client side.
+            // Permissions.checkSkillNotBanned(skillKey);
+
             EntityTargetedSkill<?> skill = PlayerSkills.getEntityTargetedSkill(skillKey);
             Tag nbtArgs = skill.clientSend(ClientUtils.getClientPlayer(), Misc.cast(entity), args);
             ClientNetManager.sendEntityTargetedSkill(skillKey, entity, nbtArgs);

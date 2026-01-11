@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.client.ClientEventRegistry;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
@@ -41,10 +42,15 @@ public final class BiologyDictionaryClient {
         hitBlock = null;
         hitEntityProperties = null;
 
-        ClientEventRegistry.registerWorldConnected(client -> EntityManager.init());
+        ClientEventRegistry.registerWorldConnected(client -> {
+            // Only request server configs from remote servers, not local servers.
+            if (!client.isLocalServer()) { ClientNetManager.requestServerConfigs(); }
+            EntityManager.init();
+        });
         ClientEventRegistry.registerWorldDisconnecting(client -> {
             FirstPersonShoulderEntityRenderer.clear();
             EntityManager.destroy();
+            ConfigsManager.setLocalServerConfigs();
         });
         ClientEventRegistry.registerEndTick(this::tick);
 

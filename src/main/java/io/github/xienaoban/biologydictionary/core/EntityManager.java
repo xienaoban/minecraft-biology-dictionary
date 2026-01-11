@@ -93,7 +93,7 @@ public final class EntityManager {
     private final List<TagGroup> tagGroups = new ArrayList<>(Arrays.asList(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
 
     private EntityManager(Level level) {
-        EntityOrder.map.get(null);
+        EntityOrder.init();
 
         initEntities(level);
         initEntitiesSortClassInfo();
@@ -165,6 +165,9 @@ public final class EntityManager {
         }
     }
 
+    /**
+     * @see net.minecraft.tags.EntityTypeTags
+     */
     private void initMcTagTagGroups() {
         TagGroup tags = mcTagTags;
         BuiltInRegistries.ENTITY_TYPE.getTags()

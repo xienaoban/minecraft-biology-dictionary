@@ -23,6 +23,9 @@
         ],
         "client": [
             "io.github.xienaoban.biologydictionary.common.ClientModInitializer"
+        ],
+        "modmenu": [
+            "io.github.xienaoban.biologydictionary.config.ModMenuConfigScreenProvider"
         ]
     },
     "mixins": [
