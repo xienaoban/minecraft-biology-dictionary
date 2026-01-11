@@ -131,9 +131,13 @@ public final class Configs {
         }
 
         public Object getValue() {
+            return getValue(categoryObject);
+        }
+
+        public Object getValue(Object anotherCategoryObject) {
             try {
                 field.setAccessible(true);
-                return field.get(categoryObject);
+                return field.get(anotherCategoryObject);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("Failed to read config value", e);
             }

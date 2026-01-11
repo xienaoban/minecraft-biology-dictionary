@@ -92,17 +92,13 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
      * Shows the translated config name on the left and the current value on the right.
      */
     public static class ConfigWidget extends Widget {
-        private final String configName;
-        private final Object value;
+        private final Configs.ConfigEntryInfo entryInfo;
         private final Component configText;
-        private final Component valueText;
 
         public ConfigWidget(Configs.ConfigEntryInfo entryInfo) {
             super(1, Page.COLUMNS);
-            this.configName = entryInfo.getName();
-            this.value = entryInfo.getValue();
-            this.configText = Component.translatable(Configs.getConfigNameTranslationKey(configName));
-            this.valueText = formatValue(value);
+            this.entryInfo = entryInfo;
+            this.configText = Component.translatable(Configs.getConfigNameTranslationKey(entryInfo.getName()));
             setSelectable(false);
             setHoverable(false);
         }
@@ -124,6 +120,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
                     box.getLeft() + 12, box.getTop() + 3);
 
             // Render current value on the right
+            Component valueText = formatValue(entryInfo.getValue(ConfigsManager.getServer()));
             ctx.renderRightAlignedText(valueText, Colors.BLACK, 0.5F, ctx.getZ(),
                     box.getRight() - 2, box.getTop() + 3);
         }

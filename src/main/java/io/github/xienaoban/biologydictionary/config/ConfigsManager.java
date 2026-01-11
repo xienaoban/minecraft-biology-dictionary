@@ -15,6 +15,8 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -152,6 +154,51 @@ public final class ConfigsManager {
         } catch (IOException | IllegalAccessException e) {
             LOGGER.error("Failed to load configuration", e);
             save(); // Create default config on error
+        }
+    }
+
+    // ==================== Serialization/Deserialization Utilities ====================
+
+    /**
+     * Serialize a config category object to a YAML string.
+     * This is used for sending configs over the network.
+     *
+     * @param configObject The config category object (e.g., ServerConfigs)
+     * @return YAML string representation of the config
+     */
+    public static String serializeConfigCategory(Object configObject) {
+        Map<String, Object> map = saveConfigCategoryToMap(configObject);
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        options.setPrettyFlow(true);
+        Yaml yaml = new Yaml(options);
+        try (StringWriter writer = new StringWriter()) {
+            yaml.dump(map, writer);
+            return writer.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to serialize config", e);
+        }
+    }
+
+    /**
+     * Deserialize a YAML string to a config category object.
+     * This is used for receiving configs over the network.
+     *
+     * @param yamlString The YAML string representation
+     * @param targetObject The target config object to populate (e.g., new ServerConfigs())
+     * @return true if deserialization succeeded, false otherwise
+     */
+    public static boolean deserializeConfigCategory(String yamlString, Object targetObject) {
+        try (StringReader reader = new StringReader(yamlString)) {
+            Yaml yaml = new Yaml();
+            Map<?, ?> dataMap = yaml.load(reader);
+            if (dataMap == null) {
+                return false;
+            }
+            return loadConfigCategoryFromMap(dataMap, targetObject);
+        } catch (Exception e) {
+            LOGGER.error("Failed to deserialize config", e);
+            return false;
         }
     }
 
