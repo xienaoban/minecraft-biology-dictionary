@@ -2,14 +2,13 @@
 
 [**English**](README.md) | **简体中文**
 
-[![Download](https://img.shields.io/badge/下载-Modrinth-%2343b581?style=for-the-badge&logo=modrinth)](MODRINTH_DOWNLOAD_LINK)
-[![Download](https://img.shields.io/badge/下载-CurseForge-%23ff6b6b?style=for-the-badge&logo=curseforge)](CURSEFORGE_DOWNLOAD_LINK)
+[![Download - Modrinth](https://img.shields.io/badge/下载-Modrinth-%2343b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
+[![Download - Curseforge](https://img.shields.io/badge/下载-CurseForge-%23ff6b6b?style=for-the-badge&logo=curseforge)](https://legacy.curseforge.com/minecraft/mc-mods/biology-dictionary)
+![License](https://img.shields.io/badge/License-LGPL3-blue?style=for-the-badge)
 
 ![Minecraft 1.21.11](https://img.shields.io/badge/Minecraft-1.21.11-brightgreen?style=for-the-badge)
 ![Fabric API](https://img.shields.io/badge/Fabric%20API-latest-%23a335ee?style=for-the-badge&logo=fabric)
 ![Cloth Config](https://img.shields.io/badge/Cloth%20Config-latest-%2315B19E?style=for-the-badge&logo=cloth)
-
-![License](https://img.shields.io/badge/License-LGPL3-blue?style=for-the-badge)
 
 ---
 
@@ -39,9 +38,9 @@
 
 |                                 |                                 |                                 |
 |---------------------------------|---------------------------------|---------------------------------|
-| ![](res/screenshot_zh_cn_1.png) | ![](res/screenshot_zh_cn_2.png) | ![](res/screenshot_zh_cn_3.png) |
-| ![](res/screenshot_zh_cn_4.png) | ![](res/screenshot_zh_cn_5.png) | ![](res/screenshot_zh_cn_6.png) |
-| ![](res/screenshot_zh_cn_7.png) | ![](res/screenshot_zh_cn_8.png) | ![](res/screenshot_zh_cn_9.png) |
+| ![](res/screenshot_zh_cn_1.jpg) | ![](res/screenshot_zh_cn_2.jpg) | ![](res/screenshot_zh_cn_3.jpg) |
+| ![](res/screenshot_zh_cn_4.jpg) | ![](res/screenshot_zh_cn_5.jpg) | ![](res/screenshot_zh_cn_6.jpg) |
+| ![](res/screenshot_zh_cn_7.jpg) | ![](res/screenshot_zh_cn_8.jpg) | ![](res/screenshot_zh_cn_9.jpg) |
 
 本模组当前仅支持 Fabric，且依赖 Fabric API 和 Cloth Config API。随着开发的深入，本模组看上去与最开始的初衷（完善生电体验）差得有点多，因此可能有人会问为什么不基于 Forge 开发，因为 Forge 上有很多模组添加了很多新的生物，本模组似乎对于查看这些生物的属性很有帮助。
 

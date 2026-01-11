@@ -2,14 +2,13 @@
 
 **English** | [**简体中文**](README.zh-CN.md)
 
-[![Download - Modrinth](https://img.shields.io/badge/download-Modrinth-%2343b581?style=for-the-badge&logo=modrinth)](MODRINTH_DOWNLOAD_LINK)
-[![Download - Curseforge](https://img.shields.io/badge/download-CurseForge-%23ff6b6b?style=for-the-badge&logo=curseforge)](CURSEFORGE_DOWNLOAD_LINK)
+[![Download - Modrinth](https://img.shields.io/badge/download-Modrinth-%2343b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
+[![Download - Curseforge](https://img.shields.io/badge/download-CurseForge-%23ff6b6b?style=for-the-badge&logo=curseforge)](https://legacy.curseforge.com/minecraft/mc-mods/biology-dictionary)
+![License](https://img.shields.io/badge/License-LGPL3-blue?style=for-the-badge)
 
 ![Minecraft 1.21.11](https://img.shields.io/badge/Minecraft-1.21.11-brightgreen?style=for-the-badge)
 ![Fabric API](https://img.shields.io/badge/Fabric%20API-latest-%23a335ee?style=for-the-badge&logo=fabric)
 ![Cloth Config](https://img.shields.io/badge/Cloth%20Config-latest-%2315B19E?style=for-the-badge&logo=fabric)
-
-![License](https://img.shields.io/badge/License-LGPL3-blue?style=for-the-badge)
 
 ---
 
@@ -39,9 +38,9 @@ However, technical survival players sometimes don't care about mod aesthetics. I
 
 |                                 |                                 |                                 |
 |---------------------------------|---------------------------------|---------------------------------|
-| ![](res/screenshot_en_us_1.png) | ![](res/screenshot_en_us_2.png) | ![](res/screenshot_en_us_3.png) |
-| ![](res/screenshot_en_us_4.png) | ![](res/screenshot_en_us_5.png) | ![](res/screenshot_en_us_6.png) |
-| ![](res/screenshot_en_us_7.png) | ![](res/screenshot_en_us_8.png) | ![](res/screenshot_en_us_9.png) |
+| ![](res/screenshot_en_us_1.jpg) | ![](res/screenshot_en_us_2.jpg) | ![](res/screenshot_en_us_3.jpg) |
+| ![](res/screenshot_en_us_4.jpg) | ![](res/screenshot_en_us_5.jpg) | ![](res/screenshot_en_us_6.jpg) |
+| ![](res/screenshot_en_us_7.jpg) | ![](res/screenshot_en_us_8.jpg) | ![](res/screenshot_en_us_9.jpg) |
 
 This mod currently only supports Fabric and requires Fabric API and Cloth Config API. As development progressed, this mod seems to have drifted quite far from its original intention (enhancing technical survival experience), so some might ask why I didn't develop it for Forge, as many Forge mods add new mobs, and this mod seems useful for viewing attributes of those mobs.
 
