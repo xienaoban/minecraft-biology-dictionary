@@ -42,7 +42,7 @@ However, technical survival players sometimes don't care about mod aesthetics. I
 | ![](res/screenshot_en_us_4.jpg) | ![](res/screenshot_en_us_5.jpg) | ![](res/screenshot_en_us_6.jpg) |
 | ![](res/screenshot_en_us_7.jpg) | ![](res/screenshot_en_us_8.jpg) | ![](res/screenshot_en_us_9.jpg) |
 
-This mod currently only supports **Fabric** and requires **Fabric API** and **Cloth Config API**. As development progressed, this mod seems to have drifted quite far from its original intention (enhancing technical survival experience), so some might ask why I didn't develop it for Forge, as many Forge mods add new mobs, and this mod seems useful for viewing attributes of those mobs.
+This mod currently only supports **<span style="color: red;">Fabric API</span>** and **<span style="color: red;">Cloth Config API</span>**. As development progressed, this mod seems to have drifted quite far from its original intention (enhancing technical survival experience), so some might ask why I didn't develop it for Forge, as many Forge mods add new mobs, and this mod seems useful for viewing attributes of those mobs.
 
 - First, yes, this mod supports third-party mobs. If there's enough demand, I'll consider opening APIs for third-party mob entity widgets.
 - Second, the mod's original intent was to enhance vanilla survival experience + keep up with latest Minecraft versions. When I started development, Forge was slow to update and didn't support optimizations like Sodium, so I didn't consider it. However, NeoForge has developed well recently, so I'm currently waiting to see how things progress.
