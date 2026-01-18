@@ -70,7 +70,8 @@ dependencies {
     }
 
     // SnakeYAML for config file parsing
-    implementation "org.yaml:snakeyaml:2.2"
+    modImplementation "org.yaml:snakeyaml:2.2"
+    include "org.yaml:snakeyaml:2.2"
 
     testServerImplementation "com.github.javaparser:javaparser-symbol-solver-core:${project.javaparser_version}"
     testServerImplementation "org.bitbucket.mstrobel:procyon-compilertools:${project.procyon_version}"
