@@ -1,0 +1,69 @@
+# Publish mod to Modrinth, CurseForge and GitHub
+# Triggered by creating a GitHub release or pushing a tag
+
+name: release
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger on version tags like v0.5.0-mc1.21.11-fabric
+  workflow_dispatch:  # Allow manual triggering from GitHub Actions page
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    if: startsWith(github.ref, 'refs/tags/')  # Only run on tags, not branches
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: setup jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: build
+        run: ./gradlew build -Dbuild.release=true
+
+      - name: publish to modrinth, curseforge and github
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # Modrinth
+          modrinth-id: biology-dictionary
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          # CurseForge
+          curseforge-id: 1426515
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          # GitHub
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Version info
+          name: 'Biology Dictionary ${{ github.ref_name }}'
+          version: '${{ github.ref_name }}'
+          version-type: release
+          changelog-file: CHANGELOG.md
+
+          # Game and loader info
+          loaders: fabric
+          java: 25
+
+          # Dependencies
+          dependencies: |
+            fabric-api
+            cloth-config
+
+          # Files
+          files: |
+            build/libs/!(*-sources|*-*dev|*-javadoc).jar
