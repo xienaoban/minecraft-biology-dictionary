@@ -6,9 +6,18 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
+Configs:
+- bookItemRequired
+- bookItemObtainableFromWanderingTrader
+
+GUI:
+- Tooltips of server configs on config screen
+
 ### Changed
 
 ### Fixed
+
+- #11: A `@Environment(EnvType.CLIENT)` that should not exist
 
 ---
 

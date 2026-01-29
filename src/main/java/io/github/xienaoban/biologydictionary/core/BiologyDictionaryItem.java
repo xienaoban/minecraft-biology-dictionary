@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.server.ItemRegistry;
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.mixin.CustomDataIMixin;
 import io.github.xienaoban.biologydictionary.mixin.MinecraftMixin;
 import net.minecraft.core.component.DataComponents;
@@ -65,6 +66,10 @@ public final class BiologyDictionaryItem {
      * @see net.minecraft.world.entity.npc.villager.VillagerTrades
      */
     public static void addToWanderingTraderTrades(WanderingTrader entity) {
+        if (!ConfigsManager.getServer().isBookItemObtainableFromWanderingTrader()) {
+            return;
+        }
+
         final int maxTicks = 2 * 24 * 60 * 60 * 20;
         int r = entity.getRandom().nextInt(maxTicks + (maxTicks >> 2));
         int t = (int) Math.min(EntityUtils.getLevel(entity).getDayTime(), maxTicks);
