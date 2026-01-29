@@ -13,10 +13,13 @@ import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -93,14 +96,15 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
      */
     public static class ConfigWidget extends Widget {
         private final Configs.ConfigEntryInfo entryInfo;
-        private final Component configText;
+        private final MutableComponent configText;
+        private final MutableComponent configTooltipText;
 
         public ConfigWidget(Configs.ConfigEntryInfo entryInfo) {
             super(1, Page.COLUMNS);
             this.entryInfo = entryInfo;
             this.configText = Component.translatable(Configs.getConfigNameTranslationKey(entryInfo.getName()));
+            this.configTooltipText = Component.translatable(Configs.getConfigNameTranslationKey(entryInfo.getName()) + ".tooltip");
             setSelectable(false);
-            setHoverable(false);
         }
 
         @Override
@@ -123,6 +127,16 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
             Component valueText = formatValue(entryInfo.getValue(ConfigsManager.getServer()));
             ctx.renderRightAlignedText(valueText, Colors.BLACK, 0.5F, ctx.getZ(),
                     box.getRight() - 2, box.getTop() + 3);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            List<Component> list = Arrays.asList(
+                    configText.withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
+                    configTooltipText.withStyle(ChatFormatting.GRAY)
+            );
+            ctx.renderComponentTooltip(list, 0.5F, getBox().getLeft(), getBox().getBottom() + 1);
+            return true;
         }
 
         private static Component formatValue(Object value) {

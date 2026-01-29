@@ -24,7 +24,21 @@ public final class Configs {
      */
     public static class ServerConfigs {
         @ConfigEntry
+        boolean bookItemRequired = true;
+
+        @ConfigEntry
+        boolean bookItemObtainableFromWanderingTrader = true;
+
+        @ConfigEntry
         Set<String> bannedPlayerSkills = Set.of();
+
+        public boolean isBookItemRequired() {
+            return bookItemRequired;
+        }
+
+        public boolean isBookItemObtainableFromWanderingTrader() {
+            return bookItemObtainableFromWanderingTrader;
+        }
 
         public Set<String> getBannedPlayerSkills() {
             return bannedPlayerSkills;

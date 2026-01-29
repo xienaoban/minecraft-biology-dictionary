@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.client;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.*;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.screen.BdEntityDetailScreen;
@@ -33,8 +34,8 @@ public final class BiologyDictionaryEvent {
         LocalPlayer player = ClientUtils.getClientPlayer(client);
         try {
             resetHit();
-            if (isCreativeOrHasBook(player)) {
-                tryOpenBookScreen(client, player);
+            if (hasPermissionToOpenBook(player)) {
+                openBookScreen0(client, player);
             } else {
                 ClientUtils.sendCenteredMessage(Component.translatable(Lang.TEXT_NO_BIOLOGY_DICTIONARY_BOOK).withStyle(ChatFormatting.YELLOW));
             }
@@ -44,7 +45,7 @@ public final class BiologyDictionaryEvent {
         }
     }
 
-    private static void tryOpenBookScreen(Minecraft client, LocalPlayer player) {
+    private static void openBookScreen0(Minecraft client, LocalPlayer player) {
         if (player == null) {
             LOGGER.error("Client player is null. Fail to open the Bole Screen.");
             return;
@@ -109,7 +110,9 @@ public final class BiologyDictionaryEvent {
                 (is1, is2) -> BiologyDictionaryItem.isBook(is2));
     }
 
-    private static boolean isCreativeOrHasBook(LocalPlayer player) {
-        return PlayerUtils.isCreative(player) || hasBook(player);
+    private static boolean hasPermissionToOpenBook(LocalPlayer player) {
+        return PlayerUtils.isCreative(player)
+                || (!ConfigsManager.getServer().isBookItemRequired())
+                || hasBook(player);
     }
 }

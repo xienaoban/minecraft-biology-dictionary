@@ -10,7 +10,6 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
-@Environment(EnvType.CLIENT)
 public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Packet {
     public static final Packet.Factory<ReplyServerConfigsPacket> FACTORY = ReplyServerConfigsPacket::new;
 
