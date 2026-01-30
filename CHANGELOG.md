@@ -6,23 +6,18 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-Configs:
-- bookItemRequired
-- bookItemObtainableFromWanderingTrader
-
-GUI:
-- Tooltips of server configs on config screen
-
 ### Changed
 
 ### Fixed
 
-- #11: A `@Environment(EnvType.CLIENT)` that should not exist
+- GitHub workflows
+- Mod version
 
 ---
 
 ## Previous Versions
 
 For older versions, please check the releases page on:
-- [Modrinth](https://modrinth.com/mod/biologydictionary/changelog)
 - [GitHub](https://github.com/xienaoban/minecraft-biology-dictionary/releases)
+- [Modrinth](https://modrinth.com/mod/biology-dictionary/changelog)
+- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary/files)

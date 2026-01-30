@@ -82,12 +82,16 @@ processResources {
     inputs.property "version", project.version
     inputs.property "minecraft_version", project.minecraft_version
     inputs.property "loader_version", project.loader_version
+    inputs.property "clothconfig_version", project.clothconfig_version
+    inputs.property "modmenu_version", project.modmenu_version
     filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
         expand "version": inputs.properties.version,
                 "minecraft_version": inputs.properties.minecraft_version,
-                "loader_version": inputs.properties.loader_version
+                "loader_version": inputs.properties.loader_version,
+                "clothconfig_version": inputs.properties.clothconfig_version,
+                "modmenu_version": inputs.properties.modmenu_version
     }
 }
 
