@@ -1,0 +1,74 @@
+#!/bin/bash
+set -e
+
+# Check if gradle.properties exists
+if [ ! -f "gradle.properties" ]; then
+  echo "Error: gradle.properties not found"
+  exit 1
+fi
+
+# Read properties from gradle.properties
+MOD_VERSION=$(grep "^mod_version=" gradle.properties | cut -d'=' -f2)
+MC_VERSION=$(grep "^minecraft_version=" gradle.properties | cut -d'=' -f2)
+FABRIC_VERSION=$(grep "^fabric_version=" gradle.properties | cut -d'=' -f2)
+FORGE_VERSION=$(grep "^forge_version=" gradle.properties | cut -d'=' -f2)
+
+# Get tag name from environment or argument
+TAG_NAME="${GITHUB_REF_NAME:-$1}"
+
+if [ -z "$TAG_NAME" ]; then
+  echo "Error: Tag name not provided (set GITHUB_REF_NAME or pass as argument)"
+  exit 1
+fi
+
+echo "Checking tag: $TAG_NAME"
+echo "mod_version: $MOD_VERSION"
+echo "minecraft_version: $MC_VERSION"
+
+# Check 1: mod_version must be in tag
+if ! echo "$TAG_NAME" | grep -q "$MOD_VERSION"; then
+  echo "Error: Tag '$TAG_NAME' does not contain mod_version '$MOD_VERSION'"
+  exit 1
+fi
+echo "✓ mod_version check passed"
+
+# Check 2: minecraft_version must be in tag
+if ! echo "$TAG_NAME" | grep -q "$MC_VERSION"; then
+  echo "Error: Tag '$TAG_NAME' does not contain minecraft_version '$MC_VERSION'"
+  exit 1
+fi
+echo "✓ minecraft_version check passed"
+
+# Check 3: loader type must be in tag
+if [ -n "$FABRIC_VERSION" ]; then
+  if ! echo "$TAG_NAME" | grep -qi "fabric"; then
+    echo "Error: Tag '$TAG_NAME' does not contain 'fabric' (fabric_version exists)"
+    exit 1
+  fi
+  echo "✓ fabric check passed"
+elif [ -n "$FORGE_VERSION" ]; then
+  if ! echo "$TAG_NAME" | grep -qi "forge"; then
+    echo "Error: Tag '$TAG_NAME' does not contain 'forge' (forge_version exists)"
+    exit 1
+  fi
+  echo "✓ forge check passed"
+else
+  echo "Error: No fabric_version or forge_version found in gradle.properties"
+  exit 1
+fi
+
+# Determine loader type
+if [ -n "$FABRIC_VERSION" ]; then
+  LOADER_TYPE="fabric"
+elif [ -n "$FORGE_VERSION" ]; then
+  LOADER_TYPE="forge"
+fi
+
+# Export to GITHUB_ENV if in GitHub Actions
+if [ -n "$GITHUB_ENV" ]; then
+  echo "MOD_VERSION=$MOD_VERSION" >> "$GITHUB_ENV"
+  echo "MC_VERSION=$MC_VERSION" >> "$GITHUB_ENV"
+  echo "LOADER_TYPE=$LOADER_TYPE" >> "$GITHUB_ENV"
+fi
+
+echo "All tag version checks passed!"
