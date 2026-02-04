@@ -44,7 +44,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
         widgets.add(new PlaceHolderWidget(1, Page.COLUMNS));
         widgets.add(new DescriptionWidget(1, Page.COLUMNS, Component.translatable(Lang.TEXT_SERVER_CONFIGS_DESC)));
         Configs.ServerConfigs serverConfigs = ConfigsManager.getServer();
-        Configs.forEachConfigEntryInCategory(serverConfigs,
+        ConfigsManager.forEachConfigEntryInCategory(serverConfigs,
                 entryInfo -> widgets.add(new ConfigWidget(entryInfo)));
 
         addAllWidgetsOneByOne(widgets);
@@ -95,11 +95,11 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
      * Shows the translated config name on the left and the current value on the right.
      */
     public static class ConfigWidget extends Widget {
-        private final Configs.ConfigEntryInfo entryInfo;
+        private final ConfigsManager.ConfigEntryInfo entryInfo;
         private final MutableComponent configText;
         private final MutableComponent configTooltipText;
 
-        public ConfigWidget(Configs.ConfigEntryInfo entryInfo) {
+        public ConfigWidget(ConfigsManager.ConfigEntryInfo entryInfo) {
             super(1, Page.COLUMNS);
             this.entryInfo = entryInfo;
             this.configText = Component.translatable(Configs.getConfigNameTranslationKey(entryInfo.getName()));

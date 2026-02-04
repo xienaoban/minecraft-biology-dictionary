@@ -28,6 +28,16 @@ public abstract class CommonScreen extends Screen {
 
     protected final ScreenRenderingContext screenRenderingContext;
 
+    /**
+     * Screen scale factor for rendering the screen.
+     * <p>
+     * Relationship between GUI Scale and Screen Scale:
+     * Actual Screen Size = Default Screen Size * GUI Scale * Screen Scale
+     * <p>
+     * For example: scale=2.0 makes UI elements appear twice as large,
+     * while scale=0.5 makes them appear half as large.
+     * </p>
+     */
     private float screenScale, reciprocalScreenScale;
 
     protected CommonScreen(Component component) {
