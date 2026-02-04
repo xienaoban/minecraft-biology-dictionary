@@ -25,8 +25,8 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     @Override
-    protected void init() {
-        super.init();
+    protected void resize() {
+        super.resize();
         updateBoxSizes();
     }
 

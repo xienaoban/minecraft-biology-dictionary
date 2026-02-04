@@ -51,7 +51,14 @@ public final class Configs {
      */
     public static class ClientConfigs {
         @ConfigEntry
+        float screenScale = 1F;
+
+        @ConfigEntry
         FirstPersonShoulderEntityPosition firstPersonShoulderEntityPosition = FirstPersonShoulderEntityPosition.BOTTOM;
+
+        public float getScreenScale() {
+            return screenScale;
+        }
 
         public FirstPersonShoulderEntityPosition getFirstPersonShoulderEntityPosition() {
             return firstPersonShoulderEntityPosition;

@@ -30,7 +30,8 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         List<Widget> widgets = Arrays.asList(
                 new ModNameAuthorNameWidget(),
                 new GetBookItemWidget(),
-                new OpenDebugScreenWidget()
+                new OpenDebugScreenWidget(),
+                new ShowGuiSizeWidget()
         );
 
         addAllWidgetsOneByOne(widgets);
@@ -84,6 +85,29 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             if (ctx.isDebug()) {
                 ctx.renderCenteredText(Component.literal("Open Debug Screen"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
+            }
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (screenRenderingContext.isDebug()) {
+                ClientUtils.setScreen(client, new DebugScreen());
+                return true;
+            }
+            return false;
+        }
+    }
+
+    private class ShowGuiSizeWidget extends Widget {
+        protected ShowGuiSizeWidget() {
+            super(1, Page.COLUMNS);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            if (ctx.isDebug()) {
+                ctx.renderCenteredText(Component.literal(ctx.getScreen().width + " , " + ctx.getScreen().height), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
+                ctx.renderCenteredText(Component.literal(ctx.getMouseX() + " , " + ctx.getMouseY()), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 5.5F);
             }
         }
 
