@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Manages configuration lifecycle for Biology Dictionary.
@@ -154,6 +155,51 @@ public final class ConfigsManager {
         } catch (IOException | IllegalAccessException e) {
             LOGGER.error("Failed to load configuration", e);
             save(); // Create default config on error
+        }
+    }
+
+    // ==================== Config Entry Traversal ====================
+
+    /**
+     * Iterate through all config entries in a specific category object.
+     * This is useful for iterating through config objects that might be remote copies.
+     *
+     * @param categoryObject The config category object (e.g., ServerConfigs)
+     * @param consumer Consumer that receives entry info for each config entry
+     */
+    public static void forEachConfigEntryInCategory(Object categoryObject, Consumer<ConfigEntryInfo> consumer) {
+        for (Field entryField : categoryObject.getClass().getDeclaredFields()) {
+            if (entryField.isAnnotationPresent(ConfigEntry.class)) {
+                ConfigEntry annotation = entryField.getAnnotation(ConfigEntry.class);
+                ConfigEntryInfo info = new ConfigEntryInfo(entryField, annotation, categoryObject);
+                consumer.accept(info);
+            }
+        }
+    }
+
+    /**
+     * Represents a single configuration entry with its metadata.
+     */
+    public record ConfigEntryInfo(Field field, ConfigEntry annotation, Object categoryObject) {
+        public String getName() {
+            return field.getName();
+        }
+
+        public Class<?> getType() {
+            return field.getType();
+        }
+
+        public Object getValue() {
+            return getValue(categoryObject);
+        }
+
+        public Object getValue(Object anotherCategoryObject) {
+            try {
+                field.setAccessible(true);
+                return field.get(anotherCategoryObject);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Failed to read config value", e);
+            }
         }
     }
 
