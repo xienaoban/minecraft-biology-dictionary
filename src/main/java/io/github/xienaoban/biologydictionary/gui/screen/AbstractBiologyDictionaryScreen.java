@@ -82,8 +82,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     @Override
-    protected void init() {
-        super.init();
+    protected void resize() {
+        super.resize();
         if (client != minecraft) {
             throw new AssertionError("this.minecraft != super.minecraft");
         }

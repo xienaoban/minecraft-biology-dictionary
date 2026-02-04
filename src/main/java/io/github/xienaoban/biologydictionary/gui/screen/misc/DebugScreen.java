@@ -38,7 +38,7 @@ public class DebugScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float f) {
         super.render(guiGraphics, mouseX, mouseY, f);
         ScreenRenderingContext ctx = new ScreenRenderingContext(this);
-        ctx.update(guiGraphics, mouseX, mouseY, f);
+        ctx.update(guiGraphics, 1F, 1F, mouseX, mouseY, f);
 
         Minecraft client = ClientUtils.getClient();
         ModelPart flag = client.getEntityModels().bakeLayer(ModelLayers.STANDING_BANNER_FLAG).getChild("flag");

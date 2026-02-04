@@ -51,6 +51,7 @@ public final class ScreenRenderingContext {
 
     private final Minecraft client;
     private GuiGraphics guiGraphics;
+    private float screenScale, reciprocalScreenScale;
     private float mouseX, mouseY;
     private float tickDelta;
     private boolean debug;
@@ -58,6 +59,8 @@ public final class ScreenRenderingContext {
     public ScreenRenderingContext(Screen screen) {
         this.client = Objects.requireNonNull(ClientUtils.getClient());
         this.screen = screen;
+        this.screenScale = 1F;
+        this.reciprocalScreenScale = 1F;
         this.debug = false;
     }
 
@@ -68,13 +71,18 @@ public final class ScreenRenderingContext {
      * @param mouseX not used
      * @param mouseY not used
      */
-    public void update(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
+    public void update(GuiGraphics guiGraphics, float screenScale, float reciprocalScreenScale, int mouseX, int mouseY, float tickDelta) {
         this.guiGraphics = guiGraphics;
+        this.screenScale = screenScale;
+        this.reciprocalScreenScale = reciprocalScreenScale;
         this.tickDelta = tickDelta;
 
         this.mouseX = (float) client.mouseHandler.xpos() * (float) client.getWindow().getGuiScaledWidth() / (float) client.getWindow().getScreenWidth();
         this.mouseY = (float) client.mouseHandler.ypos() * (float) client.getWindow().getGuiScaledHeight() / (float) client.getWindow().getScreenHeight();
         assert mouseX == (int) this.mouseX && mouseY == (int) this.mouseY;
+
+        this.mouseX *= reciprocalScreenScale;
+        this.mouseY *= reciprocalScreenScale;
     }
 
     public Minecraft getClient()        { return client; }
@@ -393,6 +401,13 @@ public final class ScreenRenderingContext {
      */
     private void renderEntity(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset) {
+        if (screenScale != 1F) {
+            left   *= screenScale;
+            top    *= screenScale;
+            right  *= screenScale;
+            bottom *= screenScale;
+        }
+
         final float width = right - left;
         final float height = bottom - top;
         final float entityWidth = entity.getBbWidth();
