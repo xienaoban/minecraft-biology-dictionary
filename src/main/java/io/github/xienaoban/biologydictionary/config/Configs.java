@@ -18,6 +18,31 @@ import java.util.function.Consumer;
  */
 @Config(Lang.CONFIG_TITLE)
 public final class Configs {
+
+    /**
+     * Client-side configuration options.
+     * These settings affect local rendering and behavior.
+     */
+    public static class ClientConfigs {
+        @ConfigEntry
+        float screenScale = 1F;
+
+        @ConfigEntry
+        FirstPersonShoulderEntityPosition firstPersonShoulderEntityPosition = FirstPersonShoulderEntityPosition.BOTTOM;
+
+        public float getScreenScale() {
+            return screenScale;
+        }
+
+        public FirstPersonShoulderEntityPosition getFirstPersonShoulderEntityPosition() {
+            return firstPersonShoulderEntityPosition;
+        }
+
+        public enum FirstPersonShoulderEntityPosition {
+            NONE, BOTTOM, SIDES, TOP
+        }
+    }
+
     /**
      * Server-side configuration options.
      * These settings are used when running a server or singleplayer.
@@ -45,42 +70,18 @@ public final class Configs {
         }
     }
 
-    /**
-     * Client-side configuration options.
-     * These settings affect local rendering and behavior.
-     */
-    public static class ClientConfigs {
-        @ConfigEntry
-        float screenScale = 1F;
-
-        @ConfigEntry
-        FirstPersonShoulderEntityPosition firstPersonShoulderEntityPosition = FirstPersonShoulderEntityPosition.BOTTOM;
-
-        public float getScreenScale() {
-            return screenScale;
-        }
-
-        public FirstPersonShoulderEntityPosition getFirstPersonShoulderEntityPosition() {
-            return firstPersonShoulderEntityPosition;
-        }
-
-        public enum FirstPersonShoulderEntityPosition {
-            NONE, BOTTOM, SIDES, TOP
-        }
-    }
+    @ConfigCategory(Lang.CONFIG_CATEGORY_CLIENT)
+    private final ClientConfigs client = new ClientConfigs();
 
     @ConfigCategory(Lang.CONFIG_CATEGORY_SERVER)
     private final ServerConfigs server = new ServerConfigs();
 
-    @ConfigCategory(Lang.CONFIG_CATEGORY_CLIENT)
-    private final ClientConfigs client = new ClientConfigs();
+    public ClientConfigs getClient() {
+        return client;
+    }
 
     public ServerConfigs getServer() {
         return server;
-    }
-
-    public ClientConfigs getClient() {
-        return client;
     }
 
     // ==================== Translation Key Utilities ====================

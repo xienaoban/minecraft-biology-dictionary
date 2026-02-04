@@ -28,8 +28,8 @@ import java.util.*;
  */
 public final class ConfigsManager {
     private static final Configs INSTANCE = new Configs();
-    private static volatile Configs.ServerConfigs serverConfigs = INSTANCE.getServer();
     private static final Configs.ClientConfigs clientConfigs = INSTANCE.getClient();
+    private static volatile Configs.ServerConfigs serverConfigs = INSTANCE.getServer();
 
     private ConfigsManager() {} // Utility class
 
@@ -38,14 +38,6 @@ public final class ConfigsManager {
      */
     public static Configs getInstance() {
         return INSTANCE;
-    }
-
-    /**
-     * Get the active server configuration.
-     * Returns remote config if connected to a server, or local config otherwise.
-     */
-    public static Configs.ServerConfigs getServer() {
-        return serverConfigs;
     }
 
     /**
@@ -58,13 +50,11 @@ public final class ConfigsManager {
     }
 
     /**
-     * Set remote server configuration from server.
-     * Called when receiving config packet from server.
+     * Get the active server configuration.
+     * Returns remote config if connected to a server, or local config otherwise.
      */
-    @Environment(EnvType.CLIENT)
-    public static void setRemoteServerConfigs(Configs.ServerConfigs remoteConfigs) {
-        serverConfigs = remoteConfigs;
-        LOGGER.info("Using remote server configs");
+    public static Configs.ServerConfigs getServer() {
+        return serverConfigs;
     }
 
     /**
@@ -75,6 +65,16 @@ public final class ConfigsManager {
     public static void setLocalServerConfigs() {
         serverConfigs = INSTANCE.getServer();
         LOGGER.info("Using local server configs");
+    }
+
+    /**
+     * Set remote server configuration from server.
+     * Called when receiving config packet from server.
+     */
+    @Environment(EnvType.CLIENT)
+    public static void setRemoteServerConfigs(Configs.ServerConfigs remoteConfigs) {
+        serverConfigs = remoteConfigs;
+        LOGGER.info("Using remote server configs");
     }
 
     private static Path getConfigPath() {
@@ -185,7 +185,7 @@ public final class ConfigsManager {
      * This is used for receiving configs over the network.
      *
      * @param yamlString The YAML string representation
-     * @param targetObject The target config object to populate (e.g., new ServerConfigs())
+     * @param targetObject The target config object to populate (e.g., ServerConfigs)
      * @return true if deserialization succeeded, false otherwise
      */
     public static boolean deserializeConfigCategory(String yamlString, Object targetObject) {

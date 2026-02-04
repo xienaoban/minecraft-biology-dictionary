@@ -28,6 +28,14 @@
   "config.biologydictionary.entry.bannedPlayerSkills": "Banned Player Skills",
   "config.biologydictionary.entry.bannedPlayerSkills.tooltip": "A list of skill IDs that are not allowed for players.",
 
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "None",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "Top",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.SIDES": "Sides",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.BOTTOM": "Bottom",
+
+  "modmenu.nameTranslation.biologydictionary": "Biology Dictionary",
+  "modmenu.descriptionTranslation.biologydictionary": "To display or modify the properties and states of mobs.",
+
   "screen.biologydictionary.player_selector": "Player Selector",
   "screen.biologydictionary.player_selector.desc": "Please select an online player near you.",
   "screen.biologydictionary.stealing" : "Stealing",
@@ -340,14 +348,6 @@
   "variant.minecraft.wolf.woods"    : "Woods",
   "variant.minecraft.wolf.chestnut" : "Chestnut",
   "variant.minecraft.wolf.striped"  : "Striped",
-
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "None",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "Top",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.SIDES": "Sides",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.BOTTOM": "Bottom",
-
-  "modmenu.nameTranslation.biologydictionary": "Biology Dictionary",
-  "modmenu.descriptionTranslation.biologydictionary": "To display or modify the properties and states of mobs.",
 
   "minecraft.accepts_iron_golem_gift"         : "Accepts Iron Golem Gift",
   "minecraft.aquatic"                         : "Aquatic",
