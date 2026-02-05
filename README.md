@@ -61,6 +61,8 @@ This mod is a complete restructure of [**Bole**](https://github.com/xienaoban/mi
 - In Survival mode, buy it from Wandering Traders. As game time progresses, the sale probability gradually decreases from 100% to a stable 20%
   > This design means you can find it everywhere when you start without emeralds, but once you're rich enough, it becomes rare hehe
 
+You can also disable Wandering Trader sales in the config. In this case, there's no way to obtain the book in survival mode, and pack authors need to add their own recipes.
+
 #### How to Open Biology Dictionary Screen
 
 - In Creative mode, simply use the hotkey (default `~`) to open the Biology Dictionary screen
@@ -75,6 +77,8 @@ This mod is a complete restructure of [**Bole**](https://github.com/xienaoban/mi
 - Aiming at an entity opens that entity's detail page
 - Aiming at a bee hive opens the bee hive page
 - Aiming at other blocks or air opens the main menu
+- Aiming straight up opens the main menu, regardless of whether you're targeting an entity
+- Aiming straight down opens your own player detail page
 
 ### All Supported Properties Display/Modification
 
