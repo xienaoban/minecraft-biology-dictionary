@@ -8,13 +8,21 @@
         "AgeableMobMixin",
         "AnimalIMixin",
         "ArmadilloStateIMixin",
+        "CompositeEntryBaseIMixin",
         "CustomDataIMixin",
         "EntityIMixin",
         "EntityMixin",
         "HorseIMixin",
+        "LootItemIMixin",
+        "LootPoolIMixin",
+        "LootPoolSingletonContainerIMixin",
+        "LootTableIMixin",
         "MobEffectInstanceIMixin",
         "MobIMixin",
+        "NestedLootTableIMixin",
         "ServerPlayerIMixin",
+        "SetItemCountFunctionIMixin",
+        "TagEntryIMixin",
         "TemptGoalIMixin",
         "WanderingTraderMixin"
     ],
@@ -28,5 +36,5 @@
     },
     "overwrites": {
         "requireAnnotations": true
-    }
+  }
 }

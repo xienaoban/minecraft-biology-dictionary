@@ -97,6 +97,8 @@
   "property_widget.biologydictionary.eat_grass.desc"              : "Force the sheep eat grass at once",
   "property_widget.biologydictionary.screaming_goat"              : "Is Screaming Goat",
   "property_widget.biologydictionary.screaming_goat.desc"         : "Ahhhhhh!!!!!!!!!",
+  "property_widget.biologydictionary.loot_table"                  : "Loot Table",
+  "property_widget.biologydictionary.loot_table.desc"             : "All possible items from the loot table, sorted by rarity",
   "property_widget.biologydictionary.bounding_box"                : "Bounding Box (X Y Z)",
   "property_widget.biologydictionary.bounding_box.desc"           : "Entities X in MC should all be equal to Z",
   "property_widget.biologydictionary.variant"                     : "Variant",

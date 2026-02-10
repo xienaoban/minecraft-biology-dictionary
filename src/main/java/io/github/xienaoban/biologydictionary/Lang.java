@@ -110,6 +110,8 @@ public final class Lang {
     PROPERTY_WIDGET_EAT_GRASS_DESC              = "property_widget.biologydictionary.eat_grass.desc",
     PROPERTY_WIDGET_SCREAMING_GOAT              = "property_widget.biologydictionary.screaming_goat",
     PROPERTY_WIDGET_SCREAMING_GOAT_DESC         = "property_widget.biologydictionary.screaming_goat.desc",
+    PROPERTY_WIDGET_LOOT_TABLE                  = "property_widget.biologydictionary.loot_table",
+    PROPERTY_WIDGET_LOOT_TABLE_DESC             = "property_widget.biologydictionary.loot_table.desc",
     PROPERTY_WIDGET_BOUNDING_BOX                = "property_widget.biologydictionary.bounding_box",
     PROPERTY_WIDGET_BOUNDING_BOX_DESC           = "property_widget.biologydictionary.bounding_box.desc",
     PROPERTY_WIDGET_VARIANT                     = "property_widget.biologydictionary.variant",
