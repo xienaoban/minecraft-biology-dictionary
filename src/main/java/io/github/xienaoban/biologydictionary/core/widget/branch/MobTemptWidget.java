@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.extra.MobTemptProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -56,9 +57,9 @@ public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
             Component text = null;
             List<ItemStack> tempts = temptProperty.getVal();
             if (tempts == null) {
-                text = Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS);
+                text = TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS);
             } else if (tempts.isEmpty()) {
-                text = Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS);
+                text = TextUtils.translate(Lang.TEXT_EMPTY_WITH_BRACKETS);
             }
             if (text != null) {
                 renderInnerText(ctx, text, Colors.GRAY_FOR_TEXT_EMPTY);

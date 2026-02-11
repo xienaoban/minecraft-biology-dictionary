@@ -1,10 +1,12 @@
 package io.github.xienaoban.biologydictionary.common.gui.screen.util;
 
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -116,7 +118,7 @@ public abstract class ScreenElement {
             ctx.renderRectangle(color | alpha, 0.6F, screen.getZ(),
                     box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
             if (this == screen.getHoveredElement()) {
-                ctx.renderText(Component.literal(getClass().getSimpleName()), 0xFF7719AA,
+                ctx.renderText(TextUtils.literal(getClass().getSimpleName()), 0xFF7719AA,
                         0.5F, ctx.getZ(), box.getLeft() + 1, box.getTop() - 4.5F);
             }
         }
@@ -222,23 +224,23 @@ public abstract class ScreenElement {
         return code == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
     }
 
-    public static Component tooltipEmpty() {
-        return Component.empty();
+    public static MutableComponent tooltipEmpty() {
+        return TextUtils.empty();
     }
 
-    public static Component tooltipTitle(String trans) {
-        return Component.translatable(trans).withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD);
+    public static MutableComponent tooltipTitle(String trans) {
+        return TextUtils.translate(trans).withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD);
     }
 
-    public static Component tooltipDescription(String trans) {
-        return Component.translatable(trans).withStyle(ChatFormatting.GRAY);
+    public static MutableComponent tooltipDescription(String trans) {
+        return TextUtils.translate(trans).withStyle(ChatFormatting.GRAY);
     }
 
-    public static Component tooltipBody(String trans) {
-        return Component.translatable(trans).withStyle(ChatFormatting.WHITE);
+    public static MutableComponent tooltipBody(String trans) {
+        return TextUtils.translate(trans).withStyle(ChatFormatting.WHITE);
     }
 
-    public static Component tooltipBody(String trans, Object... args) {
-        return Component.translatable(trans, args).withStyle(ChatFormatting.WHITE);
+    public static MutableComponent tooltipBody(String trans, Object... args) {
+        return TextUtils.translate(trans, args).withStyle(ChatFormatting.WHITE);
     }
 }

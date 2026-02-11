@@ -5,13 +5,13 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingMenu;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,7 +43,7 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
         if (!(entity instanceof LivingEntity livingEntity)) {
             Screen screen = ctx.client().screen;
             if (screen != null) { screen.onClose(); }
-            BiologyDictionaryClient.sendCenteredWarning(Component.translatable(Lang.TEXT_UNKNOWN_ENTITY_ID));
+            BiologyDictionaryClient.sendCenteredWarning(TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_ID));
             return;
         }
 

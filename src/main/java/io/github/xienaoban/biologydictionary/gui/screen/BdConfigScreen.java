@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.config.ClothConfigScreenProvider;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
@@ -26,7 +27,7 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
     public BdConfigScreen() {
-        super(Component.translatable(Lang.BOOKMARK_CONFIG));
+        super(TextUtils.translate(Lang.BOOKMARK_CONFIG));
         initBookmarks();
         initWidgets();
     }
@@ -38,11 +39,11 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
     private void initWidgets() {
         List<Widget> widgets = new ArrayList<>();
 
-        widgets.add(new DescriptionWidget(1, Page.COLUMNS, Component.translatable(Lang.TEXT_LOCAL_CONFIGS_DESC)));
+        widgets.add(new DescriptionWidget(1, Page.COLUMNS, TextUtils.translate(Lang.TEXT_LOCAL_CONFIGS_DESC)));
         widgets.add(new OpenLocalConfigsScreenWidget());
 
         widgets.add(new PlaceHolderWidget(1, Page.COLUMNS));
-        widgets.add(new DescriptionWidget(1, Page.COLUMNS, Component.translatable(Lang.TEXT_SERVER_CONFIGS_DESC)));
+        widgets.add(new DescriptionWidget(1, Page.COLUMNS, TextUtils.translate(Lang.TEXT_SERVER_CONFIGS_DESC)));
         Configs.ServerConfigs serverConfigs = ConfigsManager.getServer();
         ConfigsManager.forEachConfigEntryInCategory(serverConfigs,
                 entryInfo -> widgets.add(new ConfigWidget(entryInfo)));
@@ -74,7 +75,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
                     ctx.getZ(), box.getRight(), box.getBottom(), box.getRight() - tw, box.getBottom() - th);
 
             int color = hovered ? Colors.BLACK : Colors.COMMON_DARK_TEXT;
-            ctx.renderCenteredText(Component.translatable(Lang.TEXT_OPEN_LOCAL_CONFIGS_SCREEN),
+            ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_OPEN_LOCAL_CONFIGS_SCREEN),
                     color, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 3);
         }
 
@@ -102,8 +103,8 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
         public ConfigWidget(ConfigsManager.ConfigEntryInfo entryInfo) {
             super(1, Page.COLUMNS);
             this.entryInfo = entryInfo;
-            this.configText = Component.translatable(Configs.getConfigNameTranslationKey(entryInfo.getName()));
-            this.configTooltipText = Component.translatable(Configs.getConfigNameTranslationKey(entryInfo.getName()) + ".tooltip");
+            this.configText = TextUtils.translate(Configs.getConfigNameTranslationKey(entryInfo.getName()));
+            this.configTooltipText = TextUtils.translate(Configs.getConfigNameTranslationKey(entryInfo.getName()) + ".tooltip");
             setSelectable(false);
         }
 
@@ -141,11 +142,11 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
 
         private static Component formatValue(Object value) {
             return switch (value) {
-                case null -> Component.translatable(Lang.TEXT_NONE_WITH_BRACKETS);
-                case Boolean b -> Component.translatable(b ? Lang.GUI_YES : Lang.GUI_NO);
-                case Enum<?> e -> Component.translatable(Configs.getEnumValueTranslationKey(e));
-                case Collection<?> s -> Component.literal(String.valueOf(s.size()));
-                default -> Component.literal(String.valueOf(value));
+                case null -> TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS);
+                case Boolean b -> TextUtils.translate(b ? Lang.GUI_YES : Lang.GUI_NO);
+                case Enum<?> e -> TextUtils.translate(Configs.getEnumValueTranslationKey(e));
+                case Collection<?> s -> TextUtils.literal(String.valueOf(s.size()));
+                default -> TextUtils.literal(String.valueOf(value));
             };
         }
     }

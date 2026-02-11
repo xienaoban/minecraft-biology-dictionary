@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.common.client.ClientEventRegistry;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
@@ -18,7 +19,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 
@@ -103,12 +103,11 @@ public final class BiologyDictionaryClient {
     public static void printThrowableToLoggerAndGame(Throwable throwable) {
         String errStack = Misc.getStackToString(throwable);
         LOGGER.error(errStack);
-        ClientUtils.sendTextBoxMessage(ComponentUtils.formatList(
+        ClientUtils.sendTextBoxMessage(TextUtils.concat(
                 Arrays.asList(
-                        Component.translatable(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN),
-                        Component.literal(throwable.toString()).withStyle(ChatFormatting.RED)
-                ),
-                Component.empty()
+                        TextUtils.translate(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN),
+                        TextUtils.literal(throwable.toString()).withStyle(ChatFormatting.RED)
+                )
         ));
     }
 }

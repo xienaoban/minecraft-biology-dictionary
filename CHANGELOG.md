@@ -6,12 +6,12 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
+- Support screen scaling
+- Add loot table widget
+
 ### Changed
 
 ### Fixed
-
-- GitHub workflows
-- Mod version
 
 ---
 

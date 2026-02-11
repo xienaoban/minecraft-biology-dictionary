@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -84,11 +85,11 @@ public final class EntityManager {
     private final List<EntityClassInfo> sortedInfos = new ArrayList<>();
     private final Map<Class<? extends Entity>, EntityType<?>> clazzToType = new HashMap<>();
 
-    private final TagGroup defaultTags   = new TagGroup(Lang.TAG_GROUP_DEFAULT,   Component.translatable(Lang.TAG_GROUP_DEFAULT_DESC));
-    private final TagGroup mcTagTags     = new TagGroup(Lang.TAG_GROUP_TAG,       Component.translatable(Lang.TAG_GROUP_TAG_DESC));
-    private final TagGroup namespaceTags = new TagGroup(Lang.TAG_GROUP_MODS,      Component.translatable(Lang.TAG_GROUP_MODS_DESC));
-    private final TagGroup classTags     = new TagGroup(Lang.TAG_GROUP_CLASS,     Component.translatable(Lang.TAG_GROUP_CLASS_DESC));
-    private final TagGroup interfaceTags = new TagGroup(Lang.TAG_GROUP_INTERFACE, Component.translatable(Lang.TAG_GROUP_INTERFACE_DESC));
+    private final TagGroup defaultTags   = new TagGroup(Lang.TAG_GROUP_DEFAULT,   TextUtils.translate(Lang.TAG_GROUP_DEFAULT_DESC));
+    private final TagGroup mcTagTags     = new TagGroup(Lang.TAG_GROUP_TAG,       TextUtils.translate(Lang.TAG_GROUP_TAG_DESC));
+    private final TagGroup namespaceTags = new TagGroup(Lang.TAG_GROUP_MODS,      TextUtils.translate(Lang.TAG_GROUP_MODS_DESC));
+    private final TagGroup classTags     = new TagGroup(Lang.TAG_GROUP_CLASS,     TextUtils.translate(Lang.TAG_GROUP_CLASS_DESC));
+    private final TagGroup interfaceTags = new TagGroup(Lang.TAG_GROUP_INTERFACE, TextUtils.translate(Lang.TAG_GROUP_INTERFACE_DESC));
 
     private final List<TagGroup> tagGroups = new ArrayList<>(Arrays.asList(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
 
@@ -179,27 +180,27 @@ public final class EntityManager {
                             .map(EntityUtils::getEntityType).map(this::getEntityClassInfo).filter(Objects::nonNull)
                             .sorted(Comparator.comparingInt(EntityClassInfo::getSortId))
                             .toList();
-                    tags.addTag(new Tag(key, null, Component.literal(holders.key().location().toString())));
+                    tags.addTag(new Tag(key, null, TextUtils.literal(holders.key().location().toString())));
                     tags.addAllToTag(key, list);
         });
     }
 
     private void initJavaTagGroups() {
         String rootClazzName = getClassRealName(Entity.class);
-        classTags.addTag(new Tag(rootClazzName, null, Component.literal(rootClazzName)));
+        classTags.addTag(new Tag(rootClazzName, null, TextUtils.literal(rootClazzName)));
         dfsEntityTree(false, (root, depth) -> {
             if (!Modifier.isAbstract(root.getClazz().getModifiers())) {
                 return false;
             }
             Tag father = classTags.getTag(getClassRealName(root.getFather().getClazz()));
             String clazzName = getClassRealName(root.getClazz());
-            classTags.addTag(new Tag(clazzName, father, Component.literal(clazzName)));
+            classTags.addTag(new Tag(clazzName, father, TextUtils.literal(clazzName)));
             return true;
         });
         for (EntityClassInfo info : sortedInfos) {
             String namespace = EntityUtils.getEntityTypeId(info.getType()).getNamespace();
             namespaceTags.getOrAddTag(namespace,
-                    s -> new Tag(s, null, Component.literal(s)));
+                    s -> new Tag(s, null, TextUtils.literal(s)));
             namespaceTags.addToTag(namespace, info);
 
             for (Class<? extends Entity> clazz : EntityUtils.bottomUp(info.getClazz())) {
@@ -211,7 +212,7 @@ public final class EntityManager {
                     if (!clazz2.getSimpleName().contains("Mixin")) {
                         String interfazeName = getClassRealName(clazz2);
                         interfaceTags.getOrAddTag(interfazeName,
-                                s -> new Tag(s, null, Component.literal(s)));
+                                s -> new Tag(s, null, TextUtils.literal(s)));
                         interfaceTags.addToTag(interfazeName, info);
                     }
                 }
@@ -473,7 +474,7 @@ public final class EntityManager {
 
         public Tag(String tagName, Tag fatherTag, Component description) {
             this.name = tagName;
-            this.text = Component.translatable(tagName);
+            this.text = TextUtils.translate(tagName);
             this.description = description;
             this.entities = new ArrayList<>();
             this.father = fatherTag;
@@ -516,7 +517,7 @@ public final class EntityManager {
 
         public TagGroup(String tagGroupName, Component description) {
             this.id = tagGroupName;
-            this.name = Component.translatable(tagGroupName);
+            this.name = TextUtils.translate(tagGroupName);
             this.description = description;
             this.tags = new HashMap<>();
             this.rootTags = new ArrayList<>();

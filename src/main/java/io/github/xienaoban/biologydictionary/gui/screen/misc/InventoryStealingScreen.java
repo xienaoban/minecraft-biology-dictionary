@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
@@ -12,7 +13,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -33,7 +33,7 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
     private boolean hasDetected;
 
     public InventoryStealingScreen(InventoryStealingMenu menu, Inventory inventory, LivingEntity entity) {
-        super(menu, inventory, Component.translatable(Lang.SCREEN_STEALING));
+        super(menu, inventory, TextUtils.translate(Lang.SCREEN_STEALING));
         this.imageWidth = 234;
         this.imageHeight = 194;
         this.entity = entity;
@@ -83,7 +83,7 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
                 hasDetected = true;
                 // Close screen and show message on client side immediately.
                 ClientUtils.getClientPlayer().closeContainer();
-                BiologyDictionaryClient.sendCenteredWarning(Component.translatable(Lang.TEXT_STEALING_DETECTED));
+                BiologyDictionaryClient.sendCenteredWarning(TextUtils.translate(Lang.TEXT_STEALING_DETECTED));
                 // Send packet to server to deal damage.
                 ClientNetManager.sendStealingDetected(entity);
             }

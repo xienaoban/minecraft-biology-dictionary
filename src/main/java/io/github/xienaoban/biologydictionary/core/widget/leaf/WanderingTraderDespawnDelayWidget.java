@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -13,7 +14,6 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.item.ItemStack;
@@ -72,7 +72,7 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
             if (delayI == null) {
                 updatePercent(0);
                 super.onRender(ctx);
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_EMPTY_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
                 return;
             }
 
@@ -80,13 +80,13 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
             updatePercent((float) delay / MAX_DESPAWN_DELAY);
             super.onRender(ctx);
             if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(delay + "t/" + MAX_DESPAWN_DELAY + "t"));
+                renderInnerText(ctx, TextUtils.literal(delay + "t/" + MAX_DESPAWN_DELAY + "t"));
             } else if (delay == 0) {
-                renderInnerText(ctx, Component.literal("∞/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
+                renderInnerText(ctx, TextUtils.literal("∞/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
             } else if (delay < 3 * 60 * 20) {
-                renderInnerText(ctx, Component.literal((delay / 20) + "s/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
+                renderInnerText(ctx, TextUtils.literal((delay / 20) + "s/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
             } else {
-                renderInnerText(ctx, Component.literal((delay / 20 / 60) + "min/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
+                renderInnerText(ctx, TextUtils.literal((delay / 20 / 60) + "min/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
             }
         }
     }

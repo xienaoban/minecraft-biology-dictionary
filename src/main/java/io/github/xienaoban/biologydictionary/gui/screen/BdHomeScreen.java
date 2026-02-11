@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
@@ -17,7 +18,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -36,7 +36,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private float entityRotateX, entityRotateY;
 
     public BdHomeScreen() {
-        super(Component.translatable(Lang.BIOLOGY_DICTIONARY_TITLE));
+        super(TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE));
         initBookmarks();
         initEntityWidgets();
     }
@@ -82,7 +82,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
     private final class AllEntitiesBookmark extends Bookmark {
         public AllEntitiesBookmark() {
-            super(Component.translatable(Lang.BOOKMARK_ALL));
+            super(TextUtils.translate(Lang.BOOKMARK_ALL));
         }
 
         @Override
@@ -126,9 +126,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         private final EntityManager.Tag tag;
 
         public TagCatalog(int depth, EntityManager.Tag tag) {
-            super(depth, ComponentUtils.formatList(
-                    Arrays.asList(tag.getText(), Component.literal("(" + tag.getEntities().size() + ")")),
-                    Component.literal(" ")));
+            super(depth, TextUtils.concat(
+                    Arrays.asList(tag.getText(), TextUtils.literal("(" + tag.getEntities().size() + ")")),
+                    TextUtils.literal(" ")));
             this.tag = tag;
         }
 
@@ -194,7 +194,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             } else {
                 if (isMouseLeft(code)) {
                     if (!PlayerUtils.isCreative(player)) {
-                        sendScreenMessage(Component.translatable(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
+                        sendScreenMessage(TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
                     } else {
                         GetSpawnEggSkill.activate(EntityUtils.getEntityType(entity));
                     }
@@ -248,17 +248,17 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             if (mouseY < BUTTONS_CUT) {
                 tooltips = Arrays.asList(
                         tooltipTitle(Lang.WIDGET_ENTITY_HIGHLIGHT),
-                        Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC, HighlightEntitiesSkill.NEAR_RADIUS, HighlightEntitiesSkill.NEAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
-                        Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS, HighlightEntitiesSkill.FAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
-                        Component.empty(),
-                        Component.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY)
+                        TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC, HighlightEntitiesSkill.NEAR_RADIUS, HighlightEntitiesSkill.NEAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
+                        TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS, HighlightEntitiesSkill.FAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
+                        TextUtils.empty(),
+                        TextUtils.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY)
                 );
             } else {
                 tooltips = Arrays.asList(
                         tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG),
                         tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC),
-                        Component.empty(),
-                        Component.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY)
+                        TextUtils.empty(),
+                        TextUtils.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY)
                 );
             }
 

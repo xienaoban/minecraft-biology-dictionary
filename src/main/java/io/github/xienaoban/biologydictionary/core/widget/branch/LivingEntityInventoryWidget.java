@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.extra.EntityInventorySizeProperty;
 import io.github.xienaoban.biologydictionary.core.skill.entity.LivingEntityStealInventorySkill;
@@ -15,7 +16,6 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyTextBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingScreen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 
 public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<LivingEntity> {
@@ -54,9 +54,9 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
             super.onRender(ctx);
             Integer size = inventorySize.getVal();
             if (size == null) {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
             } else {
-                renderInnerText(ctx, Component.literal("" + inventorySize.getVal()));
+                renderInnerText(ctx, TextUtils.literal("" + inventorySize.getVal()));
             }
         }
     }
@@ -72,7 +72,7 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
             if (isMouseLeft(code)) {
                 // Check if entity is looking at the player before opening the screen
                 if (InventoryStealingScreen.isPlayerCaughtByEntity(e(), ClientUtils.getClientPlayer())) {
-                    BiologyDictionaryClient.sendCenteredWarning(Component.translatable(Lang.TEXT_ENTITY_LOOKING_AT_YOU));
+                    BiologyDictionaryClient.sendCenteredWarning(TextUtils.translate(Lang.TEXT_ENTITY_LOOKING_AT_YOU));
                     return true;
                 }
                 LivingEntityStealInventorySkill.activate(e());

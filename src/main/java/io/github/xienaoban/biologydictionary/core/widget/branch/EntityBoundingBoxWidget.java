@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -57,9 +58,9 @@ public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<
             AABB currBox = e().getBoundingBox();
             if (lastBox == currBox) return;
             lastBox = currBox;
-            textX = Component.literal(String.format("%.2f", lastBox.getXsize()));
-            textY = Component.literal(String.format("%.2f", lastBox.getYsize()));
-            textZ = Component.literal(String.format("%.2f", lastBox.getZsize()));
+            textX = TextUtils.literal(String.format("%.2f", lastBox.getXsize()));
+            textY = TextUtils.literal(String.format("%.2f", lastBox.getYsize()));
+            textZ = TextUtils.literal(String.format("%.2f", lastBox.getZsize()));
         }
     }
 }

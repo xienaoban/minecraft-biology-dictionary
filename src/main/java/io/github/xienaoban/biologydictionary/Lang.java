@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary;
 
-import net.minecraft.network.chat.Component;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import net.minecraft.network.chat.MutableComponent;
 
 /**
@@ -14,7 +14,7 @@ public final class Lang {
     }
 
     public static MutableComponent textYesOrNo(boolean v) {
-        return Component.translatable(keyYesOrNo(v));
+        return TextUtils.translate(keyYesOrNo(v));
     }
 
     public static final String

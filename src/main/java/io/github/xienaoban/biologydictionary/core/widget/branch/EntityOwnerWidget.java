@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
@@ -100,9 +101,9 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
             super.onRender(ctx);
             updateOwnerRef();
             if (lastUuid == null) {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NONE_WITH_BRACKETS), Colors.COMMON_LIGHT_TEXT);
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS), Colors.COMMON_LIGHT_TEXT);
             } else if (lastEntity == null) {
-                renderInnerText(ctx, Component.literal(lastUuid.toString()), Colors.COMMON_LIGHT_TEXT);
+                renderInnerText(ctx, TextUtils.literal(lastUuid.toString()), Colors.COMMON_LIGHT_TEXT);
             } else {
                 renderInnerText(ctx, lastEntity.getName(), Colors.COMMON_LIGHT_TEXT);
             }
@@ -118,7 +119,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 if (lastEntity != ClientUtils.getClientPlayer()) {
-                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT));
+                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT));
                     return true;
                 }
                 ClientUtils.setScreen(new PlayerSelectorScreen(ClientUtils.getCurrentScreen(), targetPlayer -> {

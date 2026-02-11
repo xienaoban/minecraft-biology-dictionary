@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
@@ -12,7 +13,6 @@ import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
@@ -36,7 +36,7 @@ public record RequestEntityTargetedSkillPacket(String skillKey, int entityId, Ta
         Entity entity = ctx.player().level().getEntity(entityId);
         if (entity == null) {
             LOGGER.warn("Entity ID not found: {}", entityId);
-            BiologyDictionary.sendCenteredWarning(ctx.player(), Component.translatable(Lang.TEXT_UNKNOWN_ENTITY_ID));
+            BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_ID));
             return;
         }
 

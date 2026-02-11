@@ -4,12 +4,12 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,13 +21,13 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
     private final Consumer<AbstractClientPlayer> callback;
 
     public PlayerSelectorScreen(AbstractBiologyDictionaryScreen lastScreen, Consumer<AbstractClientPlayer> callback) {
-        super(Component.translatable(Lang.SCREEN_PLAYER_SELECTOR));
+        super(TextUtils.translate(Lang.SCREEN_PLAYER_SELECTOR));
         this.lastScreen = lastScreen;
         this.callback = callback;
         addBookmark(new ReturnLastScreenBookmark());
 
         List<Widget> list = new ArrayList<>();
-        list.add(new DescriptionWidget(1, Page.COLUMNS, Component.translatable(Lang.SCREEN_PLAYER_SELECTOR_DESC)));
+        list.add(new DescriptionWidget(1, Page.COLUMNS, TextUtils.translate(Lang.SCREEN_PLAYER_SELECTOR_DESC)));
         list.add(new PlayerSelectorWidget(player));
         list.addAll(
                 ClientUtils.getClientLevel().players().stream()
@@ -49,7 +49,7 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
 
     public final class ReturnLastScreenBookmark extends Bookmark {
         public ReturnLastScreenBookmark() {
-            super(Component.translatable(Lang.BOOKMARK_BACK));
+            super(TextUtils.translate(Lang.BOOKMARK_BACK));
         }
 
         @Override

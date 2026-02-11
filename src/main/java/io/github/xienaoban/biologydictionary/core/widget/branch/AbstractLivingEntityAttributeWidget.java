@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
@@ -10,7 +11,6 @@ import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
@@ -47,7 +47,7 @@ public abstract class AbstractLivingEntityAttributeWidget<E extends LivingEntity
         final double currValue = calcValue(currAttr);
         String showCurr = Misc.format3Digits(ctx.isDebug() ? currAttr : currValue);
         String showUnit = ctx.isDebug() ? "value" : calcUnit(currAttr, currValue);
-        ctx.renderText(Component.literal(showCurr), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), getElementIcon().getBox().getRight() + 1.0F, getBox().getTop() + 1.25F);
-        ctx.renderText(Component.literal(showUnit), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), getElementIcon().getBox().getRight() + 1.0F, getBox().getTop() + 5.25F);
+        ctx.renderText(TextUtils.literal(showCurr), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), getElementIcon().getBox().getRight() + 1.0F, getBox().getTop() + 1.25F);
+        ctx.renderText(TextUtils.literal(showUnit), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), getElementIcon().getBox().getRight() + 1.0F, getBox().getTop() + 5.25F);
     }
 }

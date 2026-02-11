@@ -4,9 +4,9 @@ import io.github.xienaoban.biologydictionary.common.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public class EntityPropertyButton extends ScreenElement {
@@ -43,8 +43,8 @@ public class EntityPropertyButton extends ScreenElement {
         ctx.renderItem(itemStack, 0.6F, box.getLeft() - 0.5F, box.getTop() - 0.5F);
         if (count != null) {
             int c = count;
-            ctx.renderRightAlignedText(Component.literal(String.valueOf(c)), Colors.GRAY, 0.5F, ctx.getZ(), box.getRight() - 0.5F + 0.5F,  box.getBottom() - 4F + 0.5F);
-            ctx.renderRightAlignedText(Component.literal(String.valueOf(c)), Colors.WHITE, 0.5F, ctx.getZ(), box.getRight() - 0.5F,  box.getBottom() - 4F);
+            ctx.renderRightAlignedText(TextUtils.literal(String.valueOf(c)), Colors.GRAY, 0.5F, ctx.getZ(), box.getRight() - 0.5F + 0.5F,  box.getBottom() - 4F + 0.5F);
+            ctx.renderRightAlignedText(TextUtils.literal(String.valueOf(c)), Colors.WHITE, 0.5F, ctx.getZ(), box.getRight() - 0.5F,  box.getBottom() - 4F);
         }
     }
 }

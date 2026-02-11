@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -15,7 +16,6 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
 
 @Environment(EnvType.CLIENT)
@@ -80,12 +80,12 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                 }
                 super.onRender(ctx);
                 if (ctx.isDebug()) {
-                    renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                    renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 } else {
                     if (isAdultClient()) {
-                        renderInnerText(ctx, Component.translatable(Lang.TEXT_ADULT));
+                        renderInnerText(ctx, TextUtils.translate(Lang.TEXT_ADULT));
                     } else {
-                        renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                        renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                     }
                 }
                 return;
@@ -95,15 +95,15 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
             updatePercent(forcedAge < ADULT_MIN_AGE ? 0F : (1F - (float) age / BABY_MIN_AGE));
             super.onRender(ctx);
             if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(age + "t/" + ADULT_MIN_AGE + "t"));
+                renderInnerText(ctx, TextUtils.literal(age + "t/" + ADULT_MIN_AGE + "t"));
             } else if (!isAdultClient()) {
                 if (forcedAge < ADULT_MIN_AGE) {
-                    renderInnerText(ctx, Component.translatable(Lang.TEXT_ALWAYS_BABY));
+                    renderInnerText(ctx, TextUtils.translate(Lang.TEXT_ALWAYS_BABY));
                 } else {
-                    renderInnerText(ctx, Component.literal(((age - BABY_MIN_AGE) / 20) + "s/" + (-BABY_MIN_AGE / 20 / 60) + "m"));
+                    renderInnerText(ctx, TextUtils.literal(((age - BABY_MIN_AGE) / 20) + "s/" + (-BABY_MIN_AGE / 20 / 60) + "m"));
                 }
             } else {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_ADULT));
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_ADULT));
             }
         }
     }
