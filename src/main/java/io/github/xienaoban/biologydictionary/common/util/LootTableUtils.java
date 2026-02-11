@@ -5,6 +5,9 @@ import io.github.xienaoban.biologydictionary.mixin.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -19,6 +22,7 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.*;
 
@@ -65,6 +69,18 @@ public final class LootTableUtils {
     public static List<LootPoolEntryContainer> getChildren(CompositeEntryBase composite) {
         return ((CompositeEntryBaseIMixin) composite).getChildren();
     }
+    
+    public static List<LootItemCondition> getConditions(LootPool pool) {
+        return ((LootPoolIMixin) pool).getConditions();
+    }
+    
+    public static List<LootItemCondition> getConditions(LootPoolEntryContainer entryContainer) {
+        return ((LootPoolEntryContainerIMixin) entryContainer).getConditions();
+    }
+    
+    public static Identifier getConditionType(LootItemCondition condition) {
+        return BuiltInRegistries.LOOT_CONDITION_TYPE.getKey(condition.getType());
+    }
 
     public static NumberProvider getCountValue(SetItemCountFunction function) {
         return ((SetItemCountFunctionIMixin) function).getValue();
@@ -78,6 +94,10 @@ public final class LootTableUtils {
      * Returns a list of LootEntry objects containing item, count range, and drop chance.
      */
     public static List<LootEntry> parseLootEntries(LootTable lootTable) {
+        return parseLootEntries(lootTable, 0);
+    }
+
+    private static List<LootEntry> parseLootEntries(LootTable lootTable, int initialDepth) {
         List<LootEntry> entries = new ArrayList<>();
         List<LootPool> pools = getPools(lootTable);
 
@@ -85,9 +105,14 @@ public final class LootTableUtils {
             float totalWeight = calculatePoolWeight(pool);
             if (totalWeight <= 0) continue;
 
+            // Get pool-level conditions
+            List<LootItemCondition> poolConditions = getConditions(pool);
+            List<Identifier> poolConditionTypes = poolConditions.stream()
+                    .map(LootTableUtils::getConditionType).toList();
+
             List<LootPoolEntryContainer> entryContainers = getEntries(pool);
             for (LootPoolEntryContainer entryContainer : entryContainers) {
-                List<LootEntry> parsedEntries = parseEntry(entryContainer, totalWeight, 0);
+                List<LootEntry> parsedEntries = parseEntry(entryContainer, totalWeight, initialDepth, poolConditionTypes);
                 entries.addAll(parsedEntries);
             }
         }
@@ -111,16 +136,25 @@ public final class LootTableUtils {
     /**
      * Parse a single loot entry container and return LootEntry objects.
      */
-    private static List<LootEntry> parseEntry(LootPoolEntryContainer entry, float totalWeight, int depth) {
+    private static List<LootEntry> parseEntry(LootPoolEntryContainer entry, float totalWeight, int depth, List<Identifier> inheritedConditions) {
         if (depth > MAX_RECURSION_DEPTH) {
             return List.of();
         }
 
+        // Get entry-level conditions
+        List<LootItemCondition> entryConditions = getConditions(entry);
+        List<Identifier> entryConditionTypes = entryConditions.stream()
+                .map(LootTableUtils::getConditionType).toList();
+
+        // Combine inherited and entry-level conditions
+        List<Identifier> allConditions = new ArrayList<>(inheritedConditions);
+        allConditions.addAll(entryConditionTypes);
+
         return switch (entry) {
-            case LootItem lootItem -> List.of(parseLootItem(lootItem, totalWeight));
-            case TagEntry tagEntry -> parseTagEntry(tagEntry, totalWeight);
-            case CompositeEntryBase composite -> parseCompositeEntry(composite, totalWeight, depth);
-            case NestedLootTable nestedLoot -> parseNestedLootTable(nestedLoot, depth);
+            case LootItem lootItem -> List.of(parseLootItem(lootItem, totalWeight, allConditions));
+            case TagEntry tagEntry -> parseTagEntry(tagEntry, totalWeight, allConditions);
+            case NestedLootTable nestedLoot -> parseNestedLootTable(nestedLoot, depth, allConditions);
+            case CompositeEntryBase composite -> parseCompositeEntry(composite, totalWeight, depth, allConditions);
             default -> List.of();
         };
     }
@@ -128,7 +162,7 @@ public final class LootTableUtils {
     /**
      * Parse a LootItem entry (single item).
      */
-    private static LootEntry parseLootItem(LootItem lootItem, float totalWeight) {
+    private static LootEntry parseLootItem(LootItem lootItem, float totalWeight, List<Identifier> conditions) {
         Holder<Item> itemHolder = getItem(lootItem);
         int weight = getWeight(lootItem);
 
@@ -137,13 +171,13 @@ public final class LootTableUtils {
         int maxCount = countRange[1];
         float dropChance = totalWeight > 0 ? (weight / totalWeight) : 0f;
 
-        return new LootEntry(itemHolder.value(), minCount, maxCount, dropChance);
+        return new LootEntry(itemHolder.value(), minCount, maxCount, dropChance, conditions);
     }
 
     /**
      * Parse a TagEntry (all items in a tag).
      */
-    private static List<LootEntry> parseTagEntry(TagEntry tagEntry, float totalWeight) {
+    private static List<LootEntry> parseTagEntry(TagEntry tagEntry, float totalWeight, List<Identifier> conditions) {
         var tag = getTag(tagEntry);
         int weight = getWeight(tagEntry);
 
@@ -156,23 +190,9 @@ public final class LootTableUtils {
         for (Item item : BuiltInRegistries.ITEM) {
             Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(item);
             if (holder.is(tag)) {
-                entries.add(new LootEntry(item, minCount, maxCount, dropChance));
+                entries.add(new LootEntry(item, minCount, maxCount, dropChance, conditions));
             }
         }
-        return entries;
-    }
-
-    /**
-     * Parse a CompositeEntryBase (EntryGroup, AlternativesEntry, SequentialEntry).
-     */
-    private static List<LootEntry> parseCompositeEntry(CompositeEntryBase composite, float totalWeight, int depth) {
-        List<LootPoolEntryContainer> children = getChildren(composite);
-        List<LootEntry> entries = new ArrayList<>();
-
-        for (LootPoolEntryContainer child : children) {
-            entries.addAll(parseEntry(child, totalWeight, depth + 1));
-        }
-
         return entries;
     }
 
@@ -180,16 +200,45 @@ public final class LootTableUtils {
      * Parse a NestedLootTable entry.
      * Only processes inline tables, skips references.
      */
-    private static List<LootEntry> parseNestedLootTable(NestedLootTable nestedLoot, int depth) {
+    private static List<LootEntry> parseNestedLootTable(NestedLootTable nestedLoot, int depth, List<Identifier> conditions) {
         Either<ResourceKey<LootTable>, LootTable> contents = getContents(nestedLoot);
 
         if (contents.right().isPresent()) {
-            // Inline loot table - process recursively
+            // Inline loot table - process recursively with increased depth
             LootTable inlineTable = contents.right().get();
-            return parseLootEntries(inlineTable);
+            
+            // Create a wrapper function to apply inherited conditions to all entries from the nested table
+            return parseLootEntries(inlineTable, depth + 1).stream()
+                .map(entry -> {
+                    // Combine inherited conditions with nested entry conditions
+                    List<Identifier> combinedConditions = new ArrayList<>(conditions);
+                    combinedConditions.addAll(entry.conditions());
+                    return new LootEntry(
+                        entry.item(),
+                        entry.minCount(),
+                        entry.maxCount(),
+                        entry.dropChance(),
+                        combinedConditions
+                    );
+                })
+                .toList();
         }
 
         return List.of();
+    }
+
+    /**
+     * Parse a CompositeEntryBase (EntryGroup, AlternativesEntry, SequentialEntry).
+     */
+    private static List<LootEntry> parseCompositeEntry(CompositeEntryBase composite, float totalWeight, int depth, List<Identifier> conditions) {
+        List<LootPoolEntryContainer> children = getChildren(composite);
+        List<LootEntry> entries = new ArrayList<>();
+
+        for (LootPoolEntryContainer child : children) {
+            entries.addAll(parseEntry(child, totalWeight, depth + 1, conditions));
+        }
+
+        return entries;
     }
 
     /**
@@ -234,7 +283,7 @@ public final class LootTableUtils {
         return null; // Cannot determine range for other providers (e.g., BinomialDistributionGenerator)
     }
 
-    public record LootEntry(Item item, int minCount, int maxCount, float dropChance) {
+    public record LootEntry(Item item, int minCount, int maxCount, float dropChance, List<Identifier> conditions) {
 
         public static LootEntry fromNbt(CompoundTag nbt) {
             String itemId = nbt.getString("item").orElseThrow();
@@ -242,7 +291,19 @@ public final class LootTableUtils {
             int minCount = nbt.getInt("minCount").orElseThrow();
             int maxCount = nbt.getInt("maxCount").orElseThrow();
             float dropChance = nbt.getFloat("dropChance").orElseThrow();
-            return new LootEntry(item, minCount, maxCount, dropChance);
+            
+            // Parse conditions
+            List<Identifier> conditions = new ArrayList<>();
+            if (nbt.contains("conditions")) {
+                ListTag conditionsList = nbt.getList("conditions").orElse(new ListTag());
+                for (Tag tag : conditionsList) {
+                    if (tag instanceof StringTag conditionId) {
+                        conditions.add(Identifier.parse(conditionId.asString().orElseThrow()));
+                    }
+                }
+            }
+            
+            return new LootEntry(item, minCount, maxCount, dropChance, conditions);
         }
 
         public CompoundTag toNbt() {
@@ -252,6 +313,14 @@ public final class LootTableUtils {
             nbt.putInt("minCount", minCount);
             nbt.putInt("maxCount", maxCount);
             nbt.putFloat("dropChance", dropChance);
+            
+            // Save conditions
+            ListTag conditionsList = new ListTag();
+            for (Identifier condition : conditions) {
+                conditionsList.add(StringTag.valueOf(condition.toString()));
+            }
+            nbt.put("conditions", conditionsList);
+            
             return nbt;
         }
 
