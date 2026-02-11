@@ -42,6 +42,7 @@ public final class Lang {
     KEY_DEBUG = "key.biologydictionary.debug",
 
     ACTIVITY_PREFIX = "activity.minecraft.",
+    LOOT_CONDITION_PREFIX = "loot_condition.",
 
     CONFIG_PREFIX          = "config.biologydictionary.",
     CONFIG_TITLE           = "config.biologydictionary.title",
