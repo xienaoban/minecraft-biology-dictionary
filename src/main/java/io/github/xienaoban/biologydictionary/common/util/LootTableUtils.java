@@ -111,16 +111,15 @@ public final class LootTableUtils {
             List<LootItemCondition> poolConditions = getConditions(pool);
             List<Identifier> poolConditionTypes = poolConditions.stream()
                     .map(LootTableUtils::getConditionType).toList();
+            float poolChance = extractConditionChance(poolConditions);
 
             List<LootPoolEntryContainer> entryContainers = getEntries(pool);
             for (LootPoolEntryContainer entryContainer : entryContainers) {
                 // Calculate base chance by weight
-                float baseChance;
+                float baseChance = poolChance;
                 if (entryContainer instanceof LootPoolSingletonContainer singleton) {
                     int weight = getWeight(singleton);
-                    baseChance = totalWeight > 0 ? (weight / totalWeight) : 0F;
-                } else {
-                    baseChance = 1F;
+                    baseChance = mulChance(baseChance, totalWeight > 0 ? (weight / totalWeight) : -1F);
                 }
 
                 List<LootEntry> parsedEntries = parseLootPoolEntryContainer(
@@ -161,18 +160,30 @@ public final class LootTableUtils {
         // Combine inherited and entry-level conditions
         List<Identifier> allConditions = new ArrayList<>(inheritedConditions);
         allConditions.addAll(entryConditionTypes);
-
         float conditionMultiplier = extractConditionChance(getConditions(entry));
         float dropChance = mulChance(baseChance, conditionMultiplier);
 
-        return switch (entry) {
-            case LootItem lootItem -> List.of(parseLootItem(lootItem, dropChance, allConditions));
-            case TagEntry tagEntry -> parseTagEntry(tagEntry, dropChance, allConditions);
-            case NestedLootTable nestedLoot -> parseNestedLootTable(nestedLoot, dropChance, allConditions, depth);
-            case CompositeEntryBase composite -> parseCompositeEntry(composite, dropChance, allConditions, depth);
-            default -> List.of();
-        };
+        if (entry instanceof LootPoolSingletonContainer singleton) {
+            int[] countRange = extractCountRange(singleton);
+            int minCount = countRange[0];
+            int maxCount = countRange[1];
+            if (minCount <= 0) {
+                dropChance = mulChance(dropChance, ((float) maxCount) / (1F + maxCount - minCount));
+                minCount = 1;
+            }
+
+            return switch (singleton) {
+                case LootItem lootItem -> List.of(parseLootItem(lootItem, minCount, maxCount, dropChance, allConditions));
+                case TagEntry tagEntry -> parseTagEntry(tagEntry, minCount, maxCount, dropChance, allConditions);
+                case NestedLootTable nestedLoot -> parseNestedLootTable(nestedLoot, dropChance, allConditions, depth);
+                default -> List.of();
+            };
+        } else if (entry instanceof CompositeEntryBase composite) {
+            return parseCompositeEntry(composite, dropChance, allConditions, depth);
+        }
+        return List.of();
     }
+
 
     /**
      * Extract chance multiplier from conditions.
@@ -198,30 +209,28 @@ public final class LootTableUtils {
     /**
      * Parse a LootItem entry (single item).
      */
-    private static LootEntry parseLootItem(LootItem lootItem, float dropChance, List<Identifier> conditions) {
+    private static LootEntry parseLootItem(LootItem lootItem, int minCount, int maxCount, float dropChance,
+                                           List<Identifier> conditions) {
         Holder<Item> itemHolder = getItem(lootItem);
-        int[] countRange = extractCountRange(lootItem);
-        int minCount = countRange[0];
-        int maxCount = countRange[1];
         return new LootEntry(itemHolder.value(), minCount, maxCount, dropChance, conditions);
     }
 
     /**
      * Parse a TagEntry (all items in a tag).
      */
-    private static List<LootEntry> parseTagEntry(TagEntry tagEntry, float dropChance, List<Identifier> conditions) {
-        var tag = getTag(tagEntry);
-        int[] countRange = extractCountRange(tagEntry);
-        int minCount = countRange[0];
-        int maxCount = countRange[1];
+    private static List<LootEntry> parseTagEntry(TagEntry tagEntry, int minCount, int maxCount, float dropChance,
+                                                 List<Identifier> conditions) {
+        TagKey<Item> tag = getTag(tagEntry);
 
         List<LootEntry> entries = new ArrayList<>();
-        for (Item item : BuiltInRegistries.ITEM) {
-            Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(item);
-            if (holder.is(tag)) {
-                entries.add(new LootEntry(item, minCount, maxCount, dropChance, conditions));
+
+        BuiltInRegistries.ITEM.get(tag).ifPresent(tagSet -> {
+            float chance = dropChance / tagSet.size();
+            for (Holder<Item> holder : tagSet) {
+                entries.add(new LootEntry(holder.value(), minCount, maxCount, chance, conditions));
             }
-        }
+        });
+
         return entries;
     }
 
@@ -260,13 +269,13 @@ public final class LootTableUtils {
     /**
      * Parse a CompositeEntryBase (EntryGroup, AlternativesEntry, SequentialEntry).
      */
-    private static List<LootEntry> parseCompositeEntry(CompositeEntryBase composite, float totalWeight,
+    private static List<LootEntry> parseCompositeEntry(CompositeEntryBase composite, float dropChance,
                                                        List<Identifier> conditions, int depth) {
         List<LootPoolEntryContainer> children = getChildren(composite);
         List<LootEntry> entries = new ArrayList<>();
 
         for (LootPoolEntryContainer child : children) {
-            entries.addAll(parseLootPoolEntryContainer(child, totalWeight, conditions, depth + 1));
+            entries.addAll(parseLootPoolEntryContainer(child, dropChance, conditions, depth + 1));
         }
 
         return entries;

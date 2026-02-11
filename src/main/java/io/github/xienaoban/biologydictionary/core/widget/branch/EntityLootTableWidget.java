@@ -31,7 +31,7 @@ import java.util.function.Function;
 public final class EntityLootTableWidget extends EntityPropertyStandardWidget<Entity> {
     public static final Factory<Entity> FACTORY = EntityLootTableWidget::new;
 
-    private static final int L = 15, T = 2;
+    private static final int L = 14, T = 3;
 
     private final EntityLootTableProperty lootTableProperty = p().getExtra(EntityLootTableProperty.class);
 
@@ -128,7 +128,7 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
         MutableComponent res;
         List<Component> conditions = new ArrayList<>();
         for (Identifier identifier : entry.conditions()) {
-            String key = "loot_condition." + identifier.getNamespace() + '.' + identifier.getPath();
+            String key = Lang.LOOT_CONDITION_PREFIX + identifier.getNamespace() + '.' + identifier.getPath();
             conditions.add(Component.translatable(key));
         }
         MutableComponent inner = ComponentUtils.formatList(conditions, Component.literal(", "), Function.identity());
@@ -170,7 +170,7 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
 
             // Render item icons
             for (int i = lootEntries.size() - 1; i >= 0; --i) {
-                ctx.renderTexture(Textures.ICONS, 23 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
+                ctx.renderTexture(Textures.ICONS, 21 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
             for (int i = lootEntries.size() - 1; i >= 0; --i) {
                 ctx.renderItem(new ItemStack(lootEntries.get(i).item()), 0.5F, getBox().getLeft() + i * gap, getBox().getTop());
