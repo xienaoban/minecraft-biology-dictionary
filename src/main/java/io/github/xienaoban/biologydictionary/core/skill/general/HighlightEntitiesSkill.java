@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.skill.general;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
@@ -13,7 +14,6 @@ import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -60,14 +60,14 @@ public class HighlightEntitiesSkill implements GeneralSkill {
         boolean allowed;
         if (entityType == null) {
             allowed = false;
-            PlayerUtils.showClientCenteredMessage(player, Component.translatable(Lang.TEXT_FAILED_TO_HIGHLIGHT,
-                    Component.translatable(Lang.TEXT_UNKNOWN_ENTITY_TYPE)));
+            PlayerUtils.showClientCenteredMessage(player, TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
+                    TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE)));
         } else if (PlayerUtils.isCreative(player) || PlayerUtils.isSpectator(player)) {
             allowed = true;
         } else if (entityType == EntityType.PLAYER) {
             allowed = false;
-            PlayerUtils.showClientCenteredMessage(player, Component.translatable(Lang.TEXT_FAILED_TO_HIGHLIGHT,
-                    Component.translatable(Lang.TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS)));
+            PlayerUtils.showClientCenteredMessage(player, TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
+                    TextUtils.translate(Lang.TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS)));
         } else {
             int experience;
             if (radius <= NEAR_RADIUS) {
@@ -79,8 +79,8 @@ public class HighlightEntitiesSkill implements GeneralSkill {
             }
             if (PlayerUtils.getExperiencePoints(player) < experience) {
                 allowed = false;
-                PlayerUtils.showClientCenteredMessage(player, Component.translatable(Lang.TEXT_FAILED_TO_HIGHLIGHT,
-                        Component.translatable(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experience)));
+                PlayerUtils.showClientCenteredMessage(player, TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
+                        TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experience)));
             } else {
                 allowed = true;
                 PlayerSkills.giveExperiencePointsIfNotCreative(player, -experience);

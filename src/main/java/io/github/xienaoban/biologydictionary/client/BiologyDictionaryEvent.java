@@ -16,7 +16,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.BeehiveBlock;
@@ -37,7 +36,7 @@ public final class BiologyDictionaryEvent {
             if (hasPermissionToOpenBook(player)) {
                 openBookScreen0(client, player);
             } else {
-                ClientUtils.sendCenteredMessage(Component.translatable(Lang.TEXT_NO_BIOLOGY_DICTIONARY_BOOK).withStyle(ChatFormatting.YELLOW));
+                ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_NO_BIOLOGY_DICTIONARY_BOOK).withStyle(ChatFormatting.YELLOW));
             }
         } catch (Throwable e) {
             resetHit();

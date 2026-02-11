@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -17,7 +18,6 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -106,7 +106,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             if (cooldownOpt == null) {
                 updatePercent(0);
                 super.onRender(ctx);
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 return;
             }
             int maxCooldown = e().getDimensionChangingDelay();
@@ -115,14 +115,14 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             super.onRender(ctx);
             if (cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
                 if (ctx.isDebug()) {
-                    renderInnerText(ctx, Component.translatable(Lang.TEXT_INFINITY));
+                    renderInnerText(ctx, TextUtils.translate(Lang.TEXT_INFINITY));
                 } else {
-                    renderInnerText(ctx, Component.translatable(Lang.TEXT_INFINITY_CHARACTER));
+                    renderInnerText(ctx, TextUtils.translate(Lang.TEXT_INFINITY_CHARACTER));
                 }
             } else if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(cooldown + "t/" + maxCooldown + "t"));
+                renderInnerText(ctx, TextUtils.literal(cooldown + "t/" + maxCooldown + "t"));
             } else {
-                renderInnerText(ctx, Component.literal((cooldown / ClientUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / ClientUtils.getClientTickCountPerSecond()) + "s"));
+                renderInnerText(ctx, TextUtils.literal((cooldown / ClientUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / ClientUtils.getClientTickCountPerSecond()) + "s"));
             }
         }
     }

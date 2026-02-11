@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.LootTableUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.extra.EntityLootTableProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -15,7 +16,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
@@ -23,9 +23,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public final class EntityLootTableWidget extends EntityPropertyStandardWidget<Entity> {
@@ -46,7 +44,7 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
         List<Component> list = new ArrayList<>();
         list.add(tooltipTitle(Lang.PROPERTY_WIDGET_LOOT_TABLE));
         list.add(tooltipDescription(Lang.PROPERTY_WIDGET_LOOT_TABLE_DESC));
-        list.add(Component.empty());
+        list.add(TextUtils.empty());
 
         List<LootTableUtils.LootEntry> entries = lootTableProperty.getVal();
         if (entries == null || entries.isEmpty()) {
@@ -81,11 +79,11 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
             for (int i = 0; i < entries.size(); i++) {
                 List<Component> column = columns.get(i);
                 List<Integer> width = widths.get(i);
-                Component dot1 = Component.literal(".".repeat(Math.max(0, (maxItemNameWidth + maxCountWidth - width.get(0) - width.get(1) + 4) / 2))).withStyle(ChatFormatting.DARK_GRAY);
-                Component dot2 = Component.literal(".".repeat(Math.max(0, (maxChanceWidth - width.get(2) + 4) / 2))).withStyle(ChatFormatting.DARK_GRAY);
-                list.add(ComponentUtils.formatList(
+                MutableComponent dot1 = TextUtils.literal(".".repeat(Math.max(0, (maxItemNameWidth + maxCountWidth - width.get(0) - width.get(1) + 4) / 2))).withStyle(ChatFormatting.DARK_GRAY);
+                MutableComponent dot2 = TextUtils.literal(".".repeat(Math.max(0, (maxChanceWidth - width.get(2) + 4) / 2))).withStyle(ChatFormatting.DARK_GRAY);
+                list.add(TextUtils.concat(
                         Arrays.asList(column.get(0), dot1, column.get(1), dot2, column.get(2), column.get(3)),
-                        Component.literal(" ")
+                        TextUtils.literal(" ")
                 ));
             }
         }
@@ -101,11 +99,11 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
     private static Component formatCount(LootTableUtils.LootEntry entry) {
         MutableComponent res;
         if (entry.minCount() < 0 || entry.maxCount() < 0) {
-            res = Component.literal("x?");
+            res = TextUtils.literal("x?");
         } else if (entry.minCount() == entry.maxCount()) {
-            res = Component.literal("x" + entry.minCount());
+            res = TextUtils.literal("x" + entry.minCount());
         } else {
-            res = Component.literal("x" + entry.minCount() + "-" + entry.maxCount());
+            res = TextUtils.literal("x" + entry.minCount() + "-" + entry.maxCount());
         }
         return res.withStyle(ChatFormatting.GRAY);
     }
@@ -113,28 +111,26 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
     private static Component formatChance(LootTableUtils.LootEntry entry) {
         MutableComponent res;
         if (entry.dropChance() < 0) {
-            res = Component.literal("?%");
+            res = TextUtils.literal("?%");
         } else {
-            res = Component.literal(String.format("%.1f%%", entry.dropChance() * 100));
+            res = TextUtils.literal(String.format("%.1f%%", entry.dropChance() * 100));
         }
         return res.withStyle(ChatFormatting.YELLOW);
     }
 
     private static Component formatConditions(LootTableUtils.LootEntry entry) {
         if (entry.conditions().isEmpty()) {
-            return Component.empty();
+            return TextUtils.empty();
         }
 
         MutableComponent res;
         List<Component> conditions = new ArrayList<>();
         for (Identifier identifier : entry.conditions()) {
             String key = Lang.LOOT_CONDITION_PREFIX + identifier.getNamespace() + '.' + identifier.getPath();
-            conditions.add(Component.translatable(key));
+            conditions.add(TextUtils.translate(key));
         }
-        MutableComponent inner = ComponentUtils.formatList(conditions, Component.literal(", "), Function.identity());
-        res = ComponentUtils.formatList(
-                Arrays.asList(Component.literal("("), inner, Component.literal(")")),
-                Component.empty(), Function.identity());
+        MutableComponent inner = TextUtils.concat(conditions, TextUtils.literal(", "));
+        res = TextUtils.concat(Arrays.asList(TextUtils.literal("("), inner, TextUtils.literal(")")));
         return res.withStyle(ChatFormatting.GRAY);
     }
 
@@ -154,11 +150,11 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
 
             List<LootTableUtils.LootEntry> entries = lootTableProperty.getVal();
             if (entries == null) {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
                 return;
             }
             if (entries.isEmpty()) {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_EMPTY_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
                 return;
             }
 

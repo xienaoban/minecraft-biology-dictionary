@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -16,7 +17,6 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.mixin.AnimalIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
 
 @Environment(EnvType.CLIENT)
@@ -80,12 +80,12 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                 updatePercent(0);
                 super.onRender(ctx);
                 if (ctx.isDebug()) {
-                    renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                    renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 } else {
                     if (isAdultClient()) {
-                        renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                        renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                     } else {
-                        renderInnerText(ctx, Component.translatable(Lang.TEXT_BABY));
+                        renderInnerText(ctx, TextUtils.translate(Lang.TEXT_BABY));
                     }
                 }
                 return;
@@ -95,15 +95,15 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
             updatePercent(forcedAge > BREED_COOLDOWN_OFF ? 1 : ((float) age / BREED_COOLDOWN_MAX));
             super.onRender(ctx);
             if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(age + "t/" + BREED_COOLDOWN_MAX + "t"));
+                renderInnerText(ctx, TextUtils.literal(age + "t/" + BREED_COOLDOWN_MAX + "t"));
             } else if (isAdultClient()) {
                 if (forcedAge > BREED_COOLDOWN_OFF) {
-                    renderInnerText(ctx, Component.translatable(Lang.TEXT_NEVER_BREED));
+                    renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NEVER_BREED));
                 } else {
-                    renderInnerText(ctx, Component.literal((age / 20) + "s/" + (BREED_COOLDOWN_MAX / 20 / 60) + "m"));
+                    renderInnerText(ctx, TextUtils.literal((age / 20) + "s/" + (BREED_COOLDOWN_MAX / 20 / 60) + "m"));
                 }
             } else {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_BABY));
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_BABY));
             }
         }
     }

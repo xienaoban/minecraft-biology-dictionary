@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
@@ -12,7 +13,6 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -43,12 +43,12 @@ public class EntityGiftPetSkill implements EntityTargetedSkill<Entity> {
         ServerPlayer targetPlayer = server.getPlayerList().getPlayer(uuid);
         LivingEntity owner = ((OwnableEntity) entity).getOwner();
         if (((OwnableEntity) entity).getOwner() != player) {
-            throw new NoPermissionException(Component.translatable(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT),
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT),
                     "Not ower of the pet: player=\"" + player.getName().getString() + "\", owner=\""
                             + (owner == null ? "null or not online" : owner.getName().getString()) + "\"");
         }
         if (player == targetPlayer) {
-            throw new NoPermissionException(Component.translatable(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_SAME),
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_SAME),
                     "The player and the target player cannot be the same person: player=\"" + player.getName().getString() + "\"");
         }
         // Cannot use Property.setTo() here as it's arg should be TamableAnimal.

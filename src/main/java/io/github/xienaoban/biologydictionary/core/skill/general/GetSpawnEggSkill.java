@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
@@ -12,7 +13,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -44,20 +44,20 @@ public class GetSpawnEggSkill implements GeneralSkill {
         EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
         Permissions.checkPlayerCreative(player);
         if (entityType == null) {
-            BiologyDictionary.sendCenteredWarning(player, Component.translatable(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
+            BiologyDictionary.sendCenteredWarning(player, TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
         } else if (!PlayerUtils.isCreative(player)) {
-            BiologyDictionary.sendCenteredWarning(player, Component.translatable(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
+            BiologyDictionary.sendCenteredWarning(player, TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
         } else {
             SpawnEggItem item = SpawnEggItem.byId(entityType);
             if (item == null) {
-                BiologyDictionary.sendCenteredWarning(player, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                BiologyDictionary.sendCenteredWarning(player, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
             } else {
                 ItemStack stack = new ItemStack(item);
                 PlayerUtils.getInventory(player).add(stack);
                 // @see net.minecraft.server.commands.GiveCommand.giveItem
                 PlayerUtils.playLocalSound(player, SoundEvents.ITEM_PICKUP, 1F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
                 BiologyDictionary.sendCenteredWarning(player,
-                        Component.translatable(Lang.TEXT_OFFER_OR_DROP, Component.translatable(item.getDescriptionId())));
+                        TextUtils.translate(Lang.TEXT_OFFER_OR_DROP, TextUtils.translate(item.getDescriptionId())));
             }
         }
     }

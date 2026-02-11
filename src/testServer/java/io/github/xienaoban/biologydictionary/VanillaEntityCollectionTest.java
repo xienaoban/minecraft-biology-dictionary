@@ -2,11 +2,11 @@ package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
@@ -58,7 +58,7 @@ public class VanillaEntityCollectionTest {
                 throw new RuntimeException(e);
             }
             LOGGER.info("Deobfuscation batch has been written to {}.", Paths.get(path).toAbsolutePath().normalize().toString());
-            helper.fail(Component.literal("Some entities are not covered by the deobfuscation map."));
+            helper.fail(TextUtils.literal("Some entities are not covered by the deobfuscation map."));
         }
     }
 
@@ -88,7 +88,7 @@ public class VanillaEntityCollectionTest {
             }
         }
         if (success) helper.succeed();
-        else helper.fail(Component.literal("Some entities have not been assigned an order."));
+        else helper.fail(TextUtils.literal("Some entities have not been assigned an order."));
     }
 
     private void exportDeobfuscationOfVanillaEntities(PrintWriter out) {

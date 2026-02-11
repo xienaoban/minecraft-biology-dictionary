@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElemen
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.biologydictionary.gui.component.CenteredMessage;
@@ -76,7 +77,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     private void check() {
         if (EntityManager.getInstance() == null) {
-            ClientUtils.sendTextBoxMessage(Component.literal("Failed to init EntityManager??").withStyle(ChatFormatting.RED));
+            ClientUtils.sendTextBoxMessage(TextUtils.literal("Failed to init EntityManager??").withStyle(ChatFormatting.RED));
             throw new RuntimeException("Failed to init EntityManager??");
         }
     }
@@ -116,7 +117,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     private void renderDebug(ScreenRenderingContext ctx) {
-        ctx.renderText(Component.literal(getClass().getSimpleName()), 0xFFFFFFFF, ctx.getZ(), 2, 2);
+        ctx.renderText(TextUtils.literal(getClass().getSimpleName()), 0xFFFFFFFF, ctx.getZ(), 2, 2);
     }
 
     @Override
@@ -167,7 +168,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
             return true;
         } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyEvent)) {
             screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
-            sendScreenMessage(Component.literal("Debug mode " + (screenRenderingContext.isDebug() ? "on" : "off")));
+            sendScreenMessage(TextUtils.literal("Debug mode " + (screenRenderingContext.isDebug() ? "on" : "off")));
             return true;
         }
         return super.keyPressed(keyEvent);
@@ -352,7 +353,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     public final class OpenBdHomeScreenBookmark extends Bookmark {
         public OpenBdHomeScreenBookmark() {
-            super(Component.translatable(Lang.BOOKMARK_BACK_TO_HOME));
+            super(TextUtils.translate(Lang.BOOKMARK_BACK_TO_HOME));
         }
 
         @Override
@@ -368,7 +369,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     public final class OpenBdConfigScreenBookmark extends Bookmark {
         public OpenBdConfigScreenBookmark() {
-            super(Component.translatable(Lang.BOOKMARK_CONFIG));
+            super(TextUtils.translate(Lang.BOOKMARK_CONFIG));
         }
 
         @Override
@@ -384,7 +385,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     public final class OpenBdAboutScreenBookmark extends Bookmark {
         public OpenBdAboutScreenBookmark() {
-            super(Component.translatable(Lang.BOOKMARK_ABOUT));
+            super(TextUtils.translate(Lang.BOOKMARK_ABOUT));
         }
 
         @Override
@@ -465,7 +466,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
         private int lastIndex = -1;
         private int lastSize = -1;
-        private Component cache = Component.empty();
+        private Component cache = TextUtils.empty();
 
         public PageNum(boolean leftOrRight) {
             super(false);
@@ -483,9 +484,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 lastSize = size;
                 int real = index + leftOrRight;
                 if (real <= size) {
-                    cache = Component.literal(real + "/" + size);
+                    cache = TextUtils.literal(real + "/" + size);
                 } else {
-                    cache = Component.empty();
+                    cache = TextUtils.empty();
                 }
             }
             ctx.renderCenteredText(cache, 0xFFAF711F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());

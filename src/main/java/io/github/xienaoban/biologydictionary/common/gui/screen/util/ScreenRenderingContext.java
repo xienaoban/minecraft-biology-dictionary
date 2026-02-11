@@ -401,6 +401,7 @@ public final class ScreenRenderingContext {
      */
     private void renderEntity(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset) {
+        // This function does not compatible with guiGraphics.pose().scale(size, size).
         if (screenScale != 1F) {
             left   *= screenScale;
             top    *= screenScale;

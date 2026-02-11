@@ -5,12 +5,12 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.server.ItemRegistry;
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.mixin.CustomDataIMixin;
 import io.github.xienaoban.biologydictionary.mixin.MinecraftMixin;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.network.Filterable;
@@ -100,12 +100,12 @@ public final class BiologyDictionaryItem {
 
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(ID_NBT));
         stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of("biologydictionary:handbook"), List.of()));
-        stack.set(DataComponents.ITEM_NAME, Component.translatable(Lang.BIOLOGY_DICTIONARY_TITLE).withStyle(
+        stack.set(DataComponents.ITEM_NAME, TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE).withStyle(
                 Style.EMPTY.withColor(TextColor.parseColor("aqua").getOrThrow())
                         .withBold(true).withItalic(false)
         ));
         stack.set(DataComponents.LORE, ItemLore.EMPTY.withLineAdded(
-                Component.translatable(Lang.BIOLOGY_DICTIONARY_DESCRIPTION).withStyle(
+                TextUtils.translate(Lang.BIOLOGY_DICTIONARY_DESCRIPTION).withStyle(
                         Style.EMPTY.withColor(TextColor.parseColor("dark_aqua").getOrThrow())
                                 .withBold(false).withItalic(false)
                 )
@@ -143,6 +143,6 @@ public final class BiologyDictionaryItem {
      * @return translated string of the current language
      */
     private static String trans(String translateKey) {
-        return Component.translatable(translateKey).getString();
+        return TextUtils.translate(translateKey).getString();
     }
 }

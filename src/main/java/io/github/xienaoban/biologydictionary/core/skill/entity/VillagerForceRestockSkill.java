@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
@@ -15,7 +16,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,13 +43,13 @@ public class VillagerForceRestockSkill implements EntityTargetedSkill<Villager> 
 
     private static void checkVillagerHasJobSite(Integer restocksToday, GlobalPos jobSite) {
         if (restocksToday == null || jobSite == null) {
-            throw new NoPermissionException(Component.translatable(Lang.TEXT_VILLAGER_NO_JOB_SITE), "No job site");
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_VILLAGER_NO_JOB_SITE), "No job site");
         }
     }
 
     private static void checkVillagerCloseToJobSite(Villager entity, GlobalPos jobSite) {
         if (!isCloseEnoughToJobSite(entity, jobSite)) {
-            throw new NoPermissionException(Component.translatable(Lang.TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE), "Too far away from the job site");
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE), "Too far away from the job site");
         }
     }
     @Environment(EnvType.CLIENT)

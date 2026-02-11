@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.leaf;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.entity.SheepForceEatGrassSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -11,7 +12,6 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 
 public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
@@ -47,7 +47,7 @@ public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
             if (isMouseLeft(code)) {
                 if (!SheepForceEatGrassSkill.isGrassOrGrassBlock(e())) {
                     AbstractBiologyDictionaryScreen.current()
-                            .sendScreenMessage(Component.translatable(Lang.TEXT_SHEEP_NO_GRASS_UNDER_FEET));
+                            .sendScreenMessage(TextUtils.translate(Lang.TEXT_SHEEP_NO_GRASS_UNDER_FEET));
                 } else if (SheepForceEatGrassSkill.activate(e())) {
                     ClientUtils.getCurrentScreen().onClose();
                 }
