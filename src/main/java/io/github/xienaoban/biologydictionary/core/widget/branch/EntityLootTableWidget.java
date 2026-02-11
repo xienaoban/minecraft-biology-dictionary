@@ -16,12 +16,16 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public final class EntityLootTableWidget extends EntityPropertyStandardWidget<Entity> {
@@ -48,27 +52,90 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
         if (entries == null || entries.isEmpty()) {
             list.add(tooltipBody(Lang.TEXT_EMPTY_WITH_BRACKETS));
         } else {
-            // Calculate max width for alignment
-            int maxW = -1;
+            int maxItemNameWidth = 0;
+            int maxCountWidth = 0;
+            int maxChanceWidth = 0;
+            List<List<Component>> columns = new ArrayList<>();
+            List<List<Integer>> widths = new ArrayList<>();
+
             for (LootTableUtils.LootEntry entry : entries) {
-                Component name = entry.getDisplayName();
-                maxW = Math.max(maxW, ctx.calcTextWidth(name));
+                Component itemName = formatItemName(entry);
+                int itemNameWidth = ctx.calcTextWidth(itemName);
+                maxItemNameWidth = Math.max(maxItemNameWidth, itemNameWidth);
+
+                Component count = formatCount(entry);
+                int countWidth = ctx.calcTextWidth(count);
+                maxCountWidth = Math.max(maxCountWidth, countWidth);
+
+                Component chance = formatChance(entry);
+                int chanceWidth = ctx.calcTextWidth(chance);
+                maxChanceWidth = Math.max(maxChanceWidth, chanceWidth);
+
+                Component conditions = formatConditions(entry);
+
+                columns.add(Arrays.asList(itemName, count, chance, conditions));
+                widths.add(Arrays.asList(itemNameWidth, countWidth, chanceWidth));
             }
 
-            for (LootTableUtils.LootEntry entry : entries) {
-                Component name = entry.getDisplayName();
-                Component count = Component.literal(entry.minCount() + "-" + entry.maxCount()).withStyle(ChatFormatting.WHITE);
-                Component chance = Component.literal(String.format("%.1f%%", entry.dropChance() * 100)).withStyle(ChatFormatting.GRAY);
-
-                int w = ctx.calcTextWidth(name) + ctx.calcTextWidth(count) + ctx.calcTextWidth(chance);
-                Component dot = Component.literal(".".repeat(Math.max(0, (maxW + 40 - w) / 2))).withStyle(ChatFormatting.DARK_GRAY);
-
-                list.add(ComponentUtils.formatList(Arrays.asList(name, dot, count, chance), Component.literal(" ")));
+            // Format each entry with alignment
+            for (int i = 0; i < entries.size(); i++) {
+                List<Component> column = columns.get(i);
+                List<Integer> width = widths.get(i);
+                Component dot1 = Component.literal(".".repeat(Math.max(0, (maxItemNameWidth + maxCountWidth - width.get(0) - width.get(1) + 4) / 2))).withStyle(ChatFormatting.DARK_GRAY);
+                Component dot2 = Component.literal(".".repeat(Math.max(0, (maxChanceWidth - width.get(2) + 4) / 2))).withStyle(ChatFormatting.DARK_GRAY);
+                list.add(ComponentUtils.formatList(
+                        Arrays.asList(column.get(0), dot1, column.get(1), dot2, column.get(2), column.get(3)),
+                        Component.literal(" ")
+                ));
             }
         }
 
         renderTooltip(ctx, list);
         return true;
+    }
+
+    private static Component formatItemName(LootTableUtils.LootEntry entry) {
+        return entry.getDisplayName().copy().withStyle(ChatFormatting.WHITE);
+    }
+
+    private static Component formatCount(LootTableUtils.LootEntry entry) {
+        MutableComponent res;
+        if (entry.minCount() < 0 || entry.maxCount() < 0) {
+            res = Component.literal("x?");
+        } else if (entry.minCount() == entry.maxCount()) {
+            res = Component.literal("x" + entry.minCount());
+        } else {
+            res = Component.literal("x" + entry.minCount() + "-" + entry.maxCount());
+        }
+        return res.withStyle(ChatFormatting.GRAY);
+    }
+
+    private static Component formatChance(LootTableUtils.LootEntry entry) {
+        MutableComponent res;
+        if (entry.dropChance() < 0) {
+            res = Component.literal("?%");
+        } else {
+            res = Component.literal(String.format("%.1f%%", entry.dropChance() * 100));
+        }
+        return res.withStyle(ChatFormatting.YELLOW);
+    }
+
+    private static Component formatConditions(LootTableUtils.LootEntry entry) {
+        if (entry.conditions().isEmpty()) {
+            return Component.empty();
+        }
+
+        MutableComponent res;
+        List<Component> conditions = new ArrayList<>();
+        for (Identifier identifier : entry.conditions()) {
+            String key = "loot_condition." + identifier.getNamespace() + '.' + identifier.getPath();
+            conditions.add(Component.translatable(key));
+        }
+        MutableComponent inner = ComponentUtils.formatList(conditions, Component.literal(", "), Function.identity());
+        res = ComponentUtils.formatList(
+                Arrays.asList(Component.literal("("), inner, Component.literal(")")),
+                Component.empty(), Function.identity());
+        return res.withStyle(ChatFormatting.GRAY);
     }
 
     private final class LootItemBar extends EntityPropertyBar {
