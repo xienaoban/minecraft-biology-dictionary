@@ -8,8 +8,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -18,13 +17,10 @@ import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
-public class SheepForceEatGrassSkill implements EntityTargetedSkill<Sheep> {
-    public static final int EXP_COST = 4;
+public record SheepForceEatGrassSkill() implements EntityTargetedSkill<Sheep> {
+    public static final Factory<SheepForceEatGrassSkill> FACTORY = SheepForceEatGrassSkill::new;
 
-    @Environment(EnvType.CLIENT)
-    public static boolean activate(Sheep entity) {
-        return PlayerSkills.sendEntityTargetedSkill(entity);
-    }
+    public static final int EXP_PT_COST = 4;
 
     /**
      * @see net.minecraft.world.entity.ai.goal.EatBlockGoal#tick()
@@ -36,18 +32,26 @@ public class SheepForceEatGrassSkill implements EntityTargetedSkill<Sheep> {
                 || level.getBlockState(blockPos.below()).is(Blocks.GRASS_BLOCK);
     }
 
+    private SheepForceEatGrassSkill(FriendlyByteBuf buf) {
+        this();
+    }
+
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Sheep entity, Object... args) {
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXP_COST);
-        return ByteTag.valueOf(false);
+    public void write(FriendlyByteBuf buf) {
+        // No data to write
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void clientCheck(LocalPlayer player, Sheep entity) {
+        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXP_PT_COST);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Sheep entity, Tag args) {
-        Permissions.checkLegalArg(args.asBoolean().orElseThrow(), false);
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXP_COST);
-        PlayerSkills.giveExperiencePointsIfNotCreative(player, -EXP_COST);
+    public void serverCheck(MinecraftServer server, ServerPlayer player, Sheep entity) {
+        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXP_PT_COST);
+        PlayerSkills.giveExperiencePointsIfNotCreative(player, -EXP_PT_COST);
         Permissions.checkMobHasGoalAndStart(entity, EatBlockGoal.class);
     }
 }

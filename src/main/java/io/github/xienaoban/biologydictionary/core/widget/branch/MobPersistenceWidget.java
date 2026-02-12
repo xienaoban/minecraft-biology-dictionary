@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.MobNaturalPersistenceProperty;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.MobForcePersistentSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -69,7 +70,7 @@ public class MobPersistenceWidget extends EntityPropertyStandardWidget<Mob> {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean persistent = !isForcedPersistent();
-                if (MobForcePersistentSkill.activate(e(), persistent)) {
+                if (PlayerSkills.activate(e(), new MobForcePersistentSkill(persistent))) {
                     persistenceRequiredProperty.setVal(persistent);
                 }
             }

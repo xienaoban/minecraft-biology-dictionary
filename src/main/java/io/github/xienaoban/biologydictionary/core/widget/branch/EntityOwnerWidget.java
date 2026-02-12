@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntityGiftPetSkill;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -124,7 +125,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
                 }
                 ClientUtils.setScreen(new PlayerSelectorScreen(ClientUtils.getCurrentScreen(), targetPlayer -> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(null);
-                    EntityGiftPetSkill.activate(e(), targetPlayer);
+                    PlayerSkills.activate(e(), new EntityGiftPetSkill(targetPlayer));
                     ownerProperty.setVal(EntityReference.of(targetPlayer.getUUID()));
                 }
                 ));

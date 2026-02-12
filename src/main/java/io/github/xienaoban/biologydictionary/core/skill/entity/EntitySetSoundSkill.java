@@ -7,15 +7,16 @@ import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
 
-public class EntitySetSoundSkill implements EntityTargetedSkill<Entity> {
+public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill<Entity> {
+    public static final Factory<EntitySetSoundSkill> FACTORY = EntitySetSoundSkill::new;
+
     private static final int FRIENDLY_EXP_PT_COST = 4;
     private static final int NEUTRAL_EXP_PT_COST = 16;
     private static final int ENEMY_EXP_PT_COST = 64;
@@ -30,23 +31,25 @@ public class EntitySetSoundSkill implements EntityTargetedSkill<Entity> {
         }
     }
 
-    @Environment(EnvType.CLIENT)
-    public static boolean activate(Entity entity, boolean silent) {
-        return PlayerSkills.sendEntityTargetedSkill(entity, silent);
+    private EntitySetSoundSkill(FriendlyByteBuf buf) {
+        this(buf.readBoolean());
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
-        boolean silent = (boolean) args[0];
+    public void write(FriendlyByteBuf buf) {
+        buf.writeBoolean(silent);
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void clientCheck(LocalPlayer player, Entity entity) {
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, experiencePointsCost(entity));
-        return ByteTag.valueOf(silent);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
-        boolean silent = args.asBoolean().orElseThrow();
+    public void serverCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
         Permissions.checkPlayerCreativeOrExperiencePoints(player, experiencePointsCost(entity));
         PlayerSkills.giveExperiencePointsIfNotCreative(player, -experiencePointsCost(entity));

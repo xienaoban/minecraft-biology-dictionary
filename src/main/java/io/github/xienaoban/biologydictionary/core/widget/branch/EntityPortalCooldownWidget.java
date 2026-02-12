@@ -9,6 +9,7 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetPortalCooldownSkill;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -146,7 +147,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
                 } else {
                     newCooldown = EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY;
                 }
-                if (EntitySetPortalCooldownSkill.activate(e(), newCooldown)) {
+                if (PlayerSkills.activate(e(), new EntitySetPortalCooldownSkill(newCooldown))) {
                     portalCooldownProperty.setVal(newCooldown);
                 }
             }

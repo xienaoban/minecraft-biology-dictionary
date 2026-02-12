@@ -7,12 +7,10 @@ import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -20,28 +18,27 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 
-public class GetSpawnEggSkill implements GeneralSkill {
-    @Environment(EnvType.CLIENT)
-    public static boolean activate(EntityType<?> entityType) {
-        return PlayerSkills.sendCommonSkill(entityType);
+public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill {
+    public static final GeneralSkill.Factory<GetSpawnEggSkill> FACTORY = GetSpawnEggSkill::new;
+
+    private GetSpawnEggSkill(FriendlyByteBuf buf) {
+        this(EntityUtils.getEntityType(buf.readUtf()));
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Object... args) {
-        EntityType<?> entityType = (EntityType<?>) args[0];
+    public void write(FriendlyByteBuf buf) {
+        buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdString(entityType));
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void clientCheck(LocalPlayer player) {
         Permissions.checkPlayerCreative(player);
-        if (entityType == null) {
-            return StringTag.valueOf("");
-        } else {
-            return StringTag.valueOf(EntityUtils.getEntityTypeIdString(entityType));
-        }
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Tag args) {
-        String entityTypeId = args.asString().orElseThrow();
-        EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
+    public void serverCheck(MinecraftServer server, ServerPlayer player) {
         Permissions.checkPlayerCreative(player);
         if (entityType == null) {
             BiologyDictionary.sendCenteredWarning(player, TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE));

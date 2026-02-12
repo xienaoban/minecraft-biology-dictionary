@@ -202,7 +202,7 @@
   "text.biologydictionary.not_enough_experience_points": "Not enough experience: %d points required",
   "text.biologydictionary.not_enough_experience_levels": "Not enough experience: %d levels required",
   "text.biologydictionary.no_permission_to_modify_this_player": "No permission to modify this player's data",
-  "text.biologydictionary.player_and_target_cannot_same": "The player and the target player cannot be the same person",
+  "text.biologydictionary.player_and_target_cannot_be_same": "The player and the target player cannot be the same person",
   "text.biologydictionary.only_in_creative_mode": "Can only be used in creative mode",
   "text.biologydictionary.not_enough_items": "Not enough items: %d %s required",
   "text.biologydictionary.experience_points_required": "Experience points required: %d",

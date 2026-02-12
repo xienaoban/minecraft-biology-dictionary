@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.extra.EntityInventorySizeProperty;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.LivingEntityStealInventorySkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -75,7 +76,7 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
                     BiologyDictionaryClient.sendCenteredWarning(TextUtils.translate(Lang.TEXT_ENTITY_LOOKING_AT_YOU));
                     return true;
                 }
-                LivingEntityStealInventorySkill.activate(e());
+                PlayerSkills.activate(e(), new LivingEntityStealInventorySkill());
             }
             return true;
         }

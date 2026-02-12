@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.skill.entity.AgeableMobSetForcedAgeSkill;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -133,7 +134,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                     newForcedAge = BREED_COOLDOWN_OFF;
                 }
 
-                if (AgeableMobSetForcedAgeSkill.activate(e(), newForcedAge, BREED_COOLDOWN_MAX)) {
+                if (PlayerSkills.activate(e(), new AgeableMobSetForcedAgeSkill(newForcedAge, BREED_COOLDOWN_MAX))) {
                     forcedAgeProperty.setVal(newForcedAge);
                     ageProperty.setVal(BREED_COOLDOWN_MAX);
                 }
@@ -163,7 +164,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                     tooltipTitle(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK),
                     tooltipDescription(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK_DESC),
                     tooltipEmpty(),
-                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, AgeableMobSetForcedAgeSkill.EXPERIENCE_POINTS_COST)
+                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, AgeableMobSetForcedAgeSkill.EXP_PT_COST)
             );
             return true;
         }

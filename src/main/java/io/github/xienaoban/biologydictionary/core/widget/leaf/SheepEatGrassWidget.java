@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.SheepForceEatGrassSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -48,7 +49,7 @@ public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
                 if (!SheepForceEatGrassSkill.isGrassOrGrassBlock(e())) {
                     AbstractBiologyDictionaryScreen.current()
                             .sendScreenMessage(TextUtils.translate(Lang.TEXT_SHEEP_NO_GRASS_UNDER_FEET));
-                } else if (SheepForceEatGrassSkill.activate(e())) {
+                } else if (PlayerSkills.activate(e(), new SheepForceEatGrassSkill())) {
                     ClientUtils.getCurrentScreen().onClose();
                 }
             }
@@ -61,7 +62,7 @@ public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
                     tooltipTitle(Lang.PROPERTY_WIDGET_EAT_GRASS),
                     tooltipDescription(Lang.PROPERTY_WIDGET_EAT_GRASS_DESC),
                     tooltipEmpty(),
-                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, SheepForceEatGrassSkill.EXP_COST)
+                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, SheepForceEatGrassSkill.EXP_PT_COST)
             );
             return true;
         }

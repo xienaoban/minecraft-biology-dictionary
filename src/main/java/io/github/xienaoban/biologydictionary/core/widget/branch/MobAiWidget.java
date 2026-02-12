@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.MobSetNoAiSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -56,7 +57,7 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean newNoAi = !isNoAi();
-                if (MobSetNoAiSkill.activate(e(), newNoAi)) {
+                if (PlayerSkills.activate(e(), new MobSetNoAiSkill(newNoAi))) {
                     setNoAi(newNoAi);
                     if (!PlayerUtils.isCreative(ClientUtils.getClientPlayer())) {
                         if (newNoAi) {
