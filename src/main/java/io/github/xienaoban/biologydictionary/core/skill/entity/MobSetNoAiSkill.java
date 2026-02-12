@@ -9,9 +9,8 @@ import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
@@ -20,7 +19,9 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
+public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> {
+    public static final Factory<MobSetNoAiSkill> FACTORY = MobSetNoAiSkill::new;
+
     private static final int FRIENDLY_EXP_LVL_REQUIRED = 0;
     private static final int FRIENDLY_EXP_LVL_COST = 1;
     private static final int NEUTRAL_EXP_LVL_REQUIRED = 10;
@@ -28,6 +29,10 @@ public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
     private static final int ENEMY_EXP_LVL_REQUIRED = 20;
     private static final int ENEMY_EXP_LVL_COST_MIN = 5;
     private static final float ENEMY_EXP_LVL_COST_FACTOR = 0.25F;
+
+    private MobSetNoAiSkill(FriendlyByteBuf buf) {
+        this(buf.readBoolean());
+    }
 
     public static int experienceLevelsRequired(Mob entity) {
         if (entity instanceof Enemy) {
@@ -49,11 +54,6 @@ public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
         }
     }
 
-    @Environment(EnvType.CLIENT)
-    public static boolean activate(Mob entity, boolean noAi) {
-        return PlayerSkills.sendEntityTargetedSkill(entity, noAi);
-    }
-
     private static void check(Player player, Mob entity) {
         int lvlRequired = experienceLevelsRequired(entity);
         int lvlCost = experienceLevelsCost(entity);
@@ -62,15 +62,18 @@ public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Mob entity, Object... args) {
-        boolean noAi = (boolean) args[0];
+    public void write(FriendlyByteBuf buf) {
+        buf.writeBoolean(noAi);
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void clientCheck(LocalPlayer player, Mob entity) {
         check(player, entity);
-        return ByteTag.valueOf(noAi);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Mob entity, Tag args) {
-        boolean noAi = args.asBoolean().orElseThrow();
+    public void serverCheck(MinecraftServer server, ServerPlayer player, Mob entity) {
         check(player, entity);
         CompoundTag nbt = VanillaEntityProperties.OfMob.createNoAiProperty().withVal(noAi).toTag();
 

@@ -9,13 +9,11 @@ import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSite
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,20 +21,17 @@ import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class VillagerForceRestockSkill implements EntityTargetedSkill<Villager> {
+public record VillagerForceRestockSkill() implements EntityTargetedSkill<Villager> {
+    public static final Factory<VillagerForceRestockSkill> FACTORY = VillagerForceRestockSkill::new;
+
     public static int emeraldsNeeded(int restocksToday) {
         return Math.max(0, restocksToday - 3 + 1) * 2;
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static boolean activate(Villager entity, Integer restocksToday, GlobalPos jobSite) {
-        return PlayerSkills.sendEntityTargetedSkill(entity, restocksToday, jobSite);
     }
 
     /**
      * @see net.minecraft.world.entity.ai.behavior.WorkAtPoi#canStillUse(ServerLevel, Villager, long)
      */
-     private static boolean isCloseEnoughToJobSite(Villager entity, GlobalPos jobSite) {
+    private static boolean isCloseEnoughToJobSite(Villager entity, GlobalPos jobSite) {
         return jobSite.dimension() == EntityUtils.getLevel(entity).dimension()
                 && jobSite.pos().closerToCenterThan(entity.position(), 1.73);
     }
@@ -52,23 +47,34 @@ public class VillagerForceRestockSkill implements EntityTargetedSkill<Villager> 
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE), "Too far away from the job site");
         }
     }
+
+    private VillagerForceRestockSkill(FriendlyByteBuf buf) {
+        this();
+    }
+
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Villager entity, Object... args) {
-        Integer restocksToday = (Integer) args[0];
-        GlobalPos jobSite = (GlobalPos) args[1];
+    public void write(FriendlyByteBuf buf) {}
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void clientCheck(LocalPlayer player, Villager entity) {
+        IntProperty<Villager> restocksTodayProperty = VanillaEntityProperties.OfVillager.createRestocksTodayProperty();
+        VillagerJobSiteProperty jobSiteProperty = new VillagerJobSiteProperty();
+        restocksTodayProperty.getFrom(entity);
+        jobSiteProperty.getFrom(entity);
+        Integer restocksToday = restocksTodayProperty.getVal();
+        GlobalPos jobSite = jobSiteProperty.getVal();
+
         checkVillagerHasJobSite(restocksToday, jobSite);
         checkVillagerCloseToJobSite(entity, jobSite);
 
         int emeralds = emeraldsNeeded(restocksToday);
         Permissions.checkPlayerCreativeOrInventoryItems(player, new ItemStack(Items.EMERALD, emeralds));
-        return ByteTag.valueOf(true);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Villager entity, Tag args) {
-        Permissions.checkLegalArg(args.asBoolean().orElseThrow(), true);
-
+    public void serverCheck(MinecraftServer server, ServerPlayer player, Villager entity) {
         IntProperty<Villager> restocksTodayProperty = VanillaEntityProperties.OfVillager.createRestocksTodayProperty();
         VillagerJobSiteProperty jobSiteProperty = new VillagerJobSiteProperty();
 

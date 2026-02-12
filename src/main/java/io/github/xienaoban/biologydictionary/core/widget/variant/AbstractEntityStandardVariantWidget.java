@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.variant;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -56,6 +57,6 @@ public abstract class AbstractEntityStandardVariantWidget<E extends Entity, V> e
 
     @Override
     protected boolean activeSkill(V variant) {
-        return EntitySetVariantSkill.activate(e(), getVariantHandlerIdx(), variant);
+        return PlayerSkills.activate(e(), new EntitySetVariantSkill(getVariantHandlerIdx(), variant));
     }
 }

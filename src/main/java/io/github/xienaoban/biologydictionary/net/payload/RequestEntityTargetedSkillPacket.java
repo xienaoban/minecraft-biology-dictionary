@@ -10,25 +10,23 @@ import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
-import net.minecraft.nbt.NbtAccounter;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
-public record RequestEntityTargetedSkillPacket(String skillKey, int entityId, Tag args) implements Packet {
+public record RequestEntityTargetedSkillPacket(int entityId, EntityTargetedSkill<?> skill) implements Packet {
     public static final Packet.Factory<RequestEntityTargetedSkillPacket> FACTORY = RequestEntityTargetedSkillPacket::new;
 
     private RequestEntityTargetedSkillPacket(FriendlyByteBuf buf) {
-        this(buf.readUtf(), buf.readInt(), buf.readNbt(NbtAccounter.unlimitedHeap()));
+        this(buf.readInt(), PlayerSkills.getEntityTargetedSkillFactory(buf.readUtf()).create(buf));
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
-        buf.writeUtf(skillKey);
         buf.writeInt(entityId);
-        buf.writeNbt(args);
+        buf.writeUtf(PlayerSkills.key(skill));
+        skill.write(buf);
     }
 
     @Override
@@ -41,9 +39,8 @@ public record RequestEntityTargetedSkillPacket(String skillKey, int entityId, Ta
         }
 
         try {
-            Permissions.checkSkillNotBanned(skillKey);
-            EntityTargetedSkill<?> skill = PlayerSkills.getEntityTargetedSkill(skillKey);
-            skill.serverReceive(ctx.server(), ctx.player(), Misc.cast(entity), args);
+            Permissions.checkSkillNotBanned(PlayerSkills.key(skill));
+            skill.serverCheck(ctx.server(), ctx.player(), Misc.cast(entity));
         } catch (NoPermissionException e) {
             LOGGER.warn(Misc.getStackToString(e));
             BiologyDictionary.sendCenteredWarning(ctx.player(), e.getGameMessage());

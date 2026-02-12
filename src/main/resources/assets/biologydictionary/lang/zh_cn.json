@@ -202,7 +202,7 @@
   "text.biologydictionary.not_enough_experience_points": "经验值不足：需要%d点经验",
   "text.biologydictionary.not_enough_experience_levels": "经验值不足：需要%d级经验",
   "text.biologydictionary.no_permission_to_modify_this_player": "无权限篡改该玩家数据",
-  "text.biologydictionary.player_and_target_cannot_same": "玩家与目标玩家不能是同一人",
+  "text.biologydictionary.player_and_target_cannot_be_same": "玩家与目标玩家不能是同一人",
   "text.biologydictionary.only_in_creative_mode": "只能在创造模式中使用",
   "text.biologydictionary.not_enough_items": "物品不足：需要%d个%s",
   "text.biologydictionary.experience_points_required": "经验值要求：%d点及以上",

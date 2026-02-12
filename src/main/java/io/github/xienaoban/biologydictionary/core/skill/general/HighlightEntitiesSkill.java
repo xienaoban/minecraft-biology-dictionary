@@ -10,53 +10,40 @@ import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.FloatTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 
-public class HighlightEntitiesSkill implements GeneralSkill {
+public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) implements GeneralSkill {
+    public static final GeneralSkill.Factory<HighlightEntitiesSkill> FACTORY = HighlightEntitiesSkill::new;
     public static final int TICKS = 12 * 20;
     public static final int NEAR_RADIUS = 20;
     public static final int NEAR_EXPERIENCE_POINTS_COST = 1;
     public static final int FAR_RADIUS = 100;
     public static final int FAR_EXPERIENCE_POINTS_COST = 16;
     public static final int BLINDNESS_TICKS = 40;
-
     public static final int BLOCK_TICKS = 6 * 20;
 
-    @Environment(EnvType.CLIENT)
-    public static boolean activate(EntityType<?> entityType, float radius) {
-        return PlayerSkills.sendCommonSkill(entityType, radius);
+    private HighlightEntitiesSkill(FriendlyByteBuf buf) {
+        this(EntityUtils.getEntityType(buf.readUtf()), buf.readFloat());
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Object... args) {
-        EntityType<?> entityType = (EntityType<?>) args[0];
-        float radius = (float) args[1];
-        ListTag res = new ListTag();
-        if (entityType == null) {
-            res.add(StringTag.valueOf(""));
-        } else {
-            res.add(StringTag.valueOf(EntityUtils.getEntityTypeIdString(entityType)));
-        }
-        res.add(FloatTag.valueOf(radius));
-        return res;
+    public void write(FriendlyByteBuf buf) {
+        buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdString(entityType));
+        buf.writeFloat(radius);
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Tag args) {
-        ListTag argList = args.asList().orElseThrow();
-        String entityTypeId = argList.getString(0).orElseThrow();
-        EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
-        float radius = argList.getFloat(1).orElseThrow();
+    public void clientCheck(LocalPlayer player) {}
 
+    @Override
+    public void serverCheck(MinecraftServer server, ServerPlayer player) {
         boolean allowed;
         if (entityType == null) {
             allowed = false;

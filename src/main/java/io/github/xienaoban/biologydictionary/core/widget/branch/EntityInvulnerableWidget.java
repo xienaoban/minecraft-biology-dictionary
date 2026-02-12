@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetInvulnerableSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -54,7 +55,7 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean newInv = !isInvulnerable();
-                if (EntitySetInvulnerableSkill.activate(e(), newInv)) {
+                if (PlayerSkills.activate(e(), new EntitySetInvulnerableSkill(newInv))) {
                     invulnerableProperty.setVal(newInv);
                 }
             }

@@ -3,11 +3,12 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -188,7 +189,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 } else {
                     return true;
                 }
-                HighlightEntitiesSkill.activate(EntityUtils.getEntityType(entity), distance);
+                PlayerSkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance));
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
                 onClose();
             } else {
@@ -196,7 +197,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     if (!PlayerUtils.isCreative(player)) {
                         sendScreenMessage(TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
                     } else {
-                        GetSpawnEggSkill.activate(EntityUtils.getEntityType(entity));
+                        PlayerSkills.activate(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)));
                     }
                 }
                 return true;

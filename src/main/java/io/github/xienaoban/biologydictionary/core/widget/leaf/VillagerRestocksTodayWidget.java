@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
 import io.github.xienaoban.biologydictionary.core.skill.entity.VillagerForceRestockSkill;
+import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -81,7 +82,7 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
                 VillagerJobSiteProperty jboSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
                 Integer r = restocksTodayProperty.getVal();
                 GlobalPos j = jboSiteProperty.getVal();
-                if (VillagerForceRestockSkill.activate(e(), r, j)) {
+                if (PlayerSkills.activate(e(), new VillagerForceRestockSkill())) {
                     restocksTodayProperty.setVal(r + 1);
                 }
             }

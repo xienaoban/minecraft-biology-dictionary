@@ -9,41 +9,42 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.AgeableMob;
 
-public class AgeableMobSetForcedAgeSkill implements EntityTargetedSkill<AgeableMob> {
-    public static final int EXPERIENCE_POINTS_COST = 8;
+public record AgeableMobSetForcedAgeSkill(int forcedAge, int age) implements EntityTargetedSkill<AgeableMob> {
+    public static final Factory<AgeableMobSetForcedAgeSkill> FACTORY = AgeableMobSetForcedAgeSkill::new;
 
-    @Environment(EnvType.CLIENT)
-    public static boolean activate(AgeableMob entity, int forcedAge, int age) {
-        return PlayerSkills.sendEntityTargetedSkill(entity, forcedAge, age);
+    public static final int EXP_PT_COST = 8;
+
+    private AgeableMobSetForcedAgeSkill(FriendlyByteBuf buf) {
+        this(buf.readInt(), buf.readInt());
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, AgeableMob entity, Object... args) {
-        int forcedAge = (int) args[0];
-        int age = (int) args[1];
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
-        return new IntArrayTag(new int[] { forcedAge, age });
+    public void write(FriendlyByteBuf buf) {
+        buf.writeInt(forcedAge);
+        buf.writeInt(age);
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void clientCheck(LocalPlayer player, AgeableMob entity) {
+        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXP_PT_COST);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, AgeableMob entity, Tag args) {
-        int[] t = args.asIntArray().orElseThrow();
-        int forcedAge = t[0];
-        int age = t[1];
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
+    public void serverCheck(MinecraftServer server, ServerPlayer player, AgeableMob entity) {
+        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXP_PT_COST);
 
         CompoundTag nbt = new CompoundTag();
         VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty().withVal(forcedAge).writeTo(nbt);
         VanillaEntityProperties.OfAgeableMob.createAgeProperty().withVal(age).writeTo(nbt);
 
-        PlayerSkills.giveExperiencePointsIfNotCreative(player, -EXPERIENCE_POINTS_COST);
+        PlayerSkills.giveExperiencePointsIfNotCreative(player, -EXP_PT_COST);
         EntityUtils.mergeNbt(entity, nbt);
     }
 }
