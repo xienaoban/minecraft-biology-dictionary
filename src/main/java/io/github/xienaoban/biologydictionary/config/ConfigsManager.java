@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.config;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.StringUtils;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
 import net.fabricmc.api.EnvType;
@@ -10,18 +11,14 @@ import net.fabricmc.api.Environment;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
-
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
+
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 /**
  * Manages configuration lifecycle for Biology Dictionary.
@@ -261,12 +258,13 @@ public final class ConfigsManager {
 
                     // special cases
                     if (value instanceof Enum<?> e) {
-                        value = e.name();
+                        value = e.name().toLowerCase();
                     } else if (value instanceof Set<?> s) {
                         value = s.stream().sorted().toList();
                     }
 
-                    map.put(field.getName(), value);
+                    String yamlKey = StringUtils.camelToSnake(field.getName());
+                    map.put(yamlKey, value);
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
@@ -279,14 +277,15 @@ public final class ConfigsManager {
         boolean allGood = true;
         for (Map.Entry<?, ?> entry : dataMap.entrySet()) {
             try {
-                Field field = configObject.getClass().getDeclaredField((String) entry.getKey());
+                String fieldName = StringUtils.snakeToLowerCamel((String) entry.getKey());
+                Field field = configObject.getClass().getDeclaredField(fieldName);
                 field.setAccessible(true);
                 Class<?> fieldType = field.getType();
                 Object convertedValue = Misc.convertNumber(entry.getValue(), fieldType);
 
                 // special cases
                 if (Enum.class.isAssignableFrom(fieldType)) {
-                    convertedValue = Enum.valueOf(fieldType.asSubclass(Enum.class), (String) convertedValue);
+                    convertedValue = Enum.valueOf(fieldType.asSubclass(Enum.class), ((String) convertedValue).toUpperCase());
                 } else if (Set.class.isAssignableFrom(fieldType)) {
                     convertedValue = Set.copyOf((Collection<?>) convertedValue);
                 }

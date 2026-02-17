@@ -4,7 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.StringUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
@@ -96,7 +96,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
 
             updatePercent(cachedDisLog / MAX_DIS_LOG);
             super.onRender(ctx);
-            renderInnerText(ctx, TextUtils.literal(Misc.format4Digits(cachedDistanceToJobSite) + 'm'));
+            renderInnerText(ctx, TextUtils.literal(StringUtils.format4Digits(cachedDistanceToJobSite) + 'm'));
         }
     }
 

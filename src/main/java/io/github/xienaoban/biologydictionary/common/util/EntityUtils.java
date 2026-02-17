@@ -177,10 +177,16 @@ public final class EntityUtils {
     public static final String NBT_TO_RM_KEY = ".biologydictionary-remove$";
 
     public static CompoundTag getNbt(Entity entity) {
+        // A bug in 1.21.8: If leash the mob and then cancel the leash,
+        // `this.writeLeashData(valueOutput, this.leashData);` will fail on client side.
+        if (entity instanceof Mob mob) {
+            Leashable.LeashData d = mob.getLeashData();
+            if (d != null && d.leashHolder == null && d.delayedLeashInfo == null) {
+                mob.setLeashData(null);
+            }
+        }
+
         TagValueOutput nbtOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
-        // TODO: A bug in 1.21.8: If leash the mob and then cancel the leash,
-        // `this.writeLeashData(valueOutput, this.leashData);` will fail.
-        // Let's see if Mojang will fix it.
         entity.saveWithoutId(nbtOut);
         return nbtOut.buildResult();
     }

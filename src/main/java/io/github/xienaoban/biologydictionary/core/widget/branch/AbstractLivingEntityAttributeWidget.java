@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.StringUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -45,7 +45,7 @@ public abstract class AbstractLivingEntityAttributeWidget<E extends LivingEntity
         super.onRender(ctx);
         final double currAttr = e().getAttributeValue(attribute);
         final double currValue = calcValue(currAttr);
-        String showCurr = Misc.format3Digits(ctx.isDebug() ? currAttr : currValue);
+        String showCurr = StringUtils.format3Digits(ctx.isDebug() ? currAttr : currValue);
         String showUnit = ctx.isDebug() ? "value" : calcUnit(currAttr, currValue);
         ctx.renderText(TextUtils.literal(showCurr), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), getElementIcon().getBox().getRight() + 1.0F, getBox().getTop() + 1.25F);
         ctx.renderText(TextUtils.literal(showUnit), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), getElementIcon().getBox().getRight() + 1.0F, getBox().getTop() + 5.25F);
