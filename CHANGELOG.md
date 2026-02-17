@@ -8,8 +8,11 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 - Support screen scaling
 - Add loot table widget
+- Baby animals will be born silent when both parents are silent
 
 ### Changed
+
+- All keys in the YAML config file are changed from camelCase to snake_case
 
 ### Fixed
 
