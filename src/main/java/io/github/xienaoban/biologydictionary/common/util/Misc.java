@@ -118,44 +118,4 @@ public final class Misc {
         Collections.shuffle(list);
         return list;
     }
-
-    /**
-     * Format num to sth. like 100, 10.0, 1.000
-     * Only accept positive values.
-     */
-    public static String format3Digits(double num) {
-        if (num >= 100) {
-            return String.valueOf(Math.round(num));
-        } else if (num >= 10) {
-            return String.format("%.1f", num);
-        } else if (num >= 0) {
-            return String.format("%.2f", num);
-        } else if (num > -10) {
-            return String.format("%.1f", num);
-        } else {
-            return String.valueOf(Math.round(num));
-        }
-    }
-
-    /**
-     * Format num to sth. like 1000, 100.0, 10.00, 1.0000
-     * Only accept positive values.
-     */
-    public static String format4Digits(double num) {
-        if (num >= 1000) {
-            return String.valueOf(Math.round(num));
-        } else if (num >= 100) {
-            return String.format("%.1f", num);
-        } else if (num >= 10) {
-            return String.format("%.2f", num);
-        } else if (num >= 0) {
-            return String.format("%.3f", num);
-        } else if (num > -10) {
-            return String.format("%.2f", num);
-        } else if (num > -100) {
-            return String.format("%.1f", num);
-        } else {
-            return String.valueOf(Math.round(num));
-        }
-    }
 }
