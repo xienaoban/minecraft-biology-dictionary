@@ -25,6 +25,8 @@
   "config.biologydictionary.entry.bookItemRequired.tooltip": "If false, the screen can be opened via hot key without the book item in survival mode.",
   "config.biologydictionary.entry.bookItemObtainableFromWanderingTrader": "Book Item Obtainable From Wandering Trader",
   "config.biologydictionary.entry.bookItemObtainableFromWanderingTrader.tooltip": "If false, The book cannot be obtained in survival mode (add the recipe manually).",
+  "config.biologydictionary.entry.inheritSilentFromParents": "Inherit Silent Status from Parents",
+  "config.biologydictionary.entry.inheritSilentFromParents.tooltip": "If true, baby animals will be born silent when both parents are silent.",
   "config.biologydictionary.entry.bannedPlayerSkills": "Banned Player Skills",
   "config.biologydictionary.entry.bannedPlayerSkills.tooltip": "A list of skill IDs that are not allowed for players.",
 

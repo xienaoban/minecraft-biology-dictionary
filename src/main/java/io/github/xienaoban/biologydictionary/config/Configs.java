@@ -52,6 +52,9 @@ public final class Configs {
         boolean bookItemObtainableFromWanderingTrader = true;
 
         @ConfigEntry
+        boolean inheritSilentFromParents = true;
+
+        @ConfigEntry
         Set<String> bannedPlayerSkills = Set.of();
 
         public boolean isBookItemRequired() {
@@ -60,6 +63,10 @@ public final class Configs {
 
         public boolean isBookItemObtainableFromWanderingTrader() {
             return bookItemObtainableFromWanderingTrader;
+        }
+
+        public boolean isInheritSilentFromParents() {
+            return inheritSilentFromParents;
         }
 
         public Set<String> getBannedPlayerSkills() {

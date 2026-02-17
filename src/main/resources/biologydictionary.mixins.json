@@ -7,6 +7,7 @@
     "AbstractHorseMixin",
     "AgeableMobMixin",
     "AnimalIMixin",
+    "AnimalMixin",
     "ArmadilloStateIMixin",
     "CompositeEntryBaseIMixin",
     "CustomDataIMixin",
