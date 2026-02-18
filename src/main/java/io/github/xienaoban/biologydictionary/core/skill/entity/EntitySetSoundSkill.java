@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -15,7 +15,22 @@ import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
 
 public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill<Entity> {
-    public static final Factory<EntitySetSoundSkill> FACTORY = EntitySetSoundSkill::new;
+    public static final Meta<EntitySetSoundSkill> META = new Meta<>() {
+        @Override
+        public EntitySetSoundSkill create(FriendlyByteBuf buf) {
+            return new EntitySetSoundSkill(buf.readBoolean());
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.empty(); // 无消耗
+        }
+
+        @Override
+        public Class<EntitySetSoundSkill> getSkillClass() {
+            return EntitySetSoundSkill.class;
+        }
+    };
 
     private static final int FRIENDLY_EXP_PT_COST = 4;
     private static final int NEUTRAL_EXP_PT_COST = 16;
@@ -43,16 +58,17 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientCheck(LocalPlayer player, Entity entity) {
+    public void clientAdditionalCheck(LocalPlayer player, Entity entity) {
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, experiencePointsCost(entity));
     }
 
     @Override
-    public void serverCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, experiencePointsCost(entity));
-        PlayerSkills.giveExperiencePointsIfNotCreative(player, -experiencePointsCost(entity));
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player, Entity entity) {
         VanillaEntityProperties.OfEntity.createSilentProperty().withVal(silent).setTo(entity);
     }
 }

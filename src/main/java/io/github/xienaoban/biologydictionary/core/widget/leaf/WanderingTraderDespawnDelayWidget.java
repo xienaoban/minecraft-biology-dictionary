@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.WanderingTraderRetainSkill;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -15,10 +16,14 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWidget<WanderingTrader> {
     public static final Factory<WanderingTrader> FACTORY = WanderingTraderDespawnDelayWidget::new;
@@ -117,10 +122,13 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN_DESC)
-            );
+            SkillCost cost = WanderingTraderRetainSkill.META.getDefaultCost();
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.format());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

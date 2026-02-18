@@ -4,7 +4,9 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.annotation.Config;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -57,6 +59,27 @@ public final class Configs {
         @ConfigEntry
         Set<String> bannedPlayerSkills = Set.of();
 
+        /**
+         * Custom skill costs configuration.
+         * Maps skill class names to their custom costs.
+         * If a skill is not in this map, it uses its default cost.
+         * Marked transient to hide from Cloth Config UI.
+         * <p>
+         * To configure skill costs, edit the YAML config file directly:
+         * <pre>
+         * server:
+         *   skill_costs:
+         *     io.github.xienaoban.biologydictionary.core.skill.entity.SheepForceEatGrassSkill:
+         *       experience_points: 5
+         *     io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill:
+         *       experience_levels: 1
+         *       items:
+         *         - item: minecraft:iron_ingot
+         *           count: 1
+         * </pre>
+         */
+        transient Map<Class<?>, SkillCost> skillCosts = Map.of();
+
         public boolean isBookItemRequired() {
             return bookItemRequired;
         }
@@ -71,6 +94,14 @@ public final class Configs {
 
         public Set<String> getBannedPlayerSkills() {
             return bannedPlayerSkills;
+        }
+
+        public Map<Class<?>, SkillCost> getSkillCosts() {
+            return skillCosts;
+        }
+
+        public void setSkillCosts(Map<Class<?>, SkillCost> skillCosts) {
+            this.skillCosts = skillCosts;
         }
     }
 

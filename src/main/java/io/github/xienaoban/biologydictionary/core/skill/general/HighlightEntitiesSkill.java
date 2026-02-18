@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -17,8 +17,26 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 
+import java.util.List;
+
 public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) implements GeneralSkill {
-    public static final GeneralSkill.Factory<HighlightEntitiesSkill> FACTORY = HighlightEntitiesSkill::new;
+    public static final Meta<HighlightEntitiesSkill> META = new Meta<>() {
+        @Override
+        public HighlightEntitiesSkill create(FriendlyByteBuf buf) {
+            return new HighlightEntitiesSkill(EntityUtils.getEntityType(buf.readUtf()), buf.readFloat());
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return new SkillCost(17, 0, 0, List.of()); // 默认 17 经验点
+        }
+
+        @Override
+        public Class<HighlightEntitiesSkill> getSkillClass() {
+            return HighlightEntitiesSkill.class;
+        }
+    };
+
     public static final int TICKS = 12 * 20;
     public static final int NEAR_RADIUS = 20;
     public static final int NEAR_EXPERIENCE_POINTS_COST = 1;
@@ -40,39 +58,28 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientCheck(LocalPlayer player) {}
+    public void clientAdditionalCheck(LocalPlayer player) {
+        // 无额外检查
+    }
 
     @Override
-    public void serverCheck(MinecraftServer server, ServerPlayer player) {
-        boolean allowed;
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player) {
         if (entityType == null) {
-            allowed = false;
             PlayerUtils.showClientCenteredMessage(player, TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
                     TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE)));
-        } else if (PlayerUtils.isCreative(player) || PlayerUtils.isSpectator(player)) {
-            allowed = true;
         } else if (entityType == EntityType.PLAYER) {
-            allowed = false;
             PlayerUtils.showClientCenteredMessage(player, TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
                     TextUtils.translate(Lang.TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS)));
-        } else {
-            int experience;
-            if (radius <= NEAR_RADIUS) {
-                experience = NEAR_EXPERIENCE_POINTS_COST;
-            } else if (radius <= FAR_RADIUS) {
-                experience = FAR_EXPERIENCE_POINTS_COST;
-            } else {
-                experience = Integer.MAX_VALUE;
-            }
-            if (PlayerUtils.getExperiencePoints(player) < experience) {
-                allowed = false;
-                PlayerUtils.showClientCenteredMessage(player, TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
-                        TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experience)));
-            } else {
-                allowed = true;
-                PlayerSkills.giveExperiencePointsIfNotCreative(player, -experience);
-            }
         }
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player) {
+        boolean allowed = entityType != null && entityType != EntityType.PLAYER;
+        if (PlayerUtils.isCreative(player) || PlayerUtils.isSpectator(player)) {
+            allowed = true;
+        }
+        // 经验消耗现在由 SkillCost.serverConsume() 处理
 
         if (allowed) {
             player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, BLINDNESS_TICKS));

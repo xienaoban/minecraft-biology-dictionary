@@ -13,12 +13,19 @@ public interface EntityTargetedSkill<E extends Entity> {
     void write(FriendlyByteBuf buf);
 
     @Environment(EnvType.CLIENT)
-    void clientCheck(LocalPlayer player, E entity);
+    void clientAdditionalCheck(LocalPlayer player, E entity) throws NoPermissionException;
 
-    void serverCheck(MinecraftServer server, ServerPlayer player, E entity);
+    void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, E entity) throws NoPermissionException;
 
-    @FunctionalInterface
-    interface Factory<T extends EntityTargetedSkill<?>> {
+    void serverDo(MinecraftServer server, ServerPlayer player, E entity);
+
+    default SkillCost getCalculatedCost() {
+        return SkillCost.empty();
+    }
+
+    interface Meta<T extends EntityTargetedSkill<?>> {
         T create(FriendlyByteBuf buf);
+        SkillCost getDefaultCost();
+        Class<T> getSkillClass();
     }
 }

@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.VillagerForceRestockSkill;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -16,9 +17,13 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Villager> {
     public static final Factory<Villager> FACTORY = VillagerRestocksTodayWidget::new;
@@ -39,10 +44,13 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx,
-                tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY),
-                tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_DESC)
-        );
+        SkillCost cost = VillagerForceRestockSkill.META.getDefaultCost();
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY));
+        tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_DESC));
+        tooltip.add(TextUtils.empty());
+        tooltip.addAll(cost.format());
+        renderTooltip(ctx, tooltip);
         return true;
     }
 

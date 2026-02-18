@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -14,7 +15,22 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
 
 public record MobForcePersistentSkill(boolean persistent) implements EntityTargetedSkill<Mob> {
-    public static final Factory<MobForcePersistentSkill> FACTORY = MobForcePersistentSkill::new;
+    public static final Meta<MobForcePersistentSkill> META = new Meta<>() {
+        @Override
+        public MobForcePersistentSkill create(FriendlyByteBuf buf) {
+            return new MobForcePersistentSkill(buf.readBoolean());
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.ofLevels(5); // 默认 5 级
+        }
+
+        @Override
+        public Class<MobForcePersistentSkill> getSkillClass() {
+            return MobForcePersistentSkill.class;
+        }
+    };
 
     private MobForcePersistentSkill(FriendlyByteBuf buf) {
         this(buf.readBoolean());
@@ -37,13 +53,17 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientCheck(LocalPlayer player, Mob entity) {
+    public void clientAdditionalCheck(LocalPlayer player, Mob entity) {
         check(entity, persistent);
     }
 
     @Override
-    public void serverCheck(MinecraftServer server, ServerPlayer player, Mob entity) {
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Mob entity) {
         check(entity, persistent);
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player, Mob entity) {
         VanillaEntityProperties.OfMob.createPersistenceRequiredProperty().withVal(persistent).setTo(entity);
     }
 }

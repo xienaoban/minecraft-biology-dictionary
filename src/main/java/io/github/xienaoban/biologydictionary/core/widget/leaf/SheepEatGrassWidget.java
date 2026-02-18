@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRender
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.SheepForceEatGrassSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -13,7 +14,11 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.sheep.Sheep;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
     public static final Factory<Sheep> FACTORY = SheepEatGrassWidget::new;
@@ -58,12 +63,13 @@ public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_EAT_GRASS),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_EAT_GRASS_DESC),
-                    tooltipEmpty(),
-                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, SheepForceEatGrassSkill.EXP_PT_COST)
-            );
+            SkillCost cost = SheepForceEatGrassSkill.META.getDefaultCost();
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_EAT_GRASS));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_EAT_GRASS_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.format());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

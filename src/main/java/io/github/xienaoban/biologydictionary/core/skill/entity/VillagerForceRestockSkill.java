@@ -8,7 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -22,7 +22,22 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public record VillagerForceRestockSkill() implements EntityTargetedSkill<Villager> {
-    public static final Factory<VillagerForceRestockSkill> FACTORY = VillagerForceRestockSkill::new;
+    public static final Meta<VillagerForceRestockSkill> META = new Meta<>() {
+        @Override
+        public VillagerForceRestockSkill create(FriendlyByteBuf buf) {
+            return new VillagerForceRestockSkill();
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.ofLevels(5); // 默认 5 级
+        }
+
+        @Override
+        public Class<VillagerForceRestockSkill> getSkillClass() {
+            return VillagerForceRestockSkill.class;
+        }
+    };
 
     public static int emeraldsNeeded(int restocksToday) {
         return Math.max(0, restocksToday - 3 + 1) * 2;
@@ -58,7 +73,7 @@ public record VillagerForceRestockSkill() implements EntityTargetedSkill<Village
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientCheck(LocalPlayer player, Villager entity) {
+    public void clientAdditionalCheck(LocalPlayer player, Villager entity) {
         IntProperty<Villager> restocksTodayProperty = VanillaEntityProperties.OfVillager.createRestocksTodayProperty();
         VillagerJobSiteProperty jobSiteProperty = new VillagerJobSiteProperty();
         restocksTodayProperty.getFrom(entity);
@@ -68,13 +83,10 @@ public record VillagerForceRestockSkill() implements EntityTargetedSkill<Village
 
         checkVillagerHasJobSite(restocksToday, jobSite);
         checkVillagerCloseToJobSite(entity, jobSite);
-
-        int emeralds = emeraldsNeeded(restocksToday);
-        Permissions.checkPlayerCreativeOrInventoryItems(player, new ItemStack(Items.EMERALD, emeralds));
     }
 
     @Override
-    public void serverCheck(MinecraftServer server, ServerPlayer player, Villager entity) {
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Villager entity) {
         IntProperty<Villager> restocksTodayProperty = VanillaEntityProperties.OfVillager.createRestocksTodayProperty();
         VillagerJobSiteProperty jobSiteProperty = new VillagerJobSiteProperty();
 
@@ -84,11 +96,10 @@ public record VillagerForceRestockSkill() implements EntityTargetedSkill<Village
         GlobalPos jobSite = jobSiteProperty.getVal();
         checkVillagerHasJobSite(restocksToday, jobSite);
         checkVillagerCloseToJobSite(entity, jobSite);
+    }
 
-        int emeralds = emeraldsNeeded(restocksTodayProperty.getVal());
-        Permissions.checkPlayerCreativeOrInventoryItems(player, new ItemStack(Items.EMERALD, emeralds));
-        Permissions.checkPlayerCreativeOrConsumeInventoryItems(player, new ItemStack(Items.EMERALD, emeralds));
-
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player, Villager entity) {
         entity.playWorkSound();
         entity.restock();
     }
