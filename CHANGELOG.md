@@ -9,6 +9,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Support screen scaling
 - Add loot table widget
 - Baby animals will be born silent when both parents are silent
+- Improve food, tempt widget tooltips
 
 ### Changed
 

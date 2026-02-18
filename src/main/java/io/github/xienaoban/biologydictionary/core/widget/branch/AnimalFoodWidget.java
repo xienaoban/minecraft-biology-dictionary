@@ -12,11 +12,15 @@ import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal> {
@@ -36,10 +40,39 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx,
-                tooltipTitle(Lang.PROPERTY_WIDGET_FOOD),
-                tooltipDescription(Lang.PROPERTY_WIDGET_FOOD_DESC)
-        );
+        List<Component> list = new ArrayList<>();
+        list.add(tooltipTitle(Lang.PROPERTY_WIDGET_FOOD));
+        list.add(tooltipDescription(Lang.PROPERTY_WIDGET_FOOD_DESC));
+        list.add(TextUtils.empty());
+
+        if (foods.length == 0) {
+            list.add(tooltipBody(Lang.TEXT_EMPTY_WITH_BRACKETS));
+        } else {
+            List<Component> currentLine = new ArrayList<>();
+            int lineWidth = 0;
+            Component separator = TextUtils.literal(", ");
+            int separatorWidth = ctx.calcTextWidth(separator);
+            final int maxWidth = (int) (getBox().getWidth() * 1.5F * 2 /* font size = 0.5 */);
+
+            for (ItemStack food : foods) {
+                Component itemName = food.getHoverName().copy().withStyle(ChatFormatting.WHITE);
+                int itemWidth = ctx.calcTextWidth(itemName);
+
+                if (!currentLine.isEmpty() && lineWidth + separatorWidth + itemWidth > maxWidth) {
+                    list.add(TextUtils.concat(currentLine, separator));
+                    currentLine = new ArrayList<>();
+                    lineWidth = 0;
+                }
+
+                currentLine.add(itemName);
+                lineWidth += itemWidth + (currentLine.size() > 1 ? separatorWidth : 0);
+            }
+
+            if (!currentLine.isEmpty()) {
+                list.add(TextUtils.concat(currentLine, separator));
+            }
+        }
+        renderTooltip(ctx, list);
         return true;
     }
 

@@ -103,9 +103,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         protected void onRender(ScreenRenderingContext ctx) {
             Component text = null;
             List<MobEffectInstance> effects = activeEffectsProperty.getVal();
-            if (effects == null) {
-                text = TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS);
-            } else if (effects.isEmpty()) {
+            if (effects == null || effects.isEmpty()) {
                 text = TextUtils.translate(Lang.TEXT_EMPTY_WITH_BRACKETS);
             }
             updatePercent(text != null ? 0 : 1);
