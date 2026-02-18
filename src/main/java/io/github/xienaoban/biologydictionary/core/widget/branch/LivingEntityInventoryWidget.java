@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.extra.EntityInventorySizeProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.LivingEntityStealInventorySkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -17,7 +18,11 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyTextBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<LivingEntity> {
     public static final Factory<LivingEntity> FACTORY = LivingEntityInventoryWidget::new;
@@ -83,14 +88,15 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            SkillCost cost = LivingEntityStealInventorySkill.META.getDefaultCost();
             boolean isCreative = PlayerUtils.isCreative(ClientUtils.getClientPlayer());
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_INVENTORY_STEAL),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC1),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC2),
-                    tooltipEmpty(),
-                    tooltipBody(isCreative ? Lang.PROPERTY_WIDGET_INVENTORY_STEAL_CREATIVE : Lang.PROPERTY_WIDGET_INVENTORY_STEAL_SURVIVAL)
-            );
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_INVENTORY_STEAL));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC1));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC2));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.format());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -17,8 +17,25 @@ import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.List;
+
 public record WanderingTraderRetainSkill() implements EntityTargetedSkill<WanderingTrader> {
-    public static final Factory<WanderingTraderRetainSkill> FACTORY = WanderingTraderRetainSkill::new;
+    public static final Meta<WanderingTraderRetainSkill> META = new Meta<>() {
+        @Override
+        public WanderingTraderRetainSkill create(FriendlyByteBuf buf) {
+            return new WanderingTraderRetainSkill();
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.ofLevels(3); // 默认 3 级
+        }
+
+        @Override
+        public Class<WanderingTraderRetainSkill> getSkillClass() {
+            return WanderingTraderRetainSkill.class;
+        }
+    };
 
     public static final int STAY_TICKS = 2 * 60 * 20;
 
@@ -32,14 +49,17 @@ public record WanderingTraderRetainSkill() implements EntityTargetedSkill<Wander
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientCheck(LocalPlayer player, WanderingTrader entity) {
-        Permissions.checkPlayerCreativeOrInventoryItems(player, new ItemStack(Items.WATER_BUCKET, 1));
+    public void clientAdditionalCheck(LocalPlayer player, WanderingTrader entity) {
+        // 无额外检查，消耗由 SkillCost 处理
     }
 
     @Override
-    public void serverCheck(MinecraftServer server, ServerPlayer player, WanderingTrader entity) {
-        Permissions.checkPlayerCreativeOrInventoryItems(player, new ItemStack(Items.WATER_BUCKET, 1));
-        Permissions.checkPlayerCreativeOrConsumeInventoryItems(player, new ItemStack(Items.WATER_BUCKET, 1));
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, WanderingTrader entity) {
+        // 无额外验证
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player, WanderingTrader entity) {
         if (!PlayerUtils.isCreative(player)) {
             PlayerUtils.getInventory(player).add(new ItemStack(Items.BUCKET, 1));
         }

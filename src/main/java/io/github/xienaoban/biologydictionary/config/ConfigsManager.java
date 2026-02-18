@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.common.util.StringUtils;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.yaml.snakeyaml.DumperOptions;
@@ -17,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -95,7 +97,17 @@ public final class ConfigsManager {
                     categoryField.setAccessible(true);
                     Object categoryObject = categoryField.get(INSTANCE);
                     String fieldName = categoryField.getName();
-                    data.put(fieldName, saveConfigCategoryToMap(categoryObject));
+                    Map<String, Object> categoryMap = saveConfigCategoryToMap(categoryObject);
+
+                    // Special handling for ServerConfigs skillCosts
+                    if (categoryObject instanceof Configs.ServerConfigs serverConfigs) {
+                        Map<String, Object> skillCostsMap = serializeSkillCosts(serverConfigs.getSkillCosts());
+                        if (!skillCostsMap.isEmpty()) {
+                            categoryMap.put("skill_costs", skillCostsMap);
+                        }
+                    }
+
+                    data.put(fieldName, categoryMap);
                 }
             }
 
@@ -138,6 +150,20 @@ public final class ConfigsManager {
                         if (categoryData != null) {
                             categoryField.setAccessible(true);
                             Object categoryObject = categoryField.get(INSTANCE);
+
+                            // Special handling for ServerConfigs skillCosts
+                            if (categoryObject instanceof Configs.ServerConfigs serverConfigs) {
+                                // Load skill_costs separately
+                                Object skillCostsData = categoryData.get("skill_costs");
+                                if (skillCostsData instanceof Map<?, ?> skillCostsMap) {
+                                    Map<Class<?>, SkillCost> skillCosts = deserializeSkillCosts((Map<String, Object>) skillCostsMap);
+                                    serverConfigs.setSkillCosts(skillCosts);
+                                }
+                                // Remove skill_costs from categoryData so it's not processed as regular field
+                                categoryData = new LinkedHashMap<>(categoryData);
+                                ((Map<String, Object>) categoryData).remove("skill_costs");
+                            }
+
                             allGood = loadConfigCategoryFromMap(categoryData, categoryObject);
                         }
                     }
@@ -203,6 +229,51 @@ public final class ConfigsManager {
     // ==================== Serialization/Deserialization Utilities ====================
 
     /**
+     * Serialize skill costs map to a YAML-friendly format.
+     * Maps class names to SkillCost data.
+     */
+    private static Map<String, Object> serializeSkillCosts(Map<Class<?>, SkillCost> skillCosts) {
+        if (skillCosts == null || skillCosts.isEmpty()) {
+            return Map.of();
+        }
+        return skillCosts.entrySet().stream()
+                .collect(Collectors.toMap(
+                        e -> e.getKey().getName(),
+                        e -> e.getValue().toMap(),
+                        (a, b) -> a,
+                        LinkedHashMap::new
+                ));
+    }
+
+    /**
+     * Deserialize skill costs from YAML map format.
+     * Maps class names back to Class objects and SkillCost instances.
+     */
+    @SuppressWarnings("unchecked")
+    private static Map<Class<?>, SkillCost> deserializeSkillCosts(Map<String, Object> skillCostsMap) {
+        if (skillCostsMap == null || skillCostsMap.isEmpty()) {
+            return Map.of();
+        }
+
+        Map<Class<?>, SkillCost> result = new LinkedHashMap<>();
+        for (Map.Entry<String, Object> entry : skillCostsMap.entrySet()) {
+            try {
+                String className = entry.getKey();
+                Class<?> skillClass = Class.forName(className);
+                if (entry.getValue() instanceof Map<?, ?> costMap) {
+                    SkillCost cost = SkillCost.fromMap((Map<String, Object>) costMap);
+                    result.put(skillClass, cost);
+                }
+            } catch (ClassNotFoundException e) {
+                LOGGER.warn("Unknown skill class: {}, skipping", entry.getKey());
+            } catch (Exception e) {
+                LOGGER.warn("Failed to deserialize skill cost for {}: {}", entry.getKey(), e.getMessage());
+            }
+        }
+        return result;
+    }
+
+    /**
      * Serialize a config category object to a YAML string.
      * This is used for sending configs over the network.
      *
@@ -251,6 +322,10 @@ public final class ConfigsManager {
     private static Map<String, Object> saveConfigCategoryToMap(Object configObject) {
         Map<String, Object> map = new LinkedHashMap<>();
         for (Field field : configObject.getClass().getDeclaredFields()) {
+            // Skip transient fields like skillCosts (they're handled separately)
+            if (java.lang.reflect.Modifier.isTransient(field.getModifiers())) {
+                continue;
+            }
             if (field.isAnnotationPresent(ConfigEntry.class)) {
                 try {
                     field.setAccessible(true);

@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntityGiftPetSkill;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -135,10 +136,13 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_OWNER_GIFT),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_OWNER_GIFT_DESC)
-            );
+            SkillCost cost = EntityGiftPetSkill.META.getDefaultCost();
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_OWNER_GIFT));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_OWNER_GIFT_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.format());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

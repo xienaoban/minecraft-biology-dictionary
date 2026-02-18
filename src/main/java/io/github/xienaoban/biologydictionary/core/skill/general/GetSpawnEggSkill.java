@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -16,10 +17,28 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
 
+import java.util.List;
+
 public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill {
-    public static final GeneralSkill.Factory<GetSpawnEggSkill> FACTORY = GetSpawnEggSkill::new;
+    public static final Meta<GetSpawnEggSkill> META = new Meta<>() {
+        @Override
+        public GetSpawnEggSkill create(FriendlyByteBuf buf) {
+            return new GetSpawnEggSkill(EntityUtils.getEntityType(buf.readUtf()));
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return new SkillCost(0, 1, 0, List.of(new ItemStack(Items.IRON_INGOT))); // 1 级 + 1 铁锭
+        }
+
+        @Override
+        public Class<GetSpawnEggSkill> getSkillClass() {
+            return GetSpawnEggSkill.class;
+        }
+    };
 
     private GetSpawnEggSkill(FriendlyByteBuf buf) {
         this(EntityUtils.getEntityType(buf.readUtf()));
@@ -33,17 +52,19 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientCheck(LocalPlayer player) {
+    public void clientAdditionalCheck(LocalPlayer player) {
         Permissions.checkPlayerCreative(player);
     }
 
     @Override
-    public void serverCheck(MinecraftServer server, ServerPlayer player) {
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player) {
         Permissions.checkPlayerCreative(player);
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player) {
         if (entityType == null) {
             BiologyDictionary.sendCenteredWarning(player, TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
-        } else if (!PlayerUtils.isCreative(player)) {
-            BiologyDictionary.sendCenteredWarning(player, TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
         } else {
             SpawnEggItem item = SpawnEggItem.byId(entityType);
             if (item == null) {

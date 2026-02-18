@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -21,7 +22,22 @@ import net.minecraft.world.entity.OwnableEntity;
 import java.util.UUID;
 
 public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargetedSkill<Entity> {
-    public static final Factory<EntityGiftPetSkill> FACTORY = EntityGiftPetSkill::new;
+    public static final Meta<EntityGiftPetSkill> META = new Meta<>() {
+        @Override
+        public EntityGiftPetSkill create(FriendlyByteBuf buf) {
+            return new EntityGiftPetSkill(new UUID(buf.readLong(), buf.readLong()));
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.empty(); // 无消耗
+        }
+
+        @Override
+        public Class<EntityGiftPetSkill> getSkillClass() {
+            return EntityGiftPetSkill.class;
+        }
+    };
 
     @Environment(EnvType.CLIENT)
     public EntityGiftPetSkill(AbstractClientPlayer player) {
@@ -41,10 +57,12 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientCheck(LocalPlayer player, Entity entity) {}
+    public void clientAdditionalCheck(LocalPlayer player, Entity entity) {
+        // 无额外检查
+    }
 
     @Override
-    public void serverCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
         ServerPlayer targetPlayer = server.getPlayerList().getPlayer(targetPlayerUuid);
         LivingEntity owner = ((OwnableEntity) entity).getOwner();
         if (((OwnableEntity) entity).getOwner() != player) {
@@ -56,6 +74,10 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
                     "The player and target player cannot be the same person: player=\"" + player.getName().getString() + "\"");
         }
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player, Entity entity) {
         // Cannot use Property.setTo() here as it's arg should be TamableAnimal.
         // But we only need the entity to be OwnableEntity.
         EntityUtils.mergeNbt(entity, VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().withVal(EntityReference.of(targetPlayerUuid)).toTag());

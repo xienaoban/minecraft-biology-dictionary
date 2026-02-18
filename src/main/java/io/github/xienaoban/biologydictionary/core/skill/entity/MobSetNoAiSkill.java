@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -19,8 +19,25 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.List;
+
 public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> {
-    public static final Factory<MobSetNoAiSkill> FACTORY = MobSetNoAiSkill::new;
+    public static final Meta<MobSetNoAiSkill> META = new Meta<>() {
+        @Override
+        public MobSetNoAiSkill create(FriendlyByteBuf buf) {
+            return new MobSetNoAiSkill(buf.readBoolean());
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return new SkillCost(0, 3, 10, List.of()); // 默认：3级，要求10级
+        }
+
+        @Override
+        public Class<MobSetNoAiSkill> getSkillClass() {
+            return MobSetNoAiSkill.class;
+        }
+    };
 
     private static final int FRIENDLY_EXP_LVL_REQUIRED = 0;
     private static final int FRIENDLY_EXP_LVL_COST = 1;
@@ -68,13 +85,17 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientCheck(LocalPlayer player, Mob entity) {
+    public void clientAdditionalCheck(LocalPlayer player, Mob entity) {
         check(player, entity);
     }
 
     @Override
-    public void serverCheck(MinecraftServer server, ServerPlayer player, Mob entity) {
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Mob entity) {
         check(player, entity);
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player, Mob entity) {
         CompoundTag nbt = VanillaEntityProperties.OfMob.createNoAiProperty().withVal(noAi).toTag();
 
         if (noAi) {
@@ -90,7 +111,6 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
             VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(noAi).writeTo(nbt);
         }
 
-        PlayerSkills.giveExperienceLevelsIfNotCreative(player, -experienceLevelsCost(entity));
         EntityUtils.mergeNbt(entity, nbt);
     }
 }

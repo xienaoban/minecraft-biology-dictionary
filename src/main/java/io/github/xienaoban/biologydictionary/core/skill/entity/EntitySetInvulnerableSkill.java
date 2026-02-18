@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -12,7 +13,22 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 public record EntitySetInvulnerableSkill(boolean invulnerable) implements EntityTargetedSkill<Entity> {
-    public static final Factory<EntitySetInvulnerableSkill> FACTORY = EntitySetInvulnerableSkill::new;
+    public static final Meta<EntitySetInvulnerableSkill> META = new Meta<>() {
+        @Override
+        public EntitySetInvulnerableSkill create(FriendlyByteBuf buf) {
+            return new EntitySetInvulnerableSkill(buf.readBoolean());
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.ofLevels(5); // 默认 5 级
+        }
+
+        @Override
+        public Class<EntitySetInvulnerableSkill> getSkillClass() {
+            return EntitySetInvulnerableSkill.class;
+        }
+    };
 
     private EntitySetInvulnerableSkill(FriendlyByteBuf buf) {
         this(buf.readBoolean());
@@ -26,15 +42,19 @@ public record EntitySetInvulnerableSkill(boolean invulnerable) implements Entity
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientCheck(LocalPlayer player, Entity entity) {
+    public void clientAdditionalCheck(LocalPlayer player, Entity entity) {
         Permissions.checkPlayerCreative(player);
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
     }
 
     @Override
-    public void serverCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
         Permissions.checkPlayerCreative(player);
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player, Entity entity) {
         VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(invulnerable).setTo(entity);
     }
 }

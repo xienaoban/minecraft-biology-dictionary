@@ -139,3 +139,4 @@ replay_*.log
 
 # AI
 .claude/
+/tmp

@@ -2,10 +2,12 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.MobNaturalPersistenceProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.MobForcePersistentSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -15,7 +17,11 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Mob;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class MobPersistenceWidget extends EntityPropertyStandardWidget<Mob> {
@@ -85,10 +91,13 @@ public class MobPersistenceWidget extends EntityPropertyStandardWidget<Mob> {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_PERSISTENCE_FORCED),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_PERSISTENCE_FORCED_DESC)
-            );
+            SkillCost cost = MobForcePersistentSkill.META.getDefaultCost();
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_PERSISTENCE_FORCED));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_PERSISTENCE_FORCED_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.format());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

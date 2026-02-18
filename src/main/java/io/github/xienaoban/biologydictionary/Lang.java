@@ -223,6 +223,7 @@ public final class Lang {
     TEXT_EXPERIENCE_LEVELS_REQUIRED          = "text.biologydictionary.experience_levels_required",
     TEXT_EXPERIENCE_POINTS_COST              = "text.biologydictionary.experience_points_cost",
     TEXT_EXPERIENCE_LEVELS_COST              = "text.biologydictionary.experience_levels_cost",
+    TEXT_ITEMS                               = "text.biologydictionary.items",
     TEXT_OFFER_OR_DROP                       = "text.biologydictionary.offer_or_drop",
     TEXT_TARGET_ENTITY_NO_ABILITY            = "text.biologydictionary.target_entity_no_ability",
     TEXT_STEALING_DETECTED                   = "text.biologydictionary.stealing_detected",

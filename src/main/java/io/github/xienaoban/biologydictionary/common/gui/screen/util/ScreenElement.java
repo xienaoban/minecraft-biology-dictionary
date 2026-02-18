@@ -229,18 +229,42 @@ public abstract class ScreenElement {
     }
 
     public static MutableComponent tooltipTitle(String trans) {
-        return TextUtils.translate(trans).withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD);
+        return tooltipTitle(TextUtils.translate(trans));
+    }
+
+    public static MutableComponent tooltipTitle(Component text) {
+        return tooltipTitle(text.copy());
+    }
+
+    public static MutableComponent tooltipTitle(MutableComponent text) {
+        return text.withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD);
     }
 
     public static MutableComponent tooltipDescription(String trans) {
-        return TextUtils.translate(trans).withStyle(ChatFormatting.GRAY);
+        return tooltipDescription(TextUtils.translate(trans));
+    }
+
+    public static MutableComponent tooltipDescription(Component text) {
+        return tooltipDescription(text.copy());
+    }
+
+    public static MutableComponent tooltipDescription(MutableComponent text) {
+        return text.withStyle(ChatFormatting.GRAY);
     }
 
     public static MutableComponent tooltipBody(String trans) {
-        return TextUtils.translate(trans).withStyle(ChatFormatting.WHITE);
+        return tooltipBody(TextUtils.translate(trans));
     }
 
     public static MutableComponent tooltipBody(String trans, Object... args) {
-        return TextUtils.translate(trans, args).withStyle(ChatFormatting.WHITE);
+        return tooltipBody(TextUtils.translate(trans, args));
+    }
+
+    public static MutableComponent tooltipBody(Component text) {
+        return tooltipBody(text.copy());
+    }
+
+    public static MutableComponent tooltipBody(MutableComponent text) {
+        return text.withStyle(ChatFormatting.WHITE);
     }
 }

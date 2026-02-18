@@ -9,6 +9,8 @@ import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -233,10 +235,13 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx,
-                tooltipTitle(Lang.PROPERTY_WIDGET_VARIANT),
-                tooltipDescription(Lang.PROPERTY_WIDGET_VARIANT_DESC)
-        );
+        SkillCost cost = EntitySetVariantSkill.META.getDefaultCost();
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_VARIANT));
+        tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_VARIANT_DESC));
+        tooltip.add(TextUtils.empty());
+        tooltip.addAll(cost.format());
+        renderTooltip(ctx, tooltip);
         return true;
     }
 

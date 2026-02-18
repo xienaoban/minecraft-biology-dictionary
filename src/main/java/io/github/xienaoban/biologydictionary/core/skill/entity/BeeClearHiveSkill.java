@@ -2,8 +2,7 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -13,9 +12,22 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.animal.bee.Bee;
 
 public record BeeClearHiveSkill() implements EntityTargetedSkill<Bee> {
-    public static final Factory<BeeClearHiveSkill> FACTORY = BeeClearHiveSkill::new;
+    public static final Meta<BeeClearHiveSkill> META = new Meta<>() {
+        @Override
+        public BeeClearHiveSkill create(FriendlyByteBuf buf) {
+            return new BeeClearHiveSkill();
+        }
 
-    public static final int EXP_PT_COST = 1;
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.empty(); // 无消耗
+        }
+
+        @Override
+        public Class<BeeClearHiveSkill> getSkillClass() {
+            return BeeClearHiveSkill.class;
+        }
+    };
 
     private BeeClearHiveSkill(FriendlyByteBuf buf) {
         this();
@@ -27,14 +39,17 @@ public record BeeClearHiveSkill() implements EntityTargetedSkill<Bee> {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientCheck(LocalPlayer player, Bee entity) {
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXP_PT_COST);
+    public void clientAdditionalCheck(LocalPlayer player, Bee entity) {
+        // 无额外检查
     }
 
     @Override
-    public void serverCheck(MinecraftServer server, ServerPlayer player, Bee entity) {
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXP_PT_COST);
-        PlayerSkills.giveExperiencePointsIfNotCreative(player, -EXP_PT_COST);
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Bee entity) {
+        // 无额外验证
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player, Bee entity) {
         VanillaEntityProperties.OfBee.createHivePosProperty().withVal(null).setTo(entity);
     }
 }

@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetPortalCooldownSkill;
 import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -19,6 +20,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -26,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -167,10 +170,13 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_LOCK),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_LOCK_DESC)
-            );
+            SkillCost cost = EntitySetPortalCooldownSkill.META.getDefaultCost();
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_LOCK));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_LOCK_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.format());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

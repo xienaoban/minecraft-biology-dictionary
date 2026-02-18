@@ -22,68 +22,84 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 public final class PlayerSkills {
 
     public static void registerBuiltIn(Registrar registrar) {
-        registrar.register(HighlightEntitiesSkill.class, HighlightEntitiesSkill.FACTORY);
-        registrar.register(GetSpawnEggSkill.class, GetSpawnEggSkill.FACTORY);
+        registrar.register(HighlightEntitiesSkill.class, HighlightEntitiesSkill.META);
+        registrar.register(GetSpawnEggSkill.class, GetSpawnEggSkill.META);
 
-        registrar.register(EntitySetVariantSkill.class, EntitySetVariantSkill.FACTORY);
-        registrar.register(EntitySetInvulnerableSkill.class, EntitySetInvulnerableSkill.FACTORY);
-        registrar.register(EntitySetSoundSkill.class, EntitySetSoundSkill.FACTORY);
-        registrar.register(EntitySetPortalCooldownSkill.class, EntitySetPortalCooldownSkill.FACTORY);
-        registrar.register(MobSetNoAiSkill.class, MobSetNoAiSkill.FACTORY);
-        registrar.register(MobForcePersistentSkill.class, MobForcePersistentSkill.FACTORY);
-        registrar.register(LivingEntityStealInventorySkill.class, LivingEntityStealInventorySkill.FACTORY);
-        registrar.register(SheepForceEatGrassSkill.class, SheepForceEatGrassSkill.FACTORY);
-        registrar.register(AgeableMobSetForcedAgeSkill.class, AgeableMobSetForcedAgeSkill.FACTORY);
-        registrar.register(BeeClearHiveSkill.class, BeeClearHiveSkill.FACTORY);
-        registrar.register(EntityGiftPetSkill.class, EntityGiftPetSkill.FACTORY);
-        registrar.register(VillagerForceRestockSkill.class, VillagerForceRestockSkill.FACTORY);
-        registrar.register(WanderingTraderRetainSkill.class, WanderingTraderRetainSkill.FACTORY);
+        registrar.register(EntitySetVariantSkill.class, EntitySetVariantSkill.META);
+        registrar.register(EntitySetInvulnerableSkill.class, EntitySetInvulnerableSkill.META);
+        registrar.register(EntitySetSoundSkill.class, EntitySetSoundSkill.META);
+        registrar.register(EntitySetPortalCooldownSkill.class, EntitySetPortalCooldownSkill.META);
+        registrar.register(MobSetNoAiSkill.class, MobSetNoAiSkill.META);
+        registrar.register(MobForcePersistentSkill.class, MobForcePersistentSkill.META);
+        registrar.register(LivingEntityStealInventorySkill.class, LivingEntityStealInventorySkill.META);
+        registrar.register(SheepForceEatGrassSkill.class, SheepForceEatGrassSkill.META);
+        registrar.register(AgeableMobSetForcedAgeSkill.class, AgeableMobSetForcedAgeSkill.META);
+        registrar.register(BeeClearHiveSkill.class, BeeClearHiveSkill.META);
+        registrar.register(EntityGiftPetSkill.class, EntityGiftPetSkill.META);
+        registrar.register(VillagerForceRestockSkill.class, VillagerForceRestockSkill.META);
+        registrar.register(WanderingTraderRetainSkill.class, WanderingTraderRetainSkill.META);
     }
 
-    private static final Map<String, GeneralSkill.Factory<?>> commonSkills = new HashMap<>();
-    private static final Map<String, EntityTargetedSkill.Factory<?>> entityTargetedSkills = new HashMap<>();
+    private static final Map<String, GeneralSkill.Meta<?>> commonSkills = new HashMap<>();
+    private static final Map<String, EntityTargetedSkill.Meta<?>> entityTargetedSkills = new HashMap<>();
 
     public static void init() {
         Registrar registrar = new Registrar() {
             @Override
-            public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Factory<T> factory) {
-                register0(skillClass, factory);
+            public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
+                register0(skillClass, meta);
             }
 
             @Override
-            public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Factory<T> factory) {
-                register0(skillClass, factory);
+            public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
+                register0(skillClass, meta);
             }
         };
         registerBuiltIn(registrar);
     }
 
-    private static <T extends GeneralSkill> void register0(Class<T> skillClass, GeneralSkill.Factory<T> factory) {
-        if (commonSkills.putIfAbsent(key(skillClass), factory) != null) {
+    private static <T extends GeneralSkill> void register0(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
+        if (commonSkills.putIfAbsent(key(skillClass), meta) != null) {
             throw new RuntimeException("Duplicate skill registered: " + key(skillClass));
         }
     }
 
-    private static <T extends EntityTargetedSkill<?>> void register0(Class<T> skillClass, EntityTargetedSkill.Factory<T> factory) {
-        if (entityTargetedSkills.putIfAbsent(key(skillClass), factory) != null) {
+    private static <T extends EntityTargetedSkill<?>> void register0(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
+        if (entityTargetedSkills.putIfAbsent(key(skillClass), meta) != null) {
             throw new RuntimeException("Duplicate skill registered: " + key(skillClass));
         }
     }
 
-    public static GeneralSkill.Factory<?> getCommonSkillFactory(String key) {
-        GeneralSkill.Factory<?> res = commonSkills.get(key);
+    public static GeneralSkill.Meta<?> getCommonSkillMeta(String key) {
+        GeneralSkill.Meta<?> res = commonSkills.get(key);
         if (res == null) {
             throw new RuntimeException("No such key: " + key);
         }
         return res;
     }
 
-    public static EntityTargetedSkill.Factory<?> getEntityTargetedSkillFactory(String key) {
-        EntityTargetedSkill.Factory<?> res = entityTargetedSkills.get(key);
+    public static EntityTargetedSkill.Meta<?> getEntityTargetedSkillMeta(String key) {
+        EntityTargetedSkill.Meta<?> res = entityTargetedSkills.get(key);
         if (res == null) {
             throw new RuntimeException("No such key: " + key);
         }
         return res;
+    }
+
+    /**
+     * @deprecated Use {@link #getCommonSkillMeta(String)} instead
+     */
+    @Deprecated
+    public static GeneralSkill.Meta<?> getCommonSkillFactory(String key) {
+        return getCommonSkillMeta(key);
+    }
+
+    /**
+     * @deprecated Use {@link #getEntityTargetedSkillMeta(String)} instead
+     */
+    @Deprecated
+    public static EntityTargetedSkill.Meta<?> getEntityTargetedSkillFactory(String key) {
+        return getEntityTargetedSkillMeta(key);
     }
 
     public static String key(Object skill) {
@@ -109,7 +125,7 @@ public final class PlayerSkills {
     @Environment(EnvType.CLIENT)
     public static boolean activate(GeneralSkill skill) {
         try {
-            skill.clientCheck(ClientUtils.getClientPlayer());
+            skill.clientAdditionalCheck(ClientUtils.getClientPlayer());
             ClientNetManager.sendCommonSkill(skill);
             return true;
         } catch (NoPermissionException e) {
@@ -123,7 +139,7 @@ public final class PlayerSkills {
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
         try {
-            skill.clientCheck(ClientUtils.getClientPlayer(), Misc.cast(entity));
+            skill.clientAdditionalCheck(ClientUtils.getClientPlayer(), Misc.cast(entity));
             ClientNetManager.sendEntityTargetedSkill(entity, skill);
             return true;
         } catch (NoPermissionException e) {
@@ -135,7 +151,7 @@ public final class PlayerSkills {
     }
 
     public interface Registrar {
-        <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Factory<T> factory);
-        <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Factory<T> factory);
+        <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta);
+        <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta);
     }
 }
