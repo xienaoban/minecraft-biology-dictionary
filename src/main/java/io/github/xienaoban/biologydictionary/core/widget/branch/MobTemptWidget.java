@@ -13,10 +13,12 @@ import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -35,10 +37,40 @@ public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx,
-                tooltipTitle(Lang.PROPERTY_WIDGET_TEMPT),
-                tooltipDescription(Lang.PROPERTY_WIDGET_TEMPT_DESC)
-        );
+        List<Component> list = new ArrayList<>();
+        list.add(tooltipTitle(Lang.PROPERTY_WIDGET_TEMPT));
+        list.add(tooltipDescription(Lang.PROPERTY_WIDGET_TEMPT_DESC));
+        list.add(TextUtils.empty());
+
+        List<ItemStack> tempts = temptProperty.getVal();
+        if (tempts == null || tempts.isEmpty()) {
+            list.add(tooltipBody(tempts == null ? Lang.TEXT_NO_DATA_WITH_BRACKETS : Lang.TEXT_EMPTY_WITH_BRACKETS));
+        } else {
+            List<Component> currentLine = new ArrayList<>();
+            int lineWidth = 0;
+            Component separator = TextUtils.literal(", ");
+            int separatorWidth = ctx.calcTextWidth(separator);
+            final int maxWidth = (int) (getBox().getWidth() * 1.5F * 2 /* font size = 0.5 */);
+
+            for (ItemStack tempt : tempts) {
+                Component itemName = tempt.getHoverName().copy().withStyle(ChatFormatting.WHITE);
+                int itemWidth = ctx.calcTextWidth(itemName);
+
+                if (!currentLine.isEmpty() && lineWidth + separatorWidth + itemWidth > maxWidth) {
+                    list.add(TextUtils.concat(currentLine, separator));
+                    currentLine = new ArrayList<>();
+                    lineWidth = 0;
+                }
+
+                currentLine.add(itemName);
+                lineWidth += itemWidth + (currentLine.size() > 1 ? separatorWidth : 0);
+            }
+
+            if (!currentLine.isEmpty()) {
+                list.add(TextUtils.concat(currentLine, separator));
+            }
+        }
+        renderTooltip(ctx, list);
         return true;
     }
 
