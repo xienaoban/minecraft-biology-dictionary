@@ -3,7 +3,7 @@
 **English** | [**简体中文**](README.zh-CN.md)
 
 [![Download - Modrinth](https://img.shields.io/badge/download-Modrinth-%2343b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
-[![Download - Curseforge](https://img.shields.io/badge/download-CurseForge-%23ff6b6b?style=for-the-badge&logo=curseforge)](https://legacy.curseforge.com/minecraft/mc-mods/biology-dictionary)
+[![Download - Curseforge](https://img.shields.io/badge/download-CurseForge-%23ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
 ![License](https://img.shields.io/badge/License-LGPL3-blue?style=for-the-badge)
 
 ![Minecraft 1.21.11](https://img.shields.io/badge/Minecraft-1.21.11-brightgreen?style=for-the-badge)

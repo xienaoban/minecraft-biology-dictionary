@@ -129,12 +129,18 @@ public final class BiologyDictionaryItem {
                 §r§0%s
                 
                 Modrinth: §9§n%s
+                
+                CurseForge: §9§n%s
+                
+                GitHub: §9§n%s
                 """
                 .formatted(
                         trans(Lang.TEXT_MOD_NAME_IS),
                         trans(Lang.BIOLOGY_DICTIONARY),
                         trans(Lang.TEXT_MOD_NOT_INSTALLED),
-                        BiologyDictionary.MODRINTH_PAGE);
+                        BiologyDictionary.MODRINTH_PAGE,
+                        BiologyDictionary.CURSEFORGE_PAGE,
+                        BiologyDictionary.GITHUB_PAGE);
     }
 
     /**

@@ -25,7 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class BiologyDictionary {
     public static final String MOD_ID = "biologydictionary";
 
-    public static final String MODRINTH_PAGE = "https://modrinth.com/mod/bole";
+    public static final String MODRINTH_PAGE = "https://modrinth.com/mod/biology-dictionary";
+    public static final String CURSEFORGE_PAGE = "https://www.curseforge.com/minecraft/mc-mods/biology-dictionary";
+    public static final String GITHUB_PAGE = "https://github.com/xienaoban/minecraft-biology-dictionary";
 
     public static final Logger LOGGER = LogManager.getLogger(BiologyDictionary.class);
 

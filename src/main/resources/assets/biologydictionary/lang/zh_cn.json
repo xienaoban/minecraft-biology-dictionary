@@ -100,7 +100,7 @@
   "property_widget.biologydictionary.screaming_goat"              : "是否为尖叫山羊",
   "property_widget.biologydictionary.screaming_goat.desc"         : "呃啊啊啊啊啊啊啊啊！！！！！！",
   "property_widget.biologydictionary.loot_table"                  : "战利品表",
-  "property_widget.biologydictionary.loot_table.desc"             : "战利品表中所有可能的物品以及掉落条件",
+  "property_widget.biologydictionary.loot_table.desc"             : "生物死亡后所有可能的掉落物品以及掉落条件",
   "property_widget.biologydictionary.bounding_box"                : "碰撞箱（X Y Z）",
   "property_widget.biologydictionary.bounding_box.desc"           : "MC的实体X应该都等于Z",
   "property_widget.biologydictionary.variant"                     : "品种",
