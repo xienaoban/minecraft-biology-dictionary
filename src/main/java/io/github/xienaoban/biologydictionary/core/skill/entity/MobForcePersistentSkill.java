@@ -23,18 +23,10 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofLevels(5); // 默认 5 级
+            return SkillCost.ofLevels(5);
         }
 
-        @Override
-        public Class<MobForcePersistentSkill> getSkillClass() {
-            return MobForcePersistentSkill.class;
-        }
     };
-
-    private MobForcePersistentSkill(FriendlyByteBuf buf) {
-        this(buf.readBoolean());
-    }
 
     /**
      * @see net.minecraft.world.item.NameTagItem#interactLivingEntity(net.minecraft.world.item.ItemStack, net.minecraft.world.entity.player.Player, net.minecraft.world.entity.LivingEntity, net.minecraft.world.InteractionHand)

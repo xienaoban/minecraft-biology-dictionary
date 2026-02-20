@@ -9,7 +9,6 @@ import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,13 +27,9 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(17, 0, 0, List.of()); // 默认 17 经验点
+            return new SkillCost(17, 0, 0, List.of());
         }
 
-        @Override
-        public Class<HighlightEntitiesSkill> getSkillClass() {
-            return HighlightEntitiesSkill.class;
-        }
     };
 
     public static final int TICKS = 12 * 20;
@@ -45,21 +40,11 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
     public static final int BLINDNESS_TICKS = 40;
     public static final int BLOCK_TICKS = 6 * 20;
 
-    private HighlightEntitiesSkill(FriendlyByteBuf buf) {
-        this(EntityUtils.getEntityType(buf.readUtf()), buf.readFloat());
-    }
-
     @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdString(entityType));
         buf.writeFloat(radius);
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Override
-    public void clientAdditionalCheck(LocalPlayer player) {
-        // 无额外检查
     }
 
     @Override
@@ -79,7 +64,6 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
         if (PlayerUtils.isCreative(player) || PlayerUtils.isSpectator(player)) {
             allowed = true;
         }
-        // 经验消耗现在由 SkillCost.serverConsume() 处理
 
         if (allowed) {
             player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, BLINDNESS_TICKS));

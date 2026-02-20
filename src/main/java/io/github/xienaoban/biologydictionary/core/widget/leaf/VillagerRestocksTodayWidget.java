@@ -9,7 +9,7 @@ import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.VillagerForceRestockSkill;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -49,7 +49,7 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
         tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY));
         tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_DESC));
         tooltip.add(TextUtils.empty());
-        tooltip.addAll(cost.format());
+        tooltip.addAll(cost.toTooltipText());
         renderTooltip(ctx, tooltip);
         return true;
     }
@@ -90,7 +90,7 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
                 VillagerJobSiteProperty jboSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
                 Integer r = restocksTodayProperty.getVal();
                 GlobalPos j = jboSiteProperty.getVal();
-                if (PlayerSkills.activate(e(), new VillagerForceRestockSkill())) {
+                if (BiologySkills.activate(e(), new VillagerForceRestockSkill())) {
                     restocksTodayProperty.setVal(r + 1);
                 }
             }

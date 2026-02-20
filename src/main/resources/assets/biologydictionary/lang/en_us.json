@@ -184,6 +184,8 @@
   "property_widget.biologydictionary.despawn_delay.retain"        : "Persuade to stay",
   "property_widget.biologydictionary.despawn_delay.retain.desc"   : "Have a sip of water and stay for 2 more minutes",
 
+  "text.biologydictionary.comma": ", ",
+
   "text.biologydictionary.open_local_configs_screen": "Open Local Configs Screen",
   "text.biologydictionary.local_configs_desc"       : "Local Client & Server Configs:",
   "text.biologydictionary.server_configs_desc"      : "Current Server Configs:",
@@ -200,6 +202,7 @@
   "text.biologydictionary.unknown_entity_id": "Unknown entity ID",
   "text.biologydictionary.unknown_entity_type": "Unknown entity type",
   "text.biologydictionary.skill_banned": "The skill is banned by the server: %s",
+  "text.biologydictionary.skill_cost": "Skill cost: ",
   "text.biologydictionary.not_allowed_to_highlight_players": "Not allowed to highlight players",
   "text.biologydictionary.not_enough_experience_points": "Not enough experience: %d points required",
   "text.biologydictionary.not_enough_experience_levels": "Not enough experience: %d levels required",
@@ -211,6 +214,7 @@
   "text.biologydictionary.experience_levels_required": "Experience levels required: %d",
   "text.biologydictionary.experience_points_cost": "Experience points cost: %d",
   "text.biologydictionary.experience_levels_cost": "Experience levels cost: %d",
+  "text.biologydictionary.items_cost": "Items cost: ",
   "text.biologydictionary.offer_or_drop": "%s is offered to you",
   "text.biologydictionary.target_entity_no_ability": "The target mob has no ability: %s",
   "text.biologydictionary.stealing_detected": "You've been spotted!",

@@ -8,7 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetSoundSkill;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -60,7 +60,7 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean newSilent = !isSilent();
-                if (PlayerSkills.activate(e(), new EntitySetSoundSkill(newSilent))) {
+                if (BiologySkills.activate(e(), new EntitySetSoundSkill(newSilent))) {
                     silentProperty.setVal(newSilent);
                 }
             }
@@ -80,7 +80,7 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_SOUND_SWITCH));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_SWITCH_DESC));
             tooltip.add(TextUtils.empty());
-            tooltip.addAll(cost.format());
+            tooltip.addAll(cost.toTooltipText());
             renderTooltip(ctx, tooltip);
             return true;
         }

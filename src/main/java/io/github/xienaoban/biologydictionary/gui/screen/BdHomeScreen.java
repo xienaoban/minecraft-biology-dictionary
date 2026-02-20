@@ -8,7 +8,7 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -189,7 +189,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 } else {
                     return true;
                 }
-                PlayerSkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance));
+                BiologySkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance));
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
                 onClose();
             } else {
@@ -197,7 +197,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     if (!PlayerUtils.isCreative(player)) {
                         sendScreenMessage(TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
                     } else {
-                        PlayerSkills.activate(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)));
+                        BiologySkills.activate(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)));
                     }
                 }
                 return true;

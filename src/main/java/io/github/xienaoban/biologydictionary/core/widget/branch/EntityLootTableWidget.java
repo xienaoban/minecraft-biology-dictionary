@@ -129,7 +129,7 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
             String key = Lang.LOOT_CONDITION_PREFIX + identifier.getNamespace() + '.' + identifier.getPath();
             conditions.add(TextUtils.translate(key));
         }
-        MutableComponent inner = TextUtils.concat(conditions, TextUtils.literal(", "));
+        MutableComponent inner = TextUtils.concat(conditions, TextUtils.comma());
         res = TextUtils.concat(Arrays.asList(TextUtils.literal("("), inner, TextUtils.literal(")")));
         return res.withStyle(ChatFormatting.GRAY);
     }

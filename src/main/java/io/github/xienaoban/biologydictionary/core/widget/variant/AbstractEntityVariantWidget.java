@@ -240,7 +240,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_VARIANT));
         tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_VARIANT_DESC));
         tooltip.add(TextUtils.empty());
-        tooltip.addAll(cost.format());
+        tooltip.addAll(cost.toTooltipText());
         renderTooltip(ctx, tooltip);
         return true;
     }

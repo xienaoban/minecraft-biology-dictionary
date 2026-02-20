@@ -12,6 +12,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public record AgeableMobSetForcedAgeSkill(int forcedAge, int age) implements EntityTargetedSkill<AgeableMob> {
     public static final Meta<AgeableMobSetForcedAgeSkill> META = new Meta<>() {
@@ -22,35 +24,16 @@ public record AgeableMobSetForcedAgeSkill(int forcedAge, int age) implements Ent
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofExp(8); // 默认 8 经验点
+            return SkillCost.ofItems(new ItemStack(Items.DANDELION), new ItemStack(Items.GOLD_NUGGET, 8));
         }
 
-        @Override
-        public Class<AgeableMobSetForcedAgeSkill> getSkillClass() {
-            return AgeableMobSetForcedAgeSkill.class;
-        }
     };
-
-    private AgeableMobSetForcedAgeSkill(FriendlyByteBuf buf) {
-        this(buf.readInt(), buf.readInt());
-    }
 
     @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeInt(forcedAge);
         buf.writeInt(age);
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Override
-    public void clientAdditionalCheck(LocalPlayer player, AgeableMob entity) {
-        // 无额外检查，消耗由 SkillCost 处理
-    }
-
-    @Override
-    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, AgeableMob entity) {
-        // 无额外验证
     }
 
     @Override

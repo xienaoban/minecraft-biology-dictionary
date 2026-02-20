@@ -30,13 +30,9 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(0, 3, 10, List.of()); // 默认：3级，要求10级
+            return new SkillCost(0, 3, 10, List.of());
         }
 
-        @Override
-        public Class<MobSetNoAiSkill> getSkillClass() {
-            return MobSetNoAiSkill.class;
-        }
     };
 
     private static final int FRIENDLY_EXP_LVL_REQUIRED = 0;
@@ -46,10 +42,6 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
     private static final int ENEMY_EXP_LVL_REQUIRED = 20;
     private static final int ENEMY_EXP_LVL_COST_MIN = 5;
     private static final float ENEMY_EXP_LVL_COST_FACTOR = 0.25F;
-
-    private MobSetNoAiSkill(FriendlyByteBuf buf) {
-        this(buf.readBoolean());
-    }
 
     public static int experienceLevelsRequired(Mob entity) {
         if (entity instanceof Enemy) {

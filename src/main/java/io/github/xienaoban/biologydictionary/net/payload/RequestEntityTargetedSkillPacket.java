@@ -10,7 +10,7 @@ import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -21,13 +21,13 @@ public record RequestEntityTargetedSkillPacket(int entityId, EntityTargetedSkill
     public static final Packet.Factory<RequestEntityTargetedSkillPacket> FACTORY = RequestEntityTargetedSkillPacket::new;
 
     private RequestEntityTargetedSkillPacket(FriendlyByteBuf buf) {
-        this(buf.readInt(), PlayerSkills.getEntityTargetedSkillMeta(buf.readUtf()).create(buf));
+        this(buf.readInt(), BiologySkills.getEntityTargetedSkillMeta(buf.readUtf()).create(buf));
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeInt(entityId);
-        buf.writeUtf(PlayerSkills.key(skill));
+        buf.writeUtf(BiologySkills.key(skill));
         skill.write(buf);
     }
 
@@ -41,7 +41,7 @@ public record RequestEntityTargetedSkillPacket(int entityId, EntityTargetedSkill
         }
 
         try {
-            Permissions.checkSkillNotBanned(PlayerSkills.key(skill));
+            Permissions.checkSkillNotBanned(BiologySkills.key(skill));
 
             // Phase 1: Additional server-side validation
             skill.serverAdditionalCheck(ctx.server(), ctx.player(), Misc.cast(entity));

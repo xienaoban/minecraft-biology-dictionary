@@ -9,7 +9,7 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.AgeableMobSetForcedAgeSkill;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -139,7 +139,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                     newForcedAge = ADULT_MIN_AGE;
                 }
 
-                if (PlayerSkills.activate(e(), new AgeableMobSetForcedAgeSkill(newForcedAge, BABY_MIN_AGE))) {
+                if (BiologySkills.activate(e(), new AgeableMobSetForcedAgeSkill(newForcedAge, BABY_MIN_AGE))) {
                     forcedAgeProperty.setVal(newForcedAge);
                     ageProperty.setVal(BABY_MIN_AGE);
                 }
@@ -170,7 +170,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_GROWTH_LOCK));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_GROWTH_LOCK_DESC));
             tooltip.add(TextUtils.empty());
-            tooltip.addAll(cost.format());
+            tooltip.addAll(cost.toTooltipText());
             renderTooltip(ctx, tooltip);
             return true;
         }

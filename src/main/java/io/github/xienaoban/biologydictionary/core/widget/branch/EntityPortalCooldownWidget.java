@@ -10,7 +10,7 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetPortalCooldownSkill;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -150,7 +150,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
                 } else {
                     newCooldown = EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY;
                 }
-                if (PlayerSkills.activate(e(), new EntitySetPortalCooldownSkill(newCooldown))) {
+                if (BiologySkills.activate(e(), new EntitySetPortalCooldownSkill(newCooldown))) {
                     portalCooldownProperty.setVal(newCooldown);
                 }
             }
@@ -175,7 +175,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_LOCK));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_LOCK_DESC));
             tooltip.add(TextUtils.empty());
-            tooltip.addAll(cost.format());
+            tooltip.addAll(cost.toTooltipText());
             renderTooltip(ctx, tooltip);
             return true;
         }

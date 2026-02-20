@@ -48,7 +48,7 @@ public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
         } else {
             List<Component> currentLine = new ArrayList<>();
             int lineWidth = 0;
-            Component separator = TextUtils.literal(", ");
+            Component separator = TextUtils.comma();
             int separatorWidth = ctx.calcTextWidth(separator);
             final int maxWidth = (int) (getBox().getWidth() * 1.5F * 2 /* font size = 0.5 */);
 

@@ -12,9 +12,9 @@ public interface GeneralSkill {
     void write(FriendlyByteBuf buf);
 
     @Environment(EnvType.CLIENT)
-    void clientAdditionalCheck(LocalPlayer player) throws NoPermissionException;
+    default void clientAdditionalCheck(LocalPlayer player) throws NoPermissionException {}
 
-    void serverAdditionalCheck(MinecraftServer server, ServerPlayer player) throws NoPermissionException;
+    default void serverAdditionalCheck(MinecraftServer server, ServerPlayer player) throws NoPermissionException {}
 
     void serverDo(MinecraftServer server, ServerPlayer player);
 
@@ -25,6 +25,5 @@ public interface GeneralSkill {
     interface Meta<T extends GeneralSkill> {
         T create(FriendlyByteBuf buf);
         SkillCost getDefaultCost();
-        Class<T> getSkillClass();
     }
 }

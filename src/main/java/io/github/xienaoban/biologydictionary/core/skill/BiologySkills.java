@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
-public final class PlayerSkills {
+public final class BiologySkills {
 
     public static void registerBuiltIn(Registrar registrar) {
         registrar.register(HighlightEntitiesSkill.class, HighlightEntitiesSkill.META);

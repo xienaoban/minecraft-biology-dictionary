@@ -8,7 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.MobNaturalPersistenceProperty;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.MobForcePersistentSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -76,7 +76,7 @@ public class MobPersistenceWidget extends EntityPropertyStandardWidget<Mob> {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean persistent = !isForcedPersistent();
-                if (PlayerSkills.activate(e(), new MobForcePersistentSkill(persistent))) {
+                if (BiologySkills.activate(e(), new MobForcePersistentSkill(persistent))) {
                     persistenceRequiredProperty.setVal(persistent);
                 }
             }
@@ -96,7 +96,7 @@ public class MobPersistenceWidget extends EntityPropertyStandardWidget<Mob> {
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_PERSISTENCE_FORCED));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_PERSISTENCE_FORCED_DESC));
             tooltip.add(TextUtils.empty());
-            tooltip.addAll(cost.format());
+            tooltip.addAll(cost.toTooltipText());
             renderTooltip(ctx, tooltip);
             return true;
         }
