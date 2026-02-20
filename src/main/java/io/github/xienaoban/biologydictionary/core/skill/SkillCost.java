@@ -146,7 +146,7 @@ public final class SkillCost {
         }
         for (ItemStack required : items) {
             if (!InventoryUtils.hasEnoughItems(player.getInventory(), required)) {
-                throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_ITEMS, required.getHoverName()), "Not enough items");
+                throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_ITEMS, required.getCount(), required.getHoverName()), "Not enough items");
             }
         }
     }

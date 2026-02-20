@@ -136,7 +136,10 @@ public class ClothConfigScreenProvider {
                         .setTooltip(tooltipText).build());
                 return;
             } else {
-                throw new RuntimeException("Unsupported field type: " + fieldType);
+                // No modification methods are provided for complex types.
+                category.addEntry(entryBuilder.startTextDescription(fieldText)
+                        .setTooltip(tooltipText).build());
+                return;
             }
 
             category.addEntry(setEntryGeneric(builder, defaultValue,

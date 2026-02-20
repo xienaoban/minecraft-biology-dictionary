@@ -4,8 +4,12 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.annotation.Config;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
+import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -21,12 +25,16 @@ public final class Configs {
      * Client-side configuration options.
      * These settings affect local rendering and behavior.
      */
-    public static class ClientConfigs {
+    public static class ClientConfigs implements PostLoader {
         @ConfigEntry
         float screenScale = 1F;
 
         @ConfigEntry
         FirstPersonShoulderEntityPosition firstPersonShoulderEntityPosition = FirstPersonShoulderEntityPosition.BOTTOM;
+
+        public ClientConfigs() {
+            postLoad();
+        }
 
         public float getScreenScale() {
             return screenScale;
@@ -35,6 +43,9 @@ public final class Configs {
         public FirstPersonShoulderEntityPosition getFirstPersonShoulderEntityPosition() {
             return firstPersonShoulderEntityPosition;
         }
+
+        @Override
+        public void postLoad() {}
 
         public enum FirstPersonShoulderEntityPosition {
             NONE, BOTTOM, SIDES, TOP
@@ -45,7 +56,7 @@ public final class Configs {
      * Server-side configuration options.
      * These settings are used when running a server or singleplayer.
      */
-    public static class ServerConfigs {
+    public static class ServerConfigs implements PostLoader {
         @ConfigEntry
         boolean bookItemRequired = true;
 
@@ -56,11 +67,9 @@ public final class Configs {
         boolean inheritSilentFromParents = true;
 
         /**
-         * Complete skill costs configuration.
-         * Maps skill class names to their costs.
-         * This map always contains all registered skills after config is loaded.
-         * Skills with default costs are included alongside any custom configurations.
-         * Marked transient to hide from Cloth Config UI.
+         * Skill costs configuration in YAML-friendly format.
+         * Maps skill class names to their cost data (from SkillCost.toMap()).
+         * Always contains all registered skills after initialization.
          * <p>
          * To configure skill costs, edit the YAML config file directly:
          * <pre>
@@ -75,7 +84,24 @@ public final class Configs {
          *           count: 1
          * </pre>
          */
-        transient Map<String, SkillCost> skillCosts = Map.of();
+        @ConfigEntry
+        Map<String, Map<String, Object>> skillCosts = new LinkedHashMap<>();
+
+        /**
+         * Cache of SkillCost objects by class name for fast access.
+         * Always derived from skillCosts after initialization.
+         */
+        private transient Map<String, SkillCost> skillCostsCache;
+
+        public ServerConfigs() {
+            postLoad();
+        }
+
+        @Override
+        public void postLoad() {
+            completeSkillCosts();
+            rebuildSkillCacheCache();
+        }
 
         public boolean isBookItemRequired() {
             return bookItemRequired;
@@ -89,12 +115,52 @@ public final class Configs {
             return inheritSilentFromParents;
         }
 
-        public Map<String, SkillCost> getSkillCosts() {
-            return skillCosts;
+        /**
+         * Get skill cost for a given skill class.
+         * All skills are guaranteed to be present after initialization.
+         */
+        public SkillCost getSkillCost(Class<?> skillClass) {
+            return skillCostsCache.get(skillClass.getName());
         }
 
-        public void setSkillCosts(Map<String, SkillCost> skillCosts) {
-            this.skillCosts = skillCosts;
+        /**
+         * Ensure all registered skills are present in skillCosts.
+         * Missing skills are added with their default costs.
+         */
+        private void completeSkillCosts() {
+            BiologySkills.registerBuiltIn(new BiologySkills.Registrar() {
+                @Override
+                public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
+                    String className = skillClass.getName();
+                    if (!skillCosts.containsKey(className)) {
+                        skillCosts.put(className, meta.getDefaultCost().toMap());
+                    }
+                }
+
+                @Override
+                public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
+                    String className = skillClass.getName();
+                    if (!skillCosts.containsKey(className)) {
+                        skillCosts.put(className, meta.getDefaultCost().toMap());
+                    }
+                }
+            });
+        }
+
+        /**
+         * Rebuild skillCostsDeserialized based on the current skillCosts.
+         * Must be called after skillCosts is fully populated.
+         */
+        private void rebuildSkillCacheCache() {
+            Map<String, SkillCost> cache = new java.util.HashMap<>();
+
+            for (Map.Entry<String, Map<String, Object>> entry : skillCosts.entrySet()) {
+                String className = entry.getKey();
+                Map<String, Object> costData = entry.getValue();
+                cache.put(className, SkillCost.fromMap(costData));
+            }
+
+            skillCostsCache = cache;
         }
     }
 
@@ -120,5 +186,14 @@ public final class Configs {
 
     public static String getEnumValueTranslationKey(Enum<?> enumValue) {
         return "enum." + enumValue.getClass().getName().replace('$', '.') + "." + enumValue.name();
+    }
+
+    /**
+     * Called after configuration is loaded from YAML or deserialized from network.
+     * This is the place to perform validation, fill in missing values, or build derived data structures.
+     */
+    @FunctionalInterface
+    public interface PostLoader {
+        void postLoad();
     }
 }

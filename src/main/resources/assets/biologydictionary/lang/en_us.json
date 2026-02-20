@@ -27,8 +27,8 @@
   "config.biologydictionary.entry.bookItemObtainableFromWanderingTrader.tooltip": "If false, The book cannot be obtained in survival mode (add the recipe manually).",
   "config.biologydictionary.entry.inheritSilentFromParents": "Inherit Silent Status from Parents",
   "config.biologydictionary.entry.inheritSilentFromParents.tooltip": "If true, baby animals will be born silent when both parents are silent.",
-  "config.biologydictionary.entry.bannedPlayerSkills": "Banned Player Skills",
-  "config.biologydictionary.entry.bannedPlayerSkills.tooltip": "A list of skill IDs that are not allowed for players.",
+  "config.biologydictionary.entry.skillCosts": "Skill Costs Configuration",
+  "config.biologydictionary.entry.skillCosts.tooltip": "Cost configuration for various skills. Please edit directly in the config file.",
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "None",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "Top",

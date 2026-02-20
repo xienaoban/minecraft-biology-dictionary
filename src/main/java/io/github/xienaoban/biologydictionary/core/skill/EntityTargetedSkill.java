@@ -30,8 +30,7 @@ public interface EntityTargetedSkill<E extends Entity> {
      * @return The real cost for this skill
      */
     default SkillCost getRealCost() {
-        String key = this.getClass().getName();
-        return ConfigsManager.getServer().getSkillCosts().get(key);
+        return ConfigsManager.getServer().getSkillCost(this.getClass());
     }
 
     /**
