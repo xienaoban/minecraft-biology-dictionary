@@ -3,15 +3,12 @@ package io.github.xienaoban.biologydictionary.core.skill;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
-import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.skill.entity.*;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 
 import java.util.HashMap;
@@ -102,24 +99,26 @@ public final class BiologySkills {
         return getEntityTargetedSkillMeta(key);
     }
 
+    /**
+     * Get all registered common skill classes.
+     */
+    public static Map<String, GeneralSkill.Meta<?>> getAllCommonSkills() {
+        return commonSkills;
+    }
+
+    /**
+     * Get all registered entity-targeted skill classes.
+     */
+    public static Map<String, EntityTargetedSkill.Meta<?>> getAllEntityTargetedSkills() {
+        return entityTargetedSkills;
+    }
+
     public static String key(Object skill) {
         return skill.getClass().getName();
     }
 
     public static String key(Class<?> skillClass) {
         return skillClass.getName();
-    }
-
-    public static void giveExperiencePointsIfNotCreative(ServerPlayer player, int experience) {
-        if (PlayerUtils.isCreative(player)) { return; }
-        PlayerUtils.giveExperiencePoints(player, experience);
-        PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
-    }
-
-    public static void giveExperienceLevelsIfNotCreative(ServerPlayer player, int experience) {
-        if (PlayerUtils.isCreative(player)) { return; }
-        PlayerUtils.giveExperienceLevels(player, experience);
-        PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
     }
 
     @Environment(EnvType.CLIENT)

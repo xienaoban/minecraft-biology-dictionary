@@ -6,11 +6,9 @@ import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
-import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -41,13 +39,11 @@ public record RequestEntityTargetedSkillPacket(int entityId, EntityTargetedSkill
         }
 
         try {
-            Permissions.checkSkillNotBanned(BiologySkills.key(skill));
-
             // Phase 1: Additional server-side validation
             skill.serverAdditionalCheck(ctx.server(), ctx.player(), Misc.cast(entity));
 
-            // Phase 2: Get cost from config or use skill's calculated cost
-            SkillCost cost = getConfiguredCost(skill.getClass(), skill.getCalculatedCost());
+            // Phase 2: Get real cost (configured or default with potential modifications)
+            SkillCost cost = skill.getRealCost();
 
             // Phase 3: Check and consume cost
             cost.serverCheck(ctx.player());
@@ -61,13 +57,5 @@ public record RequestEntityTargetedSkillPacket(int entityId, EntityTargetedSkill
         } catch (Exception e) {
             LOGGER.warn(Misc.getStackToString(e));
         }
-    }
-
-    /**
-     * Get configured cost for a skill, or fallback to default cost.
-     */
-    private static SkillCost getConfiguredCost(Class<?> skillClass, SkillCost defaultCost) {
-        SkillCost configured = ConfigsManager.getServer().getSkillCosts().get(skillClass);
-        return configured != null ? configured : defaultCost;
     }
 }
