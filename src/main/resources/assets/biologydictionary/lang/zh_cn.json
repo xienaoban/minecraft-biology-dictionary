@@ -27,8 +27,8 @@
   "config.biologydictionary.entry.bookItemObtainableFromWanderingTrader.tooltip": "如果为否，则生存模式没有途径获取该物品，请自行添加获取配方。",
   "config.biologydictionary.entry.inheritSilentFromParents": "继承父母的静音状态",
   "config.biologydictionary.entry.inheritSilentFromParents.tooltip": "如果为是，父母均为静音时生下的小生物也会被静音。",
-  "config.biologydictionary.entry.bannedPlayerSkills": "玩家技能禁用列表",
-  "config.biologydictionary.entry.bannedPlayerSkills.tooltip": "禁止玩家使用的技能ID列表。",
+  "config.biologydictionary.entry.skillCosts": "技能消耗配置",
+  "config.biologydictionary.entry.skillCosts.tooltip": "自定义各种技能的所需消耗。请直接在配置文件中编辑。",
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "不显示",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "顶部",
