@@ -25,19 +25,35 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class SkillCost {
+    private final boolean banned;
+    private final boolean creativeOnly;
     private final int experiencePoints;
     private final int experienceLevels;
     private final int experienceLevelRequired;
     private final List<ItemStack> items;
 
-    public SkillCost(int experiencePoints, int experienceLevels, int experienceLevelRequired, List<ItemStack> items) {
+    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experienceLevelRequired, List<ItemStack> items) {
+        this.banned = banned;
+        this.creativeOnly = creativeOnly;
         this.experiencePoints = experiencePoints;
         this.experienceLevels = experienceLevels;
         this.experienceLevelRequired = experienceLevelRequired;
         this.items = items == null ? List.of() : List.copyOf(items);
     }
 
+    public SkillCost(int experiencePoints, int experienceLevels, int experienceLevelRequired, List<ItemStack> items) {
+        this(false, false, experiencePoints, experienceLevels, experienceLevelRequired, items);
+    }
+
     // ==================== Factory Methods ====================
+
+    public static SkillCost banned() {
+        return new SkillCost(true, false, 0, 0, 0, List.of());
+    }
+
+    public static SkillCost creativeOnly() {
+        return new SkillCost(false, true, 0, 0, 0, List.of());
+    }
 
     public static SkillCost empty() {
         return new SkillCost(0, 0, 0, List.of());
@@ -58,7 +74,15 @@ public final class SkillCost {
     // ==================== Getters ====================
 
     public boolean isEmpty() {
-        return experiencePoints == 0 && experienceLevels == 0 && experienceLevelRequired == 0 && items.isEmpty();
+        return !banned && !creativeOnly && experiencePoints == 0 && experienceLevels == 0 && experienceLevelRequired == 0 && items.isEmpty();
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public boolean isCreativeOnly() {
+        return creativeOnly;
     }
 
     public int getExperiencePoints() {
@@ -83,7 +107,9 @@ public final class SkillCost {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof SkillCost other)) return false;
-        return experiencePoints == other.experiencePoints &&
+        return banned == other.banned &&
+               creativeOnly == other.creativeOnly &&
+               experiencePoints == other.experiencePoints &&
                experienceLevels == other.experienceLevels &&
                experienceLevelRequired == other.experienceLevelRequired &&
                itemsEquals(items, other.items);
@@ -91,25 +117,27 @@ public final class SkillCost {
 
     @Override
     public int hashCode() {
-        return Objects.hash(experiencePoints, experienceLevels, experienceLevelRequired, items);
+        return Objects.hash(banned, creativeOnly, experiencePoints, experienceLevels, experienceLevelRequired, items);
     }
 
-    // ==================== Client Check ====================
+    // ==================== CCheck & Consume ====================
 
     @Environment(EnvType.CLIENT)
     public void clientCheck(LocalPlayer player) throws NoPermissionException {
         checkCommon(player);
     }
 
-    // ==================== Server Check ====================
-
     public void serverCheck(ServerPlayer player) throws NoPermissionException {
         checkCommon(player);
     }
 
-    // ==================== Common Check ====================
-
     private void checkCommon(Player player) throws NoPermissionException {
+        if (banned) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_SKILL_BANNED), "Skill is banned");
+        }
+        if (creativeOnly && !PlayerUtils.isCreative(player)) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE), "Skill only available in creative mode");
+        }
         if (player.experienceLevel < experienceLevelRequired) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experienceLevelRequired), "Not enough experience levels");
         }
@@ -123,24 +151,21 @@ public final class SkillCost {
         }
     }
 
-    // ==================== Server Consume ====================
-
     public void serverConsume(ServerPlayer player) {
         if (experiencePoints > 0) {
             PlayerUtils.giveExperiencePoints(player, -experiencePoints);
+            PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
         }
         if (experienceLevels > 0) {
             PlayerUtils.giveExperienceLevels(player, -experienceLevels);
+            PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
         }
 
         for (ItemStack required : items) {
             InventoryUtils.consumeItems(player.getInventory(), required);
+            PlayerUtils.playLocalSound(player, SoundEvents.ITEM_PICKUP, 0.5F, 0.01F);
         }
-
-        PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
     }
-
-    // ==================== Server Refund ====================
 
     public void serverRefund(ServerPlayer player) {
         if (experiencePoints > 0) {
@@ -161,6 +186,12 @@ public final class SkillCost {
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new java.util.LinkedHashMap<>();
+        if (banned) {
+            map.put("banned", true);
+        }
+        if (creativeOnly) {
+            map.put("creative_only", true);
+        }
         if (experiencePoints != 0) {
             map.put("experience_points", experiencePoints);
         }
@@ -181,6 +212,8 @@ public final class SkillCost {
     }
 
     public static SkillCost fromMap(Map<String, Object> map) {
+        boolean banned = Boolean.TRUE.equals(map.get("banned"));
+        boolean creativeOnly = Boolean.TRUE.equals(map.get("creative_only"));
         int expPoints = ((Number) map.getOrDefault("experience_points", 0)).intValue();
         int expLevels = ((Number) map.getOrDefault("experience_levels", 0)).intValue();
         int expLevelReq = ((Number) map.getOrDefault("experience_level_required", 0)).intValue();
@@ -194,7 +227,7 @@ public final class SkillCost {
             }
         }
 
-        return new SkillCost(expPoints, expLevels, expLevelReq, itemsList);
+        return new SkillCost(banned, creativeOnly, expPoints, expLevels, expLevelReq, itemsList);
     }
 
     private static Map<String, Object> itemStackToMap(ItemStack stack) {
@@ -262,6 +295,12 @@ public final class SkillCost {
     @Environment(EnvType.CLIENT)
     public List<Component> toTooltipText() {
         List<MutableComponent> res = new ArrayList<>();
+
+        if (banned) {
+            res.add(TextUtils.translate(Lang.TEXT_SKILL_BANNED).withStyle(ChatFormatting.RED));
+        } else if (creativeOnly) {
+            res.add(TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE).withStyle(ChatFormatting.YELLOW));
+        }
 
         if (experienceLevelRequired > 0) {
             res.add(TextUtils.translate(Lang.TEXT_EXPERIENCE_LEVELS_REQUIRED, experienceLevelRequired));

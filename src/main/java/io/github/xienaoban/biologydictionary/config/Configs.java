@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Main configuration data class for Biology Dictionary.
@@ -56,13 +55,11 @@ public final class Configs {
         @ConfigEntry
         boolean inheritSilentFromParents = true;
 
-        @ConfigEntry
-        Set<String> bannedPlayerSkills = Set.of();
-
         /**
-         * Custom skill costs configuration.
-         * Maps skill class names to their custom costs.
-         * If a skill is not in this map, it uses its default cost.
+         * Complete skill costs configuration.
+         * Maps skill class names to their costs.
+         * This map always contains all registered skills after config is loaded.
+         * Skills with default costs are included alongside any custom configurations.
          * Marked transient to hide from Cloth Config UI.
          * <p>
          * To configure skill costs, edit the YAML config file directly:
@@ -78,7 +75,7 @@ public final class Configs {
          *           count: 1
          * </pre>
          */
-        transient Map<Class<?>, SkillCost> skillCosts = Map.of();
+        transient Map<String, SkillCost> skillCosts = Map.of();
 
         public boolean isBookItemRequired() {
             return bookItemRequired;
@@ -92,15 +89,11 @@ public final class Configs {
             return inheritSilentFromParents;
         }
 
-        public Set<String> getBannedPlayerSkills() {
-            return bannedPlayerSkills;
-        }
-
-        public Map<Class<?>, SkillCost> getSkillCosts() {
+        public Map<String, SkillCost> getSkillCosts() {
             return skillCosts;
         }
 
-        public void setSkillCosts(Map<Class<?>, SkillCost> skillCosts) {
+        public void setSkillCosts(Map<String, SkillCost> skillCosts) {
             this.skillCosts = skillCosts;
         }
     }

@@ -57,6 +57,6 @@ public abstract class AbstractEntityStandardVariantWidget<E extends Entity, V> e
 
     @Override
     protected boolean activeSkill(V variant) {
-        return BiologySkills.activate(e(), new EntitySetVariantSkill(getVariantHandlerIdx(), variant));
+        return BiologySkills.activate(e(), new EntitySetVariantSkill(e(), getVariantHandlerIdx(), variant));
     }
 }

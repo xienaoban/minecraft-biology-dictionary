@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -18,6 +19,24 @@ public interface GeneralSkill {
 
     void serverDo(MinecraftServer server, ServerPlayer player);
 
+    /**
+     * Get the real cost for this skill.
+     * Returns the cost from server config, which includes all skills with their
+     * configured or default costs.
+     * <p>
+     * Skills can override this method to perform additional cost calculations.
+     *
+     * @return The real cost for this skill
+     */
+    default SkillCost getRealCost() {
+        String key = this.getClass().getName();
+        return ConfigsManager.getServer().getSkillCosts().get(key);
+    }
+
+    /**
+     * @deprecated Use {@link #getRealCost()} instead
+     */
+    @Deprecated
     default SkillCost getCalculatedCost() {
         return SkillCost.empty();
     }
