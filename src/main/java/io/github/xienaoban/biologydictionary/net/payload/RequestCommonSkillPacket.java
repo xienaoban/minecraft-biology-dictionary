@@ -7,7 +7,7 @@ import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -17,12 +17,12 @@ public record RequestCommonSkillPacket(GeneralSkill skill) implements Packet {
     public static final Packet.Factory<RequestCommonSkillPacket> FACTORY = RequestCommonSkillPacket::new;
 
     private RequestCommonSkillPacket(FriendlyByteBuf buf) {
-        this(PlayerSkills.getCommonSkillMeta(buf.readUtf()).create(buf));
+        this(BiologySkills.getCommonSkillMeta(buf.readUtf()).create(buf));
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
-        buf.writeUtf(PlayerSkills.key(skill));
+        buf.writeUtf(BiologySkills.key(skill));
         skill.write(buf);
     }
 

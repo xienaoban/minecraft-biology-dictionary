@@ -25,19 +25,10 @@ public record EntitySetVariantSkill(int variantHandlerIdx, Object variant) imple
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(0, 0, 10, List.of()); // 要求 10 级，不消耗
+            return new SkillCost(0, 0, 10, List.of());
         }
 
-        @Override
-        public Class<EntitySetVariantSkill> getSkillClass() {
-            return EntitySetVariantSkill.class;
-        }
     };
-
-    private EntitySetVariantSkill(FriendlyByteBuf buf) {
-        // TODO: Implement proper variant deserialization from buffer
-        this(buf.readInt(), null);
-    }
 
     @Environment(EnvType.CLIENT)
     @Override

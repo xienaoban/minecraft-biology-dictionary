@@ -9,7 +9,7 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntityGiftPetSkill;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -126,7 +126,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
                 }
                 ClientUtils.setScreen(new PlayerSelectorScreen(ClientUtils.getCurrentScreen(), targetPlayer -> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(null);
-                    PlayerSkills.activate(e(), new EntityGiftPetSkill(targetPlayer));
+                    BiologySkills.activate(e(), new EntityGiftPetSkill(targetPlayer));
                     ownerProperty.setVal(EntityReference.of(targetPlayer.getUUID()));
                 }
                 ));
@@ -141,7 +141,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_OWNER_GIFT));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_OWNER_GIFT_DESC));
             tooltip.add(TextUtils.empty());
-            tooltip.addAll(cost.format());
+            tooltip.addAll(cost.toTooltipText());
             renderTooltip(ctx, tooltip);
             return true;
         }

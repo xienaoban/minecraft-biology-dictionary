@@ -21,18 +21,10 @@ public record EntitySetInvulnerableSkill(boolean invulnerable) implements Entity
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofLevels(5); // 默认 5 级
+            return SkillCost.ofLevels(5);
         }
 
-        @Override
-        public Class<EntitySetInvulnerableSkill> getSkillClass() {
-            return EntitySetInvulnerableSkill.class;
-        }
     };
-
-    private EntitySetInvulnerableSkill(FriendlyByteBuf buf) {
-        this(buf.readBoolean());
-    }
 
     @Environment(EnvType.CLIENT)
     @Override

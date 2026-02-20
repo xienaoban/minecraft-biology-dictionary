@@ -19,6 +19,7 @@ import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargetedSkill<Entity> {
@@ -30,22 +31,14 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.empty(); // 无消耗
+            return SkillCost.empty();
         }
 
-        @Override
-        public Class<EntityGiftPetSkill> getSkillClass() {
-            return EntityGiftPetSkill.class;
-        }
     };
 
     @Environment(EnvType.CLIENT)
     public EntityGiftPetSkill(AbstractClientPlayer player) {
         this(player.getUUID());
-    }
-
-    private EntityGiftPetSkill(FriendlyByteBuf buf) {
-        this(new UUID(buf.readLong(), buf.readLong()));
     }
 
     @Environment(EnvType.CLIENT)
@@ -58,7 +51,16 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
     @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(LocalPlayer player, Entity entity) {
-        // 无额外检查
+        LivingEntity owner = ((OwnableEntity) entity).getOwner();
+        if (owner != player) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT),
+                    "Not owner of pet: player=\"" + player.getPlainTextName() + "\", owner=\""
+                            + (owner == null ? "null or not online" : owner.getPlainTextName()) + "\"");
+        }
+        if (Objects.equals(targetPlayerUuid, player.getUUID())) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
+                    "The player and target player cannot be the same person: player=\"" + player.getPlainTextName() + "\"");
+        }
     }
 
     @Override
@@ -67,12 +69,12 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
         LivingEntity owner = ((OwnableEntity) entity).getOwner();
         if (((OwnableEntity) entity).getOwner() != player) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT),
-                    "Not owner of pet: player=\"" + player.getName().getString() + "\", owner=\""
-                            + (owner == null ? "null or not online" : owner.getName().getString()) + "\"");
+                    "Not owner of pet: player=\"" + player.getPlainTextName() + "\", owner=\""
+                            + (owner == null ? "null or not online" : owner.getPlainTextName()) + "\"");
         }
         if (player == targetPlayer) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
-                    "The player and target player cannot be the same person: player=\"" + player.getName().getString() + "\"");
+                    "The player and target player cannot be the same person: player=\"" + player.getPlainTextName() + "\"");
         }
     }
 

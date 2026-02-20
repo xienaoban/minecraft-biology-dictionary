@@ -184,6 +184,8 @@
   "property_widget.biologydictionary.despawn_delay.retain"        : "挽留",
   "property_widget.biologydictionary.despawn_delay.retain.desc"   : "喝口（桶）水，再待2分钟呗",
 
+  "text.biologydictionary.comma": "，",
+
   "text.biologydictionary.open_local_configs_screen": "打开本地配置界面",
   "text.biologydictionary.local_configs_desc"  : "本地客户端、本地服务端配置：",
   "text.biologydictionary.server_configs_desc" : "当前服务端配置：",
@@ -200,6 +202,7 @@
   "text.biologydictionary.unknown_entity_id": "未知生物ID",
   "text.biologydictionary.unknown_entity_type": "未知生物类型",
   "text.biologydictionary.skill_banned": "此技能已被服务器禁用：%s",
+  "text.biologydictionary.skill_cost": "技能消耗：",
   "text.biologydictionary.not_allowed_to_highlight_players": "不支持高亮玩家",
   "text.biologydictionary.not_enough_experience_points": "经验值不足：需要%d点经验",
   "text.biologydictionary.not_enough_experience_levels": "经验值不足：需要%d级经验",
@@ -211,6 +214,7 @@
   "text.biologydictionary.experience_levels_required": "经验等级要求：%d级及以上",
   "text.biologydictionary.experience_points_cost": "经验值消耗：%d点",
   "text.biologydictionary.experience_levels_cost": "经验等级消耗：%d级",
+  "text.biologydictionary.items_cost": "物品消耗：",
   "text.biologydictionary.offer_or_drop": "%s已发放到你的背包",
   "text.biologydictionary.target_entity_no_ability": "目标生物无此能力：%s",
   "text.biologydictionary.stealing_detected": "你被发现了！",

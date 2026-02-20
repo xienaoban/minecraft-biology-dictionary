@@ -21,20 +21,12 @@ public record EntitySetPortalCooldownSkill(int cooldown) implements EntityTarget
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.empty(); // 无消耗
+            return SkillCost.empty();
         }
 
-        @Override
-        public Class<EntitySetPortalCooldownSkill> getSkillClass() {
-            return EntitySetPortalCooldownSkill.class;
-        }
     };
 
     public static final int ENTITY_PORTAL_COOLDOWN_INFINITY = 303;
-
-    private EntitySetPortalCooldownSkill(FriendlyByteBuf buf) {
-        this(buf.readInt());
-    }
 
     @Environment(EnvType.CLIENT)
     @Override

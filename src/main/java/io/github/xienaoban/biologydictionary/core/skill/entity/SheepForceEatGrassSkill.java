@@ -29,13 +29,9 @@ public record SheepForceEatGrassSkill() implements EntityTargetedSkill<Sheep> {
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.empty(); // 无消耗
+            return SkillCost.empty();
         }
 
-        @Override
-        public Class<SheepForceEatGrassSkill> getSkillClass() {
-            return SheepForceEatGrassSkill.class;
-        }
     };
 
     /**
@@ -54,43 +50,35 @@ public record SheepForceEatGrassSkill() implements EntityTargetedSkill<Sheep> {
         // No data to write
     }
 
-    @Environment(EnvType.CLIENT)
-    @Override
-    public void clientAdditionalCheck(LocalPlayer player, Sheep entity) {
-        // 无额外检查
-    }
-
     @Override
     public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Sheep entity) {
         Permissions.checkMobHasGoalAndStart(entity, EatBlockGoal.class);
     }
 
+    /**
+     * In Minecraft 1.21.11, call the ate() method to trigger the effects after eating grass (such as dropping wool).
+     *
+     * @see net.minecraft.world.entity.ai.goal.EatBlockGoal#tick()
+     */
     @Override
     public void serverDo(MinecraftServer server, ServerPlayer player, Sheep sheep) {
-        // 在 Minecraft 1.21.11 中，调用 ate() 方法来触发吃草后的效果（如掉落羊毛）
-        // 参考 EatBlockGoal#tick() 中的实现
         ServerLevel level = (ServerLevel) EntityUtils.getLevel(sheep);
         BlockPos blockPos = sheep.blockPosition();
 
-        // 检查脚下是否有草方块或可食用的草
         boolean hasGrassBlock = level.getBlockState(blockPos.below()).is(Blocks.GRASS_BLOCK);
         boolean hasEdibleBlock = isGrassOrGrassBlock(sheep);
 
         if (hasEdibleBlock || hasGrassBlock) {
-            // 触发吃草动画
             level.broadcastEntityEvent(sheep, (byte) 10);
 
-            // 如果是草方块，破坏它
             if (hasGrassBlock && level.getGameRules().get(GameRules.MOB_GRIEFING)) {
                 BlockPos belowPos = blockPos.below();
                 level.levelEvent(2001, belowPos, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
                 level.setBlock(belowPos, Blocks.DIRT.defaultBlockState(), 2);
             } else if (!hasGrassBlock && level.getGameRules().get(GameRules.MOB_GRIEFING)) {
-                // 如果是可食用的草，破坏它
                 level.destroyBlock(blockPos, false);
             }
 
-            // 调用 ate() 方法触发吃草后的效果（如再生羊毛）
             sheep.ate();
         }
     }

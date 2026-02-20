@@ -31,18 +31,10 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(0, 1, 0, List.of(new ItemStack(Items.IRON_INGOT))); // 1 级 + 1 铁锭
+            return new SkillCost(0, 1, 0, List.of(new ItemStack(Items.IRON_INGOT)));
         }
 
-        @Override
-        public Class<GetSpawnEggSkill> getSkillClass() {
-            return GetSpawnEggSkill.class;
-        }
     };
-
-    private GetSpawnEggSkill(FriendlyByteBuf buf) {
-        this(EntityUtils.getEntityType(buf.readUtf()));
-    }
 
     @Environment(EnvType.CLIENT)
     @Override

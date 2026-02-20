@@ -23,13 +23,9 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.empty(); // 无消耗
+            return SkillCost.empty();
         }
 
-        @Override
-        public Class<EntitySetSoundSkill> getSkillClass() {
-            return EntitySetSoundSkill.class;
-        }
     };
 
     private static final int FRIENDLY_EXP_PT_COST = 4;
@@ -44,10 +40,6 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
         } else {
             return FRIENDLY_EXP_PT_COST;
         }
-    }
-
-    private EntitySetSoundSkill(FriendlyByteBuf buf) {
-        this(buf.readBoolean());
     }
 
     @Environment(EnvType.CLIENT)

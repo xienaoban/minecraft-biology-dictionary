@@ -18,8 +18,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.npc.villager.Villager;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public record VillagerForceRestockSkill() implements EntityTargetedSkill<Villager> {
     public static final Meta<VillagerForceRestockSkill> META = new Meta<>() {
@@ -30,13 +28,9 @@ public record VillagerForceRestockSkill() implements EntityTargetedSkill<Village
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofLevels(5); // 默认 5 级
+            return SkillCost.ofLevels(5);
         }
 
-        @Override
-        public Class<VillagerForceRestockSkill> getSkillClass() {
-            return VillagerForceRestockSkill.class;
-        }
     };
 
     public static int emeraldsNeeded(int restocksToday) {
@@ -61,10 +55,6 @@ public record VillagerForceRestockSkill() implements EntityTargetedSkill<Village
         if (!isCloseEnoughToJobSite(entity, jobSite)) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE), "Too far away from the job site");
         }
-    }
-
-    private VillagerForceRestockSkill(FriendlyByteBuf buf) {
-        this();
     }
 
     @Environment(EnvType.CLIENT)

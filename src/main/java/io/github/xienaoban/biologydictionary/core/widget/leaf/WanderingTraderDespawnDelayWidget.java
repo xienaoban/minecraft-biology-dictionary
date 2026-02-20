@@ -8,7 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.WanderingTraderRetainSkill;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -107,7 +107,7 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                if (PlayerSkills.activate(e(), new WanderingTraderRetainSkill())) {
+                if (BiologySkills.activate(e(), new WanderingTraderRetainSkill())) {
                     despawnDelayProperty.setVal(despawnDelayProperty.getVal() + WanderingTraderRetainSkill.STAY_TICKS);
                 }
             }
@@ -127,7 +127,7 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN_DESC));
             tooltip.add(TextUtils.empty());
-            tooltip.addAll(cost.format());
+            tooltip.addAll(cost.toTooltipText());
             renderTooltip(ctx, tooltip);
             return true;
         }

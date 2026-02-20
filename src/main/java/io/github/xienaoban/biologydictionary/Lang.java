@@ -196,6 +196,8 @@ public final class Lang {
     PROPERTY_WIDGET_INVENTORY_STEAL_CREATIVE    = "property_widget.biologydictionary.inventory.steal.creative",
     PROPERTY_WIDGET_INVENTORY_STEAL_SURVIVAL    = "property_widget.biologydictionary.inventory.steal.survival",
 
+    TEXT_COMMA  = "text.biologydictionary.comma",
+
     TEXT_OPEN_LOCAL_CONFIGS_SCREEN  = "text.biologydictionary.open_local_configs_screen",
     TEXT_LOCAL_CONFIGS_DESC         = "text.biologydictionary.local_configs_desc",
     TEXT_SERVER_CONFIGS_DESC        = "text.biologydictionary.server_configs_desc",
@@ -212,6 +214,7 @@ public final class Lang {
     TEXT_UNKNOWN_ENTITY_ID                   = "text.biologydictionary.unknown_entity_id",
     TEXT_UNKNOWN_ENTITY_TYPE                 = "text.biologydictionary.unknown_entity_type",
     TEXT_SKILL_BANNED                        = "text.biologydictionary.skill_banned",
+    TEXT_SKILL_COST                          = "text.biologydictionary.skill_cost",
     TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS    = "text.biologydictionary.not_allowed_to_highlight_players",
     TEXT_NOT_ENOUGH_EXPERIENCE_POINTS        = "text.biologydictionary.not_enough_experience_points",
     TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS        = "text.biologydictionary.not_enough_experience_levels",
@@ -223,11 +226,11 @@ public final class Lang {
     TEXT_EXPERIENCE_LEVELS_REQUIRED          = "text.biologydictionary.experience_levels_required",
     TEXT_EXPERIENCE_POINTS_COST              = "text.biologydictionary.experience_points_cost",
     TEXT_EXPERIENCE_LEVELS_COST              = "text.biologydictionary.experience_levels_cost",
-    TEXT_ITEMS                               = "text.biologydictionary.items",
+    TEXT_ITEMS_COST                          = "text.biologydictionary.items_cost",
     TEXT_OFFER_OR_DROP                       = "text.biologydictionary.offer_or_drop",
     TEXT_TARGET_ENTITY_NO_ABILITY            = "text.biologydictionary.target_entity_no_ability",
     TEXT_STEALING_DETECTED                   = "text.biologydictionary.stealing_detected",
-    TEXT_ENTITY_LOOKING_AT_YOU              = "text.biologydictionary.entity_looking_at_you",
+    TEXT_ENTITY_LOOKING_AT_YOU               = "text.biologydictionary.entity_looking_at_you",
 
     TEXT_NO_DATA_WITH_BRACKETS               = "text.biologydictionary.no_data_with_brackets",
     TEXT_NONE_WITH_BRACKETS                  = "text.biologydictionary.none_with_brackets",

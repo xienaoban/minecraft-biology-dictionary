@@ -10,7 +10,7 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.BeeClearHiveSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -150,7 +150,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_CLEAR));
                     return true;
                 }
-                if (PlayerSkills.activate(e(), new BeeClearHiveSkill())) {
+                if (BiologySkills.activate(e(), new BeeClearHiveSkill())) {
                     hivePosProperty.setVal(null);
                 }
             }
@@ -164,7 +164,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR_DESC));
             tooltip.add(TextUtils.empty());
-            tooltip.addAll(cost.format());
+            tooltip.addAll(cost.toTooltipText());
             renderTooltip(ctx, tooltip);
             return true;
         }
