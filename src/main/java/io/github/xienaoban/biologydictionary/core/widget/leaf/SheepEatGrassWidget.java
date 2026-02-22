@@ -63,7 +63,7 @@ public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            SkillCost cost = SheepForceEatGrassSkill.META.getDefaultCost();
+            SkillCost cost = new SheepForceEatGrassSkill().getRealCost();
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_EAT_GRASS));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_EAT_GRASS_DESC));

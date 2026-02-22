@@ -28,17 +28,10 @@ public record RequestCommonSkillPacket(GeneralSkill skill) implements Packet {
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
         try {
-            // Phase 1: Additional server-side validation
             skill.serverAdditionalCheck(ctx.server(), ctx.player());
-
-            // Phase 2: Get real cost (configured or default with potential modifications)
             SkillCost cost = skill.getRealCost();
-
-            // Phase 3: Check and consume cost
             cost.serverCheck(ctx.player());
             cost.serverConsume(ctx.player());
-
-            // Phase 4: Execute the skill
             skill.serverDo(ctx.server(), ctx.player());
         } catch (NoPermissionException e) {
             LOGGER.warn(Misc.getStackToString(e));

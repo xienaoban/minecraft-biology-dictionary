@@ -75,7 +75,7 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            SkillCost cost = EntitySetSoundSkill.META.getDefaultCost();
+            SkillCost cost = new EntitySetSoundSkill(!isSilent()).getRealCost();
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_SOUND_SWITCH));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_SWITCH_DESC));

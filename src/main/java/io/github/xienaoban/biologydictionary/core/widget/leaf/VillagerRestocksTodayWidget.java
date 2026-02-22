@@ -44,7 +44,7 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        SkillCost cost = VillagerForceRestockSkill.META.getDefaultCost();
+        SkillCost cost = new VillagerForceRestockSkill().getRealCost();
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY));
         tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_DESC));
