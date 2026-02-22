@@ -9,6 +9,7 @@ import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitie
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 
 import java.util.HashMap;
@@ -99,20 +100,6 @@ public final class BiologySkills {
         return getEntityTargetedSkillMeta(key);
     }
 
-    /**
-     * Get all registered common skill classes.
-     */
-    public static Map<String, GeneralSkill.Meta<?>> getAllCommonSkills() {
-        return commonSkills;
-    }
-
-    /**
-     * Get all registered entity-targeted skill classes.
-     */
-    public static Map<String, EntityTargetedSkill.Meta<?>> getAllEntityTargetedSkills() {
-        return entityTargetedSkills;
-    }
-
     public static String key(Object skill) {
         return skill.getClass().getName();
     }
@@ -124,7 +111,10 @@ public final class BiologySkills {
     @Environment(EnvType.CLIENT)
     public static boolean activate(GeneralSkill skill) {
         try {
-            skill.clientAdditionalCheck(ClientUtils.getClientPlayer());
+            LocalPlayer player = ClientUtils.getClientPlayer();
+            skill.clientAdditionalCheck(player);
+            SkillCost cost = skill.getRealCost();
+            cost.clientCheck(player);
             ClientNetManager.sendCommonSkill(skill);
             return true;
         } catch (NoPermissionException e) {

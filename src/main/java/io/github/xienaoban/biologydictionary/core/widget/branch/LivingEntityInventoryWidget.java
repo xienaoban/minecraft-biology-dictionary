@@ -88,7 +88,7 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            SkillCost cost = LivingEntityStealInventorySkill.META.getDefaultCost();
+            SkillCost cost = new LivingEntityStealInventorySkill().getRealCost();
             boolean isCreative = PlayerUtils.isCreative(ClientUtils.getClientPlayer());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_INVENTORY_STEAL));

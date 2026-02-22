@@ -159,7 +159,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            SkillCost cost = BeeClearHiveSkill.META.getDefaultCost();
+            SkillCost cost = new BeeClearHiveSkill().getRealCost();
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_BEE_HIVE_CLEAR_DESC));

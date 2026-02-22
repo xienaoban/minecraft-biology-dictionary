@@ -170,7 +170,9 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            SkillCost cost = EntitySetPortalCooldownSkill.META.getDefaultCost();
+            Integer cooldown = portalCooldownProperty.getVal();
+            int targetCooldown = (cooldown != null && cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) ? 0 : EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY;
+            SkillCost cost = new EntitySetPortalCooldownSkill(targetCooldown).getRealCost();
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_LOCK));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_LOCK_DESC));

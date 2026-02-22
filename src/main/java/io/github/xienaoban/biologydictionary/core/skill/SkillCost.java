@@ -9,6 +9,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -138,6 +139,10 @@ public final class SkillCost {
         if (creativeOnly && !PlayerUtils.isCreative(player)) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE), "Skill only available in creative mode");
         }
+
+        // Always free in creative mode.
+        if (PlayerUtils.isCreative(player)) { return; }
+
         if (player.experienceLevel < experienceLevelRequired) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experienceLevelRequired), "Not enough experience levels");
         }
@@ -152,11 +157,14 @@ public final class SkillCost {
     }
 
     public void serverConsume(ServerPlayer player) {
-        if (experiencePoints > 0) {
+        // Always free in creative mode.
+        if (PlayerUtils.isCreative(player)) { return; }
+
+        if (experiencePoints != 0) {
             PlayerUtils.giveExperiencePoints(player, -experiencePoints);
             PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
         }
-        if (experienceLevels > 0) {
+        if (experienceLevels != 0) {
             PlayerUtils.giveExperienceLevels(player, -experienceLevels);
             PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
         }
@@ -168,10 +176,10 @@ public final class SkillCost {
     }
 
     public void serverRefund(ServerPlayer player) {
-        if (experiencePoints > 0) {
+        if (experiencePoints != 0) {
             PlayerUtils.giveExperiencePoints(player, experiencePoints);
         }
-        if (experienceLevels > 0) {
+        if (experienceLevels != 0) {
             PlayerUtils.giveExperienceLevels(player, experienceLevels);
         }
 
@@ -193,13 +201,13 @@ public final class SkillCost {
             map.put("creative_only", true);
         }
         if (experiencePoints != 0) {
-            map.put("experience_points", experiencePoints);
+            map.put("exp_points", experiencePoints);
         }
         if (experienceLevels != 0) {
-            map.put("experience_levels", experienceLevels);
+            map.put("exp_levels", experienceLevels);
         }
         if (experienceLevelRequired != 0) {
-            map.put("experience_level_required", experienceLevelRequired);
+            map.put("exp_level_required", experienceLevelRequired);
         }
         if (!items.isEmpty()) {
             List<Map<String, Object>> itemsList = new ArrayList<>();
@@ -214,9 +222,9 @@ public final class SkillCost {
     public static SkillCost fromMap(Map<String, Object> map) {
         boolean banned = Boolean.TRUE.equals(map.get("banned"));
         boolean creativeOnly = Boolean.TRUE.equals(map.get("creative_only"));
-        int expPoints = ((Number) map.getOrDefault("experience_points", 0)).intValue();
-        int expLevels = ((Number) map.getOrDefault("experience_levels", 0)).intValue();
-        int expLevelReq = ((Number) map.getOrDefault("experience_level_required", 0)).intValue();
+        int expPoints = ((Number) map.getOrDefault("exp_points", 0)).intValue();
+        int expLevels = ((Number) map.getOrDefault("exp_levels", 0)).intValue();
+        int expLevelReq = ((Number) map.getOrDefault("exp_level_required", 0)).intValue();
 
         List<ItemStack> itemsList = List.of();
         if (map.containsKey("items")) {
@@ -237,41 +245,16 @@ public final class SkillCost {
         if (stack.getCount() > 1) {
             map.put("count", stack.getCount());
         }
-        // For items with components, we serialize them in a simplified format
-        // Components like enchantment, damage, etc. are noted but not fully serialized
-        if (!stack.getComponents().isEmpty()) {
-            map.put("has_components", true);
-            // Store a simple representation for reference
-            // Full component serialization is complex and typically not needed for skill costs
-            map.put("components_hint", stack.getComponents().size() + " components");
-        }
         return map;
     }
 
     private static ItemStack itemStackFromMap(Map<String, Object> map) {
         String itemId = (String) map.get("item");
         int count = ((Number) map.getOrDefault("count", 1)).intValue();
-        Item item = BuiltInRegistries.ITEM.get(Identifier.tryParse(itemId))
-                .map(holder -> holder.value())
+        Item item = BuiltInRegistries.ITEM.get(Objects.requireNonNull(Identifier.tryParse(itemId)))
+                .map(Holder.Reference::value)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown item: " + itemId));
-        ItemStack stack = new ItemStack(item, count);
-
-        // Restore components if present
-        // Note: This is a simplified implementation that skips complex component restoration
-        // For most skill costs, items don't have components, so this should be sufficient
-        if (map.containsKey("components")) {
-            @SuppressWarnings("unchecked")
-            Map<String, String> componentsMap = (Map<String, String>) map.get("components");
-            // Components are not restored for now
-            // If you need component support, you'll need to implement component-specific parsing
-            // based on the component type (e.g., enchantment, damage, etc.)
-            if (!componentsMap.isEmpty()) {
-                // Log a warning that components are being skipped
-                // System.out.println("Warning: Components not restored for item: " + itemId);
-            }
-        }
-
-        return stack;
+        return new ItemStack(item, count);
     }
 
     // ==================== Private Helper Methods ====================
