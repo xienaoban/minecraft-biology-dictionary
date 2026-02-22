@@ -76,7 +76,7 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            SkillCost cost = new EntitySetInvulnerableSkill(!isInvulnerable()).getRealCost();
+            SkillCost cost = new EntitySetInvulnerableSkill(!isInvulnerable()).getRealCost(e());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_INVULNERABLE_SWITCH_DESC));

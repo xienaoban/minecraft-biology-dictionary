@@ -19,7 +19,7 @@ public record BeeClearHiveSkill() implements EntityTargetedSkill<Bee> {
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.empty();
+            return SkillCost.ofExpPoints(1);
         }
 
     };

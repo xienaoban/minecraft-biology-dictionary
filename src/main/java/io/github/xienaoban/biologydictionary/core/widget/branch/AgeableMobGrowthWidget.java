@@ -167,7 +167,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             Integer forcedAge = forcedAgeProperty.getVal();
             int targetForcedAge = (forcedAge != null && forcedAge >= ADULT_MIN_AGE) ? BABY_MIN_AGE : ADULT_MIN_AGE;
-            SkillCost cost = new AgeableMobSetForcedAgeSkill(targetForcedAge, BABY_MIN_AGE).getRealCost();
+            SkillCost cost = new AgeableMobSetForcedAgeSkill(targetForcedAge, BABY_MIN_AGE).getRealCost(e());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_GROWTH_LOCK));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_GROWTH_LOCK_DESC));

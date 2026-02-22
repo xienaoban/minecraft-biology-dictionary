@@ -25,20 +25,14 @@ public interface EntityTargetedSkill<E extends Entity> {
      * Returns the cost from server config, which includes all skills with their
      * configured or default costs.
      * <p>
-     * Skills can override this method to perform additional cost calculations.
+     * Skills can override this method to perform additional cost calculations based on
+     * the target entity.
      *
+     * @param entity The target entity for this skill
      * @return The real cost for this skill
      */
-    default SkillCost getRealCost() {
+    default SkillCost getRealCost(E entity) {
         return ConfigsManager.getServer().getSkillCost(this.getClass());
-    }
-
-    /**
-     * @deprecated Use {@link #getRealCost()} instead
-     */
-    @Deprecated
-    default SkillCost getCalculatedCost() {
-        return SkillCost.empty();
     }
 
     interface Meta<T extends EntityTargetedSkill<?>> {

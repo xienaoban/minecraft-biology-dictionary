@@ -15,8 +15,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-import java.util.List;
-
 public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, Tag variantTag) implements EntityTargetedSkill<Entity> {
     public static final Meta<EntitySetVariantSkill> META = new Meta<>() {
         @Override
@@ -29,7 +27,7 @@ public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, 
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(0, 0, 10, List.of());
+            return SkillCost.creativeOnly();
         }
 
     };

@@ -21,7 +21,7 @@ public record EntitySetPortalCooldownSkill(int cooldown) implements EntityTarget
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.empty();
+            return SkillCost.ofExpPoints(1);
         }
 
     };

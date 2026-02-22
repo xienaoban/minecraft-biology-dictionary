@@ -91,7 +91,7 @@ public class MobPersistenceWidget extends EntityPropertyStandardWidget<Mob> {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            SkillCost cost = new MobForcePersistentSkill(!isForcedPersistent()).getRealCost();
+            SkillCost cost = new MobForcePersistentSkill(!isForcedPersistent()).getRealCost(e());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_PERSISTENCE_FORCED));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_PERSISTENCE_FORCED_DESC));

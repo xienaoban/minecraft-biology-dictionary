@@ -43,7 +43,7 @@ public record RequestEntityTargetedSkillPacket(int entityId, EntityTargetedSkill
             skill.serverAdditionalCheck(ctx.server(), ctx.player(), Misc.cast(entity));
 
             // Phase 2: Get real cost (configured or default with potential modifications)
-            SkillCost cost = skill.getRealCost();
+            SkillCost cost = skill.getRealCost(Misc.cast(entity));
 
             // Phase 3: Check and consume cost
             cost.serverCheck(ctx.player());

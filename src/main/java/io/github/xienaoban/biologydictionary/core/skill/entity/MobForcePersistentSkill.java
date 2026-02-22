@@ -13,6 +13,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public record MobForcePersistentSkill(boolean persistent) implements EntityTargetedSkill<Mob> {
     public static final Meta<MobForcePersistentSkill> META = new Meta<>() {
@@ -23,7 +25,7 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofLevels(5);
+            return SkillCost.ofItems(new ItemStack(Items.PAPER), new ItemStack(Items.COPPER_NUGGET));
         }
 
     };
