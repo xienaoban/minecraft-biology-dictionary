@@ -2,21 +2,22 @@ package io.github.xienaoban.biologydictionary.core.skill.general;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
+import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-
-import java.util.List;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) implements GeneralSkill {
     public static final Meta<HighlightEntitiesSkill> META = new Meta<>() {
@@ -27,9 +28,8 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(17, 0, 0, List.of());
+            return new SkillCost(16, 0, 0, 0, new ItemStack(Items.ENDER_EYE));
         }
-
     };
 
     public static final int TICKS = 12 * 20;
@@ -48,26 +48,37 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
     }
 
     @Override
+    public void clientAdditionalCheck(LocalPlayer player) throws NoPermissionException {
+        commonCheck();
+    }
+
+    @Override
     public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player) {
+        commonCheck();
+    }
+
+    private void commonCheck() {
         if (entityType == null) {
-            PlayerUtils.showClientCenteredMessage(player, TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
-                    TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE)));
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
+                    TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE)), "entityType == null");
         } else if (entityType == EntityType.PLAYER) {
-            PlayerUtils.showClientCenteredMessage(player, TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
-                    TextUtils.translate(Lang.TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS)));
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
+                    TextUtils.translate(Lang.TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS)), "entityType == EntityType.PLAYER");
         }
     }
 
     @Override
     public void serverDo(MinecraftServer server, ServerPlayer player) {
-        boolean allowed = entityType != null && entityType != EntityType.PLAYER;
-        if (PlayerUtils.isCreative(player) || PlayerUtils.isSpectator(player)) {
-            allowed = true;
-        }
+        player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, BLINDNESS_TICKS));
+        ServerNetManager.replyHighlightEntitiesSkill(player, true, entityType, radius);
+    }
 
-        if (allowed) {
-            player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, BLINDNESS_TICKS));
+    @Override
+    public SkillCost getRealCost() {
+        SkillCost base = GeneralSkill.super.getRealCost();
+        if (radius <= NEAR_RADIUS) {
+            return SkillCost.ofExpPoints(1);
         }
-        ServerNetManager.replyHighlightEntitiesSkill(player, allowed, entityType, radius);
+        return base;
     }
 }

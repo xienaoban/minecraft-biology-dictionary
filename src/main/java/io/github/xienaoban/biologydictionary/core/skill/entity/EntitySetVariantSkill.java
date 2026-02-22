@@ -4,11 +4,9 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -44,17 +42,6 @@ public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, 
         buf.writeUtf(entityTypeId);
         buf.writeInt(variantHandlerIdx);
         buf.writeNbt(variantTag);
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Override
-    public void clientAdditionalCheck(LocalPlayer player, Entity entity) {
-        Permissions.checkPlayerCreative(player);
-    }
-
-    @Override
-    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
-        Permissions.checkPlayerCreative(player);
     }
 
     @Override

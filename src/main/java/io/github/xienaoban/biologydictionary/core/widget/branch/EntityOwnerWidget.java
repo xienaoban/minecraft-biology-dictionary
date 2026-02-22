@@ -136,7 +136,8 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            SkillCost cost = EntityGiftPetSkill.META.getDefaultCost();
+            // Target player is selected at runtime, so we use a placeholder UUID
+            SkillCost cost = new EntityGiftPetSkill(new UUID(0, 0)).getRealCost(e());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_OWNER_GIFT));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_OWNER_GIFT_DESC));

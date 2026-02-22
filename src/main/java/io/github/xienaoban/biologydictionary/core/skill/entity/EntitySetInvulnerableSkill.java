@@ -35,13 +35,11 @@ public record EntitySetInvulnerableSkill(boolean invulnerable) implements Entity
     @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(LocalPlayer player, Entity entity) {
-        Permissions.checkPlayerCreative(player);
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
     }
 
     @Override
     public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
-        Permissions.checkPlayerCreative(player);
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
     }
 

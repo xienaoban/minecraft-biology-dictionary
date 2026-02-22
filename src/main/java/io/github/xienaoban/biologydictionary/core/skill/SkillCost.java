@@ -27,60 +27,62 @@ public final class SkillCost {
     private final boolean creativeOnly;
     private final int experiencePoints;
     private final int experienceLevels;
+    private final int experiencePointRequired;
     private final int experienceLevelRequired;
     private final List<ItemStack> items;
 
-    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experienceLevelRequired, List<ItemStack> items) {
+    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, List<ItemStack> items) {
         this.banned = banned;
         this.creativeOnly = creativeOnly;
         this.experiencePoints = experiencePoints;
         this.experienceLevels = experienceLevels;
+        this.experiencePointRequired = experiencePointRequired;
         this.experienceLevelRequired = experienceLevelRequired;
         this.items = items == null ? List.of() : List.copyOf(items);
     }
 
-    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experienceLevelRequired, ItemStack... items) {
-        this(banned, creativeOnly, experiencePoints, experienceLevels, experienceLevelRequired, Arrays.asList(items));
+    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, ItemStack... items) {
+        this(banned, creativeOnly, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, Arrays.asList(items));
     }
 
-    public SkillCost(int experiencePoints, int experienceLevels, int experienceLevelRequired, List<ItemStack> items) {
-        this(false, false, experiencePoints, experienceLevels, experienceLevelRequired, items);
+    public SkillCost(int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, List<ItemStack> items) {
+        this(false, false, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, items);
     }
 
-    public SkillCost(int experiencePoints, int experienceLevels, int experienceLevelRequired, ItemStack... items) {
-        this(experiencePoints, experienceLevels, experienceLevelRequired, Arrays.asList(items));
+    public SkillCost(int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, ItemStack... items) {
+        this(experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, Arrays.asList(items));
     }
 
     // ==================== Factory Methods ====================
 
     public static SkillCost banned() {
-        return new SkillCost(true, false, 0, 0, 0, List.of());
+        return new SkillCost(true, false, 0, 0, 0, 0, List.of());
     }
 
     public static SkillCost creativeOnly() {
-        return new SkillCost(false, true, 0, 0, 0, List.of());
+        return new SkillCost(false, true, 0, 0, 0, 0, List.of());
     }
 
     public static SkillCost empty() {
-        return new SkillCost(0, 0, 0, List.of());
+        return new SkillCost(0, 0, 0, 0, List.of());
     }
 
     public static SkillCost ofExpPoints(int points) {
-        return new SkillCost(points, 0, 0, List.of());
+        return new SkillCost(points, 0, 0, 0, List.of());
     }
 
     public static SkillCost ofExpLevels(int levels) {
-        return new SkillCost(0, levels, 0, List.of());
+        return new SkillCost(0, levels, 0, 0, List.of());
     }
 
     public static SkillCost ofItems(ItemStack... items) {
-        return new SkillCost(0, 0, 0, Arrays.asList(items));
+        return new SkillCost(0, 0, 0, 0, Arrays.asList(items));
     }
 
     // ==================== Getters ====================
 
     public boolean isEmpty() {
-        return !banned && !creativeOnly && experiencePoints == 0 && experienceLevels == 0 && experienceLevelRequired == 0 && items.isEmpty();
+        return !banned && !creativeOnly && experiencePoints == 0 && experienceLevels == 0 && experiencePointRequired == 0 && experienceLevelRequired == 0 && items.isEmpty();
     }
 
     public boolean isBanned() {
@@ -97,6 +99,10 @@ public final class SkillCost {
 
     public int getExperienceLevels() {
         return experienceLevels;
+    }
+
+    public int getExperiencePointRequired() {
+        return experiencePointRequired;
     }
 
     public int getExperienceLevelRequired() {
@@ -117,13 +123,14 @@ public final class SkillCost {
                creativeOnly == other.creativeOnly &&
                experiencePoints == other.experiencePoints &&
                experienceLevels == other.experienceLevels &&
+               experiencePointRequired == other.experiencePointRequired &&
                experienceLevelRequired == other.experienceLevelRequired &&
                itemsEquals(items, other.items);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(banned, creativeOnly, experiencePoints, experienceLevels, experienceLevelRequired, items);
+        return Objects.hash(banned, creativeOnly, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, items);
     }
 
     // ==================== CCheck & Consume ====================
@@ -148,12 +155,19 @@ public final class SkillCost {
         // Always free in creative mode.
         if (PlayerUtils.isCreative(player)) { return; }
 
+        if (player.totalExperience < experiencePointRequired) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_EXPERIENCE_POINT_THRESHOLD_NOT_MET, experiencePointRequired), "Experience point threshold not met");
+        }
         if (player.experienceLevel < experienceLevelRequired) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experienceLevelRequired), "Not enough experience levels");
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_EXPERIENCE_LEVEL_THRESHOLD_NOT_MET, experienceLevelRequired), "Experience level threshold not met");
         }
         if (player.totalExperience < experiencePoints) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_POINTS, experiencePoints), "Not enough experience points");
         }
+        if (player.experienceLevel < experienceLevels) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experienceLevels), "Not enough experience levels");
+        }
+
         for (ItemStack required : items) {
             if (!InventoryUtils.hasEnoughItems(player.getInventory(), required)) {
                 throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_ITEMS, required.getCount(), required.getHoverName()), "Not enough items");
@@ -211,6 +225,9 @@ public final class SkillCost {
         if (experienceLevels != 0) {
             map.put("exp_levels", experienceLevels);
         }
+        if (experiencePointRequired != 0) {
+            map.put("exp_point_required", experiencePointRequired);
+        }
         if (experienceLevelRequired != 0) {
             map.put("exp_level_required", experienceLevelRequired);
         }
@@ -229,6 +246,7 @@ public final class SkillCost {
         boolean creativeOnly = Boolean.TRUE.equals(map.get("creative_only"));
         int expPoints = ((Number) map.getOrDefault("exp_points", 0)).intValue();
         int expLevels = ((Number) map.getOrDefault("exp_levels", 0)).intValue();
+        int expPointReq = ((Number) map.getOrDefault("exp_point_required", 0)).intValue();
         int expLevelReq = ((Number) map.getOrDefault("exp_level_required", 0)).intValue();
 
         List<ItemStack> itemsList = List.of();
@@ -240,7 +258,7 @@ public final class SkillCost {
             }
         }
 
-        return new SkillCost(banned, creativeOnly, expPoints, expLevels, expLevelReq, itemsList);
+        return new SkillCost(banned, creativeOnly, expPoints, expLevels, expPointReq, expLevelReq, itemsList);
     }
 
     private static Map<String, Object> itemStackToMap(ItemStack stack) {
@@ -291,7 +309,10 @@ public final class SkillCost {
         }
 
         if (experienceLevelRequired > 0) {
-            res.add(TextUtils.translate(Lang.TEXT_EXPERIENCE_LEVELS_REQUIRED, experienceLevelRequired));
+            res.add(TextUtils.translate(Lang.TEXT_EXPERIENCE_LEVEL_REQUIRED, experienceLevelRequired));
+        }
+        if (experiencePointRequired > 0) {
+            res.add(TextUtils.translate(Lang.TEXT_EXPERIENCE_POINT_REQUIRED, experiencePointRequired));
         }
         if (experiencePoints > 0) {
             res.add(TextUtils.translate(Lang.TEXT_EXPERIENCE_POINTS_COST, experiencePoints));

@@ -16,30 +16,27 @@ import java.util.Objects;
 
 public final class Permissions {
 
-    public static <T> void checkLegalArg(T actual, T expect) {
-        if (!Objects.equals(actual, expect)) {
-            throw new IllegalArgumentException("Bad arg: expect={" + expect + "}, actual={" + actual + "}");
+    public static <T> void checkClientServerSameState(T client, T server) {
+        if (!Objects.equals(client, server)) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_CLIENT_SERVER_ARG_NOT_SAME, TextUtils.literal(client.getClass().getSimpleName())),
+                    "Arg state differs between client and server: client={" + client + "}, server={" + server + "}");
         }
-    }
-
-    public static void checkPlayerCreative(Player player) {
-        if (PlayerUtils.isCreative(player)) { return; }
-        throw new NoPermissionException(TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE), "Not in creative mode");
-
     }
 
     public static void checkPlayerCreativeOrExperiencePoints(Player player, int experience) {
         if (PlayerUtils.isCreative(player)) { return; }
         int exp = PlayerUtils.getExperiencePoints(player);
         if (exp >= experience) { return; }
-        throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_POINTS, experience), "No enough experience points: " + exp + " < " + experience);
+        throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_POINTS, experience),
+                "No enough experience points: " + exp + " < " + experience);
     }
 
     public static void checkPlayerCreativeOrExperienceLevel(Player player, int level) {
         if (PlayerUtils.isCreative(player)) { return; }
         int lvl = PlayerUtils.getExperienceLevels(player);
         if (lvl >= level) { return; }
-        throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, level), "No enough experience levels: " + lvl + " < " + level);
+        throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, level),
+                "No enough experience levels: " + lvl + " < " + level);
     }
 
     public static void checkTargetPlayerLowerGameMode(Player player, Player target) {

@@ -30,7 +30,7 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
         @Override
         public SkillCost getDefaultCost() {
             // Simulate the eyes of Medusa
-            return new SkillCost(0, 5, 20, List.of(new ItemStack(Items.SPIDER_EYE, 2)));
+            return new SkillCost(0, 5, 0, 20, List.of(new ItemStack(Items.SPIDER_EYE, 2)));
         }
     };
 
@@ -38,40 +38,6 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeBoolean(noAi);
-    }
-
-    @Override
-    public SkillCost getRealCost(Mob entity) {
-        SkillCost base = EntityTargetedSkill.super.getRealCost(entity);
-        int expPoints, expLevels, expLevelRequired;
-        List<ItemStack> items;
-
-        if (entity instanceof Enemy) {
-            expPoints = base.getExperiencePoints();
-            expLevels = base.getExperienceLevels();
-            expLevelRequired = base.getExperienceLevelRequired() * Math.max(1, (int) entity.getMaxHealth() / 20);
-            items = base.getItems();
-        } else if (entity instanceof NeutralMob) {
-            expPoints = base.getExperiencePoints() / 2;
-            expLevels = base.getExperienceLevels() / 2;
-            expLevelRequired = base.getExperienceLevelRequired() / 2;
-            items = base.getItems();
-        } else {
-            expPoints = base.getExperiencePoints() / 4;
-            expLevels = base.getExperienceLevels() / 4;
-            expLevelRequired = 0;
-            items = base.getItems();
-        }
-
-        if (!noAi) {
-            expPoints /= 2;
-            expLevels /= 2;
-            expLevelRequired /= 2;
-            items = List.of();
-        }
-
-        return new SkillCost(base.isBanned(), base.isCreativeOnly(),
-                expPoints, expLevels, expLevelRequired, items);
     }
 
     @Override
@@ -92,5 +58,42 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
         }
 
         EntityUtils.mergeNbt(entity, nbt);
+    }
+
+    @Override
+    public SkillCost getRealCost(Mob entity) {
+        SkillCost base = EntityTargetedSkill.super.getRealCost(entity);
+        int expPoints, expLevels, expPointRequired, expLevelRequired;
+        List<ItemStack> items;
+
+        if (entity instanceof Enemy) {
+            expPoints = base.getExperiencePoints();
+            expLevels = base.getExperienceLevels();
+            expPointRequired = base.getExperiencePointRequired();
+            expLevelRequired = base.getExperienceLevelRequired() * Math.max(1, (int) entity.getMaxHealth() / 20);
+            items = base.getItems();
+        } else if (entity instanceof NeutralMob) {
+            expPoints = base.getExperiencePoints() / 2;
+            expLevels = base.getExperienceLevels() / 2;
+            expPointRequired = base.getExperiencePointRequired() / 2;
+            expLevelRequired = base.getExperienceLevelRequired() / 2;
+            items = base.getItems();
+        } else {
+            expPoints = base.getExperiencePoints() / 4;
+            expLevels = base.getExperienceLevels() / 4;
+            expPointRequired = base.getExperiencePointRequired() / 4;
+            expLevelRequired = 0;
+            items = base.getItems();
+        }
+
+        if (!noAi) {
+            expPoints /= 2;
+            expLevels /= 2;
+            expPointRequired /= 2;
+            expLevelRequired /= 2;
+            items = List.of();
+        }
+
+        return new SkillCost(expPoints, expLevels, expPointRequired, expLevelRequired, items);
     }
 }
