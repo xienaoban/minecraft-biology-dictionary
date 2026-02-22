@@ -6,7 +6,6 @@ import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -46,9 +45,7 @@ public record SheepForceEatGrassSkill() implements EntityTargetedSkill<Sheep> {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void write(FriendlyByteBuf buf) {
-        // No data to write
-    }
+    public void write(FriendlyByteBuf buf) {}
 
     @Override
     public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Sheep entity) {

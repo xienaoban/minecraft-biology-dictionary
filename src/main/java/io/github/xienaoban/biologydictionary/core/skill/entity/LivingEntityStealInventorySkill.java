@@ -13,10 +13,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-
-import java.util.List;
 
 public record LivingEntityStealInventorySkill() implements EntityTargetedSkill<LivingEntity> {
     public static final Meta<LivingEntityStealInventorySkill> META = new Meta<>() {
@@ -27,7 +23,7 @@ public record LivingEntityStealInventorySkill() implements EntityTargetedSkill<L
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(0, 10, 0, List.of(new ItemStack(Items.DIAMOND)));
+            return SkillCost.empty();
         }
 
     };

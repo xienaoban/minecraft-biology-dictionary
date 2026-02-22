@@ -18,22 +18,24 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
-public record VillagerForceRestockSkill() implements EntityTargetedSkill<Villager> {
+public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos) implements EntityTargetedSkill<Villager> {
     public static final Meta<VillagerForceRestockSkill> META = new Meta<>() {
         @Override
         public VillagerForceRestockSkill create(FriendlyByteBuf buf) {
-            return new VillagerForceRestockSkill();
+            return new VillagerForceRestockSkill(buf.readInt(), buf.readGlobalPos());
         }
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofLevels(5);
+            return SkillCost.ofItems(new ItemStack(Items.EMERALD));
         }
 
     };
 
-    public static int emeraldsNeeded(int restocksToday) {
+    public static int factor(int restocksToday) {
         return Math.max(0, restocksToday - 3 + 1) * 2;
     }
 
@@ -59,20 +61,16 @@ public record VillagerForceRestockSkill() implements EntityTargetedSkill<Village
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void write(FriendlyByteBuf buf) {}
+    public void write(FriendlyByteBuf buf) {
+        buf.writeInt(restocksToday);
+        buf.writeGlobalPos(jobSitePos);
+    }
 
     @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(LocalPlayer player, Villager entity) {
-        IntProperty<Villager> restocksTodayProperty = VanillaEntityProperties.OfVillager.createRestocksTodayProperty();
-        VillagerJobSiteProperty jobSiteProperty = new VillagerJobSiteProperty();
-        restocksTodayProperty.getFrom(entity);
-        jobSiteProperty.getFrom(entity);
-        Integer restocksToday = restocksTodayProperty.getVal();
-        GlobalPos jobSite = jobSiteProperty.getVal();
-
-        checkVillagerHasJobSite(restocksToday, jobSite);
-        checkVillagerCloseToJobSite(entity, jobSite);
+        checkVillagerHasJobSite(restocksToday, jobSitePos);
+        checkVillagerCloseToJobSite(entity, jobSitePos);
     }
 
     @Override

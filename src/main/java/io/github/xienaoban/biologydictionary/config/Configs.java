@@ -9,6 +9,7 @@ import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -152,7 +153,7 @@ public final class Configs {
          * Must be called after skillCosts is fully populated.
          */
         private void rebuildSkillCacheCache() {
-            Map<String, SkillCost> cache = new java.util.HashMap<>();
+            Map<String, SkillCost> cache = new HashMap<>();
 
             for (Map.Entry<String, Map<String, Object>> entry : skillCosts.entrySet()) {
                 String className = entry.getKey();

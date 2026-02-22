@@ -84,7 +84,7 @@ public final class MobAiWidget extends EntityPropertyStandardWidget<Mob> {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            SkillCost cost = new MobSetNoAiSkill(!isNoAi()).getRealCost();
+            SkillCost cost = new MobSetNoAiSkill(!isNoAi()).getRealCost(e());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_AI_SWITCH));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_AI_SWITCH_DESC));

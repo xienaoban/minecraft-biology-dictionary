@@ -97,6 +97,9 @@ public final class ConfigsManager {
                 if (categoryField.isAnnotationPresent(ConfigCategory.class)) {
                     categoryField.setAccessible(true);
                     Object categoryObject = categoryField.get(INSTANCE);
+                    if (categoryObject instanceof Configs.PostLoader processor) {
+                        processor.postLoad();
+                    }
                     String fieldName = categoryField.getName();
                     Map<String, Object> categoryMap = saveConfigCategoryToMap(categoryObject);
                     data.put(fieldName, categoryMap);
@@ -243,9 +246,6 @@ public final class ConfigsManager {
         }
     }
 
-    /**
-     * Create a configured Yaml instance for serialization.
-     */
     private static Yaml createYamlForDump() {
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
@@ -256,6 +256,7 @@ public final class ConfigsManager {
             protected Node representSequence(Tag tag, Iterable<?> sequence,
                                              DumperOptions.FlowStyle flowStyle) {
                 if (!sequence.iterator().hasNext()) {
+                    // Output empty maps as flow style []
                     return super.representSequence(tag, sequence, DumperOptions.FlowStyle.FLOW);
                 }
                 return super.representSequence(tag, sequence, flowStyle);
@@ -304,6 +305,9 @@ public final class ConfigsManager {
         return map;
     }
 
+    /**
+     * Convert maps (deserialized from YAML) to configs.
+     */
     private static boolean loadConfigCategoryFromMap(Map<?, ?> dataMap, Object configObject) {
         boolean allGood = true;
         for (Map.Entry<?, ?> entry : dataMap.entrySet()) {

@@ -122,7 +122,7 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            SkillCost cost = new WanderingTraderRetainSkill().getRealCost();
+            SkillCost cost = new WanderingTraderRetainSkill().getRealCost(e());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN_DESC));

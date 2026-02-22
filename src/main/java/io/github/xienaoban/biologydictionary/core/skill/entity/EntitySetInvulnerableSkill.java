@@ -21,7 +21,7 @@ public record EntitySetInvulnerableSkill(boolean invulnerable) implements Entity
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofLevels(5);
+            return SkillCost.creativeOnly();
         }
 
     };

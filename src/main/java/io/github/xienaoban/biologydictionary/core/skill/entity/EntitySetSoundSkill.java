@@ -13,6 +13,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill<Entity> {
     public static final Meta<EntitySetSoundSkill> META = new Meta<>() {
@@ -23,7 +25,8 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.empty();
+            // 辣条把嗓子辣哑了
+            return SkillCost.ofItems(new ItemStack(Items.ROTTEN_FLESH));
         }
 
     };

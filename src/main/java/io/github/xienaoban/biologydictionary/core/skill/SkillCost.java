@@ -20,10 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public final class SkillCost {
     private final boolean banned;
@@ -42,8 +39,16 @@ public final class SkillCost {
         this.items = items == null ? List.of() : List.copyOf(items);
     }
 
+    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experienceLevelRequired, ItemStack... items) {
+        this(banned, creativeOnly, experiencePoints, experienceLevels, experienceLevelRequired, Arrays.asList(items));
+    }
+
     public SkillCost(int experiencePoints, int experienceLevels, int experienceLevelRequired, List<ItemStack> items) {
         this(false, false, experiencePoints, experienceLevels, experienceLevelRequired, items);
+    }
+
+    public SkillCost(int experiencePoints, int experienceLevels, int experienceLevelRequired, ItemStack... items) {
+        this(experiencePoints, experienceLevels, experienceLevelRequired, Arrays.asList(items));
     }
 
     // ==================== Factory Methods ====================
@@ -60,16 +65,16 @@ public final class SkillCost {
         return new SkillCost(0, 0, 0, List.of());
     }
 
-    public static SkillCost ofExp(int points) {
+    public static SkillCost ofExpPoints(int points) {
         return new SkillCost(points, 0, 0, List.of());
     }
 
-    public static SkillCost ofLevels(int levels) {
+    public static SkillCost ofExpLevels(int levels) {
         return new SkillCost(0, levels, 0, List.of());
     }
 
     public static SkillCost ofItems(ItemStack... items) {
-        return new SkillCost(0, 0, 0, List.of(items));
+        return new SkillCost(0, 0, 0, Arrays.asList(items));
     }
 
     // ==================== Getters ====================

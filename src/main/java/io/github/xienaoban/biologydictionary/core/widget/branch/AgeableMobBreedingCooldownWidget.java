@@ -167,7 +167,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             Integer forcedAge = forcedAgeProperty.getVal();
             int targetForcedAge = (forcedAge != null && forcedAge == BREED_COOLDOWN_OFF) ? BREED_COOLDOWN_MAX : BREED_COOLDOWN_OFF;
-            SkillCost cost = new AgeableMobSetForcedAgeSkill(targetForcedAge, BREED_COOLDOWN_MAX).getRealCost();
+            SkillCost cost = new AgeableMobSetForcedAgeSkill(targetForcedAge, BREED_COOLDOWN_MAX).getRealCost(e());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK_DESC));

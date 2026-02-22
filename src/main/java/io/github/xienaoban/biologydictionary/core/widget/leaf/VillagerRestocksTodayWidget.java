@@ -33,6 +33,7 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
     private static final int MAX_RESTOCK_TODAY = 2;
 
     private final IntProperty<Villager> restocksTodayProperty = VanillaEntityProperties.OfVillager.getRestocksTodayProperty(p());
+    private final VillagerJobSiteProperty jboSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
 
     public VillagerRestocksTodayWidget(EntityProperties<Villager> properties) {
         super(properties);
@@ -44,7 +45,9 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        SkillCost cost = new VillagerForceRestockSkill().getRealCost();
+        Integer r = restocksTodayProperty.getVal();
+        GlobalPos j = jboSiteProperty.getVal();
+        SkillCost cost = new VillagerForceRestockSkill(r == null ? 0 : r, j).getRealCost(e());
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY));
         tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_DESC));
@@ -87,11 +90,12 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                VillagerJobSiteProperty jboSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
                 Integer r = restocksTodayProperty.getVal();
-                GlobalPos j = jboSiteProperty.getVal();
-                if (BiologySkills.activate(e(), new VillagerForceRestockSkill())) {
-                    restocksTodayProperty.setVal(r + 1);
+                if (r != null) {
+                    GlobalPos j = jboSiteProperty.getVal();
+                    if (BiologySkills.activate(e(), new VillagerForceRestockSkill(r, j))) {
+                        restocksTodayProperty.setVal(r + 1);
+                    }
                 }
             }
             return true;

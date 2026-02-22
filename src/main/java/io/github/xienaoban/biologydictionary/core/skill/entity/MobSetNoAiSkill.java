@@ -4,11 +4,9 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -16,7 +14,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -30,44 +29,10 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(0, 3, 10, List.of());
+            // Simulate the eyes of Medusa
+            return new SkillCost(0, 5, 20, List.of(new ItemStack(Items.SPIDER_EYE, 2)));
         }
-
     };
-
-    private static final int FRIENDLY_EXP_LVL_REQUIRED = 0;
-    private static final int FRIENDLY_EXP_LVL_COST = 1;
-    private static final int NEUTRAL_EXP_LVL_REQUIRED = 10;
-    private static final int NEUTRAL_EXP_LVL_COST = 3;
-    private static final int ENEMY_EXP_LVL_REQUIRED = 20;
-    private static final int ENEMY_EXP_LVL_COST_MIN = 5;
-    private static final float ENEMY_EXP_LVL_COST_FACTOR = 0.25F;
-
-    public static int experienceLevelsRequired(Mob entity) {
-        if (entity instanceof Enemy) {
-            return ENEMY_EXP_LVL_REQUIRED;
-        } else if (entity instanceof NeutralMob) {
-            return NEUTRAL_EXP_LVL_REQUIRED;
-        } else {
-            return FRIENDLY_EXP_LVL_REQUIRED;
-        }
-    }
-
-    public static int experienceLevelsCost(Mob entity) {
-        if (entity instanceof Enemy) {
-            return Math.max(ENEMY_EXP_LVL_COST_MIN, (int) (ENEMY_EXP_LVL_COST_FACTOR * entity.getMaxHealth()));
-        } else if (entity instanceof NeutralMob) {
-            return NEUTRAL_EXP_LVL_COST;
-        } else {
-            return FRIENDLY_EXP_LVL_COST;
-        }
-    }
-
-    private static void check(Player player, Mob entity) {
-        int lvlRequired = experienceLevelsRequired(entity);
-        int lvlCost = experienceLevelsCost(entity);
-        Permissions.checkPlayerCreativeOrExperienceLevel(player, Math.max(lvlRequired, lvlCost));
-    }
 
     @Environment(EnvType.CLIENT)
     @Override
@@ -75,15 +40,38 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
         buf.writeBoolean(noAi);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
-    public void clientAdditionalCheck(LocalPlayer player, Mob entity) {
-        check(player, entity);
-    }
+    public SkillCost getRealCost(Mob entity) {
+        SkillCost base = EntityTargetedSkill.super.getRealCost(entity);
+        int expPoints, expLevels, expLevelRequired;
+        List<ItemStack> items;
 
-    @Override
-    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Mob entity) {
-        check(player, entity);
+        if (entity instanceof Enemy) {
+            expPoints = base.getExperiencePoints();
+            expLevels = base.getExperienceLevels();
+            expLevelRequired = base.getExperienceLevelRequired() * Math.max(1, (int) entity.getMaxHealth() / 20);
+            items = base.getItems();
+        } else if (entity instanceof NeutralMob) {
+            expPoints = base.getExperiencePoints() / 2;
+            expLevels = base.getExperienceLevels() / 2;
+            expLevelRequired = base.getExperienceLevelRequired() / 2;
+            items = base.getItems();
+        } else {
+            expPoints = base.getExperiencePoints() / 4;
+            expLevels = base.getExperienceLevels() / 4;
+            expLevelRequired = 0;
+            items = base.getItems();
+        }
+
+        if (!noAi) {
+            expPoints /= 2;
+            expLevels /= 2;
+            expLevelRequired /= 2;
+            items = List.of();
+        }
+
+        return new SkillCost(base.isBanned(), base.isCreativeOnly(),
+                expPoints, expLevels, expLevelRequired, items);
     }
 
     @Override
