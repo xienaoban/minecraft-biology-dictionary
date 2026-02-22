@@ -235,7 +235,8 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        SkillCost cost = EntitySetVariantSkill.META.getDefaultCost();
+        // Use placeholder values since variant is selected at runtime
+        SkillCost cost = new EntitySetVariantSkill("", -1, null).getRealCost(e());
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_VARIANT));
         tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_VARIANT_DESC));

@@ -128,7 +128,10 @@ public final class BiologySkills {
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
         try {
-            skill.clientAdditionalCheck(ClientUtils.getClientPlayer(), Misc.cast(entity));
+            LocalPlayer player = ClientUtils.getClientPlayer();
+            skill.clientAdditionalCheck(player, Misc.cast(entity));
+            SkillCost cost = skill.getRealCost(Misc.cast(entity));
+            cost.clientCheck(player);
             ClientNetManager.sendEntityTargetedSkill(entity, skill);
             return true;
         } catch (NoPermissionException e) {

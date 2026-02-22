@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
+import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,10 +35,6 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
         }
 
     };
-
-    public static int factor(int restocksToday) {
-        return Math.max(0, restocksToday - 3 + 1) * 2;
-    }
 
     /**
      * @see net.minecraft.world.entity.ai.behavior.WorkAtPoi#canStillUse(ServerLevel, Villager, long)
@@ -80,9 +77,13 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
 
         restocksTodayProperty.readFrom(EntityUtils.getNbt(entity));
         jobSiteProperty.getFrom(entity);
-        Integer restocksToday = restocksTodayProperty.getVal();
+        Integer restocks = restocksTodayProperty.getVal();
         GlobalPos jobSite = jobSiteProperty.getVal();
-        checkVillagerHasJobSite(restocksToday, jobSite);
+
+        Permissions.checkClientServerSameState(restocksToday, restocks);
+        Permissions.checkClientServerSameState(jobSitePos, jobSite);
+
+        checkVillagerHasJobSite(restocks, jobSite);
         checkVillagerCloseToJobSite(entity, jobSite);
     }
 
@@ -90,5 +91,21 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
     public void serverDo(MinecraftServer server, ServerPlayer player, Villager entity) {
         entity.playWorkSound();
         entity.restock();
+    }
+
+    @Override
+    public SkillCost getRealCost(Villager entity) {
+        SkillCost base = EntityTargetedSkill.super.getRealCost(entity);
+        int factor = Math.max(0, restocksToday - 3 + 1) * 2;
+        return new SkillCost(
+                factor * base.getExperiencePoints(),
+                factor * base.getExperienceLevels(),
+                factor * base.getExperiencePointRequired(),
+                factor * base.getExperienceLevelRequired(),
+                base.getItems().stream().map(i -> {
+                    ItemStack res = i.copy();
+                    res.setCount(factor * i.getCount());
+                    return res;
+                }).toList());
     }
 }

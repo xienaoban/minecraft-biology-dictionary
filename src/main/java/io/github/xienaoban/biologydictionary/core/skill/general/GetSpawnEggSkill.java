@@ -6,21 +6,16 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
-
-import java.util.List;
 
 public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill {
     public static final Meta<GetSpawnEggSkill> META = new Meta<>() {
@@ -31,7 +26,7 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(0, 1, 0, List.of(new ItemStack(Items.IRON_INGOT)));
+            return SkillCost.creativeOnly();
         }
 
     };
@@ -40,17 +35,6 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdString(entityType));
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Override
-    public void clientAdditionalCheck(LocalPlayer player) {
-        Permissions.checkPlayerCreative(player);
-    }
-
-    @Override
-    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player) {
-        Permissions.checkPlayerCreative(player);
     }
 
     @Override
