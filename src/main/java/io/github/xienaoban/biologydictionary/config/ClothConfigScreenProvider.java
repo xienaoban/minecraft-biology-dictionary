@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.config;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.config.annotation.Config;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
@@ -38,7 +39,7 @@ public class ClothConfigScreenProvider {
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(Component.translatable(configAnnotation.value()))
+                .setTitle(TextUtils.translate(configAnnotation.value()))
                 .setSavingRunnable(ConfigsManager::save);
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
@@ -50,7 +51,7 @@ public class ClothConfigScreenProvider {
                 String categoryKey = categoryAnnotation.value();
 
                 me.shedaniel.clothconfig2.api.ConfigCategory category = builder.getOrCreateCategory(
-                        Component.translatable(categoryKey)
+                        TextUtils.translate(categoryKey)
                 );
 
                 try {
@@ -81,8 +82,8 @@ public class ClothConfigScreenProvider {
 
         String entryKey = Configs.getConfigNameTranslationKey(fieldName);
         String tooltipKey = entryKey + Lang.CONFIG_TOOLTIP_SUFFIX;
-        Component fieldText = Component.translatable(entryKey);
-        Component tooltipText = Component.translatable(tooltipKey);
+        Component fieldText = TextUtils.translate(entryKey);
+        Component tooltipText = TextUtils.translate(tooltipKey);
 
         try {
             field.setAccessible(true);
@@ -122,7 +123,7 @@ public class ClothConfigScreenProvider {
                 builder = entryBuilder.startStrField(fieldText, (String) currentValue);
             } else if (fieldType.isEnum()) {
                 builder = entryBuilder.startEnumSelector(fieldText, Misc.cast(fieldType), Misc.cast(currentValue))
-                        .setEnumNameProvider(e -> Component.translatable(Configs.getEnumValueTranslationKey(e)));
+                        .setEnumNameProvider(e -> TextUtils.translate(Configs.getEnumValueTranslationKey(e)));
             } else if (List.class.isAssignableFrom(fieldType)) {
                 // Only support string list!
                 builder = entryBuilder.startStrList(fieldText, (List<String>) currentValue);
@@ -135,7 +136,10 @@ public class ClothConfigScreenProvider {
                         .setTooltip(tooltipText).build());
                 return;
             } else {
-                throw new RuntimeException("Unsupported field type: " + fieldType);
+                // No modification methods are provided for complex types.
+                category.addEntry(entryBuilder.startTextDescription(fieldText)
+                        .setTooltip(tooltipText).build());
+                return;
             }
 
             category.addEntry(setEntryGeneric(builder, defaultValue,

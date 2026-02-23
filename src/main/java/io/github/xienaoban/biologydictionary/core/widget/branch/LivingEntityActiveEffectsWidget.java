@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
@@ -16,7 +17,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -59,7 +59,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         List<Component> list = new ArrayList<>();
         list.add(tooltipTitle(Lang.PROPERTY_WIDGET_EFFECTS));
         list.add(tooltipDescription(Lang.PROPERTY_WIDGET_EFFECTS_DESC));
-        list.add(Component.empty());
+        list.add(TextUtils.empty());
         List<MobEffectInstance> effects = activeEffectsProperty.getVal();
         if (effects == null || effects.isEmpty()) {
             list.add(tooltipBody(Lang.TEXT_EMPTY_WITH_BRACKETS));
@@ -70,22 +70,21 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
                 maxW = Math.max(maxW, ctx.calcTextWidth(name));
             }
             for (MobEffectInstance effect : effects) {
-                Component name = ComponentUtils.formatList(Arrays.asList(
+                Component name = TextUtils.concat(Arrays.asList(
                         effect.getEffect().value().getDisplayName(),
-                        Component.literal(String.valueOf(effect.getAmplifier() + 1))),
-                        Component.empty());
+                        TextUtils.literal(String.valueOf(effect.getAmplifier() + 1))));
                 int duration = effect.getDuration();
                 Component time;
                 if (ctx.isDebug()) {
-                    time = Component.literal(duration + "t").withStyle(ChatFormatting.GRAY);
+                    time = TextUtils.literal(duration + "t").withStyle(ChatFormatting.GRAY);
                 } else if (duration == MobEffectInstance.INFINITE_DURATION) {
-                    time = Component.translatable(Lang.TEXT_INFINITY_CHARACTER).withStyle(ChatFormatting.GRAY);
+                    time = TextUtils.translate(Lang.TEXT_INFINITY_CHARACTER).withStyle(ChatFormatting.GRAY);
                 } else {
-                    time = Component.literal((effect.getDuration() / 20) + "s").withStyle(ChatFormatting.GRAY);
+                    time = TextUtils.literal((effect.getDuration() / 20) + "s").withStyle(ChatFormatting.GRAY);
                 }
                 int w = ctx.calcTextWidth(name) + ctx.calcTextWidth(time);
-                Component dot = Component.literal(".".repeat(Math.max(0, (maxW + 40 - w) / 2))).withStyle(ChatFormatting.DARK_GRAY);
-                list.add(ComponentUtils.formatList(Arrays.asList(name, dot, time), Component.literal(" ")));
+                Component dot = TextUtils.literal(".".repeat(Math.max(0, (maxW + 40 - w) / 2))).withStyle(ChatFormatting.DARK_GRAY);
+                list.add(TextUtils.concat(Arrays.asList(name, dot, time), TextUtils.literal(" ")));
             }
         }
         renderTooltip(ctx, list);
@@ -104,10 +103,8 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         protected void onRender(ScreenRenderingContext ctx) {
             Component text = null;
             List<MobEffectInstance> effects = activeEffectsProperty.getVal();
-            if (effects == null) {
-                text = Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS);
-            } else if (effects.isEmpty()) {
-                text = Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS);
+            if (effects == null || effects.isEmpty()) {
+                text = TextUtils.translate(Lang.TEXT_EMPTY_WITH_BRACKETS);
             }
             updatePercent(text != null ? 0 : 1);
             super.onRender(ctx);

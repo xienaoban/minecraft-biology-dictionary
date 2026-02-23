@@ -4,74 +4,49 @@ import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
-public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
-    private static final int FRIENDLY_EXP_LVL_REQUIRED = 0;
-    private static final int FRIENDLY_EXP_LVL_COST = 1;
-    private static final int NEUTRAL_EXP_LVL_REQUIRED = 10;
-    private static final int NEUTRAL_EXP_LVL_COST = 3;
-    private static final int ENEMY_EXP_LVL_REQUIRED = 20;
-    private static final int ENEMY_EXP_LVL_COST_MIN = 5;
-    private static final float ENEMY_EXP_LVL_COST_FACTOR = 0.25F;
+import java.util.List;
 
-    public static int experienceLevelsRequired(Mob entity) {
-        if (entity instanceof Enemy) {
-            return ENEMY_EXP_LVL_REQUIRED;
-        } else if (entity instanceof NeutralMob) {
-            return NEUTRAL_EXP_LVL_REQUIRED;
-        } else {
-            return FRIENDLY_EXP_LVL_REQUIRED;
+public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> {
+    public static final Meta<MobSetNoAiSkill> META = new Meta<>() {
+        @Override
+        public MobSetNoAiSkill create(FriendlyByteBuf buf) {
+            return new MobSetNoAiSkill(buf.readBoolean());
         }
-    }
 
-    public static int experienceLevelsCost(Mob entity) {
-        if (entity instanceof Enemy) {
-            return Math.max(ENEMY_EXP_LVL_COST_MIN, (int) (ENEMY_EXP_LVL_COST_FACTOR * entity.getMaxHealth()));
-        } else if (entity instanceof NeutralMob) {
-            return NEUTRAL_EXP_LVL_COST;
-        } else {
-            return FRIENDLY_EXP_LVL_COST;
+        @Override
+        public SkillCost getDefaultCost() {
+            // Simulate the eyes of Medusa
+            return new SkillCost(0, 5, 0, 20, List.of(new ItemStack(Items.SPIDER_EYE, 2)));
         }
-    }
 
-    @Environment(EnvType.CLIENT)
-    public static boolean activate(Mob entity, boolean noAi) {
-        return PlayerSkills.sendEntityTargetedSkill(entity, noAi);
-    }
-
-    private static void check(Player player, Mob entity) {
-        int lvlRequired = experienceLevelsRequired(entity);
-        int lvlCost = experienceLevelsCost(entity);
-        Permissions.checkPlayerCreativeOrExperienceLevel(player, Math.max(lvlRequired, lvlCost));
-    }
+        @Override
+        public String shortName() {
+            return "set_no_ai";
+        }
+    };
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Mob entity, Object... args) {
-        boolean noAi = (boolean) args[0];
-        check(player, entity);
-        return ByteTag.valueOf(noAi);
+    public void write(FriendlyByteBuf buf) {
+        buf.writeBoolean(noAi);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Mob entity, Tag args) {
-        boolean noAi = args.asBoolean().orElseThrow();
-        check(player, entity);
+    public void serverDo(MinecraftServer server, ServerPlayer player, Mob entity) {
         CompoundTag nbt = VanillaEntityProperties.OfMob.createNoAiProperty().withVal(noAi).toTag();
 
         if (noAi) {
@@ -87,7 +62,43 @@ public class MobSetNoAiSkill implements EntityTargetedSkill<Mob> {
             VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(noAi).writeTo(nbt);
         }
 
-        PlayerSkills.giveExperienceLevelsIfNotCreative(player, -experienceLevelsCost(entity));
         EntityUtils.mergeNbt(entity, nbt);
+    }
+
+    @Override
+    public SkillCost getRealCost(Mob entity) {
+        SkillCost base = EntityTargetedSkill.super.getRealCost(entity);
+        int expPoints, expLevels, expPointRequired, expLevelRequired;
+        List<ItemStack> items;
+
+        if (entity instanceof Enemy) {
+            expPoints = base.getExperiencePoints();
+            expLevels = base.getExperienceLevels();
+            expPointRequired = base.getExperiencePointRequired();
+            expLevelRequired = base.getExperienceLevelRequired() * Math.max(1, (int) entity.getMaxHealth() / 20);
+            items = base.getItems();
+        } else if (entity instanceof NeutralMob) {
+            expPoints = base.getExperiencePoints() / 2;
+            expLevels = base.getExperienceLevels() / 2;
+            expPointRequired = base.getExperiencePointRequired() / 2;
+            expLevelRequired = base.getExperienceLevelRequired() / 2;
+            items = base.getItems();
+        } else {
+            expPoints = base.getExperiencePoints() / 4;
+            expLevels = base.getExperienceLevels() / 4;
+            expPointRequired = base.getExperiencePointRequired() / 4;
+            expLevelRequired = 0;
+            items = base.getItems();
+        }
+
+        if (!noAi) {
+            expPoints /= 2;
+            expLevels /= 2;
+            expPointRequired /= 2;
+            expLevelRequired /= 2;
+            items = List.of();
+        }
+
+        return new SkillCost(expPoints, expLevels, expPointRequired, expLevelRequired, items);
     }
 }

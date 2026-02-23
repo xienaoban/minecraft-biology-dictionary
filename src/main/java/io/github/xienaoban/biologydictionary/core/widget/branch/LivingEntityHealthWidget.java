@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -10,7 +11,6 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 
 @Environment(EnvType.CLIENT)
@@ -43,7 +43,7 @@ public final class LivingEntityHealthWidget extends EntityPropertyStandardWidget
         protected void onRender(ScreenRenderingContext ctx) {
             updatePercent(e().getHealth() / e().getMaxHealth());
             super.onRender(ctx);
-            renderInnerText(ctx, Component.literal(((int) e().getHealth()) + "/" + ((int) e().getMaxHealth())));
+            renderInnerText(ctx, TextUtils.literal(((int) e().getHealth()) + "/" + ((int) e().getMaxHealth())));
         }
     }
 }

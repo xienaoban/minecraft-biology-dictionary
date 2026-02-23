@@ -3,7 +3,7 @@
 [**English**](README.md) | **简体中文**
 
 [![Download - Modrinth](https://img.shields.io/badge/下载-Modrinth-%2343b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
-[![Download - Curseforge](https://img.shields.io/badge/下载-CurseForge-%23ff6b6b?style=for-the-badge&logo=curseforge)](https://legacy.curseforge.com/minecraft/mc-mods/biology-dictionary)
+[![Download - Curseforge](https://img.shields.io/badge/下载-CurseForge-%23ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
 ![License](https://img.shields.io/badge/License-LGPL3-blue?style=for-the-badge)
 
 ![Minecraft 1.21.11](https://img.shields.io/badge/Minecraft-1.21.11-brightgreen?style=for-the-badge)
@@ -61,6 +61,8 @@
 - 生存模式下，可以在流浪商人那买到，随着游戏时间推进，售卖概率从 100% 逐步下降，最终稳定在 20%
   > 主打一个刚开局没绿宝石时到处刷，玩到后面不缺绿宝石了就刷不到了嘿嘿
 
+以及可以在设置里禁止流浪商人刷此交易，此时生存模式将无任何方式获得此书，需要整合包作者自行添加配方。
+
 #### 如何打开界面
 
 - 创造模式下，直接使用热键（默认 `~`）即可打开生物辞典界面
@@ -75,6 +77,8 @@
 - 瞄准生物时，打开该生物的详情信息页
 - 瞄准蜂箱时，打开蜂箱页面
 - 瞄准其他方块或空气时，打开主界面
+- 瞄准正上方时，无视是否指向生物，强制打开主界面
+- 瞄准正下方时，打开玩家自己的详情信息界面
 
 ### 支持的所有属性展示或修改
 

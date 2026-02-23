@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
@@ -10,7 +11,6 @@ import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
 import java.util.List;
@@ -33,6 +33,7 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
 
     private void initBookmarks() {
         addBookmarkFromLast(new OpenBdAboutScreenBookmark());
+        addBookmarkFromLast(new OpenBdConfigScreenBookmark());
         addBookmark(new OpenBdHomeScreenBookmark());
     }
 
@@ -47,7 +48,7 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
 
         if (!player.isWithinEntityInteractionRange(entity, CLOSE_SCREEN_DISTANCE)) {
             HighlightManager.highlightEntity(entity, 4 * 20);
-            ClientUtils.sendCenteredMessage(Component.translatable(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
+            ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
             onClose();
         }
 

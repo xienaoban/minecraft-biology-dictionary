@@ -3,36 +3,54 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-public class EntitySetPortalCooldownSkill implements EntityTargetedSkill<Entity> {
+public record EntitySetPortalCooldownSkill(int cooldown) implements EntityTargetedSkill<Entity> {
+    public static final Meta<EntitySetPortalCooldownSkill> META = new Meta<>() {
+        @Override
+        public EntitySetPortalCooldownSkill create(FriendlyByteBuf buf) {
+            return new EntitySetPortalCooldownSkill(buf.readInt());
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.ofExpPoints(1);
+        }
+
+        @Override
+        public String shortName() {
+            return "set_portal_cooldown";
+        }
+    };
+
     public static final int ENTITY_PORTAL_COOLDOWN_INFINITY = 303;
 
     @Environment(EnvType.CLIENT)
-    public static boolean activate(Entity entity, int cooldown) {
-        return PlayerSkills.sendEntityTargetedSkill(entity, cooldown);
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeInt(cooldown);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
-        int cooldown = (int) args[0];
+    public void clientAdditionalCheck(LocalPlayer player, Entity entity) {
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
-        return IntTag.valueOf(cooldown);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
-        int cooldown = args.asInt().orElseThrow();
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player, Entity entity) {
         VanillaEntityProperties.OfEntity.createPortalCooldownProperty().withVal(cooldown).setTo(entity);
     }
 }

@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -11,7 +12,6 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
@@ -45,9 +45,9 @@ public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> 
             updatePercent((float) e().getAirSupply() / (float) e().getMaxAirSupply());
             super.onRender(ctx);
             if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(e().getAirSupply() + "t/" + e().getMaxAirSupply() + "t"));
+                renderInnerText(ctx, TextUtils.literal(e().getAirSupply() + "t/" + e().getMaxAirSupply() + "t"));
             } else {
-                renderInnerText(ctx, Component.literal((e().getAirSupply() / ClientUtils.getClientTickCountPerSecond()) + "s/" + (e().getMaxAirSupply() / ClientUtils.getClientTickCountPerSecond()) + "s"));
+                renderInnerText(ctx, TextUtils.literal((e().getAirSupply() / ClientUtils.getClientTickCountPerSecond()) + "s/" + (e().getMaxAirSupply() / ClientUtils.getClientTickCountPerSecond()) + "s"));
             }
         }
     }

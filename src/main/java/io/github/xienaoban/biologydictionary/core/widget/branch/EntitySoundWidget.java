@@ -2,10 +2,13 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.BooleanProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetSoundSkill;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -13,7 +16,11 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity> {
@@ -53,7 +60,7 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 boolean newSilent = !isSilent();
-                if (EntitySetSoundSkill.activate(e(), newSilent)) {
+                if (BiologySkills.activate(e(), new EntitySetSoundSkill(newSilent))) {
                     silentProperty.setVal(newSilent);
                 }
             }
@@ -68,12 +75,13 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_SOUND_SWITCH),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_SWITCH_DESC),
-                    tooltipEmpty(),
-                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, EntitySetSoundSkill.experiencePointsCost(e()))
-            );
+            SkillCost cost = new EntitySetSoundSkill(!isSilent()).getRealCost(e());
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_SOUND_SWITCH));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_SOUND_SWITCH_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.toTooltipText());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

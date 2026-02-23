@@ -3,10 +3,11 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -17,7 +18,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -36,7 +36,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private float entityRotateX, entityRotateY;
 
     public BdHomeScreen() {
-        super(Component.translatable(Lang.BIOLOGY_DICTIONARY_TITLE));
+        super(TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE));
         initBookmarks();
         initEntityWidgets();
     }
@@ -82,7 +82,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
     private final class AllEntitiesBookmark extends Bookmark {
         public AllEntitiesBookmark() {
-            super(Component.translatable(Lang.BOOKMARK_ALL));
+            super(TextUtils.translate(Lang.BOOKMARK_ALL));
         }
 
         @Override
@@ -126,9 +126,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         private final EntityManager.Tag tag;
 
         public TagCatalog(int depth, EntityManager.Tag tag) {
-            super(depth, ComponentUtils.formatList(
-                    Arrays.asList(tag.getText(), Component.literal("(" + tag.getEntities().size() + ")")),
-                    Component.literal(" ")));
+            super(depth, TextUtils.concat(
+                    Arrays.asList(tag.getText(), TextUtils.literal("(" + tag.getEntities().size() + ")")),
+                    TextUtils.literal(" ")));
             this.tag = tag;
         }
 
@@ -188,16 +188,13 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 } else {
                     return true;
                 }
-                HighlightEntitiesSkill.activate(EntityUtils.getEntityType(entity), distance);
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
-                onClose();
+                if (BiologySkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance))) {
+                    onClose();
+                }
             } else {
                 if (isMouseLeft(code)) {
-                    if (!PlayerUtils.isCreative(player)) {
-                        sendScreenMessage(Component.translatable(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
-                    } else {
-                        GetSpawnEggSkill.activate(EntityUtils.getEntityType(entity));
-                    }
+                    BiologySkills.activate(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)));
                 }
                 return true;
             }
@@ -246,20 +243,24 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
             List<Component> tooltips;
             if (mouseY < BUTTONS_CUT) {
-                tooltips = Arrays.asList(
-                        tooltipTitle(Lang.WIDGET_ENTITY_HIGHLIGHT),
-                        Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC, HighlightEntitiesSkill.NEAR_RADIUS, HighlightEntitiesSkill.NEAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
-                        Component.translatable(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS, HighlightEntitiesSkill.FAR_EXPERIENCE_POINTS_COST).withStyle(ChatFormatting.GRAY),
-                        Component.empty(),
-                        Component.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY)
-                );
+                tooltips = new ArrayList<>();
+                tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_HIGHLIGHT));
+                tooltips.add(TextUtils.empty());
+                tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC, HighlightEntitiesSkill.NEAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.NEAR_RADIUS).getRealCost().toTooltipText());
+                tooltips.add(TextUtils.empty());
+                tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.FAR_RADIUS).getRealCost().toTooltipText());
+                tooltips.add(TextUtils.empty());
+                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY));
             } else {
-                tooltips = Arrays.asList(
-                        tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG),
-                        tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC),
-                        Component.empty(),
-                        Component.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY)
-                );
+                tooltips = new ArrayList<>();
+                tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG));
+                tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC));
+                tooltips.add(TextUtils.empty());
+                tooltips.addAll(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)).getRealCost().toTooltipText());
+                tooltips.add(TextUtils.empty());
+                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY));
             }
 
             ctx.renderComponentTooltipCentered(tooltips, 0.5F, midX, box.getBottom() + 1);

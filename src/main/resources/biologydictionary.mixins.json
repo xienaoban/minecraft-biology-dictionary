@@ -1,32 +1,42 @@
 {
-    "required": true,
-    "minVersion": "0.8",
-    "package": "io.github.xienaoban.biologydictionary.mixin",
-    "compatibilityLevel": "JAVA_21",
-    "mixins": [
-        "AbstractHorseMixin",
-        "AgeableMobMixin",
-        "AnimalIMixin",
-        "ArmadilloStateIMixin",
-        "CustomDataIMixin",
-        "EntityIMixin",
-        "EntityMixin",
-        "HorseIMixin",
-        "MobEffectInstanceIMixin",
-        "MobIMixin",
-        "ServerPlayerIMixin",
-        "TemptGoalIMixin",
-        "WanderingTraderMixin"
-    ],
-    "client": [
-        "ItemInHandRendererMixin",
-        "LevelRendererMixin",
-        "MinecraftMixin"
-    ],
-    "injectors": {
-        "defaultRequire": 1
-    },
-    "overwrites": {
-        "requireAnnotations": true
-    }
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.xienaoban.biologydictionary.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "AbstractHorseMixin",
+    "AgeableMobMixin",
+    "AnimalIMixin",
+    "AnimalMixin",
+    "ArmadilloStateIMixin",
+    "CompositeEntryBaseIMixin",
+    "CustomDataIMixin",
+    "EntityIMixin",
+    "EntityMixin",
+    "HorseIMixin",
+    "LootItemIMixin",
+    "LootPoolEntryContainerIMixin",
+    "LootPoolIMixin",
+    "LootPoolSingletonContainerIMixin",
+    "LootTableIMixin",
+    "MobEffectInstanceIMixin",
+    "MobIMixin",
+    "NestedLootTableIMixin",
+    "ServerPlayerIMixin",
+    "SetItemCountFunctionIMixin",
+    "TagEntryIMixin",
+    "TemptGoalIMixin",
+    "WanderingTraderMixin"
+  ],
+  "client": [
+    "ItemInHandRendererMixin",
+    "LevelRendererMixin",
+    "MinecraftMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
 }

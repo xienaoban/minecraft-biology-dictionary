@@ -55,6 +55,14 @@ public final class InventoryUtils {
     }
 
     private static BiPredicate<ItemStack, ItemStack> defaultCmp() {
+        return ItemStack::isSameItemSameComponents;
+    }
+
+    private static BiPredicate<ItemStack, ItemStack> fullCmp() {
+        return ItemStack::matches;
+    }
+
+    private static BiPredicate<ItemStack, ItemStack> fastCmp() {
         return (is1, is2) -> Objects.equals(is1.getItem(), is2.getItem());
     }
 }

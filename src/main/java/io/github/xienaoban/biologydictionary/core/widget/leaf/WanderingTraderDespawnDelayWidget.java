@@ -2,10 +2,13 @@ package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.WanderingTraderRetainSkill;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -18,6 +21,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWidget<WanderingTrader> {
     public static final Factory<WanderingTrader> FACTORY = WanderingTraderDespawnDelayWidget::new;
@@ -72,7 +78,7 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
             if (delayI == null) {
                 updatePercent(0);
                 super.onRender(ctx);
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_EMPTY_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_EMPTY_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
                 return;
             }
 
@@ -80,13 +86,13 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
             updatePercent((float) delay / MAX_DESPAWN_DELAY);
             super.onRender(ctx);
             if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(delay + "t/" + MAX_DESPAWN_DELAY + "t"));
+                renderInnerText(ctx, TextUtils.literal(delay + "t/" + MAX_DESPAWN_DELAY + "t"));
             } else if (delay == 0) {
-                renderInnerText(ctx, Component.literal("∞/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
+                renderInnerText(ctx, TextUtils.literal("∞/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
             } else if (delay < 3 * 60 * 20) {
-                renderInnerText(ctx, Component.literal((delay / 20) + "s/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
+                renderInnerText(ctx, TextUtils.literal((delay / 20) + "s/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
             } else {
-                renderInnerText(ctx, Component.literal((delay / 20 / 60) + "min/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
+                renderInnerText(ctx, TextUtils.literal((delay / 20 / 60) + "min/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
             }
         }
     }
@@ -101,7 +107,7 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                if (WanderingTraderRetainSkill.activate(e())) {
+                if (BiologySkills.activate(e(), new WanderingTraderRetainSkill())) {
                     despawnDelayProperty.setVal(despawnDelayProperty.getVal() + WanderingTraderRetainSkill.STAY_TICKS);
                 }
             }
@@ -116,10 +122,13 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN_DESC)
-            );
+            SkillCost cost = new WanderingTraderRetainSkill().getRealCost(e());
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.toTooltipText());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

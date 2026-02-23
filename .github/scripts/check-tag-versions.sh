@@ -64,11 +64,25 @@ elif [ -n "$FORGE_VERSION" ]; then
   LOADER_TYPE="forge"
 fi
 
+# Determine release type
+# Check for beta first (since 'beta' contains 'alpha' as substring if we're not careful)
+# Convert to lowercase for case-insensitive matching
+TAG_LOWER=$(echo "$TAG_NAME" | tr '[:upper:]' '[:lower:]')
+if echo "$TAG_LOWER" | grep -q "beta"; then
+  RELEASE_TYPE="beta"
+elif echo "$TAG_LOWER" | grep -q "alpha"; then
+  RELEASE_TYPE="alpha"
+else
+  RELEASE_TYPE="release"
+fi
+echo "Release type: $RELEASE_TYPE"
+
 # Export to GITHUB_ENV if in GitHub Actions
 if [ -n "$GITHUB_ENV" ]; then
   echo "MOD_VERSION=$MOD_VERSION" >> "$GITHUB_ENV"
   echo "MC_VERSION=$MC_VERSION" >> "$GITHUB_ENV"
   echo "LOADER_TYPE=$LOADER_TYPE" >> "$GITHUB_ENV"
+  echo "RELEASE_TYPE=$RELEASE_TYPE" >> "$GITHUB_ENV"
 fi
 
 echo "All tag version checks passed!"

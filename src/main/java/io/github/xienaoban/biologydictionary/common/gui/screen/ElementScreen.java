@@ -25,8 +25,8 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     @Override
-    protected void init() {
-        super.init();
+    protected void resize() {
+        super.resize();
         updateBoxSizes();
     }
 
@@ -126,8 +126,8 @@ public abstract class ElementScreen extends CommonScreen {
     protected abstract void resizeBox(int width, int height);
 
     private void showExceptionMessageAndCloseScreen(Throwable throwable) {
-        BiologyDictionaryClient.printThrowableToLoggerAndGame(throwable);
         onClose();
+        BiologyDictionaryClient.printThrowableToLoggerAndGame(throwable);
     }
 
     private final class RootScreenElement extends ScreenElement {

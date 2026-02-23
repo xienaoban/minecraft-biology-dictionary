@@ -4,7 +4,8 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.common.util.StringUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
@@ -16,7 +17,6 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.phys.Vec3;
 
@@ -90,13 +90,13 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
             if (cachedDistanceToJobSite == NO_DIS) {
                 updatePercent(0);
                 super.onRender(ctx);
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NONE_WITH_BRACKETS));
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS));
                 return;
             }
 
             updatePercent(cachedDisLog / MAX_DIS_LOG);
             super.onRender(ctx);
-            renderInnerText(ctx, Component.literal(Misc.format4Digits(cachedDistanceToJobSite) + 'm'));
+            renderInnerText(ctx, TextUtils.literal(StringUtils.format4Digits(cachedDistanceToJobSite) + 'm'));
         }
     }
 
@@ -110,7 +110,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
             if (isMouseLeft(code)) {
                 GlobalPos currJobSitePos = jobSiteProperty.getVal();
                 if (currJobSitePos == null) {
-                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NO_BLOCK_TO_LOCATE));
+                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_LOCATE));
                     return true;
                 }
                 HighlightManager.highlightBlock(currJobSitePos.pos(), HighlightEntitiesSkill.BLOCK_TICKS);

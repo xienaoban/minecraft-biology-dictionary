@@ -3,19 +3,38 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
-public class EntitySetSoundSkill implements EntityTargetedSkill<Entity> {
+public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill<Entity> {
+    public static final Meta<EntitySetSoundSkill> META = new Meta<>() {
+        @Override
+        public EntitySetSoundSkill create(FriendlyByteBuf buf) {
+            return new EntitySetSoundSkill(buf.readBoolean());
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            // 辣条把嗓子辣哑了
+            return SkillCost.ofItems(new ItemStack(Items.ROTTEN_FLESH));
+        }
+
+        @Override
+        public String shortName() {
+            return "set_sound";
+        }
+    };
+
     private static final int FRIENDLY_EXP_PT_COST = 4;
     private static final int NEUTRAL_EXP_PT_COST = 16;
     private static final int ENEMY_EXP_PT_COST = 64;
@@ -31,25 +50,24 @@ public class EntitySetSoundSkill implements EntityTargetedSkill<Entity> {
     }
 
     @Environment(EnvType.CLIENT)
-    public static boolean activate(Entity entity, boolean silent) {
-        return PlayerSkills.sendEntityTargetedSkill(entity, silent);
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeBoolean(silent);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
-        boolean silent = (boolean) args[0];
+    public void clientAdditionalCheck(LocalPlayer player, Entity entity) {
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, experiencePointsCost(entity));
-        return ByteTag.valueOf(silent);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
-        boolean silent = args.asBoolean().orElseThrow();
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, experiencePointsCost(entity));
-        PlayerSkills.giveExperiencePointsIfNotCreative(player, -experiencePointsCost(entity));
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player, Entity entity) {
         VanillaEntityProperties.OfEntity.createSilentProperty().withVal(silent).setTo(entity);
     }
 }

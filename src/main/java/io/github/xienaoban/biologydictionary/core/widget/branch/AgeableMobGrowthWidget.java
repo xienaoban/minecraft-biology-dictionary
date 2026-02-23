@@ -3,10 +3,13 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.AgeableMobSetForcedAgeSkill;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -17,6 +20,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<AgeableMob> {
@@ -80,12 +86,12 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                 }
                 super.onRender(ctx);
                 if (ctx.isDebug()) {
-                    renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                    renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 } else {
                     if (isAdultClient()) {
-                        renderInnerText(ctx, Component.translatable(Lang.TEXT_ADULT));
+                        renderInnerText(ctx, TextUtils.translate(Lang.TEXT_ADULT));
                     } else {
-                        renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                        renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                     }
                 }
                 return;
@@ -95,15 +101,15 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
             updatePercent(forcedAge < ADULT_MIN_AGE ? 0F : (1F - (float) age / BABY_MIN_AGE));
             super.onRender(ctx);
             if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(age + "t/" + ADULT_MIN_AGE + "t"));
+                renderInnerText(ctx, TextUtils.literal(age + "t/" + ADULT_MIN_AGE + "t"));
             } else if (!isAdultClient()) {
                 if (forcedAge < ADULT_MIN_AGE) {
-                    renderInnerText(ctx, Component.translatable(Lang.TEXT_ALWAYS_BABY));
+                    renderInnerText(ctx, TextUtils.translate(Lang.TEXT_ALWAYS_BABY));
                 } else {
-                    renderInnerText(ctx, Component.literal(((age - BABY_MIN_AGE) / 20) + "s/" + (-BABY_MIN_AGE / 20 / 60) + "m"));
+                    renderInnerText(ctx, TextUtils.literal(((age - BABY_MIN_AGE) / 20) + "s/" + (-BABY_MIN_AGE / 20 / 60) + "m"));
                 }
             } else {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_ADULT));
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_ADULT));
             }
         }
     }
@@ -133,7 +139,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                     newForcedAge = ADULT_MIN_AGE;
                 }
 
-                if (AgeableMobSetForcedAgeSkill.activate(e(), newForcedAge, BABY_MIN_AGE)) {
+                if (BiologySkills.activate(e(), new AgeableMobSetForcedAgeSkill(newForcedAge, BABY_MIN_AGE))) {
                     forcedAgeProperty.setVal(newForcedAge);
                     ageProperty.setVal(BABY_MIN_AGE);
                 }
@@ -159,12 +165,15 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_GROWTH_LOCK),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_GROWTH_LOCK_DESC),
-                    tooltipEmpty(),
-                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, AgeableMobSetForcedAgeSkill.EXPERIENCE_POINTS_COST)
-            );
+            Integer forcedAge = forcedAgeProperty.getVal();
+            int targetForcedAge = (forcedAge != null && forcedAge >= ADULT_MIN_AGE) ? BABY_MIN_AGE : ADULT_MIN_AGE;
+            SkillCost cost = new AgeableMobSetForcedAgeSkill(targetForcedAge, BABY_MIN_AGE).getRealCost(e());
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_GROWTH_LOCK));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_GROWTH_LOCK_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.toTooltipText());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

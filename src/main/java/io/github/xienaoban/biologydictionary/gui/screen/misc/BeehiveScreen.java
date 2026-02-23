@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.ChatFormatting;
@@ -132,15 +133,15 @@ public class BeehiveScreen extends ElementScreen {
             if (ctx.getMouseX() > x - 10 && ctx.getMouseX() < x + 10 && ctx.getMouseY() > beeTop && ctx.getMouseY() < y) {
                 List<Component> texts = Arrays.asList(
                         bee.entity.getName(),
-                        Component.translatable(Lang.TEXT_BEE_STATE_IN_BEEHIVE, Component.translatable(bee.entity.hasNectar() ? Lang.TEXT_BEE_PRODUCING_NECTAR : Lang.TEXT_BEE_RESTING)).withStyle(ChatFormatting.GRAY),
-                        Component.translatable(Lang.TEXT_TIME_IN_BEEHIVE, (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s").withStyle(ChatFormatting.GRAY)
+                        TextUtils.translate(Lang.TEXT_BEE_STATE_IN_BEEHIVE, TextUtils.translate(bee.entity.hasNectar() ? Lang.TEXT_BEE_PRODUCING_NECTAR : Lang.TEXT_BEE_RESTING)).withStyle(ChatFormatting.GRAY),
+                        TextUtils.translate(Lang.TEXT_TIME_IN_BEEHIVE, (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s").withStyle(ChatFormatting.GRAY)
                 );
                 ctx.renderComponentTooltipCenteredForNextFrameVanilla(texts, x, y + 18F);
             }
         }
-        ctx.renderText(Component.literal(honeyCnt + "/" + MAX_HONEY_CNT), color, ctx.getZ(), LATTICES[5][0] + lw + 16 - 8.5F, LATTICES[5][1] + lh + 8);
-        ctx.renderText(Component.literal(beeCnt + "/" + MAX_BEE_CNT), color, ctx.getZ(), LATTICES[6][0] + lw + 16 - 8.5F, LATTICES[6][1] + lh + 8);
-        ctx.renderCenteredText(Component.translatable(Lang.TEXT_HONEY), color, ctx.getZ(), LATTICES[5][0] + lw + 16.5F, LATTICES[5][1] + lh + 16);
+        ctx.renderText(TextUtils.literal(honeyCnt + "/" + MAX_HONEY_CNT), color, ctx.getZ(), LATTICES[5][0] + lw + 16 - 8.5F, LATTICES[5][1] + lh + 8);
+        ctx.renderText(TextUtils.literal(beeCnt + "/" + MAX_BEE_CNT), color, ctx.getZ(), LATTICES[6][0] + lw + 16 - 8.5F, LATTICES[6][1] + lh + 8);
+        ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_HONEY), color, ctx.getZ(), LATTICES[5][0] + lw + 16.5F, LATTICES[5][1] + lh + 16);
         ctx.renderCenteredText(EntityType.BEE.getDescription(), color, ctx.getZ(), LATTICES[6][0] + lw + 16.5F, LATTICES[6][1] + lh + 16);
         ctx.getGuiGraphics().pose().popMatrix();
     }

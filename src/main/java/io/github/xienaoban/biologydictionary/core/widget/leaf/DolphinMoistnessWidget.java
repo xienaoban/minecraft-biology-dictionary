@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
@@ -10,7 +11,6 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.dolphin.Dolphin;
 
 public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin> {
@@ -66,7 +66,7 @@ public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin
             if (mL == null) {
                 updatePercent(0);
                 super.onRender(ctx);
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 return;
             }
             int m = mL;
@@ -74,9 +74,9 @@ public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin
             updatePercent((float) m / mMax);
             super.onRender(ctx);
             if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(m + "t/" + mMax + "t"));
+                renderInnerText(ctx, TextUtils.literal(m + "t/" + mMax + "t"));
             } else {
-                renderInnerText(ctx, Component.literal((m / 20) + "s/" + (mMax / 20) + "s"));
+                renderInnerText(ctx, TextUtils.literal((m / 20) + "s/" + (mMax / 20) + "s"));
             }
         }
     }

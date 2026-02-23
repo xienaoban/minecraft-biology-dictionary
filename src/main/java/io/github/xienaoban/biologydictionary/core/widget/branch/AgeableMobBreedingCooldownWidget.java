@@ -3,10 +3,13 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.AgeableMobSetForcedAgeSkill;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -18,6 +21,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStandardWidget<AgeableMob> {
@@ -80,12 +86,12 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                 updatePercent(0);
                 super.onRender(ctx);
                 if (ctx.isDebug()) {
-                    renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                    renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 } else {
                     if (isAdultClient()) {
-                        renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                        renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                     } else {
-                        renderInnerText(ctx, Component.translatable(Lang.TEXT_BABY));
+                        renderInnerText(ctx, TextUtils.translate(Lang.TEXT_BABY));
                     }
                 }
                 return;
@@ -95,15 +101,15 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
             updatePercent(forcedAge > BREED_COOLDOWN_OFF ? 1 : ((float) age / BREED_COOLDOWN_MAX));
             super.onRender(ctx);
             if (ctx.isDebug()) {
-                renderInnerText(ctx, Component.literal(age + "t/" + BREED_COOLDOWN_MAX + "t"));
+                renderInnerText(ctx, TextUtils.literal(age + "t/" + BREED_COOLDOWN_MAX + "t"));
             } else if (isAdultClient()) {
                 if (forcedAge > BREED_COOLDOWN_OFF) {
-                    renderInnerText(ctx, Component.translatable(Lang.TEXT_NEVER_BREED));
+                    renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NEVER_BREED));
                 } else {
-                    renderInnerText(ctx, Component.literal((age / 20) + "s/" + (BREED_COOLDOWN_MAX / 20 / 60) + "m"));
+                    renderInnerText(ctx, TextUtils.literal((age / 20) + "s/" + (BREED_COOLDOWN_MAX / 20 / 60) + "m"));
                 }
             } else {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_BABY));
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_BABY));
             }
         }
     }
@@ -133,7 +139,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                     newForcedAge = BREED_COOLDOWN_OFF;
                 }
 
-                if (AgeableMobSetForcedAgeSkill.activate(e(), newForcedAge, BREED_COOLDOWN_MAX)) {
+                if (BiologySkills.activate(e(), new AgeableMobSetForcedAgeSkill(newForcedAge, BREED_COOLDOWN_MAX))) {
                     forcedAgeProperty.setVal(newForcedAge);
                     ageProperty.setVal(BREED_COOLDOWN_MAX);
                 }
@@ -159,12 +165,15 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK_DESC),
-                    tooltipEmpty(),
-                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, AgeableMobSetForcedAgeSkill.EXPERIENCE_POINTS_COST)
-            );
+            Integer forcedAge = forcedAgeProperty.getVal();
+            int targetForcedAge = (forcedAge != null && forcedAge == BREED_COOLDOWN_OFF) ? BREED_COOLDOWN_MAX : BREED_COOLDOWN_OFF;
+            SkillCost cost = new AgeableMobSetForcedAgeSkill(targetForcedAge, BREED_COOLDOWN_MAX).getRealCost(e());
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.toTooltipText());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

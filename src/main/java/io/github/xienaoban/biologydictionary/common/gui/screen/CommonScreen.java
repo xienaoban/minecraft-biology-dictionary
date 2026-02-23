@@ -1,12 +1,15 @@
 package io.github.xienaoban.biologydictionary.common.gui.screen;
 
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScaleRAII;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -25,17 +28,43 @@ public abstract class CommonScreen extends Screen {
 
     protected final ScreenRenderingContext screenRenderingContext;
 
+    /**
+     * Screen scale factor for rendering the screen.
+     * <p>
+     * Relationship between GUI Scale and Screen Scale:
+     * Actual Screen Size = Default Screen Size * GUI Scale * Screen Scale
+     * <p>
+     * For example: scale=2.0 makes UI elements appear twice as large,
+     * while scale=0.5 makes them appear half as large.
+     * </p>
+     */
+    private float screenScale, reciprocalScreenScale;
+
     protected CommonScreen(Component component) {
         super(component);
-        screenRenderingContext = new ScreenRenderingContext(this);
+        this.screenRenderingContext = new ScreenRenderingContext(this);
     }
 
     @Override
+    protected final void init() {
+        screenScale = ConfigsManager.getClient().getScreenScale();
+        reciprocalScreenScale = 1F / screenScale;
+        super.width = Mth.ceil(super.width * reciprocalScreenScale);
+        super.height = Mth.ceil(super.height * reciprocalScreenScale);
+        super.init();
+        resize();
+    }
+
+    protected void resize() {}
+
+    @Override
     public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
-        screenRenderingContext.update(guiGraphics, mouseX, mouseY, tickDelta);
-        beforeRender(screenRenderingContext);
-        render(screenRenderingContext);
-        afterRender(screenRenderingContext);
+        screenRenderingContext.update(guiGraphics, screenScale, reciprocalScreenScale, mouseX, mouseY, tickDelta);
+        try (ScaleRAII ignored = screenRenderingContext.scaleOnce(screenScale)) {
+            beforeRender(screenRenderingContext);
+            render(screenRenderingContext);
+            afterRender(screenRenderingContext);
+        }
     }
 
     @Override

@@ -3,47 +3,48 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
-public class AgeableMobSetForcedAgeSkill implements EntityTargetedSkill<AgeableMob> {
-    public static final int EXPERIENCE_POINTS_COST = 8;
+public record AgeableMobSetForcedAgeSkill(int forcedAge, int age) implements EntityTargetedSkill<AgeableMob> {
+    public static final Meta<AgeableMobSetForcedAgeSkill> META = new Meta<>() {
+        @Override
+        public AgeableMobSetForcedAgeSkill create(FriendlyByteBuf buf) {
+            return new AgeableMobSetForcedAgeSkill(buf.readInt(), buf.readInt());
+        }
 
-    @Environment(EnvType.CLIENT)
-    public static boolean activate(AgeableMob entity, int forcedAge, int age) {
-        return PlayerSkills.sendEntityTargetedSkill(entity, forcedAge, age);
-    }
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.ofItems(new ItemStack(Items.DANDELION), new ItemStack(Items.GOLD_NUGGET, 8));
+        }
+
+        @Override
+        public String shortName() {
+            return "set_forced_age";
+        }
+    };
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, AgeableMob entity, Object... args) {
-        int forcedAge = (int) args[0];
-        int age = (int) args[1];
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
-        return new IntArrayTag(new int[] { forcedAge, age });
+    public void write(FriendlyByteBuf buf) {
+        buf.writeInt(forcedAge);
+        buf.writeInt(age);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, AgeableMob entity, Tag args) {
-        int[] t = args.asIntArray().orElseThrow();
-        int forcedAge = t[0];
-        int age = t[1];
-        Permissions.checkPlayerCreativeOrExperiencePoints(player, EXPERIENCE_POINTS_COST);
-
+    public void serverDo(MinecraftServer server, ServerPlayer player, AgeableMob entity) {
         CompoundTag nbt = new CompoundTag();
         VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty().withVal(forcedAge).writeTo(nbt);
         VanillaEntityProperties.OfAgeableMob.createAgeProperty().withVal(age).writeTo(nbt);
-
-        PlayerSkills.giveExperiencePointsIfNotCreative(player, -EXPERIENCE_POINTS_COST);
         EntityUtils.mergeNbt(entity, nbt);
     }
 }
