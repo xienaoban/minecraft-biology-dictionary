@@ -33,6 +33,7 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
 
     private void initBookmarks() {
         addBookmarkFromLast(new OpenBdAboutScreenBookmark());
+        addBookmarkFromLast(new OpenBdConfigScreenBookmark());
         addBookmark(new OpenBdHomeScreenBookmark());
     }
 

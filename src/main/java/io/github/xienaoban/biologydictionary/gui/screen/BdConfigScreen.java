@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.config.ClothConfigScreenProvider;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
@@ -19,10 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Environment(EnvType.CLIENT)
 public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
@@ -41,8 +39,10 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
 
         widgets.add(new DescriptionWidget(1, Page.COLUMNS, TextUtils.translate(Lang.TEXT_LOCAL_CONFIGS_DESC)));
         widgets.add(new OpenLocalConfigsScreenWidget());
+        widgets.add(new ReloadLocalConfigsScreenWidget());
 
         widgets.add(new PlaceHolderWidget(1, Page.COLUMNS));
+        widgets.add(new TurnPageTriggerWidget());
         widgets.add(new DescriptionWidget(1, Page.COLUMNS, TextUtils.translate(Lang.TEXT_SERVER_CONFIGS_DESC)));
         Configs.ServerConfigs serverConfigs = ConfigsManager.getServer();
         ConfigsManager.forEachConfigEntryInCategory(serverConfigs,
@@ -85,6 +85,46 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
                 ClientUtils.playScreenSound(ClientUtils.getClient(), SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 ClientUtils.setScreen(ClientUtils.getClient(),
                         ClothConfigScreenProvider.provideScreen(ClientUtils.getCurrentScreen()));
+                return true;
+            }
+            return super.onMouseDown(x, y, code);
+        }
+    }
+
+    public static class ReloadLocalConfigsScreenWidget extends Widget {
+        public ReloadLocalConfigsScreenWidget() {
+            super(1, Page.COLUMNS);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            boolean hovered = ctx.getElementScreen().getHoveredElement() == this;
+
+            int tt = hovered ? 21 : 24;
+            int ww = Widget.WIDGET_WIDTH, wh = Widget.WIDGET_HEIGHT;
+            ctx.renderTexture(Textures.ICONS, 8 * ww, tt * wh,
+                    ctx.getZ(), box.getLeft(), box.getTop(), 3 * ww, wh);
+            int tw = 3 * ww, th = 1 * wh;
+            ctx.renderTexture(Textures.ICONS,
+                    8 * ww, tt * ww, 8 * ww + tw, tt * ww + th,
+                    ctx.getZ(), box.getRight(), box.getBottom(), box.getRight() - tw, box.getBottom() - th);
+
+            int color = hovered ? Colors.BLACK : Colors.COMMON_DARK_TEXT;
+            ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_RELOAD_LOCAL_CONFIGS_SCREEN),
+                    color, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 3);
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                synchronized (ReloadLocalConfigsScreenWidget.class) {
+                    ConfigsManager.load();
+                }
+                if (AbstractBiologyDictionaryScreen.current() instanceof BdConfigScreen screen) {
+                    screen.sendScreenMessage(TextUtils.translate(Lang.GUI_OK));
+                }
                 return true;
             }
             return super.onMouseDown(x, y, code);
@@ -146,6 +186,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
                 case Boolean b -> TextUtils.translate(b ? Lang.GUI_YES : Lang.GUI_NO);
                 case Enum<?> e -> TextUtils.translate(Configs.getEnumValueTranslationKey(e));
                 case Collection<?> s -> TextUtils.literal(String.valueOf(s.size()));
+                case Map<?, ?> s -> TextUtils.literal(String.valueOf(s.size()));
                 default -> TextUtils.literal(String.valueOf(value));
             };
         }

@@ -198,9 +198,10 @@ public final class Lang {
 
     TEXT_COMMA  = "text.biologydictionary.comma",
 
-    TEXT_OPEN_LOCAL_CONFIGS_SCREEN  = "text.biologydictionary.open_local_configs_screen",
-    TEXT_LOCAL_CONFIGS_DESC         = "text.biologydictionary.local_configs_desc",
-    TEXT_SERVER_CONFIGS_DESC        = "text.biologydictionary.server_configs_desc",
+    TEXT_OPEN_LOCAL_CONFIGS_SCREEN   = "text.biologydictionary.open_local_configs_screen",
+    TEXT_RELOAD_LOCAL_CONFIGS_SCREEN = "text.biologydictionary.reload_local_configs_screen",
+    TEXT_LOCAL_CONFIGS_DESC          = "text.biologydictionary.local_configs_desc",
+    TEXT_SERVER_CONFIGS_DESC         = "text.biologydictionary.server_configs_desc",
 
     TEXT_MOD_NAME_IS                         = "text.biologydictionary.mod_name_is",
     TEXT_AUTHOR_IS                           = "text.biologydictionary.author_is",
