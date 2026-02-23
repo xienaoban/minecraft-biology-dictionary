@@ -12,6 +12,7 @@ import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Main configuration data class for Biology Dictionary.
@@ -86,7 +87,7 @@ public final class Configs {
          * </pre>
          */
         @ConfigEntry
-        Map<String, Map<String, Object>> skillCosts = new LinkedHashMap<>();
+        Map<String, Map<String, Object>> skillCosts = new HashMap<>();
 
         /**
          * Cache of SkillCost objects by skill class for fast access.
@@ -129,23 +130,24 @@ public final class Configs {
          * Missing skills are added with their default costs.
          */
         private void completeSkillCosts() {
+            Map<String, Map<String, Object>> newCosts = new LinkedHashMap<>();
             BiologySkills.registerBuiltIn(new BiologySkills.Registrar() {
                 @Override
                 public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
                     String shortName = meta.shortName();
-                    if (!skillCosts.containsKey(shortName)) {
-                        skillCosts.put(shortName, meta.getDefaultCost().toMap());
-                    }
+                    Map<String, Object> v = skillCosts.get(shortName);
+                    newCosts.put(shortName, Objects.requireNonNullElseGet(v, () -> meta.getDefaultCost().toMap()));
                 }
 
                 @Override
                 public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
                     String shortName = meta.shortName();
-                    if (!skillCosts.containsKey(shortName)) {
-                        skillCosts.put(shortName, meta.getDefaultCost().toMap());
-                    }
+                    Map<String, Object> v = skillCosts.get(shortName);
+                    newCosts.put(shortName, Objects.requireNonNullElseGet(v, () -> meta.getDefaultCost().toMap()));
                 }
             });
+            // Reduce the possibility of concurrency issues.
+            skillCosts = newCosts;
         }
 
         /**

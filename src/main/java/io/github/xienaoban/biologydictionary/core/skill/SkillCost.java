@@ -155,21 +155,21 @@ public final class SkillCost {
         // Always free in creative mode.
         if (PlayerUtils.isCreative(player)) { return; }
 
-        if (player.totalExperience < experiencePointRequired) {
+        if (PlayerUtils.getExperiencePoint(player) < experiencePointRequired) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_EXPERIENCE_POINT_THRESHOLD_NOT_MET, experiencePointRequired), "Experience point threshold not met");
         }
-        if (player.experienceLevel < experienceLevelRequired) {
+        if (PlayerUtils.getExperienceLevel(player) < experienceLevelRequired) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_EXPERIENCE_LEVEL_THRESHOLD_NOT_MET, experienceLevelRequired), "Experience level threshold not met");
         }
-        if (player.totalExperience < experiencePoints) {
+        if (PlayerUtils.getExperiencePoint(player) < experiencePoints) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_POINTS, experiencePoints), "Not enough experience points");
         }
-        if (player.experienceLevel < experienceLevels) {
+        if (PlayerUtils.getExperienceLevel(player) < experienceLevels) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experienceLevels), "Not enough experience levels");
         }
 
         for (ItemStack required : items) {
-            if (!InventoryUtils.hasEnoughItems(player.getInventory(), required)) {
+            if (!InventoryUtils.hasEnoughItems(PlayerUtils.getInventory(player), required)) {
                 throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_ITEMS, required.getCount(), required.getHoverName()), "Not enough items");
             }
         }
@@ -189,7 +189,7 @@ public final class SkillCost {
         }
 
         for (ItemStack required : items) {
-            InventoryUtils.consumeItems(player.getInventory(), required);
+            InventoryUtils.consumeItems(PlayerUtils.getInventory(player), required);
             PlayerUtils.playLocalSound(player, SoundEvents.ITEM_PICKUP, 0.5F, 0.01F);
         }
     }
@@ -203,7 +203,7 @@ public final class SkillCost {
         }
 
         for (ItemStack item : items) {
-            if (!player.getInventory().add(item.copy())) {
+            if (!PlayerUtils.getInventory(player).add(item.copy())) {
                 player.drop(item.copy(), false);
             }
         }

@@ -25,7 +25,7 @@ public final class Permissions {
 
     public static void checkPlayerCreativeOrExperiencePoints(Player player, int experience) {
         if (PlayerUtils.isCreative(player)) { return; }
-        int exp = PlayerUtils.getExperiencePoints(player);
+        int exp = PlayerUtils.getExperiencePoint(player);
         if (exp >= experience) { return; }
         throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_POINTS, experience),
                 "No enough experience points: " + exp + " < " + experience);
@@ -33,7 +33,7 @@ public final class Permissions {
 
     public static void checkPlayerCreativeOrExperienceLevel(Player player, int level) {
         if (PlayerUtils.isCreative(player)) { return; }
-        int lvl = PlayerUtils.getExperienceLevels(player);
+        int lvl = PlayerUtils.getExperienceLevel(player);
         if (lvl >= level) { return; }
         throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, level),
                 "No enough experience levels: " + lvl + " < " + level);
