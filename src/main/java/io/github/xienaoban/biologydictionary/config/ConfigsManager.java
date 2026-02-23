@@ -90,7 +90,7 @@ public final class ConfigsManager {
         try {
             Files.createDirectories(configPath.getParent());
 
-            Map<String, Object> data = new HashMap<>();
+            Map<String, Object> data = new LinkedHashMap<>();
 
             // Iterate through fields annotated with @ConfigCategory
             for (Field categoryField : INSTANCE.getClass().getDeclaredFields()) {
