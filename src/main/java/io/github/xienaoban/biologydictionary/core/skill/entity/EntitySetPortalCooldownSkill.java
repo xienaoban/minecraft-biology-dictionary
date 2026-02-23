@@ -24,6 +24,10 @@ public record EntitySetPortalCooldownSkill(int cooldown) implements EntityTarget
             return SkillCost.ofExpPoints(1);
         }
 
+        @Override
+        public String shortName() {
+            return "set_portal_cooldown";
+        }
     };
 
     public static final int ENTITY_PORTAL_COOLDOWN_INFINITY = 303;

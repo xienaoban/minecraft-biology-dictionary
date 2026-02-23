@@ -34,6 +34,10 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
             return SkillCost.ofItems(new ItemStack(Items.EMERALD));
         }
 
+        @Override
+        public String shortName() {
+            return "force_restock";
+        }
     };
 
     /**

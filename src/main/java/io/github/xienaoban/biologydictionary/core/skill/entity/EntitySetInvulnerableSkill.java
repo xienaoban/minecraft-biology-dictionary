@@ -24,6 +24,10 @@ public record EntitySetInvulnerableSkill(boolean invulnerable) implements Entity
             return SkillCost.creativeOnly();
         }
 
+        @Override
+        public String shortName() {
+            return "set_invulnerable";
+        }
     };
 
     @Environment(EnvType.CLIENT)

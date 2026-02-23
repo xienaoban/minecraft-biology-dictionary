@@ -38,12 +38,12 @@ public final class BiologyDictionary {
     private BiologyDictionary() {
         servers = ConcurrentHashMap.newKeySet();
 
-        ConfigsManager.load();
         EntityUtils.init();
         ServerNetManager.init();
         BiologyDictionaryItem.init();
         EntityProperties.init();
         BiologySkills.init();
+        ConfigsManager.load();
 
         ServerEventRegistry.registerStarted(servers::add);
         ServerEventRegistry.registerStopping(servers::remove);

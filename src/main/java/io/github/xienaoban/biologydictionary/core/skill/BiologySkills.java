@@ -40,6 +40,7 @@ public final class BiologySkills {
 
     private static final Map<String, GeneralSkill.Meta<?>> commonSkills = new HashMap<>();
     private static final Map<String, EntityTargetedSkill.Meta<?>> entityTargetedSkills = new HashMap<>();
+    private static final Map<String, Class<?>> skillClasses = new HashMap<>();
 
     public static void init() {
         Registrar registrar = new Registrar() {
@@ -60,11 +61,17 @@ public final class BiologySkills {
         if (commonSkills.putIfAbsent(key(skillClass), meta) != null) {
             throw new RuntimeException("Duplicate skill registered: " + key(skillClass));
         }
+        if (skillClasses.putIfAbsent(meta.shortName(), skillClass) != null) {
+            throw new RuntimeException("Duplicate short name: " + meta.shortName());
+        }
     }
 
     private static <T extends EntityTargetedSkill<?>> void register0(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
         if (entityTargetedSkills.putIfAbsent(key(skillClass), meta) != null) {
             throw new RuntimeException("Duplicate skill registered: " + key(skillClass));
+        }
+        if (skillClasses.putIfAbsent(meta.shortName(), skillClass) != null) {
+            throw new RuntimeException("Duplicate short name: " + meta.shortName());
         }
     }
 
@@ -80,6 +87,14 @@ public final class BiologySkills {
         EntityTargetedSkill.Meta<?> res = entityTargetedSkills.get(key);
         if (res == null) {
             throw new RuntimeException("No such key: " + key);
+        }
+        return res;
+    }
+
+    public static Class<?> getSkillClass(String shortName) {
+        Class<?> res = skillClasses.get(shortName);
+        if (res == null) {
+            throw new RuntimeException("No such short name: " + shortName);
         }
         return res;
     }

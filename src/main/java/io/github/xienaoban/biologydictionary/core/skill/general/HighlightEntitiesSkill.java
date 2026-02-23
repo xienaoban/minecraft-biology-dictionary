@@ -30,6 +30,11 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
         public SkillCost getDefaultCost() {
             return new SkillCost(16, 0, 0, 0, new ItemStack(Items.ENDER_EYE));
         }
+
+        @Override
+        public String shortName() {
+            return "highlight_entities";
+        }
     };
 
     public static final int TICKS = 12 * 20;

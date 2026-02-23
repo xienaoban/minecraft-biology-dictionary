@@ -29,6 +29,10 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
             return SkillCost.ofItems(new ItemStack(Items.ROTTEN_FLESH));
         }
 
+        @Override
+        public String shortName() {
+            return "set_sound";
+        }
     };
 
     private static final int FRIENDLY_EXP_PT_COST = 4;

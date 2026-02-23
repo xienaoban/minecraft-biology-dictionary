@@ -26,6 +26,10 @@ public record LivingEntityStealInventorySkill() implements EntityTargetedSkill<L
             return SkillCost.empty();
         }
 
+        @Override
+        public String shortName() {
+            return "steal_inventory";
+        }
     };
 
     @Environment(EnvType.CLIENT)

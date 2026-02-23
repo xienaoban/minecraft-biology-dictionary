@@ -28,6 +28,10 @@ public record WanderingTraderRetainSkill() implements EntityTargetedSkill<Wander
             return SkillCost.ofItems(new ItemStack(Items.WATER_BUCKET));
         }
 
+        @Override
+        public String shortName() {
+            return "retain";
+        }
     };
 
     public static final int STAY_TICKS = 2 * 60 * 20;

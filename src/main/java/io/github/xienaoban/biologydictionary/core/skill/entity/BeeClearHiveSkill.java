@@ -22,6 +22,10 @@ public record BeeClearHiveSkill() implements EntityTargetedSkill<Bee> {
             return SkillCost.ofExpPoints(1);
         }
 
+        @Override
+        public String shortName() {
+            return "clear_hive";
+        }
     };
 
     @Environment(EnvType.CLIENT)

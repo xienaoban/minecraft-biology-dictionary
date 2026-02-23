@@ -45,15 +45,10 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        Integer r = restocksTodayProperty.getVal();
-        GlobalPos j = jboSiteProperty.getVal();
-        SkillCost cost = new VillagerForceRestockSkill(r == null ? 0 : r, j).getRealCost(e());
-        List<Component> tooltip = new ArrayList<>();
-        tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY));
-        tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_DESC));
-        tooltip.add(TextUtils.empty());
-        tooltip.addAll(cost.toTooltipText());
-        renderTooltip(ctx, tooltip);
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY),
+                tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_DESC)
+        );
         return true;
     }
 
@@ -111,10 +106,15 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK_DESC)
-            );
+            Integer r = restocksTodayProperty.getVal();
+            GlobalPos j = jboSiteProperty.getVal();
+            SkillCost cost = new VillagerForceRestockSkill(r == null ? 0 : r, j).getRealCost(e());
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.toTooltipText());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }
