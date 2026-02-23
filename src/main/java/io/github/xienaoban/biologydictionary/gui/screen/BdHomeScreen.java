@@ -5,7 +5,6 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElemen
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
@@ -194,11 +193,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 BiologySkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance));
             } else {
                 if (isMouseLeft(code)) {
-                    if (!PlayerUtils.isCreative(player)) {
-                        sendScreenMessage(TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE));
-                    } else {
-                        BiologySkills.activate(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)));
-                    }
+                    BiologySkills.activate(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)));
                 }
                 return true;
             }

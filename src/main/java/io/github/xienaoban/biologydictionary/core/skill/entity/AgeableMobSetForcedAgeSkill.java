@@ -27,6 +27,10 @@ public record AgeableMobSetForcedAgeSkill(int forcedAge, int age) implements Ent
             return SkillCost.ofItems(new ItemStack(Items.DANDELION), new ItemStack(Items.GOLD_NUGGET, 8));
         }
 
+        @Override
+        public String shortName() {
+            return "set_forced_age";
+        }
     };
 
     @Environment(EnvType.CLIENT)

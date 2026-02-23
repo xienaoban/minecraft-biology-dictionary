@@ -28,6 +28,10 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
             return SkillCost.ofItems(new ItemStack(Items.PAPER), new ItemStack(Items.COPPER_NUGGET));
         }
 
+        @Override
+        public String shortName() {
+            return "force_persistent";
+        }
     };
 
     /**

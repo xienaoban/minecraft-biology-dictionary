@@ -69,16 +69,16 @@ public final class Configs {
 
         /**
          * Skill costs configuration in YAML-friendly format.
-         * Maps skill class names to their cost data (from SkillCost.toMap()).
+         * Maps skill short names to their cost data (from SkillCost.toMap()).
          * Always contains all registered skills after initialization.
          * <p>
          * To configure skill costs, edit the YAML config file directly:
          * <pre>
          * server:
          *   skill_costs:
-         *     io.github.xienaoban.biologydictionary.core.skill.entity.SheepForceEatGrassSkill:
+         *     set_invulnerable:
          *       experience_points: 5
-         *     io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill:
+         *     highlight_entities:
          *       experience_levels: 1
          *       items:
          *         - item: minecraft:iron_ingot
@@ -89,10 +89,10 @@ public final class Configs {
         Map<String, Map<String, Object>> skillCosts = new LinkedHashMap<>();
 
         /**
-         * Cache of SkillCost objects by class name for fast access.
+         * Cache of SkillCost objects by skill class for fast access.
          * Always derived from skillCosts after initialization.
          */
-        private transient Map<String, SkillCost> skillCostsCache;
+        private transient Map<Class<?>, SkillCost> skillCostsCache;
 
         public ServerConfigs() {
             postLoad();
@@ -121,7 +121,7 @@ public final class Configs {
          * All skills are guaranteed to be present after initialization.
          */
         public SkillCost getSkillCost(Class<?> skillClass) {
-            return skillCostsCache.get(skillClass.getName());
+            return skillCostsCache.get(skillClass);
         }
 
         /**
@@ -132,17 +132,17 @@ public final class Configs {
             BiologySkills.registerBuiltIn(new BiologySkills.Registrar() {
                 @Override
                 public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
-                    String className = skillClass.getName();
-                    if (!skillCosts.containsKey(className)) {
-                        skillCosts.put(className, meta.getDefaultCost().toMap());
+                    String shortName = meta.shortName();
+                    if (!skillCosts.containsKey(shortName)) {
+                        skillCosts.put(shortName, meta.getDefaultCost().toMap());
                     }
                 }
 
                 @Override
                 public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
-                    String className = skillClass.getName();
-                    if (!skillCosts.containsKey(className)) {
-                        skillCosts.put(className, meta.getDefaultCost().toMap());
+                    String shortName = meta.shortName();
+                    if (!skillCosts.containsKey(shortName)) {
+                        skillCosts.put(shortName, meta.getDefaultCost().toMap());
                     }
                 }
             });
@@ -153,12 +153,13 @@ public final class Configs {
          * Must be called after skillCosts is fully populated.
          */
         private void rebuildSkillCacheCache() {
-            Map<String, SkillCost> cache = new HashMap<>();
+            Map<Class<?>, SkillCost> cache = new HashMap<>();
 
             for (Map.Entry<String, Map<String, Object>> entry : skillCosts.entrySet()) {
-                String className = entry.getKey();
+                String shortName = entry.getKey();
                 Map<String, Object> costData = entry.getValue();
-                cache.put(className, SkillCost.fromMap(costData));
+                Class<?> skillClass = BiologySkills.getSkillClass(shortName);
+                cache.put(skillClass, SkillCost.fromMap(costData));
             }
 
             skillCostsCache = cache;

@@ -34,6 +34,10 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
             return SkillCost.empty();
         }
 
+        @Override
+        public String shortName() {
+            return "gift_pet";
+        }
     };
 
     @Environment(EnvType.CLIENT)

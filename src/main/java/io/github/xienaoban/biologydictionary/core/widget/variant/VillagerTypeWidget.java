@@ -2,12 +2,19 @@ package io.github.xienaoban.biologydictionary.core.widget.variant;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class VillagerTypeWidget extends AbstractEntityStandardVariantWidget<Villager, Holder<VillagerType>> {
     public static final Factory<Villager> FACTORY = VillagerTypeWidget::new;
@@ -24,10 +31,14 @@ public final class VillagerTypeWidget extends AbstractEntityStandardVariantWidge
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx,
-                tooltipTitle(Lang.PROPERTY_WIDGET_VILLAGER_TYPE),
-                tooltipDescription(Lang.PROPERTY_WIDGET_VILLAGER_TYPE_DESC)
-        );
+        // Use placeholder values since variant is selected at runtime
+        SkillCost cost = new EntitySetVariantSkill("", -1, null).getRealCost(e());
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_VILLAGER_TYPE));
+        tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_VILLAGER_TYPE_DESC));
+        tooltip.add(TextUtils.empty());
+        tooltip.addAll(cost.toTooltipText());
+        renderTooltip(ctx, tooltip);
         return true;
     }
 }

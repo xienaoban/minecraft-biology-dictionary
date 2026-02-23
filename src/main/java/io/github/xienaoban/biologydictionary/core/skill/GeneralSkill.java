@@ -32,16 +32,9 @@ public interface GeneralSkill {
         return ConfigsManager.getServer().getSkillCost(this.getClass());
     }
 
-    /**
-     * @deprecated Use {@link #getRealCost()} instead
-     */
-    @Deprecated
-    default SkillCost getCalculatedCost() {
-        return SkillCost.empty();
-    }
-
     interface Meta<T extends GeneralSkill> {
         T create(FriendlyByteBuf buf);
         SkillCost getDefaultCost();
+        String shortName();
     }
 }

@@ -38,5 +38,6 @@ public interface EntityTargetedSkill<E extends Entity> {
     interface Meta<T extends EntityTargetedSkill<?>> {
         T create(FriendlyByteBuf buf);
         SkillCost getDefaultCost();
+        String shortName(); // for yaml config
     }
 }

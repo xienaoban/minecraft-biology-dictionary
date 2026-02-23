@@ -32,6 +32,11 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
             // Simulate the eyes of Medusa
             return new SkillCost(0, 5, 0, 20, List.of(new ItemStack(Items.SPIDER_EYE, 2)));
         }
+
+        @Override
+        public String shortName() {
+            return "set_no_ai";
+        }
     };
 
     @Environment(EnvType.CLIENT)

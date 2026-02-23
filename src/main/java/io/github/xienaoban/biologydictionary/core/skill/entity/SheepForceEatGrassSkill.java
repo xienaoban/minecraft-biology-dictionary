@@ -31,6 +31,10 @@ public record SheepForceEatGrassSkill() implements EntityTargetedSkill<Sheep> {
             return SkillCost.empty();
         }
 
+        @Override
+        public String shortName() {
+            return "force_eat_grass";
+        }
     };
 
     /**

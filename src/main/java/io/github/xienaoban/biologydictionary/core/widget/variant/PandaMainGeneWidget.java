@@ -3,9 +3,16 @@ package io.github.xienaoban.biologydictionary.core.widget.variant;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.panda.Panda;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public sealed class PandaMainGeneWidget extends AbstractEntityStandardVariantWidget<Panda, Panda.Gene> permits PandaHiddenGeneWidget {
     public static final Factory<Panda> FACTORY = PandaMainGeneWidget::new;
@@ -26,10 +33,14 @@ public sealed class PandaMainGeneWidget extends AbstractEntityStandardVariantWid
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx,
-                tooltipTitle(Lang.PROPERTY_WIDGET_MAIN_GENE),
-                tooltipDescription(Lang.PROPERTY_WIDGET_MAIN_GENE_DESC)
-        );
+        // Use placeholder values since variant is selected at runtime
+        SkillCost cost = new EntitySetVariantSkill("", -1, null).getRealCost(e());
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_MAIN_GENE));
+        tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_MAIN_GENE_DESC));
+        tooltip.add(TextUtils.empty());
+        tooltip.addAll(cost.toTooltipText());
+        renderTooltip(ctx, tooltip);
         return true;
     }
 }

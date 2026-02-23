@@ -28,6 +28,10 @@ public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, 
             return SkillCost.creativeOnly();
         }
 
+        @Override
+        public String shortName() {
+            return "set_variant";
+        }
     };
 
     @Environment(EnvType.CLIENT)

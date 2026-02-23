@@ -29,6 +29,10 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
             return SkillCost.creativeOnly();
         }
 
+        @Override
+        public String shortName() {
+            return "get_spawn_egg";
+        }
     };
 
     @Environment(EnvType.CLIENT)
