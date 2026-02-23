@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary;
 
-import net.minecraft.network.chat.Component;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import net.minecraft.network.chat.MutableComponent;
 
 /**
@@ -14,7 +14,7 @@ public final class Lang {
     }
 
     public static MutableComponent textYesOrNo(boolean v) {
-        return Component.translatable(keyYesOrNo(v));
+        return TextUtils.translate(keyYesOrNo(v));
     }
 
     public static final String
@@ -42,6 +42,7 @@ public final class Lang {
     KEY_DEBUG = "key.biologydictionary.debug",
 
     ACTIVITY_PREFIX = "activity.minecraft.",
+    LOOT_CONDITION_PREFIX = "loot_condition.",
 
     CONFIG_PREFIX          = "config.biologydictionary.",
     CONFIG_TITLE           = "config.biologydictionary.title",
@@ -110,6 +111,8 @@ public final class Lang {
     PROPERTY_WIDGET_EAT_GRASS_DESC              = "property_widget.biologydictionary.eat_grass.desc",
     PROPERTY_WIDGET_SCREAMING_GOAT              = "property_widget.biologydictionary.screaming_goat",
     PROPERTY_WIDGET_SCREAMING_GOAT_DESC         = "property_widget.biologydictionary.screaming_goat.desc",
+    PROPERTY_WIDGET_LOOT_TABLE                  = "property_widget.biologydictionary.loot_table",
+    PROPERTY_WIDGET_LOOT_TABLE_DESC             = "property_widget.biologydictionary.loot_table.desc",
     PROPERTY_WIDGET_BOUNDING_BOX                = "property_widget.biologydictionary.bounding_box",
     PROPERTY_WIDGET_BOUNDING_BOX_DESC           = "property_widget.biologydictionary.bounding_box.desc",
     PROPERTY_WIDGET_VARIANT                     = "property_widget.biologydictionary.variant",
@@ -193,9 +196,12 @@ public final class Lang {
     PROPERTY_WIDGET_INVENTORY_STEAL_CREATIVE    = "property_widget.biologydictionary.inventory.steal.creative",
     PROPERTY_WIDGET_INVENTORY_STEAL_SURVIVAL    = "property_widget.biologydictionary.inventory.steal.survival",
 
-    TEXT_OPEN_LOCAL_CONFIGS_SCREEN  = "text.biologydictionary.open_local_configs_screen",
-    TEXT_LOCAL_CONFIGS_DESC         = "text.biologydictionary.local_configs_desc",
-    TEXT_SERVER_CONFIGS_DESC        = "text.biologydictionary.server_configs_desc",
+    TEXT_COMMA  = "text.biologydictionary.comma",
+
+    TEXT_OPEN_LOCAL_CONFIGS_SCREEN   = "text.biologydictionary.open_local_configs_screen",
+    TEXT_RELOAD_LOCAL_CONFIGS_SCREEN = "text.biologydictionary.reload_local_configs_screen",
+    TEXT_LOCAL_CONFIGS_DESC          = "text.biologydictionary.local_configs_desc",
+    TEXT_SERVER_CONFIGS_DESC         = "text.biologydictionary.server_configs_desc",
 
     TEXT_MOD_NAME_IS                         = "text.biologydictionary.mod_name_is",
     TEXT_AUTHOR_IS                           = "text.biologydictionary.author_is",
@@ -209,21 +215,26 @@ public final class Lang {
     TEXT_UNKNOWN_ENTITY_ID                   = "text.biologydictionary.unknown_entity_id",
     TEXT_UNKNOWN_ENTITY_TYPE                 = "text.biologydictionary.unknown_entity_type",
     TEXT_SKILL_BANNED                        = "text.biologydictionary.skill_banned",
+    TEXT_SKILL_COST                          = "text.biologydictionary.skill_cost",
     TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS    = "text.biologydictionary.not_allowed_to_highlight_players",
+    TEXT_CLIENT_SERVER_ARG_NOT_SAME          = "text.biologydictionary.client_server_arg_not_same",
     TEXT_NOT_ENOUGH_EXPERIENCE_POINTS        = "text.biologydictionary.not_enough_experience_points",
     TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS        = "text.biologydictionary.not_enough_experience_levels",
+    TEXT_EXPERIENCE_POINT_THRESHOLD_NOT_MET  = "text.biologydictionary.experience_point_threshold_not_met",
+    TEXT_EXPERIENCE_LEVEL_THRESHOLD_NOT_MET  = "text.biologydictionary.experience_level_threshold_not_met",
     TEXT_NO_PERMISSION_TO_MODIFY_THIS_PLAYER = "text.biologydictionary.no_permission_to_modify_this_player",
-    TEXT_PLAYER_AND_TARGET_CANNOT_SAME       = "text.biologydictionary.player_and_target_cannot_same",
+    TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME    = "text.biologydictionary.player_and_target_cannot_be_same",
     TEXT_ONLY_IN_CREATIVE_MODE               = "text.biologydictionary.only_in_creative_mode",
     TEXT_NOT_ENOUGH_ITEMS                    = "text.biologydictionary.not_enough_items",
-    TEXT_EXPERIENCE_POINTS_REQUIRED          = "text.biologydictionary.experience_points_required",
-    TEXT_EXPERIENCE_LEVELS_REQUIRED          = "text.biologydictionary.experience_levels_required",
+    TEXT_EXPERIENCE_POINT_REQUIRED           = "text.biologydictionary.experience_point_required",
+    TEXT_EXPERIENCE_LEVEL_REQUIRED           = "text.biologydictionary.experience_level_required",
     TEXT_EXPERIENCE_POINTS_COST              = "text.biologydictionary.experience_points_cost",
     TEXT_EXPERIENCE_LEVELS_COST              = "text.biologydictionary.experience_levels_cost",
+    TEXT_ITEMS_COST                          = "text.biologydictionary.items_cost",
     TEXT_OFFER_OR_DROP                       = "text.biologydictionary.offer_or_drop",
     TEXT_TARGET_ENTITY_NO_ABILITY            = "text.biologydictionary.target_entity_no_ability",
     TEXT_STEALING_DETECTED                   = "text.biologydictionary.stealing_detected",
-    TEXT_ENTITY_LOOKING_AT_YOU              = "text.biologydictionary.entity_looking_at_you",
+    TEXT_ENTITY_LOOKING_AT_YOU               = "text.biologydictionary.entity_looking_at_you",
 
     TEXT_NO_DATA_WITH_BRACKETS               = "text.biologydictionary.no_data_with_brackets",
     TEXT_NONE_WITH_BRACKETS                  = "text.biologydictionary.none_with_brackets",

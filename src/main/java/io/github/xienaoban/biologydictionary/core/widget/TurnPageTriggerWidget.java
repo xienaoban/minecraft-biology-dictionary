@@ -7,6 +7,10 @@ import net.minecraft.world.entity.Entity;
 public final class TurnPageTriggerWidget extends EntityPropertyWidget<Entity> {
     public static final Factory<Entity> FACTORY = TurnPageTriggerWidget::new;
 
+    public TurnPageTriggerWidget() {
+        super(null, 1, 1);
+    }
+
     public TurnPageTriggerWidget(EntityProperties<Entity> properties) {
         super(properties, 1, 1);
     }

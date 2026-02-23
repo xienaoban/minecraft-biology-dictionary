@@ -4,19 +4,24 @@ import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.extra.EntityInventorySizeProperty;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.LivingEntityStealInventorySkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyTextBar;
-import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingScreen;
+import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<LivingEntity> {
     public static final Factory<LivingEntity> FACTORY = LivingEntityInventoryWidget::new;
@@ -54,9 +59,9 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
             super.onRender(ctx);
             Integer size = inventorySize.getVal();
             if (size == null) {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
             } else {
-                renderInnerText(ctx, Component.literal("" + inventorySize.getVal()));
+                renderInnerText(ctx, TextUtils.literal("" + inventorySize.getVal()));
             }
         }
     }
@@ -72,24 +77,24 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
             if (isMouseLeft(code)) {
                 // Check if entity is looking at the player before opening the screen
                 if (InventoryStealingScreen.isPlayerCaughtByEntity(e(), ClientUtils.getClientPlayer())) {
-                    BiologyDictionaryClient.sendCenteredWarning(Component.translatable(Lang.TEXT_ENTITY_LOOKING_AT_YOU));
+                    BiologyDictionaryClient.sendCenteredWarning(TextUtils.translate(Lang.TEXT_ENTITY_LOOKING_AT_YOU));
                     return true;
                 }
-                LivingEntityStealInventorySkill.activate(e());
+                BiologySkills.activate(e(), new LivingEntityStealInventorySkill());
             }
             return true;
         }
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            boolean isCreative = PlayerUtils.isCreative(ClientUtils.getClientPlayer());
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_INVENTORY_STEAL),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC1),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC2),
-                    tooltipEmpty(),
-                    tooltipBody(isCreative ? Lang.PROPERTY_WIDGET_INVENTORY_STEAL_CREATIVE : Lang.PROPERTY_WIDGET_INVENTORY_STEAL_SURVIVAL)
-            );
+            SkillCost cost = new LivingEntityStealInventorySkill().getRealCost(e());
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_INVENTORY_STEAL));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC1));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC2));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.toTooltipText());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

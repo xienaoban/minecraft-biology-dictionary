@@ -33,7 +33,7 @@ public final class VariantProperty<E extends Entity, T> extends AbstractProperty
     @Override
     public void readFrom(CompoundTag nbt) {
         Optional<Holder<T>> o1 = nbt.read(name(), Identifier.CODEC)
-                .map(resourceLocation -> ResourceKey.create(resourceKey, resourceLocation))
+                .map(identifier -> ResourceKey.create(resourceKey, identifier))
                 .flatMap(key -> {
                     Level level = BD.justGiveMeALevel(); // TODO: Thread local level
                     if (level == null) { return Optional.empty(); }

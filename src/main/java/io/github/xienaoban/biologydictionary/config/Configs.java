@@ -4,11 +4,15 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.annotation.Config;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
+import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 
-import java.lang.reflect.Field;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Main configuration data class for Biology Dictionary.
@@ -18,11 +22,43 @@ import java.util.function.Consumer;
  */
 @Config(Lang.CONFIG_TITLE)
 public final class Configs {
+
+    /**
+     * Client-side configuration options.
+     * These settings affect local rendering and behavior.
+     */
+    public static class ClientConfigs implements PostLoader {
+        @ConfigEntry
+        float screenScale = 1F;
+
+        @ConfigEntry
+        FirstPersonShoulderEntityPosition firstPersonShoulderEntityPosition = FirstPersonShoulderEntityPosition.BOTTOM;
+
+        public ClientConfigs() {
+            postLoad();
+        }
+
+        public float getScreenScale() {
+            return screenScale;
+        }
+
+        public FirstPersonShoulderEntityPosition getFirstPersonShoulderEntityPosition() {
+            return firstPersonShoulderEntityPosition;
+        }
+
+        @Override
+        public void postLoad() {}
+
+        public enum FirstPersonShoulderEntityPosition {
+            NONE, BOTTOM, SIDES, TOP
+        }
+    }
+
     /**
      * Server-side configuration options.
      * These settings are used when running a server or singleplayer.
      */
-    public static class ServerConfigs {
+    public static class ServerConfigs implements PostLoader {
         @ConfigEntry
         boolean bookItemRequired = true;
 
@@ -30,7 +66,44 @@ public final class Configs {
         boolean bookItemObtainableFromWanderingTrader = true;
 
         @ConfigEntry
-        Set<String> bannedPlayerSkills = Set.of();
+        boolean inheritSilentFromParents = true;
+
+        /**
+         * Skill costs configuration in YAML-friendly format.
+         * Maps skill short names to their cost data (from SkillCost.toMap()).
+         * Always contains all registered skills after initialization.
+         * <p>
+         * To configure skill costs, edit the YAML config file directly:
+         * <pre>
+         * server:
+         *   skill_costs:
+         *     set_invulnerable:
+         *       experience_points: 5
+         *     highlight_entities:
+         *       experience_levels: 1
+         *       items:
+         *         - item: minecraft:iron_ingot
+         *           count: 1
+         * </pre>
+         */
+        @ConfigEntry
+        Map<String, Map<String, Object>> skillCosts = new HashMap<>();
+
+        /**
+         * Cache of SkillCost objects by skill class for fast access.
+         * Always derived from skillCosts after initialization.
+         */
+        private transient Map<Class<?>, SkillCost> skillCostsCache;
+
+        public ServerConfigs() {
+            postLoad();
+        }
+
+        @Override
+        public void postLoad() {
+            completeSkillCosts();
+            rebuildSkillCacheCache();
+        }
 
         public boolean isBookItemRequired() {
             return bookItemRequired;
@@ -40,40 +113,73 @@ public final class Configs {
             return bookItemObtainableFromWanderingTrader;
         }
 
-        public Set<String> getBannedPlayerSkills() {
-            return bannedPlayerSkills;
+        public boolean isInheritSilentFromParents() {
+            return inheritSilentFromParents;
+        }
+
+        /**
+         * Get skill cost for a given skill class.
+         * All skills are guaranteed to be present after initialization.
+         */
+        public SkillCost getSkillCost(Class<?> skillClass) {
+            return skillCostsCache.get(skillClass);
+        }
+
+        /**
+         * Ensure all registered skills are present in skillCosts.
+         * Missing skills are added with their default costs.
+         */
+        private void completeSkillCosts() {
+            Map<String, Map<String, Object>> newCosts = new LinkedHashMap<>();
+            BiologySkills.registerBuiltIn(new BiologySkills.Registrar() {
+                @Override
+                public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
+                    String shortName = meta.shortName();
+                    Map<String, Object> v = skillCosts.get(shortName);
+                    newCosts.put(shortName, Objects.requireNonNullElseGet(v, () -> meta.getDefaultCost().toMap()));
+                }
+
+                @Override
+                public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
+                    String shortName = meta.shortName();
+                    Map<String, Object> v = skillCosts.get(shortName);
+                    newCosts.put(shortName, Objects.requireNonNullElseGet(v, () -> meta.getDefaultCost().toMap()));
+                }
+            });
+            // Reduce the possibility of concurrency issues.
+            skillCosts = newCosts;
+        }
+
+        /**
+         * Rebuild skillCostsDeserialized based on the current skillCosts.
+         * Must be called after skillCosts is fully populated.
+         */
+        private void rebuildSkillCacheCache() {
+            Map<Class<?>, SkillCost> cache = new HashMap<>();
+
+            for (Map.Entry<String, Map<String, Object>> entry : skillCosts.entrySet()) {
+                String shortName = entry.getKey();
+                Map<String, Object> costData = entry.getValue();
+                Class<?> skillClass = BiologySkills.getSkillClass(shortName);
+                cache.put(skillClass, SkillCost.fromMap(costData));
+            }
+
+            skillCostsCache = cache;
         }
     }
-
-    /**
-     * Client-side configuration options.
-     * These settings affect local rendering and behavior.
-     */
-    public static class ClientConfigs {
-        @ConfigEntry
-        FirstPersonShoulderEntityPosition firstPersonShoulderEntityPosition = FirstPersonShoulderEntityPosition.BOTTOM;
-
-        public FirstPersonShoulderEntityPosition getFirstPersonShoulderEntityPosition() {
-            return firstPersonShoulderEntityPosition;
-        }
-
-        public enum FirstPersonShoulderEntityPosition {
-            NONE, BOTTOM, SIDES, TOP
-        }
-    }
-
-    @ConfigCategory(Lang.CONFIG_CATEGORY_SERVER)
-    private final ServerConfigs server = new ServerConfigs();
 
     @ConfigCategory(Lang.CONFIG_CATEGORY_CLIENT)
     private final ClientConfigs client = new ClientConfigs();
 
-    public ServerConfigs getServer() {
-        return server;
-    }
+    @ConfigCategory(Lang.CONFIG_CATEGORY_SERVER)
+    private final ServerConfigs server = new ServerConfigs();
 
     public ClientConfigs getClient() {
         return client;
+    }
+
+    public ServerConfigs getServer() {
+        return server;
     }
 
     // ==================== Translation Key Utilities ====================
@@ -86,75 +192,12 @@ public final class Configs {
         return "enum." + enumValue.getClass().getName().replace('$', '.') + "." + enumValue.name();
     }
 
-    // ==================== Config Entry Traversal ====================
-
     /**
-     * Iterate through all config entries in this configs instance.
-     * This provides a unified way to access all configuration entries.
-     *
-     * @param categoryConsumer Consumer that receives category name and entry info
+     * Called after configuration is loaded from YAML or deserialized from network.
+     * This is the place to perform validation, fill in missing values, or build derived data structures.
      */
-    public void forEachConfigEntry(BiConsumer<String, ConfigEntryInfo> categoryConsumer) {
-        for (Field categoryField : getClass().getDeclaredFields()) {
-            if (categoryField.isAnnotationPresent(ConfigCategory.class)) {
-                try {
-                    categoryField.setAccessible(true);
-                    Object categoryObject = categoryField.get(this);
-
-                    for (Field entryField : categoryObject.getClass().getDeclaredFields()) {
-                        if (entryField.isAnnotationPresent(ConfigEntry.class)) {
-                            ConfigEntry annotation = entryField.getAnnotation(ConfigEntry.class);
-                            ConfigEntryInfo info = new ConfigEntryInfo(entryField, annotation, categoryObject);
-                            categoryConsumer.accept(categoryField.getName(), info);
-                        }
-                    }
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException("Failed to access config field", e);
-                }
-            }
-        }
-    }
-
-    /**
-     * Iterate through all config entries in a specific category object.
-     * This is useful for iterating through config objects that might be remote copies.
-     *
-     * @param categoryObject The config category object (e.g., ServerConfigs)
-     * @param consumer Consumer that receives entry info for each config entry
-     */
-    public static void forEachConfigEntryInCategory(Object categoryObject, Consumer<ConfigEntryInfo> consumer) {
-        for (Field entryField : categoryObject.getClass().getDeclaredFields()) {
-            if (entryField.isAnnotationPresent(ConfigEntry.class)) {
-                ConfigEntry annotation = entryField.getAnnotation(ConfigEntry.class);
-                ConfigEntryInfo info = new ConfigEntryInfo(entryField, annotation, categoryObject);
-                consumer.accept(info);
-            }
-        }
-    }
-
-    /**
-     * Represents a single configuration entry with its metadata.
-     */
-    public record ConfigEntryInfo(Field field, ConfigEntry annotation, Object categoryObject) {
-        public String getName() {
-            return field.getName();
-        }
-
-        public Class<?> getType() {
-            return field.getType();
-        }
-
-        public Object getValue() {
-            return getValue(categoryObject);
-        }
-
-        public Object getValue(Object anotherCategoryObject) {
-            try {
-                field.setAccessible(true);
-                return field.get(anotherCategoryObject);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Failed to read config value", e);
-            }
-        }
+    @FunctionalInterface
+    public interface PostLoader {
+        void postLoad();
     }
 }

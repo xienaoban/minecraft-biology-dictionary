@@ -38,7 +38,7 @@ public final class PlayerUtils {
         return player.getInventory();
     }
 
-    public static int getExperiencePoints(Player player) {
+    public static int getExperiencePoint(Player player) {
         return player.totalExperience;
     }
 
@@ -46,7 +46,7 @@ public final class PlayerUtils {
         player.giveExperiencePoints(experiencePoints);
     }
 
-    public static int getExperienceLevels(Player player) {
+    public static int getExperienceLevel(Player player) {
         return player.experienceLevel;
     }
 

@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -217,7 +218,7 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
         private void renderText(ScreenRenderingContext ctx, TimelineEntry[] timeline, int idx, float left) {
             int last = (idx + timeline.length - 1) % timeline.length;
 
-            Component txt1 = Component.translatable(Lang.ACTIVITY_PREFIX + timeline[last].activity().getName());
+            Component txt1 = TextUtils.translate(Lang.ACTIVITY_PREFIX + timeline[last].activity().getName());
             int w1 = ctx.calcTextWidth(txt1) / 2;
 
             String str2;
@@ -226,7 +227,7 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
             } else {
                 str2 = tickZeroToTime(timeline[last].time()) + "-" + tickZeroToTime(timeline[idx].time());
             }
-            Component txt2 = Component.literal(str2);
+            Component txt2 = TextUtils.literal(str2);
             int w2 = ctx.calcTextWidth(txt2) / 2;
 
             int w = w1 + w2 + 1;

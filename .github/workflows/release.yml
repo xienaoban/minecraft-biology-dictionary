@@ -82,7 +82,7 @@ jobs:
           # Version info
           name: 'Biology Dictionary ${{ github.ref_name }}'
           version: '${{ github.ref_name }}'
-          version-type: release
+          version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: CHANGELOG.md
 
           # Game and loader info

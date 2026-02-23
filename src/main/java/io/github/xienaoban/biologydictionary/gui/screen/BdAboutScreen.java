@@ -3,21 +3,21 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.DebugScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
     public BdAboutScreen() {
-        super(Component.translatable(Lang.BOOKMARK_ABOUT));
+        super(TextUtils.translate(Lang.BOOKMARK_ABOUT));
         initBookmarks();
         initWidgets();
     }
@@ -30,7 +30,8 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         List<Widget> widgets = Arrays.asList(
                 new ModNameAuthorNameWidget(),
                 new GetBookItemWidget(),
-                new OpenDebugScreenWidget()
+                new OpenDebugScreenWidget(),
+                new ShowGuiSizeWidget()
         );
 
         addAllWidgetsOneByOne(widgets);
@@ -44,10 +45,10 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             ctx.renderCenteredText(
-                    ComponentUtils.formatList(Arrays.asList(Component.translatable(Lang.TEXT_MOD_NAME_IS).withStyle(ChatFormatting.BOLD), Component.translatable(Lang.MOD_NAME_TWO_LANG)), Component.empty()),
+                    TextUtils.concat(Arrays.asList(TextUtils.translate(Lang.TEXT_MOD_NAME_IS).withStyle(ChatFormatting.BOLD), TextUtils.translate(Lang.MOD_NAME_TWO_LANG))),
                     Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
             ctx.renderCenteredText(
-                    ComponentUtils.formatList(Arrays.asList(Component.translatable(Lang.TEXT_AUTHOR_IS).withStyle(ChatFormatting.BOLD), Component.translatable(Lang.AUTHOR_NAME_TWO_LANG)), Component.empty()),
+                    TextUtils.concat(Arrays.asList(TextUtils.translate(Lang.TEXT_AUTHOR_IS).withStyle(ChatFormatting.BOLD), TextUtils.translate(Lang.AUTHOR_NAME_TWO_LANG))),
                     Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 12);
         }
     }
@@ -59,16 +60,16 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            if (ctx.isDebug() && player.isCreative()) {
-                ctx.renderCenteredText(Component.literal("Get Book Item"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
+            if (ctx.isDebug() && PlayerUtils.isCreative(player)) {
+                ctx.renderCenteredText(TextUtils.literal("Get Book Item"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
             }
         }
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            if (screenRenderingContext.isDebug() && player.isCreative()) {
-                ClientNetManager.requestBookItem();
+            if (screenRenderingContext.isDebug() && PlayerUtils.isCreative(player)) {
                 onClose();
+                ClientNetManager.requestBookItem();
                 return true;
             }
             return false;
@@ -83,7 +84,30 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             if (ctx.isDebug()) {
-                ctx.renderCenteredText(Component.literal("Open Debug Screen"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
+                ctx.renderCenteredText(TextUtils.literal("Open Debug Screen"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
+            }
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (screenRenderingContext.isDebug()) {
+                ClientUtils.setScreen(client, new DebugScreen());
+                return true;
+            }
+            return false;
+        }
+    }
+
+    private class ShowGuiSizeWidget extends Widget {
+        protected ShowGuiSizeWidget() {
+            super(1, Page.COLUMNS);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            if (ctx.isDebug()) {
+                ctx.renderCenteredText(TextUtils.literal(ctx.getScreen().width + " , " + ctx.getScreen().height), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
+                ctx.renderCenteredText(TextUtils.literal(ctx.getMouseX() + " , " + ctx.getMouseY()), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 5.5F);
             }
         }
 

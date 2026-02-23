@@ -2,11 +2,14 @@ package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.VillagerForceRestockSkill;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -19,6 +22,9 @@ import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Villager> {
     public static final Factory<Villager> FACTORY = VillagerRestocksTodayWidget::new;
 
@@ -27,6 +33,7 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
     private static final int MAX_RESTOCK_TODAY = 2;
 
     private final IntProperty<Villager> restocksTodayProperty = VanillaEntityProperties.OfVillager.getRestocksTodayProperty(p());
+    private final VillagerJobSiteProperty jboSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
 
     public VillagerRestocksTodayWidget(EntityProperties<Villager> properties) {
         super(properties);
@@ -57,14 +64,14 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
             if (numI == null) {
                 updatePercent(0);
                 super.onRender(ctx);
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 return;
             }
 
             int num = numI;
             updatePercent((float) num / MAX_RESTOCK_TODAY);
             super.onRender(ctx);
-            renderInnerText(ctx, Component.literal(String.valueOf(num)));
+            renderInnerText(ctx, TextUtils.literal(String.valueOf(num)));
         }
     }
 
@@ -78,11 +85,12 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                VillagerJobSiteProperty jboSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
                 Integer r = restocksTodayProperty.getVal();
-                GlobalPos j = jboSiteProperty.getVal();
-                if (VillagerForceRestockSkill.activate(e(), r, j)) {
-                    restocksTodayProperty.setVal(r + 1);
+                if (r != null) {
+                    GlobalPos j = jboSiteProperty.getVal();
+                    if (BiologySkills.activate(e(), new VillagerForceRestockSkill(r, j))) {
+                        restocksTodayProperty.setVal(r + 1);
+                    }
                 }
             }
             return true;
@@ -98,10 +106,15 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK_DESC)
-            );
+            Integer r = restocksTodayProperty.getVal();
+            GlobalPos j = jboSiteProperty.getVal();
+            SkillCost cost = new VillagerForceRestockSkill(r == null ? 0 : r, j).getRealCost(e());
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_RESTOCKS_TODAY_RESTOCK_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.toTooltipText());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

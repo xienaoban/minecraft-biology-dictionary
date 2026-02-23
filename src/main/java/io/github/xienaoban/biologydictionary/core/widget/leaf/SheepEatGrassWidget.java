@@ -3,7 +3,10 @@ package io.github.xienaoban.biologydictionary.core.widget.leaf;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.SheepForceEatGrassSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -13,6 +16,9 @@ import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionar
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.sheep.Sheep;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
     public static final Factory<Sheep> FACTORY = SheepEatGrassWidget::new;
@@ -47,8 +53,8 @@ public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
             if (isMouseLeft(code)) {
                 if (!SheepForceEatGrassSkill.isGrassOrGrassBlock(e())) {
                     AbstractBiologyDictionaryScreen.current()
-                            .sendScreenMessage(Component.translatable(Lang.TEXT_SHEEP_NO_GRASS_UNDER_FEET));
-                } else if (SheepForceEatGrassSkill.activate(e())) {
+                            .sendScreenMessage(TextUtils.translate(Lang.TEXT_SHEEP_NO_GRASS_UNDER_FEET));
+                } else if (BiologySkills.activate(e(), new SheepForceEatGrassSkill())) {
                     ClientUtils.getCurrentScreen().onClose();
                 }
             }
@@ -57,12 +63,13 @@ public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_EAT_GRASS),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_EAT_GRASS_DESC),
-                    tooltipEmpty(),
-                    tooltipBody(Lang.TEXT_EXPERIENCE_POINTS_COST, SheepForceEatGrassSkill.EXP_COST)
-            );
+            SkillCost cost = new SheepForceEatGrassSkill().getRealCost(e());
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_EAT_GRASS));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_EAT_GRASS_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.toTooltipText());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

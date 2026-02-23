@@ -8,7 +8,7 @@ import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -25,7 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class BiologyDictionary {
     public static final String MOD_ID = "biologydictionary";
 
-    public static final String MODRINTH_PAGE = "https://modrinth.com/mod/bole";
+    public static final String MODRINTH_PAGE = "https://modrinth.com/mod/biology-dictionary";
+    public static final String CURSEFORGE_PAGE = "https://www.curseforge.com/minecraft/mc-mods/biology-dictionary";
+    public static final String GITHUB_PAGE = "https://github.com/xienaoban/minecraft-biology-dictionary";
 
     public static final Logger LOGGER = LogManager.getLogger(BiologyDictionary.class);
 
@@ -36,12 +38,12 @@ public final class BiologyDictionary {
     private BiologyDictionary() {
         servers = ConcurrentHashMap.newKeySet();
 
-        ConfigsManager.load();
         EntityUtils.init();
         ServerNetManager.init();
         BiologyDictionaryItem.init();
         EntityProperties.init();
-        PlayerSkills.init();
+        BiologySkills.init();
+        ConfigsManager.load();
 
         ServerEventRegistry.registerStarted(servers::add);
         ServerEventRegistry.registerStopping(servers::remove);

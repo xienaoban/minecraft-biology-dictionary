@@ -3,36 +3,52 @@ package io.github.xienaoban.biologydictionary.core.skill.entity;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-public class EntitySetInvulnerableSkill implements EntityTargetedSkill<Entity> {
+public record EntitySetInvulnerableSkill(boolean invulnerable) implements EntityTargetedSkill<Entity> {
+    public static final Meta<EntitySetInvulnerableSkill> META = new Meta<>() {
+        @Override
+        public EntitySetInvulnerableSkill create(FriendlyByteBuf buf) {
+            return new EntitySetInvulnerableSkill(buf.readBoolean());
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.creativeOnly();
+        }
+
+        @Override
+        public String shortName() {
+            return "set_invulnerable";
+        }
+    };
+
     @Environment(EnvType.CLIENT)
-    public static boolean activate(Entity entity, boolean inv) {
-        return PlayerSkills.sendEntityTargetedSkill(entity, inv);
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeBoolean(invulnerable);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, Entity entity, Object... args) {
-        boolean inv = (boolean) args[0];
-        Permissions.checkPlayerCreative(player);
+    public void clientAdditionalCheck(LocalPlayer player, Entity entity) {
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
-        return ByteTag.valueOf(inv);
     }
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, Entity entity, Tag args) {
-        boolean inv = args.asBoolean().orElseThrow();
-        Permissions.checkPlayerCreative(player);
+    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
         Permissions.checkTargetPlayerLowerGameMode(player, entity);
-        VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(inv).setTo(entity);
+    }
+
+    @Override
+    public void serverDo(MinecraftServer server, ServerPlayer player, Entity entity) {
+        VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(invulnerable).setTo(entity);
     }
 }

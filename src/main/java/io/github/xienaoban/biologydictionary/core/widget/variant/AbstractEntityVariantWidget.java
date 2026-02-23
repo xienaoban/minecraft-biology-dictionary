@@ -7,7 +7,11 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElemen
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -109,7 +113,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     protected abstract boolean activeSkill(V variant);
 
-    protected boolean isAllowedToChoose() { return player.isCreative(); }
+    protected boolean isAllowedToChoose() { return PlayerUtils.isCreative(player); }
 
     protected boolean equals(V v1, V v2) {
         return Objects.equals(v1, v2);
@@ -232,10 +236,14 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        renderTooltip(ctx,
-                tooltipTitle(Lang.PROPERTY_WIDGET_VARIANT),
-                tooltipDescription(Lang.PROPERTY_WIDGET_VARIANT_DESC)
-        );
+        // Use placeholder values since variant is selected at runtime
+        SkillCost cost = new EntitySetVariantSkill("", -1, null).getRealCost(e());
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_VARIANT));
+        tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_VARIANT_DESC));
+        tooltip.add(TextUtils.empty());
+        tooltip.addAll(cost.toTooltipText());
+        renderTooltip(ctx, tooltip);
         return true;
     }
 
@@ -355,7 +363,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         private void renderEllipsis(ScreenRenderingContext ctx) {
-            renderTheText(ctx, Component.literal("..."));
+            renderTheText(ctx, TextUtils.literal("..."));
         }
 
         private void renderTheText(ScreenRenderingContext ctx, Component text) {

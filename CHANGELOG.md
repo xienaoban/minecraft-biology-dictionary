@@ -6,12 +6,18 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
+- Support screen scaling
+- Add loot table widget
+- Baby animals will be born silent when both parents are silent
+- Improve food, tempt widget tooltips
+- Configurable skill cost
+
 ### Changed
 
-### Fixed
+- All keys in the YAML config file are changed from camelCase to snake_case
+- Refactor skill module. Detailed tooltips.
 
-- GitHub workflows
-- Mod version
+### Fixed
 
 ---
 

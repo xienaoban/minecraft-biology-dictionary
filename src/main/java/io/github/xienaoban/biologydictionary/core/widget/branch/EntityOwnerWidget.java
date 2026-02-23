@@ -3,10 +3,13 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntityGiftPetSkill;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -100,9 +103,9 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
             super.onRender(ctx);
             updateOwnerRef();
             if (lastUuid == null) {
-                renderInnerText(ctx, Component.translatable(Lang.TEXT_NONE_WITH_BRACKETS), Colors.COMMON_LIGHT_TEXT);
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS), Colors.COMMON_LIGHT_TEXT);
             } else if (lastEntity == null) {
-                renderInnerText(ctx, Component.literal(lastUuid.toString()), Colors.COMMON_LIGHT_TEXT);
+                renderInnerText(ctx, TextUtils.literal(lastUuid.toString()), Colors.COMMON_LIGHT_TEXT);
             } else {
                 renderInnerText(ctx, lastEntity.getName(), Colors.COMMON_LIGHT_TEXT);
             }
@@ -118,12 +121,12 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 if (lastEntity != ClientUtils.getClientPlayer()) {
-                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(Component.translatable(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT));
+                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT));
                     return true;
                 }
                 ClientUtils.setScreen(new PlayerSelectorScreen(ClientUtils.getCurrentScreen(), targetPlayer -> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(null);
-                    EntityGiftPetSkill.activate(e(), targetPlayer);
+                    BiologySkills.activate(e(), new EntityGiftPetSkill(targetPlayer));
                     ownerProperty.setVal(EntityReference.of(targetPlayer.getUUID()));
                 }
                 ));
@@ -133,10 +136,14 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            renderTooltip(ctx,
-                    tooltipTitle(Lang.PROPERTY_WIDGET_OWNER_GIFT),
-                    tooltipDescription(Lang.PROPERTY_WIDGET_OWNER_GIFT_DESC)
-            );
+            // Target player is selected at runtime, so we use a placeholder UUID
+            SkillCost cost = new EntityGiftPetSkill(new UUID(0, 0)).getRealCost(e());
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_OWNER_GIFT));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_OWNER_GIFT_DESC));
+            tooltip.add(TextUtils.empty());
+            tooltip.addAll(cost.toTooltipText());
+            renderTooltip(ctx, tooltip);
             return true;
         }
     }

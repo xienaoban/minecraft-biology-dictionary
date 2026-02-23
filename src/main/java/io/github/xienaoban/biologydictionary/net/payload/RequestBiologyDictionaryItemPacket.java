@@ -6,8 +6,8 @@ import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import net.minecraft.network.FriendlyByteBuf;
 
-public record RequestHandbookItemPacket() implements Packet {
-    public static final Packet.Factory<RequestHandbookItemPacket> FACTORY = buf -> new RequestHandbookItemPacket();
+public record RequestBiologyDictionaryItemPacket() implements Packet {
+    public static final Packet.Factory<RequestBiologyDictionaryItemPacket> FACTORY = buf -> new RequestBiologyDictionaryItemPacket();
 
     @Override
     public void write(FriendlyByteBuf buf) {}

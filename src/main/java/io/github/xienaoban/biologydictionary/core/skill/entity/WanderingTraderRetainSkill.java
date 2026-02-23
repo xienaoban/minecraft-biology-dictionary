@@ -5,41 +5,43 @@ import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
-import io.github.xienaoban.biologydictionary.core.skill.Permissions;
-import io.github.xienaoban.biologydictionary.core.skill.PlayerSkills;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class WanderingTraderRetainSkill implements EntityTargetedSkill<WanderingTrader> {
+public record WanderingTraderRetainSkill() implements EntityTargetedSkill<WanderingTrader> {
+    public static final Meta<WanderingTraderRetainSkill> META = new Meta<>() {
+        @Override
+        public WanderingTraderRetainSkill create(FriendlyByteBuf buf) {
+            return new WanderingTraderRetainSkill();
+        }
+
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.ofItems(new ItemStack(Items.WATER_BUCKET));
+        }
+
+        @Override
+        public String shortName() {
+            return "retain";
+        }
+    };
+
     public static final int STAY_TICKS = 2 * 60 * 20;
 
     @Environment(EnvType.CLIENT)
-    public static boolean activate(Entity entity) {
-        return PlayerSkills.sendEntityTargetedSkill(entity);
-    }
-
-    @Environment(EnvType.CLIENT)
     @Override
-    public Tag clientSend(LocalPlayer player, WanderingTrader entity, Object... args) {
-        Permissions.checkPlayerCreativeOrInventoryItems(player, new ItemStack(Items.WATER_BUCKET, 1));
-        return ByteTag.valueOf(false);
-    }
+    public void write(FriendlyByteBuf buf) {}
 
     @Override
-    public void serverReceive(MinecraftServer server, ServerPlayer player, WanderingTrader entity, Tag args) {
-        Permissions.checkLegalArg(args.asBoolean().orElseThrow(), false);
-        Permissions.checkPlayerCreativeOrInventoryItems(player, new ItemStack(Items.WATER_BUCKET, 1));
-        Permissions.checkPlayerCreativeOrConsumeInventoryItems(player, new ItemStack(Items.WATER_BUCKET, 1));
+    public void serverDo(MinecraftServer server, ServerPlayer player, WanderingTrader entity) {
         if (!PlayerUtils.isCreative(player)) {
             PlayerUtils.getInventory(player).add(new ItemStack(Items.BUCKET, 1));
         }
