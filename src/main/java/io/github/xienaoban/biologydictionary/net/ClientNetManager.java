@@ -18,7 +18,7 @@ public final class ClientNetManager {
     }
 
     public static void requestBookItem() {
-        ClientNetApi.send(new RequestHandbookItemPacket());
+        ClientNetApi.send(new RequestBiologyDictionaryItemPacket());
     }
 
     public static void requestEntityData(Entity entity) {

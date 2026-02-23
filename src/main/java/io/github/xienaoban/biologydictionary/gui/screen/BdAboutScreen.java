@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -59,16 +60,16 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            if (ctx.isDebug() && player.isCreative()) {
+            if (ctx.isDebug() && PlayerUtils.isCreative(player)) {
                 ctx.renderCenteredText(TextUtils.literal("Get Book Item"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
             }
         }
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            if (screenRenderingContext.isDebug() && player.isCreative()) {
-                ClientNetManager.requestBookItem();
+            if (screenRenderingContext.isDebug() && PlayerUtils.isCreative(player)) {
                 onClose();
+                ClientNetManager.requestBookItem();
                 return true;
             }
             return false;

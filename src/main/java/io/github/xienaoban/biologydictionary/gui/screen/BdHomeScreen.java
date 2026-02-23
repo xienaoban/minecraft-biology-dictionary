@@ -189,8 +189,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     return true;
                 }
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
-                onClose();
-                BiologySkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance));
+                if (BiologySkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance))) {
+                    onClose();
+                }
             } else {
                 if (isMouseLeft(code)) {
                     BiologySkills.activate(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)));
@@ -253,12 +254,13 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 tooltips.add(TextUtils.empty());
                 tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY));
             } else {
-                tooltips = Arrays.asList(
-                        tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG),
-                        tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC),
-                        TextUtils.empty(),
-                        TextUtils.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY)
-                );
+                tooltips = new ArrayList<>();
+                tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG));
+                tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC));
+                tooltips.add(TextUtils.empty());
+                tooltips.addAll(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)).getRealCost().toTooltipText());
+                tooltips.add(TextUtils.empty());
+                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY));
             }
 
             ctx.renderComponentTooltipCentered(tooltips, 0.5F, midX, box.getBottom() + 1);

@@ -35,6 +35,6 @@ public interface GeneralSkill {
     interface Meta<T extends GeneralSkill> {
         T create(FriendlyByteBuf buf);
         SkillCost getDefaultCost();
-        String shortName();
+        String shortName(); // for yaml config
     }
 }

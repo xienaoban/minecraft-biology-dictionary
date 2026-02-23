@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElemen
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
@@ -112,7 +113,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     protected abstract boolean activeSkill(V variant);
 
-    protected boolean isAllowedToChoose() { return player.isCreative(); }
+    protected boolean isAllowedToChoose() { return PlayerUtils.isCreative(player); }
 
     protected boolean equals(V v1, V v2) {
         return Objects.equals(v1, v2);
