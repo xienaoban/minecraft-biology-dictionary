@@ -1,0 +1,99 @@
+# Publish mod to Modrinth, CurseForge and GitHub
+# Triggered by creating a GitHub release or pushing a tag
+
+name: release
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger on version tags like v0.5.0-mc1.21.11-fabric
+  workflow_dispatch:  # Allow manual triggering from GitHub Actions page
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    if: startsWith(github.ref, 'refs/tags/')  # Only run on tags, not branches
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: check tag versions
+        run: |
+          chmod +x .github/scripts/check-tag-versions.sh
+          .github/scripts/check-tag-versions.sh
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_ENV: ${{ github.env }}
+
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: setup jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: build
+        run: ./gradlew build -Dbuild.release=true
+
+      - name: test
+        run: ./gradlew testServer
+
+      - name: rename jar
+        run: |
+          chmod +x .github/scripts/rename-jar.sh
+          .github/scripts/rename-jar.sh
+        env:
+          MOD_VERSION: ${{ env.MOD_VERSION }}
+          MC_VERSION: ${{ env.MC_VERSION }}
+          LOADER_TYPE: ${{ env.LOADER_TYPE }}
+          GITHUB_ENV: ${{ github.env }}
+
+      - name: integration test - run minecraft server
+        run: |
+          chmod +x .github/scripts/integration-test.sh
+          .github/scripts/integration-test.sh
+        env:
+          MOD_JAR: ${{ env.MOD_JAR }}
+          MC_VERSION: ${{ env.MC_VERSION }}
+          LOADER_TYPE: ${{ env.LOADER_TYPE }}
+
+      - name: publish to modrinth, curseforge and github
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # Modrinth
+          modrinth-id: biology-dictionary
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          # CurseForge
+          curseforge-id: 1426515
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          # GitHub
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Version info
+          name: 'Biology Dictionary ${{ github.ref_name }}'
+          version: '${{ github.ref_name }}'
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: CHANGELOG.md
+
+          # Game and loader info
+          loaders: fabric
+          java: 25
+
+          # Dependencies
+          dependencies: |
+            fabric-api
+            cloth-config
+
+          # Files
+          files: |
+            build/libs/biologydictionary-*-mc*.jar

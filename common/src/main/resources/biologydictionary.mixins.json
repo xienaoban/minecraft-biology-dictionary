@@ -3,9 +3,35 @@
     "package": "io.github.xienaoban.biologydictionary.mixin",
     "compatibilityLevel": "JAVA_21",
     "minVersion": "0.8",
-    "client": [
-    ],
     "mixins": [
+        "AbstractHorseMixin",
+        "AgeableMobMixin",
+        "AnimalIMixin",
+        "AnimalMixin",
+        "ArmadilloStateIMixin",
+        "CompositeEntryBaseIMixin",
+        "CustomDataIMixin",
+        "EntityIMixin",
+        "EntityMixin",
+        "HorseIMixin",
+        "LootItemIMixin",
+        "LootPoolEntryContainerIMixin",
+        "LootPoolIMixin",
+        "LootPoolSingletonContainerIMixin",
+        "LootTableIMixin",
+        "MobEffectInstanceIMixin",
+        "MobIMixin",
+        "NestedLootTableIMixin",
+        "ServerPlayerIMixin",
+        "SetItemCountFunctionIMixin",
+        "TagEntryIMixin",
+        "TemptGoalIMixin",
+        "WanderingTraderMixin"
+    ],
+    "client": [
+        "ItemInHandRendererMixin",
+        "LevelRendererMixin",
+        "MinecraftMixin"
     ],
     "injectors": {
         "defaultRequire": 1

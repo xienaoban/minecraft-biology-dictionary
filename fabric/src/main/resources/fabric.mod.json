@@ -8,29 +8,38 @@
         "XieNaoban"
     ],
     "contact": {
-        "homepage": "https://github.com/xienaoban/minecraft-biology-dictionary"
+        "homepage": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "sources": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "repo": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "issues": "https://github.com/xienaoban/minecraft-biology-dictionary/issues"
     },
     "license": "LGPL-3.0",
     "icon": "assets/biologydictionary/icon.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-            "io.github.xienaoban.biologydictionary.fabric.BiologydictionaryFabric"
+            "io.github.xienaoban.biologydictionary.fabric.BiologyDictionaryFabric"
         ],
         "client": [
-            "io.github.xienaoban.biologydictionary.fabric.client.BiologydictionaryFabricClient"
+            "io.github.xienaoban.biologydictionary.fabric.BiologyDictionaryFabricClient"
+        ],
+        "modmenu": [
+            "io.github.xienaoban.biologydictionary.fabric.config.ModMenuConfigScreenProvider"
         ]
     },
+    "accessWidener" : "biologydictionary.classtweaker",
     "mixins": [
         "biologydictionary.mixins.json"
     ],
     "depends": {
-        "fabricloader": ">=0.18.4",
-        "minecraft": "~1.21.11",
-        "java": ">=21",
-        "fabric-api": "*"
+        "minecraft": "${minecraft_version}",
+        "fabricloader": ">=${fabric_loader_version}",
+        "fabric-api": "*",
+        "cloth-config": ">=${clothconfig_version}",
+        "java": ">=21"
     },
     "suggests": {
+        "modmenu": ">=${modmenu_version}",
         "another-mod": "*"
     }
 }

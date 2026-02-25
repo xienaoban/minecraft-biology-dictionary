@@ -24,6 +24,10 @@ configurations {
     }
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/biologydictionary.classtweaker")
+}
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
@@ -36,9 +40,18 @@ dependencies {
 
 processResources {
     inputs.property 'version', project.version
+    inputs.property 'minecraft_version', rootProject.minecraft_version
+    inputs.property 'fabric_loader_version', rootProject.fabric_loader_version
+    inputs.property 'modmenu_version', rootProject.fabric_modmenu_version
+    inputs.property 'clothconfig_version', rootProject.clothconfig_version
+    filteringCharset "UTF-8"
 
     filesMatching('fabric.mod.json') {
-        expand version: project.version
+        expand 'version': inputs.properties.version,
+                'minecraft_version': inputs.properties.minecraft_version,
+                'fabric_loader_version': inputs.properties.fabric_loader_version,
+                'modmenu_version': inputs.properties.modmenu_version,
+                'clothconfig_version': inputs.properties.clothconfig_version
     }
 }
 
