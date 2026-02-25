@@ -1,0 +1,43 @@
+package io.github.xienaoban.biologydictionary.net.payload;
+
+import io.github.xienaoban.biologydictionary.common.net.Packet;
+import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.common.util.Misc;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
+
+public record RequestEntityDataPacket(int entityId) implements Packet {
+    public static final Packet.Factory<RequestEntityDataPacket> FACTORY = RequestEntityDataPacket::new;
+
+    private RequestEntityDataPacket(FriendlyByteBuf buf) { this(buf.readInt()); }
+
+    @Override
+    public void write(FriendlyByteBuf buf) { buf.writeInt(entityId); }
+
+    @Override
+    public void serverReceive(ServerNetApi.Context ctx) {
+        Entity entity = ctx.player().level().getEntity(entityId);
+
+        ReplyEntityDataPacket toSend;
+        if (entity != null) {
+            // Write vanilla NBT data.
+            CompoundTag vanillaNbt = EntityUtils.getNbt(entity);
+
+            // Write data that not in vanilla NBT.
+            CompoundTag extraNbt = new CompoundTag();
+            for (EntityProperty<?> p : new EntityProperties<>(entity).getExtras()) {
+                p.getFrom(Misc.cast(entity));
+                p.writeTo(extraNbt);
+            }
+            toSend = new ReplyEntityDataPacket(true, EntityUtils.getId(entity), vanillaNbt, extraNbt);
+        } else {
+            toSend = new ReplyEntityDataPacket(false, -1, null, null);
+        }
+
+        ServerNetApi.send(ctx.player(), toSend);
+    }
+}
