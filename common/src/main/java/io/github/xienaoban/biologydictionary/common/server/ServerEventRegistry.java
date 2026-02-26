@@ -1,15 +1,17 @@
 package io.github.xienaoban.biologydictionary.common.server;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.server.MinecraftServer;
 
 public final class ServerEventRegistry {
+    @ExpectPlatform
     public static void registerStarted(ServerListener listener) {
-        ServerLifecycleEvents.SERVER_STARTED.register(listener::run);
+        throw new AssertionError();
     }
 
+    @ExpectPlatform
     public static void registerStopping(ServerListener listener) {
-        ServerLifecycleEvents.SERVER_STOPPING.register(listener::run);
+        throw new AssertionError();
     }
 
     @FunctionalInterface
