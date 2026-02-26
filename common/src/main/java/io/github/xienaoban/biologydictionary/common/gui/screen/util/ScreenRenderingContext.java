@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.RenderUtils;
+import io.github.xienaoban.biologydictionary.mixin.GuiGraphicsIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -102,8 +103,8 @@ public final class ScreenRenderingContext {
     public Matrix3x2fStack getPose() {
         return getGuiGraphics().pose();
     }
-    public GuiGraphics.ScissorStack getScissorStack() { return getGuiGraphics().scissorStack; }
-    public GuiRenderState getGuiRenderState() { return getGuiGraphics().guiRenderState; }
+    public GuiGraphics.ScissorStack getScissorStack() { return ((GuiGraphicsIMixin) getGuiGraphics()).getScissorStack(); }
+    public GuiRenderState getGuiRenderState() { return ((GuiGraphicsIMixin) getGuiGraphics()).getGuiRenderState(); }
 
     public ScaleRAII scaleOnce(float size) {
         return new ScaleRAII(this, size);

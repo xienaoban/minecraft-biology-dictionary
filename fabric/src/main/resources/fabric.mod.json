@@ -27,7 +27,6 @@
             "io.github.xienaoban.biologydictionary.fabric.config.ModMenuConfigScreenProvider"
         ]
     },
-    "accessWidener" : "biologydictionary.classtweaker",
     "mixins": [
         "biologydictionary.mixins.json"
     ],

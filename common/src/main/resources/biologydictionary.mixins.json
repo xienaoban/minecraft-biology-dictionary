@@ -29,6 +29,7 @@
         "WanderingTraderMixin"
     ],
     "client": [
+        "GuiGraphicsIMixin",
         "ItemInHandRendererMixin",
         "LevelRendererMixin",
         "MinecraftMixin"
