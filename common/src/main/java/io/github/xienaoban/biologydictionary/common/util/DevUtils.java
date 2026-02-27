@@ -6,7 +6,6 @@ import net.minecraft.resources.Identifier;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public final class DevUtils {
     public static final String MINECRAFT_PACKAGE = "net.minecraft";
@@ -26,10 +25,6 @@ public final class DevUtils {
     @ExpectPlatform
     public static boolean isClient() {
         throw new AssertionError();
-    }
-
-    public static <T> T clientOnly(Supplier<T> supplier) {
-        return isClient() ? supplier.get() : null;
     }
 
     @ExpectPlatform
