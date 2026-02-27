@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.mixin.CreativeModeTabsIMixin;
 import io.github.xienaoban.biologydictionary.mixin.CustomDataIMixin;
 import io.github.xienaoban.biologydictionary.mixin.MinecraftMixin;
 import net.minecraft.core.component.DataComponents;
@@ -46,7 +47,7 @@ public final class BiologyDictionaryItem {
     private static final CompoundTag ID_NBT = initIdNbt();
 
     public static void init() {
-        ItemRegistry.register(CreativeModeTabs.TOOLS_AND_UTILITIES, createBook());
+        ItemRegistry.register(CreativeModeTabsIMixin.getToolsAndUtilities(), createBook());
     }
 
     /**

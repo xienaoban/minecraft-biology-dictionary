@@ -24,7 +24,7 @@
             "io.github.xienaoban.biologydictionary.fabric.BiologyDictionaryFabricClient"
         ],
         "modmenu": [
-            "io.github.xienaoban.biologydictionary.fabric.config.ModMenuConfigScreenProvider"
+            "io.github.xienaoban.biologydictionary.config.fabric.ModMenuConfigScreenProvider"
         ]
     },
     "mixins": [
