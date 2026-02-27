@@ -1,0 +1,15 @@
+package io.github.xienaoban.biologydictionary.common.server.neoforge;
+
+import dev.architectury.event.events.common.LifecycleEvent;
+import io.github.xienaoban.biologydictionary.common.server.ServerEventRegistry;
+
+public final class ServerEventRegistryImpl {
+
+    public static void registerStarted(ServerEventRegistry.ServerListener listener) {
+        LifecycleEvent.SERVER_STARTED.register(listener::run);
+    }
+
+    public static void registerStopping(ServerEventRegistry.ServerListener listener) {
+        LifecycleEvent.SERVER_STOPPING.register(listener::run);
+    }
+}
