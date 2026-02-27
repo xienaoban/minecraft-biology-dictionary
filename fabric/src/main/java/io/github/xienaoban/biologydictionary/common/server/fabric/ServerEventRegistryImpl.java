@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.common.server.fabric;
 import io.github.xienaoban.biologydictionary.common.server.ServerEventRegistry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-public class ServerEventRegistryImpl {
+public final class ServerEventRegistryImpl {
     public static void registerStarted(ServerEventRegistry.ServerListener listener) {
         ServerLifecycleEvents.SERVER_STARTED.register(listener::run);
     }

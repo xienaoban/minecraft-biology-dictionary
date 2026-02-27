@@ -13,7 +13,12 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
     
     // Common dependencies for both platforms
-    modImplementation "me.shedaniel.cloth:cloth-config:$rootProject.clothconfig_version"
-    implementation "org.yaml:snakeyaml:$rootProject.snakeyaml_version"
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.clothconfig_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    // SnakeYAML for config file parsing
+    modImplementation "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
+    include "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
 
 }

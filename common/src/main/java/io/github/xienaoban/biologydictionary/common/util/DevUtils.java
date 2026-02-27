@@ -1,13 +1,10 @@
 package io.github.xienaoban.biologydictionary.common.util;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -18,23 +15,26 @@ public final class DevUtils {
 
     public static String getModVersion(String modId) {
         if (modVersion != null) return modVersion;
-        // no need to use locks here
-        String version = "<unknown>";
-        Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(modId);
-        if (modContainer.isPresent()) version = modContainer.get().getMetadata().getVersion().toString();
-        return modVersion = version;
+        return modVersion = getModVersion0(modId);
     }
 
+    @ExpectPlatform
+    public static String getModVersion0(String modId) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
     public static boolean isClient() {
-        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
+        throw new AssertionError();
     }
 
     public static <T> T clientOnly(Supplier<T> supplier) {
         return isClient() ? supplier.get() : null;
     }
 
+    @ExpectPlatform
     public static Path getConfigDir() {
-        return FabricLoader.getInstance().getConfigDir();
+        throw new AssertionError();
     }
 
     /**

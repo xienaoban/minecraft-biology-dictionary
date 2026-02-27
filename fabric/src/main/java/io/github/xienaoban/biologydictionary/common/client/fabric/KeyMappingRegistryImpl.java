@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 
 @Environment(EnvType.CLIENT)
-public class KeyMappingRegistryImpl {
+public final class KeyMappingRegistryImpl {
     public static void registerKeyMapping(KeyMapping mapping) {
         KeyBindingHelper.registerKeyBinding(mapping);
     }
