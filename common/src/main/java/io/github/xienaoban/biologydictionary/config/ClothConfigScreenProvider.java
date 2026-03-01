@@ -12,11 +12,14 @@ import me.shedaniel.clothconfig2.impl.builders.AbstractFieldBuilder;
 import me.shedaniel.clothconfig2.impl.builders.AbstractRangeFieldBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -28,7 +31,7 @@ public class ClothConfigScreenProvider {
     // Cache default config instance to avoid repeated instantiation
     private static final Configs DEFAULT_CONFIGS = new Configs();
 
-    public static net.minecraft.client.gui.screens.Screen provideScreen(net.minecraft.client.gui.screens.Screen parent) {
+    public static Screen provideScreen(net.minecraft.client.gui.screens.Screen parent) {
         Configs configs = ConfigsManager.getInstance();
 
         // Get the @Config annotation from the class

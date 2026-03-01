@@ -10,8 +10,6 @@ fi
 # Read properties from gradle.properties
 MOD_VERSION=$(grep "^mod_version=" gradle.properties | cut -d'=' -f2)
 MC_VERSION=$(grep "^minecraft_version=" gradle.properties | cut -d'=' -f2)
-FABRIC_VERSION=$(grep "^fabric_version=" gradle.properties | cut -d'=' -f2)
-FORGE_VERSION=$(grep "^forge_version=" gradle.properties | cut -d'=' -f2)
 
 # Get tag name from environment or argument
 TAG_NAME="${GITHUB_REF_NAME:-$1}"
@@ -39,30 +37,8 @@ if ! echo "$TAG_NAME" | grep -q "$MC_VERSION"; then
 fi
 echo "✓ minecraft_version check passed"
 
-# Check 3: loader type must be in tag
-if [ -n "$FABRIC_VERSION" ]; then
-  if ! echo "$TAG_NAME" | grep -qi "fabric"; then
-    echo "Error: Tag '$TAG_NAME' does not contain 'fabric' (fabric_version exists)"
-    exit 1
-  fi
-  echo "✓ fabric check passed"
-elif [ -n "$FORGE_VERSION" ]; then
-  if ! echo "$TAG_NAME" | grep -qi "forge"; then
-    echo "Error: Tag '$TAG_NAME' does not contain 'forge' (forge_version exists)"
-    exit 1
-  fi
-  echo "✓ forge check passed"
-else
-  echo "Error: No fabric_version or forge_version found in gradle.properties"
-  exit 1
-fi
-
-# Determine loader type
-if [ -n "$FABRIC_VERSION" ]; then
-  LOADER_TYPE="fabric"
-elif [ -n "$FORGE_VERSION" ]; then
-  LOADER_TYPE="forge"
-fi
+# Note: No longer checking for loader type in tag name
+# We publish both fabric and neoforge from the same tag
 
 # Determine release type
 # Check for beta first (since 'beta' contains 'alpha' as substring if we're not careful)
@@ -81,7 +57,6 @@ echo "Release type: $RELEASE_TYPE"
 if [ -n "$GITHUB_ENV" ]; then
   echo "MOD_VERSION=$MOD_VERSION" >> "$GITHUB_ENV"
   echo "MC_VERSION=$MC_VERSION" >> "$GITHUB_ENV"
-  echo "LOADER_TYPE=$LOADER_TYPE" >> "$GITHUB_ENV"
   echo "RELEASE_TYPE=$RELEASE_TYPE" >> "$GITHUB_ENV"
 fi
 

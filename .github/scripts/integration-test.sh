@@ -1,14 +1,13 @@
 #!/bin/bash
 set -e
 
-# Required environment variables
-SERVER_DIR="${SERVER_DIR:-build/vanillaServer}"
-
 # Validate required environment variables
 if [ -z "$MOD_JAR" ] || [ -z "$MC_VERSION" ] || [ -z "$LOADER_TYPE" ]; then
   echo "Error: Required environment variables not set (MOD_JAR, MC_VERSION, LOADER_TYPE)"
   exit 1
 fi
+
+SERVER_DIR="${SERVER_DIR:-${LOADER_TYPE}/build/vanillaServer}"
 
 echo "Setting up Minecraft server integration test..."
 echo "Server directory: $SERVER_DIR"
@@ -83,13 +82,13 @@ if [ "$LOADER_TYPE" = "fabric" ]; then
   else
     echo "Warning: fabric-server-launch.jar not found"
   fi
-elif [ "$LOADER_TYPE" = "forge" ]; then
+elif [ "$LOADER_TYPE" = "neoforge" ]; then
   echo "Downloading Forge installer..."
   FORGE_VERSION=$(grep "^forge_version=" ../../gradle.properties | cut -d'=' -f2)
-  FORGE_INSTALLER_URL="https://maven.minecraftforge.net/net/minecraftforge/forge/${MC_VERSION}-${FORGE_VERSION}/forge-${MC_VERSION}-${FORGE_VERSION}-installer.jar"
-  wget -q "$FORGE_INSTALLER_URL" -O forge-installer.jar
-  echo "Installing Forge loader..."
-  java -jar forge-installer.jar --installServer
+  FORGE_INSTALLER_URL="https://maven.neoforged.net/releases/net/neoforged/neoforge/${FORGE_VERSION}/neoforge-${FORGE_VERSION}-installer.jar"
+  wget -q "$FORGE_INSTALLER_URL" -O neoforge-installer.jar
+  echo "Installing neoforge loader..."
+  java -jar neoforge-installer.jar --installServer
 else
   echo "Error: Unknown loader type: $LOADER_TYPE"
   exit 1

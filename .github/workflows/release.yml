@@ -5,7 +5,7 @@ name: release
 on:
   push:
     tags:
-      - 'v*.*.*'  # Trigger on version tags like v0.5.0-mc1.21.11-fabric
+      - 'v*-mc*'  # Trigger on version tags like v0.7.0-mc1.21.11
   workflow_dispatch:  # Allow manual triggering from GitHub Actions page
 
 jobs:
@@ -34,17 +34,23 @@ jobs:
       - name: setup jdk
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: '21'
           distribution: 'microsoft'
 
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: build
-        run: ./gradlew build -Dbuild.release=true
+      - name: build fabric
+        run: ./gradlew fabric:build -Dbuild.release=true
 
-      - name: test
-        run: ./gradlew testServer
+      - name: build neoforge
+        run: ./gradlew neoforge:build -Dbuild.release=true
+
+      - name: test fabric
+        run: ./gradlew fabric:testServer
+
+      - name: test neoforge
+        run: ./gradlew neoforge:testServer
 
       - name: rename jar
         run: |
@@ -53,19 +59,27 @@ jobs:
         env:
           MOD_VERSION: ${{ env.MOD_VERSION }}
           MC_VERSION: ${{ env.MC_VERSION }}
-          LOADER_TYPE: ${{ env.LOADER_TYPE }}
           GITHUB_ENV: ${{ github.env }}
 
-      - name: integration test - run minecraft server
+      - name: integration test fabric - run minecraft server
         run: |
           chmod +x .github/scripts/integration-test.sh
           .github/scripts/integration-test.sh
         env:
-          MOD_JAR: ${{ env.MOD_JAR }}
+          MOD_JAR: ${{ env.MOD_JAR_FABRIC }}
           MC_VERSION: ${{ env.MC_VERSION }}
-          LOADER_TYPE: ${{ env.LOADER_TYPE }}
+          LOADER_TYPE: fabric
 
-      - name: publish to modrinth, curseforge and github
+      - name: integration test neoforge - run minecraft server
+        run: |
+          chmod +x .github/scripts/integration-test.sh
+          .github/scripts/integration-test.sh
+        env:
+          MOD_JAR: ${{ env.MOD_JAR_NEOFORGE }}
+          MC_VERSION: ${{ env.MC_VERSION }}
+          LOADER_TYPE: neoforge
+
+      - name: publish fabric version to modrinth, curseforge and github
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           # Modrinth
@@ -80,20 +94,57 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
           # Version info
-          name: 'Biology Dictionary ${{ github.ref_name }}'
-          version: '${{ github.ref_name }}'
+          name: "Biology Dictionary ${{ github.ref_name }}-fabric"
+          version: "${{ github.ref_name }}-fabric"
           version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: CHANGELOG.md
 
           # Game and loader info
           loaders: fabric
-          java: 25
+          java: |
+            21
+            25
+
+          # Files
+          files: |
+            ${{ env.MOD_JAR_FABRIC }}
 
           # Dependencies
           dependencies: |
             fabric-api
             cloth-config
 
+      - name: publish neoforge version to modrinth, curseforge and github
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # Modrinth
+          modrinth-id: biology-dictionary
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          # CurseForge
+          curseforge-id: 1426515
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          # GitHub
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Version info
+          name: "Biology Dictionary ${{ github.ref_name }}-neoforge"
+          version: "${{ github.ref_name }}-neoforge"
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: CHANGELOG.md
+
+          # Game and loader info
+          loaders: neoforge
+          java: |
+            21
+            25
+
           # Files
           files: |
-            build/libs/biologydictionary-*-mc*.jar
+            ${{ env.MOD_JAR_NEOFORGE }}
+
+          # Dependencies
+          dependencies: |
+            architectury-api
+            cloth-config
