@@ -52,8 +52,8 @@ public record SheepForceEatGrassSkill() implements EntityTargetedSkill<Sheep> {
     public void write(FriendlyByteBuf buf) {}
 
     @Override
-    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Sheep entity) {
-        Permissions.checkMobHasGoalAndStart(entity, EatBlockGoal.class);
+    public void serverAdditionalCheck(ServerContext<Sheep> ctx) {
+        Permissions.checkMobHasGoalAndStart(ctx.entity(), EatBlockGoal.class);
     }
 
     /**
@@ -62,15 +62,15 @@ public record SheepForceEatGrassSkill() implements EntityTargetedSkill<Sheep> {
      * @see net.minecraft.world.entity.ai.goal.EatBlockGoal#tick()
      */
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player, Sheep sheep) {
-        ServerLevel level = (ServerLevel) EntityUtils.getLevel(sheep);
-        BlockPos blockPos = sheep.blockPosition();
+    public void serverDo(ServerContext<Sheep> ctx) {
+        ServerLevel level = (ServerLevel) EntityUtils.getLevel(ctx.entity());
+        BlockPos blockPos = ctx.entity().blockPosition();
 
         boolean hasGrassBlock = level.getBlockState(blockPos.below()).is(Blocks.GRASS_BLOCK);
-        boolean hasEdibleBlock = isGrassOrGrassBlock(sheep);
+        boolean hasEdibleBlock = isGrassOrGrassBlock(ctx.entity());
 
         if (hasEdibleBlock || hasGrassBlock) {
-            level.broadcastEntityEvent(sheep, (byte) 10);
+            level.broadcastEntityEvent(ctx.entity(), (byte) 10);
 
             if (hasGrassBlock && level.getGameRules().get(GameRules.MOB_GRIEFING)) {
                 BlockPos belowPos = blockPos.below();
@@ -80,7 +80,7 @@ public record SheepForceEatGrassSkill() implements EntityTargetedSkill<Sheep> {
                 level.destroyBlock(blockPos, false);
             }
 
-            sheep.ate();
+            ctx.entity().ate();
         }
     }
 }

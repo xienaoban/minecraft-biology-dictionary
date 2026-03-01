@@ -40,17 +40,20 @@ public record EntitySetPortalCooldownSkill(int cooldown) implements EntityTarget
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientAdditionalCheck(LocalPlayer player, Entity entity) {
-        Permissions.checkTargetPlayerLowerGameMode(player, entity);
+    public void clientAdditionalCheck(ClientContext<Entity> ctx) {
+        final class C { static void check(ClientContext<Entity> ctx) {
+            Permissions.checkTargetPlayerLowerGameMode(ctx.player(), ctx.entity());
+        }}
+        C.check(ctx);
     }
 
     @Override
-    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
-        Permissions.checkTargetPlayerLowerGameMode(player, entity);
+    public void serverAdditionalCheck(ServerContext<Entity> ctx) {
+        Permissions.checkTargetPlayerLowerGameMode(ctx.player(), ctx.entity());
     }
 
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player, Entity entity) {
-        VanillaEntityProperties.OfEntity.createPortalCooldownProperty().withVal(cooldown).setTo(entity);
+    public void serverDo(ServerContext<Entity> ctx) {
+        VanillaEntityProperties.OfEntity.createPortalCooldownProperty().withVal(cooldown).setTo(ctx.entity());
     }
 }

@@ -87,14 +87,8 @@ public final class EntityUtils {
         return EntityVanillaDeobfuscation.clazzToName.get(clazz);
     }
 
-    @Environment(EnvType.CLIENT)
     public static <E extends Entity> E create(E entity) {
-        return create(getEntityType(entity));
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static <E extends Entity> E create(EntityType<E> entityType) {
-        return create(entityType, ClientUtils.getClientLevel());
+        return create(getEntityType(entity), getLevel(entity));
     }
 
     public static <E extends Entity> E create(EntityType<E> entityType, Level level) {

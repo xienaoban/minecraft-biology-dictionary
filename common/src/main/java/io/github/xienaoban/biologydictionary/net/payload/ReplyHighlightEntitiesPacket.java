@@ -4,8 +4,8 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import net.fabricmc.api.EnvType;
@@ -37,20 +37,23 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        if (!allowed) { return; }
+        final class C { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
+            if (!packet.allowed()) { return; }
 
-        ClientUtils.playScreenSound(SoundEvents.ENDER_DRAGON_FLAP, 0.6F, -10.0F);
-        LocalPlayer player = ctx.player();
-        int cnt = 0;
-        for (Entity e : ClientUtils.getClientLevel().entitiesForRendering()) {
-            if (e.getType() != entityType) { continue; }
-            if (player.distanceToSqr(e) > radius * radius) {
-                continue;
+            ClientUtils.playScreenSound(SoundEvents.ENDER_DRAGON_FLAP, 0.6F, -10.0F);
+            LocalPlayer player = ctx.player();
+            int cnt = 0;
+            for (Entity e : ClientUtils.getClientLevel().entitiesForRendering()) {
+                if (e.getType() != packet.entityType()) { continue; }
+                if (player.distanceToSqr(e) > packet.radius() * packet.radius()) {
+                    continue;
+                }
+                ++cnt;
+                HighlightManager.highlightEntity(e, HighlightEntitiesSkill.TICKS);
             }
-            ++cnt;
-            HighlightManager.highlightEntity(e, HighlightEntitiesSkill.TICKS);
-        }
-        ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
-                cnt, entityType.getDescription(), radius));
+            ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
+                    cnt, packet.entityType().getDescription(), packet.radius()));
+        }}
+        C.receive(this, ctx);
     }
 }

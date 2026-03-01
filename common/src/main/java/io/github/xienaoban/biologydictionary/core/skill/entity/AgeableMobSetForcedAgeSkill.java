@@ -6,11 +6,8 @@ import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -41,10 +38,10 @@ public record AgeableMobSetForcedAgeSkill(int forcedAge, int age) implements Ent
     }
 
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player, AgeableMob entity) {
+    public void serverDo(ServerContext<AgeableMob> ctx) {
         CompoundTag nbt = new CompoundTag();
         VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty().withVal(forcedAge).writeTo(nbt);
         VanillaEntityProperties.OfAgeableMob.createAgeProperty().withVal(age).writeTo(nbt);
-        EntityUtils.mergeNbt(entity, nbt);
+        EntityUtils.mergeNbt(ctx.entity(), nbt);
     }
 }

@@ -41,15 +41,15 @@ public record WanderingTraderRetainSkill() implements EntityTargetedSkill<Wander
     public void write(FriendlyByteBuf buf) {}
 
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player, WanderingTrader entity) {
-        if (!PlayerUtils.isCreative(player)) {
-            PlayerUtils.getInventory(player).add(new ItemStack(Items.BUCKET, 1));
+    public void serverDo(ServerContext<WanderingTrader> ctx) {
+        if (!PlayerUtils.isCreative(ctx.player())) {
+            PlayerUtils.getInventory(ctx.player()).add(new ItemStack(Items.BUCKET, 1));
         }
-        EntityUtils.playSound(entity, SoundEvents.WANDERING_TRADER_DRINK_MILK);
+        EntityUtils.playSound(ctx.entity(), SoundEvents.WANDERING_TRADER_DRINK_MILK);
 
         IntProperty<WanderingTrader> property = VanillaEntityProperties.OfWanderingTrader.createDespawnDelayProperty();
-        property.getFrom(entity);
+        property.getFrom(ctx.entity());
         property.setVal(property.getVal() + STAY_TICKS);
-        property.setTo(entity);
+        property.setTo(ctx.entity());
     }
 }

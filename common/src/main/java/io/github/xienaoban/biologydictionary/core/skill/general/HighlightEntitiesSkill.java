@@ -9,10 +9,7 @@ import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -53,12 +50,12 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
     }
 
     @Override
-    public void clientAdditionalCheck(LocalPlayer player) throws NoPermissionException {
+    public void clientAdditionalCheck(ClientContext ctx) throws NoPermissionException {
         commonCheck();
     }
 
     @Override
-    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player) {
+    public void serverAdditionalCheck(ServerContext ctx) {
         commonCheck();
     }
 
@@ -73,9 +70,9 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
     }
 
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player) {
-        player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, BLINDNESS_TICKS));
-        ServerNetManager.replyHighlightEntitiesSkill(player, true, entityType, radius);
+    public void serverDo(ServerContext ctx) {
+        ctx.player().addEffect(new MobEffectInstance(MobEffects.BLINDNESS, BLINDNESS_TICKS));
+        ServerNetManager.replyHighlightEntitiesSkill(ctx.player(), true, entityType, radius);
     }
 
     @Override

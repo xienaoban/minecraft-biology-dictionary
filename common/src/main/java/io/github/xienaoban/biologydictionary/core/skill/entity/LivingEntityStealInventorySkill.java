@@ -40,11 +40,11 @@ public record LivingEntityStealInventorySkill() implements EntityTargetedSkill<L
      * @see net.minecraft.server.level.ServerPlayer#openHorseInventory(net.minecraft.world.entity.animal.equine.AbstractHorse, net.minecraft.world.Container)
      */
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player, LivingEntity entity) {
-        Container container = EntityInventoryPropertyBundle.getContainerOrEmpty(entity);
-        PlayerUtils.openContainerInventoryMenu(player, (counter, inventory, player1) -> {
-            ServerNetManager.replyInventoryStealingScreen(player, counter, entity, container);
-            return new InventoryStealingMenu(counter, inventory, entity, container);
+    public void serverDo(ServerContext<LivingEntity> ctx) {
+        Container container = EntityInventoryPropertyBundle.getContainerOrEmpty(ctx.entity());
+        PlayerUtils.openContainerInventoryMenu(ctx.player(), (counter, inventory, player1) -> {
+            ServerNetManager.replyInventoryStealingScreen(ctx.player(), counter, ctx.entity(), container);
+            return new InventoryStealingMenu(counter, inventory, ctx.entity(), container);
         });
     }
 }

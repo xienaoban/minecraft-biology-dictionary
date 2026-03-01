@@ -6,8 +6,6 @@ import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.animal.bee.Bee;
 
 public record BeeClearHiveSkill() implements EntityTargetedSkill<Bee> {
@@ -33,7 +31,7 @@ public record BeeClearHiveSkill() implements EntityTargetedSkill<Bee> {
     public void write(FriendlyByteBuf buf) {}
 
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player, Bee entity) {
-        VanillaEntityProperties.OfBee.createHivePosProperty().withVal(null).setTo(entity);
+    public void serverDo(ServerContext<Bee> ctx) {
+        VanillaEntityProperties.OfBee.createHivePosProperty().withVal(null).setTo(ctx.entity());
     }
 }

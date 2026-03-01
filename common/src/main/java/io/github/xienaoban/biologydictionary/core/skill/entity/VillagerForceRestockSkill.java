@@ -69,18 +69,21 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientAdditionalCheck(LocalPlayer player, Villager entity) {
-        checkVillagerHasJobSite(restocksToday, jobSitePos);
-        checkVillagerCloseToJobSite(entity, jobSitePos);
+    public void clientAdditionalCheck(ClientContext<Villager> ctx) {
+        final class C { static void check(ClientContext<Villager> ctx, Integer restocksToday, GlobalPos jobSitePos) {
+            checkVillagerHasJobSite(restocksToday, jobSitePos);
+            checkVillagerCloseToJobSite(ctx.entity(), jobSitePos);
+        }}
+        C.check(ctx, restocksToday, jobSitePos);
     }
 
     @Override
-    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Villager entity) {
+    public void serverAdditionalCheck(ServerContext<Villager> ctx) {
         IntProperty<Villager> restocksTodayProperty = VanillaEntityProperties.OfVillager.createRestocksTodayProperty();
         VillagerJobSiteProperty jobSiteProperty = new VillagerJobSiteProperty();
 
-        restocksTodayProperty.readFrom(EntityUtils.getNbt(entity));
-        jobSiteProperty.getFrom(entity);
+        restocksTodayProperty.readFrom(EntityUtils.getNbt(ctx.entity()));
+        jobSiteProperty.getFrom(ctx.entity());
         Integer restocks = restocksTodayProperty.getVal();
         GlobalPos jobSite = jobSiteProperty.getVal();
 
@@ -88,13 +91,13 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
         Permissions.checkClientServerSameState(jobSitePos, jobSite);
 
         checkVillagerHasJobSite(restocks, jobSite);
-        checkVillagerCloseToJobSite(entity, jobSite);
+        checkVillagerCloseToJobSite(ctx.entity(), jobSite);
     }
 
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player, Villager entity) {
-        entity.playWorkSound();
-        entity.restock();
+    public void serverDo(ServerContext<Villager> ctx) {
+        ctx.entity().playWorkSound();
+        ctx.entity().restock();
     }
 
     @Override

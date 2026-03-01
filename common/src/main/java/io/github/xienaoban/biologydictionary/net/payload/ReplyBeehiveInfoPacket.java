@@ -23,11 +23,14 @@ public record ReplyBeehiveInfoPacket(CompoundTag bees) implements Packet {
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        if (ctx.client().screen instanceof BeehiveScreen screen) {
-            BeehiveBlockEntity.Occupant.LIST_CODEC
-                    .parse(NbtOps.INSTANCE, bees.get("bees"))
-                    .resultOrPartial(string -> LOGGER.error("Failed to parse bees: '{}'", string))
-                    .ifPresent(screen::updateBeeInfo);
-        }
+        final class C { static void receive(ReplyBeehiveInfoPacket packet, ClientNetApi.Context ctx) {
+            if (ctx.client().screen instanceof BeehiveScreen screen) {
+                BeehiveBlockEntity.Occupant.LIST_CODEC
+                        .parse(NbtOps.INSTANCE, packet.bees().get("bees"))
+                        .resultOrPartial(string -> LOGGER.error("Failed to parse bees: '{}'", string))
+                        .ifPresent(screen::updateBeeInfo);
+            }
+        }}
+        C.receive(this, ctx);
     }
 }

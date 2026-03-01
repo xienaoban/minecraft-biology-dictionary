@@ -46,7 +46,7 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
     }
 
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player, Mob entity) {
+    public void serverDo(ServerContext<Mob> ctx) {
         CompoundTag nbt = VanillaEntityProperties.OfMob.createNoAiProperty().withVal(noAi).toTag();
 
         if (noAi) {
@@ -58,11 +58,11 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
         }
 
         // Set the entity without AI to be invulnerable to avoid disrupting the balance of Survival Mode.
-        if (!PlayerUtils.isCreative(player)) {
+        if (!PlayerUtils.isCreative(ctx.player())) {
             VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(noAi).writeTo(nbt);
         }
 
-        EntityUtils.mergeNbt(entity, nbt);
+        EntityUtils.mergeNbt(ctx.entity(), nbt);
     }
 
     @Override

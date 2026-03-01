@@ -51,17 +51,22 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientAdditionalCheck(LocalPlayer player, Mob entity) {
-        check(entity, persistent);
+    public void clientAdditionalCheck(ClientContext<Mob> ctx) {
+        final class C { static void check(Mob entity, boolean persistent) {
+            if (entity.hasCustomName() && !persistent) {
+                throw new NoPermissionException(TextUtils.translate(Lang.TEXT_CUSTOM_NAME_FORCE_PERSISTENT), "Entities with custom name should be forced persistent");
+            }
+        }}
+        C.check(ctx.entity(), persistent);
     }
 
     @Override
-    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Mob entity) {
-        check(entity, persistent);
+    public void serverAdditionalCheck(ServerContext<Mob> ctx) {
+        check(ctx.entity(), persistent);
     }
 
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player, Mob entity) {
-        VanillaEntityProperties.OfMob.createPersistenceRequiredProperty().withVal(persistent).setTo(entity);
+    public void serverDo(ServerContext<Mob> ctx) {
+        VanillaEntityProperties.OfMob.createPersistenceRequiredProperty().withVal(persistent).setTo(ctx.entity());
     }
 }

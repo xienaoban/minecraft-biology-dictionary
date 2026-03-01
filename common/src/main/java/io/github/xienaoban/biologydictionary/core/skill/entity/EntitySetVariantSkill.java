@@ -49,11 +49,11 @@ public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, 
     }
 
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player, Entity entity) {
+    public void serverDo(ServerContext<Entity> ctx) {
         EntityVariantPropertyBundle.VariantHandler<Entity, Object> variantHandler =
-                Misc.cast(EntityVariantPropertyBundle.getHandlers(entity).get(variantHandlerIdx));
+                Misc.cast(EntityVariantPropertyBundle.getHandlers(ctx.entity()).get(variantHandlerIdx));
 
         Object variant = variantHandler.nbtToVariant(variantTag);
-        variantHandler.setVariant(entity, variant);
+        variantHandler.setVariant(ctx.entity(), variant);
     }
 }
