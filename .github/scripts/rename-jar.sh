@@ -2,34 +2,45 @@
 set -e
 
 # Validate required variables
-if [ -z "$MOD_VERSION" ] || [ -z "$MC_VERSION" ] || [ -z "$LOADER_TYPE" ]; then
-  echo "Error: Required environment variables not set (MOD_VERSION, MC_VERSION, LOADER_TYPE)"
+if [ -z "$MOD_VERSION" ] || [ -z "$MC_VERSION" ]; then
+  echo "Error: Required environment variables not set (MOD_VERSION, MC_VERSION)"
   echo "Please run check-tag-versions.sh first"
   exit 1
 fi
 
-# Source and target jar names
-SOURCE_JAR="build/libs/biologydictionary-${MOD_VERSION}.jar"
-TARGET_JAR="build/libs/biologydictionary-${MOD_VERSION}-mc${MC_VERSION}-${LOADER_TYPE}.jar"
+echo "Renaming jars for version: $MOD_VERSION, MC: $MC_VERSION"
 
-echo "Renaming jar:"
-echo "  Source: $SOURCE_JAR"
-echo "  Target: $TARGET_JAR"
+# Array of platforms
+PLATFORMS=("fabric" "neoforge")
 
-# Check if source jar exists
-if [ ! -f "$SOURCE_JAR" ]; then
-  echo "Error: Source jar '$SOURCE_JAR' not found!"
-  echo "Available files in build/libs/:"
-  ls -la build/libs/ || echo "build/libs/ directory does not exist"
-  exit 1
-fi
+# Process each platform
+for PLATFORM in "${PLATFORMS[@]}"; do
+  # Source and target jar names
+  SOURCE_JAR="${PLATFORM}/build/libs/biology-dictionary-${PLATFORM}-${MOD_VERSION}.jar"
+  TARGET_JAR="${PLATFORM}/build/libs/biology-dictionary-${MOD_VERSION}-mc${MC_VERSION}-${PLATFORM}.jar"
 
-# Rename the jar
-mv "$SOURCE_JAR" "$TARGET_JAR"
+  echo ""
+  echo "Processing $PLATFORM:"
+  echo "  Source: $SOURCE_JAR"
+  echo "  Target: $TARGET_JAR"
 
-echo "✓ Jar renamed successfully to: $TARGET_JAR"
+  # Check if source jar exists
+  if [ ! -f "$SOURCE_JAR" ]; then
+    echo "  ❌Error: Source jar '$SOURCE_JAR' not found!"
+    echo "  Available files in ${PLATFORM}/build/libs/:"
+    ls -la "${PLATFORM}/build/libs/" || echo "  ${PLATFORM}/build/libs/ directory does not exist"
+    exit 1
+  fi
 
-# Export to GITHUB_ENV if in GitHub Actions
-if [ -n "$GITHUB_ENV" ]; then
-  echo "MOD_JAR=$TARGET_JAR" >> "$GITHUB_ENV"
-fi
+  # Rename the jar
+  mv "$SOURCE_JAR" "$TARGET_JAR"
+  echo "  ✓ Jar renamed successfully to: $TARGET_JAR"
+
+  # Export to GITHUB_ENV if in GitHub Actions
+  if [ -n "$GITHUB_ENV" ]; then
+    echo "MOD_JAR_${PLATFORM^^}=$TARGET_JAR" >> "$GITHUB_ENV"
+  fi
+done
+
+echo ""
+echo "All jar renaming completed!"
