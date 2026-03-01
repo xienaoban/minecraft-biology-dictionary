@@ -14,11 +14,11 @@ public interface EntityTargetedSkill<E extends Entity> {
     void write(FriendlyByteBuf buf);
 
     @Environment(EnvType.CLIENT)
-    default void clientAdditionalCheck(LocalPlayer player, E entity) throws NoPermissionException {}
+    default void clientAdditionalCheck(ClientContext<E> ctx) throws NoPermissionException {}
 
-    default void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, E entity) throws NoPermissionException {}
+    default void serverAdditionalCheck(ServerContext<E> ctx) throws NoPermissionException {}
 
-    void serverDo(MinecraftServer server, ServerPlayer player, E entity);
+    void serverDo(ServerContext<E> ctx);
 
     /**
      * Get the real cost for this skill.
@@ -40,4 +40,7 @@ public interface EntityTargetedSkill<E extends Entity> {
         SkillCost getDefaultCost();
         String shortName(); // for yaml config
     }
+
+    record ClientContext<E extends Entity>(LocalPlayer player, E entity) {}
+    record ServerContext<E extends Entity>(MinecraftServer server, ServerPlayer player, E entity) {}
 }

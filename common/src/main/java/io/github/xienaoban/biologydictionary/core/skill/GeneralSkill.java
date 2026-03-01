@@ -13,11 +13,11 @@ public interface GeneralSkill {
     void write(FriendlyByteBuf buf);
 
     @Environment(EnvType.CLIENT)
-    default void clientAdditionalCheck(LocalPlayer player) throws NoPermissionException {}
+    default void clientAdditionalCheck(ClientContext ctx) throws NoPermissionException {}
 
-    default void serverAdditionalCheck(MinecraftServer server, ServerPlayer player) throws NoPermissionException {}
+    default void serverAdditionalCheck(ServerContext ctx) throws NoPermissionException {}
 
-    void serverDo(MinecraftServer server, ServerPlayer player);
+    void serverDo(ServerContext ctx);
 
     /**
      * Get the real cost for this skill.
@@ -37,4 +37,7 @@ public interface GeneralSkill {
         SkillCost getDefaultCost();
         String shortName(); // for yaml config
     }
+
+    record ClientContext(LocalPlayer player) {}
+    record ServerContext(MinecraftServer server, ServerPlayer player) {}
 }

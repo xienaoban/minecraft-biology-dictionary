@@ -30,11 +30,14 @@ public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag v
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        if (!notNull) return;
+        final class C { static void receive(ReplyEntityDataPacket packet, ClientNetApi.Context ctx) {
+            if (!packet.notNull()) return;
 
-        Entity entity = BDC.getHitEntity();
-        EntityProperties<?> properties = BDC.getHitEntityProperties();
-        if (entity == null || EntityUtils.getId(entity) != entityId || properties == null) return;
-        properties.update(vanillaNbt, extraNbt);
+            Entity entity = BDC.getHitEntity();
+            EntityProperties<?> properties = BDC.getHitEntityProperties();
+            if (entity == null || EntityUtils.getId(entity) != packet.entityId() || properties == null) return;
+            properties.update(packet.vanillaNbt(), packet.extraNbt());
+        }}
+        C.receive(this, ctx);
     }
 }

@@ -6,10 +6,7 @@ import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 public record EntitySetInvulnerableSkill(boolean invulnerable) implements EntityTargetedSkill<Entity> {
@@ -38,17 +35,20 @@ public record EntitySetInvulnerableSkill(boolean invulnerable) implements Entity
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void clientAdditionalCheck(LocalPlayer player, Entity entity) {
-        Permissions.checkTargetPlayerLowerGameMode(player, entity);
+    public void clientAdditionalCheck(ClientContext<Entity> ctx) {
+        final class C { static void check(ClientContext<Entity> ctx) {
+            Permissions.checkTargetPlayerLowerGameMode(ctx.player(), ctx.entity());
+        }}
+        C.check(ctx);
     }
 
     @Override
-    public void serverAdditionalCheck(MinecraftServer server, ServerPlayer player, Entity entity) {
-        Permissions.checkTargetPlayerLowerGameMode(player, entity);
+    public void serverAdditionalCheck(ServerContext<Entity> ctx) {
+        Permissions.checkTargetPlayerLowerGameMode(ctx.player(), ctx.entity());
     }
 
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player, Entity entity) {
-        VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(invulnerable).setTo(entity);
+    public void serverDo(ServerContext<Entity> ctx) {
+        VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(invulnerable).setTo(ctx.entity());
     }
 }

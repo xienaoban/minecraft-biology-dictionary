@@ -42,19 +42,19 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
     }
 
     @Override
-    public void serverDo(MinecraftServer server, ServerPlayer player) {
+    public void serverDo(ServerContext ctx) {
         if (entityType == null) {
-            BiologyDictionary.sendCenteredWarning(player, TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
+            BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
         } else {
             SpawnEggItem item = SpawnEggItem.byId(entityType);
             if (item == null) {
-                BiologyDictionary.sendCenteredWarning(player, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
             } else {
                 ItemStack stack = new ItemStack(item);
-                PlayerUtils.getInventory(player).add(stack);
+                PlayerUtils.getInventory(ctx.player()).add(stack);
                 // @see net.minecraft.server.commands.GiveCommand.giveItem
-                PlayerUtils.playLocalSound(player, SoundEvents.ITEM_PICKUP, 1F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                BiologyDictionary.sendCenteredWarning(player,
+                PlayerUtils.playLocalSound(ctx.player(), SoundEvents.ITEM_PICKUP, 1F, ((ctx.player().getRandom().nextFloat() - ctx.player().getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                BiologyDictionary.sendCenteredWarning(ctx.player(),
                         TextUtils.translate(Lang.TEXT_OFFER_OR_DROP, TextUtils.translate(item.getDescriptionId())));
             }
         }

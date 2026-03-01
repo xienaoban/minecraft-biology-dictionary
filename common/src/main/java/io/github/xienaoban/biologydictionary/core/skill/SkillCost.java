@@ -136,12 +136,13 @@ public final class SkillCost {
     // ==================== CCheck & Consume ====================
 
     @Environment(EnvType.CLIENT)
-    public void clientCheck(LocalPlayer player) throws NoPermissionException {
-        checkCommon(player);
+    public void clientCheck(ClientContext ctx) throws NoPermissionException {
+        final class P { static Player p(ClientContext ctx) { return ctx.player(); } }
+        checkCommon(P.p(ctx));
     }
 
-    public void serverCheck(ServerPlayer player) throws NoPermissionException {
-        checkCommon(player);
+    public void serverCheck(ServerContext ctx) throws NoPermissionException {
+        checkCommon(ctx.player());
     }
 
     private void checkCommon(Player player) throws NoPermissionException {
@@ -175,7 +176,9 @@ public final class SkillCost {
         }
     }
 
-    public void serverConsume(ServerPlayer player) {
+    public void serverConsume(ServerContext ctx) {
+        ServerPlayer player = ctx.player();
+
         // Always free in creative mode.
         if (PlayerUtils.isCreative(player)) { return; }
 
@@ -337,4 +340,7 @@ public final class SkillCost {
         }
         return res.stream().map(txt -> (Component) txt.withStyle(ChatFormatting.GOLD)).toList();
     }
+
+    public record ClientContext(LocalPlayer player) {}
+    public record ServerContext(ServerPlayer player) {}
 }

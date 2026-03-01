@@ -127,9 +127,9 @@ public final class BiologySkills {
     public static boolean activate(GeneralSkill skill) {
         try {
             LocalPlayer player = ClientUtils.getClientPlayer();
-            skill.clientAdditionalCheck(player);
+            skill.clientAdditionalCheck(new GeneralSkill.ClientContext(player));
             SkillCost cost = skill.getRealCost();
-            cost.clientCheck(player);
+            cost.clientCheck(new SkillCost.ClientContext(player));
             ClientNetManager.sendCommonSkill(skill);
             return true;
         } catch (NoPermissionException e) {
@@ -144,9 +144,9 @@ public final class BiologySkills {
     public static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
         try {
             LocalPlayer player = ClientUtils.getClientPlayer();
-            skill.clientAdditionalCheck(player, Misc.cast(entity));
+            skill.clientAdditionalCheck(new EntityTargetedSkill.ClientContext<>(player, Misc.cast(entity)));
             SkillCost cost = skill.getRealCost(Misc.cast(entity));
-            cost.clientCheck(player);
+            cost.clientCheck(new SkillCost.ClientContext(player));
             ClientNetManager.sendEntityTargetedSkill(entity, skill);
             return true;
         } catch (NoPermissionException e) {

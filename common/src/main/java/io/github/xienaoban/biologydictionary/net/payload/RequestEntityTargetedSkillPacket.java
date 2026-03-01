@@ -39,18 +39,20 @@ public record RequestEntityTargetedSkillPacket(int entityId, EntityTargetedSkill
         }
 
         try {
+            EntityTargetedSkill.ServerContext<Entity> skillCtx
+                    = new EntityTargetedSkill.ServerContext<>(ctx.server(), ctx.player(), entity);
+
             // Phase 1: Additional server-side validation
-            skill.serverAdditionalCheck(ctx.server(), ctx.player(), Misc.cast(entity));
+            skill.serverAdditionalCheck(Misc.cast(skillCtx));
 
-            // Phase 2: Get real cost (configured or default with potential modifications)
+            // Phase 2: Check and consume cost
             SkillCost cost = skill.getRealCost(Misc.cast(entity));
+            SkillCost.ServerContext costCtx = new SkillCost.ServerContext(ctx.player());
+            cost.serverCheck(costCtx);
+            cost.serverConsume(costCtx);
 
-            // Phase 3: Check and consume cost
-            cost.serverCheck(ctx.player());
-            cost.serverConsume(ctx.player());
-
-            // Phase 4: Execute the skill
-            skill.serverDo(ctx.server(), ctx.player(), Misc.cast(entity));
+            // Phase 3: Execute the skill
+            skill.serverDo(Misc.cast(skillCtx));
         } catch (NoPermissionException e) {
             LOGGER.warn(Misc.getStackToString(e));
             BiologyDictionary.sendCenteredWarning(ctx.player(), e.getGameMessage());
