@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.common.server.neoforge;
 import dev.architectury.event.events.common.LifecycleEvent;
 import io.github.xienaoban.biologydictionary.common.server.ServerEventRegistry;
 
+@SuppressWarnings("unused")
 public final class ServerEventRegistryImpl {
 
     public static void registerStarted(ServerEventRegistry.ServerListener listener) {

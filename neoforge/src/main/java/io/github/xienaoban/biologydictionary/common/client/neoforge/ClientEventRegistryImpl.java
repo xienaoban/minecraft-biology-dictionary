@@ -8,15 +8,16 @@ import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+@SuppressWarnings("unused")
 @OnlyIn(Dist.CLIENT)
 public final class ClientEventRegistryImpl {
 
     public static void registerStarted(ClientEventRegistry.ClientListener listener) {
-        ClientLifecycleEvent.CLIENT_STARTED.register(client -> listener.run(client));
+       ClientLifecycleEvent.CLIENT_STARTED.register(listener::run);
     }
 
     public static void registerStopping(ClientEventRegistry.ClientListener listener) {
-        ClientLifecycleEvent.CLIENT_STOPPING.register(client -> listener.run(client));
+        ClientLifecycleEvent.CLIENT_STOPPING.register(listener::run);
     }
 
     public static void registerWorldConnected(ClientEventRegistry.ClientListener listener) {
@@ -28,6 +29,6 @@ public final class ClientEventRegistryImpl {
     }
 
     public static void registerEndTick(ClientEventRegistry.ClientListener listener) {
-        ClientTickEvent.CLIENT_POST.register(client -> listener.run(client));
+        ClientTickEvent.CLIENT_POST.register(listener::run);
     }
 }
