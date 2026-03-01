@@ -6,6 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSoundEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -18,6 +19,10 @@ import net.minecraft.world.level.GameType;
 import java.util.Objects;
 
 public final class PlayerUtils {
+    public static MinecraftServer getServer(ServerPlayer serverPlayer) {
+        return ((ServerPlayerIMixin) serverPlayer).getServer();
+    }
+
     public static GameType gameMode(Player player) {
         return player.gameMode();
     }
