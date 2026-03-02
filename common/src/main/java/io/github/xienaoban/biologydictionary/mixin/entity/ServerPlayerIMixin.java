@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.mixin;
+package io.github.xienaoban.biologydictionary.mixin.entity;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;

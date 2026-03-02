@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.common.util;
 
 import com.mojang.datafixers.util.Either;
-import io.github.xienaoban.biologydictionary.mixin.*;
+import io.github.xienaoban.biologydictionary.mixin.loot.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;

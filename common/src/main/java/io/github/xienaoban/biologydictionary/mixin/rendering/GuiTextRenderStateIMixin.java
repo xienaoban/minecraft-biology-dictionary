@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.mixin;
+package io.github.xienaoban.biologydictionary.mixin.rendering;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.navigation.ScreenRectangle;

@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.mixin;
+package io.github.xienaoban.biologydictionary.mixin.entity;
 
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;

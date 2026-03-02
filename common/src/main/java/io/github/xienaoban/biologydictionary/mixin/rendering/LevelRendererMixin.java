@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.mixin;
+package io.github.xienaoban.biologydictionary.mixin.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;

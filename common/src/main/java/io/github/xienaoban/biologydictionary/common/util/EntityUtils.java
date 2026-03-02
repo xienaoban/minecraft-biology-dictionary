@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.common.util;
 
-import io.github.xienaoban.biologydictionary.mixin.EntityIMixin;
-import io.github.xienaoban.biologydictionary.mixin.HorseIMixin;
-import io.github.xienaoban.biologydictionary.mixin.MobIMixin;
+import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
+import io.github.xienaoban.biologydictionary.mixin.entity.HorseIMixin;
+import io.github.xienaoban.biologydictionary.mixin.entity.MobIMixin;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;

@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.property;
 import io.github.xienaoban.biologydictionary.core.property.builtin.*;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.VariantProperty;
-import io.github.xienaoban.biologydictionary.mixin.EntityIMixin;
+import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;

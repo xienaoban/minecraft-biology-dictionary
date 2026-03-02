@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.mixin;
+package io.github.xienaoban.biologydictionary.mixin.loot;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.resources.ResourceKey;
