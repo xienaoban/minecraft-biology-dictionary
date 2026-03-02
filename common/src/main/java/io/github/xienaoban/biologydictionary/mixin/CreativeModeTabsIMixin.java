@@ -9,8 +9,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(CreativeModeTabs.class)
 public interface CreativeModeTabsIMixin {
     @Accessor("TOOLS_AND_UTILITIES")
-    static ResourceKey<CreativeModeTab> getToolsAndUtilities() {
+    static ResourceKey<CreativeModeTab> biologydictionary$getToolsAndUtilities() {
         throw new AssertionError();
     }
-
 }

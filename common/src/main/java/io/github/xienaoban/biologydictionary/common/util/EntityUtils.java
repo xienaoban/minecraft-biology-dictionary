@@ -3,16 +3,14 @@ package io.github.xienaoban.biologydictionary.common.util;
 import io.github.xienaoban.biologydictionary.mixin.EntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.HorseIMixin;
 import io.github.xienaoban.biologydictionary.mixin.MobIMixin;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.*;
@@ -256,11 +254,11 @@ public final class EntityUtils {
     // ============================================================================ //
 
     public static void setInWater(Entity entity, boolean inWater) {
-        ((EntityIMixin) entity).setWasTouchingWater(inWater);
+        ((EntityIMixin) entity).biologydictionary$setWasTouchingWater(inWater);
     }
 
     public static GoalSelector getGoalSelector(Mob entity) {
-        return ((MobIMixin) entity).getGoalSelector();
+        return ((MobIMixin) entity).biologydictionary$getGoalSelector();
     }
 
     public static WrappedGoal getWrappedGoal(Mob entity, Class<? extends Goal> goalClass) {
@@ -306,6 +304,6 @@ public final class EntityUtils {
     public static void setVariantAndMarkings(Horse entity,
                                              net.minecraft.world.entity.animal.equine.Variant variant,
                                              net.minecraft.world.entity.animal.equine.Markings markings) {
-        ((HorseIMixin) entity).invokeSetVariantAndMarkings(variant, markings);
+        ((HorseIMixin) entity).biologydictionary$invokeSetVariantAndMarkings(variant, markings);
     }
 }

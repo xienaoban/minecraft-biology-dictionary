@@ -9,6 +9,6 @@ import java.util.List;
 
 @Mixin(LootPoolEntryContainer.class)
 public interface LootPoolEntryContainerIMixin {
-    @Accessor
-    List<LootItemCondition> getConditions();
+    @Accessor("conditions")
+    List<LootItemCondition> biologydictionary$getConditions();
 }

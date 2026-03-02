@@ -7,5 +7,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(Animal.class)
 public interface AnimalIMixin {
     @Accessor("PARENT_AGE_AFTER_BREEDING")
-    static int getParentAgeAfterBreeding() { throw new AssertionError(); }
+    static int biologydictionary$getParentAgeAfterBreeding() { throw new AssertionError(); }
 }

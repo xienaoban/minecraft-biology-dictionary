@@ -34,7 +34,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
     /**
      * @see net.minecraft.world.entity.animal.Animal#PARENT_AGE_AFTER_BREEDING
      */
-    private static final int BREED_COOLDOWN_MAX = AnimalIMixin.getParentAgeAfterBreeding();
+    private static final int BREED_COOLDOWN_MAX = AnimalIMixin.biologydictionary$getParentAgeAfterBreeding();
     private static final int BREED_COOLDOWN_OFF = 0;
 
     private final IntProperty<AgeableMob> ageProperty = VanillaEntityProperties.OfAgeableMob.getAgeProperty(p());

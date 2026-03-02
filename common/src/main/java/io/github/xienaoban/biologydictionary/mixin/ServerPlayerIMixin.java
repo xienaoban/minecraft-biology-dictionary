@@ -9,15 +9,15 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(ServerPlayer.class)
 public interface ServerPlayerIMixin {
-    @Accessor
-    MinecraftServer getServer();
+    @Accessor("server")
+    MinecraftServer biologydictionary$getServer();
 
-    @Accessor
-    int getContainerCounter();
+    @Accessor("containerCounter")
+    int biologydictionary$getContainerCounter();
 
-    @Invoker
-    void invokeNextContainerCounter();
+    @Invoker("nextContainerCounter")
+    void biologydictionary$invokeNextContainerCounter();
 
-    @Invoker
-    void invokeInitMenu(AbstractContainerMenu abstractContainerMenu);
+    @Invoker("initMenu")
+    void biologydictionary$invokeInitMenu(AbstractContainerMenu abstractContainerMenu);
 }

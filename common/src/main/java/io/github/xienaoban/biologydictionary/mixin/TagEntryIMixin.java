@@ -8,6 +8,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(TagEntry.class)
 public interface TagEntryIMixin {
-    @Accessor
-    TagKey<Item> getTag();
+    @Accessor("tag")
+    TagKey<Item> biologydictionary$getTag();
 }

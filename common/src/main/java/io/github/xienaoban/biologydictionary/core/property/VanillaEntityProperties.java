@@ -395,7 +395,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Entity, List<String>> createTagsProperty() {
-            return new CodecProperty<>("Tags", List.class, EntityIMixin.getTagListCodec());
+            return new CodecProperty<>("Tags", List.class, EntityIMixin.biologydictionary$getTagListCodec());
         }
 
         public static CodecProperty<Entity, List<String>> getTagsProperty(EntityProperties<?> ep) {

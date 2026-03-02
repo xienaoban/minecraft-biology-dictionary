@@ -8,5 +8,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(Armadillo.ArmadilloState.class)
 public interface ArmadilloStateIMixin {
     @Accessor("CODEC")
-    static Codec<Armadillo.ArmadilloState> getCodec() { throw new AssertionError(); }
+    static Codec<Armadillo.ArmadilloState> biologydictionary$getCodec() { throw new AssertionError(); }
 }
