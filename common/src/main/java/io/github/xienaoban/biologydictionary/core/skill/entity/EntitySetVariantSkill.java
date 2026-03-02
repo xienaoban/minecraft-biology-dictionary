@@ -9,8 +9,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, Tag variantTag) implements EntityTargetedSkill<Entity> {

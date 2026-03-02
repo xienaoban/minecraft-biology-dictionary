@@ -4,8 +4,8 @@ import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractPrope
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.variant.VariantUtils;
 import net.minecraft.world.level.Level;
