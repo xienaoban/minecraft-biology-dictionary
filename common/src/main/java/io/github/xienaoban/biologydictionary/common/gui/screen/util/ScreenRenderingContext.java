@@ -544,10 +544,10 @@ public final class ScreenRenderingContext {
         PlayerFaceRenderer.draw(getGuiGraphics(), player.getSkin().body().texturePath(), (int) left, (int) top, (int) size, /* show hat */ true, ud, -1);
     }
 
-    private static ScreenRectangle getBounds(float x0, float y0, float x1, float y1, Matrix3x2f matrix3x2f, @Nullable ScreenRectangle screenRectangle) {
+    private static ScreenRectangle getBounds(float x0, float y0, float x1, float y1, Matrix3x2f pose, @Nullable ScreenRectangle screenRectangle) {
         int x0i = Mth.floor(x0);    int x1i = Mth.ceil(x1);
         int y0i = Mth.floor(y0);    int y1i = Mth.ceil(y1);
-        ScreenRectangle screenRectangle2 = new ScreenRectangle(x0i, y0i, x1i - x0i, y1i - y0i).transformMaxBounds(matrix3x2f);
+        ScreenRectangle screenRectangle2 = new ScreenRectangle(x0i, y0i, x1i - x0i, y1i - y0i).transformMaxBounds(pose);
         return screenRectangle != null ? screenRectangle.intersection(screenRectangle2) : screenRectangle2;
     }
 

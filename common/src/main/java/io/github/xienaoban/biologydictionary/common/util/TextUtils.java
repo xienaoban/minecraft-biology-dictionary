@@ -14,6 +14,10 @@ public final class TextUtils {
         return Component.empty();
     }
 
+    public static MutableComponent space() {
+        return literal(" ");
+    }
+
     public static MutableComponent comma() {
         return translate(Lang.TEXT_COMMA);
     }

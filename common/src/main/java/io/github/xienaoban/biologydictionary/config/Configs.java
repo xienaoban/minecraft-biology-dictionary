@@ -29,15 +29,20 @@ public final class Configs {
      * These settings affect local rendering and behavior.
      */
     public static class ClientConfigs implements PostLoader {
+        /**
+         * Scale factor for Biology Dictionary GUI screens.
+         * Does not affect other mod or vanilla interfaces.
+         */
         @ConfigEntry
         float screenScale = 1F;
 
+        /**
+         * Position where shoulder entities (e.g., parrots) are rendered in first-person view.
+         */
         @ConfigEntry
         FirstPersonShoulderEntityPosition firstPersonShoulderEntityPosition = FirstPersonShoulderEntityPosition.BOTTOM;
 
-        public ClientConfigs() {
-            postLoad();
-        }
+        // =========================== Getters ============================
 
         public float getScreenScale() {
             return screenScale;
@@ -45,6 +50,12 @@ public final class Configs {
 
         public FirstPersonShoulderEntityPosition getFirstPersonShoulderEntityPosition() {
             return firstPersonShoulderEntityPosition;
+        }
+
+        // ============================= Misc =============================
+
+        public ClientConfigs() {
+            postLoad();
         }
 
         @Override
@@ -60,12 +71,22 @@ public final class Configs {
      * These settings are used when running a server or singleplayer.
      */
     public static class ServerConfigs implements PostLoader {
+        /**
+         * Whether the Biology Dictionary item must be in the player's inventory
+         * to open the GUI via keybind in non-creative mode.
+         */
         @ConfigEntry
         boolean bookItemRequired = true;
 
+        /**
+         * Whether wandering traders have a chance to offer the Biology Dictionary item for trade.
+         */
         @ConfigEntry
         boolean bookItemObtainableFromWanderingTrader = true;
 
+        /**
+         * Whether baby entities inherit the "silent" trait when both parents are silent.
+         */
         @ConfigEntry
         boolean inheritSilentFromParents = true;
 
@@ -93,18 +114,11 @@ public final class Configs {
         /**
          * Cache of SkillCost objects by skill class for fast access.
          * Always derived from {@link #skillCosts} after initialization.
+         * All skills are guaranteed to be present after initialization.
          */
         private transient Map<Class<?>, SkillCost> skillCostsCache;
 
-        public ServerConfigs() {
-            postLoad();
-        }
-
-        @Override
-        public void postLoad() {
-            completeSkillCosts();
-            rebuildSkillCacheCache();
-        }
+        // =========================== Getters ============================
 
         public boolean isBookItemRequired() {
             return bookItemRequired;
@@ -118,12 +132,20 @@ public final class Configs {
             return inheritSilentFromParents;
         }
 
-        /**
-         * Get skill cost for a given skill class.
-         * All skills are guaranteed to be present after initialization.
-         */
         public SkillCost getSkillCost(Class<?> skillClass) {
             return skillCostsCache.get(skillClass);
+        }
+
+        // ============================= Misc =============================
+
+        public ServerConfigs() {
+            postLoad();
+        }
+
+        @Override
+        public void postLoad() {
+            completeSkillCosts();
+            rebuildSkillCacheCache();
         }
 
         /**

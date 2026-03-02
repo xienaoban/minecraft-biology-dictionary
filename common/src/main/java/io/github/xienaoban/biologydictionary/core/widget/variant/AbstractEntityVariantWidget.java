@@ -54,6 +54,8 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
     private final List<BackgroundBar> backgroundBars = new ArrayList<>();
     private final LocalPlayer player = Objects.requireNonNull(ClientUtils.getClientPlayer());
 
+    private Boolean allowedToChoose = null;
+
     public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt) {
         this(properties, variantCnt, 7, 2);
     }
@@ -113,7 +115,14 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     protected abstract boolean activeSkill(V variant);
 
-    protected boolean isAllowedToChoose() { return PlayerUtils.isCreative(player); }
+    protected boolean isAllowedToChoose() {
+        if (allowedToChoose == null) {
+            boolean creativeOnly = new EntitySetVariantSkill(e(), 0, getVariantClient(e()))
+                    .getRealCost(e()).isCreativeOnly();
+            allowedToChoose = !creativeOnly || PlayerUtils.isCreative(player);
+        }
+        return allowedToChoose;
+    }
 
     protected boolean equals(V v1, V v2) {
         return Objects.equals(v1, v2);

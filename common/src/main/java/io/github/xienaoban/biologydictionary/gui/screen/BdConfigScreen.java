@@ -185,8 +185,8 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
                 case null -> TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS);
                 case Boolean b -> TextUtils.translate(b ? Lang.GUI_YES : Lang.GUI_NO);
                 case Enum<?> e -> TextUtils.translate(Configs.getEnumValueTranslationKey(e));
-                case Collection<?> s -> TextUtils.literal(String.valueOf(s.size()));
-                case Map<?, ?> s -> TextUtils.literal(String.valueOf(s.size()));
+                case Collection<?> s -> TextUtils.concat(Arrays.asList(TextUtils.literal(String.valueOf(s.size())), TextUtils.translate(Lang.TEXT_ITEMS)), TextUtils.space());
+                case Map<?, ?> s -> TextUtils.concat(Arrays.asList(TextUtils.literal(String.valueOf(s.size())), TextUtils.translate(Lang.TEXT_ENTRIES)), TextUtils.space());
                 default -> TextUtils.literal(String.valueOf(value));
             };
         }
