@@ -234,11 +234,11 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
 
             float l1 = left + 1.0F, l2 = getBox().getRight() - 2.0F - w;
             if (l1 < l2) {
-                ctx.renderText(txt1, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l1, getBox().getTop() + 2.25F);
-                ctx.renderText(txt2, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l1 + w1 + 1, getBox().getTop() + 2.5F);
+                ctx.renderText(txt1, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l1, getBox().getTop() + 2 + TXT_TO);
+                ctx.renderText(txt2, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l1 + w1 + 1, getBox().getTop() + 2 + TXT_TO);
             } else {
-                ctx.renderText(txt1, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l2, getBox().getTop() + 2.25F);
-                ctx.renderText(txt2, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l2 + w1 + 1, getBox().getTop() + 2.5F);
+                ctx.renderText(txt1, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l2, getBox().getTop() + 2 + TXT_TO);
+                ctx.renderText(txt2, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l2 + w1 + 1, getBox().getTop() + 2 + TXT_TO);
             }
         }
     }

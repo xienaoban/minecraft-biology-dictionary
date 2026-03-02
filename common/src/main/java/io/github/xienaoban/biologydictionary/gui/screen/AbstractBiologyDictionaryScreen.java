@@ -112,7 +112,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private void renderTitle(ScreenRenderingContext ctx, Component title) {
         float left = width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH + 2;
         float top = (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN - 12;
-        ctx.renderText(title, 0x66000000, ctx.getZ(), left + 0.6F, top + 0.6F);
+        ctx.renderText(title, 0x66000000, ctx.getZ(), left + 0.5F, top + 0.5F);
         ctx.renderText(title, 0xFF080808, ctx.getZ(), left, top);
     }
 
@@ -431,7 +431,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 ctx.renderHorizontalLine(lineColor, 1F, ctx.getZ(), (box.getTop() + box.getBottom()) / 2,
                         box.getLeft() + 1, box.getLeft() + d - 1);
             }
-            ctx.renderText(text, textColor, 0.5F, ctx.getZ(), box.getLeft() + d + 12, box.getTop() + 3);
+            ctx.renderText(text, textColor, 0.5F, ctx.getZ(), box.getLeft() + d + 12, box.getTop() + 3 + TXT_TO);
         }
     }
 
@@ -455,7 +455,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
-            ctx.renderText(text, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), box.getLeft() + 2, box.getTop() + 3);
+            ctx.renderText(text, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), box.getLeft() + 2, box.getTop() + 3 + TXT_TO);
         }
     }
 

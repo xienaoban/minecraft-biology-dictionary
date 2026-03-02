@@ -86,7 +86,7 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
                 ctx.renderRectangle(0x2b90593F, ctx.getZ(), box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
             }
             ctx.renderPlayerFace(targetPlayer, box.getLeft() + 1F, box.getTop() + 1F);
-            ctx.renderText(targetPlayer.getName(), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), box.getLeft() + 11, box.getTop() + 3.25F);
+            ctx.renderText(targetPlayer.getName(), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), box.getLeft() + 11, box.getTop() + 3 + TXT_ASCII_TO);
         }
     }
 }

@@ -54,7 +54,7 @@
   "tag_group.biologydictionary.class"     : "Classes",
   "tag_group.biologydictionary.interface" : "Interfaces",
 
-  "tag_group.biologydictionary.default.desc"   : "Preset categories provided by Biology Dictionary mod.",
+  "tag_group.biologydictionary.default.desc"   : "Preset categories provided by this mod.",
   "tag_group.biologydictionary.tag.desc"       : "Categories classified by Minecraft tags.",
   "tag_group.biologydictionary.mod.desc"       : "Categories classified by mod namespaces.",
   "tag_group.biologydictionary.class.desc"     : "Categories classified by Java classes.",
@@ -192,7 +192,8 @@
   "text.biologydictionary.server_configs_desc"        : "Current Server Configs:",
 
   "text.biologydictionary.mod_name_is": "Mod name: ",
-  "text.biologydictionary.author_is": "Author: ",
+  "text.biologydictionary.mod_author_is": "Author: ",
+  "text.biologydictionary.mod_version_is": "Version: ",
   "text.biologydictionary.mod_not_installed": "It means that you have not installed the mod `Biology Dictionary` if you see this text. You may download this mod at: ",
   "text.biologydictionary.click_me_to_download": "Click me to download!",
   "text.biologydictionary.info_from_this_mod": "[Biology Dictionary] ",

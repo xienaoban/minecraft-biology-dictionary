@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -48,8 +49,11 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
                     TextUtils.concat(Arrays.asList(TextUtils.translate(Lang.TEXT_MOD_NAME_IS).withStyle(ChatFormatting.BOLD), TextUtils.translate(Lang.MOD_NAME_TWO_LANG))),
                     Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
             ctx.renderCenteredText(
-                    TextUtils.concat(Arrays.asList(TextUtils.translate(Lang.TEXT_AUTHOR_IS).withStyle(ChatFormatting.BOLD), TextUtils.translate(Lang.AUTHOR_NAME_TWO_LANG))),
-                    Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 12);
+                    TextUtils.concat(Arrays.asList(TextUtils.translate(Lang.TEXT_MOD_AUTHOR_IS).withStyle(ChatFormatting.BOLD), TextUtils.translate(Lang.AUTHOR_NAME_TWO_LANG))),
+                    Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 10);
+            ctx.renderCenteredText(
+                    TextUtils.concat(Arrays.asList(TextUtils.translate(Lang.TEXT_MOD_VERSION_IS).withStyle(ChatFormatting.BOLD), TextUtils.literal(DevUtils.getModVersion()))),
+                    Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 18);
         }
     }
 

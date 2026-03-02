@@ -12,7 +12,7 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 public final class DevUtilsImpl {
 
-    public static String getModVersion0(String modId) {
+    public static String getModVersion(String modId) {
         Optional<? extends ModContainer> container = ModList.get().getModContainerById(modId);
         return container.map(c -> c.getModInfo().getVersion().toString())
                 .orElse("<unknown>");

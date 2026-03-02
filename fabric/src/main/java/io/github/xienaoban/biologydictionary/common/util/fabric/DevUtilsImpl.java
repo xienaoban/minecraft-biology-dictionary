@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 public final class DevUtilsImpl {
-    public static String getModVersion0(String modId) {
+    public static String getModVersion(String modId) {
         String version = "<unknown>";
         Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(modId);
         if (modContainer.isPresent()) version = modContainer.get().getMetadata().getVersion().toString();

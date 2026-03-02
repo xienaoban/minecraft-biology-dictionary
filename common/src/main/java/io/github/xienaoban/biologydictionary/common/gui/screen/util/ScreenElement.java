@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * Each element does not overlap in pairs.
  */
 @Environment(EnvType.CLIENT)
-public abstract class ScreenElement {
+public abstract class ScreenElement implements ScreenConsts {
     @Nullable protected ScreenElement parent;
     private final ScreenElementBox box;
     private final ArrayList<ScreenElement> subScreenElements;

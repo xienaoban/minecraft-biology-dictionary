@@ -88,6 +88,6 @@ public class EntityPropertyBar extends ScreenElement {
     }
 
     protected void renderInnerText(ScreenRenderingContext ctx, Component text, int color) {
-        ctx.renderText(text, color, 0.5F, ctx.getZ(), getBox().getLeft() + 3.0F, getBox().getTop() + 2.25F);
+        ctx.renderText(text, color, 0.5F, ctx.getZ(), getBox().getLeft() + 3.0F, getBox().getTop() + 2F + TXT_TO);
     }
 }
