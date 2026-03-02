@@ -83,7 +83,7 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
                 MutableComponent dot2 = TextUtils.literal(".".repeat(Math.max(0, (maxChanceWidth - width.get(2) + 4) / 2))).withStyle(ChatFormatting.DARK_GRAY);
                 list.add(TextUtils.concat(
                         Arrays.asList(column.get(0), dot1, column.get(1), dot2, column.get(2), column.get(3)),
-                        TextUtils.literal(" ")
+                        TextUtils.space()
                 ));
             }
         }

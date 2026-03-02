@@ -84,7 +84,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
                 }
                 int w = ctx.calcTextWidth(name) + ctx.calcTextWidth(time);
                 Component dot = TextUtils.literal(".".repeat(Math.max(0, (maxW + 40 - w) / 2))).withStyle(ChatFormatting.DARK_GRAY);
-                list.add(TextUtils.concat(Arrays.asList(name, dot, time), TextUtils.literal(" ")));
+                list.add(TextUtils.concat(Arrays.asList(name, dot, time), TextUtils.space()));
             }
         }
         renderTooltip(ctx, list);

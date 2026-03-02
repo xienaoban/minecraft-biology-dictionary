@@ -190,6 +190,8 @@
   "text.biologydictionary.reload_local_configs_screen": "重新加载本地配置文件",
   "text.biologydictionary.local_configs_desc"         : "本地客户端、本地服务端配置：",
   "text.biologydictionary.server_configs_desc"        : "当前服务端配置：",
+  "text.biologydictionary.items"                      : "项",
+  "text.biologydictionary.entries"                    : "条目",
 
   "text.biologydictionary.mod_name_is": "模组名：",
   "text.biologydictionary.mod_author_is": "作者：",

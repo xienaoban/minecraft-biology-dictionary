@@ -187,9 +187,11 @@
   "text.biologydictionary.comma": ", ",
 
   "text.biologydictionary.open_local_configs_screen"  : "Open Local Configs Screen",
-  "text.biologydictionary.reload_local_configs_screen": "Reload local configuration file",
+  "text.biologydictionary.reload_local_configs_screen": "Reload Local Configs File",
   "text.biologydictionary.local_configs_desc"         : "Local Client & Server Configs:",
   "text.biologydictionary.server_configs_desc"        : "Current Server Configs:",
+  "text.biologydictionary.items"                      : "items",
+  "text.biologydictionary.entries"                    : "entries",
 
   "text.biologydictionary.mod_name_is": "Mod name: ",
   "text.biologydictionary.mod_author_is": "Author: ",

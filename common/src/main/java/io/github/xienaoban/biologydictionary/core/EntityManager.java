@@ -135,16 +135,16 @@ public final class EntityManager {
             else if (oa != null || ob != null) {
                 return oa == null ? 1 : -1;
             }
-            Identifier la = a.getLocation();
-            Identifier lb = b.getLocation();
-            int cmp = la.getNamespace().compareTo(lb.getNamespace());
+            Identifier ia = a.getId();
+            Identifier ib = b.getId();
+            int cmp = ia.getNamespace().compareTo(ib.getNamespace());
             if (cmp != 0) {
-                if (la.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+                if (ia.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
                     return 1;
                 }
                 return cmp;
             }
-            String pa = la.getPath(), pb = lb.getPath();
+            String pa = ia.getPath(), pb = ib.getPath();
             int i = pa.length() - 1, j = pb.length() - 1;
             while (i >= 0 && j >= 0) {
                 cmp = pa.charAt(i) - pb.charAt(j);
@@ -332,7 +332,7 @@ public final class EntityManager {
 
     public boolean isVanillaEntity(EntityType<?> entityType) {
         return Identifier.DEFAULT_NAMESPACE
-                .equals(getEntityClassInfo(entityType).getLocation().getNamespace());
+                .equals(getEntityClassInfo(entityType).getId().getNamespace());
     }
 
     /**
@@ -405,8 +405,8 @@ public final class EntityManager {
         public Class<? extends Entity> getClazz() { return clazz; }
         // public Entity getInstance() { return instance; }
         public Vec3 getBox() { return box; }
-        public Identifier getLocation() { return EntityType.getKey(getType()); }
-        public String getStringId() { return getLocation().toString(); }
+        public Identifier getId() { return EntityType.getKey(getType()); }
+        public String getStringId() { return getId().toString(); }
 
         public List<Tag> getTags() { return tags; }
         protected void addTag(Tag tag) { tags.add(tag); }

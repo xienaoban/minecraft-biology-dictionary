@@ -128,7 +128,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         public TagCatalog(int depth, EntityManager.Tag tag) {
             super(depth, TextUtils.concat(
                     Arrays.asList(tag.getText(), TextUtils.literal("(" + tag.getEntities().size() + ")")),
-                    TextUtils.literal(" ")));
+                    TextUtils.space()));
             this.tag = tag;
         }
 

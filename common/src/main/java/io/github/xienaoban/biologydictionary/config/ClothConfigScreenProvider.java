@@ -12,6 +12,7 @@ import me.shedaniel.clothconfig2.impl.builders.AbstractFieldBuilder;
 import me.shedaniel.clothconfig2.impl.builders.AbstractRangeFieldBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -140,7 +141,7 @@ public class ClothConfigScreenProvider {
                 return;
             } else {
                 // No modification methods are provided for complex types.
-                category.addEntry(entryBuilder.startTextDescription(fieldText)
+                category.addEntry(entryBuilder.startTextDescription(TextUtils.concat(fieldText.copy().withStyle(ChatFormatting.GRAY)))
                         .setTooltip(tooltipText).build());
                 return;
             }
