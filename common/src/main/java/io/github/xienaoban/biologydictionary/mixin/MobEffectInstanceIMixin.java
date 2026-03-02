@@ -6,6 +6,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(MobEffectInstance.class)
 public interface MobEffectInstanceIMixin {
-    @Accessor
-    void setDuration(int duration);
+    @Accessor("duration")
+    void biologydictionary$setDuration(int duration);
 }

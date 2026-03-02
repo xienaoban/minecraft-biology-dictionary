@@ -42,43 +42,43 @@ public final class LootTableUtils {
     }
 
     public static List<LootPool> getPools(LootTable lootTable) {
-        return ((LootTableIMixin) lootTable).getPools();
+        return ((LootTableIMixin) lootTable).biologydictionary$getPools();
     }
 
     public static List<LootPoolEntryContainer> getEntries(LootPool pool) {
-        return ((LootPoolIMixin) pool).getEntries();
+        return ((LootPoolIMixin) pool).biologydictionary$getEntries();
     }
 
     public static Holder<Item> getItem(LootItem lootItem) {
-        return ((LootItemIMixin) lootItem).getItem();
+        return ((LootItemIMixin) lootItem).biologydictionary$getItem();
     }
 
     public static int getWeight(LootPoolSingletonContainer singleton) {
-        return ((LootPoolSingletonContainerIMixin) singleton).getWeight();
+        return ((LootPoolSingletonContainerIMixin) singleton).biologydictionary$getWeight();
     }
 
     public static List<LootItemFunction> getFunctions(LootPoolSingletonContainer singleton) {
-        return ((LootPoolSingletonContainerIMixin) singleton).getFunctions();
+        return ((LootPoolSingletonContainerIMixin) singleton).biologydictionary$getFunctions();
     }
 
     public static TagKey<Item> getTag(TagEntry tagEntry) {
-        return ((TagEntryIMixin) tagEntry).getTag();
+        return ((TagEntryIMixin) tagEntry).biologydictionary$getTag();
     }
 
     public static Either<ResourceKey<LootTable>, LootTable> getContents(NestedLootTable nestedLoot) {
-        return ((NestedLootTableIMixin) nestedLoot).getContents();
+        return ((NestedLootTableIMixin) nestedLoot).biologydictionary$getContents();
     }
 
     public static List<LootPoolEntryContainer> getChildren(CompositeEntryBase composite) {
-        return ((CompositeEntryBaseIMixin) composite).getChildren();
+        return ((CompositeEntryBaseIMixin) composite).biologydictionary$getChildren();
     }
     
     public static List<LootItemCondition> getConditions(LootPool pool) {
-        return ((LootPoolIMixin) pool).getConditions();
+        return ((LootPoolIMixin) pool).biologydictionary$getConditions();
     }
     
     public static List<LootItemCondition> getConditions(LootPoolEntryContainer entryContainer) {
-        return ((LootPoolEntryContainerIMixin) entryContainer).getConditions();
+        return ((LootPoolEntryContainerIMixin) entryContainer).biologydictionary$getConditions();
     }
     
     public static Identifier getConditionType(LootItemCondition condition) {
@@ -86,7 +86,7 @@ public final class LootTableUtils {
     }
 
     public static NumberProvider getCountValue(SetItemCountFunction function) {
-        return ((SetItemCountFunctionIMixin) function).getValue();
+        return ((SetItemCountFunctionIMixin) function).biologydictionary$getValue();
     }
 
     /**

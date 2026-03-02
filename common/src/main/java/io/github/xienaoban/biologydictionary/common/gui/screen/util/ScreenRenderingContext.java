@@ -107,8 +107,13 @@ public final class ScreenRenderingContext {
     public Matrix3x2fStack getPose() {
         return getGuiGraphics().pose();
     }
-    public GuiGraphics.ScissorStack getScissorStack() { return ((GuiGraphicsIMixin) getGuiGraphics()).getScissorStack(); }
-    public GuiRenderState getGuiRenderState() { return ((GuiGraphicsIMixin) getGuiGraphics()).getGuiRenderState(); }
+    public GuiGraphics.ScissorStack getScissorStack() {
+        return ((GuiGraphicsIMixin) getGuiGraphics()).biologydictionary$getScissorStack();
+    }
+
+    public GuiRenderState getGuiRenderState() {
+        return ((GuiGraphicsIMixin) getGuiGraphics()).biologydictionary$getGuiRenderState();
+    }
 
     public ScaleRAII scaleOnce(float size) {
         return new ScaleRAII(this, size);
@@ -148,18 +153,20 @@ public final class ScreenRenderingContext {
             @Override
             public Font.PreparedText ensurePrepared() {
                 GuiTextRenderStateIMixin self = (GuiTextRenderStateIMixin) (Object) this;
-                if (self.getPreparedText() == null) {
-                    self.setPreparedText(self.getFont().prepareText(self.getText(), fx, fy,
-                            self.getColor(), self.getDropShadow(), self.getIncludeEmpty(), self.getBackgroundColor()));
-                    ScreenRectangle screenRectangle = self.getPreparedText().bounds();
+                if (self.biologydictionary$getPreparedText() == null) {
+                    self.biologydictionary$setPreparedText(self.biologydictionary$getFont().prepareText(
+                            self.biologydictionary$getText(), fx, fy, self.biologydictionary$getColor(),
+                            self.biologydictionary$getDropShadow(), self.biologydictionary$getIncludeEmpty(),
+                            self.biologydictionary$getBackgroundColor()));
+                    ScreenRectangle screenRectangle = self.biologydictionary$getPreparedText().bounds();
                     if (screenRectangle != null) {
                         screenRectangle = screenRectangle.transformMaxBounds(this.pose);
-                        self.setBounds(self.getScissor() != null ?
-                                self.getScissor().intersection(screenRectangle) : screenRectangle);
+                        self.biologydictionary$setBounds(self.biologydictionary$getScissor() != null ?
+                                self.biologydictionary$getScissor().intersection(screenRectangle) : screenRectangle);
                     }
                 }
 
-                return self.getPreparedText();
+                return self.biologydictionary$getPreparedText();
             }
         }
         

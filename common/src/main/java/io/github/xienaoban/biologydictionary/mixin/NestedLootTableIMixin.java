@@ -9,6 +9,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(NestedLootTable.class)
 public interface NestedLootTableIMixin {
-    @Accessor
-    Either<ResourceKey<LootTable>, LootTable> getContents();
+    @Accessor("contents")
+    Either<ResourceKey<LootTable>, LootTable> biologydictionary$getContents();
 }

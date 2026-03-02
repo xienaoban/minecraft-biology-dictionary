@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public final class PlayerUtils {
     public static MinecraftServer getServer(ServerPlayer serverPlayer) {
-        return ((ServerPlayerIMixin) serverPlayer).getServer();
+        return ((ServerPlayerIMixin) serverPlayer).biologydictionary$getServer();
     }
 
     public static GameType gameMode(Player player) {
@@ -124,12 +124,12 @@ public final class PlayerUtils {
             player.closeContainer();
         }
 
-        mixinPlayer.invokeNextContainerCounter();
-        int counter = mixinPlayer.getContainerCounter();
+        mixinPlayer.biologydictionary$invokeNextContainerCounter();
+        int counter = mixinPlayer.biologydictionary$getContainerCounter();
         AbstractContainerMenu menu
-                = menuConstructor.createMenu(mixinPlayer.getContainerCounter(), getInventory(player), player);
+                = menuConstructor.createMenu(mixinPlayer.biologydictionary$getContainerCounter(), getInventory(player), player);
         player.containerMenu = Objects.requireNonNull(menu);
-        mixinPlayer.invokeInitMenu(menu);
+        mixinPlayer.biologydictionary$invokeInitMenu(menu);
         return counter;
     }
 }

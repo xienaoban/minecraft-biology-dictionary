@@ -9,9 +9,9 @@ import java.util.List;
 
 @Mixin(LootPoolSingletonContainer.class)
 public interface LootPoolSingletonContainerIMixin {
-    @Accessor
-    int getWeight();
+    @Accessor("weight")
+    int biologydictionary$getWeight();
 
-    @Accessor
-    List<LootItemFunction> getFunctions();
+    @Accessor("functions")
+    List<LootItemFunction> biologydictionary$getFunctions();
 }

@@ -7,6 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(Mob.class)
 public interface MobIMixin {
-    @Accessor
-    GoalSelector getGoalSelector();
+    @Accessor("goalSelector")
+    GoalSelector biologydictionary$getGoalSelector();
 }

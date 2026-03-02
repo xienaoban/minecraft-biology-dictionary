@@ -9,6 +9,6 @@ import java.util.List;
 
 @Mixin(CompositeEntryBase.class)
 public interface CompositeEntryBaseIMixin {
-    @Accessor
-    List<LootPoolEntryContainer> getChildren();
+    @Accessor("children")
+    List<LootPoolEntryContainer> biologydictionary$getChildren();
 }

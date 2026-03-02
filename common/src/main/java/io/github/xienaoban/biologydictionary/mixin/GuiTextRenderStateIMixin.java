@@ -10,39 +10,39 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(GuiTextRenderState.class)
 public interface GuiTextRenderStateIMixin {
-    @Accessor
-    Font getFont();
+    @Accessor("font")
+    Font biologydictionary$getFont();
 
-    @Accessor
-    FormattedCharSequence getText();
+    @Accessor("text")
+    FormattedCharSequence biologydictionary$getText();
 
-    @Accessor
-    Matrix3x2fc getPose();
+    @Accessor("pose")
+    Matrix3x2fc biologydictionary$getPose();
 
-    @Accessor
-    int getColor();
+    @Accessor("color")
+    int biologydictionary$getColor();
 
-    @Accessor
-    int getBackgroundColor();
+    @Accessor("backgroundColor")
+    int biologydictionary$getBackgroundColor();
 
-    @Accessor
-    boolean getDropShadow();
+    @Accessor("dropShadow")
+    boolean biologydictionary$getDropShadow();
 
-    @Accessor
-    boolean getIncludeEmpty();
+    @Accessor("includeEmpty")
+    boolean biologydictionary$getIncludeEmpty();
 
-    @Accessor
-    ScreenRectangle getScissor();
+    @Accessor("scissor")
+    ScreenRectangle biologydictionary$getScissor();
 
-    @Accessor
-    Font.PreparedText getPreparedText();
+    @Accessor("preparedText")
+    Font.PreparedText biologydictionary$getPreparedText();
 
-    @Accessor
-    void setPreparedText(Font.PreparedText text);
+    @Accessor("preparedText")
+    void biologydictionary$setPreparedText(Font.PreparedText text);
 
-    @Accessor
-    ScreenRectangle getBounds();
+    @Accessor("bounds")
+    ScreenRectangle biologydictionary$getBounds();
 
-    @Accessor
-    void setBounds(ScreenRectangle bounds);
+    @Accessor("bounds")
+    void biologydictionary$setBounds(ScreenRectangle bounds);
 }

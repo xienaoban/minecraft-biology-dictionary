@@ -10,8 +10,8 @@ import java.util.List;
 @Mixin(Entity.class)
 public interface EntityIMixin {
     @Accessor("TAG_LIST_CODEC")
-    static Codec<List<String>> getTagListCodec() { throw new AssertionError(); }
+    static Codec<List<String>> biologydictionary$getTagListCodec() { throw new AssertionError(); }
 
-    @Accessor
-    void setWasTouchingWater(boolean touchingWater);
+    @Accessor("wasTouchingWater")
+    void biologydictionary$setWasTouchingWater(boolean touchingWater);
 }

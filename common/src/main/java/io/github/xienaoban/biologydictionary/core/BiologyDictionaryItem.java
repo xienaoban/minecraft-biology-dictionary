@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
@@ -47,7 +46,7 @@ public final class BiologyDictionaryItem {
     private static final CompoundTag ID_NBT = initIdNbt();
 
     public static void init() {
-        ItemRegistry.register(CreativeModeTabsIMixin.getToolsAndUtilities(), createBook());
+        ItemRegistry.register(CreativeModeTabsIMixin.biologydictionary$getToolsAndUtilities(), createBook());
     }
 
     /**
@@ -93,7 +92,7 @@ public final class BiologyDictionaryItem {
     public static boolean isBook(ItemStack stack) {
         if (stack == null || !stack.is(Items.WRITABLE_BOOK)) return false;
         CustomData cd = stack.get(DataComponents.CUSTOM_DATA);
-        return cd != null && ((CustomDataIMixin) (Object) cd).getTag().contains(ID);
+        return cd != null && ((CustomDataIMixin) (Object) cd).biologydictionary$getTag().contains(ID);
     }
 
     private static ItemStack createWritableBook() {

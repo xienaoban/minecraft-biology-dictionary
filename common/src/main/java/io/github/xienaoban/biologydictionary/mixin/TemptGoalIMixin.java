@@ -9,6 +9,6 @@ import java.util.function.Predicate;
 
 @Mixin(TemptGoal.class)
 public interface TemptGoalIMixin {
-    @Accessor
-    Predicate<ItemStack> getItems();
+    @Accessor("items")
+    Predicate<ItemStack> biologydictionary$getItems();
 }

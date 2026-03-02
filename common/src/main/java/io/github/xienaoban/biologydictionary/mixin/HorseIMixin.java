@@ -8,6 +8,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(Horse.class)
 public interface HorseIMixin {
-    @Invoker
-    void invokeSetVariantAndMarkings(Variant variant, Markings markings);
+    @Invoker("setVariantAndMarkings")
+    void biologydictionary$invokeSetVariantAndMarkings(Variant variant, Markings markings);
 }

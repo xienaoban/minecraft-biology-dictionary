@@ -49,7 +49,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         for (MobEffectInstance effect : effects) {
             int duration = effect.getDuration();
             if (duration > 0) {
-                ((MobEffectInstanceIMixin) effect).setDuration(duration - 1);
+                ((MobEffectInstanceIMixin) effect).biologydictionary$setDuration(duration - 1);
             }
         }
     }

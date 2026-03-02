@@ -30,7 +30,7 @@ public final class EntityInventoryPropertyBundle {
 
     public static final Function<Entity, InventoryHandler<?>> ABSTRACT_HORSE_PATTERN = entity -> {
         if (entity instanceof AbstractHorse) {
-            return (InventoryHandler<Entity>) e -> ((AbstractHorseMixin) e).getInventory();
+            return (InventoryHandler<Entity>) e -> ((AbstractHorseMixin) e).biologydictionary$getInventory();
         }
         return null;
     };

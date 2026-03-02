@@ -7,6 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(AbstractHorse.class)
 public interface AbstractHorseMixin {
-    @Accessor
-    SimpleContainer getInventory();
+    @Accessor("inventory")
+    SimpleContainer biologydictionary$getInventory();
 }

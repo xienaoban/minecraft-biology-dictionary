@@ -7,6 +7,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(CustomData.class)
 public interface CustomDataIMixin {
-    @Accessor
-    CompoundTag getTag();
+    @Accessor("tag")
+    CompoundTag biologydictionary$getTag();
 }
