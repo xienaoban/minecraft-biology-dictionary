@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.config;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.config.annotation.Config;
@@ -44,7 +45,10 @@ public class ClothConfigScreenProvider {
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
                 .setTitle(TextUtils.translate(configAnnotation.value()))
-                .setSavingRunnable(ConfigsManager::save);
+                .setSavingRunnable(() -> {
+                    ConfigsManager.save();
+                    ConfigsManager.broadcast(ClientUtils.getServer());
+                });
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 

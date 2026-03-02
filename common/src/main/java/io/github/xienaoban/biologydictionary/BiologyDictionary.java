@@ -62,7 +62,7 @@ public final class BiologyDictionary {
 
     public Level justGiveMeALevel() {
         if (DevUtils.isClient()) {
-            Level level = ClientUtils.getClientLevel0();
+            Level level = ClientUtils.getClientLevelCommon();
             if (level != null) { return level; }
         }
         for (MinecraftServer server : getServers()) {

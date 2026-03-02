@@ -121,6 +121,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
             if (isMouseLeft(code)) {
                 synchronized (ReloadLocalConfigsScreenWidget.class) {
                     ConfigsManager.load();
+                    ConfigsManager.broadcast(ClientUtils.getServer());
                 }
                 if (AbstractBiologyDictionaryScreen.current() instanceof BdConfigScreen screen) {
                     screen.sendScreenMessage(TextUtils.translate(Lang.GUI_OK));
