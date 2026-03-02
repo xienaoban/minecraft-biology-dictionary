@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.common.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.RenderUtils;
 import io.github.xienaoban.biologydictionary.mixin.GuiGraphicsIMixin;
+import io.github.xienaoban.biologydictionary.mixin.GuiTextRenderStateIMixin;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -19,6 +20,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.GuiElementRenderState;
 import net.minecraft.client.gui.render.state.GuiRenderState;
+import net.minecraft.client.gui.render.state.GuiTextRenderState;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
@@ -34,6 +36,8 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
@@ -122,8 +126,47 @@ public final class ScreenRenderingContext {
         return getFont().width(component);
     }
 
+    /**
+     * getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
+     *
+     * @see net.minecraft.client.gui.GuiGraphics#drawString(net.minecraft.client.gui.Font, net.minecraft.network.chat.Component, int, int, int, boolean)
+     * @see net.minecraft.client.gui.render.state.GuiTextRenderState#ensurePrepared()
+     */
     public void renderText(Component component, int color, float z, float x, float y) {
-        getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
+        final class TextState extends GuiTextRenderState {
+            public final float fx;
+            public final float fy;
+
+            public TextState(Font font, FormattedCharSequence text, Matrix3x2fc pose, float x, float y,
+                             int color, int backgroundColor, boolean dropShadow, boolean includeEmpty,
+                             ScreenRectangle screenRectangle) {
+                super(font, text, pose, -1, -1, color, backgroundColor, dropShadow, includeEmpty, screenRectangle);
+                this.fx = x;
+                this.fy = y;
+            }
+
+            @Override
+            public Font.PreparedText ensurePrepared() {
+                GuiTextRenderStateIMixin self = (GuiTextRenderStateIMixin) (Object) this;
+                if (self.getPreparedText() == null) {
+                    self.setPreparedText(self.getFont().prepareText(self.getText(), fx, fy,
+                            self.getColor(), self.getDropShadow(), self.getIncludeEmpty(), self.getBackgroundColor()));
+                    ScreenRectangle screenRectangle = self.getPreparedText().bounds();
+                    if (screenRectangle != null) {
+                        screenRectangle = screenRectangle.transformMaxBounds(this.pose);
+                        self.setBounds(self.getScissor() != null ?
+                                self.getScissor().intersection(screenRectangle) : screenRectangle);
+                    }
+                }
+
+                return self.getPreparedText();
+            }
+        }
+        
+        if (ARGB.alpha(color) == 0) { return; }
+        getGuiRenderState().submitText(new TextState(getFont(), component.getVisualOrderText(),
+                new Matrix3x2f(getPose()), x, y, color, 0, false, false,
+                getScissorStack().peek()));
     }
 
     public void renderText(Component component, int color, float size, float z, float x, float y) {

@@ -18,7 +18,8 @@ import java.util.Objects;
  * Main configuration data class for Biology Dictionary.
  * Uses annotations for automatic YAML serialization and Cloth Config generation.
  * <p>
- * I'm not going to use @Environment(EnvType.CLIENT) here, or things will get too complicated.
+ * I'm not going to use @Environment(EnvType.CLIENT) for client configs here,
+ * or things will get too complicated.
  */
 @Config(Lang.CONFIG_TITLE)
 public final class Configs {
@@ -91,7 +92,7 @@ public final class Configs {
 
         /**
          * Cache of SkillCost objects by skill class for fast access.
-         * Always derived from skillCosts after initialization.
+         * Always derived from {@link #skillCosts} after initialization.
          */
         private transient Map<Class<?>, SkillCost> skillCostsCache;
 

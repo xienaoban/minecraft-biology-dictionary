@@ -19,17 +19,20 @@ jobs:
       - name: setup jdk
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: '21'
           distribution: 'microsoft'
 
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: build
-        run: ./gradlew build
+      - name: build fabric
+        run: ./gradlew fabric:build
+
+      - name: build neoforge
+        run: ./gradlew neoforge:build
 
       - name: test
-        run: ./gradlew testServer
+        run: ./gradlew fabric:testServer
 
       - name: capture build artifacts
         uses: actions/upload-artifact@v4
