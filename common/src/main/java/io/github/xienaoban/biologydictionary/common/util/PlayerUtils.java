@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.common.util;
 
-import io.github.xienaoban.biologydictionary.mixin.ServerPlayerIMixin;
+import io.github.xienaoban.biologydictionary.mixin.entity.ServerPlayerIMixin;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;

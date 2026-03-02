@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.mixin;
+package io.github.xienaoban.biologydictionary.mixin.entity;
 
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;

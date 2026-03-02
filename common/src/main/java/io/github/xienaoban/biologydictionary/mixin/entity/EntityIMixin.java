@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.mixin;
+package io.github.xienaoban.biologydictionary.mixin.entity;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.world.entity.Entity;

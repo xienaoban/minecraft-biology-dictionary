@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.mixin;
+package io.github.xienaoban.biologydictionary.mixin.loot;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
