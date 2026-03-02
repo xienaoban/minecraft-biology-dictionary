@@ -1,13 +1,18 @@
 package io.github.xienaoban.biologydictionary.config;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.common.util.StringUtils;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
+import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.nodes.Node;
@@ -18,10 +23,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
@@ -68,7 +70,7 @@ public final class ConfigsManager {
     @Environment(EnvType.CLIENT)
     public static void setLocalServerConfigs() {
         serverConfigs = INSTANCE.getServer();
-        LOGGER.info("Using local server configs");
+        LOGGER.info("Using local server configs.");
     }
 
     /**
@@ -78,7 +80,7 @@ public final class ConfigsManager {
     @Environment(EnvType.CLIENT)
     public static void setRemoteServerConfigs(Configs.ServerConfigs remoteConfigs) {
         serverConfigs = remoteConfigs;
-        LOGGER.info("Using remote server configs");
+        LOGGER.info("Using remote server configs.");
     }
 
     private static Path getConfigPath() {
@@ -159,6 +161,46 @@ public final class ConfigsManager {
         } catch (IOException | IllegalAccessException e) {
             LOGGER.error("Failed to load configuration", e);
             save(); // Create default config on error
+        }
+    }
+
+    /**
+     * Broadcast server configs to all relevant players.
+     * Behavior depends on the current environment:
+     * <ul>
+     *   <li>Integrated server: broadcasts to all players except the host</li>
+     *   <li>Dedicated server: broadcasts to all players</li>
+     *   <li>Client connected to remote server: does nothing (should not be called)</li>
+     * </ul>
+     *
+     * @param server The MinecraftServer instance, used to get the player list and check server type
+     */
+    public static void broadcast(MinecraftServer server) {
+        String serverConfigsYaml = serializeConfigCategory(INSTANCE.getServer());
+
+        if (server == null) {
+            // Client connected to remote server
+            // Do nothing
+            LOGGER.info("We are on a client connected to remote server. No need to broadcast new configs.");
+        } else if (server.isDedicatedServer()) {
+            // Dedicated server
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
+            }
+            LOGGER.info("New server configs broadcasted to all players.");
+        } else {
+            // Integrated server
+            if (ClientUtils.isSingleplayer()) {
+                LOGGER.info("We are on a single-player server. No need to broadcast new configs.");
+            } else {
+                Player owner = ClientUtils.getClientPlayerCommon();
+                for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                    if (!Objects.equals(owner.getUUID(), player.getUUID())) {
+                        ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
+                    }
+                }
+                LOGGER.info("New server configs broadcasted to remote players.");
+            }
         }
     }
 

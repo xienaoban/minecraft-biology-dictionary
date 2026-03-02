@@ -10,7 +10,9 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
@@ -31,10 +33,10 @@ public final class ClientUtils {
     }
 
     /**
-     * To avoid "Cannot load class net.minecraft.client.multiplayer.ClientLevel in environment type SERVER".
+     * To avoid "Cannot load class net.minecraft.client.player.LocalPlayer in environment type SERVER".
      */
-    public static Level getClientLevel0() {
-        return getClient().level;
+    public static Player getClientPlayerCommon() {
+        return getClientPlayer();
     }
 
     public static ClientLevel getClientLevel() {
@@ -43,6 +45,21 @@ public final class ClientUtils {
 
     public static ClientLevel getClientLevel(Minecraft client) {
         return client.level;
+    }
+
+    /**
+     * To avoid "Cannot load class net.minecraft.client.multiplayer.ClientLevel in environment type SERVER".
+     */
+    public static Level getClientLevelCommon() {
+        return getClientLevel();
+    }
+
+    public static MinecraftServer getServer() {
+        return getClient().getSingleplayerServer();
+    }
+
+    public static boolean isSingleplayer() {
+        return getClient().isSingleplayer();
     }
 
     /**
