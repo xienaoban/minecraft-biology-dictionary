@@ -204,7 +204,8 @@ public final class Lang {
     TEXT_SERVER_CONFIGS_DESC         = "text.biologydictionary.server_configs_desc",
 
     TEXT_MOD_NAME_IS                         = "text.biologydictionary.mod_name_is",
-    TEXT_AUTHOR_IS                           = "text.biologydictionary.author_is",
+    TEXT_MOD_AUTHOR_IS                       = "text.biologydictionary.mod_author_is",
+    TEXT_MOD_VERSION_IS                      = "text.biologydictionary.mod_version_is",
     TEXT_MOD_NOT_INSTALLED                   = "text.biologydictionary.mod_not_installed",
     TEXT_CLICK_ME_TO_DOWNLOAD                = "text.biologydictionary.click_me_to_download",
     TEXT_INFO_FROM_THIS_MOD                  = "text.biologydictionary.info_from_this_mod",

@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.common.util;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import io.github.xienaoban.biologydictionary.Lang;
 import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
@@ -12,13 +13,13 @@ public final class DevUtils {
 
     private static String modVersion = null;
 
-    public static String getModVersion(String modId) {
+    public static String getModVersion() {
         if (modVersion != null) return modVersion;
-        return modVersion = getModVersion0(modId);
+        return modVersion = getModVersion(Lang.BIOLOGY_DICTIONARY);
     }
 
     @ExpectPlatform
-    public static String getModVersion0(String modId) {
+    public static String getModVersion(String modId) {
         throw new AssertionError();
     }
 

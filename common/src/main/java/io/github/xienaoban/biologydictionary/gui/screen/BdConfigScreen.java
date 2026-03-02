@@ -76,7 +76,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
 
             int color = hovered ? Colors.BLACK : Colors.COMMON_DARK_TEXT;
             ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_OPEN_LOCAL_CONFIGS_SCREEN),
-                    color, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 3);
+                    color, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 3 + TXT_TO);
         }
 
         @Override
@@ -113,7 +113,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
 
             int color = hovered ? Colors.BLACK : Colors.COMMON_DARK_TEXT;
             ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_RELOAD_LOCAL_CONFIGS_SCREEN),
-                    color, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 3);
+                    color, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 3 + TXT_TO);
         }
 
         @Override
@@ -162,12 +162,12 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
 
             // Render translated config name on the left
             ctx.renderText(configText, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
-                    box.getLeft() + 12, box.getTop() + 3);
+                    box.getLeft() + 12, box.getTop() + 3.2F);
 
             // Render current value on the right
             Component valueText = formatValue(entryInfo.getValue(ConfigsManager.getServer()));
             ctx.renderRightAlignedText(valueText, Colors.BLACK, 0.5F, ctx.getZ(),
-                    box.getRight() - 2, box.getTop() + 3);
+                    box.getRight() - 2, box.getTop() + 3.2F);
         }
 
         @Override

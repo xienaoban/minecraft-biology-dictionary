@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.common.gui.screen;
 
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScaleRAII;
+import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenConsts;
 import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import net.fabricmc.api.EnvType;
@@ -19,7 +20,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * 2. Because the parameter names of the methods are missing when using the official mappings.
  */
 @Environment(EnvType.CLIENT)
-public abstract class CommonScreen extends Screen {
+public abstract class CommonScreen extends Screen implements ScreenConsts {
     private static boolean commonScreenOpened = false;
 
     public static boolean isOpened() {
