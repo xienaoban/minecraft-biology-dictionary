@@ -2,10 +2,10 @@ package io.github.xienaoban.biologydictionary.net;
 
 import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.net.payload.SendCenteredMessagePacket;
 import io.github.xienaoban.biologydictionary.net.payload.ReplyHighlightEntitiesPacket;
 import io.github.xienaoban.biologydictionary.net.payload.ReplyInventoryStealingScreenPacket;
 import io.github.xienaoban.biologydictionary.net.payload.ReplyServerConfigsPacket;
+import io.github.xienaoban.biologydictionary.net.payload.SendCenteredMessagePacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;

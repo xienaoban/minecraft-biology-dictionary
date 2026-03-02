@@ -12,7 +12,6 @@ import net.minecraft.world.entity.animal.nautilus.Nautilus;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.HorseInventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
@@ -21,7 +20,7 @@ import net.minecraft.world.ticks.ContainerSingleItem;
 import org.jspecify.annotations.Nullable;
 
 /**
- * @see HorseInventoryMenu
+ * @see net.minecraft.world.inventory.HorseInventoryMenu
  */
 public class InventoryStealingMenu extends AbstractContainerMenu {
     public static final int EQUIPMENT_SLOTS = EquipmentSlot.values().length;

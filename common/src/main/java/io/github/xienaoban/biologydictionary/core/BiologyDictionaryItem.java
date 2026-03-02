@@ -9,7 +9,6 @@ import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.mixin.CreativeModeTabsIMixin;
 import io.github.xienaoban.biologydictionary.mixin.CustomDataIMixin;
-import io.github.xienaoban.biologydictionary.mixin.MinecraftMixin;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Style;
@@ -37,7 +36,7 @@ import java.util.Optional;
  * I didn't choose to define a new book item, instead I just made a book with custom NBT to ensure a good compatibility.
  * And I implemented the opening of the book in the mixin.
  *
- * @see MinecraftMixin#useBiologyDictionaryScreen(CallbackInfo)
+ * @see io.github.xienaoban.biologydictionary.mixin.MinecraftMixin#useBiologyDictionaryScreen(CallbackInfo)
  */
 public final class BiologyDictionaryItem {
     // Any writable book with this nbt key will be recognized as a biology dictionary.

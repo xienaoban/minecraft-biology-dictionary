@@ -4,6 +4,10 @@
     "compatibilityLevel": "JAVA_21",
     "minVersion": "0.8",
     "mixins": [
+        "CreativeModeTabsIMixin",
+        "CustomDataIMixin",
+        "MobEffectInstanceIMixin",
+        "TemptGoalIMixin",
         "entity.AbstractHorseMixin",
         "entity.AgeableMobMixin",
         "entity.AnimalIMixin",
@@ -22,18 +26,14 @@
         "loot.LootTableIMixin",
         "loot.NestedLootTableIMixin",
         "loot.SetItemCountFunctionIMixin",
-        "loot.TagEntryIMixin",
-        "CreativeModeTabsIMixin",
-        "CustomDataIMixin",
-        "MobEffectInstanceIMixin",
-        "TemptGoalIMixin"
+        "loot.TagEntryIMixin"
     ],
     "client": [
+        "MinecraftMixin",
         "rendering.GuiGraphicsIMixin",
         "rendering.GuiTextRenderStateIMixin",
         "rendering.ItemInHandRendererMixin",
-        "rendering.LevelRendererMixin",
-        "MinecraftMixin"
+        "rendering.LevelRendererMixin"
     ],
     "injectors": {
         "defaultRequire": 1

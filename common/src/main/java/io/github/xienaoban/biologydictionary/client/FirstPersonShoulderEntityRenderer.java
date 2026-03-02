@@ -24,6 +24,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.parrot.Parrot;
 
 import java.util.Optional;
+
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @Environment(EnvType.CLIENT)
