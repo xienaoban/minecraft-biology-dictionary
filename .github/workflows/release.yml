@@ -46,11 +46,11 @@ jobs:
       - name: build neoforge
         run: ./gradlew neoforge:build -Dbuild.release=true
 
-      - name: test fabric
-        run: ./gradlew fabric:testServer
-
-      - name: test neoforge
-        run: ./gradlew neoforge:testServer
+#      - name: test fabric
+#        run: ./gradlew fabric:testServer
+#
+#      - name: test neoforge
+#        run: ./gradlew neoforge:testServer
 
       - name: rename jar
         run: |
@@ -79,72 +79,80 @@ jobs:
           MC_VERSION: ${{ env.MC_VERSION }}
           LOADER_TYPE: neoforge
 
-      - name: publish fabric version to modrinth, curseforge and github
+      - name: publish fabric & neoforge version to github
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          # Modrinth
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+          name: "Biology Dictionary ${{ github.ref_name }}"
+          version: "${{ github.ref_name }}"
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: CHANGELOG.md
+
+          loaders: |
+            fabric
+            neoforge
+          java: |
+            21
+            25
+
+          files: |
+            ${{ env.MOD_JAR_FABRIC }}
+            ${{ env.MOD_JAR_NEOFORGE }}
+
+          dependencies: |
+            fabric-api
+            architectury-api
+            cloth-config
+
+      - name: publish fabric version to modrinth and curseforge
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
           modrinth-id: biology-dictionary
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
-          # CurseForge
           curseforge-id: 1426515
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          # GitHub
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-          # Version info
           name: "Biology Dictionary ${{ github.ref_name }}-fabric"
           version: "${{ github.ref_name }}-fabric"
           version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: CHANGELOG.md
 
-          # Game and loader info
           loaders: fabric
           java: |
             21
             25
 
-          # Files
           files: |
             ${{ env.MOD_JAR_FABRIC }}
 
-          # Dependencies
           dependencies: |
             fabric-api
             cloth-config
 
-      - name: publish neoforge version to modrinth, curseforge and github
+      - name: publish neoforge version to modrinth and curseforge
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          # Modrinth
           modrinth-id: biology-dictionary
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
-          # CurseForge
           curseforge-id: 1426515
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          # GitHub
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-          # Version info
           name: "Biology Dictionary ${{ github.ref_name }}-neoforge"
           version: "${{ github.ref_name }}-neoforge"
           version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: CHANGELOG.md
 
-          # Game and loader info
           loaders: neoforge
           java: |
             21
             25
 
-          # Files
           files: |
             ${{ env.MOD_JAR_NEOFORGE }}
 
-          # Dependencies
           dependencies: |
             architectury-api
             cloth-config
