@@ -1,0 +1,29 @@
+package io.github.xienaoban.biologydictionary.core.property.extra;
+
+import io.github.xienaoban.biologydictionary.core.property.vanilla.GlobalPosProperty;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.npc.villager.Villager;
+
+import java.util.Optional;
+
+public class VillagerJobSiteProperty extends GlobalPosProperty<Villager> {
+    public static final Factory<Villager> FACTORY = VillagerJobSiteProperty::new;
+
+    public VillagerJobSiteProperty() {
+        super(VillagerJobSiteProperty.class.getSimpleName());
+    }
+
+    @Override
+    public void getFrom(Villager entity) {
+        Optional<GlobalPos> globalPos = entity.getBrain().getMemory(MemoryModuleType.JOB_SITE);
+        setVal(globalPos.orElse(null));
+    }
+
+    @Override
+    public void setTo(Villager entity) {
+        throw new UnsupportedOperationException();
+        // TODO: the villager won't find new job site anymore
+        // entity.getBrain().setMemory(MemoryModuleType.JOB_SITE, getVal());
+    }
+}

@@ -1,0 +1,158 @@
+# Publish mod to Modrinth, CurseForge and GitHub
+# Triggered by creating a GitHub release or pushing a tag
+
+name: release
+on:
+  push:
+    tags:
+      - 'v*-mc*'  # Trigger on version tags like v0.7.0-mc1.21.11
+  workflow_dispatch:  # Allow manual triggering from GitHub Actions page
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    if: startsWith(github.ref, 'refs/tags/')  # Only run on tags, not branches
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: check tag versions
+        run: |
+          chmod +x .github/scripts/check-tag-versions.sh
+          .github/scripts/check-tag-versions.sh
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_ENV: ${{ github.env }}
+
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: setup jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: build fabric
+        run: ./gradlew fabric:build -Dbuild.release=true
+
+      - name: build neoforge
+        run: ./gradlew neoforge:build -Dbuild.release=true
+
+#      - name: test fabric
+#        run: ./gradlew fabric:testServer
+#
+#      - name: test neoforge
+#        run: ./gradlew neoforge:testServer
+
+      - name: rename jar
+        run: |
+          chmod +x .github/scripts/rename-jar.sh
+          .github/scripts/rename-jar.sh
+        env:
+          MOD_VERSION: ${{ env.MOD_VERSION }}
+          MC_VERSION: ${{ env.MC_VERSION }}
+          GITHUB_ENV: ${{ github.env }}
+
+      - name: integration test fabric - run minecraft server
+        run: |
+          chmod +x .github/scripts/integration-test.sh
+          .github/scripts/integration-test.sh
+        env:
+          MOD_JAR: ${{ env.MOD_JAR_FABRIC }}
+          MC_VERSION: ${{ env.MC_VERSION }}
+          LOADER_TYPE: fabric
+
+      - name: integration test neoforge - run minecraft server
+        run: |
+          chmod +x .github/scripts/integration-test.sh
+          .github/scripts/integration-test.sh
+        env:
+          MOD_JAR: ${{ env.MOD_JAR_NEOFORGE }}
+          MC_VERSION: ${{ env.MC_VERSION }}
+          LOADER_TYPE: neoforge
+
+      - name: publish fabric & neoforge version to github
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+          name: "Biology Dictionary ${{ github.ref_name }}"
+          version: "${{ github.ref_name }}"
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: CHANGELOG.md
+
+          loaders: |
+            fabric
+            neoforge
+          java: |
+            21
+            25
+
+          files: |
+            ${{ env.MOD_JAR_FABRIC }}
+            ${{ env.MOD_JAR_NEOFORGE }}
+
+          dependencies: |
+            fabric-api
+            architectury-api
+            cloth-config
+
+      - name: publish fabric version to modrinth and curseforge
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: biology-dictionary
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 1426515
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          name: "Biology Dictionary ${{ github.ref_name }}-fabric"
+          version: "${{ github.ref_name }}-fabric"
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: CHANGELOG.md
+
+          loaders: fabric
+          java: |
+            21
+            25
+
+          files: |
+            ${{ env.MOD_JAR_FABRIC }}
+
+          dependencies: |
+            fabric-api
+            cloth-config
+
+      - name: publish neoforge version to modrinth and curseforge
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: biology-dictionary
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 1426515
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          name: "Biology Dictionary ${{ github.ref_name }}-neoforge"
+          version: "${{ github.ref_name }}-neoforge"
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: CHANGELOG.md
+
+          loaders: neoforge
+          java: |
+            21
+            25
+
+          files: |
+            ${{ env.MOD_JAR_NEOFORGE }}
+
+          dependencies: |
+            architectury-api
+            cloth-config

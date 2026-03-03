@@ -1,32 +1,45 @@
 {
-  "schemaVersion": 1,
-  "id": "biologydictionary",
-  "version": "${version}",
-  "name": "Biology Dictionary",
-  "description": "A biology dictionary for all entities in minecraft.",
-  "authors": [
-    "xienaoban"
-  ],
-  "contact": {
-    "website": "xienaoban.github.io"
-  },
-  "license": "LGPL-3.0",
-  "icon": "icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "client": [
-      "xienaoban.minecraft.biologydictionary.fabric.BiologyDictionaryClientFabric"
+    "schemaVersion": 1,
+    "id": "biologydictionary",
+    "version": "${version}",
+    "name": "Biology Dictionary",
+    "description": "To display or modify the properties and states of mobs.",
+    "authors": [
+        "XieNaoban"
     ],
-    "main": [
-      "xienaoban.minecraft.biologydictionary.fabric.BiologyDictionaryFabric"
-    ]
-  },
-  "mixins": [
-    "biologydictionary.mixins.json",
-    "biologydictionary-common.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.14.9",
-    "minecraft": ">=1.19.2"
-  }
+    "contact": {
+        "homepage": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "sources": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "repo": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "issues": "https://github.com/xienaoban/minecraft-biology-dictionary/issues"
+    },
+    "license": "LGPL-3.0",
+    "icon": "assets/biologydictionary/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "io.github.xienaoban.biologydictionary.fabric.BiologyDictionaryFabric"
+        ],
+        "client": [
+            "io.github.xienaoban.biologydictionary.fabric.BiologyDictionaryFabricClient"
+        ],
+        "modmenu": [
+            "io.github.xienaoban.biologydictionary.config.fabric.ModMenuConfigScreenProvider"
+        ]
+    },
+    "accessWidener" : "biologydictionary.accesswidener",
+    "mixins": [
+        "biologydictionary.mixins.json"
+    ],
+    "depends": {
+        "minecraft": "${minecraft_version}",
+        "fabricloader": ">=${fabric_loader_version}",
+        "fabric-api": "*",
+        "java": ">=21"
+    },
+    "suggests": {
+        "cloth-config": ">=${clothconfig_version}",
+        "modmenu": ">=${modmenu_version}",
+        "another-mod": "*"
+    }
 }
