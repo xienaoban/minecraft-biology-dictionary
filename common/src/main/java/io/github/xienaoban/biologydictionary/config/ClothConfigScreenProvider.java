@@ -18,6 +18,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -188,6 +189,7 @@ public class ClothConfigScreenProvider {
 
     private static void save(Field field, Object categoryObject, Object newValue) {
         try {
+            VarHandle.storeStoreFence();
             field.set(categoryObject, newValue);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Failed to set config value", e);
