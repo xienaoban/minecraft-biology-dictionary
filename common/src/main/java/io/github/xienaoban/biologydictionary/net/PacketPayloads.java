@@ -1,0 +1,30 @@
+package io.github.xienaoban.biologydictionary.net;
+
+import io.github.xienaoban.biologydictionary.common.net.Packet;
+import io.github.xienaoban.biologydictionary.net.payload.*;
+
+public final class PacketPayloads {
+
+    private PacketPayloads() {}
+
+    public static void registerBuiltIn(Registrar registrar) {
+        registrar.register(SendCenteredMessagePacket.class, SendCenteredMessagePacket.FACTORY);
+        registrar.register(RequestEntityDataPacket.class, RequestEntityDataPacket.FACTORY);
+        registrar.register(ReplyEntityDataPacket.class, ReplyEntityDataPacket.FACTORY);
+        registrar.register(RequestBiologyDictionaryItemPacket.class, RequestBiologyDictionaryItemPacket.FACTORY);
+        registrar.register(RequestCommonSkillPacket.class, RequestCommonSkillPacket.FACTORY);
+        registrar.register(RequestEntityTargetedSkillPacket.class, RequestEntityTargetedSkillPacket.FACTORY);
+        registrar.register(ReplyHighlightEntitiesPacket.class, ReplyHighlightEntitiesPacket.FACTORY);
+        registrar.register(ReplyInventoryStealingScreenPacket.class, ReplyInventoryStealingScreenPacket.FACTORY);
+        registrar.register(SendStealingDetectedPacket.class, SendStealingDetectedPacket.FACTORY);
+        registrar.register(RequestBeehiveInfoPacket.class, RequestBeehiveInfoPacket.FACTORY);
+        registrar.register(ReplyBeehiveInfoPacket.class, ReplyBeehiveInfoPacket.FACTORY);
+        registrar.register(RequestServerConfigsPacket.class, RequestServerConfigsPacket.FACTORY);
+        registrar.register(ReplyServerConfigsPacket.class, ReplyServerConfigsPacket.FACTORY);
+    }
+
+    @FunctionalInterface
+    public interface Registrar {
+        <T extends Packet> void register(Class<T> packetClass, Packet.Factory<T> factory);
+    }
+}

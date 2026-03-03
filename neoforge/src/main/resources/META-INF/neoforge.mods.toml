@@ -1,0 +1,48 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+#issueTrackerURL = ""
+license = "GNU LGPL 3.0"
+
+[[mods]]
+modId = "biologydictionary"
+version = "${version}"
+displayName = "Biology Dictionary"
+authors = "XieNaoban"
+description = '''
+To display or modify the properties and states of mobs.
+'''
+#logoFile = ""
+
+#[[accessTransformers]]
+#file="META-INF/accesstransformer.cfg"
+
+[[dependencies.biologydictionary]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.biologydictionary]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.11,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.biologydictionary]]
+modId = "architectury"
+type = "required"
+versionRange = "[19.0.1,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.biologydictionary]]
+modId = "cloth_config"
+type = "required"
+versionRange = "[21.0.0,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[mixins]]
+config = "biologydictionary.mixins.json"
