@@ -75,20 +75,34 @@ if [ "$LOADER_TYPE" = "fabric" ]; then
   echo "Files after Fabric installation:"
   ls -la
 
-  # Fabric installer creates fabric-server-launch.jar, use it instead
+  # Check for fabric-server-launch.jar
   if [ -f "fabric-server-launch.jar" ]; then
     echo "✓ Fabric loader installed successfully"
-    mv fabric-server-launch.jar server-mod-loader.jar
   else
-    echo "Warning: fabric-server-launch.jar not found"
+    echo "✗ fabric-server-launch.jar not found"
+    exit 1
   fi
 elif [ "$LOADER_TYPE" = "neoforge" ]; then
-  echo "Downloading Forge installer..."
-  FORGE_VERSION=$(grep "^forge_version=" ../../gradle.properties | cut -d'=' -f2)
+  echo "Downloading NeoForge installer..."
+  FORGE_VERSION=$(grep "^neoforge_version=" ../../../gradle.properties | cut -d'=' -f2)
+  echo "FORGE_VERSION=${FORGE_VERSION}"
   FORGE_INSTALLER_URL="https://maven.neoforged.net/releases/net/neoforged/neoforge/${FORGE_VERSION}/neoforge-${FORGE_VERSION}-installer.jar"
+  echo "FORGE_INSTALLER_URL=${FORGE_INSTALLER_URL}"
   wget -q "$FORGE_INSTALLER_URL" -O neoforge-installer.jar
   echo "Installing neoforge loader..."
   java -jar neoforge-installer.jar --installServer
+
+  echo "Files after NeoForge installation:"
+  ls -la
+
+  # Check for run.sh
+  if [ -f "run.sh" ]; then
+    echo "✓ NeoForge loader installed successfully"
+    chmod +x run.sh
+  else
+    echo "✗ run.sh not found"
+    exit 1
+  fi
 else
   echo "Error: Unknown loader type: $LOADER_TYPE"
   exit 1
@@ -100,14 +114,14 @@ echo "✓ EULA accepted"
 
 # Create mods directory and copy mod
 mkdir -p mods
-cp "../../$MOD_JAR" "mods/"
+cp "../../../$MOD_JAR" "mods/"
 echo "✓ Mod copied to mods/"
 
 # Download and install dependencies
 if [ "$LOADER_TYPE" = "fabric" ]; then
   echo "Downloading Fabric API..."
   # Get Fabric API version from gradle.properties
-  FABRIC_API_VERSION=$(grep "^fabric_version=" ../../gradle.properties | cut -d'=' -f2)
+  FABRIC_API_VERSION=$(grep "^fabric_api_version=" ../../../gradle.properties | cut -d'=' -f2)
 
   # Fabric API URL pattern
   FABRIC_API_URL="https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/${FABRIC_API_VERSION}/fabric-api-${FABRIC_API_VERSION}.jar"
@@ -122,7 +136,7 @@ if [ "$LOADER_TYPE" = "fabric" ]; then
 
   echo "Downloading Cloth Config..."
   # Get Cloth Config version from gradle.properties
-  CLOTHCONFIG_VERSION=$(grep "^clothconfig_version=" ../../gradle.properties | cut -d'=' -f2)
+  CLOTHCONFIG_VERSION=$(grep "^clothconfig_version=" ../../../gradle.properties | cut -d'=' -f2)
 
   # Cloth Config URL from Maven
   CLOTHCONFIG_URL="https://maven.shedaniel.me/me/shedaniel/cloth/cloth-config-fabric/${CLOTHCONFIG_VERSION}/cloth-config-fabric-${CLOTHCONFIG_VERSION}-fabric.jar"
@@ -137,7 +151,7 @@ if [ "$LOADER_TYPE" = "fabric" ]; then
 elif [ "$LOADER_TYPE" = "neoforge" ]; then
   echo "Downloading Architectury API..."
   # Get Architectury API version from gradle.properties
-  ARCHITECTURY_API_VERSION=$(grep "^architectury_api_version=" ../../gradle.properties | cut -d'=' -f2)
+  ARCHITECTURY_API_VERSION=$(grep "^architectury_api_version=" ../../../gradle.properties | cut -d'=' -f2)
 
   # Architectury API URL
   ARCHITECTURY_API_URL="https://maven.architectury.dev/dev/architectury/architectury-neoforge/${ARCHITECTURY_API_VERSION}/architectury-neoforge-${ARCHITECTURY_API_VERSION}.jar"
@@ -152,7 +166,7 @@ elif [ "$LOADER_TYPE" = "neoforge" ]; then
 
   echo "Downloading Cloth Config..."
   # Get Cloth Config version from gradle.properties
-  CLOTHCONFIG_VERSION=$(grep "^clothconfig_version=" ../../gradle.properties | cut -d'=' -f2)
+  CLOTHCONFIG_VERSION=$(grep "^clothconfig_version=" ../../../gradle.properties | cut -d'=' -f2)
 
   # Cloth Config NeoForge URL from Maven
   CLOTHCONFIG_URL="https://maven.shedaniel.me/me/shedaniel/cloth/cloth-config-neoforge/${CLOTHCONFIG_VERSION}/cloth-config-neoforge-${CLOTHCONFIG_VERSION}-neoforge.jar"
@@ -178,13 +192,19 @@ EOF
 
 # Run server in background with timeout
 echo "Starting Minecraft server..."
-timeout 120s java -Xmx1G -Xms1G -jar server-mod-loader.jar nogui &
-SERVER_PID=$!
+if [ "$LOADER_TYPE" = "fabric" ]; then
+  timeout 120s java -Xmx1G -Xms1G -jar fabric-server-launch.jar nogui &
+  SERVER_PID=$!
+elif [ "$LOADER_TYPE" = "neoforge" ]; then
+  # NeoForge uses run.sh script
+  timeout 120s ./run.sh &
+  SERVER_PID=$!
+fi
 
-# Wait for server to start (look for "Done" in logs)
+# Wait for mod to load (look for "EntityManager initialized." in logs)
 for i in {1..60}; do
-  if grep -q "Done" logs/latest.log 2>/dev/null; then
-    echo "✓ Server started successfully!"
+  if grep -q "EntityManager initialized\." logs/latest.log 2>/dev/null; then
+    echo "✓ Mod loaded successfully!"
     break
   fi
   if ! kill -0 $SERVER_PID 2>/dev/null; then
@@ -195,18 +215,11 @@ for i in {1..60}; do
   sleep 2
 done
 
-# Check if server started successfully
-if ! grep -q "Done" logs/latest.log 2>/dev/null; then
-  echo "✗ Server failed to start within timeout"
+# Check if mod loaded successfully
+if ! grep -q "EntityManager initialized\." logs/latest.log 2>/dev/null; then
+  echo "✗ Mod failed to load within timeout"
   tail -n 50 logs/latest.log
   exit 1
-fi
-
-# Check for mod loading
-if grep -qi "biology.*dictionary" logs/latest.log; then
-  echo "✓ Mod loaded successfully!"
-else
-  echo "⚠ Warning: Mod may not have loaded (check logs above)"
 fi
 
 # Stop server gracefully
