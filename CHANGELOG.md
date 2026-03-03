@@ -6,20 +6,19 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Support screen scaling
-- Add loot table widget
-- Baby animals will be born silent when both parents are silent
-- Improve food, tempt widget tooltips
-- Configurable skill cost
+- Rebuild project with Architectury
+- Support NeoForge
+- Broadcast new configs after their modification
 
 ### Changed
 
-- All keys in the YAML config file are changed from camelCase to snake_case
-- Refactor skill module. Detailed tooltips.
+- Positions of text are now float (instead of int)
+- The Fabric version still depends on Fabric API, while the NeoForge version depends on Architectury API
+- Test cases are removed temporary
 
 ### Fixed
 
----
+- Rename Mixin methods to `biologydictionary$xxx`
 
 ## Previous Versions
 
