@@ -116,8 +116,8 @@ if [ "$LOADER_TYPE" = "fabric" ]; then
   if wget -q "$FABRIC_API_URL" -P mods/; then
     echo "✓ Fabric API downloaded successfully"
   else
-    echo "Warning: Failed to download Fabric API for version $FABRIC_API_VERSION"
-    echo "The mod may fail to load due to missing dependencies"
+    echo "✗ Failed to download Fabric API for version $FABRIC_API_VERSION"
+    exit 1
   fi
 
   echo "Downloading Cloth Config..."
@@ -131,8 +131,38 @@ if [ "$LOADER_TYPE" = "fabric" ]; then
   if wget -q "$CLOTHCONFIG_URL" -P mods/; then
     echo "✓ Cloth Config downloaded successfully"
   else
-    echo "Warning: Failed to download Cloth Config for version $CLOTHCONFIG_VERSION"
-    echo "The mod may fail to load due to missing dependencies"
+    echo "✗ Failed to download Cloth Config for version $CLOTHCONFIG_VERSION"
+    exit 1
+  fi
+elif [ "$LOADER_TYPE" = "neoforge" ]; then
+  echo "Downloading Architectury API..."
+  # Get Architectury API version from gradle.properties
+  ARCHITECTURY_API_VERSION=$(grep "^architectury_api_version=" ../../gradle.properties | cut -d'=' -f2)
+
+  # Architectury API URL
+  ARCHITECTURY_API_URL="https://maven.architectury.dev/dev/architectury/architectury-neoforge/${ARCHITECTURY_API_VERSION}/architectury-neoforge-${ARCHITECTURY_API_VERSION}.jar"
+
+  echo "Downloading Architectury API from: $ARCHITECTURY_API_URL"
+  if wget -q "$ARCHITECTURY_API_URL" -P mods/; then
+    echo "✓ Architectury API downloaded successfully"
+  else
+    echo "✗ Failed to download Architectury API for version $ARCHITECTURY_API_VERSION"
+    exit 1
+  fi
+
+  echo "Downloading Cloth Config..."
+  # Get Cloth Config version from gradle.properties
+  CLOTHCONFIG_VERSION=$(grep "^clothconfig_version=" ../../gradle.properties | cut -d'=' -f2)
+
+  # Cloth Config NeoForge URL from Maven
+  CLOTHCONFIG_URL="https://maven.shedaniel.me/me/shedaniel/cloth/cloth-config-neoforge/${CLOTHCONFIG_VERSION}/cloth-config-neoforge-${CLOTHCONFIG_VERSION}-neoforge.jar"
+
+  echo "Downloading Cloth Config from: $CLOTHCONFIG_URL"
+  if wget -q "$CLOTHCONFIG_URL" -P mods/; then
+    echo "✓ Cloth Config downloaded successfully"
+  else
+    echo "✗ Failed to download Cloth Config for version $CLOTHCONFIG_VERSION"
+    exit 1
   fi
 fi
 

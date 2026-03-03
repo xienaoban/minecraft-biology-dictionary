@@ -20,6 +20,7 @@ import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -370,6 +371,7 @@ public final class ConfigsManager {
                     convertedValue = Set.copyOf((Collection<?>) convertedValue);
                 }
 
+                VarHandle.storeStoreFence();
                 field.set(configObject, convertedValue);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
