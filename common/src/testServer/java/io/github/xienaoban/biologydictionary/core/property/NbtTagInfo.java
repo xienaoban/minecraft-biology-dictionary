@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property;
 
-import io.github.xienaoban.biologydictionary.common.util.Result;
+import io.github.xienaoban.biologydictionary.platform.util.Result;
 
 import java.util.Objects;
 import java.util.regex.Matcher;

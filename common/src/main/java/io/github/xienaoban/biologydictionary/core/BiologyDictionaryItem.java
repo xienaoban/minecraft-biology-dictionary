@@ -2,13 +2,13 @@ package io.github.xienaoban.biologydictionary.core;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.server.ItemRegistry;
-import io.github.xienaoban.biologydictionary.common.util.DevUtils;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.mixin.CreativeModeTabsIMixin;
 import io.github.xienaoban.biologydictionary.mixin.CustomDataIMixin;
+import io.github.xienaoban.biologydictionary.platform.server.ItemRegistry;
+import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Style;

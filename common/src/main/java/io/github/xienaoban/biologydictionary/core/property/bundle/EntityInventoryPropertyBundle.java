@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.property.bundle;
 
-import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.mixin.entity.AbstractHorseMixin;
+import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
