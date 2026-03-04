@@ -1,13 +1,13 @@
 package io.github.xienaoban.biologydictionary.config;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.DevUtils;
-import io.github.xienaoban.biologydictionary.common.util.Misc;
-import io.github.xienaoban.biologydictionary.common.util.StringUtils;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
+import io.github.xienaoban.biologydictionary.platform.util.Misc;
+import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.server.MinecraftServer;

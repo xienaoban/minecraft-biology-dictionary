@@ -1,13 +1,13 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
-import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.StringUtils;
-import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;

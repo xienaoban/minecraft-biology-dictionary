@@ -1,12 +1,12 @@
 package io.github.xienaoban.biologydictionary.core.skill.general;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
@@ -25,7 +25,7 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(16, 0, 0, 0, new ItemStack(Items.ENDER_EYE));
+            return new SkillCost(16, 0, 0, 0, 0, 0, new ItemStack(Items.ENDER_EYE));
         }
 
         @Override

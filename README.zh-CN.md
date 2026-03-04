@@ -2,13 +2,15 @@
 
 [**English**](README.md) | **简体中文**
 
-[![Download - Modrinth](https://img.shields.io/badge/下载-Modrinth-%2343b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
-[![Download - Curseforge](https://img.shields.io/badge/下载-CurseForge-%23ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
-![License](https://img.shields.io/badge/License-LGPL3-blue?style=for-the-badge)
+[![下载 - Modrinth](https://img.shields.io/badge/下载-Modrinth-43b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
+[![下载 - Curseforge](https://img.shields.io/badge/下载-CurseForge-ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
+![开源协议](https://img.shields.io/badge/开源协议-LGPL_3-blue?style=for-the-badge)
 
-![Minecraft 1.21.11](https://img.shields.io/badge/Minecraft-1.21.11-brightgreen?style=for-the-badge)
-![Fabric API](https://img.shields.io/badge/Fabric%20API-latest-%23a335ee?style=for-the-badge&logo=fabric)
-![Cloth Config](https://img.shields.io/badge/Cloth%20Config-latest-%2315B19E?style=for-the-badge&logo=cloth)
+![我的世界 1.21.11](https://img.shields.io/badge/我的世界-1.21.11-59A922?style=for-the-badge)
+
+![Fabric 依赖](https://img.shields.io/badge/依赖-Fabric-A99774?style=for-the-badge&logo=fabric) ![Fabric API](https://img.shields.io/badge/Fabric_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
+
+![NeoForge 依赖](https://img.shields.io/badge/依赖-NeoForge-D7742F?style=for-the-badge&logo=neoforge) ![Architectury API](https://img.shields.io/badge/Architectury_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
 
 ---
 
@@ -42,12 +44,10 @@
 | ![](res/screenshot_zh_cn_4.jpg) | ![](res/screenshot_zh_cn_5.jpg) | ![](res/screenshot_zh_cn_6.jpg) |
 | ![](res/screenshot_zh_cn_7.jpg) | ![](res/screenshot_zh_cn_8.jpg) | ![](res/screenshot_zh_cn_9.jpg) |
 
-本模组当前仅支持 Fabric，且依赖 **<span style="color: red;">Fabric API</span>** 和 **<span style="color: red;">Cloth Config API</span>**。随着开发的深入，本模组看上去与最开始的初衷（完善生电体验）差得有点多，因此可能有人会问为什么不基于 Forge 开发，因为 Forge 上有很多模组添加了很多新的生物，本模组似乎对于查看这些生物的属性很有帮助。
+本模组当前支持 **Fabric** 和 **NeoForge** 两个加载器。
 
-- 首先，是的本模组支持第三方模组的生物，后续如果呼声高的话也会考虑开放三方生物属性 widget 的接口。
-- 其次，本模组初衷是完善原版生存体验 + 持续跟随最新我的世界版本，在我刚开始开发时 Forge 更新慢且不支持“纳”等优化模组，因此未作考虑。但是如今 NeoForge 发展得不错，所以当前先观望，后续看情况。
-
-> 我现在工作越来越忙了，但仍会尽力持续追赶我的世界官方版本最新版本，但也因此不会再添加过多复杂功能。
+- Fabric 版本依赖 **<span style="color: red;">Fabric API</span>** 和 **<span style="color: red;">Cloth Config API</span>**。
+- NeoForge 版本依赖 **<span style="color: red;">Architectury API</span>** 和 **<span style="color: red;">Cloth Config API</span>**。
 
 ## 详细功能与设定
 

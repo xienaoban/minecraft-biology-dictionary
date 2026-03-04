@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.gui.component;
 
-import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenElement;
-import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.minecraft.network.chat.Component;
 
 public class CenteredMessage extends ScreenElement {

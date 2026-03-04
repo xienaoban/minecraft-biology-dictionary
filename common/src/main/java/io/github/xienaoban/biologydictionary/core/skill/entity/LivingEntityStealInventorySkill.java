@@ -1,11 +1,11 @@
 package io.github.xienaoban.biologydictionary.core.skill.entity;
 
-import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingMenu;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;

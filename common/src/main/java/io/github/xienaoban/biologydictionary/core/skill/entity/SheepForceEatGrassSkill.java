@@ -1,9 +1,9 @@
 package io.github.xienaoban.biologydictionary.core.skill.entity;
 
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;

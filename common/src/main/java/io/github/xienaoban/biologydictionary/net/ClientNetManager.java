@@ -1,10 +1,10 @@
 package io.github.xienaoban.biologydictionary.net;
 
-import io.github.xienaoban.biologydictionary.common.net.ClientNetApi;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.net.payload.*;
+import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;

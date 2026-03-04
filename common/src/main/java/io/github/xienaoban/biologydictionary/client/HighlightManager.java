@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.client;
 
-import io.github.xienaoban.biologydictionary.common.client.ClientEventRegistry;
-import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.client.ClientEventRegistry;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;

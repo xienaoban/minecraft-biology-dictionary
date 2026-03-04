@@ -2,11 +2,11 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
-import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;

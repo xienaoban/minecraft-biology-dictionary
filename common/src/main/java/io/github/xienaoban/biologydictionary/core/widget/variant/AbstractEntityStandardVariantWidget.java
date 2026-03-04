@@ -1,10 +1,10 @@
 package io.github.xienaoban.biologydictionary.core.widget.variant;
 
-import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
