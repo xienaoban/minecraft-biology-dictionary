@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.property;
 
-import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.extra.*;
+import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;

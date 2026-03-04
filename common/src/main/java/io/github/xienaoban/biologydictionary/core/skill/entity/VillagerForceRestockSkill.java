@@ -1,8 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.skill.entity;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
@@ -10,6 +8,8 @@ import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.GlobalPos;
@@ -106,6 +106,8 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
                 factor * base.getExperienceLevels(),
                 factor * base.getExperiencePointRequired(),
                 factor * base.getExperienceLevelRequired(),
+                factor * base.getHealth(),
+                factor * base.getSatiety(),
                 base.getItems().stream().map(i -> {
                     ItemStack res = i.copy();
                     res.setCount(factor * i.getCount());

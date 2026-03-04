@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.net.Packet;
+import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,11 +31,11 @@ public record SendStealingDetectedPacket(int entityId) implements Packet {
         if (entity instanceof LivingEntity livingEntity) {
             // Deal 0 damage to the entity to trigger its attack response
             DamageSource damageSource = level.damageSources().playerAttack(player);
-            livingEntity.hurtServer(level, damageSource, 0.0f);
+            EntityUtils.hurt(livingEntity, damageSource, 0.0f);
 
             // Also deal 0 damage to the player
             DamageSource entityDamageSource = level.damageSources().mobAttack(livingEntity);
-            player.hurtServer(level, entityDamageSource, 0.01f);
+            EntityUtils.hurt(player, entityDamageSource, 0.01f);
         }
     }
 }

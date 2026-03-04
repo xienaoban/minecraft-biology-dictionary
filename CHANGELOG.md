@@ -6,19 +6,16 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Rebuild project with Architectury
-- Support NeoForge
-- Broadcast new configs after their modification
+- Support consuming health and satiety as skill cost
 
 ### Changed
 
-- Positions of text are now float (instead of int)
-- The Fabric version still depends on Fabric API, while the NeoForge version depends on Architectury API
-- Test cases are removed temporary
+- Rename 'common' package
+- Update README
 
 ### Fixed
 
-- Rename Mixin methods to `biologydictionary$xxx`
+- Support game tests (fabric only)
 
 ## Previous Versions
 

@@ -41,6 +41,7 @@ public interface EntityTargetedSkill<E extends Entity> {
         String shortName(); // for yaml config
     }
 
+    @Environment(EnvType.CLIENT)
     record ClientContext<E extends Entity>(LocalPlayer player, E entity) {}
     record ServerContext<E extends Entity>(MinecraftServer server, ServerPlayer player, E entity) {}
 }

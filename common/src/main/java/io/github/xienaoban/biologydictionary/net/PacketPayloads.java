@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.net;
 
-import io.github.xienaoban.biologydictionary.common.net.Packet;
 import io.github.xienaoban.biologydictionary.net.payload.*;
+import io.github.xienaoban.biologydictionary.platform.net.Packet;
 
 public final class PacketPayloads {
 
