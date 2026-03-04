@@ -7,6 +7,17 @@ architectury {
     fabric()
 }
 
+sourceSets {
+    testServer {
+        runtimeClasspath += main.runtimeClasspath + main.output
+        compileClasspath += main.compileClasspath + main.output
+    }
+    testClient {
+        runtimeClasspath += main.runtimeClasspath + main.output
+        compileClasspath += main.compileClasspath + main.output
+    }
+}
+
 configurations {
     common {
         canBeResolved = true
@@ -26,6 +37,23 @@ configurations {
 
 loom {
     accessWidenerPath = project(':common').loom.accessWidenerPath
+
+    runs {
+        testServer {
+            server()
+            source sourceSets.testServer
+            vmArg "--enable-native-access=ALL-UNNAMED"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
+            runDir "build/testServer"
+        }
+        testClient {
+            client()
+            source sourceSets.testClient
+            ideConfigGenerated project.rootProject == project
+            runDir "build/testServer"
+        }
+    }
 }
 
 repositories {
