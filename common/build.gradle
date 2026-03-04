@@ -4,12 +4,12 @@ architectury {
 
 sourceSets {
     testServer {
-        runtimeClasspath += main.runtimeClasspath + main.output
         compileClasspath += main.compileClasspath + main.output
+        runtimeClasspath += main.runtimeClasspath + main.output
     }
     testClient {
-        runtimeClasspath += main.runtimeClasspath + main.output
         compileClasspath += main.compileClasspath + main.output
+        runtimeClasspath += main.runtimeClasspath + main.output
     }
 }
 
@@ -37,6 +37,7 @@ dependencies {
     modImplementation "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
     include "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
 
+    // Dependencies for testServer
     testServerImplementation "com.github.javaparser:javaparser-symbol-solver-core:${rootProject.javaparser_version}"
     testServerImplementation "org.bitbucket.mstrobel:procyon-compilertools:${rootProject.procyon_version}"
     testServerImplementation "org.vineflower:vineflower:${rootProject.vineflower_version}"

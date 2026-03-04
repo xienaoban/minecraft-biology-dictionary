@@ -4,7 +4,6 @@ import io.github.xienaoban.biologydictionary.common.util.DevUtils;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.Entity;
@@ -26,7 +25,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class VanillaEntityCollectionTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @GameTest
     public void testDeobfuscationBatch(GameTestHelper helper) {
         AtomicBoolean success = new AtomicBoolean(true);
 
@@ -62,7 +60,6 @@ public class VanillaEntityCollectionTest {
         }
     }
 
-    @GameTest
     public void testOrderBatch(GameTestHelper helper) {
         boolean success = true;
 

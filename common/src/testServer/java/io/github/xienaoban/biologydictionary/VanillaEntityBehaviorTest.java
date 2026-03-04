@@ -3,7 +3,6 @@ package io.github.xienaoban.biologydictionary;
 import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
@@ -16,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 public class VanillaEntityBehaviorTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @GameTest
     public void testAgeableMobAge(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Chicken chicken = EntityUtils.create(EntityType.CHICKEN, level, EntitySpawnReason.NATURAL);
@@ -31,7 +29,6 @@ public class VanillaEntityBehaviorTest {
         helper.succeed();
     }
 
-    @GameTest
     public void testAgeableMobForcedAge(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Chicken chicken = EntityUtils.create(EntityType.CHICKEN, level, EntitySpawnReason.NATURAL);

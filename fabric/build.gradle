@@ -9,12 +9,16 @@ architectury {
 
 sourceSets {
     testServer {
-        runtimeClasspath += main.runtimeClasspath + main.output
         compileClasspath += main.compileClasspath + main.output
+        runtimeClasspath += main.runtimeClasspath + main.output
+        compileClasspath += project(':common').sourceSets.testServer.output
+        runtimeClasspath += project(':common').sourceSets.testServer.output
     }
     testClient {
-        runtimeClasspath += main.runtimeClasspath + main.output
         compileClasspath += main.compileClasspath + main.output
+        runtimeClasspath += main.runtimeClasspath + main.output
+        compileClasspath += project(':common').sourceSets.testClient.output
+        runtimeClasspath += project(':common').sourceSets.testClient.output
     }
 }
 
@@ -80,6 +84,11 @@ dependencies {
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
+
+    // Test dependencies from common
+    testServerImplementation "com.github.javaparser:javaparser-symbol-solver-core:${rootProject.javaparser_version}"
+    testServerImplementation "org.bitbucket.mstrobel:procyon-compilertools:${rootProject.procyon_version}"
+    testServerImplementation "org.vineflower:vineflower:${rootProject.vineflower_version}"
 }
 
 processResources {
