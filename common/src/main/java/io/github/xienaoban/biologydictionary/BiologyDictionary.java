@@ -60,6 +60,9 @@ public final class BiologyDictionary {
         return servers;
     }
 
+    /**
+     * Get a server instance. Any server is OK. Usually be used in {@code EntityType.create}.
+     */
     public Level justGiveMeALevel() {
         if (DevUtils.isClient()) {
             Level level = ClientUtils.getClientLevelCommon();

@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.InventoryUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
@@ -29,60 +30,72 @@ public final class SkillCost {
     private final int experienceLevels;
     private final int experiencePointRequired;
     private final int experienceLevelRequired;
+    private final int health;
+    private final int satiety;
     private final List<ItemStack> items;
 
-    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, List<ItemStack> items) {
+    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, int health, int satiety, List<ItemStack> items) {
         this.banned = banned;
         this.creativeOnly = creativeOnly;
         this.experiencePoints = experiencePoints;
         this.experienceLevels = experienceLevels;
         this.experiencePointRequired = experiencePointRequired;
         this.experienceLevelRequired = experienceLevelRequired;
+        this.health = health;
+        this.satiety = satiety;
         this.items = items == null ? List.of() : List.copyOf(items);
     }
 
-    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, ItemStack... items) {
-        this(banned, creativeOnly, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, Arrays.asList(items));
+    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, int health, int satiety, ItemStack... items) {
+        this(banned, creativeOnly, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, health, satiety, Arrays.asList(items));
     }
 
-    public SkillCost(int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, List<ItemStack> items) {
-        this(false, false, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, items);
+    public SkillCost(int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, int health, int satiety, List<ItemStack> items) {
+        this(false, false, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, health, satiety, items);
     }
 
-    public SkillCost(int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, ItemStack... items) {
-        this(experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, Arrays.asList(items));
+    public SkillCost(int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, int health, int satiety, ItemStack... items) {
+        this(experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, health, satiety, Arrays.asList(items));
     }
 
     // ==================== Factory Methods ====================
 
     public static SkillCost banned() {
-        return new SkillCost(true, false, 0, 0, 0, 0, List.of());
+        return new SkillCost(true, false, 0, 0, 0, 0, 0, 0, List.of());
     }
 
     public static SkillCost creativeOnly() {
-        return new SkillCost(false, true, 0, 0, 0, 0, List.of());
+        return new SkillCost(false, true, 0, 0, 0, 0, 0, 0, List.of());
     }
 
     public static SkillCost empty() {
-        return new SkillCost(0, 0, 0, 0, List.of());
+        return new SkillCost(0, 0, 0, 0, 0, 0, List.of());
     }
 
     public static SkillCost ofExpPoints(int points) {
-        return new SkillCost(points, 0, 0, 0, List.of());
+        return new SkillCost(points, 0, 0, 0, 0, 0, List.of());
     }
 
     public static SkillCost ofExpLevels(int levels) {
-        return new SkillCost(0, levels, 0, 0, List.of());
+        return new SkillCost(0, levels, 0, 0, 0, 0, List.of());
+    }
+
+    public static SkillCost ofHealth(int health) {
+        return new SkillCost(0, 0, 0, 0, health, 0, List.of());
+    }
+
+    public static SkillCost ofSatiety(int satiety) {
+        return new SkillCost(0, 0, 0, 0, 0, satiety, List.of());
     }
 
     public static SkillCost ofItems(ItemStack... items) {
-        return new SkillCost(0, 0, 0, 0, Arrays.asList(items));
+        return new SkillCost(0, 0, 0, 0, 0, 0, Arrays.asList(items));
     }
 
     // ==================== Getters ====================
 
     public boolean isEmpty() {
-        return !banned && !creativeOnly && experiencePoints == 0 && experienceLevels == 0 && experiencePointRequired == 0 && experienceLevelRequired == 0 && items.isEmpty();
+        return !banned && !creativeOnly && experiencePoints == 0 && experienceLevels == 0 && experiencePointRequired == 0 && experienceLevelRequired == 0 && health == 0 && satiety == 0 && items.isEmpty();
     }
 
     public boolean isBanned() {
@@ -109,6 +122,14 @@ public final class SkillCost {
         return experienceLevelRequired;
     }
 
+    public int getHealth() {
+        return health;
+    }
+
+    public int getSatiety() {
+        return satiety;
+    }
+
     public List<ItemStack> getItems() {
         return items;
     }
@@ -125,12 +146,14 @@ public final class SkillCost {
                experienceLevels == other.experienceLevels &&
                experiencePointRequired == other.experiencePointRequired &&
                experienceLevelRequired == other.experienceLevelRequired &&
+               health == other.health &&
+               satiety == other.satiety &&
                itemsEquals(items, other.items);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(banned, creativeOnly, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, items);
+        return Objects.hash(banned, creativeOnly, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, health, satiety, items);
     }
 
     // ==================== CCheck & Consume ====================
@@ -168,6 +191,12 @@ public final class SkillCost {
         if (PlayerUtils.getExperienceLevel(player) < experienceLevels) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experienceLevels), "Not enough experience levels");
         }
+        if (EntityUtils.getHealth(player) <= health) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_HEALTH, health), "Not enough health");
+        }
+        if (PlayerUtils.getSatiety(player) < satiety) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_SATIETY, satiety), "Not enough satiety");
+        }
 
         for (ItemStack required : items) {
             if (!InventoryUtils.hasEnoughItems(PlayerUtils.getInventory(player), required)) {
@@ -190,6 +219,14 @@ public final class SkillCost {
             PlayerUtils.giveExperienceLevels(player, -experienceLevels);
             PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
         }
+        if (health != 0) {
+            EntityUtils.hurt(player, player.level().damageSources().wither(), health);
+            PlayerUtils.playLocalSound(player, SoundEvents.PLAYER_HURT, 0.5F, 1.0F);
+        }
+        if (satiety != 0) {
+            PlayerUtils.consumeSatiety(player, satiety);
+            PlayerUtils.playLocalSound(player, SoundEvents.PLAYER_BURP, 0.5F, 1.0F);
+        }
 
         for (ItemStack required : items) {
             InventoryUtils.consumeItems(PlayerUtils.getInventory(player), required);
@@ -203,6 +240,12 @@ public final class SkillCost {
         }
         if (experienceLevels != 0) {
             PlayerUtils.giveExperienceLevels(player, experienceLevels);
+        }
+        if (health != 0) {
+            EntityUtils.heal(player, health);
+        }
+        if (satiety != 0) {
+            PlayerUtils.restoreSatiety(player, satiety);
         }
 
         for (ItemStack item : items) {
@@ -234,6 +277,12 @@ public final class SkillCost {
         if (experienceLevelRequired != 0) {
             map.put("exp_level_required", experienceLevelRequired);
         }
+        if (health != 0) {
+            map.put("health", health);
+        }
+        if (satiety != 0) {
+            map.put("satiety", satiety);
+        }
         if (!items.isEmpty()) {
             List<Map<String, Object>> itemsList = new ArrayList<>();
             for (ItemStack stack : items) {
@@ -251,6 +300,8 @@ public final class SkillCost {
         int expLevels = ((Number) map.getOrDefault("exp_levels", 0)).intValue();
         int expPointReq = ((Number) map.getOrDefault("exp_point_required", 0)).intValue();
         int expLevelReq = ((Number) map.getOrDefault("exp_level_required", 0)).intValue();
+        int health = ((Number) map.getOrDefault("health", 0)).intValue();
+        int satiety = ((Number) map.getOrDefault("satiety", 0)).intValue();
 
         List<ItemStack> itemsList = List.of();
         if (map.containsKey("items")) {
@@ -261,7 +312,7 @@ public final class SkillCost {
             }
         }
 
-        return new SkillCost(banned, creativeOnly, expPoints, expLevels, expPointReq, expLevelReq, itemsList);
+        return new SkillCost(banned, creativeOnly, expPoints, expLevels, expPointReq, expLevelReq, health, satiety, itemsList);
     }
 
     private static Map<String, Object> itemStackToMap(ItemStack stack) {
@@ -322,6 +373,12 @@ public final class SkillCost {
         }
         if (experienceLevels > 0) {
             res.add(TextUtils.translate(Lang.TEXT_EXPERIENCE_LEVELS_COST, experienceLevels));
+        }
+        if (health > 0) {
+            res.add(TextUtils.translate(Lang.TEXT_HEALTH_COST, health));
+        }
+        if (satiety > 0) {
+            res.add(TextUtils.translate(Lang.TEXT_SATIETY_COST, satiety));
         }
         if (!items.isEmpty()) {
             List<MutableComponent> itemList = items.stream()

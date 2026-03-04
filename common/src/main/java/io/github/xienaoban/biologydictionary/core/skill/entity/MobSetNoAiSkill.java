@@ -28,7 +28,7 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
         @Override
         public SkillCost getDefaultCost() {
             // Simulate the eyes of Medusa
-            return new SkillCost(0, 5, 0, 20, List.of(new ItemStack(Items.SPIDER_EYE, 2)));
+            return new SkillCost(0, 5, 0, 20, 0, 0, List.of(new ItemStack(Items.SPIDER_EYE, 2)));
         }
 
         @Override
@@ -66,7 +66,7 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
     @Override
     public SkillCost getRealCost(Mob entity) {
         SkillCost base = EntityTargetedSkill.super.getRealCost(entity);
-        int expPoints, expLevels, expPointRequired, expLevelRequired;
+        int expPoints, expLevels, expPointRequired, expLevelRequired, health, satiety;
         List<ItemStack> items;
 
         if (entity instanceof Enemy) {
@@ -74,18 +74,24 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
             expLevels = base.getExperienceLevels();
             expPointRequired = base.getExperiencePointRequired();
             expLevelRequired = base.getExperienceLevelRequired() * Math.max(1, (int) entity.getMaxHealth() / 20);
+            health = base.getHealth();
+            satiety = base.getSatiety();
             items = base.getItems();
         } else if (entity instanceof NeutralMob) {
             expPoints = base.getExperiencePoints() / 2;
             expLevels = base.getExperienceLevels() / 2;
             expPointRequired = base.getExperiencePointRequired() / 2;
             expLevelRequired = base.getExperienceLevelRequired() / 2;
+            health = base.getHealth() / 2;
+            satiety = base.getSatiety() / 2;
             items = base.getItems();
         } else {
             expPoints = base.getExperiencePoints() / 4;
             expLevels = base.getExperienceLevels() / 4;
             expPointRequired = base.getExperiencePointRequired() / 4;
             expLevelRequired = 0;
+            health = base.getHealth() / 4;
+            satiety = base.getSatiety() / 4;
             items = base.getItems();
         }
 
@@ -94,9 +100,11 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
             expLevels /= 2;
             expPointRequired /= 2;
             expLevelRequired /= 2;
+            health /= 2;
+            satiety /= 2;
             items = List.of();
         }
 
-        return new SkillCost(expPoints, expLevels, expPointRequired, expLevelRequired, items);
+        return new SkillCost(expPoints, expLevels, expPointRequired, expLevelRequired, health, satiety, items);
     }
 }

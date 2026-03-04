@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodData;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.level.GameType;
@@ -57,6 +58,49 @@ public final class PlayerUtils {
 
     public static void giveExperienceLevels(Player player, int experienceLevels) {
         player.giveExperienceLevels(experienceLevels);
+    }
+
+    public static int getSatiety(Player player) {
+        FoodData foodData = player.getFoodData();
+        return foodData.getFoodLevel() + (int) foodData.getSaturationLevel();
+    }
+
+    public static void consumeSatiety(Player player, int amount) {
+        FoodData foodData = player.getFoodData();
+        float saturation = foodData.getSaturationLevel();
+        int foodLevel = foodData.getFoodLevel();
+
+        // Consume saturation integer part first, keep fractional part
+        // Example: saturation=1.5, consume 3 → consume 1.0 saturation, then 2 food
+        int saturationIntPart = (int) saturation;
+        float saturationFracPart = saturation - saturationIntPart;
+
+        amount -= saturationIntPart;
+
+        // If still need to consume, consume from food level
+        if (amount > 0) {
+            foodData.setFoodLevel(Math.max(0, foodLevel - amount));
+        }
+
+        // Set saturation to the remaining fractional part
+        foodData.setSaturation(saturationFracPart);
+    }
+
+    public static void restoreSatiety(Player player, int amount) {
+        FoodData foodData = player.getFoodData();
+        float saturation = foodData.getSaturationLevel();
+        int foodLevel = foodData.getFoodLevel();
+
+        // Restore saturation first (max = food level), then food level
+        float saturationCanAdd = Math.max(0, (float) foodLevel - saturation);
+        float saturationToAdd = Math.min(amount, saturationCanAdd);
+        foodData.setSaturation(saturation + saturationToAdd);
+        amount -= (int) saturationToAdd;
+
+        // If still have amount left, restore food level (max 20)
+        if (amount > 0) {
+            foodData.setFoodLevel(Math.min(20, foodLevel + (int) amount));
+        }
     }
 
     public static void playLocalSound(Player player, SoundEvent soundEvent) {
