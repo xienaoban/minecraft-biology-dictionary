@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.core.property.extra;
 
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.ItemStackListProperty;
 import io.github.xienaoban.biologydictionary.mixin.TemptGoalIMixin;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.TemptGoal;

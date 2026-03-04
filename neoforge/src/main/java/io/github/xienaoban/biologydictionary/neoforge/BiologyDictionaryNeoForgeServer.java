@@ -2,9 +2,9 @@ package io.github.xienaoban.biologydictionary.neoforge;
 
 import dev.architectury.networking.NetworkManager;
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.PacketUtil;
 import io.github.xienaoban.biologydictionary.net.PacketPayloads;
+import io.github.xienaoban.biologydictionary.platform.net.Packet;
+import io.github.xienaoban.biologydictionary.platform.net.PacketUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

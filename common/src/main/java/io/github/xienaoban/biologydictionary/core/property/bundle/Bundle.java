@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property.bundle;
 
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 

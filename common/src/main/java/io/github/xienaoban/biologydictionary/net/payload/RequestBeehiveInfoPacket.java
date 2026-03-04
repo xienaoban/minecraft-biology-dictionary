@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
+import io.github.xienaoban.biologydictionary.platform.net.Packet;
+import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

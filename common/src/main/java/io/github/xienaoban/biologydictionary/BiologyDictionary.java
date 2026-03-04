@@ -1,15 +1,15 @@
 package io.github.xienaoban.biologydictionary;
 
-import io.github.xienaoban.biologydictionary.common.server.ServerEventRegistry;
-import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.DevUtils;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.server.ServerEventRegistry;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

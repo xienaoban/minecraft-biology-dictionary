@@ -1,11 +1,11 @@
 package io.github.xienaoban.biologydictionary.core.skill.entity;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;

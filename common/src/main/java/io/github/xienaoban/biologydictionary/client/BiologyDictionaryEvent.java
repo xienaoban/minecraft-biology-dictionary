@@ -2,7 +2,6 @@ package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.util.*;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
@@ -10,6 +9,7 @@ import io.github.xienaoban.biologydictionary.gui.screen.BdEntityDetailScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.BdHomeScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.util.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;

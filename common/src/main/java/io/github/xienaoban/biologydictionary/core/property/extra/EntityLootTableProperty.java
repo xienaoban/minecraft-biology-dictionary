@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.core.property.extra;
 
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.common.util.LootTableUtils;
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.LootTableUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;

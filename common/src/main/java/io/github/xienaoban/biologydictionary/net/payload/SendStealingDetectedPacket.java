@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
-import io.github.xienaoban.biologydictionary.common.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.net.Packet;
+import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

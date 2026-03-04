@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary;
 
-import io.github.xienaoban.biologydictionary.common.util.TextUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.MutableComponent;
 
 /**

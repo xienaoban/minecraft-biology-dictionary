@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
-import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;

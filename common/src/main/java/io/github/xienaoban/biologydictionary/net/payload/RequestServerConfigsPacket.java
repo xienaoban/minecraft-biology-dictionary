@@ -1,9 +1,9 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.common.net.Packet;
-import io.github.xienaoban.biologydictionary.common.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.net.Packet;
+import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import net.minecraft.network.FriendlyByteBuf;
 
 public record RequestServerConfigsPacket() implements Packet {

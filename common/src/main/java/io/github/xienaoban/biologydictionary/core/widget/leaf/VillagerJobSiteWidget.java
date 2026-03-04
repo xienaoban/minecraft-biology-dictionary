@@ -2,10 +2,6 @@ package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
-import io.github.xienaoban.biologydictionary.common.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.common.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.common.util.StringUtils;
-import io.github.xienaoban.biologydictionary.common.util.TextUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
@@ -16,6 +12,10 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.phys.Vec3;

@@ -1,10 +1,10 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.common.util.InventoryUtils;
-import io.github.xienaoban.biologydictionary.common.util.Misc;
-import io.github.xienaoban.biologydictionary.common.util.PlayerUtils;
-import io.github.xienaoban.biologydictionary.common.util.TextUtils;
+import io.github.xienaoban.biologydictionary.platform.util.InventoryUtils;
+import io.github.xienaoban.biologydictionary.platform.util.Misc;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
