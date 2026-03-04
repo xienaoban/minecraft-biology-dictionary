@@ -38,6 +38,7 @@ public interface GeneralSkill {
         String shortName(); // for yaml config
     }
 
+    @Environment(EnvType.CLIENT)
     record ClientContext(LocalPlayer player) {}
     record ServerContext(MinecraftServer server, ServerPlayer player) {}
 }

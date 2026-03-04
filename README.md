@@ -2,13 +2,15 @@
 
 **English** | [**简体中文**](README.zh-CN.md)
 
-[![Download - Modrinth](https://img.shields.io/badge/download-Modrinth-%2343b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
-[![Download - Curseforge](https://img.shields.io/badge/download-CurseForge-%23ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
-![License](https://img.shields.io/badge/License-LGPL3-blue?style=for-the-badge)
+[![Download - Modrinth](https://img.shields.io/badge/download-Modrinth-43b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
+[![Download - Curseforge](https://img.shields.io/badge/download-CurseForge-ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
+![License](https://img.shields.io/badge/License-LGPL_3-blue?style=for-the-badge)
 
-![Minecraft 1.21.11](https://img.shields.io/badge/Minecraft-1.21.11-brightgreen?style=for-the-badge)
-![Fabric API](https://img.shields.io/badge/Fabric%20API-latest-%23a335ee?style=for-the-badge&logo=fabric)
-![Cloth Config](https://img.shields.io/badge/Cloth%20Config-latest-%2315B19E?style=for-the-badge&logo=fabric)
+![Minecraft 1.21.11](https://img.shields.io/badge/Minecraft-1.21.11-59A922?style=for-the-badge)
+
+![Fabric Dependencies](https://img.shields.io/badge/Dependencies-Fabric-A99774?style=for-the-badge&logo=fabric) ![Fabric API](https://img.shields.io/badge/Fabric_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
+
+![NeoForge Dependencies](https://img.shields.io/badge/Dependencies-NeoForge-D7742F?style=for-the-badge&logo=neoforge) ![Architectury API](https://img.shields.io/badge/Architectury_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
 
 ---
 
@@ -42,10 +44,10 @@ However, technical survival players sometimes don't care about mod aesthetics. I
 | ![](res/screenshot_en_us_4.jpg) | ![](res/screenshot_en_us_5.jpg) | ![](res/screenshot_en_us_6.jpg) |
 | ![](res/screenshot_en_us_7.jpg) | ![](res/screenshot_en_us_8.jpg) | ![](res/screenshot_en_us_9.jpg) |
 
-This mod currently only supports **<span style="color: red;">Fabric API</span>** and **<span style="color: red;">Cloth Config API</span>**. As development progressed, this mod seems to have drifted quite far from its original intention (enhancing technical survival experience), so some might ask why I didn't develop it for Forge, as many Forge mods add new mobs, and this mod seems useful for viewing attributes of those mobs.
+This mod currently supports **Fabric** and **NeoForge** loaders.
 
-- First, yes, this mod supports third-party mobs. If there's enough demand, I'll consider opening APIs for third-party mob entity widgets.
-- Second, the mod's original intent was to enhance vanilla survival experience + keep up with latest Minecraft versions. When I started development, Forge was slow to update and didn't support optimizations like Sodium, so I didn't consider it. However, NeoForge has developed well recently, so I'm currently waiting to see how things progress.
+- Fabric version depends on **<span style="color: red;">Fabric API</span>** and **<span style="color: red;">Cloth Config API</span>**.
+- NeoForge version depends on **<span style="color: red;">Architectury API</span>** and **<span style="color: red;">Cloth Config API</span>**.
 
 > I'm becoming increasingly busy with work, but I'll still try my best to keep up with official Minecraft updates. However, I won't be adding too many complex features going forward.
 
