@@ -18,6 +18,9 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.camel.Camel;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.animal.dolphin.Dolphin;
 import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.level.Level;
@@ -151,6 +154,31 @@ public final class EntityUtils {
 
     public static void playSound(Entity entity, SoundEvent soundEvent, float volume, float pitch) {
         entity.playSound(soundEvent, volume, pitch);
+    }
+
+    public static float getHealth(LivingEntity entity) {
+        return entity.getHealth();
+    }
+
+    public static float getMaxHealth(LivingEntity entity) {
+        return entity.getMaxHealth();
+    }
+
+    /**
+     * Hurt a living entity with damage source on server side.
+     */
+    public static void hurt(LivingEntity entity, DamageSource damageSource, float amount) {
+        if (entity instanceof ServerPlayer serverPlayer) {
+            ServerLevel level = serverPlayer.level();
+            entity.hurtServer(level, damageSource, amount);
+        }
+    }
+
+    /**
+     * Heal a living entity by given amount.
+     */
+    public static void heal(LivingEntity entity, float amount) {
+        entity.heal(amount);
     }
 
     // ============================================================================ //

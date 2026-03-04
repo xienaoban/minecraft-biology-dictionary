@@ -173,7 +173,7 @@ public static final EntityPropertyWidget.Factory<LaborEntity, LaborEntityHealthW
 - The access widener is in `common/src/main/resources/biologydictionary.accesswidener`
 - Main entry points: `BiologyDictionaryFabric` / `BiologyDictionaryNeoForge` (server), `BiologyDictionaryFabricClient` / `BiologyDictionaryNeoForgeClient` (client)
 
-## Code Style & Coding Rules
+## Coding Rules
 
 - Avoid using the `this.` qualifier in code unless explicitly necessary. Follow the code style of existing code in the project.
 - Unless absolutely necessary, avoid using the fully qualified name of the class; instead, use `import`.

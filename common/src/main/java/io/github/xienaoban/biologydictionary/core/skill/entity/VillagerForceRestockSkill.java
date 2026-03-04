@@ -106,6 +106,8 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
                 factor * base.getExperienceLevels(),
                 factor * base.getExperiencePointRequired(),
                 factor * base.getExperienceLevelRequired(),
+                factor * base.getHealth(),
+                factor * base.getSatiety(),
                 base.getItems().stream().map(i -> {
                     ItemStack res = i.copy();
                     res.setCount(factor * i.getCount());

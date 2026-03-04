@@ -25,7 +25,7 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(16, 0, 0, 0, new ItemStack(Items.ENDER_EYE));
+            return new SkillCost(16, 0, 0, 0, 0, 0, new ItemStack(Items.ENDER_EYE));
         }
 
         @Override
