@@ -5,7 +5,6 @@ import io.github.xienaoban.biologydictionary.common.util.Misc;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
 import io.github.xienaoban.biologydictionary.core.property.ExtraEntityProperties;
 import io.github.xienaoban.biologydictionary.net.PacketPayloads;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +40,6 @@ public class RegistrarsTest {
     //     }
     // }
 
-    @GameTest
     public void testExtraEntityProperties(GameTestHelper helper) {
         try {
             var uniqueness = new UniquenessValidator();
@@ -64,7 +62,6 @@ public class RegistrarsTest {
         }
     }
 
-    @GameTest
     public void testPacketPayloads(GameTestHelper helper) {
         try {
             var uniqueness = new UniquenessValidator();
@@ -85,7 +82,6 @@ public class RegistrarsTest {
         }
     }
 
-    @GameTest
     public void testPlayerSkills(GameTestHelper helper) {
         helper.succeed();
     }

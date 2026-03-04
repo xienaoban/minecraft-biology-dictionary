@@ -23,8 +23,12 @@ public class TestUtils {
         if (!GAME_ROOT.endsWith(Paths.get("build", "testServer"))) {
             throw new AssertionError("GAME_ROOT=" + GAME_ROOT);
         }
-        PROJECT_ROOT = GAME_ROOT.getParent().getParent();
-        SRC_ROOT = Paths.get(PROJECT_ROOT.toString(), "src");
+        PROJECT_ROOT = GAME_ROOT.getParent().getParent().getParent();
+        Path readme = Paths.get(PROJECT_ROOT.toString(), "README.md");
+        if (!Files.isRegularFile(readme)) {
+            throw new AssertionError("PROJECT_ROOT=" + PROJECT_ROOT + " does not contain README.md");
+        }
+        SRC_ROOT = Paths.get(PROJECT_ROOT.toString(), "common", "src");
         if (!Files.isDirectory(SRC_ROOT)) {
             throw new AssertionError("SRC_ROOT=" + SRC_ROOT);
         }
