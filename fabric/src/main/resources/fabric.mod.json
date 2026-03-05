@@ -1,0 +1,37 @@
+{
+    "schemaVersion": 1,
+    "id": "biologydictionary",
+    "version": "${version}",
+    "name": "Biology Dictionary",
+    "description": "To display or modify the properties and states of mobs.",
+    "authors": [
+        "XieNaoban"
+    ],
+    "contact": {
+        "homepage": "https://github.com/xienaoban/minecraft-biology-dictionary"
+    },
+    "license": "LGPL-3.0",
+    "icon": "assets/biologydictionary/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "io.github.xienaoban.biologydictionary.fabric.BiologydictionaryFabric"
+        ],
+        "client": [
+            "io.github.xienaoban.biologydictionary.fabric.client.BiologydictionaryFabricClient"
+        ]
+    },
+    "mixins": [
+        "biologydictionary.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.18.4",
+        "minecraft": "~1.21.1",
+        "java": ">=21",
+        "architectury": ">=13.0.8",
+        "fabric-api": "*"
+    },
+    "suggests": {
+        "another-mod": "*"
+    }
+}
