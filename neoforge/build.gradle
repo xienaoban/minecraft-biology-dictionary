@@ -29,12 +29,24 @@ repositories {
         name = 'NeoForged'
         url = 'https://maven.neoforged.net/releases'
     }
+    maven {
+        name = 'Shedaniel'
+        url = 'https://maven.shedaniel.me/'
+    }
 }
 
 dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
 
     modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
+
+    // Cloth Config for NeoForge
+    modImplementation "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.clothconfig_version}"
+
+    // SnakeYAML for config file parsing
+    modImplementation "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
+    forgeRuntimeLibrary "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
+    include "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
