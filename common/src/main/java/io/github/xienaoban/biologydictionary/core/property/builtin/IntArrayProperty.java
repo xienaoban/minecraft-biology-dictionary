@@ -4,15 +4,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
-public class ShortProperty<E extends Entity> extends AbstractProperty<E, Short> {
-    public ShortProperty(String propertyName) {
+public class IntArrayProperty<E extends Entity> extends AbstractProperty<E, int[]> {
+    public IntArrayProperty(String propertyName) {
         super(propertyName);
     }
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (nbt.contains(name(), Tag.TAG_SHORT)) {
-            setVal(nbt.getShort(name()));
+        if (nbt.contains(name(), Tag.TAG_INT_ARRAY)) {
+            setVal(nbt.getIntArray(name()));
         } else {
             setVal(null);
         }
@@ -21,7 +21,7 @@ public class ShortProperty<E extends Entity> extends AbstractProperty<E, Short> 
     @Override
     public void writeTo(CompoundTag nbt) {
         if (getVal() != null) {
-            nbt.putShort(name(), getVal());
+            nbt.putIntArray(name(), getVal());
         } else {
             nbt.put(name(), new CompoundTag());
         }

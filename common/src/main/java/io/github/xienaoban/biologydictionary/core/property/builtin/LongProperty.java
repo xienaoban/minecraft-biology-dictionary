@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.property.builtin;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
 public class LongProperty<E extends Entity> extends AbstractProperty<E, Long> {
@@ -10,7 +11,7 @@ public class LongProperty<E extends Entity> extends AbstractProperty<E, Long> {
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (nbt.contains(name())) {
+        if (nbt.contains(name(), Tag.TAG_LONG)) {
             setVal(nbt.getLong(name()));
         } else {
             setVal(null);
@@ -22,7 +23,7 @@ public class LongProperty<E extends Entity> extends AbstractProperty<E, Long> {
         if (getVal() != null) {
             nbt.putLong(name(), getVal());
         } else {
-            throw new IllegalPropertyStateException("primitive type must not be null");
+            nbt.put(name(), new CompoundTag());
         }
     }
 }

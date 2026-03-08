@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.property.builtin;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
 public class FloatProperty<E extends Entity> extends AbstractProperty<E, Float> {
@@ -10,7 +11,7 @@ public class FloatProperty<E extends Entity> extends AbstractProperty<E, Float> 
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (nbt.contains(name())) {
+        if (nbt.contains(name(), Tag.TAG_FLOAT)) {
             setVal(nbt.getFloat(name()));
         } else {
             setVal(null);
@@ -22,7 +23,7 @@ public class FloatProperty<E extends Entity> extends AbstractProperty<E, Float> 
         if (getVal() != null) {
             nbt.putFloat(name(), getVal());
         } else {
-            throw new IllegalPropertyStateException("primitive type must not be null");
+            nbt.put(name(), new CompoundTag());
         }
     }
 }

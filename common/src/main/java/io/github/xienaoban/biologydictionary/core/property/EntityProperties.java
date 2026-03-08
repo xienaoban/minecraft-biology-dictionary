@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("rawtypes")
-public final class EntityProperties<E extends Entity> {
+public class EntityProperties<E extends Entity> {
     public static void init() {
         VanillaEntityProperties.init();
         ExtraEntityProperties.init();
