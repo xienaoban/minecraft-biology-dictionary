@@ -266,5 +266,7 @@ public final class Lang {
     TEXT_BEE_RESTING                         = "text.biologydictionary.bee_resting",
     TEXT_TIME_IN_BEEHIVE                     = "text.biologydictionary.time_in_beehive",
 
+    VARIANT_PREFIX  = "variant.",
+
     __END__ = "";
 }

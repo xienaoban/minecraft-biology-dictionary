@@ -1,36 +1,29 @@
 package io.github.xienaoban.biologydictionary.core.property.bundle;
 
-import com.mojang.serialization.Codec;
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
-import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
-import io.github.xienaoban.biologydictionary.core.property.vanilla.VariantProperty;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.StringRepresentable;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.VariantHolder;
 import net.minecraft.world.entity.animal.Panda;
+import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerType;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.function.Function;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public final class EntityVariantPropertyBundle {
     private static final Bundle<VariantHandler<?, ?>> BUNDLE = new Bundle<>();
@@ -95,139 +88,148 @@ public final class EntityVariantPropertyBundle {
     }
 
     static final Function<Entity, VariantHandler<?, ?>> STANDARD_PATTERN = entity -> {
-        Class<? extends Entity> entityClass = entity.getClass();
-        if (!EntityUtils.isVanillaEntity(entityClass)) { return null; }
-        String fullName = EntityUtils.getDeobfuscatedName(entity.getClass());
-        String simpleName = fullName.substring(fullName.lastIndexOf('.') + 1);
-
-        for (String variantType : new String[] {"Variant", "Type"}) {
-            try {
-                Class<?> ofEntity = Class.forName(VanillaEntityProperties.class.getName() + "$Of" + simpleName);
-                Method creator = ofEntity.getDeclaredMethod("create" + variantType + "Property");
-
-                if (VariantProperty.class.isAssignableFrom(creator.getReturnType())) {
-                    @SuppressWarnings("all")
-                    VariantProperty<Entity, Object> property = (VariantProperty<Entity, Object>) creator.invoke(null);
-
-                    ResourceKey<Registry<Object>> key = property.getResourceKey();
-                    Optional<Registry<Object>> optional = entity.registryAccess().lookup(key);
-                    if (optional.isPresent()) {
-                        Registry<Object> registry = optional.get();
-                        List<Holder<Object>> variants = registry.registryKeySet().stream()
-                                .map(registry::getOrThrow)
-                                .map(k -> (Holder<Object>) k)
-                                .toList();
-                        return new StandardVariantHandler(key, variants);
-                    }
-                } else if (CodecProperty.class.isAssignableFrom(creator.getReturnType())) {
-                    @SuppressWarnings("all")
-                    CodecProperty<Entity, Enum<?>> property = (CodecProperty<Entity, Enum<?>>) creator.invoke(null);
-                    if (property.getClazz().isEnum()) {
-                        return new CodecVariantHandler(property);
-                    }
-                }
-            } catch (Exception e) {
-                LOGGER.debug("Entity `{}` has no variant: {}", entity.getType().toString(), e.toString());
-            }
+        if (!(entity instanceof VariantHolder<?> variantHolder)) {
+            return null;
         }
+        Object variant = variantHolder.getVariant();
+        if (variant instanceof Holder<?> holder) {
+            Holder<Object> objHolder = Misc.cast(holder);
+            ResourceKey<Object> rk = objHolder.unwrapKey().orElseThrow();
+            Registry<Object> registry = entity.registryAccess().registry(rk.registryKey()).orElseThrow();
+            List<Holder<Object>> res = registry.registryKeySet().stream()
+                    .map(registry::getHolderOrThrow)
+                    .map(r -> (Holder<Object>) r)
+                    .toList();
+            return new VariantHandlerHandler(EntityUtils.getEntityType(entity), registry, res);
+        } else if (variant instanceof Enum<?>) {
+            return new EnumHandler(EntityUtils.getEntityType(entity), Misc.cast(variant.getClass()));
+        }
+
         return null;
     };
 
-    public record StandardVariantHandler(ResourceKey<Registry<Object>> key, List<Holder<Object>> variants)
-            implements PropertyVariantHandler<Entity, Holder<Object>> {
+    public record VariantHandlerHandler(EntityType<?> entityType, Registry<Object> registry, List<Holder<Object>> variants)
+            implements VariantHandler<Entity, Holder<Object>> {
 
         @Override
-        public AbstractProperty<Entity, Holder<Object>> createProperty() {
-            return new VariantProperty<>(key);
+        public List<Holder<Object>> getVariants() {
+            return variants;
         }
 
         @Override
-        public List<Holder<Object>> getVariants() { return variants; }
+        public Holder<Object> getVariant(Entity entity) {
+            return Misc.cast(((VariantHolder<?>) entity).getVariant());
+        }
+
+        @Override
+        public void setVariant(Entity entity, Holder<Object> variant) {
+            ((VariantHolder<?>) entity).setVariant(Misc.cast(variant));
+        }
+
+        @Override
+        public Tag variantToNbt(Holder<Object> variant) {
+            ResourceKey<Object> rk = variant.unwrapKey().orElseThrow();
+            return StringTag.valueOf(rk.location().toString());
+        }
+
+        @Override
+        public Holder<Object> nbtToVariant(Tag nbt) {
+            registry.getHolder(ResourceLocation.parse(nbt.getAsString())).orElseThrow();
+            return null;
+        }
 
         @Override
         public String getVariantName(Holder<Object> variant) {
             return variant.unwrapKey().map(resourceKey -> {
-                ResourceLocation id = resourceKey.identifier();
-                String res;
-                if (ResourceLocation.DEFAULT_NAMESPACE.equals(id.getNamespace())) {
-                    res = id.getPath();
-                } else {
-                    res = id.getNamespace() + '.' + id.getPath();
-                }
-                return res;
+                ResourceLocation id = resourceKey.location();
+                ResourceLocation entityId = EntityUtils.getEntityTypeId(entityType);
+                return Lang.VARIANT_PREFIX + entityId.getNamespace().toLowerCase() + '.'
+                        + entityId.getPath().toLowerCase() + '.' + id.getPath().toLowerCase();
             }).orElse("unknown");
         }
     }
 
-    public record CodecVariantHandler(String propertyName, Class<Enum<?>> variantClazz, Codec<Enum<?>> codec)
-            implements PropertyVariantHandler<Entity, Enum<?>> {
-
-        public CodecVariantHandler(CodecProperty<? extends Entity, ? extends Enum<?>> property) {
-            this(property.name(), Misc.cast(property.getClazz()), Misc.cast(property.getCodec()));
-        }
-
-        @Override
-        public AbstractProperty<? super Entity, Enum<?>> createProperty() {
-            return new CodecProperty<>(propertyName, variantClazz, codec);
-        }
+    public record EnumHandler(EntityType<?> entityType, Class<Enum<?>> clazz) implements VariantHandler<Entity, Enum<?>> {
 
         @Override
         public List<Enum<?>> getVariants() {
-            return Arrays.asList(variantClazz.getEnumConstants());
+            return Arrays.stream(clazz.getEnumConstants()).toList();
+        }
+
+        @Override
+        public Enum<?> getVariant(Entity entity) {
+            return Misc.cast(((VariantHolder<?>) entity).getVariant());
+        }
+
+        @Override
+        public void setVariant(Entity entity, Enum<?> variant) {
+            ((VariantHolder<?>) entity).setVariant(Misc.cast(variant));
+
+        }
+
+        @Override
+        public Tag variantToNbt(Enum<?> variant) {
+            return StringTag.valueOf(variant.name());
+        }
+
+        @Override
+        public Enum<?> nbtToVariant(Tag nbt) {
+            return Enum.valueOf(Misc.cast(clazz), nbt.getAsString());
         }
 
         @Override
         public String getVariantName(Enum<?> variant) {
-            if (variant instanceof StringRepresentable sr) {
-                return sr.getSerializedName();
-            } else {
-                return variant.name().toLowerCase();
-            }
+            ResourceLocation entityId = EntityUtils.getEntityTypeId(entityType);
+            return Lang.VARIANT_PREFIX + entityId.getNamespace().toLowerCase() + '.'
+                    + entityId.getPath().toLowerCase() + '.' + variant.name().toLowerCase();
         }
     }
 
-    public static final class VillagerTypeHandler implements VariantHandler<Villager, Holder<VillagerType>> {
+    public static final class VillagerTypeHandler implements VariantHandler<Villager, ResourceKey<VillagerType>> {
 
         @Override
         public boolean isStandard() { return false; }
 
         @Override
-        public List<Holder<VillagerType>> getVariants() {
-            return BuiltInRegistries.VILLAGER_TYPE.listElements().map(ref -> (Holder<VillagerType>) ref).toList();
+        public List<ResourceKey<VillagerType>> getVariants() {
+            return BuiltInRegistries.VILLAGER_TYPE.registryKeySet().stream().toList();
         }
 
         @Override
-        public Holder<VillagerType> getVariant(Villager entity) {
-            return entity.getVillagerData().type();
+        public ResourceKey<VillagerType> getVariant(Villager entity) {
+            VillagerType vt = entity.getVillagerData().getType();
+            return BuiltInRegistries.VILLAGER_TYPE.getResourceKey(vt).orElseThrow();
         }
 
         @Override
-        public void setVariant(Villager entity, Holder<VillagerType> variant) {
-            entity.setVillagerData(entity.getVillagerData().withType(variant));
+        public void setVariant(Villager entity, ResourceKey<VillagerType> variant) {
+            entity.setVillagerData(entity.getVillagerData()
+                    .setType(Objects.requireNonNull(BuiltInRegistries.VILLAGER_TYPE.get(variant))));
         }
 
         @Override
-        public Tag variantToNbt(Holder<VillagerType> variant) {
-            return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).withVal(variant).toTag();
+        public Tag variantToNbt(ResourceKey<VillagerType> variant) {
+            ResourceLocation location = variant.location();
+            return StringTag.valueOf(location.toString());
         }
 
         @Override
-        public Holder<VillagerType> nbtToVariant(Tag nbt) {
-            return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).withTag((CompoundTag) nbt).getVal();
+        public ResourceKey<VillagerType> nbtToVariant(Tag nbt) {
+            String str = nbt.toString();
+            ResourceLocation location = ResourceLocation.parse(str);
+            return ResourceKey.create(Registries.VILLAGER_TYPE, location);
         }
 
         @Override
-        public String getVariantName(Holder<VillagerType> variant) {
-            return variant.unwrapKey().map(resourceKey -> {
-                ResourceLocation id = resourceKey.identifier();
-                String res;
-                if (ResourceLocation.DEFAULT_NAMESPACE.equals(id.getNamespace())) {
-                    res = id.getPath();
-                } else {
-                    res = id.getNamespace() + '.' + id.getPath();
-                }
-                return res;
-            }).orElse("unknown");
+        public String getVariantName(ResourceKey<VillagerType> variant) {
+            ResourceLocation id = variant.location();
+            String res;
+            if (ResourceLocation.DEFAULT_NAMESPACE.equals(id.getNamespace())) {
+                res = id.getPath();
+            } else {
+                res = id.getNamespace() + '.' + id.getPath();
+            }
+            return res;
         }
     }
 
@@ -245,13 +247,7 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public void setVariant(Horse entity, net.minecraft.world.entity.animal.horse.Variant variant) {
-            // 1.21.1中Horse可能没有setVariantAndMarkings方法
-            // 暂时使用反射方式调用
-            try {
-                EntityUtils.setVariantAndMarkings(entity, variant, entity.getMarkings());
-            } catch (Exception e) {
-                // Ignore errors in 1.21.1
-            }
+            EntityUtils.setVariantAndMarkings(entity, variant, entity.getMarkings());
         }
 
         @Override
@@ -261,7 +257,7 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public net.minecraft.world.entity.animal.horse.Variant nbtToVariant(Tag nbt) {
-            return net.minecraft.world.entity.animal.horse.Variant.byId(nbt.asInt().orElse(0));
+            return net.minecraft.world.entity.animal.horse.Variant.byId(((IntTag) nbt).getAsInt());
         }
 
         @Override
@@ -294,7 +290,7 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public net.minecraft.world.entity.animal.horse.Markings nbtToVariant(Tag nbt) {
-            return net.minecraft.world.entity.animal.horse.Markings.byId(nbt.asInt().orElse(0));
+            return net.minecraft.world.entity.animal.horse.Markings.byId(((IntTag) nbt).getAsInt());
         }
 
         @Override
