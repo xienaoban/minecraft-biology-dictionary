@@ -1,11 +1,10 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
+import io.github.xienaoban.biologydictionary.mixin.entity.AbstractClientPlayerIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.ServerPlayerIMixin;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundSoundEntityPacket;
-import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -25,7 +24,20 @@ public final class PlayerUtils {
     }
 
     public static GameType gameMode(Player player) {
-        return player.gameMode();
+        if (player instanceof ServerPlayer serverPlayer) {
+            return ((ServerPlayerIMixin) serverPlayer).biologydictionary$getGameMode();
+        } else {
+            final class T {
+                private static GameType getTypeFromClient(Player player) {
+                    if (player instanceof AbstractClientPlayer clientPlayer) {
+                        PlayerInfo playerInfo = ((AbstractClientPlayerIMixin) clientPlayer).biologydictionary$invokeGetPlayerInfo();
+                        return playerInfo.getGameMode();
+                    }
+                    throw new RuntimeException("Cannot get gamemode from player: " + player.getClass());
+                }
+            }
+            return T.getTypeFromClient(player);
+        }
     }
 
     public static boolean isCreative(Player player) {
@@ -108,45 +120,7 @@ public final class PlayerUtils {
     }
 
     public static void playLocalSound(Player player, SoundEvent soundEvent, float volume, float pitch) {
-        // We have two choices.
-        playLocalSoundOnEntity(player, soundEvent, volume, pitch);
-        // playLocalSoundAt(player, soundEvent, player.getX(), player.getY(), player.getZ(), volume, pitch);
-    }
-
-    public static void playLocalSoundOnEntity(Player player, SoundEvent soundEvent, float volume, float pitch) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            // On server side, send sound entity packet that follows the player
-            Holder<SoundEvent> soundHolder = BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent);
-            long seed = player.level().getRandom().nextLong();
-            ClientboundSoundEntityPacket packet = new ClientboundSoundEntityPacket(
-                    soundHolder,
-                    SoundSource.UI,
-                    player,  // Entity, not entity ID
-                    volume, pitch, seed
-            );
-            serverPlayer.connection.send(packet);
-        } else {
-            // On client side, play locally
-            player.level().playLocalSound(player, soundEvent, SoundSource.UI, volume, pitch);
-        }
-    }
-
-    public static void playLocalSoundAt(Player player, SoundEvent soundEvent, double x, double y, double z, float volume, float pitch) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            // On server side, send sound packet at fixed position
-            Holder<SoundEvent> soundHolder = BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent);
-            long seed = player.level().getRandom().nextLong();
-            ClientboundSoundPacket packet = new ClientboundSoundPacket(
-                    soundHolder,
-                    SoundSource.UI,
-                    x, y, z,
-                    volume, pitch, seed
-            );
-            serverPlayer.connection.send(packet);
-        } else {
-            // On client side, play locally at position
-            player.level().playSound(player, x, y, z, soundEvent, SoundSource.UI, volume, pitch);
-        }
+        player.playNotifySound(soundEvent, SoundSource.PLAYERS, volume, pitch);
     }
 
     public static void showClientTextBoxMessage(Player player, Component component) {
@@ -160,7 +134,7 @@ public final class PlayerUtils {
     /**
      * This method only opens the menu. Send the relative packet yourself!
      *
-     * @see net.minecraft.server.level.ServerPlayer#openHorseInventory(net.minecraft.world.entity.animal.equine.AbstractHorse, net.minecraft.world.Container)
+     * @see net.minecraft.server.level.ServerPlayer#openHorseInventory(net.minecraft.world.entity.animal.horse.AbstractHorse, net.minecraft.world.Container)
      */
     public static int openContainerInventoryMenu(ServerPlayer player, MenuConstructor menuConstructor) {
         ServerPlayerIMixin mixinPlayer = (ServerPlayerIMixin) player;

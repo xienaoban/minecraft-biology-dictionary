@@ -15,7 +15,9 @@ public final class InventoryUtils {
 
     public static boolean hasEnoughItems(Inventory inventory, ItemStack itemStack, BiPredicate<ItemStack, ItemStack> cmp) {
         int left = itemStack.getCount();
-        for (ItemStack is : inventory) {
+        int itemCount = inventory.getContainerSize();
+        for (int i = 0; i < itemCount; i++) {
+            ItemStack is = inventory.getItem(i);
             if (!cmp.test(itemStack, is)) { continue; }
             int cnt = is.getCount();
             left -= cnt;
@@ -30,22 +32,22 @@ public final class InventoryUtils {
 
     public static boolean consumeItems(Inventory inventory, ItemStack itemStack, BiPredicate<ItemStack, ItemStack> cmp) {
         int left = itemStack.getCount();
-        List<ItemStack> list = inventory.getNonEquipmentItems();
+        int itemCount = inventory.getContainerSize();
         List<ItemStack> fallback = new ArrayList<>();
-        for (int i = 0; i < list.size(); ++i) {
-            ItemStack is = list.get(i);
+        for (int i = 0; i < itemCount; ++i) {
+            ItemStack is = inventory.getItem(i);
             if (!cmp.test(itemStack, is)) { continue; }
             int cnt = is.getCount();
             if (cnt < left) {
                 left -= cnt;
-                list.set(i, ItemStack.EMPTY);
+                inventory.setItem(i, ItemStack.EMPTY);
                 fallback.add(is);
                 continue;
             }
             if (cnt > left) {
                 is.setCount(cnt - left);
             } else {
-                list.set(i, ItemStack.EMPTY);
+                inventory.setItem(i, ItemStack.EMPTY);
             }
             return true;
         }

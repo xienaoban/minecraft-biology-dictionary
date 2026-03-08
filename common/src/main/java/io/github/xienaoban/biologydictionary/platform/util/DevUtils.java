@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.platform.util;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import io.github.xienaoban.biologydictionary.Lang;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -44,8 +44,8 @@ public final class DevUtils {
         return clazzName.startsWith(MINECRAFT_PACKAGE);
     }
 
-    public static boolean isVanilaResourceLocation(Identifier id) {
-        return Identifier.DEFAULT_NAMESPACE.equals(id.getNamespace());
+    public static boolean isVanilaResourceLocation(ResourceLocation id) {
+        return ResourceLocation.DEFAULT_NAMESPACE.equals(id.getNamespace());
     }
 
     /**
@@ -66,13 +66,13 @@ public final class DevUtils {
     }
 
     /**
-     * For Identifier names, let vanilla locations be in front of mod locations.
+     * For ResourceLocation names, let vanilla locations be in front of mod locations.
      * - "minecraft:entity" < "mod-id:entity"
      */
-    public static <T> Comparator<T> getResourceLocationComparator(Function<T, Identifier> getter) {
+    public static <T> Comparator<T> getResourceLocationComparator(Function<T, ResourceLocation> getter) {
         return (t1, t2) -> {
-            Identifier id1 = getter.apply(t1);
-            Identifier id2 = getter.apply(t2);
+            ResourceLocation id1 = getter.apply(t1);
+            ResourceLocation id2 = getter.apply(t2);
             boolean isVanilla1 = isVanilaResourceLocation(id1);
             boolean isVanilla2 = isVanilaResourceLocation(id2);
             if (isVanilla1 == isVanilla2) {

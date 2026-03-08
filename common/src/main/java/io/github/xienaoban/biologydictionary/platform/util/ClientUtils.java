@@ -121,6 +121,6 @@ public final class ClientUtils {
      * This can be used for smooth entity rotation calculations.
      */
     public static float getPartialTick() {
-        return getClient().getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        return getClient().getTimer().getGameTimeDeltaPartialTick(false);
     }
 }

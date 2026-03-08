@@ -3,30 +3,24 @@ package io.github.xienaoban.biologydictionary.platform.util;
 import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.HorseIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.MobIMixin;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.camel.Camel;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.animal.dolphin.Dolphin;
-import net.minecraft.world.entity.animal.equine.Horse;
+import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.level.storage.ValueInput;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,26 +87,22 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity> E create(EntityType<E> entityType, Level level) {
-        return create(entityType, level, null);
+        return entityType.create(level);
     }
 
-    public static <E extends Entity> E create(EntityType<E> entityType, Level level, EntitySpawnReason reason) {
-        return entityType.create(level, reason);
-    }
-
-    public static Optional<Entity> create(ValueInput valueInput, Level level, EntitySpawnReason reason) {
-        return EntityType.create(valueInput, level, reason);
+    public static Optional<Entity> create(CompoundTag nbt, Level level) {
+        return EntityType.create(nbt, level);
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(E entity) {
         return Misc.cast(entity.getType());
     }
 
-    public static Identifier getEntityTypeId(Entity entity) {
+    public static ResourceLocation getEntityTypeId(Entity entity) {
         return getEntityTypeId(entity.getType());
     }
 
-    public static Identifier getEntityTypeId(EntityType<?> entityType) {
+    public static ResourceLocation getEntityTypeId(EntityType<?> entityType) {
         return EntityType.getKey(entityType);
     }
 
@@ -129,10 +119,10 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(ResourceKey<EntityType<?>> key) {
-        return getEntityType(key.identifier());
+        return getEntityType(key.location());
     }
 
-    public static <E extends Entity> EntityType<E> getEntityType(Identifier key) {
+    public static <E extends Entity> EntityType<E> getEntityType(ResourceLocation key) {
         return Misc.cast(BuiltInRegistries.ENTITY_TYPE.getOptional(key).orElse(null));
     }
 
@@ -168,10 +158,7 @@ public final class EntityUtils {
      * Hurt a living entity with damage source on server side.
      */
     public static void hurt(LivingEntity entity, DamageSource damageSource, float amount) {
-        if (entity instanceof ServerPlayer serverPlayer) {
-            ServerLevel level = serverPlayer.level();
-            entity.hurtServer(level, damageSource, amount);
-        }
+        entity.hurt(damageSource, amount);
     }
 
     /**
@@ -206,14 +193,13 @@ public final class EntityUtils {
             }
         }
 
-        TagValueOutput nbtOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
-        entity.saveWithoutId(nbtOut);
-        return nbtOut.buildResult();
+        CompoundTag nbt = new CompoundTag();
+        entity.saveWithoutId(nbt);
+        return nbt;
     }
 
     public static void setNbt(Entity entity, CompoundTag nbt) {
-        TagValueInput nbtIn = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, entity.registryAccess(), nbt);
-        entity.load(nbtIn);
+        entity.load(nbt);
     }
 
     public static void mergeNbt(Entity entity, CompoundTag nbt) {
@@ -229,7 +215,7 @@ public final class EntityUtils {
         if (list != null) {
             nbt.remove(NBT_TO_RM_KEY);
             for (Tag nbt2 : list) {
-                String key = ((StringTag) nbt2).value();
+                String key = nbt2.getAsString();
                 nbt.remove(key);
             }
         }
@@ -266,7 +252,7 @@ public final class EntityUtils {
             nbt.remove("SleepingZ");
         }
 
-        if (entity instanceof AbstractClientPlayer) {
+        if (entity instanceof Player) {
             nbt.remove("Inventory");
         } else if (entity instanceof Dolphin) {
             nbt.remove("GotFish");
@@ -330,8 +316,8 @@ public final class EntityUtils {
     }
 
     public static void setVariantAndMarkings(Horse entity,
-                                             net.minecraft.world.entity.animal.equine.Variant variant,
-                                             net.minecraft.world.entity.animal.equine.Markings markings) {
+                                             net.minecraft.world.entity.animal.horse.Variant variant,
+                                             net.minecraft.world.entity.animal.horse.Markings markings) {
         ((HorseIMixin) entity).biologydictionary$invokeSetVariantAndMarkings(variant, markings);
     }
 }
