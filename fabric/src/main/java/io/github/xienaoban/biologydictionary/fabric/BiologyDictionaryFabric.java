@@ -1,9 +1,9 @@
 package io.github.xienaoban.biologydictionary.fabric;
 
-import io.github.xienaoban.biologydictionary.Biologydictionary;
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import net.fabricmc.api.ModInitializer;
 
-public final class BiologydictionaryFabric implements ModInitializer {
+public final class BiologyDictionaryFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
@@ -11,6 +11,6 @@ public final class BiologydictionaryFabric implements ModInitializer {
         // Proceed with mild caution.
 
         // Run our common setup.
-        Biologydictionary.init();
+        BiologyDictionary.init();
     }
 }

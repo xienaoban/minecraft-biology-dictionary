@@ -1,4 +1,2 @@
 classTweaker v1 named
 
-accessible class net/minecraft/client/gui/GuiGraphics$ScissorStack
-extendable class net/minecraft/client/gui/render/state/GuiTextRenderState

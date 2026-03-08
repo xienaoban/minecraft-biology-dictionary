@@ -22,9 +22,6 @@
         ],
         "client": [
             "io.github.xienaoban.biologydictionary.fabric.BiologyDictionaryFabricClient"
-        ],
-        "modmenu": [
-            "io.github.xienaoban.biologydictionary.config.fabric.ModMenuConfigScreenProvider"
         ]
     },
     "accessWidener" : "biologydictionary.accesswidener",
