@@ -10,7 +10,11 @@ public class FloatProperty<E extends Entity> extends AbstractProperty<E, Float> 
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        setVal(nbt.getFloat(name()).orElse(null));
+        if (nbt.contains(name())) {
+            setVal(nbt.getFloat(name()));
+        } else {
+            setVal(null);
+        }
     }
 
     @Override

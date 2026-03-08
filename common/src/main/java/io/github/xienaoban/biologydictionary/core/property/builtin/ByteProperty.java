@@ -10,7 +10,11 @@ public class ByteProperty<E extends Entity> extends AbstractProperty<E, Byte> {
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        setVal(nbt.getByte(name()).orElse(null));
+        if (nbt.contains(name())) {
+            setVal(nbt.getByte(name()));
+        } else {
+            setVal(null);
+        }
     }
 
     @Override

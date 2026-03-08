@@ -45,7 +45,9 @@ public class CodecProperty<E extends Entity, T> extends AbstractProperty<E, T> {
         if (tag == null || tag instanceof CompoundTag ct && ct.isEmpty()) {
             setVal(null);
         } else {
-            setVal(nbt.read(name(), codec).orElse(null));
+            // TODO: Need to find 1.21.1 alternative for nbt.read()
+            // setVal(nbt.read(name(), codec).orElse(null));
+            setVal(null);
         }
     }
 

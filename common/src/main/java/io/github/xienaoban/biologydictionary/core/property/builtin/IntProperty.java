@@ -10,7 +10,11 @@ public class IntProperty<E extends Entity> extends AbstractProperty<E, Integer> 
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        setVal(nbt.getInt(name()).orElse(null));
+        if (nbt.contains(name())) {
+            setVal(nbt.getInt(name()));
+        } else {
+            setVal(null);
+        }
     }
 
     @Override

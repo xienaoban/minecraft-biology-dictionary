@@ -3,15 +3,17 @@ package io.github.xienaoban.biologydictionary.core.property.builtin;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
-public class ByteArrayProperty<E extends Entity> extends AbstractProperty<E, byte[]> {
-    public ByteArrayProperty(String propertyName) {
+import java.util.UUID;
+
+public class UuidProperty<E extends Entity> extends AbstractProperty<E, UUID> {
+    public UuidProperty(String propertyName) {
         super(propertyName);
     }
 
     @Override
     public void readFrom(CompoundTag nbt) {
         if (nbt.contains(name())) {
-            setVal(nbt.getByteArray(name()));
+            setVal(nbt.getUUID(name()));
         } else {
             setVal(null);
         }
@@ -20,9 +22,9 @@ public class ByteArrayProperty<E extends Entity> extends AbstractProperty<E, byt
     @Override
     public void writeTo(CompoundTag nbt) {
         if (getVal() != null) {
-            nbt.putByteArray(name(), getVal());
+            nbt.putUUID(name(), getVal());
         } else {
-            throw new IllegalPropertyStateException("array type must not be null");
+            nbt.put(name(), new CompoundTag());
         }
     }
 }

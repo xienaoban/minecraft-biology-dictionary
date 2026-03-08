@@ -10,7 +10,11 @@ public class BooleanProperty<E extends Entity> extends AbstractProperty<E, Boole
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        setVal(nbt.getBoolean(name()).orElse(null));
+        if (nbt.contains(name())) {
+            setVal(nbt.getBoolean(name()));
+        } else {
+            setVal(null);
+        }
     }
 
     @Override

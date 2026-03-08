@@ -10,7 +10,11 @@ public class StringProperty<E extends Entity> extends AbstractProperty<E, String
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        setVal(nbt.getString(name()).orElse(null));
+        if (nbt.contains(name())) {
+            setVal(nbt.getString(name()));
+        } else {
+            setVal(null);
+        }
     }
 
     @Override

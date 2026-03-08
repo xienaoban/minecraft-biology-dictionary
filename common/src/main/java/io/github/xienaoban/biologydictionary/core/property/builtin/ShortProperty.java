@@ -10,7 +10,11 @@ public class ShortProperty<E extends Entity> extends AbstractProperty<E, Short> 
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        setVal(nbt.getShort(name()).orElse(null));
+        if (nbt.contains(name())) {
+            setVal(nbt.getShort(name()));
+        } else {
+            setVal(null);
+        }
     }
 
     @Override

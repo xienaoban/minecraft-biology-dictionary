@@ -10,7 +10,11 @@ public class LongProperty<E extends Entity> extends AbstractProperty<E, Long> {
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        setVal(nbt.getLong(name()).orElse(null));
+        if (nbt.contains(name())) {
+            setVal(nbt.getLong(name()));
+        } else {
+            setVal(null);
+        }
     }
 
     @Override

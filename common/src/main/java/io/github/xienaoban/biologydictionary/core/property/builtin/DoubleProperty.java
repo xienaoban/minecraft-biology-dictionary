@@ -10,7 +10,11 @@ public class DoubleProperty<E extends Entity> extends AbstractProperty<E, Double
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        setVal(nbt.getDouble(name()).orElse(null));
+        if (nbt.contains(name())) {
+            setVal(nbt.getDouble(name()));
+        } else {
+            setVal(null);
+        }
     }
 
     @Override
