@@ -1,13 +1,13 @@
 package io.github.xienaoban.biologydictionary.core.property.extra;
 
-import io.github.xienaoban.biologydictionary.core.property.vanilla.GlobalPosProperty;
+import io.github.xienaoban.biologydictionary.core.property.vanilla.BlockPosProperty;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.npc.Villager;
 
 import java.util.Optional;
 
-public class VillagerJobSiteProperty extends GlobalPosProperty<Villager> {
+public class VillagerJobSiteProperty extends BlockPosProperty<Villager> {
     public static final Factory<Villager> FACTORY = VillagerJobSiteProperty::new;
 
     public VillagerJobSiteProperty() {
@@ -17,7 +17,7 @@ public class VillagerJobSiteProperty extends GlobalPosProperty<Villager> {
     @Override
     public void getFrom(Villager entity) {
         Optional<GlobalPos> globalPos = entity.getBrain().getMemory(MemoryModuleType.JOB_SITE);
-        setVal(globalPos.orElse(null));
+        setVal(globalPos.map(GlobalPos::pos).orElse(null));
     }
 
     @Override
