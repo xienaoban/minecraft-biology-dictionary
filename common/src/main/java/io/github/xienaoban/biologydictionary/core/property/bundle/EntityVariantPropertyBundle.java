@@ -1,7 +1,5 @@
 package io.github.xienaoban.biologydictionary.core.property.bundle;
 
-import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
@@ -9,7 +7,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.VariantHolder;
 import net.minecraft.world.entity.animal.Panda;
 import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerType;
 
@@ -34,7 +36,7 @@ public final class EntityVariantPropertyBundle {
         register(EntityType.VILLAGER, new VillagerTypeHandler());
         register(EntityType.HORSE, new HorseVariantHandler(), new HorseMarkingsHandler());
         register(EntityType.PANDA, new PandaMainGeneHandler(), new PandaHiddenGeneHandler());
-        register(EntityType.TRADER_LLAMA, new CodecVariantHandler(VanillaEntityProperties.OfLlama.createVariantProperty()));
+        register(EntityType.TRADER_LLAMA, new EnumHandler(EntityType.TRADER_LLAMA, Llama.Variant.class));
     }
 
     public static void register(Function<Entity, VariantHandler<?, ?>> pattern) {
@@ -102,9 +104,8 @@ public final class EntityVariantPropertyBundle {
                     .toList();
             return new VariantHandlerHandler(EntityUtils.getEntityType(entity), registry, res);
         } else if (variant instanceof Enum<?>) {
-            return new EnumHandler(EntityUtils.getEntityType(entity), Misc.cast(variant.getClass()));
+            return new EnumHandler(EntityUtils.getEntityType(entity), variant.getClass());
         }
-
         return null;
     };
 
@@ -142,18 +143,16 @@ public final class EntityVariantPropertyBundle {
         public String getVariantName(Holder<Object> variant) {
             return variant.unwrapKey().map(resourceKey -> {
                 ResourceLocation id = resourceKey.location();
-                ResourceLocation entityId = EntityUtils.getEntityTypeId(entityType);
-                return Lang.VARIANT_PREFIX + entityId.getNamespace().toLowerCase() + '.'
-                        + entityId.getPath().toLowerCase() + '.' + id.getPath().toLowerCase();
+                return id.getPath().toLowerCase();
             }).orElse("unknown");
         }
     }
 
-    public record EnumHandler(EntityType<?> entityType, Class<Enum<?>> clazz) implements VariantHandler<Entity, Enum<?>> {
+    public record EnumHandler(EntityType<?> entityType, Class<?> clazz) implements VariantHandler<Entity, Enum<?>> {
 
         @Override
         public List<Enum<?>> getVariants() {
-            return Arrays.stream(clazz.getEnumConstants()).toList();
+            return Misc.cast(Arrays.stream(clazz.getEnumConstants()).toList());
         }
 
         @Override
@@ -179,9 +178,7 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public String getVariantName(Enum<?> variant) {
-            ResourceLocation entityId = EntityUtils.getEntityTypeId(entityType);
-            return Lang.VARIANT_PREFIX + entityId.getNamespace().toLowerCase() + '.'
-                    + entityId.getPath().toLowerCase() + '.' + variant.name().toLowerCase();
+            return variant.name().toLowerCase();
         }
     }
 
@@ -223,13 +220,7 @@ public final class EntityVariantPropertyBundle {
         @Override
         public String getVariantName(ResourceKey<VillagerType> variant) {
             ResourceLocation id = variant.location();
-            String res;
-            if (ResourceLocation.DEFAULT_NAMESPACE.equals(id.getNamespace())) {
-                res = id.getPath();
-            } else {
-                res = id.getNamespace() + '.' + id.getPath();
-            }
-            return res;
+            return id.getPath().toLowerCase();
         }
     }
 
@@ -262,7 +253,7 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public String getVariantName(net.minecraft.world.entity.animal.horse.Variant variant) {
-            return variant.getSerializedName();
+            return variant.getSerializedName().toLowerCase();
         }
     }
 
@@ -321,17 +312,17 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public Tag variantToNbt(Panda.Gene variant) {
-            return VanillaEntityProperties.OfPanda.createMainGeneProperty().withVal(variant).toTag();
+            return StringTag.valueOf(variant.name());
         }
 
         @Override
         public Panda.Gene nbtToVariant(Tag nbt) {
-            return VanillaEntityProperties.OfPanda.createMainGeneProperty().withTag((CompoundTag) nbt).getVal();
+            return Enum.valueOf(Panda.Gene.class, nbt.getAsString());
         }
 
         @Override
         public String getVariantName(Panda.Gene variant) {
-            return variant.getSerializedName();
+            return variant.getSerializedName().toLowerCase();
         }
     }
 
@@ -345,16 +336,6 @@ public final class EntityVariantPropertyBundle {
         @Override
         public void setVariant(Panda entity, Panda.Gene variant) {
             entity.setHiddenGene(variant);
-        }
-
-        @Override
-        public Tag variantToNbt(Panda.Gene variant) {
-            return VanillaEntityProperties.OfPanda.createHiddenGeneProperty().withVal(variant).toTag();
-        }
-
-        @Override
-        public Panda.Gene nbtToVariant(Tag nbt) {
-            return VanillaEntityProperties.OfPanda.createHiddenGeneProperty().withTag((CompoundTag) nbt).getVal();
         }
     }
 }

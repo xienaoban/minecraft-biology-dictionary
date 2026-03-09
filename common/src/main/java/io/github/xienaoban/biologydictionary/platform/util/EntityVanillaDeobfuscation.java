@@ -35,10 +35,6 @@ final class EntityVanillaDeobfuscation {
         /*--------*/ r(net.minecraft.world.entity.monster.Phantom.class, "net.minecraft.world.entity.monster.Phantom");
         /*------*/ r(net.minecraft.world.entity.PathfinderMob.class, "net.minecraft.world.entity.PathfinderMob");
         /*--------*/ r(net.minecraft.world.entity.AgeableMob.class, "net.minecraft.world.entity.AgeableMob");
-        /*----------*/ r(net.minecraft.world.entity.animal.WaterAnimal.class, "net.minecraft.world.entity.animal.WaterAnimal");
-        /*------------*/ r(net.minecraft.world.entity.animal.Dolphin.class, "net.minecraft.world.entity.animal.Dolphin");
-        /*------------*/ r(net.minecraft.world.entity.animal.Squid.class, "net.minecraft.world.entity.animal.Squid");
-        /*--------------*/ r(net.minecraft.world.entity.GlowSquid.class, "net.minecraft.world.entity.GlowSquid");
         /*----------*/ r(net.minecraft.world.entity.animal.Animal.class, "net.minecraft.world.entity.animal.Animal");
         /*------------*/ r(net.minecraft.world.entity.TamableAnimal.class, "net.minecraft.world.entity.TamableAnimal");
         /*--------------*/ r(net.minecraft.world.entity.animal.Cat.class, "net.minecraft.world.entity.animal.Cat");
@@ -82,6 +78,9 @@ final class EntityVanillaDeobfuscation {
         /*----------*/ r(net.minecraft.world.entity.animal.SnowGolem.class, "net.minecraft.world.entity.animal.SnowGolem");
         /*----------*/ r(net.minecraft.world.entity.monster.Shulker.class, "net.minecraft.world.entity.monster.Shulker");
         /*--------*/ r(net.minecraft.world.entity.animal.WaterAnimal.class, "net.minecraft.world.entity.animal.WaterAnimal");
+        /*------------*/ r(net.minecraft.world.entity.animal.Dolphin.class, "net.minecraft.world.entity.animal.Dolphin");
+        /*------------*/ r(net.minecraft.world.entity.animal.Squid.class, "net.minecraft.world.entity.animal.Squid");
+        /*--------------*/ r(net.minecraft.world.entity.GlowSquid.class, "net.minecraft.world.entity.GlowSquid");
         /*----------*/ r(net.minecraft.world.entity.animal.AbstractFish.class, "net.minecraft.world.entity.animal.AbstractFish");
         /*------------*/ r(net.minecraft.world.entity.animal.AbstractSchoolingFish.class, "net.minecraft.world.entity.animal.AbstractSchoolingFish");
         /*--------------*/ r(net.minecraft.world.entity.animal.Cod.class, "net.minecraft.world.entity.animal.Cod");
