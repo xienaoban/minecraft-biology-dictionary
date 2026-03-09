@@ -9,6 +9,8 @@
         "EatBlockGoalIMixin"
     ],
     "client": [
+        "rendering.ScreenMixin",
+        "rendering.GuiGraphicsIMixin"
     ],
     "injectors": {
         "defaultRequire": 1
