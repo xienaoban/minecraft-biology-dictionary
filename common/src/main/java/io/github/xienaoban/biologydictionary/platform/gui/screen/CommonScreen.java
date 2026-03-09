@@ -72,8 +72,8 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
     @Override
     public final void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {}
 
-    public final void renderBlurredBackground(ScreenRenderingContext ctx) {
-        super.renderBlurredBackground(ctx.getGuiGraphics());
+    public final void renderBlurredBackground(ScreenRenderingContext ctx, float blurRadius) {
+        super.renderBlurredBackground(blurRadius);
     }
 
     public final void renderTransparentBackground(ScreenRenderingContext ctx) {

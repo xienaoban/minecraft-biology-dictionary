@@ -5,7 +5,6 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElem
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
@@ -42,13 +41,13 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         try {
             updateSelectedElement();
             if (getSelectedElement() != null) {
-                return getSelectedElement().mouseDown((float) mouseButtonEvent.x(), (float) mouseButtonEvent.y(), mouseButtonEvent.button());
+                return getSelectedElement().mouseDown((float) mouseX, (float) mouseY, button);
             } else {
-                return super.mouseClicked(mouseButtonEvent, bl);
+                return super.mouseClicked(mouseX, mouseY, button);
             }
         } catch (Throwable e) {
             showExceptionMessageAndCloseScreen(e);
@@ -68,7 +67,6 @@ public abstract class ElementScreen extends CommonScreen {
             super.render(ctx);
             rootScreenElement.render(ctx);
 
-            ctx.getGuiGraphics().nextStratum();
             ScreenElement hovered = getHoveredElement();
             if (hovered != null) {
                 hovered.renderHovered(ctx);
