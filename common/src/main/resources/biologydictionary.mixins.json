@@ -5,7 +5,8 @@
     "minVersion": "0.8",
     "mixins": [
         "entity.AbstractHorseMixin",
-        "TemptGoalIMixin"
+        "TemptGoalIMixin",
+        "EatBlockGoalIMixin"
     ],
     "client": [
     ],

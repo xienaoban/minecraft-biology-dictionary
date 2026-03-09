@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -129,6 +130,14 @@ public final class EntityUtils {
     // ============================================================================ //
     //                             Entity Method Utils                              //
     // ============================================================================ //
+
+    public static String getNameString(Entity entity) {
+        return entity.getScoreboardName();
+    }
+
+    public static Component getNameText(Entity entity) {
+        return entity.getName();
+    }
 
     public static Level getLevel(Entity entity) {
         return entity.level();

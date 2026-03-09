@@ -4,9 +4,15 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.annotation.Config;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
+import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
+import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Main configuration data class for Biology Dictionary.
@@ -110,8 +116,7 @@ public final class Configs {
          * Always derived from {@link #skillCosts} after initialization.
          * All skills are guaranteed to be present after initialization.
          */
-        // TODO
-        // private transient Map<Class<?>, SkillCost> skillCostsCache;
+        private transient Map<Class<?>, SkillCost> skillCostsCache;
 
         // =========================== Getters ============================
 
@@ -127,10 +132,9 @@ public final class Configs {
             return inheritSilentFromParents;
         }
 
-        // TODO
-        // public SkillCost getSkillCost(Class<?> skillClass) {
-        //     return skillCostsCache.get(skillClass);
-        // }
+        public SkillCost getSkillCost(Class<?> skillClass) {
+            return skillCostsCache.get(skillClass);
+        }
 
         // ============================= Misc =============================
 
@@ -149,25 +153,24 @@ public final class Configs {
          * Missing skills are added with their default costs.
          */
         private void completeSkillCosts() {
-            // TODO
-            // Map<String, Map<String, Object>> newCosts = new LinkedHashMap<>();
-            // BiologySkills.registerBuiltIn(new BiologySkills.Registrar() {
-            //     @Override
-            //     public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
-            //         String shortName = meta.shortName();
-            //         Map<String, Object> v = skillCosts.get(shortName);
-            //         newCosts.put(shortName, Objects.requireNonNullElseGet(v, () -> meta.getDefaultCost().toMap()));
-            //     }
-            //
-            //     @Override
-            //     public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
-            //         String shortName = meta.shortName();
-            //         Map<String, Object> v = skillCosts.get(shortName);
-            //         newCosts.put(shortName, Objects.requireNonNullElseGet(v, () -> meta.getDefaultCost().toMap()));
-            //     }
-            // });
-            // // Reduce the possibility of concurrency issues.
-            // skillCosts = newCosts;
+            Map<String, Map<String, Object>> newCosts = new LinkedHashMap<>();
+            BiologySkills.registerBuiltIn(new BiologySkills.Registrar() {
+                @Override
+                public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
+                    String shortName = meta.shortName();
+                    Map<String, Object> v = skillCosts.get(shortName);
+                    newCosts.put(shortName, Objects.requireNonNullElseGet(v, () -> meta.getDefaultCost().toMap()));
+                }
+
+                @Override
+                public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
+                    String shortName = meta.shortName();
+                    Map<String, Object> v = skillCosts.get(shortName);
+                    newCosts.put(shortName, Objects.requireNonNullElseGet(v, () -> meta.getDefaultCost().toMap()));
+                }
+            });
+            // Reduce the possibility of concurrency issues.
+            skillCosts = newCosts;
         }
 
         /**
@@ -175,17 +178,16 @@ public final class Configs {
          * Must be called after skillCosts is fully populated.
          */
         private void rebuildSkillCacheCache() {
-            // TODO
-            // Map<Class<?>, SkillCost> cache = new HashMap<>();
-            //
-            // for (Map.Entry<String, Map<String, Object>> entry : skillCosts.entrySet()) {
-            //     String shortName = entry.getKey();
-            //     Map<String, Object> costData = entry.getValue();
-            //     Class<?> skillClass = BiologySkills.getSkillClass(shortName);
-            //     cache.put(skillClass, SkillCost.fromMap(costData));
-            // }
-            //
-            // skillCostsCache = cache;
+            Map<Class<?>, SkillCost> cache = new HashMap<>();
+
+            for (Map.Entry<String, Map<String, Object>> entry : skillCosts.entrySet()) {
+                String shortName = entry.getKey();
+                Map<String, Object> costData = entry.getValue();
+                Class<?> skillClass = BiologySkills.getSkillClass(shortName);
+                cache.put(skillClass, SkillCost.fromMap(costData));
+            }
+
+            skillCostsCache = cache;
         }
     }
 
