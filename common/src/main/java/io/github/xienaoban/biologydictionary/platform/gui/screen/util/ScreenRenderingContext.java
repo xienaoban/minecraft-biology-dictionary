@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin;
-import io.github.xienaoban.biologydictionary.mixin.rendering.ScreenMixin;
+import io.github.xienaoban.biologydictionary.mixin.rendering.ScreenIMixin;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
@@ -83,7 +83,7 @@ public final class ScreenRenderingContext {
     public float getMouseX()            { return mouseX; }
     public float getMouseY()            { return mouseY; }
     public float getTickDelta()         { return tickDelta; }
-    public Font getFont()               { return ((ScreenMixin) screen).biologydictionary$getFont(); }
+    public Font getFont()               { return ((ScreenIMixin) screen).biologydictionary$getFont(); }
     public float getZ()                 { return getCommonScreen().getZ(); }
     public boolean isDebug()            { return debug; }
     public void setDebug(boolean debug) { this.debug = debug; }

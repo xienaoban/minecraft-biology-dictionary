@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary;
 
+import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRenderer;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
@@ -48,7 +49,7 @@ public final class BiologyDictionaryClient {
         });
         ClientEventRegistry.registerWorldDisconnecting(client -> {
             // TODO
-            // FirstPersonShoulderEntityRenderer.clear();
+            FirstPersonShoulderEntityRenderer.clear();
             EntityManager.destroy();
             ConfigsManager.setLocalServerConfigs();
         });

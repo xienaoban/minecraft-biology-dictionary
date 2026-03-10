@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen;
 
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.mixin.rendering.ScreenMixin;
+import io.github.xienaoban.biologydictionary.mixin.rendering.ScreenIMixin;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScaleRAII;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenConsts;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
@@ -88,7 +88,7 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
         super.render(ctx.getGuiGraphics(), (int) ctx.getMouseX(), (int) ctx.getMouseY(), ctx.getTickDelta());
     }
 
-    public Font getFont() { return ((ScreenMixin) this).biologydictionary$getFont(); }
+    public Font getFont() { return ((ScreenIMixin) this).biologydictionary$getFont(); }
 
     public float getZ() { return 0; }
 

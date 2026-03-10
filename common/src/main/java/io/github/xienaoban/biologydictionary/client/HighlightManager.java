@@ -13,7 +13,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
@@ -21,7 +24,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 @Environment(EnvType.CLIENT)
 public final class HighlightManager {
     private static volatile boolean hasHighlighted = false;
-    private static final List<HighlightedEntity> highlightedEntities = new CopyOnWriteArrayList<>();
+    private static final Map<Entity, HighlightedEntity> highlightedEntities = new ConcurrentHashMap<>();
     private static final List<HighlightedBlock> highlightedBlocks = new CopyOnWriteArrayList<>();
 
     public static void init() {
@@ -37,7 +40,11 @@ public final class HighlightManager {
         if (level == null) { clear(); return; }
 
         Context ctx = new Context(level);
-        highlightedEntities.removeIf(h -> h.checkEnd(ticks, ctx));
+        for (Map.Entry<Entity, HighlightedEntity> entry : highlightedEntities.entrySet()) {
+            if (entry.getValue().checkEnd(ticks, ctx)) {
+                highlightedEntities.remove(entry.getKey());
+            }
+        }
         highlightedBlocks.removeIf(h -> h.checkEnd(ticks, ctx));
         if (highlightedEntities.isEmpty() && highlightedBlocks.isEmpty()) {
             hasHighlighted = false;
@@ -54,8 +61,12 @@ public final class HighlightManager {
         return hasHighlighted;
     }
 
-    public static List<HighlightedEntity> getHighlightedEntities() {
-        return highlightedEntities;
+    public static boolean isEntityHighlighted(Entity entity) {
+        return highlightedEntities.containsKey(entity);
+    }
+
+    public static Collection<HighlightedEntity> getHighlightedEntities() {
+        return highlightedEntities.values();
     }
 
     public static List<HighlightedBlock> getHighlightedBlocks() {
@@ -64,7 +75,7 @@ public final class HighlightManager {
 
     public static void highlightEntity(Entity entity, int durationTicks) {
         if (!hasHighlighted) { hasHighlighted = true; }
-        highlightedEntities.add(new HighlightedEntity(BDC.getTicks() + durationTicks, entity));
+        highlightedEntities.put(entity, new HighlightedEntity(BDC.getTicks() + durationTicks, entity));
     }
 
     public static void highlightBlock(BlockPos blockPos, int durationTicks) {

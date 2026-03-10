@@ -8,12 +8,16 @@
         "EatBlockGoalIMixin",
         "MobEffectInstanceIMixin",
         "TemptGoalIMixin",
-        "entity.AbstractHorseMixin",
+        "entity.AbstractHorseIMixin",
+        "entity.AgeableMobMixin",
         "entity.AnimalIMixin",
+        "entity.AnimalMixin",
         "entity.EntityIMixin",
+        "entity.EntityMixin",
         "entity.HorseIMixin",
         "entity.MobIMixin",
         "entity.ServerPlayerIMixin",
+        "entity.WanderingTraderMixin",
         "loot.CompositeEntryBaseIMixin",
         "loot.LootItemIMixin",
         "loot.LootPoolEntryContainerIMixin",
@@ -25,9 +29,12 @@
         "loot.TagEntryIMixin"
     ],
     "client": [
+        "MinecraftMixin",
         "entity.AbstractClientPlayerIMixin",
         "rendering.GuiGraphicsIMixin",
-        "rendering.ScreenMixin"
+        "rendering.ItemInHandRendererMixin",
+        "rendering.LevelRendererMixin",
+        "rendering.ScreenIMixin"
     ],
     "injectors": {
         "defaultRequire": 1
