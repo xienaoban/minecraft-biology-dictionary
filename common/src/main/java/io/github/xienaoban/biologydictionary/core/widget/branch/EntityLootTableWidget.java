@@ -17,7 +17,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 
@@ -125,7 +125,7 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
 
         MutableComponent res;
         List<Component> conditions = new ArrayList<>();
-        for (Identifier identifier : entry.conditions()) {
+        for (ResourceLocation identifier : entry.conditions()) {
             String key = Lang.LOOT_CONDITION_PREFIX + identifier.getNamespace() + '.' + identifier.getPath();
             conditions.add(TextUtils.translate(key));
         }

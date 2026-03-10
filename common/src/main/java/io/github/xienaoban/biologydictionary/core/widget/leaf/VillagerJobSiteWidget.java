@@ -17,7 +17,7 @@ import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.phys.Vec3;
 
 public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager> {

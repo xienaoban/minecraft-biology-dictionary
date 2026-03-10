@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
+import io.github.xienaoban.biologydictionary.core.property.builtin.UuidProperty;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntityGiftPetSkill;
@@ -21,9 +21,8 @@ import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.OwnableEntity;
-import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
 
     private static final String OWNER_KEY = VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().name();
 
-    private final EntityReferenceProperty<AbstractHorse> ownerProperty = p().getVanilla(OWNER_KEY);
+    private final UuidProperty<AbstractHorse> ownerProperty = p().getVanilla(OWNER_KEY);
 
     private UUID lastUuid = null;
     private Entity lastEntity = null;
@@ -56,17 +55,16 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
     }
 
     private void updateOwnerRef() {
-        EntityReference<Entity> ref = ownerProperty.getVal();
-        if (ref == null) {
+        UUID uuid = ownerProperty.getVal();
+        if (uuid == null) {
             if (lastUuid != null) {
                 lastUuid = null;
                 lastEntity = null;
             }
         } else {
-            UUID uuid = ref.getUUID();
             if (!Objects.equals(uuid, lastUuid)) {
                 lastUuid = uuid;
-                lastEntity = ref.getEntity(ClientUtils.getClientLevel(), Entity.class);
+                lastEntity = ClientUtils.getClientLevel().getPlayerByUUID(uuid);
             }
         }
     }
@@ -127,7 +125,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
                 ClientUtils.setScreen(new PlayerSelectorScreen(ClientUtils.getCurrentScreen(), targetPlayer -> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(null);
                     BiologySkills.activate(e(), new EntityGiftPetSkill(targetPlayer));
-                    ownerProperty.setVal(EntityReference.of(targetPlayer.getUUID()));
+                    ownerProperty.setVal(targetPlayer.getUUID());
                 }
                 ));
             }

@@ -11,7 +11,7 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.minecraft.world.entity.animal.dolphin.Dolphin;
+import net.minecraft.world.entity.animal.Dolphin;
 
 public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin> {
     public static final Factory<Dolphin> FACTORY = DolphinMoistnessWidget::new;

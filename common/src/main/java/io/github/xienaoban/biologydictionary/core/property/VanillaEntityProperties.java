@@ -475,11 +475,11 @@ public class VanillaEntityProperties {
             return g(ep, "Team");
         }
 
-        public static UnsupportedProperty<LivingEntity> createActiveEffectsProperty() {
-            return new UnsupportedProperty<>("active_effects");
+        public static MobEffectInstanceListProperty<LivingEntity> createActiveEffectsProperty() {
+            return new MobEffectInstanceListProperty<>("active_effects");
         }
 
-        public static UnsupportedProperty<LivingEntity> getActiveEffectsProperty(EntityProperties<?> ep) {
+        public static MobEffectInstanceListProperty<LivingEntity> getActiveEffectsProperty(EntityProperties<?> ep) {
             return g(ep, "active_effects");
         }
 

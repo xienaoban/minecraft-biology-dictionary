@@ -10,8 +10,8 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRend
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.npc.villager.Villager;
-import net.minecraft.world.entity.npc.villager.VillagerType;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerType;
 
 import java.util.ArrayList;
 import java.util.List;

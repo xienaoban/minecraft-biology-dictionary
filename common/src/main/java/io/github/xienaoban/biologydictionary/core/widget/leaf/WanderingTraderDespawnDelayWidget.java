@@ -18,7 +18,7 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRend
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
+import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -31,7 +31,7 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
     private static final int L = 6, T = 6;
 
     /**
-     * @see net.minecraft.world.entity.npc.wanderingtrader.WanderingTraderSpawner#spawn(ServerLevel)
+     * @see net.minecraft.world.entity.npc.WanderingTraderSpawner#spawn(ServerLevel)
      */
     private static final int MAX_DESPAWN_DELAY = 48000;
 

@@ -91,7 +91,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
         for (BlockPos bp : blockPoses) {
             BlockState bs = level.getBlockState(bp);
             if (!bs.isAir() && bs.getBlock() == Blocks.NETHER_PORTAL
-                    && box.collidedAlongVector(Vec3.ZERO, List.of(new AABB(bp).deflate(0.01)))) {
+                    && box.intersects(new AABB(bp).deflate(0.01))) {
                 return (--inPortalRecheck) <= 0;
             }
         }

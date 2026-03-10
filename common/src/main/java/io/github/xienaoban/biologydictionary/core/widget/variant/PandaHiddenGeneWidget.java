@@ -9,7 +9,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.animal.panda.Panda;
+import net.minecraft.world.entity.animal.Panda;
 
 import java.util.ArrayList;
 import java.util.List;

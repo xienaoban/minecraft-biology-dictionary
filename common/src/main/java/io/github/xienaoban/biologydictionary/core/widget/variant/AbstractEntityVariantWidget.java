@@ -21,7 +21,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
@@ -150,7 +150,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
     public final String getVariantNameKeyPrefix() {
         // variant.minecraft.cat.xxxx
-        Identifier id = EntityUtils.getEntityTypeId(e());
+        ResourceLocation id = EntityUtils.getEntityTypeId(e());
         return "variant." + id.getNamespace() + "." + id.getPath() + ".";
     }
 
@@ -269,9 +269,6 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         private float widthFix;
         private float heightFix;
 
-        private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
-                = new ScreenRenderingContext.EntityRenderingCache();
-
         public VariantElement(int index, V variant) {
             this.index = index;
             this.variant = variant;
@@ -381,7 +378,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         private void renderEntity(ScreenRenderingContext ctx) {
-            ctx.renderEntityCentered(model, entityRenderingCache,
+            ctx.renderEntityCentered(model,
                     getBox().getLeft() - 1- widthFix / 2,
                     getBox().getTop() + 1 - heightFix,
                     getBox().getRight() + 1 + widthFix / 2,

@@ -7,7 +7,9 @@
         "CreativeModeTabsIMixin",
         "TemptGoalIMixin",
         "EatBlockGoalIMixin",
-        "entity.AbstractHorseMixin"
+        "MobEffectInstanceIMixin",
+        "entity.AbstractHorseMixin",
+        "entity.AnimalIMixin"
     ],
     "client": [
         "rendering.ScreenMixin",

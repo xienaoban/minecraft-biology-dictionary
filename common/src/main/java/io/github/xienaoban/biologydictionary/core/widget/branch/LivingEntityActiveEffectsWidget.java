@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
+import io.github.xienaoban.biologydictionary.core.property.vanilla.MobEffectInstanceListProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
@@ -30,7 +30,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
 
     private static final int L = 11, T = 3;
 
-    private final CodecProperty<LivingEntity, List<MobEffectInstance>> activeEffectsProperty
+    private final MobEffectInstanceListProperty<LivingEntity> activeEffectsProperty
             = VanillaEntityProperties.OfLivingEntity.getActiveEffectsProperty(p());
 
     public LivingEntityActiveEffectsWidget(EntityProperties<LivingEntity> properties) {

@@ -13,7 +13,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -37,7 +37,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
         if (model == null) {
             if (entity instanceof LocalPlayer me) {
                 GameProfile profile = me.getGameProfile();
-                model = new RemotePlayer((ClientLevel) me.level(), new GameProfile(profile.id(), profile.name()));
+                model = new RemotePlayer((ClientLevel) me.level(), new GameProfile(profile.getId(), profile.getName()));
                 // to make name label invisible
                 // @see net.minecraft.client.renderer.entity.LivingEntityRenderer.shouldShowName
                 Vec3 pos = model.position();
@@ -61,9 +61,6 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
 
     private final Entity model;
 
-    private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
-            = new ScreenRenderingContext.EntityRenderingCache();
-
     public EntityDisplayWidget(EntityProperties<Entity> properties) {
         this(properties, createModelEntity(properties.entity()));
     }
@@ -85,7 +82,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        ctx.renderEntityCentered(model, entityRenderingCache, getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
+        ctx.renderEntityCentered(model, getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
                 (float) Math.atan(ctx.getMouseX() / 40F) / 10,
                 (float) Math.atan(ctx.getMouseY() / 40F) / 20);
     }
