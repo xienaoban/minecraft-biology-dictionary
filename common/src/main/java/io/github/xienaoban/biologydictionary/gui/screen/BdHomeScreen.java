@@ -21,7 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
@@ -163,9 +163,6 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         private final Component name;
         private final ItemStack spawnEgg;
 
-        private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
-                = new ScreenRenderingContext.EntityRenderingCache();
-
         public EntityWidget(Entity entity) {
             super(2, 2);
             this.entity = entity;
@@ -205,7 +202,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
-            ctx.renderEntityCentered(entity, entityRenderingCache, box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6, entityRotateX, entityRotateY);
+            ctx.renderEntityCentered(entity, box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6, entityRotateX, entityRotateY);
             ctx.renderCenteredText(name, 0xFF000000, 0.5F, getZ(), (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
         }
 

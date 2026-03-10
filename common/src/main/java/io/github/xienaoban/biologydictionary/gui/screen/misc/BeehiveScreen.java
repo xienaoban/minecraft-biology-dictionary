@@ -3,7 +3,6 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -11,12 +10,11 @@ import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.bee.Bee;
+import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
@@ -74,7 +72,7 @@ public class BeehiveScreen extends ElementScreen {
         mills = System.currentTimeMillis();
         int diff = (int) (mills - lastMills);
         renderTransparentBackground(ctx);
-        ctx.getGuiGraphics().pose().pushMatrix();
+        ctx.getGuiGraphics().pose().pushPose();
         int w = (width - 128) >> 1;
         int h = (height - 128) >> 1;
 
@@ -120,8 +118,7 @@ public class BeehiveScreen extends ElementScreen {
             ctx.renderHorizontalLine(0xFF443300, 2.2F, ctx.getZ(), y - 1, x - 7.5F, x + 7.5F);
             ctx.renderHorizontalLine(bee.entity.hasNectar() ? 0xFFFFBB00 : 0x64FFBB00,
                     1.2F, ctx.getZ(), y - 1, x - 7, x - 7 + t);
-            ctx.renderEntityCentered(bee.entity, bee.entityRenderingCache,
-                    x - 14F, y - 26F, x + 14F, y,
+            ctx.renderEntityCentered(bee.entity, x - 14F, y - 26F, x + 14F, y,
                     (float) Math.atan(action.mouseX / 80), (float) Math.atan(action.mouseY / 80), beeScale);
             Component customName = bee.entity.getCustomName();
             int beeTop = y - (bee.entity.isBaby() ? 20 : 25);
@@ -136,14 +133,14 @@ public class BeehiveScreen extends ElementScreen {
                         TextUtils.translate(Lang.TEXT_BEE_STATE_IN_BEEHIVE, TextUtils.translate(bee.entity.hasNectar() ? Lang.TEXT_BEE_PRODUCING_NECTAR : Lang.TEXT_BEE_RESTING)).withStyle(ChatFormatting.GRAY),
                         TextUtils.translate(Lang.TEXT_TIME_IN_BEEHIVE, (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s").withStyle(ChatFormatting.GRAY)
                 );
-                ctx.renderComponentTooltipCenteredForNextFrameVanilla(texts, x, y + 18F);
+                ctx.renderComponentTooltipCenteredVanilla(texts, x, y + 18F);
             }
         }
         ctx.renderText(TextUtils.literal(honeyCnt + "/" + MAX_HONEY_CNT), color, ctx.getZ(), LATTICES[5][0] + lw + 16 - 8.5F, LATTICES[5][1] + lh + 8);
         ctx.renderText(TextUtils.literal(beeCnt + "/" + MAX_BEE_CNT), color, ctx.getZ(), LATTICES[6][0] + lw + 16 - 8.5F, LATTICES[6][1] + lh + 8);
         ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_HONEY), color, ctx.getZ(), LATTICES[5][0] + lw + 16.5F, LATTICES[5][1] + lh + 16);
         ctx.renderCenteredText(EntityType.BEE.getDescription(), color, ctx.getZ(), LATTICES[6][0] + lw + 16.5F, LATTICES[6][1] + lh + 16);
-        ctx.getGuiGraphics().pose().popMatrix();
+        ctx.getGuiGraphics().pose().popPose();
     }
 
     private void drawLattice(ScreenRenderingContext ctx, int w, int h, int type) {
@@ -156,16 +153,16 @@ public class BeehiveScreen extends ElementScreen {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent keyEvent) {
-        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyEvent)
-                || client.options.keyInventory.matches(keyEvent)) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)
+                || client.options.keyInventory.matches(keyCode, scanCode)) {
             onClose();
             return true;
-        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyEvent)) {
+        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
             screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
             return true;
         }
-        return super.keyPressed(keyEvent);
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
@@ -178,7 +175,8 @@ public class BeehiveScreen extends ElementScreen {
                 return;
             }
             if (passedClientTickCount % 10 == 5) {
-                ClientNetManager.requestBeehiveInfo(pos);
+                // TODO
+                // ClientNetManager.requestBeehiveInfo(pos);
             }
         }
     }
@@ -191,7 +189,7 @@ public class BeehiveScreen extends ElementScreen {
             // @see net.minecraft.server.commands.data.DataCommands.register
             beeInfo.entity.setCustomName(null);
             CompoundTag newTag = EntityUtils.getNbt(beeInfo.entity);
-            EntityUtils.setNbt(beeInfo.entity, newTag.merge(occupant.entityData().copyTagWithoutId()));
+            EntityUtils.setNbt(beeInfo.entity, newTag.merge(occupant.entityData().copyTag()));
 
             beeInfo.ticksInHive = occupant.ticksInHive();
             beeInfo.minTicksInHive = occupant.minTicksInHive();
@@ -204,9 +202,6 @@ public class BeehiveScreen extends ElementScreen {
         public final Bee entity;
         public int ticksInHive;
         public int minTicksInHive;
-
-        private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
-                = new ScreenRenderingContext.EntityRenderingCache();
 
         public BeeInfo(Level level) {
             entity = EntityUtils.create(EntityType.BEE, level);

@@ -41,9 +41,6 @@ public class DebugScreen extends Screen {
         ctx.update(guiGraphics, 1F, 1F, mouseX, mouseY, f);
 
         Minecraft client = ClientUtils.getClient();
-        ModelPart flag = client.getEntityModels().bakeLayer(ModelLayers.STANDING_BANNER_FLAG).getChild("flag");
-        DyeColor dyeColor = DyeColor.ORANGE;
-        BannerPatternLayers resultBannerPatterns = BannerPatternLayers.EMPTY;
 
         int left;
         int top;
@@ -64,7 +61,7 @@ public class DebugScreen extends Screen {
         for (int i = 0; i < 40; ++i) {
             left = width / 2 -200 + i * 10;
             top = height / 2;
-            ctx.renderEntityCentered(e, null, left, top, left + 20, top + 40, mouseX, mouseY);
+            ctx.renderEntityCentered(e, left, top, left + 20, top + 40, mouseX, mouseY);
         }
     }
 }

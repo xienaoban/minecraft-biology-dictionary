@@ -3,7 +3,6 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
-import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.biologydictionary.gui.component.CenteredMessage;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -19,7 +18,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -161,22 +159,17 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent keyEvent) {
-        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyEvent)
-                || client.options.keyInventory.matches(keyEvent)) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)
+                || client.options.keyInventory.matches(keyCode, scanCode)) {
             onClose();
             return true;
-        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyEvent)) {
+        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
             screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
             sendScreenMessage(TextUtils.literal("Debug mode " + (screenRenderingContext.isDebug() ? "on" : "off")));
             return true;
         }
-        return super.keyPressed(keyEvent);
-    }
-
-    @Override
-    public boolean isInGameUi() {
-        return true;
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     public Bookmark getBookmark(int idx) {
@@ -296,10 +289,11 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         boolean add = true;
         Page page = null;
         for (var widget : widgets) {
-            if (widget instanceof TurnPageTriggerWidget) {
-                add = true;
-                continue;
-            }
+            // TODO
+            // if (widget instanceof TurnPageTriggerWidget) {
+            //     add = true;
+            //     continue;
+            // }
             if (add) {
                 page = addPage();
                 add = false;

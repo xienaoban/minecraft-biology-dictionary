@@ -26,13 +26,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2ic;
 import org.joml.Vector3f;
@@ -286,6 +283,11 @@ public final class ScreenRenderingContext {
     public void renderComponentTooltipCentered(List<Component> texts, float midX, float topY) {
         int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
         renderComponentTooltip(texts, midX - (maxLength + 6) / 2F, topY);
+    }
+
+    public void renderComponentTooltipCenteredVanilla(List<Component> texts, float midX, float topY) {
+        int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+        getGuiGraphics().renderComponentTooltip(getFont(), texts, (int) (midX - (maxLength + 6) / 2F), (int) topY);
     }
 
     public void renderComponentTooltipCentered(List<Component> texts, float size, float midX, float topY) {

@@ -3,7 +3,6 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
-import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -12,7 +11,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -47,12 +45,12 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
     protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
         int left = (this.width - this.imageWidth) / 2;
         int top = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Textures.STEALING_INVENTORY.location(), left, top, 0, 0, this.imageWidth, this.imageHeight, (int) Textures.STEALING_INVENTORY.width(), (int) Textures.STEALING_INVENTORY.height());
+        guiGraphics.blit(Textures.STEALING_INVENTORY.location(), left, top, 0, 0, this.imageWidth, this.imageHeight, (int) Textures.STEALING_INVENTORY.width(), (int) Textures.STEALING_INVENTORY.height());
 
         final int wh = 18;
         final int mod = InventoryStealingMenu.calculateMod(this.containerSize);
         for (int i = 0; i < this.containerSize; i++) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Textures.STEALING_INVENTORY.location(), left + 65 + (i % mod) * wh, top + 17 + (i / mod) * wh, (int) Textures.STEALING_INVENTORY.width() - wh, (int) Textures.STEALING_INVENTORY.height() - wh, wh, wh, (int) Textures.STEALING_INVENTORY.width(), (int) Textures.STEALING_INVENTORY.height());
+            guiGraphics.blit(Textures.STEALING_INVENTORY.location(), left + 65 + (i % mod) * wh, top + 17 + (i / mod) * wh, (int) Textures.STEALING_INVENTORY.width() - wh, (int) Textures.STEALING_INVENTORY.height() - wh, wh, wh, (int) Textures.STEALING_INVENTORY.width(), (int) Textures.STEALING_INVENTORY.height());
         }
 
         InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 8, top + 18, left + 60, top + 88, 17, 0.25F, this.xMouse, this.yMouse, this.entity);
@@ -85,7 +83,8 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
                 ClientUtils.getClientPlayer().closeContainer();
                 BiologyDictionaryClient.sendCenteredWarning(TextUtils.translate(Lang.TEXT_STEALING_DETECTED));
                 // Send packet to server to deal damage.
-                ClientNetManager.sendStealingDetected(entity);
+                // TODO
+                // ClientNetManager.sendStealingDetected(entity);
             }
         }
     }
