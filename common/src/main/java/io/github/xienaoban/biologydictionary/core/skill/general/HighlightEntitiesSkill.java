@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
@@ -71,8 +72,7 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
     @Override
     public void serverDo(ServerContext ctx) {
         ctx.player().addEffect(new MobEffectInstance(MobEffects.BLINDNESS, BLINDNESS_TICKS));
-        // TODO
-        // ServerNetManager.replyHighlightEntitiesSkill(ctx.player(), true, entityType, radius);
+        ServerNetManager.replyHighlightEntitiesSkill(ctx.player(), true, entityType, radius);
     }
 
     @Override

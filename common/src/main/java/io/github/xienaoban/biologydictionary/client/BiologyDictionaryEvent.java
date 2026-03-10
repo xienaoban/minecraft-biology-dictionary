@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.screen.BdEntityDetailScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.BdHomeScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
+import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -69,8 +70,7 @@ public final class BiologyDictionaryEvent {
             BDC.setHitBlock(pos);
             BlockState blockState = EntityUtils.getLevel(player).getBlockState(pos);
             if (blockState.getBlock() instanceof BeehiveBlock) {
-                // TODO
-                // ClientNetManager.requestBeehiveInfo(pos);
+                ClientNetManager.requestBeehiveInfo(pos);
                 ClientUtils.setScreen(client, new BeehiveScreen(pos));
                 ClientUtils.playScreenSound(client, SoundEvents.HONEYCOMB_WAX_ON, 1.0F, 0.8F);
                 return;
@@ -87,8 +87,7 @@ public final class BiologyDictionaryEvent {
             EntityProperties<Entity> properties = new EntityProperties<>(target);
             BDC.setHitEntity(target);
             BDC.setHitEntityProperties(properties);
-            // TODO
-            // ClientNetManager.requestEntityData(target);
+            ClientNetManager.requestEntityData(target);
             try {
                 ClientUtils.setScreen(client, new BdEntityDetailScreen(properties));
             } catch (RuntimeException e) {

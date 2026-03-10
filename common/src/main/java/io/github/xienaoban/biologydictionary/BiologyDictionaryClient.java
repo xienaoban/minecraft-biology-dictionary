@@ -5,6 +5,9 @@ import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
+import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
+import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.client.ClientEventRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
@@ -38,22 +41,22 @@ public final class BiologyDictionaryClient {
         hitBlock = null;
         hitEntityProperties = null;
 
-        // TODO
         ClientEventRegistry.registerWorldConnected(client -> {
             // Only request server configs from remote servers, not local servers.
-            // if (!client.isLocalServer()) { ClientNetManager.requestServerConfigs(); }
+            if (!client.isLocalServer()) { ClientNetManager.requestServerConfigs(); }
             EntityManager.init();
         });
         ClientEventRegistry.registerWorldDisconnecting(client -> {
+            // TODO
             // FirstPersonShoulderEntityRenderer.clear();
             EntityManager.destroy();
             ConfigsManager.setLocalServerConfigs();
         });
         ClientEventRegistry.registerEndTick(this::tick);
 
-        // EntityPropertyWidgets.init();
+        EntityPropertyWidgets.init();
         KeyMappingManager.init();
-        // ClientNetManager.init();
+        ClientNetManager.init();
         HighlightManager.init();
 
         LOGGER.info("BiologyDictionary (client) initialized.");
@@ -78,12 +81,11 @@ public final class BiologyDictionaryClient {
     }
 
     public static void sendCenteredMessage(Component text) {
-        // TODO
-        // if (ClientUtils.getCurrentScreen() instanceof AbstractBiologyDictionaryScreen screen) {
-        //     screen.sendScreenMessage(text);
-        // } else {
-        //     ClientUtils.sendCenteredMessage(text);
-        // }
+        if (ClientUtils.getCurrentScreen() instanceof AbstractBiologyDictionaryScreen screen) {
+            screen.sendScreenMessage(text);
+        } else {
+            ClientUtils.sendCenteredMessage(text);
+        }
     }
 
     public static void sendCenteredInfo(MutableComponent text) {

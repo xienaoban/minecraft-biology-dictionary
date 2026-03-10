@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
+import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.server.ServerEventRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
@@ -38,8 +39,7 @@ public final class BiologyDictionary {
         servers = ConcurrentHashMap.newKeySet();
 
         EntityUtils.init();
-        // TODO
-        // ServerNetManager.init();
+        ServerNetManager.init();
         BiologyDictionaryItem.init();
         EntityProperties.init();
         BiologySkills.init();
@@ -77,8 +77,7 @@ public final class BiologyDictionary {
     }
 
     public static void sendCenteredMessage(ServerPlayer player, Component text) {
-        // TODO
-        // ServerNetManager.sendCenteredMessage(player, text);
+        ServerNetManager.sendCenteredMessage(player, text);
     }
 
     public static void sendCenteredInfo(ServerPlayer player, MutableComponent text) {

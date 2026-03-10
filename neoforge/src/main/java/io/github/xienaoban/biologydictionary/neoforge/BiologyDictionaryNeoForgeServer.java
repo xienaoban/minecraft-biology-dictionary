@@ -1,6 +1,13 @@
 package io.github.xienaoban.biologydictionary.neoforge;
 
+import dev.architectury.networking.NetworkManager;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.net.PacketPayloads;
+import io.github.xienaoban.biologydictionary.platform.net.Packet;
+import io.github.xienaoban.biologydictionary.platform.net.PacketUtil;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
@@ -15,17 +22,16 @@ public class BiologyDictionaryNeoForgeServer {
     }
 
     private static void initServer(FMLDedicatedServerSetupEvent event) {
-        // TODO
-        // PacketPayloads.registerBuiltIn(new PacketPayloads.Registrar() {
-        //     @Override
-        //     public <T extends Packet> void register(Class<T> packetClass, Packet.Factory<T> factory) {
-        //         if (PacketUtil.hasClientReceiver(packetClass)) {
-        //             CustomPacketPayload.Type<T> type = PacketUtil.getType(packetClass);
-        //             StreamCodec<FriendlyByteBuf, T> codec = PacketUtil.generateCodec(factory);
-        //
-        //             NetworkManager.registerS2CPayloadType(type, codec);
-        //         }
-        //     }
-        // });
+        PacketPayloads.registerBuiltIn(new PacketPayloads.Registrar() {
+            @Override
+            public <T extends Packet> void register(Class<T> packetClass, Packet.Factory<T> factory) {
+                if (PacketUtil.hasClientReceiver(packetClass)) {
+                    CustomPacketPayload.Type<T> type = PacketUtil.getType(packetClass);
+                    StreamCodec<FriendlyByteBuf, T> codec = PacketUtil.generateCodec(factory);
+
+                    NetworkManager.registerS2CPayloadType(type, codec);
+                }
+            }
+        });
     }
 }

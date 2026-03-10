@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.config;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
+import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
@@ -185,8 +186,7 @@ public final class ConfigsManager {
         } else if (server.isDedicatedServer()) {
             // Dedicated server
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                // TODO
-                // ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
+                ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
             }
             LOGGER.info("New server configs broadcasted to all players.");
         } else {
@@ -197,8 +197,7 @@ public final class ConfigsManager {
                 Player owner = ClientUtils.getClientPlayerCommon();
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                     if (!Objects.equals(owner.getUUID(), player.getUUID())) {
-                        // TODO
-                        // ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
+                        ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
                     }
                 }
                 LOGGER.info("New server configs broadcasted to remote players.");

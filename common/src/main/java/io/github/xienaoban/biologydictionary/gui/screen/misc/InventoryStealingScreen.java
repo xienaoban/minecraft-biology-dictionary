@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -83,8 +84,7 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
                 ClientUtils.getClientPlayer().closeContainer();
                 BiologyDictionaryClient.sendCenteredWarning(TextUtils.translate(Lang.TEXT_STEALING_DETECTED));
                 // Send packet to server to deal damage.
-                // TODO
-                // ClientNetManager.sendStealingDetected(entity);
+                ClientNetManager.sendStealingDetected(entity);
             }
         }
     }

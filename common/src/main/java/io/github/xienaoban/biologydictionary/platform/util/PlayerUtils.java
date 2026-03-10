@@ -25,7 +25,7 @@ public final class PlayerUtils {
 
     public static GameType gameMode(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            return ((ServerPlayerIMixin) serverPlayer).biologydictionary$getGameMode();
+            return ((ServerPlayerIMixin) serverPlayer).biologydictionary$getGameMode().getGameModeForPlayer();
         } else {
             final class T {
                 private static GameType getTypeFromClient(Player player) {

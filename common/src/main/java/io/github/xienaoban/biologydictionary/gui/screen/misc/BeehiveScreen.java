@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -175,8 +176,7 @@ public class BeehiveScreen extends ElementScreen {
                 return;
             }
             if (passedClientTickCount % 10 == 5) {
-                // TODO
-                // ClientNetManager.requestBeehiveInfo(pos);
+                ClientNetManager.requestBeehiveInfo(pos);
             }
         }
     }

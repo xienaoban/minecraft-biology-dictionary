@@ -381,13 +381,6 @@ public final class ScreenRenderingContext {
      */
     private void renderEntity(Entity entity, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset) {
-        if (screenScale != 1F) {
-            left   *= screenScale;
-            top    *= screenScale;
-            right  *= screenScale;
-            bottom *= screenScale;
-        }
-
         final float width = right - left;
         final float height = bottom - top;
         final float entityWidth = entity.getBbWidth();

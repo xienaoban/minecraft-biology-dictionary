@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ClothConfigScreenProvider;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
@@ -41,8 +42,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
         widgets.add(new ReloadLocalConfigsScreenWidget());
 
         widgets.add(new PlaceHolderWidget(1, Page.COLUMNS));
-        // TODO
-        // widgets.add(new TurnPageTriggerWidget());
+        widgets.add(new TurnPageTriggerWidget());
         widgets.add(new DescriptionWidget(1, Page.COLUMNS, TextUtils.translate(Lang.TEXT_SERVER_CONFIGS_DESC)));
         Configs.ServerConfigs serverConfigs = ConfigsManager.getServer();
         ConfigsManager.forEachConfigEntryInCategory(serverConfigs,

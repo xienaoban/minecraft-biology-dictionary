@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.DebugScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
+import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
@@ -72,8 +73,7 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onMouseDown(float x, float y, int code) {
             if (screenRenderingContext.isDebug() && PlayerUtils.isCreative(player)) {
                 onClose();
-                // TODO
-                // ClientNetManager.requestBookItem();
+                ClientNetManager.requestBookItem();
                 return true;
             }
             return false;

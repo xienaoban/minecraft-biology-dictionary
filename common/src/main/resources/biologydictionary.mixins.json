@@ -5,15 +5,29 @@
     "minVersion": "0.8",
     "mixins": [
         "CreativeModeTabsIMixin",
-        "TemptGoalIMixin",
         "EatBlockGoalIMixin",
         "MobEffectInstanceIMixin",
+        "TemptGoalIMixin",
         "entity.AbstractHorseMixin",
-        "entity.AnimalIMixin"
+        "entity.AnimalIMixin",
+        "entity.EntityIMixin",
+        "entity.HorseIMixin",
+        "entity.MobIMixin",
+        "entity.ServerPlayerIMixin",
+        "loot.CompositeEntryBaseIMixin",
+        "loot.LootItemIMixin",
+        "loot.LootPoolEntryContainerIMixin",
+        "loot.LootPoolIMixin",
+        "loot.LootPoolSingletonContainerIMixin",
+        "loot.LootTableIMixin",
+        "loot.NestedLootTableIMixin",
+        "loot.SetItemCountFunctionIMixin",
+        "loot.TagEntryIMixin"
     ],
     "client": [
-        "rendering.ScreenMixin",
-        "rendering.GuiGraphicsIMixin"
+        "entity.AbstractClientPlayerIMixin",
+        "rendering.GuiGraphicsIMixin",
+        "rendering.ScreenMixin"
     ],
     "injectors": {
         "defaultRequire": 1

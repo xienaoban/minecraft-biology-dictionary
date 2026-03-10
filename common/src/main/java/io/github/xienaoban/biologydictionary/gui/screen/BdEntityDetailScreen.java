@@ -1,10 +1,19 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
+import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
+import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.Entity;
+
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
@@ -19,8 +28,7 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
         this.entity = properties.entity();
         this.properties = properties;
         initBookmarks();
-        // TODO
-        // initEntityPropertyWidgets();
+        initEntityPropertyWidgets();
     }
 
     private void initBookmarks() {
@@ -29,30 +37,29 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
         addBookmark(new OpenBdHomeScreenBookmark());
     }
 
-    // TODO
-    // private void initEntityPropertyWidgets() {
-    //     List<EntityPropertyWidget<?>> widgets = EntityPropertyWidgets.getWidgets(properties);
-    //     addAllWidgetsOneByOne(widgets);
-    // }
-    //
-    // @Override
-    // public void tick() {
-    //     super.tick();
-    //
-    //     if (!player.isWithinEntityInteractionRange(entity, CLOSE_SCREEN_DISTANCE)) {
-    //         HighlightManager.highlightEntity(entity, 4 * 20);
-    //         ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
-    //         onClose();
-    //     }
-    //
-    //     properties.tickNoUpdateCooldown();
-    //     // Always 20 ticks per second. Not affected by "/tick rate" or "/gamerule randomTickSpeed".
-    //     if (getTicks() % SYNC_PROPERTIES_INTERVAL_TICK_CNT == 0) {
-    //         syncEntityProperties();
-    //     }
-    // }
-    //
-    // private void syncEntityProperties() {
-    //     ClientNetManager.requestEntityData(entity);
-    // }
+    private void initEntityPropertyWidgets() {
+        List<EntityPropertyWidget<?>> widgets = EntityPropertyWidgets.getWidgets(properties);
+        addAllWidgetsOneByOne(widgets);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (!player.canInteractWithEntity(entity, CLOSE_SCREEN_DISTANCE)) {
+            HighlightManager.highlightEntity(entity, 4 * 20);
+            ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
+            onClose();
+        }
+
+        properties.tickNoUpdateCooldown();
+        // Always 20 ticks per second. Not affected by "/tick rate" or "/gamerule randomTickSpeed".
+        if (getTicks() % SYNC_PROPERTIES_INTERVAL_TICK_CNT == 0) {
+            syncEntityProperties();
+        }
+    }
+
+    private void syncEntityProperties() {
+        ClientNetManager.requestEntityData(entity);
+    }
 }

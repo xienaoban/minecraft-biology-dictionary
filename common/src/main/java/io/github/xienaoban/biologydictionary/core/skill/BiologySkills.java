@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.core.skill.entity.*;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
+import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.fabricmc.api.EnvType;
@@ -129,8 +130,7 @@ public final class BiologySkills {
             skill.clientAdditionalCheck(new GeneralSkill.ClientContext(player));
             SkillCost cost = skill.getRealCost();
             cost.clientCheck(new SkillCost.ClientContext(player));
-            // TODO
-            // ClientNetManager.sendCommonSkill(skill);
+            ClientNetManager.sendCommonSkill(skill);
             return true;
         } catch (NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
@@ -147,8 +147,7 @@ public final class BiologySkills {
             skill.clientAdditionalCheck(new EntityTargetedSkill.ClientContext<>(player, Misc.cast(entity)));
             SkillCost cost = skill.getRealCost(Misc.cast(entity));
             cost.clientCheck(new SkillCost.ClientContext(player));
-            // TODO
-            // ClientNetManager.sendEntityTargetedSkill(entity, skill);
+            ClientNetManager.sendEntityTargetedSkill(entity, skill);
             return true;
         } catch (NoPermissionException e) {
             BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
