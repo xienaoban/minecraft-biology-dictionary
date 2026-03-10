@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.platform.server.ServerEventRegistry;
@@ -38,7 +39,7 @@ public final class BiologyDictionary {
         EntityUtils.init();
         // TODO
         // ServerNetManager.init();
-        // BiologyDictionaryItem.init();
+        BiologyDictionaryItem.init();
         EntityProperties.init();
         BiologySkills.init();
         ConfigsManager.load();

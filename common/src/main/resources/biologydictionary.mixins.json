@@ -4,9 +4,10 @@
     "compatibilityLevel": "JAVA_21",
     "minVersion": "0.8",
     "mixins": [
-        "entity.AbstractHorseMixin",
+        "CreativeModeTabsIMixin",
         "TemptGoalIMixin",
-        "EatBlockGoalIMixin"
+        "EatBlockGoalIMixin",
+        "entity.AbstractHorseMixin"
     ],
     "client": [
         "rendering.ScreenMixin",
