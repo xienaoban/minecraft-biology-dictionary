@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
+import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.platform.server.ServerEventRegistry;
@@ -47,9 +48,8 @@ public final class BiologyDictionary {
         ServerEventRegistry.registerStarted(servers::add);
         ServerEventRegistry.registerStopping(servers::remove);
 
-        // TODO
-        // ServerEventRegistry.registerStarted(server -> EntityManager.init());
-        // ServerEventRegistry.registerStopping(server -> EntityManager.destroy());
+        ServerEventRegistry.registerStarted(server -> EntityManager.init());
+        ServerEventRegistry.registerStopping(server -> EntityManager.destroy());
 
         LOGGER.info("BiologyDictionary initialized.");
     }
