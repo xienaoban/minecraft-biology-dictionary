@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property.bundle;
 
-import io.github.xienaoban.biologydictionary.mixin.entity.AbstractHorseMixin;
+import io.github.xienaoban.biologydictionary.mixin.entity.AbstractHorseIMixin;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -30,7 +30,7 @@ public final class EntityInventoryPropertyBundle {
 
     public static final Function<Entity, InventoryHandler<?>> ABSTRACT_HORSE_PATTERN = entity -> {
         if (entity instanceof AbstractHorse) {
-            return (InventoryHandler<Entity>) e -> ((AbstractHorseMixin) e).biologydictionary$getInventory();
+            return (InventoryHandler<Entity>) e -> ((AbstractHorseIMixin) e).biologydictionary$getInventory();
         }
         return null;
     };

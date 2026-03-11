@@ -106,7 +106,6 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
             if (effects == null || effects.isEmpty()) {
                 text = TextUtils.translate(Lang.TEXT_EMPTY_WITH_BRACKETS);
             }
-            updatePercent(text != null ? 0 : 1);
             super.onRender(ctx);
             if (text != null) {
                 renderInnerText(ctx, text, Colors.GRAY_FOR_TEXT_EMPTY);
