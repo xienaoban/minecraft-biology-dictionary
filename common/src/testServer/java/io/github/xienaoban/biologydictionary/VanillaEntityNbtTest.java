@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 public class VanillaEntityNbtTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    // @GameTest
     public void testCollectVanillaNbts(GameTestHelper helper) {
         try {
             NbtTagCollector.collectAll();

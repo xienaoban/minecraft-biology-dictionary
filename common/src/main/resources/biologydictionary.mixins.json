@@ -8,7 +8,7 @@
         "CustomDataIMixin",
         "MobEffectInstanceIMixin",
         "TemptGoalIMixin",
-        "entity.AbstractHorseMixin",
+        "entity.AbstractHorseIMixin",
         "entity.AgeableMobMixin",
         "entity.AnimalIMixin",
         "entity.AnimalMixin",

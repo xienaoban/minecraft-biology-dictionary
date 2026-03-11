@@ -516,7 +516,7 @@ public final class ScreenRenderingContext {
 
         if (isDebug() && width > 0 && height > 0) {
             final int color = 0xFFAAAAAA;
-            renderRectangle(color, 0.6F, getZ(), left, top, right, bottom);
+            renderRectangle(color, 0.6F, getZ(), left / screenScale, top / screenScale, right / screenScale, bottom / screenScale);
         }
 
         if (cache != null && !cached) {
