@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin;
@@ -23,6 +24,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -386,6 +388,8 @@ public final class ScreenRenderingContext {
         final float entityWidth = entity.getBbWidth();
         final float entityHeight = entity.getBbHeight();
 
+        getGuiGraphics().enableScissor((int) left, (int) top, (int) right, (int) bottom);
+
         final float scale;
         if (forceScale < 0) {
             float vw;
@@ -408,15 +412,11 @@ public final class ScreenRenderingContext {
         float posX = (left + right) / 2.0F;
         float posY = (top + bottom) / 2.0F;
 
-        var entityRenderDispatcher = getClient().getEntityRenderDispatcher();
-        @SuppressWarnings("unchecked")
-        var entityRenderer = entityRenderDispatcher.getRenderer(entity);
-
         float sc = entity instanceof LivingEntity living ? living.getScale() : 1F;
         float finalScale = scale / sc;
 
-        Quaternionf quaternionf = new Quaternionf().rotateX(rotateY * 20F * (float) (Math.PI / 180F));
-        Quaternionf quaternionf2 = new Quaternionf().rotateY((float) Math.PI - rotateX * 20F * (float) (Math.PI / 180F));
+        Quaternionf quaternionf = new Quaternionf().rotateX(-rotateY * 20F * (float) (Math.PI / 180F));
+        Quaternionf quaternionf2 = new Quaternionf().rotateY( rotateX * 20F * (float) (Math.PI / 180F));
         Quaternionf quaternionf3 = new Quaternionf().rotateZ((float) Math.PI);
         quaternionf.mul(quaternionf2).mul(quaternionf3);
 
@@ -424,14 +424,24 @@ public final class ScreenRenderingContext {
 
         PoseStack poseStack = getPose();
         poseStack.pushPose();
-        poseStack.translate(posX, posY, 0.0F);
+        poseStack.translate(posX, posY, 50F);
         poseStack.scale(finalScale, finalScale, finalScale);
         poseStack.translate(vector3f.x(), vector3f.y(), vector3f.z());
         poseStack.mulPose(quaternionf);
 
-        entityRenderer.render(entity, 0.0F, 1.0F, poseStack, bufferSource(), 15728880);
+        Lighting.setupForEntityInInventory();
+        EntityRenderDispatcher entityRenderDispatcher = getClient().getEntityRenderDispatcher();
 
+        entityRenderDispatcher.setRenderShadow(false);
+        RenderSystem.runAsFancy(
+                () -> entityRenderDispatcher.render(entity, 0D, 0D, 0D, 0F, 1F, getPose(), bufferSource(), 15728880)
+        );
+        getGuiGraphics().flush();
+        entityRenderDispatcher.setRenderShadow(true);
         poseStack.popPose();
+        Lighting.setupFor3DItems();
+
+        getGuiGraphics().disableScissor();
 
         if (isDebug() && width > 0 && height > 0) {
             final int color = 0xFFAAAAAA;

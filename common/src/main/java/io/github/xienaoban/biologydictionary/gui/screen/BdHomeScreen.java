@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitie
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScaleRAII;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -208,60 +209,67 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
-            ctx.renderRectangle(0x77794500, ctx.getZ(), box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
+            try (ScaleRAII ignored = ctx.scaleOnce(1F, 100F)) {
+                ScreenElementBox box = getBox();
+                ctx.renderRectangle(0x77794500, ctx.getZ(), box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
 
-            float midX = (box.getLeft() + box.getRight()) / 2;
-            float mouseY = ctx.getMouseY() - box.getTop();
-            int colorHighlight, colorEgg;
-            if (mouseY < BUTTONS_CUT) {
-                colorHighlight = 0xd4ffffff;
-                colorEgg = 0xaaffffff;
-            } else {
-                colorHighlight = 0xaaffffff;
-                colorEgg = 0xd4ffffff;
+                float midX = (box.getLeft() + box.getRight()) / 2;
+                float mouseY = ctx.getMouseY() - box.getTop();
+                int colorHighlight, colorEgg;
+                if (mouseY < BUTTONS_CUT) {
+                    colorHighlight = 0xd4ffffff;
+                    colorEgg = 0xaaffffff;
+                } else {
+                    colorHighlight = 0xaaffffff;
+                    colorEgg = 0xd4ffffff;
+                }
+                ctx.renderRectangle(colorHighlight, ctx.getZ(), box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getTop() + BUTTONS_CUT);
+                ctx.renderRectangle(colorEgg, ctx.getZ(), box.getLeft() + 1, box.getTop() + BUTTONS_CUT, box.getRight() - 1, box.getBottom() - 1);
+
+                final int wh = 10;
+                final int wink = 600, cycle = 2400;
+                long time = currTime % cycle;
+                int u;
+                if (time < wink) {
+                    u = -1;
+                } else if (time < cycle / 2) {
+                    u = 0;
+                } else if (time < cycle / 2 + wink) {
+                    u = 1;
+                } else {
+                    u = 0;
+                }
+                ctx.renderTexture(Textures.ICONS, (23 + u) * wh, 24 * wh, ctx.getZ(), midX - wh / 2F, box.getTop() + (BUTTONS_CUT - wh) / 2F, Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+
+                if (spawnEgg != null) {
+                    ctx.renderItem(spawnEgg, 0.5F, midX - 4F, box.getTop() + BUTTONS_CUT);
+                }
+
+                List<Component> tooltips;
+                if (mouseY < BUTTONS_CUT) {
+                    tooltips = new ArrayList<>();
+                    tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_HIGHLIGHT));
+                    tooltips.add(TextUtils.empty());
+                    tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC, HighlightEntitiesSkill.NEAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                    tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.NEAR_RADIUS).getRealCost().toTooltipText());
+                    tooltips.add(TextUtils.empty());
+                    tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                    tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.FAR_RADIUS).getRealCost().toTooltipText());
+                    tooltips.add(TextUtils.empty());
+                    tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY));
+                } else {
+                    tooltips = new ArrayList<>();
+                    tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG));
+                    tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC));
+                    tooltips.add(TextUtils.empty());
+                    tooltips.addAll(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)).getRealCost().toTooltipText());
+                    tooltips.add(TextUtils.empty());
+                    tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY));
+                }
+
+                ctx.renderComponentTooltipCentered(tooltips, 0.5F, midX, box.getBottom() + 1);
+                return true;
             }
-            ctx.renderRectangle(colorHighlight, ctx.getZ(), box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getTop() + BUTTONS_CUT);
-            ctx.renderRectangle(colorEgg, ctx.getZ(), box.getLeft() + 1, box.getTop() + BUTTONS_CUT, box.getRight() - 1, box.getBottom() - 1);
-
-            final int wh = 10;
-            final int wink = 600, cycle = 2400;
-            long time = currTime % cycle;
-            int u;
-            if (time < wink) { u = -1; }
-            else if (time < cycle / 2) { u = 0; }
-            else if (time < cycle / 2 + wink) { u = 1; }
-            else { u = 0; }
-            ctx.renderTexture(Textures.ICONS, (23 + u) * wh, 24 * wh, ctx.getZ(), midX - wh / 2F, box.getTop() + (BUTTONS_CUT - wh) / 2F, Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
-
-            if (spawnEgg != null) {
-                ctx.renderItem(spawnEgg, 0.5F, midX - 4F, box.getTop() + BUTTONS_CUT);
-            }
-
-            List<Component> tooltips;
-            if (mouseY < BUTTONS_CUT) {
-                tooltips = new ArrayList<>();
-                tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_HIGHLIGHT));
-                tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC, HighlightEntitiesSkill.NEAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
-                tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.NEAR_RADIUS).getRealCost().toTooltipText());
-                tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
-                tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.FAR_RADIUS).getRealCost().toTooltipText());
-                tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY));
-            } else {
-                tooltips = new ArrayList<>();
-                tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG));
-                tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC));
-                tooltips.add(TextUtils.empty());
-                tooltips.addAll(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)).getRealCost().toTooltipText());
-                tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdString(entity)).withStyle(ChatFormatting.GRAY));
-            }
-
-            ctx.renderComponentTooltipCentered(tooltips, 0.5F, midX, box.getBottom() + 1);
-            return true;
         }
     }
 }
