@@ -78,9 +78,6 @@ final class EntityVanillaDeobfuscation {
         /*----------*/ r(net.minecraft.world.entity.animal.SnowGolem.class, "net.minecraft.world.entity.animal.SnowGolem");
         /*----------*/ r(net.minecraft.world.entity.monster.Shulker.class, "net.minecraft.world.entity.monster.Shulker");
         /*--------*/ r(net.minecraft.world.entity.animal.WaterAnimal.class, "net.minecraft.world.entity.animal.WaterAnimal");
-        /*------------*/ r(net.minecraft.world.entity.animal.Dolphin.class, "net.minecraft.world.entity.animal.Dolphin");
-        /*------------*/ r(net.minecraft.world.entity.animal.Squid.class, "net.minecraft.world.entity.animal.Squid");
-        /*--------------*/ r(net.minecraft.world.entity.GlowSquid.class, "net.minecraft.world.entity.GlowSquid");
         /*----------*/ r(net.minecraft.world.entity.animal.AbstractFish.class, "net.minecraft.world.entity.animal.AbstractFish");
         /*------------*/ r(net.minecraft.world.entity.animal.AbstractSchoolingFish.class, "net.minecraft.world.entity.animal.AbstractSchoolingFish");
         /*--------------*/ r(net.minecraft.world.entity.animal.Cod.class, "net.minecraft.world.entity.animal.Cod");
@@ -88,6 +85,9 @@ final class EntityVanillaDeobfuscation {
         /*--------------*/ r(net.minecraft.world.entity.animal.TropicalFish.class, "net.minecraft.world.entity.animal.TropicalFish");
         /*------------*/ r(net.minecraft.world.entity.animal.Pufferfish.class, "net.minecraft.world.entity.animal.Pufferfish");
         /*------------*/ r(net.minecraft.world.entity.animal.frog.Tadpole.class, "net.minecraft.world.entity.animal.frog.Tadpole");
+        /*----------*/ r(net.minecraft.world.entity.animal.Dolphin.class, "net.minecraft.world.entity.animal.Dolphin");
+        /*----------*/ r(net.minecraft.world.entity.animal.Squid.class, "net.minecraft.world.entity.animal.Squid");
+        /*------------*/ r(net.minecraft.world.entity.GlowSquid.class, "net.minecraft.world.entity.GlowSquid");
         /*--------*/ r(net.minecraft.world.entity.animal.allay.Allay.class, "net.minecraft.world.entity.animal.allay.Allay");
         /*--------*/ r(net.minecraft.world.entity.monster.Monster.class, "net.minecraft.world.entity.monster.Monster");
         /*----------*/ r(net.minecraft.world.entity.boss.wither.WitherBoss.class, "net.minecraft.world.entity.boss.wither.WitherBoss");
@@ -136,6 +136,7 @@ final class EntityVanillaDeobfuscation {
         /*----*/ r(net.minecraft.world.entity.decoration.ArmorStand.class, "net.minecraft.world.entity.decoration.ArmorStand");
 
         // interfaces
+        r(net.minecraft.commands.CommandSource.class, "net.minecraft.commands.CommandSource");
         r(net.minecraft.network.syncher.SyncedDataHolder.class, "net.minecraft.network.syncher.SyncedDataHolder");
         r(net.minecraft.world.ContainerListener.class, "net.minecraft.world.ContainerListener");
         r(net.minecraft.world.Nameable.class, "net.minecraft.world.Nameable");
@@ -144,9 +145,11 @@ final class EntityVanillaDeobfuscation {
         r(net.minecraft.world.entity.HasCustomInventoryScreen.class, "net.minecraft.world.entity.HasCustomInventoryScreen");
         r(net.minecraft.world.entity.ItemSteerable.class, "net.minecraft.world.entity.ItemSteerable");
         r(net.minecraft.world.entity.Leashable.class, "net.minecraft.world.entity.Leashable");
+        r(net.minecraft.world.entity.LerpingModel.class, "net.minecraft.world.entity.LerpingModel");
         r(net.minecraft.world.entity.NeutralMob.class, "net.minecraft.world.entity.NeutralMob");
         r(net.minecraft.world.entity.OwnableEntity.class, "net.minecraft.world.entity.OwnableEntity");
         r(net.minecraft.world.entity.PlayerRideableJumping.class, "net.minecraft.world.entity.PlayerRideableJumping");
+        r(net.minecraft.world.entity.PowerableMob.class, "net.minecraft.world.entity.PowerableMob");
         r(net.minecraft.world.entity.ReputationEventHandler.class, "net.minecraft.world.entity.ReputationEventHandler");
         r(net.minecraft.world.entity.Saddleable.class, "net.minecraft.world.entity.Saddleable");
         r(net.minecraft.world.entity.Shearable.class, "net.minecraft.world.entity.Shearable");
