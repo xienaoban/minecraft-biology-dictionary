@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -20,6 +21,8 @@ public abstract class AbstractEntityStandardVariantWidget<E extends Entity, V> e
     protected static <E extends Entity> int getVariantCount(EntityProperties<E> properties, int variantHandlerIdx) {
         return getVariantHandler(properties.entity(), variantHandlerIdx).getVariants().size();
     }
+
+    private Boolean allowedToChoose = null;
 
     protected AbstractEntityStandardVariantWidget(EntityProperties<E> properties, int variantCnt) {
         super(properties, variantCnt);
@@ -58,5 +61,15 @@ public abstract class AbstractEntityStandardVariantWidget<E extends Entity, V> e
     @Override
     protected boolean activeSkill(V variant) {
         return BiologySkills.activate(e(), new EntitySetVariantSkill(e(), getVariantHandlerIdx(), variant));
+    }
+
+    @Override
+    protected boolean isAllowedToChoose() {
+        if (allowedToChoose == null) {
+            boolean creativeOnly = new EntitySetVariantSkill(e(), getVariantHandlerIdx(), getVariantClient(e()))
+                    .getRealCost(e()).isCreativeOnly();
+            allowedToChoose = !creativeOnly || PlayerUtils.isCreative(getPlayer());
+        }
+        return allowedToChoose;
     }
 }
