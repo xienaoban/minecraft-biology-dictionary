@@ -144,8 +144,7 @@ public final class PlayerUtils {
 
         mixinPlayer.biologydictionary$invokeNextContainerCounter();
         int counter = mixinPlayer.biologydictionary$getContainerCounter();
-        AbstractContainerMenu menu
-                = menuConstructor.createMenu(mixinPlayer.biologydictionary$getContainerCounter(), getInventory(player), player);
+        AbstractContainerMenu menu = menuConstructor.createMenu(counter, getInventory(player), player);
         player.containerMenu = Objects.requireNonNull(menu);
         mixinPlayer.biologydictionary$invokeInitMenu(menu);
         return counter;

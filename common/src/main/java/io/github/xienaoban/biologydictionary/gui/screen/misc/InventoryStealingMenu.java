@@ -8,7 +8,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -27,15 +26,15 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
     public static final int MAX_SLOTS = 4 * 9;
 
-    private static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD          = ResourceLocation.withDefaultNamespace("container/slot/sword");
-    private static final ResourceLocation EMPTY_ARMOR_SLOT_SHIELD         = ResourceLocation.withDefaultNamespace("container/slot/shield");
-    private static final ResourceLocation EMPTY_ARMOR_SLOT_HELMET         = ResourceLocation.withDefaultNamespace("container/slot/helmet");
-    private static final ResourceLocation EMPTY_ARMOR_SLOT_CHESTPLATE     = ResourceLocation.withDefaultNamespace("container/slot/chestplate");
-    private static final ResourceLocation EMPTY_ARMOR_SLOT_LEGGINGS       = ResourceLocation.withDefaultNamespace("container/slot/leggings");
-    private static final ResourceLocation EMPTY_ARMOR_SLOT_BOOTS          = ResourceLocation.withDefaultNamespace("container/slot/boots");
-    private static final ResourceLocation EMPTY_ARMOR_SLOT_SADDLE         = ResourceLocation.withDefaultNamespace("container/slot/saddle");
-    private static final ResourceLocation EMPTY_ARMOR_SLOT_HORSE_ARMOR    = ResourceLocation.withDefaultNamespace("container/slot/horse_armor");
-    private static final ResourceLocation EMPTY_ARMOR_SLOT_LLAMA_ARMOR    = ResourceLocation.withDefaultNamespace("container/slot/llama_armor");
+    private static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD          = ResourceLocation.withDefaultNamespace("item/empty_slot_sword");
+    private static final ResourceLocation EMPTY_ARMOR_SLOT_SHIELD         = InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
+    private static final ResourceLocation EMPTY_ARMOR_SLOT_HELMET         = InventoryMenu.EMPTY_ARMOR_SLOT_HELMET;
+    private static final ResourceLocation EMPTY_ARMOR_SLOT_CHESTPLATE     = InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE;
+    private static final ResourceLocation EMPTY_ARMOR_SLOT_LEGGINGS       = InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS;
+    private static final ResourceLocation EMPTY_ARMOR_SLOT_BOOTS          = InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS;
+    // private static final ResourceLocation EMPTY_ARMOR_SLOT_SADDLE;
+    // private static final ResourceLocation EMPTY_ARMOR_SLOT_HORSE_ARMOR = ResourceLocation.withDefaultNamespace("gui/sprites/container/horse/armor_slot");
+    // private static final ResourceLocation EMPTY_ARMOR_SLOT_LLAMA_ARMOR = ResourceLocation.withDefaultNamespace("gui/sprites/container/horse/llama_armor_slot");
 
     static int calculateMod(int size) {
         if (size > MAX_SLOTS) {
@@ -68,19 +67,15 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
         container.startOpen(inventory.player);
 
-        ResourceLocation emptyBodySlot = switch (entity) {
-            case Llama ignored -> EMPTY_ARMOR_SLOT_LLAMA_ARMOR;
-            default -> EMPTY_ARMOR_SLOT_HORSE_ARMOR;
-        };
         int left = 8, top = 94;
         final int wh = 18;
         addSlot(new EntityEquipmentSlot(EquipmentSlot.HEAD,     left, top, EMPTY_ARMOR_SLOT_HELMET));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.CHEST,    left + wh, top, EMPTY_ARMOR_SLOT_CHESTPLATE));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.LEGS,     left, top += wh, EMPTY_ARMOR_SLOT_LEGGINGS));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.FEET,     left + wh, top, EMPTY_ARMOR_SLOT_BOOTS));
-        // SADDLE is not an EquipmentSlot in 1.21.1, use a special Slot instead
-        addSlot(new SaddleSlot(container, 0, left, top += wh, EMPTY_ARMOR_SLOT_SADDLE));
-        addSlot(new EntityEquipmentSlot(EquipmentSlot.BODY,     left + wh, top, emptyBodySlot));
+        // SADDLE is not an EquipmentSlot in 1.21.1, ignored
+        top += wh;
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.BODY,     left + wh, top, null));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.MAINHAND, left, top += wh + 4, EMPTY_ARMOR_SLOT_SWORD));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.OFFHAND,  left + wh, top, EMPTY_ARMOR_SLOT_SHIELD));
 
@@ -93,12 +88,12 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         // Add player inventory slots manually (replaces addStandardInventorySlots in 1.21.1)
         for (int m = 0; m < 3; m++) {
             for (int n = 0; n < 9; n++) {
-                this.addSlot(new Slot(inventory, n + m * 9 + 9, 8 + n * 18, 102 + m * 18 - 18));
+                this.addSlot(new Slot(inventory, n + m * 9 + 9, 66 + n * 18, 130 + m * 18 - 18));
             }
         }
 
         for (int m = 0; m < 9; m++) {
-            this.addSlot(new Slot(inventory, m, 8 + m * 18, 142));
+            this.addSlot(new Slot(inventory, m, 66 + m * 18, 170));
         }
     }
 
@@ -243,46 +238,6 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         public boolean isActive() {
             // return entity.canUseSlot(equipmentSlot);
             return true;
-        }
-
-        @Override
-        public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-            return emptyIcon != null ? Pair.of(InventoryMenu.BLOCK_ATLAS, emptyIcon) : null;
-        }
-    }
-
-    /**
-     * Special slot for saddle (SADDLE is not an EquipmentSlot in 1.21.1)
-     * @see net.minecraft.world.inventory.HorseInventoryMenu
-     */
-    class SaddleSlot extends Slot {
-        private final ResourceLocation emptyIcon;
-
-        SaddleSlot(Container container, int slot, int x, int y, ResourceLocation emptyIcon) {
-            super(container, slot, x, y);
-            this.emptyIcon = emptyIcon;
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack itemStack) {
-            if (!PlayerUtils.isCreative(getPlayer())) {
-                return false;
-            }
-            // Check if entity can have saddle (Horse, Llama, etc.)
-            boolean canSaddle = entity instanceof net.minecraft.world.entity.animal.horse.AbstractHorse
-                    && ((net.minecraft.world.entity.animal.horse.AbstractHorse) entity).isSaddleable();
-            return canSaddle && itemStack.is(net.minecraft.world.item.Items.SADDLE);
-        }
-
-        @Override
-        public boolean isActive() {
-            return entity instanceof net.minecraft.world.entity.animal.horse.AbstractHorse
-                    && ((net.minecraft.world.entity.animal.horse.AbstractHorse) entity).isSaddleable();
-        }
-
-        @Override
-        public int getMaxStackSize() {
-            return 1;
         }
 
         @Override

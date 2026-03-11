@@ -388,7 +388,8 @@ public final class ScreenRenderingContext {
         final float entityWidth = entity.getBbWidth();
         final float entityHeight = entity.getBbHeight();
 
-        getGuiGraphics().enableScissor((int) left, (int) top, (int) right, (int) bottom);
+        // This function does not compatible with guiGraphics.pose().scale(size, size).
+        getGuiGraphics().enableScissor((int) (left * screenScale), (int) (top * screenScale), (int) (right * screenScale), (int) (bottom * screenScale));
 
         final float scale;
         if (forceScale < 0) {
@@ -445,7 +446,7 @@ public final class ScreenRenderingContext {
 
         if (isDebug() && width > 0 && height > 0) {
             final int color = 0xFFAAAAAA;
-            renderRectangle(color, 0.6F, getZ(), left / screenScale, top / screenScale, right / screenScale, bottom / screenScale);
+            renderRectangle(color, 0.6F, getZ(), left, top, right, bottom);
         }
     }
 
