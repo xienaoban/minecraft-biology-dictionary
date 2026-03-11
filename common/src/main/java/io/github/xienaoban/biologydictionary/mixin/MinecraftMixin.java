@@ -18,22 +18,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Environment(value= EnvType.CLIENT)
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
-    @Unique private LocalPlayer player;
-    @Unique private InteractionHand hand;
-    @Unique private ItemStack handItem;
+    @Unique private LocalPlayer biologydictionary$player;
+    @Unique private InteractionHand biologydictionary$hand;
+    @Unique private ItemStack biologydictionary$handItem;
 
     @Redirect(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack getHandItem(LocalPlayer player, InteractionHand hand) {
-        this.player = player;
-        this.hand = hand;
-        return this.handItem = player.getItemInHand(hand);
+    private ItemStack biologydictionary$getHandItem(LocalPlayer player, InteractionHand hand) {
+        biologydictionary$player = player;
+        biologydictionary$hand = hand;
+        return biologydictionary$handItem = player.getItemInHand(hand);
     }
 
 
     @Inject(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;", shift = At.Shift.AFTER), cancellable = true)
-    private void useBiologyDictionaryScreen(CallbackInfo ci) {
-        if (BiologyDictionaryItem.isBook(handItem)) {
-            player.swing(hand);
+    private void biologydictionary$useBiologyDictionaryScreen(CallbackInfo ci) {
+        if (BiologyDictionaryItem.isBook(biologydictionary$handItem)) {
+            biologydictionary$player.swing(biologydictionary$hand);
             BiologyDictionaryEvent.openBookScreen((Minecraft) (Object) this);
             ci.cancel();
         }

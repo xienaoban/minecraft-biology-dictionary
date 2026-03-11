@@ -18,7 +18,7 @@ public class FloatProperty<E extends Entity> extends AbstractProperty<E, Float> 
         if (getVal() != null) {
             nbt.putFloat(name(), getVal());
         } else {
-            throw new IllegalPropertyStateException("primitive type must not be null");
+            nbt.put(name(), new CompoundTag());
         }
     }
 }

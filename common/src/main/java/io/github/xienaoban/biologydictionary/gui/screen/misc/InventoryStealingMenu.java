@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.ticks.ContainerSingleItem;
-import org.jspecify.annotations.Nullable;
 
 /**
  * @see net.minecraft.world.inventory.HorseInventoryMenu
@@ -190,10 +189,9 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
      */
     class EntityEquipmentSlot extends Slot {
         private final EquipmentSlot equipmentSlot;
-        @Nullable
         private final Identifier emptyIcon;
 
-        EntityEquipmentSlot(EquipmentSlot equipmentSlot, int x, int y, @Nullable Identifier emptyIcon) {
+        EntityEquipmentSlot(EquipmentSlot equipmentSlot, int x, int y, Identifier emptyIcon) {
             super(new EntityEquipmentContainer(equipmentSlot), 0, x, y);
             this.equipmentSlot = equipmentSlot;
             this.emptyIcon = emptyIcon;
@@ -236,7 +234,6 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
             return true;
         }
 
-        @Nullable
         @Override
         public Identifier getNoItemIcon() {
             return emptyIcon;

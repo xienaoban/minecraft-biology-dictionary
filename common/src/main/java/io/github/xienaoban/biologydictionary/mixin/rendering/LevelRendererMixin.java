@@ -26,7 +26,7 @@ public abstract class LevelRendererMixin {
 
     @Inject(method = "extractVisibleEntities(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/culling/Frustum;Lnet/minecraft/client/DeltaTracker;Lnet/minecraft/client/renderer/state/LevelRenderState;)V",
             at = @At(value = "TAIL"))
-    private void setGlowing(Camera camera, Frustum frustum, DeltaTracker deltaTracker, LevelRenderState levelRenderState, CallbackInfo ci) {
+    private void biologydictionary$setGlowing(Camera camera, Frustum frustum, DeltaTracker deltaTracker, LevelRenderState levelRenderState, CallbackInfo ci) {
         if (HighlightManager.hasAnyHighlighted()) {
             levelRenderState.haveGlowingEntities = true;
         }
@@ -34,7 +34,7 @@ public abstract class LevelRendererMixin {
 
     @Inject(method = "submitEntities(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/state/LevelRenderState;Lnet/minecraft/client/renderer/SubmitNodeCollector;)V",
             at = @At(value = "TAIL"))
-    private void submitHighlight(PoseStack poseStack, LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector, CallbackInfo ci) {
+    private void biologydictionary$submitHighlight(PoseStack poseStack, LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector, CallbackInfo ci) {
         HighlightRenderer.submit(minecraft, entityRenderDispatcher, poseStack, levelRenderState, submitNodeCollector);
     }
 }

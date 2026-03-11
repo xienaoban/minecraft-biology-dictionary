@@ -74,15 +74,15 @@ public final class LootTableUtils {
     public static List<LootPoolEntryContainer> getChildren(CompositeEntryBase composite) {
         return ((CompositeEntryBaseIMixin) composite).biologydictionary$getChildren();
     }
-    
+
     public static List<LootItemCondition> getConditions(LootPool pool) {
         return ((LootPoolIMixin) pool).biologydictionary$getConditions();
     }
-    
+
     public static List<LootItemCondition> getConditions(LootPoolEntryContainer entryContainer) {
         return ((LootPoolEntryContainerIMixin) entryContainer).biologydictionary$getConditions();
     }
-    
+
     public static Identifier getConditionType(LootItemCondition condition) {
         return BuiltInRegistries.LOOT_CONDITION_TYPE.getKey(condition.getType());
     }
@@ -247,7 +247,7 @@ public final class LootTableUtils {
         if (contents.right().isPresent()) {
             // Inline loot table - process recursively with increased depth
             LootTable inlineTable = contents.right().get();
-            
+
             // Create a wrapper function to apply inherited conditions to all entries from the nested table
             return parseLootEntries(inlineTable, depth + 1).stream()
                 .map(entry -> {
@@ -338,7 +338,7 @@ public final class LootTableUtils {
             int minCount = nbt.getInt("minCount").orElseThrow();
             int maxCount = nbt.getInt("maxCount").orElseThrow();
             float dropChance = nbt.getFloat("dropChance").orElseThrow();
-            
+
             // Parse conditions
             List<Identifier> conditions = new ArrayList<>();
             if (nbt.contains("conditions")) {
@@ -349,7 +349,7 @@ public final class LootTableUtils {
                     }
                 }
             }
-            
+
             return new LootEntry(item, minCount, maxCount, dropChance, conditions);
         }
 
@@ -360,14 +360,14 @@ public final class LootTableUtils {
             nbt.putInt("minCount", minCount);
             nbt.putInt("maxCount", maxCount);
             nbt.putFloat("dropChance", dropChance);
-            
+
             // Save conditions
             ListTag conditionsList = new ListTag();
             for (Identifier condition : conditions) {
                 conditionsList.add(StringTag.valueOf(condition.toString()));
             }
             nbt.put("conditions", conditionsList);
-            
+
             return nbt;
         }
 

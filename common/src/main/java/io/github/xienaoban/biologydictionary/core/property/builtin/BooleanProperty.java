@@ -18,7 +18,7 @@ public class BooleanProperty<E extends Entity> extends AbstractProperty<E, Boole
         if (getVal() != null) {
             nbt.putBoolean(name(), getVal());
         } else {
-            throw new IllegalPropertyStateException("primitive type must not be null");
+            nbt.put(name(), new CompoundTag());
         }
     }
 }

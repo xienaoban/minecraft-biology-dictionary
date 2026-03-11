@@ -16,7 +16,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
@@ -200,7 +199,7 @@ public class ClothConfigScreenProvider {
      * Use generic to avoid errors from javac.
      */
     private static <T, B extends AbstractFieldBuilder<T, ?, B>> B setEntryGeneric(
-            @NotNull AbstractFieldBuilder<?, ?, ?> builder, Object defaultValue, Consumer<?> saveConsumer, Component tooltip) {
+            AbstractFieldBuilder<?, ?, ?> builder, Object defaultValue, Consumer<?> saveConsumer, Component tooltip) {
         B b = Misc.cast(builder);
         T d = Misc.cast(defaultValue);
         Consumer<T> s = Misc.cast(saveConsumer);

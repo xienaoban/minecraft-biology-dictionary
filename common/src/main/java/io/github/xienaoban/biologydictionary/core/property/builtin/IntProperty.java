@@ -18,7 +18,7 @@ public class IntProperty<E extends Entity> extends AbstractProperty<E, Integer> 
         if (getVal() != null) {
             nbt.putInt(name(), getVal());
         } else {
-            throw new IllegalPropertyStateException("primitive type must not be null");
+            nbt.put(name(), new CompoundTag());
         }
     }
 }

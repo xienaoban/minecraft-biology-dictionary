@@ -3,12 +3,12 @@ package io.github.xienaoban.biologydictionary.platform.util;
 import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.HorseIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.MobIMixin;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
@@ -19,10 +19,10 @@ import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.animal.dolphin.Dolphin;
 import net.minecraft.world.entity.animal.equine.Horse;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
@@ -140,6 +140,14 @@ public final class EntityUtils {
     //                             Entity Method Utils                              //
     // ============================================================================ //
 
+    public static String getNameString(Entity entity) {
+        return entity.getPlainTextName();
+    }
+
+    public static Component getNameText(Entity entity) {
+        return entity.getName();
+    }
+
     public static Level getLevel(Entity entity) {
         return entity.level();
     }
@@ -168,9 +176,8 @@ public final class EntityUtils {
      * Hurt a living entity with damage source on server side.
      */
     public static void hurt(LivingEntity entity, DamageSource damageSource, float amount) {
-        if (entity instanceof ServerPlayer serverPlayer) {
-            ServerLevel level = serverPlayer.level();
-            entity.hurtServer(level, damageSource, amount);
+        if (entity.level() instanceof ServerLevel serverLevel) {
+            entity.hurtServer(serverLevel, damageSource, amount);
         }
     }
 
@@ -266,7 +273,7 @@ public final class EntityUtils {
             nbt.remove("SleepingZ");
         }
 
-        if (entity instanceof AbstractClientPlayer) {
+        if (entity instanceof Player) {
             nbt.remove("Inventory");
         } else if (entity instanceof Dolphin) {
             nbt.remove("GotFish");

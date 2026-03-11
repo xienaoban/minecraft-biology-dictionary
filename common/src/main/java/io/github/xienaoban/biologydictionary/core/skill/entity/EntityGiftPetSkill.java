@@ -57,12 +57,12 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
             LivingEntity owner = ((OwnableEntity) ctx.entity()).getOwner();
             if (owner != ctx.player()) {
                 throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT),
-                        "Not owner of pet: player=\"" + ctx.player().getPlainTextName() + "\", owner=\""
-                                + (owner == null ? "null or not online" : owner.getPlainTextName()) + "\"");
+                        "Not owner of pet: player=\"" + EntityUtils.getNameString(ctx.player()) + "\", owner=\""
+                                + (owner == null ? "null or not online" : EntityUtils.getNameString(owner)) + "\"");
             }
             if (Objects.equals(targetPlayerUuid, ctx.player().getUUID())) {
                 throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
-                        "The player and target player cannot be the same person: player=\"" + ctx.player().getPlainTextName() + "\"");
+                        "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
             }
         }}
         C.check(ctx, targetPlayerUuid);
@@ -74,12 +74,12 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
         LivingEntity owner = ((OwnableEntity) ctx.entity()).getOwner();
         if (((OwnableEntity) ctx.entity()).getOwner() != ctx.player()) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT),
-                    "Not owner of pet: player=\"" + ctx.player().getPlainTextName() + "\", owner=\""
-                            + (owner == null ? "null or not online" : owner.getPlainTextName()) + "\"");
+                    "Not owner of pet: player=\"" + EntityUtils.getNameString(ctx.player()) + "\", owner=\""
+                            + (owner == null ? "null or not online" : EntityUtils.getNameString(owner)) + "\"");
         }
         if (ctx.player() == targetPlayer) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
-                    "The player and target player cannot be the same person: player=\"" + ctx.player().getPlainTextName() + "\"");
+                    "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
         }
     }
 

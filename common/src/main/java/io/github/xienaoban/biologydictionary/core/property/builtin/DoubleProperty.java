@@ -18,7 +18,7 @@ public class DoubleProperty<E extends Entity> extends AbstractProperty<E, Double
         if (getVal() != null) {
             nbt.putDouble(name(), getVal());
         } else {
-            throw new IllegalPropertyStateException("primitive type must not be null");
+            nbt.put(name(), new CompoundTag());
         }
     }
 }

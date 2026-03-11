@@ -18,7 +18,7 @@ public class ByteProperty<E extends Entity> extends AbstractProperty<E, Byte> {
         if (getVal() != null) {
             nbt.putByte(name(), getVal());
         } else {
-            throw new IllegalPropertyStateException("primitive type must not be null");
+            nbt.put(name(), new CompoundTag());
         }
     }
 }

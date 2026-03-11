@@ -18,7 +18,7 @@ public class ByteArrayProperty<E extends Entity> extends AbstractProperty<E, byt
         if (getVal() != null) {
             nbt.putByteArray(name(), getVal());
         } else {
-            throw new IllegalPropertyStateException("array type must not be null");
+            nbt.put(name(), new CompoundTag());
         }
     }
 }

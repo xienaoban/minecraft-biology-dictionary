@@ -111,7 +111,6 @@ public final class VanillaEntityProperties {
 
     @FunctionalInterface
     interface Creator {
-
         void create(Map<String, EntityProperty<?>> map);
     }
 

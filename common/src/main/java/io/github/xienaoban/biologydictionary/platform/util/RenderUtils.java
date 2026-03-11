@@ -9,11 +9,7 @@ import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public final class RenderUtils {
-    // ============================================================================ //
-    //                            Entity Renderer Utils                             //
-    // ============================================================================ //
 
-    @Environment(EnvType.CLIENT)
     public static <E extends Entity, S extends EntityRenderState> EntityRenderer<E, S> getRenderer(EntityRenderDispatcher renderDispatcher, E entity) {
         return Misc.cast(renderDispatcher.getRenderer(entity));
     }
