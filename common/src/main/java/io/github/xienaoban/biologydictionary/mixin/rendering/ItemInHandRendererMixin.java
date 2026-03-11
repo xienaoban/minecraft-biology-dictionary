@@ -22,7 +22,7 @@ public class ItemInHandRendererMixin {
 
     @Inject(method = "renderHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderAllFeatures()V", shift = At.Shift.AFTER))
-    private void renderFirstPerson(float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer localPlayer, int light, CallbackInfo ci) {
+    private void biologydictionary$renderFirstPerson(float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer localPlayer, int light, CallbackInfo ci) {
         FirstPersonShoulderEntityRenderer.run(minecraft, entityRenderDispatcher, tickDelta, poseStack, submitNodeCollector, localPlayer, light);
     }
 }

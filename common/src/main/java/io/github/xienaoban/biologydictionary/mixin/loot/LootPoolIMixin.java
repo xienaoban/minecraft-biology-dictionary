@@ -12,7 +12,7 @@ import java.util.List;
 public interface LootPoolIMixin {
     @Accessor("entries")
     List<LootPoolEntryContainer> biologydictionary$getEntries();
-    
+
     @Accessor("conditions")
     List<LootItemCondition> biologydictionary$getConditions();
 }

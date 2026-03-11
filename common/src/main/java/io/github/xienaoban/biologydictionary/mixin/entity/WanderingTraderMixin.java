@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(WanderingTrader.class)
 public class WanderingTraderMixin {
     @Inject(method = "updateTrades(Lnet/minecraft/server/level/ServerLevel;)V", at = @At(value = "TAIL"))
-    private void addBiologyDictionaryTrades(CallbackInfo ci) {
+    private void biologydictionary$addBiologyDictionaryTrades(CallbackInfo ci) {
         BiologyDictionaryItem.addToWanderingTraderTrades((WanderingTrader) (Object) this);
     }
 }

@@ -14,14 +14,14 @@ public class EntityMixin {
     private int portalCooldown;
 
     @Inject(method = "setPortalCooldown()V", at = @At(value = "HEAD"), cancellable = true)
-    private void lockSetPortalCooldown(CallbackInfo ci) {
+    private void biologydictionary$lockSetPortalCooldown(CallbackInfo ci) {
         if (portalCooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
             ci.cancel();
         }
     }
 
     @Inject(method = "processPortalCooldown()V", at = @At(value = "HEAD"), cancellable = true)
-    private void lockTickPortalCooldown(CallbackInfo ci) {
+    private void biologydictionary$lockTickPortalCooldown(CallbackInfo ci) {
         if (portalCooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
             ci.cancel();
         }

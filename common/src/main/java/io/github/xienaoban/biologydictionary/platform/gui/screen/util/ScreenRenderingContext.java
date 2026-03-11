@@ -169,7 +169,7 @@ public final class ScreenRenderingContext {
                 return self.biologydictionary$getPreparedText();
             }
         }
-        
+
         if (ARGB.alpha(color) == 0) { return; }
         getGuiRenderState().submitText(new TextState(getFont(), component.getVisualOrderText(),
                 new Matrix3x2f(getPose()), x, y, color, 0, false, false,

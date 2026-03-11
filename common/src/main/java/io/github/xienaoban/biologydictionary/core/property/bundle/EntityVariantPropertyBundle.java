@@ -220,13 +220,7 @@ public final class EntityVariantPropertyBundle {
         public String getVariantName(Holder<VillagerType> variant) {
             return variant.unwrapKey().map(resourceKey -> {
                 Identifier id = resourceKey.identifier();
-                String res;
-                if (Identifier.DEFAULT_NAMESPACE.equals(id.getNamespace())) {
-                    res = id.getPath();
-                } else {
-                    res = id.getNamespace() + '.' + id.getPath();
-                }
-                return res;
+                return id.getPath().toLowerCase();
             }).orElse("unknown");
         }
     }

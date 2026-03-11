@@ -19,7 +19,7 @@ public class AnimalMixin {
      * capturing the ageableMob local variable which is the baby.
      */
     @Inject(method = "spawnChildFromBreeding", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Animal;finalizeSpawnChildFromBreeding(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/animal/Animal;Lnet/minecraft/world/entity/AgeableMob;)V"))
-    private void inheritSilentFromParents(ServerLevel serverLevel, Animal otherParent, CallbackInfo ci, @Local AgeableMob ageableMob) {
+    private void biologydictionary$inheritSilentFromParents(ServerLevel serverLevel, Animal otherParent, CallbackInfo ci, @Local AgeableMob ageableMob) {
         // Check if the config is enabled
         if (!ConfigsManager.getServer().isInheritSilentFromParents()) {
             return;

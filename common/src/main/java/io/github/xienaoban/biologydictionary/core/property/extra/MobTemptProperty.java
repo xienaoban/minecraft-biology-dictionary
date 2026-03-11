@@ -49,7 +49,7 @@ public final class MobTemptProperty extends ItemStackListProperty<Mob> {
         throw new UnsupportedOperationException();
     }
 
-    private static @NotNull List<Predicate<ItemStack>> getPredicates(Mob entity) {
+    private static List<Predicate<ItemStack>> getPredicates(Mob entity) {
         // TODO: cache this
         // Pigs have two TemptGoal!
         List<Predicate<ItemStack>> predicates = new ArrayList<>();

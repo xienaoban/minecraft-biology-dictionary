@@ -18,7 +18,7 @@ public class LongProperty<E extends Entity> extends AbstractProperty<E, Long> {
         if (getVal() != null) {
             nbt.putLong(name(), getVal());
         } else {
-            throw new IllegalPropertyStateException("primitive type must not be null");
+            nbt.put(name(), new CompoundTag());
         }
     }
 }

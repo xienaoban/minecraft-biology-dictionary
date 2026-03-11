@@ -18,7 +18,7 @@ public class ShortProperty<E extends Entity> extends AbstractProperty<E, Short> 
         if (getVal() != null) {
             nbt.putShort(name(), getVal());
         } else {
-            throw new IllegalPropertyStateException("primitive type must not be null");
+            nbt.put(name(), new CompoundTag());
         }
     }
 }
