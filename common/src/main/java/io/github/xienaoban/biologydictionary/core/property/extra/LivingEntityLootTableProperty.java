@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class EntityLootTableProperty extends AbstractProperty<LivingEntity, List<LootTableUtils.LootEntry>> {
-    public static final Factory<LivingEntity> FACTORY = EntityLootTableProperty::new;
+public class LivingEntityLootTableProperty extends AbstractProperty<LivingEntity, List<LootTableUtils.LootEntry>> {
+    public static final Factory<LivingEntity> FACTORY = LivingEntityLootTableProperty::new;
 
-    public EntityLootTableProperty() {
-        super(EntityLootTableProperty.class.getSimpleName());
+    public LivingEntityLootTableProperty() {
+        super(LivingEntityLootTableProperty.class.getSimpleName());
     }
 
     @Override

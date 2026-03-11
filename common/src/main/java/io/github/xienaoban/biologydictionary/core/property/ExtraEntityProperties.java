@@ -12,8 +12,8 @@ import java.util.Map;
 public final class ExtraEntityProperties {
 
     public static void registerBuiltIn(Registrar registrar) {
-        registrar.register(EntityLootTableProperty.class, EntityLootTableProperty.FACTORY);
         registrar.register(EntityInventorySizeProperty.class, EntityInventorySizeProperty.FACTORY);
+        registrar.register(LivingEntityLootTableProperty.class, LivingEntityLootTableProperty.FACTORY);
         registrar.register(MobNaturalPersistenceProperty.class, MobNaturalPersistenceProperty.FACTORY);
         registrar.register(MobTemptProperty.class, MobTemptProperty.FACTORY);
         registrar.register(VillagerJobSiteProperty.class, VillagerJobSiteProperty.FACTORY);

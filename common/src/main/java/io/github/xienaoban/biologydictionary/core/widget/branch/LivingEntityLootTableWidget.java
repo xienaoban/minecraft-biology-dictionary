@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.extra.EntityLootTableProperty;
+import io.github.xienaoban.biologydictionary.core.property.extra.LivingEntityLootTableProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyBar;
@@ -18,7 +18,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -26,14 +26,14 @@ import java.util.Arrays;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public final class EntityLootTableWidget extends EntityPropertyStandardWidget<Entity> {
-    public static final Factory<Entity> FACTORY = EntityLootTableWidget::new;
+public final class LivingEntityLootTableWidget extends EntityPropertyStandardWidget<LivingEntity> {
+    public static final Factory<LivingEntity> FACTORY = LivingEntityLootTableWidget::new;
 
     private static final int L = 14, T = 3;
 
-    private final EntityLootTableProperty lootTableProperty = p().getExtra(EntityLootTableProperty.class);
+    private final LivingEntityLootTableProperty lootTableProperty = p().getExtra(LivingEntityLootTableProperty.class);
 
-    public EntityLootTableWidget(EntityProperties<Entity> properties) {
+    public LivingEntityLootTableWidget(EntityProperties<LivingEntity> properties) {
         super(properties);
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new LootItemBar());
