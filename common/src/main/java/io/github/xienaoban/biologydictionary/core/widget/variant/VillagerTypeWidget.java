@@ -1,0 +1,44 @@
+package io.github.xienaoban.biologydictionary.core.widget.variant;
+
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
+import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public final class VillagerTypeWidget extends AbstractEntityStandardVariantWidget<Villager, Holder<VillagerType>> {
+    public static final Factory<Villager> FACTORY = VillagerTypeWidget::new;
+
+    private static final int VH_IDX = 0;
+
+    public VillagerTypeWidget(EntityProperties<Villager> properties) {
+        super(properties, getVariantCount(properties, VH_IDX), 7, 3);
+        setBackgroundBars(Textures.ICONS, BG_BAR1_LEFT * Widget.WIDGET_WIDTH, BG_BAR1_TOP * Widget.WIDGET_HEIGHT);
+    }
+
+    @Override
+    protected int getVariantHandlerIdx() { return VH_IDX; }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        // Use placeholder values since variant is selected at runtime
+        SkillCost cost = new EntitySetVariantSkill("", -1, null).getRealCost(e());
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_VILLAGER_TYPE));
+        tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_VILLAGER_TYPE_DESC));
+        tooltip.add(TextUtils.empty());
+        tooltip.addAll(cost.toTooltipText());
+        renderTooltip(ctx, tooltip);
+        return true;
+    }
+}
