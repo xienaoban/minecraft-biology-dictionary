@@ -8,4 +8,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface EntityIMixin {
     @Accessor("wasTouchingWater")
     void biologydictionary$setWasTouchingWater(boolean touchingWater);
+
+    @Accessor("FLAG_GLOWING")
+    static int biologydictionary$getFlagGlowing() {
+        throw new AssertionError();
+    }
 }

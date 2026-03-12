@@ -1,5 +1,7 @@
 package io.github.xienaoban.biologydictionary.client;
 
+import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
+import io.github.xienaoban.biologydictionary.mixin.entity.FallingBlockEntityIMixin;
 import io.github.xienaoban.biologydictionary.platform.client.ClientEventRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -10,8 +12,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Collection;
 import java.util.List;
@@ -136,12 +141,14 @@ public final class HighlightManager {
         private final BlockState blockState;
         private final BlockPos blockPos;
         private final ResourceKey<Level> dimension;
+        private final FallingBlockEntity fallingBlockEntity;
 
         public HighlightedBlock(int endTick, BlockState blockState, BlockPos blockPos, ResourceKey<Level> dimension) {
             super(endTick);
             this.blockState = blockState;
             this.blockPos = blockPos;
             this.dimension = dimension;
+            this.fallingBlockEntity = createFallingBlockEntity();
         }
 
         public BlockState getBlockState() {
@@ -152,10 +159,40 @@ public final class HighlightManager {
             return blockPos;
         }
 
+        public FallingBlockEntity getFallingBlockEntity() {
+            return fallingBlockEntity;
+        }
+
         @Override
         protected boolean onCheckEnd(Context ctx) {
             return (dimension != ctx.level.dimension())
                     || (blockState.getBlock() != ctx.level.getBlockState(blockPos).getBlock());
+        }
+
+        private FallingBlockEntity createFallingBlockEntity() {
+            return new ClientHighlightedBlockEntity(
+                    blockPos.getX() + 0.5, blockPos.getY() - 0.001, blockPos.getZ() + 0.5, blockState);
+        }
+    }
+
+    public static final class ClientHighlightedBlockEntity extends FallingBlockEntity {
+
+        /**
+         * @see net.minecraft.world.entity.item.FallingBlockEntity#FallingBlockEntity(net.minecraft.world.level.Level, double, double, double, net.minecraft.world.level.block.state.BlockState)
+         */
+        public ClientHighlightedBlockEntity(double x, double y, double z, BlockState blockState) {
+            super(EntityType.FALLING_BLOCK, ClientUtils.getClientLevel());
+            ((FallingBlockEntityIMixin) (Object) this).biologydictionary$setBlockState(blockState);
+            blocksBuilding = false;
+            setPos(x, y, z);
+            setDeltaMovement(Vec3.ZERO);
+            xo = x;
+            yo = y;
+            zo = z;
+            setStartPos(this.blockPosition());
+            setNoGravity(true);
+            setGlowingTag(true);
+            setSharedFlag(EntityIMixin.biologydictionary$getFlagGlowing(), true);
         }
     }
 }

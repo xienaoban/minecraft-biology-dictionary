@@ -20,13 +20,6 @@ public class EntityMixin {
         }
     }
 
-    @Inject(method = "setPortalCooldown(I)V", at = @At(value = "HEAD"), cancellable = true)
-    private void biologydictionary$lockSetPortalCooldownI(int i, CallbackInfo ci) {
-        if (portalCooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
-            ci.cancel();
-        }
-    }
-
     @Inject(method = "processPortalCooldown()V", at = @At(value = "HEAD"), cancellable = true)
     private void biologydictionary$lockTickPortalCooldown(CallbackInfo ci) {
         if (portalCooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {

@@ -14,6 +14,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
     @Unique private boolean biologydictionary$shouldHighlightEntity;
@@ -23,6 +26,17 @@ public abstract class LevelRendererMixin {
         if (HighlightManager.hasAnyHighlighted()) {
             cir.setReturnValue(true);
         }
+    }
+
+    @Redirect(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;entitiesForRendering()Ljava/lang/Iterable;"))
+    private Iterable<Entity> biologydictionary$redirectEntitiesForRendering(ClientLevel instance) {
+        if (HighlightManager.hasAnyHighlighted() && !HighlightManager.getHighlightedBlocks().isEmpty()) {
+            Stream<Entity> entitiesStream = StreamSupport.stream(instance.entitiesForRendering().spliterator(), false);
+            Stream<Entity> blocksStream = HighlightManager.getHighlightedBlocks().stream()
+                    .map(HighlightManager.HighlightedBlock::getFallingBlockEntity);
+            return Stream.concat(entitiesStream, blocksStream)::iterator;
+        }
+        return instance.entitiesForRendering();
     }
 
     @Redirect(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;shouldRender(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/client/renderer/culling/Frustum;DDD)Z"))
