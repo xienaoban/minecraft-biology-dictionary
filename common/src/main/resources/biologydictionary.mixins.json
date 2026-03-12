@@ -5,15 +5,16 @@
     "minVersion": "0.8",
     "mixins": [
         "CreativeModeTabsIMixin",
-        "CustomDataIMixin",
+        "EatBlockGoalIMixin",
         "MobEffectInstanceIMixin",
         "TemptGoalIMixin",
-        "entity.AbstractHorseMixin",
+        "entity.AbstractHorseIMixin",
         "entity.AgeableMobMixin",
         "entity.AnimalIMixin",
         "entity.AnimalMixin",
         "entity.EntityIMixin",
         "entity.EntityMixin",
+        "entity.FallingBlockEntityIMixin",
         "entity.HorseIMixin",
         "entity.MobIMixin",
         "entity.ServerPlayerIMixin",
@@ -30,10 +31,12 @@
     ],
     "client": [
         "MinecraftMixin",
+        "entity.AbstractClientPlayerIMixin",
+        "rendering.FallingBlockRendererMixin",
         "rendering.GuiGraphicsIMixin",
-        "rendering.GuiTextRenderStateIMixin",
         "rendering.ItemInHandRendererMixin",
-        "rendering.LevelRendererMixin"
+        "rendering.LevelRendererMixin",
+        "rendering.ScreenIMixin"
     ],
     "injectors": {
         "defaultRequire": 1
