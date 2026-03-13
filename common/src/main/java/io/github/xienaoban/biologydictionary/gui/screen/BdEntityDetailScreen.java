@@ -46,7 +46,7 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
     public void tick() {
         super.tick();
 
-        if (!player.canInteractWithEntity(entity, CLOSE_SCREEN_DISTANCE)) {
+        if (player.distanceToSqr(entity) > CLOSE_SCREEN_DISTANCE * CLOSE_SCREEN_DISTANCE) {
             HighlightManager.highlightEntity(entity, 4 * 20);
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
             onClose();

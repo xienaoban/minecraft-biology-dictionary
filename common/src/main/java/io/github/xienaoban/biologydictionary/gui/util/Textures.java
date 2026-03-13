@@ -10,11 +10,11 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.MOD_ID;
 @Environment(EnvType.CLIENT)
 public final class Textures {
     private static ResourceLocation mc(String path) {
-        return ResourceLocation.withDefaultNamespace(path);
+        return new ResourceLocation(path);
     }
 
     private static ResourceLocation my(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+        return new ResourceLocation(MOD_ID, path);
     }
 
     public static final TextureInfo HORSE_SCREEN = new TextureInfo(mc("textures/gui/container/horse.png"), 256, 256);

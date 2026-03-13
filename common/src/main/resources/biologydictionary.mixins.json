@@ -12,6 +12,7 @@
         "entity.AgeableMobMixin",
         "entity.AnimalIMixin",
         "entity.AnimalMixin",
+        "entity.BeehiveBlockEntityBeeDataIMixin",
         "entity.EntityIMixin",
         "entity.EntityMixin",
         "entity.FallingBlockEntityIMixin",

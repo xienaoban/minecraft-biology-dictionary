@@ -115,7 +115,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     tags.add(new TagCatalog(depth, nbt));
                     return true;
                 });
-                tags.addFirst(new DescriptionWidget(1, Page.COLUMNS, group.getDescription()));
+                tags.add(0, new DescriptionWidget(1, Page.COLUMNS, group.getDescription()));
                 resetAndAndWidgetsOneByOne(tags);
                 return true;
             }

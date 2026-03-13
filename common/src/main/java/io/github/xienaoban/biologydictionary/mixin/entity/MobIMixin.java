@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.mixin.entity;
 
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import org.spongepowered.asm.mixin.Mixin;

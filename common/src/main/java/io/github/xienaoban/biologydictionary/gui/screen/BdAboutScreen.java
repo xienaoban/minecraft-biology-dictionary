@@ -3,7 +3,6 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
-import io.github.xienaoban.biologydictionary.gui.screen.misc.DebugScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
@@ -31,7 +30,6 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         List<Widget> widgets = Arrays.asList(
                 new ModNameAuthorNameWidget(),
                 new GetBookItemWidget(),
-                new OpenDebugScreenWidget(),
                 new ShowGuiSizeWidget()
         );
 
@@ -80,29 +78,7 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    private class OpenDebugScreenWidget extends Widget {
-        protected OpenDebugScreenWidget() {
-            super(1, Page.COLUMNS);
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            if (ctx.isDebug()) {
-                ctx.renderCenteredText(TextUtils.literal("Open Debug Screen"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
-            }
-        }
-
-        @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (screenRenderingContext.isDebug()) {
-                ClientUtils.setScreen(client, new DebugScreen());
-                return true;
-            }
-            return false;
-        }
-    }
-
-    private class ShowGuiSizeWidget extends Widget {
+    private static class ShowGuiSizeWidget extends Widget {
         protected ShowGuiSizeWidget() {
             super(1, Page.COLUMNS);
         }
@@ -113,15 +89,6 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
                 ctx.renderCenteredText(TextUtils.literal(ctx.getScreen().width + " , " + ctx.getScreen().height), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
                 ctx.renderCenteredText(TextUtils.literal(ctx.getMouseX() + " , " + ctx.getMouseY()), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 5.5F);
             }
-        }
-
-        @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (screenRenderingContext.isDebug()) {
-                ClientUtils.setScreen(client, new DebugScreen());
-                return true;
-            }
-            return false;
         }
     }
 }

@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.mixin.entity.BeehiveBlockEntityBeeDataIMixin;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
@@ -72,7 +73,8 @@ public class BeehiveScreen extends ElementScreen {
         long lastMills = mills;
         mills = System.currentTimeMillis();
         int diff = (int) (mills - lastMills);
-        renderTransparentBackground(ctx);
+        // Note: renderTransparentBackground not available in 1.20.1
+        ctx.getGuiGraphics().fill(0, 0, width, height, 0x80000000);
         ctx.getGuiGraphics().pose().pushPose();
         int w = (width - 128) >> 1;
         int h = (height - 128) >> 1;
@@ -181,20 +183,20 @@ public class BeehiveScreen extends ElementScreen {
         }
     }
 
-    public void updateBeeInfo(List<BeehiveBlockEntity.Occupant> occupants) {
-        for (int i = 0; i < occupants.size(); ++i) {
-            BeehiveBlockEntity.Occupant occupant = occupants.get(i);
-            BeeInfo beeInfo = bees[i];
+    public void updateBeeInfo(List<BeehiveBlockEntity.BeeData> bees) {
+        for (int i = 0; i < bees.size(); ++i) {
+            BeehiveBlockEntity.BeeData beeData = bees.get(i);
+            BeeInfo beeInfo = this.bees[i];
 
             // @see net.minecraft.server.commands.data.DataCommands.register
             beeInfo.entity.setCustomName(null);
             CompoundTag newTag = EntityUtils.getNbt(beeInfo.entity);
-            EntityUtils.setNbt(beeInfo.entity, newTag.merge(occupant.entityData().copyTag()));
+            EntityUtils.setNbt(beeInfo.entity, newTag.merge(((BeehiveBlockEntityBeeDataIMixin) beeData).biologydictionary$getEntityData().copy()));
 
-            beeInfo.ticksInHive = occupant.ticksInHive();
-            beeInfo.minTicksInHive = occupant.minTicksInHive();
+            beeInfo.ticksInHive = ((BeehiveBlockEntityBeeDataIMixin) beeData).biologydictionary$getTicksInHive();
+            beeInfo.minTicksInHive = ((BeehiveBlockEntityBeeDataIMixin) beeData).biologydictionary$getMinOccupationTicks();
         }
-        blockBeeCnt = occupants.size();
+        blockBeeCnt = bees.size();
         blockHoneyCnt = BeehiveBlockEntity.getHoneyLevel(entity.getBlockState());
     }
 

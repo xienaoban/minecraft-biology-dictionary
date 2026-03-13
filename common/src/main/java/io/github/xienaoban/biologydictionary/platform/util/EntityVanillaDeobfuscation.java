@@ -53,7 +53,6 @@ final class EntityVanillaDeobfuscation {
         /*------------*/ r(net.minecraft.world.entity.animal.Rabbit.class, "net.minecraft.world.entity.animal.Rabbit");
         /*------------*/ r(net.minecraft.world.entity.animal.Sheep.class, "net.minecraft.world.entity.animal.Sheep");
         /*------------*/ r(net.minecraft.world.entity.animal.Turtle.class, "net.minecraft.world.entity.animal.Turtle");
-        /*------------*/ r(net.minecraft.world.entity.animal.armadillo.Armadillo.class, "net.minecraft.world.entity.animal.armadillo.Armadillo");
         /*------------*/ r(net.minecraft.world.entity.animal.axolotl.Axolotl.class, "net.minecraft.world.entity.animal.axolotl.Axolotl");
         /*------------*/ r(net.minecraft.world.entity.animal.frog.Frog.class, "net.minecraft.world.entity.animal.frog.Frog");
         /*------------*/ r(net.minecraft.world.entity.animal.goat.Goat.class, "net.minecraft.world.entity.animal.goat.Goat");
@@ -92,7 +91,6 @@ final class EntityVanillaDeobfuscation {
         /*--------*/ r(net.minecraft.world.entity.monster.Monster.class, "net.minecraft.world.entity.monster.Monster");
         /*----------*/ r(net.minecraft.world.entity.boss.wither.WitherBoss.class, "net.minecraft.world.entity.boss.wither.WitherBoss");
         /*----------*/ r(net.minecraft.world.entity.monster.AbstractSkeleton.class, "net.minecraft.world.entity.monster.AbstractSkeleton");
-        /*------------*/ r(net.minecraft.world.entity.monster.Bogged.class, "net.minecraft.world.entity.monster.Bogged");
         /*------------*/ r(net.minecraft.world.entity.monster.Skeleton.class, "net.minecraft.world.entity.monster.Skeleton");
         /*------------*/ r(net.minecraft.world.entity.monster.Stray.class, "net.minecraft.world.entity.monster.Stray");
         /*------------*/ r(net.minecraft.world.entity.monster.WitherSkeleton.class, "net.minecraft.world.entity.monster.WitherSkeleton");
@@ -123,7 +121,6 @@ final class EntityVanillaDeobfuscation {
         /*------------*/ r(net.minecraft.world.entity.monster.Husk.class, "net.minecraft.world.entity.monster.Husk");
         /*------------*/ r(net.minecraft.world.entity.monster.ZombieVillager.class, "net.minecraft.world.entity.monster.ZombieVillager");
         /*------------*/ r(net.minecraft.world.entity.monster.ZombifiedPiglin.class, "net.minecraft.world.entity.monster.ZombifiedPiglin");
-        /*----------*/ r(net.minecraft.world.entity.monster.breeze.Breeze.class, "net.minecraft.world.entity.monster.breeze.Breeze");
         /*----------*/ r(net.minecraft.world.entity.monster.piglin.AbstractPiglin.class, "net.minecraft.world.entity.monster.piglin.AbstractPiglin");
         /*------------*/ r(net.minecraft.world.entity.monster.piglin.Piglin.class, "net.minecraft.world.entity.monster.piglin.Piglin");
         /*------------*/ r(net.minecraft.world.entity.monster.piglin.PiglinBrute.class, "net.minecraft.world.entity.monster.piglin.PiglinBrute");
@@ -137,14 +134,11 @@ final class EntityVanillaDeobfuscation {
 
         // interfaces
         r(net.minecraft.commands.CommandSource.class, "net.minecraft.commands.CommandSource");
-        r(net.minecraft.network.syncher.SyncedDataHolder.class, "net.minecraft.network.syncher.SyncedDataHolder");
         r(net.minecraft.world.ContainerListener.class, "net.minecraft.world.ContainerListener");
         r(net.minecraft.world.Nameable.class, "net.minecraft.world.Nameable");
         r(net.minecraft.world.entity.Attackable.class, "net.minecraft.world.entity.Attackable");
-        r(net.minecraft.world.entity.EquipmentUser.class, "net.minecraft.world.entity.EquipmentUser");
         r(net.minecraft.world.entity.HasCustomInventoryScreen.class, "net.minecraft.world.entity.HasCustomInventoryScreen");
         r(net.minecraft.world.entity.ItemSteerable.class, "net.minecraft.world.entity.ItemSteerable");
-        r(net.minecraft.world.entity.Leashable.class, "net.minecraft.world.entity.Leashable");
         r(net.minecraft.world.entity.LerpingModel.class, "net.minecraft.world.entity.LerpingModel");
         r(net.minecraft.world.entity.NeutralMob.class, "net.minecraft.world.entity.NeutralMob");
         r(net.minecraft.world.entity.OwnableEntity.class, "net.minecraft.world.entity.OwnableEntity");
@@ -168,6 +162,5 @@ final class EntityVanillaDeobfuscation {
         r(net.minecraft.world.item.trading.Merchant.class, "net.minecraft.world.item.trading.Merchant");
         r(net.minecraft.world.level.entity.EntityAccess.class, "net.minecraft.world.level.entity.EntityAccess");
         r(net.minecraft.world.level.gameevent.vibrations.VibrationSystem.class, "net.minecraft.world.level.gameevent.vibrations.VibrationSystem");
-        r(net.minecraft.world.scores.ScoreHolder.class, "net.minecraft.world.scores.ScoreHolder");
     }
 }

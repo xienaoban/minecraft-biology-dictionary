@@ -28,7 +28,6 @@ final class EntityOrder {
         registrar.register(EntityType.OCELOT);
         registrar.register(EntityType.WOLF);
         registrar.register(EntityType.FOX);
-        registrar.register(EntityType.ARMADILLO);
         registrar.register(EntityType.HORSE);
         registrar.register(EntityType.SKELETON_HORSE);
         registrar.register(EntityType.ZOMBIE_HORSE);
@@ -71,7 +70,6 @@ final class EntityOrder {
         registrar.register(EntityType.CREEPER);
         registrar.register(EntityType.SKELETON);
         registrar.register(EntityType.STRAY);
-        registrar.register(EntityType.BOGGED);
         registrar.register(EntityType.WITHER_SKELETON);
         registrar.register(EntityType.ENDERMAN);
         registrar.register(EntityType.SLIME);
@@ -86,7 +84,6 @@ final class EntityOrder {
         registrar.register(EntityType.EVOKER);
         registrar.register(EntityType.ILLUSIONER);
         registrar.register(EntityType.WITCH);
-        registrar.register(EntityType.BREEZE);
         registrar.register(EntityType.WARDEN);
         registrar.register(EntityType.WITHER);
         registrar.register(EntityType.GUARDIAN);
@@ -120,7 +117,6 @@ final class EntityOrder {
         registrar.register(EntityType.CAT);
         registrar.register(EntityType.PARROT);
         registrar.register(EntityType.WOLF);
-        registrar.register(EntityType.ARMADILLO);
         registrar.register(EntityType.BAT);
         registrar.register(EntityType.BEE);
         registrar.register(EntityType.FOX);
@@ -149,7 +145,6 @@ final class EntityOrder {
         registrar.register(EntityType.TRADER_LLAMA);
         registrar.register(EntityType.VILLAGER);
         registrar.register(EntityType.WANDERING_TRADER);
-        registrar.register(EntityType.BOGGED);
         registrar.register(EntityType.DROWNED);
         registrar.register(EntityType.HUSK);
         registrar.register(EntityType.SKELETON);
@@ -160,7 +155,6 @@ final class EntityOrder {
         registrar.register(EntityType.ZOMBIE_VILLAGER);
         registrar.register(EntityType.CAVE_SPIDER);
         registrar.register(EntityType.SPIDER);
-        registrar.register(EntityType.BREEZE);
         registrar.register(EntityType.CREEPER);
         registrar.register(EntityType.ELDER_GUARDIAN);
         registrar.register(EntityType.GUARDIAN);
