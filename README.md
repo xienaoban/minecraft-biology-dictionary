@@ -10,7 +10,7 @@
 
 ![Fabric Dependencies](https://img.shields.io/badge/Dependencies-Fabric-A99774?style=for-the-badge&logo=fabric) ![Fabric API](https://img.shields.io/badge/Fabric_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
 
-![NeoForge Dependencies](https://img.shields.io/badge/Dependencies-NeoForge-D7742F?style=for-the-badge&logo=neoforge) ![Architectury API](https://img.shields.io/badge/Architectury_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
+![Forge Dependencies](https://img.shields.io/badge/Dependencies-Forge-D7742F?style=for-the-badge&logo=forge) ![Architectury API](https://img.shields.io/badge/Architectury_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
 
 ---
 
@@ -44,10 +44,10 @@ However, technical survival players sometimes don't care about mod aesthetics. I
 | ![](res/screenshot_en_us_4.jpg) | ![](res/screenshot_en_us_5.jpg) | ![](res/screenshot_en_us_6.jpg) |
 | ![](res/screenshot_en_us_7.jpg) | ![](res/screenshot_en_us_8.jpg) | ![](res/screenshot_en_us_9.jpg) |
 
-This mod currently supports **Fabric** and **NeoForge** loaders.
+This mod currently supports **Fabric** and **Forge** loaders.
 
 - Fabric version depends on **<span style="color: red;">Fabric API</span>** and **<span style="color: red;">Cloth Config API</span>**.
-- NeoForge version depends on **<span style="color: red;">Architectury API</span>** and **<span style="color: red;">Cloth Config API</span>**.
+- Forge version depends on **<span style="color: red;">Architectury API</span>** and **<span style="color: red;">Cloth Config API</span>**.
 
 > I'm becoming increasingly busy with work, but I'll still try my best to keep up with official Minecraft updates. However, I won't be adding too many complex features going forward.
 

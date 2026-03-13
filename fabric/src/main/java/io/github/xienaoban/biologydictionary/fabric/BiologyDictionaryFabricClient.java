@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.fabric.client;
+package io.github.xienaoban.biologydictionary.fabric;
 
 import net.fabricmc.api.ClientModInitializer;
 

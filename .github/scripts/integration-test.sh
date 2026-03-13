@@ -82,22 +82,22 @@ if [ "$LOADER_TYPE" = "fabric" ]; then
     echo "✗ fabric-server-launch.jar not found"
     exit 1
   fi
-elif [ "$LOADER_TYPE" = "neoforge" ]; then
-  echo "Downloading NeoForge installer..."
-  FORGE_VERSION=$(grep "^neoforge_version=" ../../../gradle.properties | cut -d'=' -f2)
+elif [ "$LOADER_TYPE" = "forge" ]; then
+  echo "Downloading forge installer..."
+  FORGE_VERSION=$(grep "^forge_version=" ../../../gradle.properties | cut -d'=' -f2)
   echo "FORGE_VERSION=${FORGE_VERSION}"
-  FORGE_INSTALLER_URL="https://maven.neoforged.net/releases/net/neoforged/neoforge/${FORGE_VERSION}/neoforge-${FORGE_VERSION}-installer.jar"
+  FORGE_INSTALLER_URL="https://maven.forged.net/releases/net/forged/forge/${FORGE_VERSION}/forge-${FORGE_VERSION}-installer.jar"
   echo "FORGE_INSTALLER_URL=${FORGE_INSTALLER_URL}"
-  wget -q "$FORGE_INSTALLER_URL" -O neoforge-installer.jar
-  echo "Installing neoforge loader..."
-  java -jar neoforge-installer.jar --installServer
+  wget -q "$FORGE_INSTALLER_URL" -O forge-installer.jar
+  echo "Installing forge loader..."
+  java -jar forge-installer.jar --installServer
 
-  echo "Files after NeoForge installation:"
+  echo "Files after Forge installation:"
   ls -la
 
   # Check for run.sh
   if [ -f "run.sh" ]; then
-    echo "✓ NeoForge loader installed successfully"
+    echo "✓ Forge loader installed successfully"
     chmod +x run.sh
   else
     echo "✗ run.sh not found"
@@ -148,13 +148,13 @@ if [ "$LOADER_TYPE" = "fabric" ]; then
     echo "✗ Failed to download Cloth Config for version $CLOTHCONFIG_VERSION"
     exit 1
   fi
-elif [ "$LOADER_TYPE" = "neoforge" ]; then
+elif [ "$LOADER_TYPE" = "forge" ]; then
   echo "Downloading Architectury API..."
   # Get Architectury API version from gradle.properties
   ARCHITECTURY_API_VERSION=$(grep "^architectury_api_version=" ../../../gradle.properties | cut -d'=' -f2)
 
   # Architectury API URL
-  ARCHITECTURY_API_URL="https://maven.architectury.dev/dev/architectury/architectury-neoforge/${ARCHITECTURY_API_VERSION}/architectury-neoforge-${ARCHITECTURY_API_VERSION}.jar"
+  ARCHITECTURY_API_URL="https://maven.architectury.dev/dev/architectury/architectury-forge/${ARCHITECTURY_API_VERSION}/architectury-forge-${ARCHITECTURY_API_VERSION}.jar"
 
   echo "Downloading Architectury API from: $ARCHITECTURY_API_URL"
   if wget -q "$ARCHITECTURY_API_URL" -P mods/; then
@@ -168,8 +168,8 @@ elif [ "$LOADER_TYPE" = "neoforge" ]; then
   # Get Cloth Config version from gradle.properties
   CLOTHCONFIG_VERSION=$(grep "^clothconfig_version=" ../../../gradle.properties | cut -d'=' -f2)
 
-  # Cloth Config NeoForge URL from Maven
-  CLOTHCONFIG_URL="https://maven.shedaniel.me/me/shedaniel/cloth/cloth-config-neoforge/${CLOTHCONFIG_VERSION}/cloth-config-neoforge-${CLOTHCONFIG_VERSION}-neoforge.jar"
+  # Cloth Config Forge URL from Maven
+  CLOTHCONFIG_URL="https://maven.shedaniel.me/me/shedaniel/cloth/cloth-config-forge/${CLOTHCONFIG_VERSION}/cloth-config-forge-${CLOTHCONFIG_VERSION}-forge.jar"
 
   echo "Downloading Cloth Config from: $CLOTHCONFIG_URL"
   if wget -q "$CLOTHCONFIG_URL" -P mods/; then
@@ -195,8 +195,8 @@ echo "Starting Minecraft server..."
 if [ "$LOADER_TYPE" = "fabric" ]; then
   timeout 120s java -Xmx1G -Xms1G -jar fabric-server-launch.jar nogui &
   SERVER_PID=$!
-elif [ "$LOADER_TYPE" = "neoforge" ]; then
-  # NeoForge uses run.sh script
+elif [ "$LOADER_TYPE" = "forge" ]; then
+  # Forge uses run.sh script
   timeout 120s ./run.sh &
   SERVER_PID=$!
 fi

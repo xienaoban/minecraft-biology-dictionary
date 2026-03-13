@@ -30,10 +30,25 @@ configurations {
     }
 }
 
+repositories {
+    maven {
+        name = 'Shedaniel'
+        url = 'https://maven.shedaniel.me/'
+    }
+}
+
 dependencies {
     forge "net.minecraftforge:forge:$rootProject.forge_version"
 
     modImplementation "dev.architectury:architectury-forge:$rootProject.architectury_api_version"
+
+    // Cloth Config for Forge
+    modImplementation "me.shedaniel.cloth:cloth-config-forge:${rootProject.clothconfig_version}"
+
+    // SnakeYAML for config file parsing
+    modImplementation "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
+    forgeRuntimeLibrary "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
+    include "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')

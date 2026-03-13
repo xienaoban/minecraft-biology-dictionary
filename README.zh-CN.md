@@ -10,7 +10,7 @@
 
 ![Fabric 依赖](https://img.shields.io/badge/依赖-Fabric-A99774?style=for-the-badge&logo=fabric) ![Fabric API](https://img.shields.io/badge/Fabric_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
 
-![NeoForge 依赖](https://img.shields.io/badge/依赖-NeoForge-D7742F?style=for-the-badge&logo=neoforge) ![Architectury API](https://img.shields.io/badge/Architectury_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
+![Forge 依赖](https://img.shields.io/badge/依赖-Forge-D7742F?style=for-the-badge&logo=forge) ![Architectury API](https://img.shields.io/badge/Architectury_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
 
 ---
 
@@ -44,10 +44,10 @@
 | ![](res/screenshot_zh_cn_4.jpg) | ![](res/screenshot_zh_cn_5.jpg) | ![](res/screenshot_zh_cn_6.jpg) |
 | ![](res/screenshot_zh_cn_7.jpg) | ![](res/screenshot_zh_cn_8.jpg) | ![](res/screenshot_zh_cn_9.jpg) |
 
-本模组当前支持 **Fabric** 和 **NeoForge** 两个加载器。
+本模组当前支持 **Fabric** 和 **Forge** 两个加载器。
 
 - Fabric 版本依赖 **<span style="color: red;">Fabric API</span>** 和 **<span style="color: red;">Cloth Config API</span>**。
-- NeoForge 版本依赖 **<span style="color: red;">Architectury API</span>** 和 **<span style="color: red;">Cloth Config API</span>**。
+- Forge 版本依赖 **<span style="color: red;">Architectury API</span>** 和 **<span style="color: red;">Cloth Config API</span>**。
 
 ## 详细功能与设定
 

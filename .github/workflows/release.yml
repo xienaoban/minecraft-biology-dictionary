@@ -43,14 +43,14 @@ jobs:
       - name: build fabric
         run: ./gradlew fabric:build -Dbuild.release=true
 
-      - name: build neoforge
-        run: ./gradlew neoforge:build -Dbuild.release=true
+      - name: build forge
+        run: ./gradlew forge:build -Dbuild.release=true
 
 #      - name: test fabric
 #        run: ./gradlew fabric:testServer
 #
-#      - name: test neoforge
-#        run: ./gradlew neoforge:testServer
+#      - name: test forge
+#        run: ./gradlew forge:testServer
 
       - name: rename jar
         run: |
@@ -70,16 +70,16 @@ jobs:
           MC_VERSION: ${{ env.MC_VERSION }}
           LOADER_TYPE: fabric
 
-      - name: integration test neoforge - run minecraft server
+      - name: integration test forge - run minecraft server
         run: |
           chmod +x .github/scripts/integration-test.sh
           .github/scripts/integration-test.sh
         env:
-          MOD_JAR: ${{ env.MOD_JAR_NEOFORGE }}
+          MOD_JAR: ${{ env.MOD_JAR_FORGE }}
           MC_VERSION: ${{ env.MC_VERSION }}
-          LOADER_TYPE: neoforge
+          LOADER_TYPE: forge
 
-      - name: publish fabric & neoforge version to github
+      - name: publish fabric & forge version to github
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -91,14 +91,14 @@ jobs:
 
           loaders: |
             fabric
-            neoforge
+            forge
           java: |
             21
             25
 
           files: |
             ${{ env.MOD_JAR_FABRIC }}
-            ${{ env.MOD_JAR_NEOFORGE }}
+            ${{ env.MOD_JAR_FORGE }}
 
           dependencies: |
             fabric-api
@@ -131,7 +131,7 @@ jobs:
             fabric-api
             cloth-config
 
-      - name: publish neoforge version to modrinth and curseforge
+      - name: publish forge version to modrinth and curseforge
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: biology-dictionary
@@ -140,18 +140,18 @@ jobs:
           curseforge-id: 1426515
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          name: "Biology Dictionary ${{ github.ref_name }}-neoforge"
-          version: "${{ github.ref_name }}-neoforge"
+          name: "Biology Dictionary ${{ github.ref_name }}-forge"
+          version: "${{ github.ref_name }}-forge"
           version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: CHANGELOG.md
 
-          loaders: neoforge
+          loaders: forge
           java: |
             21
             25
 
           files: |
-            ${{ env.MOD_JAR_NEOFORGE }}
+            ${{ env.MOD_JAR_FORGE }}
 
           dependencies: |
             architectury-api

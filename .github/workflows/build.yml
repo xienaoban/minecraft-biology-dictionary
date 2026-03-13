@@ -29,14 +29,14 @@ jobs:
       - name: build fabric
         run: ./gradlew fabric:build
 
-      - name: build neoforge
-        run: ./gradlew neoforge:build
+      - name: build forge
+        run: ./gradlew forge:build
 
 #      - name: test fabric
 #        run: ./gradlew fabric:testServer
 #
-#      - name: test neoforge
-#        run: ./gradlew neoforge:testServer
+#      - name: test forge
+#        run: ./gradlew forge:testServer
 
       - name: capture build artifacts
         uses: actions/upload-artifact@v4
@@ -44,4 +44,4 @@ jobs:
           name: Artifacts
           path: |
             fabric/build/libs/
-            neoforge/build/libs/
+            forge/build/libs/

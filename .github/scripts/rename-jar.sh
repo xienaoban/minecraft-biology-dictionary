@@ -11,7 +11,7 @@ fi
 echo "Renaming jars for version: $MOD_VERSION, MC: $MC_VERSION"
 
 # Array of platforms
-PLATFORMS=("fabric" "neoforge")
+PLATFORMS=("fabric" "forge")
 
 # Process each platform
 for PLATFORM in "${PLATFORMS[@]}"; do

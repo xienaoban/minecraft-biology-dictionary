@@ -3,9 +3,40 @@
     "package": "io.github.xienaoban.biologydictionary.mixin",
     "compatibilityLevel": "JAVA_17",
     "minVersion": "0.8",
-    "client": [
-    ],
     "mixins": [
+        "CreativeModeTabsIMixin",
+        "EatBlockGoalIMixin",
+        "MobEffectInstanceIMixin",
+        "TemptGoalIMixin",
+        "entity.AbstractHorseIMixin",
+        "entity.AgeableMobMixin",
+        "entity.AnimalIMixin",
+        "entity.AnimalMixin",
+        "entity.EntityIMixin",
+        "entity.EntityMixin",
+        "entity.FallingBlockEntityIMixin",
+        "entity.HorseIMixin",
+        "entity.MobIMixin",
+        "entity.ServerPlayerIMixin",
+        "entity.WanderingTraderMixin",
+        "loot.CompositeEntryBaseIMixin",
+        "loot.LootItemIMixin",
+        "loot.LootPoolEntryContainerIMixin",
+        "loot.LootPoolIMixin",
+        "loot.LootPoolSingletonContainerIMixin",
+        "loot.LootTableIMixin",
+        "loot.NestedLootTableIMixin",
+        "loot.SetItemCountFunctionIMixin",
+        "loot.TagEntryIMixin"
+    ],
+    "client": [
+        "MinecraftMixin",
+        "entity.AbstractClientPlayerIMixin",
+        "rendering.FallingBlockRendererMixin",
+        "rendering.GuiGraphicsIMixin",
+        "rendering.ItemInHandRendererMixin",
+        "rendering.LevelRendererMixin",
+        "rendering.ScreenIMixin"
     ],
     "injectors": {
         "defaultRequire": 1

@@ -38,7 +38,7 @@ fi
 echo "✓ minecraft_version check passed"
 
 # Note: No longer checking for loader type in tag name
-# We publish both fabric and neoforge from the same tag
+# We publish both fabric and forge from the same tag
 
 # Determine release type
 # Check for beta first (since 'beta' contains 'alpha' as substring if we're not careful)
