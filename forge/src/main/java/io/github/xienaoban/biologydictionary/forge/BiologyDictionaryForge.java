@@ -12,6 +12,5 @@ public final class BiologyDictionaryForge {
         EventBuses.registerModEventBus(BiologyDictionary.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
 
         // Run our common setup.
-        BiologyDictionary.init();
     }
 }

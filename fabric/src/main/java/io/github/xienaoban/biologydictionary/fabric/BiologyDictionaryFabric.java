@@ -11,6 +11,5 @@ public final class BiologyDictionaryFabric implements ModInitializer {
         // Proceed with mild caution.
 
         // Run our common setup.
-        BiologyDictionary.init();
     }
 }
