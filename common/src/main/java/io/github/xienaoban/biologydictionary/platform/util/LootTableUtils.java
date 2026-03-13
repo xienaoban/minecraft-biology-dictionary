@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
-import com.mojang.datafixers.util.Either;
 import io.github.xienaoban.biologydictionary.mixin.loot.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -9,7 +8,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,12 +20,13 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithEnchantedBonusCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithLootingCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -38,19 +37,19 @@ public final class LootTableUtils {
         return getLootTableKey(entity) != null;
     }
 
-    public static ResourceKey<LootTable> getLootTableKey(LivingEntity entity) {
+    public static ResourceLocation getLootTableKey(LivingEntity entity) {
         return entity.getLootTable();
     }
 
-    public static List<LootPool> getPools(LootTable lootTable) {
+    public static LootPool[] getPools(LootTable lootTable) {
         return ((LootTableIMixin) lootTable).biologydictionary$getPools();
     }
 
-    public static List<LootPoolEntryContainer> getEntries(LootPool pool) {
+    public static LootPoolEntryContainer[] getEntries(LootPool pool) {
         return ((LootPoolIMixin) pool).biologydictionary$getEntries();
     }
 
-    public static Holder<Item> getItem(LootItem lootItem) {
+    public static Item getItem(LootItem lootItem) {
         return ((LootItemIMixin) lootItem).biologydictionary$getItem();
     }
 
@@ -58,7 +57,7 @@ public final class LootTableUtils {
         return ((LootPoolSingletonContainerIMixin) singleton).biologydictionary$getWeight();
     }
 
-    public static List<LootItemFunction> getFunctions(LootPoolSingletonContainer singleton) {
+    public static LootItemFunction[] getFunctions(LootPoolSingletonContainer singleton) {
         return ((LootPoolSingletonContainerIMixin) singleton).biologydictionary$getFunctions();
     }
 
@@ -66,19 +65,19 @@ public final class LootTableUtils {
         return ((TagEntryIMixin) tagEntry).biologydictionary$getTag();
     }
 
-    public static Either<ResourceKey<LootTable>, LootTable> getContents(NestedLootTable nestedLoot) {
-        return ((NestedLootTableIMixin) nestedLoot).biologydictionary$getContents();
+    public static ResourceLocation getNestedLootTableName(LootTableReference nestedLoot) {
+        return ((NestedLootTableIMixin) nestedLoot).biologydictionary$getName();
     }
 
-    public static List<LootPoolEntryContainer> getChildren(CompositeEntryBase composite) {
+    public static LootPoolEntryContainer[] getChildren(CompositeEntryBase composite) {
         return ((CompositeEntryBaseIMixin) composite).biologydictionary$getChildren();
     }
 
-    public static List<LootItemCondition> getConditions(LootPool pool) {
+    public static LootItemCondition[] getConditions(LootPool pool) {
         return ((LootPoolIMixin) pool).biologydictionary$getConditions();
     }
 
-    public static List<LootItemCondition> getConditions(LootPoolEntryContainer entryContainer) {
+    public static LootItemCondition[] getConditions(LootPoolEntryContainer entryContainer) {
         return ((LootPoolEntryContainerIMixin) entryContainer).biologydictionary$getConditions();
     }
 
@@ -90,6 +89,30 @@ public final class LootTableUtils {
         return ((SetItemCountFunctionIMixin) function).biologydictionary$getValue();
     }
 
+    public static float getProbability(LootItemRandomChanceCondition condition) {
+        return ((LootItemRandomChanceConditionIMixin) condition).biologydictionary$getProbability();
+    }
+
+    public static float getPercent(LootItemRandomChanceWithLootingCondition condition) {
+        return ((LootItemRandomChanceWithLootingConditionIMixin) condition).biologydictionary$getPercent();
+    }
+
+    public static float[] getValues(BonusLevelTableCondition condition) {
+        return ((BonusLevelTableConditionIMixin) condition).biologydictionary$getValues();
+    }
+
+    public static float getValue(ConstantValue constantValue) {
+        return ((ConstantValueIMixin) (Object) constantValue).biologydictionary$getValue();
+    }
+
+    public static NumberProvider getMin(UniformGenerator uniformGenerator) {
+        return ((UniformGeneratorIMixin) uniformGenerator).biologydictionary$getMin();
+    }
+
+    public static NumberProvider getMax(UniformGenerator uniformGenerator) {
+        return ((UniformGeneratorIMixin) uniformGenerator).biologydictionary$getMax();
+    }
+
     /**
      * Parse loot table entries with probability information.
      * Only handles most common cases. Some complex situations and parts that depend on dynamic information
@@ -97,24 +120,24 @@ public final class LootTableUtils {
      * <p>
      * Returns a list of LootEntry objects containing item, count range, and drop chance.
      */
-    public static List<LootEntry> parseLootEntries(LootTable lootTable) {
-        return parseLootEntries(lootTable, 0);
+    public static List<LootEntry> parseLootEntries(LootTable lootTable, LivingEntity entity) {
+        return parseLootEntries(lootTable, entity, 0);
     }
 
-    private static List<LootEntry> parseLootEntries(LootTable lootTable, int initialDepth) {
+    private static List<LootEntry> parseLootEntries(LootTable lootTable, LivingEntity entity, int initialDepth) {
         List<LootEntry> entries = new ArrayList<>();
-        List<LootPool> pools = getPools(lootTable);
+        LootPool[] pools = getPools(lootTable);
 
         for (LootPool pool : pools) {
             float totalWeight = calculatePoolWeight(pool);
 
             // Get pool-level conditions
-            List<LootItemCondition> poolConditions = getConditions(pool);
-            List<ResourceLocation> poolConditionTypes = poolConditions.stream()
+            LootItemCondition[] poolConditions = getConditions(pool);
+            List<ResourceLocation> poolConditionTypes = Arrays.stream(poolConditions)
                     .map(LootTableUtils::getConditionType).toList();
             float poolChance = extractConditionChance(poolConditions);
 
-            List<LootPoolEntryContainer> entryContainers = getEntries(pool);
+            LootPoolEntryContainer[] entryContainers = getEntries(pool);
             for (LootPoolEntryContainer entryContainer : entryContainers) {
                 // Calculate base chance by weight
                 float baseChance = poolChance;
@@ -124,7 +147,7 @@ public final class LootTableUtils {
                 }
 
                 List<LootEntry> parsedEntries = parseLootPoolEntryContainer(
-                        entryContainer, baseChance, poolConditionTypes, initialDepth);
+                        entryContainer, entity, baseChance, poolConditionTypes, initialDepth);
                 entries.addAll(parsedEntries);
             }
         }
@@ -148,14 +171,14 @@ public final class LootTableUtils {
     /**
      * Parse a single loot entry container and return LootEntry objects.
      */
-    private static List<LootEntry> parseLootPoolEntryContainer(LootPoolEntryContainer entry, float baseChance, List<ResourceLocation> inheritedConditions, int depth) {
+    private static List<LootEntry> parseLootPoolEntryContainer(LootPoolEntryContainer entry, LivingEntity entity, float baseChance, List<ResourceLocation> inheritedConditions, int depth) {
         if (depth > MAX_RECURSION_DEPTH) {
             return List.of();
         }
 
         // Get entry-level conditions
-        List<LootItemCondition> entryConditions = getConditions(entry);
-        List<ResourceLocation> entryConditionTypes = entryConditions.stream()
+        LootItemCondition[] entryConditions = getConditions(entry);
+        List<ResourceLocation> entryConditionTypes = Arrays.stream(entryConditions)
                 .map(LootTableUtils::getConditionType).toList();
 
         // Combine inherited and entry-level conditions
@@ -173,14 +196,16 @@ public final class LootTableUtils {
                 minCount = 1;
             }
 
-            return switch (singleton) {
-                case LootItem lootItem -> List.of(parseLootItem(lootItem, minCount, maxCount, dropChance, allConditions));
-                case TagEntry tagEntry -> parseTagEntry(tagEntry, minCount, maxCount, dropChance, allConditions);
-                case NestedLootTable nestedLoot -> parseNestedLootTable(nestedLoot, dropChance, allConditions, depth);
-                default -> List.of();
-            };
+            if (singleton instanceof LootItem lootItem) {
+                return List.of(parseLootItem(lootItem, minCount, maxCount, dropChance, allConditions));
+            } else if (singleton instanceof TagEntry tagEntry) {
+                return parseTagEntry(tagEntry, minCount, maxCount, dropChance, allConditions);
+            } else if (singleton instanceof LootTableReference lootTableReference) {
+                return parseNestedLootTable(lootTableReference, dropChance, allConditions, entity, depth);
+            }
+            return List.of();
         } else if (entry instanceof CompositeEntryBase composite) {
-            return parseCompositeEntry(composite, dropChance, allConditions, depth);
+            return parseCompositeEntry(composite, entity, dropChance, allConditions, depth);
         }
         return List.of();
     }
@@ -191,17 +216,15 @@ public final class LootTableUtils {
      * Looks for random_chance or random_chance_with_enchanted_bonus conditions.
      * Returns 1.0 if no such condition is found (no multiplier).
      */
-    private static float extractConditionChance(List<LootItemCondition> conditions) {
+    private static float extractConditionChance(LootItemCondition[] conditions) {
         for (LootItemCondition condition : conditions) {
             if (condition instanceof LootItemRandomChanceCondition c) {
-                if (c.chance() instanceof ConstantValue(float value)) {
-                    return value;
-                }
-                return -1F;
-            } else if (condition instanceof LootItemRandomChanceWithEnchantedBonusCondition c) {
-                return c.unenchantedChance();
+                return getProbability(c);
+            } else if (condition instanceof LootItemRandomChanceWithLootingCondition c) {
+                return getPercent(c);
             } else if (condition instanceof BonusLevelTableCondition c) {
-                return c.values().isEmpty() ? 0 : c.values().getFirst();
+                float[] values = getValues(c);
+                return values.length == 0 ? 0 : values[0];
             }
         }
         return 1.0f;
@@ -212,8 +235,8 @@ public final class LootTableUtils {
      */
     private static LootEntry parseLootItem(LootItem lootItem, int minCount, int maxCount, float dropChance,
                                            List<ResourceLocation> conditions) {
-        Holder<Item> itemHolder = getItem(lootItem);
-        return new LootEntry(itemHolder.value(), minCount, maxCount, dropChance, conditions);
+        Item item = getItem(lootItem);
+        return new LootEntry(item, minCount, maxCount, dropChance, conditions);
     }
 
     /**
@@ -236,21 +259,20 @@ public final class LootTableUtils {
     }
 
     /**
-     * Parse a NestedLootTable entry.
-     * Only processes inline tables, skips references.
+     * Parse a LootTableReference entry (nested loot table).
+     * Fetches the referenced table from the server's loot data manager and parses it recursively.
      */
-    private static List<LootEntry> parseNestedLootTable(NestedLootTable nestedLoot, float dropChance,
-                                                        List<ResourceLocation> conditions, int depth) {
-        Either<ResourceKey<LootTable>, LootTable> contents = getContents(nestedLoot);
+    private static List<LootEntry> parseNestedLootTable(LootTableReference lootTableReference, float dropChance,
+                                                        List<ResourceLocation> conditions, LivingEntity entity, int depth) {
+        ResourceLocation tableName = getNestedLootTableName(lootTableReference);
 
-        if (contents.right().isPresent()) {
-            // Inline loot table - process recursively with increased depth
-            LootTable inlineTable = contents.right().get();
+        // Get the referenced loot table from server
+        LootTable referencedTable = entity.level().getServer().getLootData().getLootTable(tableName);
 
-            // Create a wrapper function to apply inherited conditions to all entries from the nested table
-            return parseLootEntries(inlineTable, depth + 1).stream()
+        // Create a wrapper function to apply inherited conditions to all entries from the referenced table
+        return parseLootEntries(referencedTable, entity, depth + 1).stream()
                 .map(entry -> {
-                    // Combine inherited conditions with nested entry conditions
+                    // Combine inherited conditions with referenced entry conditions
                     List<ResourceLocation> combinedConditions = new ArrayList<>(conditions);
                     combinedConditions.addAll(entry.conditions());
                     return new LootEntry(
@@ -262,21 +284,18 @@ public final class LootTableUtils {
                     );
                 })
                 .toList();
-        }
-
-        return List.of();
     }
 
     /**
      * Parse a CompositeEntryBase (EntryGroup, AlternativesEntry, SequentialEntry).
      */
-    private static List<LootEntry> parseCompositeEntry(CompositeEntryBase composite, float dropChance,
+    private static List<LootEntry> parseCompositeEntry(CompositeEntryBase composite, LivingEntity entity, float dropChance,
                                                        List<ResourceLocation> conditions, int depth) {
-        List<LootPoolEntryContainer> children = getChildren(composite);
+        LootPoolEntryContainer[] children = getChildren(composite);
         List<LootEntry> entries = new ArrayList<>();
 
         for (LootPoolEntryContainer child : children) {
-            entries.addAll(parseLootPoolEntryContainer(child, dropChance, conditions, depth + 1));
+            entries.addAll(parseLootPoolEntryContainer(child, entity, dropChance, conditions, depth + 1));
         }
 
         return entries;
@@ -290,7 +309,7 @@ public final class LootTableUtils {
         int minCount = 1;
         int maxCount = 1;
 
-        List<LootItemFunction> functions = getFunctions(singleton);
+        LootItemFunction[] functions = getFunctions(singleton);
         for (LootItemFunction function : functions) {
             if (function instanceof SetItemCountFunction setCount) {
                 NumberProvider value = getCountValue(setCount);
@@ -311,10 +330,12 @@ public final class LootTableUtils {
      * Returns int array [min, max] or null if cannot be determined.
      */
     private static int[] extractRangeFromNumberProvider(NumberProvider provider) {
-        if (provider instanceof ConstantValue(float value1)) {
-            int value = (int) value1;
+        if (provider instanceof ConstantValue constantValue) {
+            int value = (int) getValue(constantValue);
             return new int[]{value, value};
-        } else if (provider instanceof UniformGenerator(NumberProvider min, NumberProvider max)) {
+        } else if (provider instanceof UniformGenerator uniformGenerator) {
+            NumberProvider min = getMin(uniformGenerator);
+            NumberProvider max = getMax(uniformGenerator);
             int[] minRange = extractRangeFromNumberProvider(min);
             int[] maxRange = extractRangeFromNumberProvider(max);
             if (minRange != null && maxRange != null) {
@@ -333,7 +354,7 @@ public final class LootTableUtils {
 
         public static LootEntry fromNbt(CompoundTag nbt) {
             String itemId = nbt.getString("item");
-            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemId));
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(itemId));
             int minCount = nbt.getInt("minCount");
             int maxCount = nbt.getInt("maxCount");
             float dropChance = nbt.getFloat("dropChance");
@@ -344,7 +365,7 @@ public final class LootTableUtils {
                 ListTag conditionsList = nbt.getList("conditions", Tag.TAG_STRING);
                 for (Tag tag : conditionsList) {
                     if (tag instanceof StringTag conditionId) {
-                        conditions.add(ResourceLocation.parse(conditionId.getAsString()));
+                        conditions.add(ResourceLocation.tryParse(conditionId.getAsString()));
                     }
                 }
             }

@@ -182,14 +182,19 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
         }
 
         private static Component formatValue(Object value) {
-            return switch (value) {
-                case null -> TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS);
-                case Boolean b -> TextUtils.translate(b ? Lang.GUI_YES : Lang.GUI_NO);
-                case Enum<?> e -> TextUtils.translate(Configs.getEnumValueTranslationKey(e));
-                case Collection<?> s -> TextUtils.concat(Arrays.asList(TextUtils.literal(String.valueOf(s.size())), TextUtils.translate(Lang.TEXT_ITEMS)), TextUtils.space());
-                case Map<?, ?> s -> TextUtils.concat(Arrays.asList(TextUtils.literal(String.valueOf(s.size())), TextUtils.translate(Lang.TEXT_ENTRIES)), TextUtils.space());
-                default -> TextUtils.literal(String.valueOf(value));
-            };
+            if (value == null) {
+                return TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS);
+            } else if (value instanceof Boolean) {
+                boolean b = (Boolean) value;
+                return TextUtils.translate(b ? Lang.GUI_YES : Lang.GUI_NO);
+            } else if (value instanceof Enum) {
+                return TextUtils.translate(Configs.getEnumValueTranslationKey((Enum<?>) value));
+            } else if (value instanceof Collection<?> s) {
+                return TextUtils.concat(Arrays.asList(TextUtils.literal(String.valueOf(s.size())), TextUtils.translate(Lang.TEXT_ITEMS)), TextUtils.space());
+            } else if (value instanceof Map<?, ?> s) {
+                return TextUtils.concat(Arrays.asList(TextUtils.literal(String.valueOf(s.size())), TextUtils.translate(Lang.TEXT_ENTRIES)), TextUtils.space());
+            }
+            return TextUtils.literal(String.valueOf(value));
         }
     }
 }

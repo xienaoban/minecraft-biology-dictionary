@@ -18,8 +18,8 @@ public record Pair<F, S>(F first, S second) {
     @Override
     public boolean equals(Object other) {
         if (other == this) { return true; }
-        if (!(other instanceof Pair<?, ?>(Object first1, Object second1))) { return false; }
-        return Objects.equals(first, first1) && Objects.equals(second, second1);
+        if (!(other instanceof Pair<?, ?> otherPair)) { return false; }
+        return Objects.equals(first, otherPair.first) && Objects.equals(second, otherPair.second);
     }
 
     @Override

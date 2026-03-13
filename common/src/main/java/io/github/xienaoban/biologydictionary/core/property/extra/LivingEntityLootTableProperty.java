@@ -6,7 +6,7 @@ import io.github.xienaoban.biologydictionary.platform.util.LootTableUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -23,14 +23,14 @@ public class LivingEntityLootTableProperty extends AbstractProperty<LivingEntity
 
     @Override
     public void getFrom(LivingEntity entity) {
-        ResourceKey<LootTable> key = LootTableUtils.getLootTableKey(entity);
+        ResourceLocation key = LootTableUtils.getLootTableKey(entity);
         if (key == null) {
             setVal(null);
         } else {
             LootTable lootTable = Objects.requireNonNull(EntityUtils.getLevel(entity).getServer())
-                    .reloadableRegistries()
+                    .getLootData()
                     .getLootTable(key);
-            setVal(LootTableUtils.parseLootEntries(lootTable));
+            setVal(LootTableUtils.parseLootEntries(lootTable, entity));
         }
     }
 

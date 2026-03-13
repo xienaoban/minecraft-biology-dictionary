@@ -4,29 +4,24 @@ import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.mixin.CreativeModeTabsIMixin;
+import io.github.xienaoban.biologydictionary.mixin.ItemPropertiesIMixin;
 import io.github.xienaoban.biologydictionary.platform.server.ItemRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.server.network.Filterable;
 import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.component.CustomModelData;
-import net.minecraft.world.item.component.ItemLore;
-import net.minecraft.world.item.component.WritableBookContent;
-import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.item.WrittenBookItem;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * If the mod is installed correctly, a biology dictionary screen will be opened when the player right-clicks the book.
@@ -35,13 +30,11 @@ import java.util.Optional;
  * I didn't choose to define a new book item, instead I just made a book with custom NBT to ensure a good compatibility.
  * And I implemented the opening of the book in the mixin.
  *
- * @see io.github.xienaoban.biologydictionary.mixin.MinecraftMixin#useBiologyDictionaryScreen(CallbackInfo)
+ * @see io.github.xienaoban.biologydictionary.mixin.MinecraftMixin#biologydictionary$useBiologyDictionaryScreen(CallbackInfo)
  */
 public final class BiologyDictionaryItem {
     // Any writable book with this nbt key will be recognized as a biology dictionary.
     public static final String ID = BiologyDictionary.MOD_ID;
-
-    private static final CompoundTag ID_NBT = initIdNbt();
 
     public static void init() {
         ItemRegistry.register(CreativeModeTabsIMixin.biologydictionary$getToolsAndUtilities(), createBook());
@@ -78,7 +71,7 @@ public final class BiologyDictionaryItem {
         final int villagerXp = 0;
         final float priceMultiplier = 0.05F;
         MerchantOffers offers = entity.getOffers();
-        MerchantOffer offer = new MerchantOffer(new ItemCost(Items.EMERALD, cost), createBook(), maxUses, villagerXp, priceMultiplier);
+        MerchantOffer offer = new MerchantOffer(new ItemStack(Items.EMERALD, cost), createBook(), maxUses, villagerXp, priceMultiplier);
         offers.add(offer);
     }
 
@@ -89,35 +82,37 @@ public final class BiologyDictionaryItem {
     @SuppressWarnings("all")
     public static boolean isBook(ItemStack stack) {
         if (stack == null || !stack.is(Items.WRITABLE_BOOK)) return false;
-        CustomData cd = stack.get(DataComponents.CUSTOM_DATA);
-        return cd != null && cd.contains(ID);
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains(ID);
     }
 
     private static ItemStack createWritableBook() {
         ItemStack stack = new ItemStack(Items.WRITABLE_BOOK);
 
-        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(ID_NBT));
-        stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(14489768));
-        stack.set(DataComponents.ITEM_NAME, TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE).withStyle(
-                Style.EMPTY.withColor(TextColor.parseColor("aqua").getOrThrow())
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putString(ID, DevUtils.getModVersion(BiologyDictionary.MOD_ID));
+        tag.putInt(ItemPropertiesIMixin.biologydictionary$getCustomModelDataTag(), 14489768);
+
+        stack.setHoverName(TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE).withStyle(
+                Style.EMPTY.withColor(TextColor.parseColor("aqua"))
                         .withBold(true).withItalic(false)
         ));
-        stack.set(DataComponents.LORE, ItemLore.EMPTY.withLineAdded(
+
+        CompoundTag displayTag = stack.getOrCreateTagElement(ItemStack.TAG_DISPLAY);
+        ListTag loreTag = new ListTag();
+        loreTag.add(StringTag.valueOf(Component.Serializer.toJson(
                 TextUtils.translate(Lang.BIOLOGY_DICTIONARY_DESCRIPTION).withStyle(
-                        Style.EMPTY.withColor(TextColor.parseColor("dark_aqua").getOrThrow())
+                        Style.EMPTY.withColor(TextColor.parseColor("dark_aqua"))
                                 .withBold(false).withItalic(false)
                 )
-        ));
-        stack.set(DataComponents.WRITABLE_BOOK_CONTENT, new WritableBookContent(List.of(
-                new Filterable<>(createWritablePageString(), Optional.empty())
         )));
-        return stack;
-    }
+        displayTag.put(ItemStack.TAG_LORE, loreTag);
 
-    private static CompoundTag initIdNbt() {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putString(ID, DevUtils.getModVersion(BiologyDictionary.MOD_ID));
-        return nbt;
+        ListTag pagesTag = new ListTag();
+        pagesTag.add(StringTag.valueOf(createWritablePageString()));
+        tag.put(WrittenBookItem.TAG_PAGES, pagesTag);
+
+        return stack;
     }
 
     private static String createWritablePageString() {

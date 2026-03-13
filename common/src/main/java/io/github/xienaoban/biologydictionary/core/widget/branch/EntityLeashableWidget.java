@@ -8,10 +8,11 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Leashable;
+import net.minecraft.world.entity.Mob;
 
 @Environment(EnvType.CLIENT)
 public final class EntityLeashableWidget extends EntityPropertyStandardWidget<Entity> {
@@ -23,8 +24,8 @@ public final class EntityLeashableWidget extends EntityPropertyStandardWidget<En
 
     public EntityLeashableWidget(EntityProperties<Entity> properties) {
         super(properties, Page.COLUMNS / 4);
-        if (e() instanceof Leashable entity) {
-            leashable = (entity.isLeashed() || entity.canBeLeashed());
+        if (e() instanceof Mob mob) {
+            leashable = (mob.isLeashed() || mob.canBeLeashed(ClientUtils.getClientPlayer()));
         } else {
             leashable = false;
         }
