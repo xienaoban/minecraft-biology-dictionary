@@ -1,16 +1,18 @@
 package io.github.xienaoban.biologydictionary.forge;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
-import dev.architectury.platform.forge.EventBuses;
+import io.github.xienaoban.biologydictionary.Lang;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-@Mod(BiologyDictionary.MOD_ID)
+@Mod(Lang.BIOLOGY_DICTIONARY)
 public final class BiologyDictionaryForge {
-    public BiologyDictionaryForge() {
-        // Submit our event bus to let Architectury API register our content on the right time.
-        EventBuses.registerModEventBus(BiologyDictionary.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+    public BiologyDictionaryForge(IEventBus modBus) {
+        modBus.addListener(BiologyDictionaryForge::initCommon);
+    }
 
-        // Run our common setup.
+    private static void initCommon(FMLCommonSetupEvent event) {
+        BiologyDictionary.BD.forceInitialize();
     }
 }
