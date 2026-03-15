@@ -5,6 +5,7 @@ plugins {
 loom {
     forge {
         mixinConfig "biologydictionary.mixins.json"
+        mixinConfig "biologydictionary-forge.mixins.json"
     }
 }
 

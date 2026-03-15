@@ -29,7 +29,6 @@
         "loot.LootPoolEntryContainerIMixin",
         "loot.LootPoolIMixin",
         "loot.LootPoolSingletonContainerIMixin",
-        "loot.LootTableIMixin",
         "loot.NestedLootTableIMixin",
         "loot.SetItemCountFunctionIMixin",
         "loot.TagEntryIMixin",

@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import io.github.xienaoban.biologydictionary.mixin.loot.*;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -41,8 +41,9 @@ public final class LootTableUtils {
         return entity.getLootTable();
     }
 
+    @ExpectPlatform
     public static LootPool[] getPools(LootTable lootTable) {
-        return ((LootTableIMixin) lootTable).biologydictionary$getPools();
+        throw new AssertionError();
     }
 
     public static LootPoolEntryContainer[] getEntries(LootPool pool) {

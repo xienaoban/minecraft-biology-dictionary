@@ -15,8 +15,9 @@ import net.minecraft.server.level.ServerPlayer;
 public final class ServerNetApiImpl {
 
     public static <T extends Packet> void register(Class<T> clazz, Packet.Factory<T> factory) {
+        PacketUtil.registerId(clazz);
+
         if (PacketUtil.hasServerReceiver(clazz)) {
-            PacketUtil.registerId(clazz);
             ResourceLocation id = PacketUtil.getId(clazz);
             NetworkManager.registerReceiver(NetworkManager.Side.C2S, id, (buf, context) -> {
                 T packet = factory.create(buf);

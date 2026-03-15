@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.mixin.loot;
+package io.github.xienaoban.biologydictionary.mixin.fabric;
 
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
