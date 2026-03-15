@@ -50,7 +50,7 @@ public final class EntityInventoryPropertyBundle {
     public static <E extends Entity> InventoryHandler<E> getHandler(E entity) {
         List<InventoryHandler<E>> list = Misc.cast(BUNDLE.getHandlers(entity));
         if (list.isEmpty()) { return null; }
-        return list.getFirst();
+        return list.get(0);
     }
 
     public static <E extends Entity> Container getContainer(E entity) {

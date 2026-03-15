@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 
@@ -21,7 +22,9 @@ public record RequestBeehiveInfoPacket(BlockPos pos) implements Packet {
     public void serverReceive(ServerNetApi.Context ctx) {
         BeehiveBlockEntity entity = (BeehiveBlockEntity) ctx.player().level().getBlockEntity(pos);
         Objects.requireNonNull(entity);
-        CompoundTag bees = entity.saveCustomOnly(Objects.requireNonNull(entity.getLevel()).registryAccess());
+        ListTag beesList = entity.writeBees();
+        CompoundTag bees = new CompoundTag();
+        bees.put(BeehiveBlockEntity.BEES, beesList);
         ReplyBeehiveInfoPacket toSend = new ReplyBeehiveInfoPacket(bees);
         ServerNetApi.send(ctx.player(), toSend);
     }

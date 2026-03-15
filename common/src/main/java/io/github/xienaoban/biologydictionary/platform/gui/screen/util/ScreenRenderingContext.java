@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -60,7 +61,7 @@ public final class ScreenRenderingContext {
 
     /**
      * We don't use the mouseX and mouseY parameters because they are int.
-     * @see net.minecraft.client.renderer.GameRenderer#render(net.minecraft.client.DeltaTracker, boolean)
+     * @see net.minecraft.client.renderer.GameRenderer#render(float, long, boolean)
      *
      * @param mouseX not used
      * @param mouseY not used
@@ -132,7 +133,7 @@ public final class ScreenRenderingContext {
         FormattedCharSequence text = component.getVisualOrderText();
         font.drawInBatch(text, x, y, color, false, getPose().last().pose(), bufferSource(),
                 Font.DisplayMode.NORMAL, 0, 15728880);
-        getGuiGraphics().flush();
+        ((io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin) getGuiGraphics()).biologydictionary$invokeFlushIfUnmanaged();
     }
 
     public void renderText(Component component, int color, float size, float z, float x, float y) {
@@ -197,11 +198,11 @@ public final class ScreenRenderingContext {
     public void renderRectangle(int color, float z, float left, float top, float right, float bottom) {
         org.joml.Matrix4f matrix4f = getPose().last().pose();
         VertexConsumer vertexConsumer = bufferSource().getBuffer(RenderType.gui());
-        vertexConsumer.addVertex(matrix4f, left, top, z).setColor(color);
-        vertexConsumer.addVertex(matrix4f, left, bottom, z).setColor(color);
-        vertexConsumer.addVertex(matrix4f, right, bottom, z).setColor(color);
-        vertexConsumer.addVertex(matrix4f, right, top, z).setColor(color);
-        getGuiGraphics().flush();
+        vertexConsumer.vertex(matrix4f, left, top, z).color(color).endVertex();
+        vertexConsumer.vertex(matrix4f, left, bottom, z).color(color).endVertex();
+        vertexConsumer.vertex(matrix4f, right, bottom, z).color(color).endVertex();
+        vertexConsumer.vertex(matrix4f, right, top, z).color(color).endVertex();
+        ((io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin) getGuiGraphics()).biologydictionary$invokeFlushIfUnmanaged();
     }
 
     public void renderTexture(TextureInfo texture,
@@ -232,12 +233,13 @@ public final class ScreenRenderingContext {
 
         // Build vertices using Tesselator (same as innerBlit)
         org.joml.Matrix4f matrix4f = getPose().last().pose();
-        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.addVertex(matrix4f, left, top, z).setUv(u0, v0);
-        bufferBuilder.addVertex(matrix4f, left, bottom, z).setUv(u0, v1);
-        bufferBuilder.addVertex(matrix4f, right, bottom, z).setUv(u1, v1);
-        bufferBuilder.addVertex(matrix4f, right, top, z).setUv(u1, v0);
-        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.vertex(matrix4f, left, top, z).uv(u0, v0).endVertex();
+        bufferBuilder.vertex(matrix4f, left, bottom, z).uv(u0, v1).endVertex();
+        bufferBuilder.vertex(matrix4f, right, bottom, z).uv(u1, v1).endVertex();
+        bufferBuilder.vertex(matrix4f, right, top, z).uv(u1, v0).endVertex();
+        BufferUploader.drawWithShader(bufferBuilder.end());
     }
 
     //=======================================================================================
@@ -258,7 +260,7 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen#renderIcons(net.minecraft.client.gui.GuiGraphics, int, int, java.lang.Iterable, boolean)
      */
     public void renderEffect(Holder<MobEffect> effect, float left, float top) {
-        var sprite = getClient().getMobEffectTextures().get(effect);
+        TextureAtlasSprite sprite = getClient().getMobEffectTextures().get(effect.value());
         getGuiGraphics().blit((int) left, (int) top, 0, 18, 18, sprite);
     }
 
@@ -379,7 +381,7 @@ public final class ScreenRenderingContext {
      *     InventoryScreen.renderEntityInInventoryFollowsMouse(getGuiGraphics(), (int) left, (int) top, (int) right, (int) bottom, 30, 0.0625F, rotateX * 20, rotateY * 20, livingEntity);
      * }
      *
-     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
+     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, float, float, net.minecraft.world.entity.LivingEntity)
      */
     private void renderEntity(Entity entity, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset) {
@@ -458,6 +460,6 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.components.PlayerTabOverlay#render(net.minecraft.client.gui.GuiGraphics, int, net.minecraft.world.scores.Scoreboard, net.minecraft.world.scores.Objective)
      */
     public void renderPlayerFace(AbstractClientPlayer player, float left, float top, float size) {
-        PlayerFaceRenderer.draw(getGuiGraphics(), player.getSkin().texture(), (int) left, (int) top, (int) size, /* show hat */ true, /* upsideDown */ false);
+        PlayerFaceRenderer.draw(getGuiGraphics(), player.getSkinTextureLocation(), (int) left, (int) top, (int) size, /* show hat */ true, /* upsideDown */ false);
     }
 }

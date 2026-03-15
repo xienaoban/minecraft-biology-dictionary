@@ -13,7 +13,8 @@ public class BlockPosProperty<E extends Entity> extends AbstractProperty<E, Bloc
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        setVal(NbtUtils.readBlockPos(nbt, name()).orElse(null));
+        CompoundTag tag = nbt.getCompound(name());
+        setVal(tag.isEmpty() ? null : NbtUtils.readBlockPos(tag));
     }
 
     @Override

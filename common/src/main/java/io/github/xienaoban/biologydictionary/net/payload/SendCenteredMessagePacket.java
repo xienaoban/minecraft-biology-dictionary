@@ -7,18 +7,17 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
 
 public record SendCenteredMessagePacket(Component message) implements Packet {
     public static final Packet.Factory<SendCenteredMessagePacket> FACTORY = SendCenteredMessagePacket::new;
 
     private SendCenteredMessagePacket(FriendlyByteBuf buf) {
-        this(ComponentSerialization.TRUSTED_CONTEXT_FREE_STREAM_CODEC.decode(buf));
+        this(buf.readComponent());
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
-        ComponentSerialization.TRUSTED_CONTEXT_FREE_STREAM_CODEC.encode(buf, message);
+        buf.writeComponent(message);
     }
 
     @Environment(EnvType.CLIENT)

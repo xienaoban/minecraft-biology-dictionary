@@ -16,7 +16,6 @@ import java.util.List;
  * Used for LivingEntity's active_effects NBT tag.
  *
  * @see LivingEntity#getActiveEffects()
- * @see net.minecraft.world.entity.LivingEntity#TAG_ACTIVE_EFFECTS
  */
 public class MobEffectInstanceListProperty<E extends Entity> extends AbstractProperty<E, List<MobEffectInstance>> {
     public MobEffectInstanceListProperty(String propertyName) {
@@ -46,7 +45,8 @@ public class MobEffectInstanceListProperty<E extends Entity> extends AbstractPro
         if (getVal() != null) {
             ListTag listTag = new ListTag();
             for (MobEffectInstance effect : getVal()) {
-                listTag.add(effect.save());
+                CompoundTag tag = new CompoundTag();
+                listTag.add(effect.save(tag));
             }
             nbt.put(name(), listTag);
         } else {

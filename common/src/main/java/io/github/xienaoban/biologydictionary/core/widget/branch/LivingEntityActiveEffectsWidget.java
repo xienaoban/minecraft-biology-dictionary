@@ -16,7 +16,10 @@ import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -66,12 +69,14 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
         } else {
             int maxW = -1;
             for (MobEffectInstance effect : effects) {
-                Component name = effect.getEffect().value().getDisplayName();
+                MobEffect mobEffect = effect.getEffect();
+                Component name = mobEffect.getDisplayName();
                 maxW = Math.max(maxW, ctx.calcTextWidth(name));
             }
             for (MobEffectInstance effect : effects) {
+                MobEffect mobEffect = effect.getEffect();
                 Component name = TextUtils.concat(Arrays.asList(
-                        effect.getEffect().value().getDisplayName(),
+                        mobEffect.getDisplayName(),
                         TextUtils.literal(String.valueOf(effect.getAmplifier() + 1))));
                 int duration = effect.getDuration();
                 Component time;
@@ -123,7 +128,9 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
             int i = -1;
             for (MobEffectInstance effect : effects) {
                 ++i;
-                ctx.renderEffect(effect.getEffect(), 0.444444F, getBox().getLeft() + 0.05F + i * gap, getBox().getTop());
+                MobEffect mobEffect = effect.getEffect();
+                Holder<MobEffect> effectHolder = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(mobEffect);
+                ctx.renderEffect(effectHolder, 0.444444F, getBox().getLeft() + 0.05F + i * gap, getBox().getTop());
             }
         }
 

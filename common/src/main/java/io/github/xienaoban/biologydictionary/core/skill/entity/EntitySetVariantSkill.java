@@ -7,17 +7,17 @@ import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 
-public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, Tag variantTag) implements EntityTargetedSkill<Entity> {
+public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, CompoundTag variantTag) implements EntityTargetedSkill<Entity> {
     public static final Meta<EntitySetVariantSkill> META = new Meta<>() {
         @Override
         public EntitySetVariantSkill create(FriendlyByteBuf buf) {
             String entityTypeId = buf.readUtf();
             int idx = buf.readInt();
-            Tag variantTag = buf.readNbt();
+            CompoundTag variantTag = buf.readNbt();
             return new EntitySetVariantSkill(entityTypeId, idx, variantTag);
         }
 

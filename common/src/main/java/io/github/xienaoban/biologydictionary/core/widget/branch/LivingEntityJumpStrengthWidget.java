@@ -10,13 +10,14 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRend
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 @Environment(EnvType.CLIENT)
 public final class LivingEntityJumpStrengthWidget extends AbstractLivingEntityAttributeWidget<LivingEntity> {
-    public static final Holder<Attribute> ATTR = Attributes.JUMP_STRENGTH;
+    public static final Holder<Attribute> ATTR = BuiltInRegistries.ATTRIBUTE.wrapAsHolder(Attributes.JUMP_STRENGTH);
 
     public static final Factory<LivingEntity> FACTORY = new Factory<>() {
         @Override

@@ -1,8 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property.vanilla;
 
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -11,10 +9,8 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ItemStackListProperty<E extends Entity> extends AbstractProperty<E, List<ItemStack>> {
-    private final RegistryAccess registryAccess = Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
 
     public ItemStackListProperty(String propertyName) {
         super(propertyName);
@@ -26,7 +22,8 @@ public class ItemStackListProperty<E extends Entity> extends AbstractProperty<E,
             ListTag listTag = nbt.getList(name(), Tag.TAG_COMPOUND);
             ArrayList<ItemStack> list = new ArrayList<>();
             for (int i = 0; i < listTag.size(); i++) {
-                list.add(ItemStack.parseOptional(registryAccess, listTag.getCompound(i)));
+                CompoundTag tag = listTag.getCompound(i);
+                list.add(tag.isEmpty() ? ItemStack.EMPTY : ItemStack.of(tag));
             }
             setVal(list);
         } else {
@@ -40,7 +37,8 @@ public class ItemStackListProperty<E extends Entity> extends AbstractProperty<E,
             ListTag listTag = new ListTag();
             for (var e : getVal()) {
                 if (e != null && !e.isEmpty()) {
-                    listTag.add(e.save(registryAccess));
+                    CompoundTag tag = new CompoundTag();
+                    listTag.add(e.save(tag));
                 } else {
                     listTag.add(new CompoundTag());
                 }

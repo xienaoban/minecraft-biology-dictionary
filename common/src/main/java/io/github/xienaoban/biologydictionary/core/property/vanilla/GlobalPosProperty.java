@@ -25,11 +25,12 @@ public class GlobalPosProperty<E extends Entity> extends AbstractProperty<E, Glo
             return;
         }
         ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION, location);
-        BlockPos blockPos = NbtUtils.readBlockPos(x, "bp").orElse(null);
-        if (blockPos == null) {
+        CompoundTag bpTag = x.getCompound("bp");
+        if (bpTag.isEmpty()) {
             setVal(null);
             return;
         }
+        BlockPos blockPos = NbtUtils.readBlockPos(bpTag);
         GlobalPos globalPos = GlobalPos.of(resourceKey, blockPos);
         setVal(globalPos);
     }

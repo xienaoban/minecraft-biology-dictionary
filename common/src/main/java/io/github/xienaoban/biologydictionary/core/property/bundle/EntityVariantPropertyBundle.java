@@ -57,7 +57,7 @@ public final class EntityVariantPropertyBundle {
         List<V> getVariants();
         V getVariant(E entity);
         void setVariant(E entity, V variant);
-        Tag variantToNbt(V variant);
+        CompoundTag variantToNbt(V variant);
         V nbtToVariant(Tag nbt);
         String getVariantName(V variant);
     }
@@ -76,7 +76,7 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        default Tag variantToNbt(V variant) {
+        default CompoundTag variantToNbt(V variant) {
             return createProperty().withVal(variant).toTag();
         }
 
@@ -94,7 +94,7 @@ public final class EntityVariantPropertyBundle {
         if (variant instanceof Holder<?> holder) {
             Holder<Object> objHolder = Misc.cast(holder);
             ResourceKey<Object> rk = objHolder.unwrapKey().orElseThrow();
-            Registry<Object> registry = entity.registryAccess().registry(rk.registryKey()).orElseThrow();
+            Registry<Object> registry = entity.level().registryAccess().registry(ResourceKey.createRegistryKey(rk.registry())).orElseThrow();
             List<Holder<Object>> res = registry.registryKeySet().stream()
                     .map(registry::getHolderOrThrow)
                     .map(r -> (Holder<Object>) r)
@@ -125,7 +125,7 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToNbt(Holder<Object> variant) {
+        public CompoundTag variantToNbt(Holder<Object> variant) {
             ResourceKey<Object> rk = variant.unwrapKey().orElseThrow();
             CompoundTag res = new CompoundTag();
             res.putString(NBT_KEY, rk.location().toString());
@@ -134,8 +134,9 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public Holder<Object> nbtToVariant(Tag nbt) {
-            registry.getHolder(ResourceLocation.parse(((CompoundTag) nbt).getString(NBT_KEY))).orElseThrow();
-            return null;
+            ResourceLocation location = new ResourceLocation(((CompoundTag) nbt).getString(NBT_KEY));
+            ResourceKey<Object> key = ResourceKey.create(registry.key(), location);
+            return registry.getHolder(key).orElseThrow();
         }
 
         @Override
@@ -166,7 +167,7 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToNbt(Enum<?> variant) {
+        public CompoundTag variantToNbt(Enum<?> variant) {
             CompoundTag res = new CompoundTag();
             res.putString(NBT_KEY, variant.name());
             return res;
@@ -206,7 +207,7 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToNbt(ResourceKey<VillagerType> variant) {
+        public CompoundTag variantToNbt(ResourceKey<VillagerType> variant) {
             CompoundTag res = new CompoundTag();
             res.putString(NBT_KEY, variant.location().toString());
             return res;
@@ -214,7 +215,7 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public ResourceKey<VillagerType> nbtToVariant(Tag nbt) {
-            ResourceLocation location = ResourceLocation.parse(((CompoundTag) nbt).getString(NBT_KEY));
+            ResourceLocation location = new ResourceLocation(((CompoundTag) nbt).getString(NBT_KEY));
             return ResourceKey.create(Registries.VILLAGER_TYPE, location);
         }
 
@@ -243,7 +244,7 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToNbt(net.minecraft.world.entity.animal.horse.Variant variant) {
+        public CompoundTag variantToNbt(net.minecraft.world.entity.animal.horse.Variant variant) {
             CompoundTag res = new CompoundTag();
             res.putString(NBT_KEY, variant.name());
             return res;
@@ -278,7 +279,7 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToNbt(net.minecraft.world.entity.animal.horse.Markings variant) {
+        public CompoundTag variantToNbt(net.minecraft.world.entity.animal.horse.Markings variant) {
             CompoundTag res = new CompoundTag();
             res.putString(NBT_KEY, variant.name());
             return res;
@@ -316,7 +317,7 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToNbt(Panda.Gene variant) {
+        public CompoundTag variantToNbt(Panda.Gene variant) {
             CompoundTag res = new CompoundTag();
             res.putString(NBT_KEY, variant.name());
             return res;
