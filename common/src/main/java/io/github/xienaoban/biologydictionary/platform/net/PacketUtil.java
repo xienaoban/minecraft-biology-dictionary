@@ -1,8 +1,5 @@
 package io.github.xienaoban.biologydictionary.platform.net;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
@@ -15,27 +12,23 @@ public final class PacketUtil {
 
     private PacketUtil() {}
 
-    private static final Map<Class<? extends Packet>, CustomPacketPayload.Type<?>> TYPE_CACHE = new HashMap<>();
+    private static final Map<Class<? extends Packet>, ResourceLocation> ID_CACHE = new HashMap<>();
 
     // Do not register after initialization. No lock here.
-    public static <T extends Packet> void registerType(Class<T> clazz) {
-        if (TYPE_CACHE.containsKey(clazz)) {
+    public static <T extends Packet> void registerId(Class<T> clazz) {
+        if (ID_CACHE.containsKey(clazz)) {
             throw new IllegalStateException("Packet class " + clazz.getName() + " has already been registered");
         }
-        TYPE_CACHE.put(clazz, new CustomPacketPayload.Type<>(generateId(clazz)));
+        ID_CACHE.put(clazz, generateId(clazz));
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Packet> CustomPacketPayload.Type<T> getType(Class<T> clazz) {
-        CustomPacketPayload.Type<?> type = TYPE_CACHE.get(clazz);
-        if (type == null) {
+    public static <T extends Packet> ResourceLocation getId(Class<T> clazz) {
+        ResourceLocation id = ID_CACHE.get(clazz);
+        if (id == null) {
             throw new IllegalArgumentException("Packet type not registered: " + clazz.getName());
         }
-        return (CustomPacketPayload.Type<T>) type;
-    }
-
-    public static <T extends Packet> StreamCodec<FriendlyByteBuf, T> generateCodec(Packet.Factory<T> factory) {
-        return StreamCodec.of((FriendlyByteBuf buf, T packet) -> packet.write(buf), factory::create);
+        return id;
     }
 
     public static boolean hasClientReceiver(Class<? extends Packet> clazz) {
@@ -56,6 +49,6 @@ public final class PacketUtil {
         }
         String path = className.substring(0, className.length() - classEnd.length())
                 .replaceAll("([A-Z]+)", "_$1").substring(1).toLowerCase();
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+        return new ResourceLocation(MOD_ID, path);
     }
 }

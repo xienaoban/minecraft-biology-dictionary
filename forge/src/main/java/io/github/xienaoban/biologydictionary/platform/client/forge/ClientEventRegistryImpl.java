@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.platform.client.neoforge;
+package io.github.xienaoban.biologydictionary.platform.client.forge;
 
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;

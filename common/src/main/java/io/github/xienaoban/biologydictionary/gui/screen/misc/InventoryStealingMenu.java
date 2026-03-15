@@ -75,7 +75,6 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         // SADDLE is not an EquipmentSlot in 1.21.1, ignored
         top += wh;
         // BODY slot doesn't exist in 1.20.1, ignored
-        left += wh;
         addSlot(new EntityEquipmentSlot(EquipmentSlot.MAINHAND, left, top += wh + 4, EMPTY_ARMOR_SLOT_SWORD));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.OFFHAND,  left + wh, top, EMPTY_ARMOR_SLOT_SHIELD));
 

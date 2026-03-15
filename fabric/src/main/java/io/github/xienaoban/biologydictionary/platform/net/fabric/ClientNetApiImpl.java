@@ -4,21 +4,32 @@ import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.PacketUtil;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.Objects;
 
 public final class ClientNetApiImpl {
 
+    private ClientNetApiImpl() {}
+
     public static <T extends Packet> void register(Class<T> clazz, Packet.Factory<T> factory) {
         if (PacketUtil.hasClientReceiver(clazz)) {
-            CustomPacketPayload.Type<T> type = PacketUtil.getType(clazz);
-            ClientPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
-                ClientNetApi.Context ctx = new ClientNetApi.Context(context.client(), context.player());
-                payload.clientReceive(ctx);
+            ResourceLocation id = PacketUtil.getId(clazz);
+            ClientPlayNetworking.registerGlobalReceiver(id, (client, handler, buf, responseSender) -> {
+                LocalPlayer player = Objects.requireNonNull(client.player);
+                T packet = factory.create(buf);
+                client.execute(() -> packet.clientReceive(new ClientNetApi.Context(client, player)));
             });
         }
     }
 
-    public static void send(Packet payload) {
-        ClientPlayNetworking.send(payload);
+    public static void send(Packet packet) {
+        ResourceLocation id = PacketUtil.getId(packet.getClass());
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        packet.write(buf);
+        ClientPlayNetworking.send(id, buf);
     }
 }

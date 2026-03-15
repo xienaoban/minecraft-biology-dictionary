@@ -981,19 +981,19 @@ public class VanillaEntityProperties {
         }
 
         public static BlockPosProperty<Bee> createFlowerPosProperty() {
-            return new BlockPosProperty<>("flower_pos");
+            return new BlockPosProperty<>("FlowerPos");
         }
 
         public static BlockPosProperty<Bee> getFlowerPosProperty(EntityProperties<?> ep) {
-            return g(ep, "flower_pos");
+            return g(ep, "FlowerPos");
         }
 
         public static BlockPosProperty<Bee> createHivePosProperty() {
-            return new BlockPosProperty<>("hive_pos");
+            return new BlockPosProperty<>("HivePos");
         }
 
         public static BlockPosProperty<Bee> getHivePosProperty(EntityProperties<?> ep) {
-            return g(ep, "hive_pos");
+            return g(ep, "HivePos");
         }
 
         @Override

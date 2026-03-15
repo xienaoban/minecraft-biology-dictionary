@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.platform.client.neoforge;
+package io.github.xienaoban.biologydictionary.platform.client.forge;
 
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import net.minecraft.client.KeyMapping;

@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.platform.server.neoforge;
+package io.github.xienaoban.biologydictionary.platform.server.forge;
 
 import dev.architectury.event.events.common.LifecycleEvent;
 import io.github.xienaoban.biologydictionary.platform.server.ServerEventRegistry;

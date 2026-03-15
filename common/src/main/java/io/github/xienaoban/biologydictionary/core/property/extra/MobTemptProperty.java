@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public final class MobTemptProperty extends ItemStackListProperty<Mob> {
         // Pigs have two TemptGoal!
         List<Predicate<ItemStack>> predicates = new ArrayList<>();
         for (TemptGoal temptGoal : EntityUtils.getGoals(entity, TemptGoal.class)) {
-            Predicate<ItemStack> items = ((TemptGoalIMixin) temptGoal).biologydictionary$getItems();
+            Ingredient items = ((TemptGoalIMixin) temptGoal).biologydictionary$getItems();
             predicates.add(items);
         }
         return predicates;

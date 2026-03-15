@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.platform.server.neoforge;
+package io.github.xienaoban.biologydictionary.platform.server.forge;
 
 import dev.architectury.registry.CreativeTabRegistry;
 import net.minecraft.resources.ResourceKey;

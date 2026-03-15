@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.platform.util.neoforge;
+package io.github.xienaoban.biologydictionary.platform.util.forge;
 
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;

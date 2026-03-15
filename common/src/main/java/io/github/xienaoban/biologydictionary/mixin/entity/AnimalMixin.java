@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.mixin.entity;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
@@ -15,11 +14,11 @@ public class AnimalMixin {
 
     /**
      * Inject into spawnChildFromBreeding to make the baby inherit silent status from both parents.
-     * This injection happens after the baby is created and set to baby state (setBaby(true)),
-     * capturing the ageableMob local variable which is the baby.
+     * This injection happens at RETURN (end) of the method, after all breeding logic is done.
+     * We need to use redirect to intercept finalizeSpawnChildFromBreeding call.
      */
-    @Inject(method = "spawnChildFromBreeding", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Animal;finalizeSpawnChildFromBreeding(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/animal/Animal;Lnet/minecraft/world/entity/AgeableMob;)V"))
-    private void biologydictionary$inheritSilentFromParents(ServerLevel serverLevel, Animal otherParent, CallbackInfo ci, @Local AgeableMob ageableMob) {
+    @Inject(method = "finalizeSpawnChildFromBreeding", at = @At("HEAD"))
+    private void biologydictionary$inheritSilentFromParents(ServerLevel serverLevel, Animal otherParent, AgeableMob ageableMob, CallbackInfo ci) {
         // Check if the config is enabled
         if (!ConfigsManager.getServer().isInheritSilentFromParents()) {
             return;
