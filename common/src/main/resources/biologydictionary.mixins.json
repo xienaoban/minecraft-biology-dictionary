@@ -35,7 +35,6 @@
         "loot.UniformGeneratorIMixin"
     ],
     "client": [
-        "ItemPropertiesIMixin",
         "MinecraftMixin",
         "entity.AbstractClientPlayerIMixin",
         "rendering.FallingBlockRendererMixin",

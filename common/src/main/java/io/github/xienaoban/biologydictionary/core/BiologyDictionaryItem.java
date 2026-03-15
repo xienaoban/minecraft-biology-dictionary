@@ -4,7 +4,6 @@ import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.mixin.CreativeModeTabsIMixin;
-import io.github.xienaoban.biologydictionary.mixin.ItemPropertiesIMixin;
 import io.github.xienaoban.biologydictionary.platform.server.ItemRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -91,7 +90,7 @@ public final class BiologyDictionaryItem {
 
         CompoundTag tag = stack.getOrCreateTag();
         tag.putString(ID, DevUtils.getModVersion(BiologyDictionary.MOD_ID));
-        tag.putInt(ItemPropertiesIMixin.biologydictionary$getCustomModelDataTag(), 14489768);
+        tag.putInt("CustomModelData", 14489768);
 
         stack.setHoverName(TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE).withStyle(
                 Style.EMPTY.withColor(TextColor.parseColor("aqua"))

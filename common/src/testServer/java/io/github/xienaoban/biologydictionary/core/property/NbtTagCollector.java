@@ -219,36 +219,42 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                         throw new AssertionError("Handle it");
                     }
                 } else if (NBT_UTILS_CLASS_NAME.equals(methodScope)) {
-                    // Probably be `NbtUtils.readBlockPos()` or `NbtUtils.writeBlockPos()`.
-                    LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
-                    NodeList<Expression> arguments = n.getArguments();
+                    // In 1.20.1: NbtUtils.readBlockPos(this.leashInfoTag)
+                    // Skip for now.
 
-                    if (methodName.equals(READ_BLOCK_POS_METHOD_NAME)) {
-                        String tagArgName = arguments.get(0).asNameExpr().getNameAsString();
-                        String nbtTagName = arguments.get(1).asStringLiteralExpr().getValue();
-                        if (TAG_ARG_NAME.equals(tagArgName)) {
-                            mergeNbtTagInfo(nbtTagName, new NbtTagInfo(TagMap.BLOCK_POS, false, true, false));
-                        }
-                    }
+                    // // Probably be `NbtUtils.readBlockPos()` or `NbtUtils.writeBlockPos()`.
+                    // LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
+                    // NodeList<Expression> arguments = n.getArguments();
+                    //
+                    // if (methodName.equals(READ_BLOCK_POS_METHOD_NAME)) {
+                    //     String tagArgName = arguments.get(0).asNameExpr().getNameAsString();
+                    //     String nbtTagName = arguments.get(1).asStringLiteralExpr().getValue();
+                    //     if (TAG_ARG_NAME.equals(tagArgName)) {
+                    //         mergeNbtTagInfo(nbtTagName, new NbtTagInfo(TagMap.BLOCK_POS, false, true, false));
+                    //     }
+                    // }
                 } else if (ITEM_STACK_CLASS_NAME.equals(methodScope)) {
-                    // Probably be `ItemStack.parse()` or `ItemStack.parseOptional()`.
-                    LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
-                    NodeList<Expression> arguments = n.getArguments();
+                    // In 1.20.1: ItemStack.of(CompoundTag) only has 1 parameter
+                    // Skip for now.
 
-                    // For `this.bodyArmorItem = (ItemStack)ItemStack.parse(this.registryAccess(), compoundTag.getCompound("body_armor_item")).orElse(ItemStack.EMPTY);`
-                    arguments.get(1).ifMethodCallExpr(methodCallExpr1 -> methodCallExpr1.getScope().ifPresent(expression1 -> expression1.ifNameExpr(nameExpr1 -> {
-                        String methodScope1 = nameExpr1.getName().getIdentifier();
-                        if (TAG_ARG_NAME.equals(methodScope1)) {
-                            super.visit(methodCallExpr1, arg);
-                        }
-                    })));
-
-                    if (methodName.equals(READ_ITEM_STACK_METHOD_NAME) || methodName.equals(READ_OR_NULL_ITEM_STACK_METHOD_NAME)) {
-                        if (currentPropertyName != null && nbtTags.containsKey(currentPropertyName)) {
-                            boolean isList = nbtTags.get(currentPropertyName).list();
-                            mergeNbtTagInfo(currentPropertyName, new NbtTagInfo(TagMap.ITEM_STACK, isList, true, false));
-                        }
-                    }
+                    // // Probably be `ItemStack.parse()` or `ItemStack.parseOptional()`.
+                    // LOGGER.trace("CompoundTag found in " + entityClazz + "." + currentMethod.getNameAsString() + ":\t" + n);
+                    // NodeList<Expression> arguments = n.getArguments();
+                    //
+                    // // For `this.bodyArmorItem = (ItemStack)ItemStack.parse(this.registryAccess(), compoundTag.getCompound("body_armor_item")).orElse(ItemStack.EMPTY);`
+                    // arguments.get(1).ifMethodCallExpr(methodCallExpr1 -> methodCallExpr1.getScope().ifPresent(expression1 -> expression1.ifNameExpr(nameExpr1 -> {
+                    //     String methodScope1 = nameExpr1.getName().getIdentifier();
+                    //     if (TAG_ARG_NAME.equals(methodScope1)) {
+                    //         super.visit(methodCallExpr1, arg);
+                    //     }
+                    // })));
+                    //
+                    // if (methodName.equals(READ_ITEM_STACK_METHOD_NAME) || methodName.equals(READ_OR_NULL_ITEM_STACK_METHOD_NAME)) {
+                    //     if (currentPropertyName != null && nbtTags.containsKey(currentPropertyName)) {
+                    //         boolean isList = nbtTags.get(currentPropertyName).list();
+                    //         mergeNbtTagInfo(currentPropertyName, new NbtTagInfo(TagMap.ITEM_STACK, isList, true, false));
+                    //     }
+                    // }
                 }
             } catch (Throwable e) {
                 throw new AssertionError("Failed to parse method: `" + n + "` in `" + currentMethod.getDeclarationAsString() + "`", e);
