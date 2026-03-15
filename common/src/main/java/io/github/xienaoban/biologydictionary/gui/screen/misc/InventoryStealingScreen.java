@@ -54,7 +54,7 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
             guiGraphics.blit(Textures.STEALING_INVENTORY.location(), left + 65 + (i % mod) * wh, top + 17 + (i / mod) * wh, (int) Textures.STEALING_INVENTORY.width() - wh, (int) Textures.STEALING_INVENTORY.height() - wh, wh, wh, (int) Textures.STEALING_INVENTORY.width(), (int) Textures.STEALING_INVENTORY.height());
         }
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 34, top + 53, 30,
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, left + 34, top + 53 + (int) (entity.getBbHeight() * 15), 30,
                 (left + 34) - this.xMouse, (top + 53 - 50) - this.yMouse, this.entity);
     }
 

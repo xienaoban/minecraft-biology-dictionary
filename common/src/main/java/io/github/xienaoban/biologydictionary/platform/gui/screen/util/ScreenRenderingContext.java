@@ -432,7 +432,8 @@ public final class ScreenRenderingContext {
         poseStack.translate(vector3f.x(), vector3f.y(), vector3f.z());
         poseStack.mulPose(quaternionf);
 
-        Lighting.setupForEntityInInventory();
+        // Lighting.setupForEntityInInventory();
+        RenderSystem.setShaderLights(new Vector3f(-1.5F, -2.0F, -2F).normalize(), new Vector3f(-1.5F, -2.0F, 2F).normalize());
         EntityRenderDispatcher entityRenderDispatcher = getClient().getEntityRenderDispatcher();
 
         entityRenderDispatcher.setRenderShadow(false);
