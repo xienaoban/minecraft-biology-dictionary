@@ -1,17 +1,48 @@
 package io.github.xienaoban.biologydictionary.forge;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import dev.architectury.platform.forge.EventBuses;
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.config.ClothConfigScreenProvider;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
-@Mod(BiologyDictionary.MOD_ID)
+@Mod(Lang.BIOLOGY_DICTIONARY)
 public final class BiologyDictionaryForge {
     public BiologyDictionaryForge() {
-        // Submit our event bus to let Architectury API register our content on the right time.
-        EventBuses.registerModEventBus(BiologyDictionary.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+        @SuppressWarnings("all")
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        @SuppressWarnings("all")
+        ModContainer container = FMLJavaModLoadingContext.get().getContainer();
 
-        // Run our common setup.
-        BiologyDictionary.init();
+        // Submit our event bus to let Architectury API register our content on the right time.
+        EventBuses.registerModEventBus(BiologyDictionary.MOD_ID, modBus);
+
+        modBus.addListener(BiologyDictionaryForge::initCommon);
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modBus.addListener(BiologyDictionaryForge::initClient);
+            container.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
+                    () -> new ConfigScreenHandler.ConfigScreenFactory(
+                            (mc, screen) -> ClothConfigScreenProvider.provideScreen(screen)
+                    )
+            );
+        }
+    }
+
+    private static void initCommon(FMLCommonSetupEvent event) {
+        BiologyDictionary.BD.forceInitialize();
+    }
+
+    private static void initClient(FMLClientSetupEvent event) {
+        BiologyDictionaryClient.BDC.forceInitialize();
     }
 }

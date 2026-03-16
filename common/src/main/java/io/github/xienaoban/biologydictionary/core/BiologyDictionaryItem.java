@@ -1,0 +1,146 @@
+package io.github.xienaoban.biologydictionary.core;
+
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.mixin.CreativeModeTabsIMixin;
+import io.github.xienaoban.biologydictionary.platform.server.ItemRegistry;
+import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.WrittenBookItem;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+/**
+ * If the mod is installed correctly, a biology dictionary screen will be opened when the player right-clicks the book.
+ * But if the mod is not installed, a vanilla book screen will be opened which displays the download address.
+ * <p>
+ * I didn't choose to define a new book item, instead I just made a book with custom NBT to ensure a good compatibility.
+ * And I implemented the opening of the book in the mixin.
+ *
+ * @see io.github.xienaoban.biologydictionary.mixin.MinecraftMixin#biologydictionary$useBiologyDictionaryScreen(CallbackInfo)
+ */
+public final class BiologyDictionaryItem {
+    // Any writable book with this nbt key will be recognized as a biology dictionary.
+    public static final String ID = BiologyDictionary.MOD_ID;
+
+    public static void init() {
+        ItemRegistry.register(CreativeModeTabsIMixin.biologydictionary$getToolsAndUtilities(), createBook());
+    }
+
+    /**
+     * The probability of the trade offer decreases as the in-game time progresses.
+     * After 2 real-world days have passed, or approximately 10 spawns of wandering
+     * traders, the probability will stabilize at 20%.
+     * <p>
+     * On average, a wandering trader will spawn approximately every 14.325 in-game
+     * days (286.5 minutes).
+     * <p>
+     * real_world_days = 2
+     * total_ticks = 2 * 24 * 60 * 60 * 20 = 3456000
+     * ticks_per_game_day = 20 * 60 * 20 = 24000
+     * game_days = 3456000 / 24000 = 144
+     * spawn_count = 144 / 14.325 = 10
+     *
+     * @see net.minecraft.world.entity.npc.VillagerTrades
+     */
+    public static void addToWanderingTraderTrades(WanderingTrader entity) {
+        if (!ConfigsManager.getServer().isBookItemObtainableFromWanderingTrader()) {
+            return;
+        }
+
+        final int maxTicks = 2 * 24 * 60 * 60 * 20;
+        int r = entity.getRandom().nextInt(maxTicks + (maxTicks >> 2));
+        int t = (int) Math.min(EntityUtils.getLevel(entity).getDayTime(), maxTicks);
+        if (r < t) { return; }
+
+        final int cost = 64;
+        final int maxUses = 3;
+        final int villagerXp = 0;
+        final float priceMultiplier = 0.05F;
+        MerchantOffers offers = entity.getOffers();
+        MerchantOffer offer = new MerchantOffer(new ItemStack(Items.EMERALD, cost), createBook(), maxUses, villagerXp, priceMultiplier);
+        offers.add(offer);
+    }
+
+    public static ItemStack createBook() {
+        return createWritableBook();
+    }
+
+    @SuppressWarnings("all")
+    public static boolean isBook(ItemStack stack) {
+        if (stack == null || !stack.is(Items.WRITABLE_BOOK)) return false;
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains(ID);
+    }
+
+    private static ItemStack createWritableBook() {
+        ItemStack stack = new ItemStack(Items.WRITABLE_BOOK);
+
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putString(ID, DevUtils.getModVersion(BiologyDictionary.MOD_ID));
+        tag.putInt("CustomModelData", 14489768);
+
+        stack.setHoverName(TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE).withStyle(
+                Style.EMPTY.withColor(TextColor.parseColor("aqua"))
+                        .withBold(true).withItalic(false)
+        ));
+
+        CompoundTag displayTag = stack.getOrCreateTagElement(ItemStack.TAG_DISPLAY);
+        ListTag loreTag = new ListTag();
+        loreTag.add(StringTag.valueOf(Component.Serializer.toJson(
+                TextUtils.translate(Lang.BIOLOGY_DICTIONARY_DESCRIPTION).withStyle(
+                        Style.EMPTY.withColor(TextColor.parseColor("dark_aqua"))
+                                .withBold(false).withItalic(false)
+                )
+        )));
+        displayTag.put(ItemStack.TAG_LORE, loreTag);
+
+        ListTag pagesTag = new ListTag();
+        pagesTag.add(StringTag.valueOf(createWritablePageString()));
+        tag.put(WrittenBookItem.TAG_PAGES, pagesTag);
+
+        return stack;
+    }
+
+    private static String createWritablePageString() {
+        return """
+                §l%s§2§l%s
+                
+                §r§0%s
+                
+                Modrinth: §9§n%s
+                
+                CurseForge: §9§n%s
+                
+                GitHub: §9§n%s
+                """
+                .formatted(
+                        trans(Lang.TEXT_MOD_NAME_IS),
+                        trans(Lang.BIOLOGY_DICTIONARY),
+                        trans(Lang.TEXT_MOD_NOT_INSTALLED),
+                        BiologyDictionary.MODRINTH_PAGE,
+                        BiologyDictionary.CURSEFORGE_PAGE,
+                        BiologyDictionary.GITHUB_PAGE);
+    }
+
+    /**
+     * If the player doesn't have the mod installed, then the translation files will not be in the client either.
+     *
+     * @return translated string of the current language
+     */
+    private static String trans(String translateKey) {
+        return TextUtils.translate(translateKey).getString();
+    }
+}
