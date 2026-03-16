@@ -12,6 +12,7 @@ import net.minecraft.world.entity.animal.nautilus.Nautilus;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
@@ -26,11 +27,11 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
     public static final int MAX_SLOTS = 4 * 9;
 
     private static final Identifier EMPTY_ARMOR_SLOT_SWORD          = Identifier.withDefaultNamespace("container/slot/sword");
-    private static final Identifier EMPTY_ARMOR_SLOT_SHIELD         = Identifier.withDefaultNamespace("container/slot/shield");
-    private static final Identifier EMPTY_ARMOR_SLOT_HELMET         = Identifier.withDefaultNamespace("container/slot/helmet");
-    private static final Identifier EMPTY_ARMOR_SLOT_CHESTPLATE     = Identifier.withDefaultNamespace("container/slot/chestplate");
-    private static final Identifier EMPTY_ARMOR_SLOT_LEGGINGS       = Identifier.withDefaultNamespace("container/slot/leggings");
-    private static final Identifier EMPTY_ARMOR_SLOT_BOOTS          = Identifier.withDefaultNamespace("container/slot/boots");
+    private static final Identifier EMPTY_ARMOR_SLOT_SHIELD         = InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
+    private static final Identifier EMPTY_ARMOR_SLOT_HELMET         = InventoryMenu.EMPTY_ARMOR_SLOT_HELMET;
+    private static final Identifier EMPTY_ARMOR_SLOT_CHESTPLATE     = InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE;
+    private static final Identifier EMPTY_ARMOR_SLOT_LEGGINGS       = InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS;
+    private static final Identifier EMPTY_ARMOR_SLOT_BOOTS          = InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS;
     private static final Identifier EMPTY_ARMOR_SLOT_SADDLE         = Identifier.withDefaultNamespace("container/slot/saddle");
     private static final Identifier EMPTY_ARMOR_SLOT_HORSE_ARMOR    = Identifier.withDefaultNamespace("container/slot/horse_armor");
     private static final Identifier EMPTY_ARMOR_SLOT_LLAMA_ARMOR    = Identifier.withDefaultNamespace("container/slot/llama_armor");

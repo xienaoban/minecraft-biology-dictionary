@@ -102,7 +102,7 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    private class ShowGuiSizeWidget extends Widget {
+    private static class ShowGuiSizeWidget extends Widget {
         protected ShowGuiSizeWidget() {
             super(1, Page.COLUMNS);
         }
@@ -113,15 +113,6 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
                 ctx.renderCenteredText(TextUtils.literal(ctx.getScreen().width + " , " + ctx.getScreen().height), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
                 ctx.renderCenteredText(TextUtils.literal(ctx.getMouseX() + " , " + ctx.getMouseY()), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 5.5F);
             }
-        }
-
-        @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (screenRenderingContext.isDebug()) {
-                ClientUtils.setScreen(client, new DebugScreen());
-                return true;
-            }
-            return false;
         }
     }
 }
