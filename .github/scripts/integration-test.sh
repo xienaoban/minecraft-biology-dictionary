@@ -139,7 +139,7 @@ if [ "$LOADER_TYPE" = "fabric" ]; then
   CLOTHCONFIG_VERSION=$(grep "^clothconfig_version=" ../../../gradle.properties | cut -d'=' -f2)
 
   # Cloth Config URL from Maven
-  CLOTHCONFIG_URL="https://maven.shedaniel.me/me/shedaniel/cloth/cloth-config-fabric/${CLOTHCONFIG_VERSION}/cloth-config-fabric-${CLOTHCONFIG_VERSION}-fabric.jar"
+  CLOTHCONFIG_URL="https://maven.shedaniel.me/me/shedaniel/cloth/cloth-config-fabric/${CLOTHCONFIG_VERSION}/cloth-config-fabric-${CLOTHCONFIG_VERSION}.jar"
 
   echo "Downloading Cloth Config from: $CLOTHCONFIG_URL"
   if wget -q "$CLOTHCONFIG_URL" -P mods/; then
@@ -169,7 +169,7 @@ elif [ "$LOADER_TYPE" = "forge" ]; then
   CLOTHCONFIG_VERSION=$(grep "^clothconfig_version=" ../../../gradle.properties | cut -d'=' -f2)
 
   # Cloth Config Forge URL from Maven
-  CLOTHCONFIG_URL="https://maven.shedaniel.me/me/shedaniel/cloth/cloth-config-forge/${CLOTHCONFIG_VERSION}/cloth-config-forge-${CLOTHCONFIG_VERSION}-forge.jar"
+  CLOTHCONFIG_URL="https://maven.shedaniel.me/me/shedaniel/cloth/cloth-config-forge/${CLOTHCONFIG_VERSION}/cloth-config-forge-${CLOTHCONFIG_VERSION}.jar"
 
   echo "Downloading Cloth Config from: $CLOTHCONFIG_URL"
   if wget -q "$CLOTHCONFIG_URL" -P mods/; then
