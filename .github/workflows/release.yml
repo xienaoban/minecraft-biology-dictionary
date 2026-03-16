@@ -34,7 +34,7 @@ jobs:
       - name: setup jdk
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'microsoft'
 
       - name: make gradle wrapper executable
@@ -46,8 +46,8 @@ jobs:
       - name: build forge
         run: ./gradlew forge:build -Dbuild.release=true
 
-#      - name: test fabric
-#        run: ./gradlew fabric:testServer
+      - name: test fabric
+        run: ./gradlew fabric:testServer
 #
 #      - name: test forge
 #        run: ./gradlew forge:testServer
@@ -93,8 +93,7 @@ jobs:
             fabric
             forge
           java: |
-            21
-            25
+            17
 
           files: |
             ${{ env.MOD_JAR_FABRIC }}
@@ -121,8 +120,7 @@ jobs:
 
           loaders: fabric
           java: |
-            21
-            25
+            17
 
           files: |
             ${{ env.MOD_JAR_FABRIC }}
@@ -147,8 +145,7 @@ jobs:
 
           loaders: forge
           java: |
-            21
-            25
+            17
 
           files: |
             ${{ env.MOD_JAR_FORGE }}

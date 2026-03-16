@@ -415,7 +415,7 @@ public final class ScreenRenderingContext {
         float posX = (left + right) / 2.0F;
         float posY = (top + bottom) / 2.0F;
 
-        float sc = entity instanceof LivingEntity living ? living.getScale() : 1F;
+        float sc = 1F;
         float finalScale = scale / sc;
 
         Quaternionf quaternionf = new Quaternionf().rotateX(-rotateY * 20F * (float) (Math.PI / 180F));

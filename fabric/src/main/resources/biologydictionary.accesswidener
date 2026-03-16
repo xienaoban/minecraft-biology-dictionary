@@ -1,4 +1,4 @@
-classTweaker v1 named
+accessWidener v2 named
 
 accessible class net/minecraft/client/gui/GuiGraphics$ScissorStack
 accessible class net/minecraft/world/level/block/entity/BeehiveBlockEntity$BeeData
