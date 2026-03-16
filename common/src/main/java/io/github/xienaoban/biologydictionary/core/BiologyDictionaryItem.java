@@ -35,7 +35,7 @@ import java.util.Optional;
  * I didn't choose to define a new book item, instead I just made a book with custom NBT to ensure a good compatibility.
  * And I implemented the opening of the book in the mixin.
  *
- * @see io.github.xienaoban.biologydictionary.mixin.MinecraftMixin#useBiologyDictionaryScreen(CallbackInfo)
+ * @see io.github.xienaoban.biologydictionary.mixin.MinecraftMixin#biologydictionary$useBiologyDictionaryScreen(CallbackInfo)
  */
 public final class BiologyDictionaryItem {
     // Any writable book with this nbt key will be recognized as a biology dictionary.

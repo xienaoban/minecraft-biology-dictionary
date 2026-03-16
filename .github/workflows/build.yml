@@ -32,8 +32,8 @@ jobs:
       - name: build neoforge
         run: ./gradlew neoforge:build
 
-#      - name: test fabric
-#        run: ./gradlew fabric:testServer
+      - name: test fabric
+        run: ./gradlew fabric:testServer
 #
 #      - name: test neoforge
 #        run: ./gradlew neoforge:testServer

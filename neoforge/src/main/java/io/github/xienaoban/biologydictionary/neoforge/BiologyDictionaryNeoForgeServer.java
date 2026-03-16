@@ -25,7 +25,7 @@ public class BiologyDictionaryNeoForgeServer {
         PacketPayloads.registerBuiltIn(new PacketPayloads.Registrar() {
             @Override
             public <T extends Packet> void register(Class<T> packetClass, Packet.Factory<T> factory) {
-                if (PacketUtil.hasClientReceiver(packetClass)) {
+                if (!PacketUtil.hasServerReceiver(packetClass)) {
                     CustomPacketPayload.Type<T> type = PacketUtil.getType(packetClass);
                     StreamCodec<FriendlyByteBuf, T> codec = PacketUtil.generateCodec(factory);
 

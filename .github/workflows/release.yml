@@ -46,8 +46,8 @@ jobs:
       - name: build neoforge
         run: ./gradlew neoforge:build -Dbuild.release=true
 
-#      - name: test fabric
-#        run: ./gradlew fabric:testServer
+      - name: test fabric
+        run: ./gradlew fabric:testServer
 #
 #      - name: test neoforge
 #        run: ./gradlew neoforge:testServer
@@ -89,6 +89,7 @@ jobs:
           version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: CHANGELOG.md
 
+          game-versions: ${{ env.MC_VERSION }}
           loaders: |
             fabric
             neoforge
@@ -119,6 +120,7 @@ jobs:
           version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: CHANGELOG.md
 
+          game-versions: ${{ env.MC_VERSION }}
           loaders: fabric
           java: |
             21
@@ -145,6 +147,7 @@ jobs:
           version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: CHANGELOG.md
 
+          game-versions: ${{ env.MC_VERSION }}
           loaders: neoforge
           java: |
             21
