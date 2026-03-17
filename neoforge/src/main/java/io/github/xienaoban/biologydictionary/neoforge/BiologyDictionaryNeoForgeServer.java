@@ -17,15 +17,15 @@ import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 @OnlyIn(Dist.DEDICATED_SERVER)
 @Mod(value = Lang.BIOLOGY_DICTIONARY, dist = Dist.DEDICATED_SERVER)
 public class BiologyDictionaryNeoForgeServer {
-    public BiologyDictionaryNeoForgeServer(IEventBus modBus) {
-        modBus.addListener(BiologyDictionaryNeoForgeServer::initServer);
+    public BiologyDictionaryNeoForgeServer() {
+        initServer();
     }
 
-    private static void initServer(FMLDedicatedServerSetupEvent event) {
+    private static void initServer() {
         PacketPayloads.registerBuiltIn(new PacketPayloads.Registrar() {
             @Override
             public <T extends Packet> void register(Class<T> packetClass, Packet.Factory<T> factory) {
-                if (PacketUtil.hasClientReceiver(packetClass)) {
+                if (!PacketUtil.hasServerReceiver(packetClass)) {
                     CustomPacketPayload.Type<T> type = PacketUtil.getType(packetClass);
                     StreamCodec<FriendlyByteBuf, T> codec = PacketUtil.generateCodec(factory);
 

@@ -14,14 +14,10 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 @OnlyIn(Dist.CLIENT)
 @Mod(value = Lang.BIOLOGY_DICTIONARY, dist = Dist.CLIENT)
 public class BiologyDictionaryNeoForgeClient {
-    public BiologyDictionaryNeoForgeClient(IEventBus modBus, ModContainer container) {
-        modBus.addListener(BiologyDictionaryNeoForgeClient::initClient);
+    public BiologyDictionaryNeoForgeClient(ModContainer container) {
+        BiologyDictionaryClient.BDC.forceInitialize();
 
         container.registerExtensionPoint(IConfigScreenFactory.class,
                 (modContainer, arg) -> ClothConfigScreenProvider.provideScreen(arg));
-    }
-
-    private static void initClient(FMLClientSetupEvent event) {
-        BiologyDictionaryClient.BDC.forceInitialize();
     }
 }
