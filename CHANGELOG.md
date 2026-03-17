@@ -6,16 +6,15 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Support consuming health and satiety as skill cost
+- Added compatibility module
 
 ### Changed
 
-- Rename 'common' package
-- Update README
-
 ### Fixed
 
-- Support game tests (fabric only)
+- Fixed Modern UI compatibility issue
+- Fixed NeoForge event registration failure (e.g., key bindings)
+- Fixed key binding translation issue
 
 ## Previous Versions
 

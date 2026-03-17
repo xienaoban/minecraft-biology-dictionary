@@ -6,7 +6,7 @@
 
   "minecraft": "Minecraft",
 
-  "key.category.biologydictionary": "Biology Dictionary",
+  "key.category.biologydictionary.biologydictionary": "Biology Dictionary",
   "key.biologydictionary.open_handbook": "Open Handbook",
   "key.biologydictionary.debug": "Toggle Debug Mode",
   "mode_name.biologydictionary.two_lang": "Biology Dictionary (生物辞典)",

@@ -6,7 +6,7 @@
 
   "minecraft": "我的世界",
 
-  "key.category.biologydictionary": "生物辞典",
+  "key.category.biologydictionary.biologydictionary": "生物辞典",
   "key.biologydictionary.open_handbook": "打开手册",
   "key.biologydictionary.debug": "切换调试模式",
   "mode_name.biologydictionary.two_lang": "生物辞典（Biology Dictionary）",

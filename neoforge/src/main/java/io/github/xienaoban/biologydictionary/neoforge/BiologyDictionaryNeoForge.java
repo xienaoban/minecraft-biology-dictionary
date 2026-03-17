@@ -8,11 +8,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 @Mod(Lang.BIOLOGY_DICTIONARY)
 public final class BiologyDictionaryNeoForge {
-    public BiologyDictionaryNeoForge(IEventBus modBus) {
-        modBus.addListener(BiologyDictionaryNeoForge::initCommon);
-    }
-
-    private static void initCommon(FMLCommonSetupEvent event) {
+    public BiologyDictionaryNeoForge() {
         BiologyDictionary.BD.forceInitialize();
     }
 }
