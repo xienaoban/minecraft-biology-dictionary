@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary;
 
+import io.github.xienaoban.biologydictionary.compat.CompatibilityManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
@@ -38,6 +39,7 @@ public final class BiologyDictionary {
     private BiologyDictionary() {
         servers = ConcurrentHashMap.newKeySet();
 
+        CompatibilityManager.init();
         EntityUtils.init();
         ServerNetManager.init();
         BiologyDictionaryItem.init();

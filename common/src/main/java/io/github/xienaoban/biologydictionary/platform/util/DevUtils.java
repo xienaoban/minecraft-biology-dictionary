@@ -13,6 +13,17 @@ public final class DevUtils {
 
     private static String modVersion = null;
 
+    /**
+     * Check if a mod is installed or will be loaded
+     *
+     * <p>This method checks whether the specified mod exists in the current runtime environment.
+     * It does not require the mod to be fully initialized, only that the mod is recognized and will be loaded.</p>
+     */
+    @ExpectPlatform
+    public static boolean isModLoaded(String modId) {
+        throw new AssertionError();
+    }
+
     public static String getModVersion() {
         if (modVersion != null) return modVersion;
         return modVersion = getModVersion(Lang.BIOLOGY_DICTIONARY);

@@ -6,11 +6,13 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Support 1.21.1
+- Added compatibility module
 
 ### Changed
 
 ### Fixed
+
+- Fixed NeoForge event registration failure (e.g., key bindings)
 
 ## Previous Versions
 
