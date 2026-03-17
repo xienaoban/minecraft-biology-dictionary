@@ -7,7 +7,13 @@ import net.fabricmc.loader.api.ModContainer;
 import java.nio.file.Path;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public final class DevUtilsImpl {
+
+    public static boolean isModLoaded(String modId) {
+        return FabricLoader.getInstance().isModLoaded(modId);
+    }
+
     public static String getModVersion(String modId) {
         String version = "<unknown>";
         Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(modId);
