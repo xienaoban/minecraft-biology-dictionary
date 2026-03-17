@@ -16,7 +16,6 @@ public final class KeyMappingManager {
 
     public static void init() {
         KeyMappingRegistry.registerKeyMapping(OPEN_BIOLOGY_DICTIONARY_SCREEN);
-        KeyMappingRegistry.registerKeyMapping(TOGGLE_DEBUG);
         ClientEventRegistry.registerEndTick(client -> {
             while (OPEN_BIOLOGY_DICTIONARY_SCREEN.consumeClick()) {
                 if (client.player != null) {
