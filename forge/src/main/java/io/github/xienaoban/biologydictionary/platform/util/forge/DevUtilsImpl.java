@@ -12,6 +12,10 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 public final class DevUtilsImpl {
 
+    public static boolean isModLoaded(String modId) {
+        return ModList.get().isLoaded(modId);
+    }
+
     public static String getModVersion(String modId) {
         Optional<? extends ModContainer> container = ModList.get().getModContainerById(modId);
         return container.map(c -> c.getModInfo().getVersion().toString())

@@ -131,8 +131,12 @@ public final class ScreenRenderingContext {
     public void renderText(Component component, int color, float z, float x, float y) {
         Font font = getFont();
         FormattedCharSequence text = component.getVisualOrderText();
-        font.drawInBatch(text, x, y, color, false, getPose().last().pose(), bufferSource(),
+        PoseStack pose = getPose();
+        pose.pushPose();
+        pose.translate(0, 0, z);
+        font.drawInBatch(text, x, y, color, false, pose.last().pose(), bufferSource(),
                 Font.DisplayMode.NORMAL, 0, 15728880);
+        pose.popPose();
         ((io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin) getGuiGraphics()).biologydictionary$invokeFlushIfUnmanaged();
     }
 

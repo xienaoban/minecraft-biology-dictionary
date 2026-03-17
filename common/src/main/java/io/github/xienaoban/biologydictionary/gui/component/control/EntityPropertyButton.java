@@ -43,8 +43,8 @@ public class EntityPropertyButton extends ScreenElement {
         ctx.renderItem(itemStack, 0.6F, box.getLeft() - 0.5F, box.getTop() - 0.5F);
         if (count != null) {
             int c = count;
-            ctx.renderRightAlignedText(TextUtils.literal(String.valueOf(c)), Colors.GRAY, 0.5F, ctx.getZ(), box.getRight() - 0.5F + 0.5F,  box.getBottom() - 4F + 0.5F);
-            ctx.renderRightAlignedText(TextUtils.literal(String.valueOf(c)), Colors.WHITE, 0.5F, ctx.getZ(), box.getRight() - 0.5F,  box.getBottom() - 4F);
+            ctx.renderRightAlignedText(TextUtils.literal(String.valueOf(c)), Colors.GRAY, 0.5F, ctx.getZ() + 200, box.getRight() - 0.5F + 0.5F,  box.getBottom() - 4F + 0.5F);
+            ctx.renderRightAlignedText(TextUtils.literal(String.valueOf(c)), Colors.WHITE, 0.5F, ctx.getZ() + 200, box.getRight() - 0.5F,  box.getBottom() - 4F);
         }
     }
 }
