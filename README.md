@@ -6,7 +6,7 @@
 [![Download - Curseforge](https://img.shields.io/badge/download-CurseForge-ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
 ![License](https://img.shields.io/badge/License-LGPL_3-blue?style=for-the-badge)
 
-![Minecraft 1.21.11](https://img.shields.io/badge/Minecraft-1.21.11-59A922?style=for-the-badge)
+![Minecraft 1.21.11 1.21.1 1.20.1](https://img.shields.io/badge/Minecraft-1.21.11_1.21.1_1.20.1-59A922?style=for-the-badge)
 
 ![Fabric Dependencies](https://img.shields.io/badge/Dependencies-Fabric-A99774?style=for-the-badge&logo=fabric) ![Fabric API](https://img.shields.io/badge/Fabric_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
 
