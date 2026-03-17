@@ -45,11 +45,16 @@ public final class BiologyDictionary {
         BiologySkills.init();
         ConfigsManager.load();
 
-        ServerEventRegistry.registerStarted(servers::add);
-        ServerEventRegistry.registerStopping(servers::remove);
-
-        ServerEventRegistry.registerStarted(server -> EntityManager.init());
-        ServerEventRegistry.registerStopping(server -> EntityManager.destroy());
+        ServerEventRegistry.registerStarted(server -> {
+            servers.add(server);
+            EntityManager.init();
+        });
+        ServerEventRegistry.registerStopping(server -> {
+            servers.remove(server);
+            if (servers.isEmpty()) {
+                EntityManager.destroy();
+            }
+        });
 
         LOGGER.info("BiologyDictionary initialized.");
     }
