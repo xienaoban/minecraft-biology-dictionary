@@ -51,7 +51,7 @@ public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, 
         EntityVariantPropertyBundle.VariantHandler<Entity, Object> variantHandler =
                 Misc.cast(EntityVariantPropertyBundle.getHandlers(ctx.entity()).get(variantHandlerIdx));
 
-        Object variant = variantHandler.nbtToVariant(variantTag);
+        Object variant = variantHandler.nbtToVariant(variantTag, ctx.entity());
         variantHandler.setVariant(ctx.entity(), variant);
     }
 }

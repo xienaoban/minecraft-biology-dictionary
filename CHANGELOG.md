@@ -12,7 +12,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Fixed
 
-- Fixed NeoForge event registration failure (e.g., key bindings)
+- Fixed variant setting issue
 
 ## Previous Versions
 
