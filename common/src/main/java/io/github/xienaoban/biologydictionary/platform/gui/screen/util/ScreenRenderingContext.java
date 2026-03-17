@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.github.xienaoban.biologydictionary.compat.CompatibilityOptions;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiTextRenderStateIMixin;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
@@ -138,6 +139,11 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.render.state.GuiTextRenderState#ensurePrepared()
      */
     public void renderText(Component component, int color, float z, float x, float y) {
+        if (!CompatibilityOptions.useAdvancedTextRendering()) {
+            getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
+            return;
+        }
+
         final class TextState extends GuiTextRenderState {
             public final float fx;
             public final float fy;
