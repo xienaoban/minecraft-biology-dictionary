@@ -26,23 +26,16 @@ public final class BiologyDictionaryForge {
         // Submit our event bus to let Architectury API register our content on the right time.
         EventBuses.registerModEventBus(BiologyDictionary.MOD_ID, modBus);
 
-        modBus.addListener(BiologyDictionaryForge::initCommon);
+        BiologyDictionary.BD.forceInitialize();
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            modBus.addListener(BiologyDictionaryForge::initClient);
+            BiologyDictionaryClient.BDC.forceInitialize();
+
             container.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
                     () -> new ConfigScreenHandler.ConfigScreenFactory(
                             (mc, screen) -> ClothConfigScreenProvider.provideScreen(screen)
                     )
             );
         }
-    }
-
-    private static void initCommon(FMLCommonSetupEvent event) {
-        BiologyDictionary.BD.forceInitialize();
-    }
-
-    private static void initClient(FMLClientSetupEvent event) {
-        BiologyDictionaryClient.BDC.forceInitialize();
     }
 }

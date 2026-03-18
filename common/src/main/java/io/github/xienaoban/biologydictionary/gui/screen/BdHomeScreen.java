@@ -13,6 +13,7 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElem
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.ItemUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,7 +26,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -169,7 +169,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             this.entity = entity;
             EntityType<?> type = EntityUtils.getEntityType(entity);
             this.name = type.getDescription();
-            Item item = SpawnEggItem.byId(type);
+            Item item = ItemUtils.getSpawnEggItem(type);
             this.spawnEgg = item == null ? null : new ItemStack(item);
         }
 

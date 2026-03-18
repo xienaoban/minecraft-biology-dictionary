@@ -6,11 +6,11 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Support 1.20.1
-
 ### Changed
 
 ### Fixed
+
+- Fix spawn egg issue on Forge version
 
 ## Previous Versions
 
