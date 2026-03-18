@@ -4,13 +4,12 @@
 
 [![Download - Modrinth](https://img.shields.io/badge/download-Modrinth-43b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
 [![Download - Curseforge](https://img.shields.io/badge/download-CurseForge-ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
-![License](https://img.shields.io/badge/License-LGPL_3-blue?style=for-the-badge)
+
+![Available For Fabric](https://img.shields.io/badge/Available_For-Fabric-A99774?style=for-the-badge&logo=fabric) ![Available For Forge](https://img.shields.io/badge/Available_For-Forge-667E9F?style=for-the-badge&logo=neoforge) ![Available For NeoForge](https://img.shields.io/badge/Available_For-NeoForge-D7742F?style=for-the-badge&logo=neoforge)
 
 ![Minecraft 1.21.11 1.21.1 1.20.1](https://img.shields.io/badge/Minecraft-1.21.11_1.21.1_1.20.1-59A922?style=for-the-badge)
 
-![Fabric Dependencies](https://img.shields.io/badge/Dependencies-Fabric-A99774?style=for-the-badge&logo=fabric) ![Fabric API](https://img.shields.io/badge/Fabric_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
-
-![NeoForge Dependencies](https://img.shields.io/badge/Dependencies-NeoForge-D7742F?style=for-the-badge&logo=neoforge) ![Architectury API](https://img.shields.io/badge/Architectury_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
+![License](https://img.shields.io/badge/License-LGPL_3-blue?style=for-the-badge)
 
 ---
 
@@ -44,10 +43,10 @@ However, technical survival players sometimes don't care about mod aesthetics. I
 | ![](res/screenshot_en_us_4.jpg) | ![](res/screenshot_en_us_5.jpg) | ![](res/screenshot_en_us_6.jpg) |
 | ![](res/screenshot_en_us_7.jpg) | ![](res/screenshot_en_us_8.jpg) | ![](res/screenshot_en_us_9.jpg) |
 
-This mod currently supports **Fabric** and **NeoForge** loaders.
+This mod currently supports **Fabric**, **Forge** and **NeoForge** loaders.
 
-- Fabric version depends on **<span style="color: red;">Fabric API</span>** and **<span style="color: red;">Cloth Config API</span>**.
-- NeoForge version depends on **<span style="color: red;">Architectury API</span>** and **<span style="color: red;">Cloth Config API</span>**.
+- Fabric versions depends on **<span style="color: red;">Fabric API</span>** and **<span style="color: red;">Cloth Config API</span>**.
+- Forge and NeoForge versions depends on **<span style="color: red;">Architectury API</span>** and **<span style="color: red;">Cloth Config API</span>**.
 
 > I'm becoming increasingly busy with work, but I'll still try my best to keep up with official Minecraft updates. However, I won't be adding too many complex features going forward.
 
