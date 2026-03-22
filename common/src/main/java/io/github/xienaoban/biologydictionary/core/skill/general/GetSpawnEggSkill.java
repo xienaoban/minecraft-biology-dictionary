@@ -36,7 +36,7 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
     @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
-        buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdString(entityType));
+        buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdName(entityType));
     }
 
     @Override
