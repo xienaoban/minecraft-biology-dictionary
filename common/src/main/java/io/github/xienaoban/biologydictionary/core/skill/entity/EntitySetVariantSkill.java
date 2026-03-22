@@ -34,7 +34,7 @@ public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, 
 
     @Environment(EnvType.CLIENT)
     public EntitySetVariantSkill(Entity entity, int variantHandlerIdx, Object variant) {
-        this(EntityUtils.getEntityTypeIdString(entity), variantHandlerIdx,
+        this(EntityUtils.getEntityTypeIdName(entity), variantHandlerIdx,
                 EntityVariantPropertyBundle.getHandlers(entity).get(variantHandlerIdx).variantToNbt(variant));
     }
 

@@ -88,7 +88,7 @@ public class VanillaEntitySkillTest {
         registerFactory(EntitySetVariantSkill.class, new EntitySkillFactory<Entity, EntitySetVariantSkill>() {
             @Override
             public EntitySetVariantSkill create(Entity entity, ServerPlayer player) {
-                String entityTypeId = EntityUtils.getEntityTypeIdString(entity);
+                String entityTypeId = EntityUtils.getEntityTypeIdName(entity);
                 EntityVariantPropertyBundle.VariantHandler<Entity, Object> handler = EntityVariantPropertyBundle.getHandlers(entity).get(0);
                 Tag variantTag = handler.variantToNbt(handler.getVariant(entity));
                 return new EntitySetVariantSkill(entityTypeId, 0, variantTag);
