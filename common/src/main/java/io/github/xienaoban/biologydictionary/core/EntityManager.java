@@ -370,16 +370,21 @@ public final class EntityManager {
 
     public static class EntityClassInfo implements Comparable<EntityClassInfo> {
         public static Optional<EntityClassInfo> create(EntityType<?> entityType, Level level) {
-            Entity entity = EntityUtils.create(entityType, level);
-            if (entity == null) {
-                if (entityType == EntityType.PLAYER) return Optional.empty();
-                if (!entityType.isEnabled(level.enabledFeatures())) return Optional.empty();
-                String name = EntityType.getKey(entityType).toString();
-                throw new NullPointerException("Failed to create \"" + name + "\".");
-            } else if (!(entity instanceof LivingEntity)) {
-                return Optional.empty();
+            try {
+                Entity entity = EntityUtils.create(entityType, level);
+                if (entity == null) {
+                    if (entityType == EntityType.PLAYER) return Optional.empty();
+                    if (!entityType.isEnabled(level.enabledFeatures())) return Optional.empty();
+                    String name = EntityType.getKey(entityType).toString();
+                    throw new RuntimeException("Failed to create \"" + name + "\".");
+                } else if (!(entity instanceof LivingEntity)) {
+                    return Optional.empty();
+                }
+                return Optional.of(new EntityClassInfo(entityType, entity));
+            } catch (Exception ex) {
+                LOGGER.error("Failed to create an EntityClassInfo of entity type \"{}\"! Skipped supporting this entity type.", EntityUtils.getEntityTypeName(entityType), ex);
             }
-            return Optional.of(new EntityClassInfo(entityType, entity));
+            return Optional.empty();
         }
 
         private final EntityType<?> type;

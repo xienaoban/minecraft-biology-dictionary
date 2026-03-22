@@ -45,7 +45,7 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
     @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
-        buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdString(entityType));
+        buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdName(entityType));
         buf.writeFloat(radius);
     }
 

@@ -89,6 +89,7 @@ jobs:
           version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: CHANGELOG.md
 
+          game-versions: ${{ env.MC_VERSION }}
           loaders: |
             fabric
             forge
@@ -118,6 +119,7 @@ jobs:
           version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: CHANGELOG.md
 
+          game-versions: ${{ env.MC_VERSION }}
           loaders: fabric
           java: |
             17
@@ -143,6 +145,7 @@ jobs:
           version-type: ${{ env.RELEASE_TYPE }}
           changelog-file: CHANGELOG.md
 
+          game-versions: ${{ env.MC_VERSION }}
           loaders: forge
           java: |
             17

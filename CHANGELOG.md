@@ -10,7 +10,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Fixed
 
-- Fix spawn egg issue on Forge version
+- Fixed compatibility issues with glitch-core, finsandtail, and goetytwilight mods.
 
 ## Previous Versions
 
