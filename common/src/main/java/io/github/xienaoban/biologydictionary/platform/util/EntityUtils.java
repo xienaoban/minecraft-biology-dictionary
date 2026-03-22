@@ -108,22 +108,6 @@ public final class EntityUtils {
         return Misc.cast(entity.getType());
     }
 
-    public static Identifier getEntityTypeId(Entity entity) {
-        return getEntityTypeId(entity.getType());
-    }
-
-    public static Identifier getEntityTypeId(EntityType<?> entityType) {
-        return EntityType.getKey(entityType);
-    }
-
-    public static String getEntityTypeIdString(Entity entity) {
-        return getEntityTypeIdString(entity.getType());
-    }
-
-    public static String getEntityTypeIdString(EntityType<?> entityType) {
-        return getEntityTypeId(entityType).toString();
-    }
-
     public static <E extends Entity> EntityType<E> getEntityType(String key) {
         return Misc.cast(EntityType.byString(key).orElse(null));
     }
@@ -134,6 +118,30 @@ public final class EntityUtils {
 
     public static <E extends Entity> EntityType<E> getEntityType(Identifier key) {
         return Misc.cast(BuiltInRegistries.ENTITY_TYPE.getOptional(key).orElse(null));
+    }
+
+    public static String getEntityTypeName(EntityType<?> entityType) {
+        return entityType.getDescriptionId();
+    }
+
+    public static Component getEntityTypeNameText(EntityType<?> entityType) {
+        return entityType.getDescription();
+    }
+
+    public static Identifier getEntityTypeId(Entity entity) {
+        return getEntityTypeId(entity.getType());
+    }
+
+    public static Identifier getEntityTypeId(EntityType<?> entityType) {
+        return EntityType.getKey(entityType);
+    }
+
+    public static String getEntityTypeIdName(Entity entity) {
+        return getEntityTypeIdName(entity.getType());
+    }
+
+    public static String getEntityTypeIdName(EntityType<?> entityType) {
+        return getEntityTypeId(entityType).toString();
     }
 
     // ============================================================================ //

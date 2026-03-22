@@ -6,15 +6,11 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Added compatibility module
-
 ### Changed
 
 ### Fixed
 
-- Fixed Modern UI compatibility issue
-- Fixed NeoForge event registration failure (e.g., key bindings)
-- Fixed key binding translation issue
+- Improved compatibility and avoid using @Redirect
 
 ## Previous Versions
 

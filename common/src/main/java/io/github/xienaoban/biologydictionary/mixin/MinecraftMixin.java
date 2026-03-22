@@ -1,7 +1,9 @@
 package io.github.xienaoban.biologydictionary.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import io.github.xienaoban.biologydictionary.client.BiologyDictionaryEvent;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -9,31 +11,21 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(value= EnvType.CLIENT)
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
-    @Unique private LocalPlayer biologydictionary$player;
-    @Unique private InteractionHand biologydictionary$hand;
-    @Unique private ItemStack biologydictionary$handItem;
 
-    @Redirect(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack biologydictionary$getHandItem(LocalPlayer player, InteractionHand hand) {
-        biologydictionary$player = player;
-        biologydictionary$hand = hand;
-        return biologydictionary$handItem = player.getItemInHand(hand);
-    }
-
-
-    @Inject(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;", shift = At.Shift.AFTER), cancellable = true)
-    private void biologydictionary$useBiologyDictionaryScreen(CallbackInfo ci) {
-        if (BiologyDictionaryItem.isBook(biologydictionary$handItem)) {
-            biologydictionary$player.swing(biologydictionary$hand);
+    @Inject(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isItemEnabled(Lnet/minecraft/world/flag/FeatureFlagSet;)Z"), cancellable = true)
+    private void biologydictionary$useBiologyDictionaryScreen(CallbackInfo ci, @Local InteractionHand interactionHand, @Local ItemStack itemStack) {
+        if (BiologyDictionaryItem.isBook(itemStack)) {
+            Minecraft client = (Minecraft) (Object) this;
+            LocalPlayer player = ClientUtils.getClientPlayer(client);
+            if (player == null) return;
+            player.swing(interactionHand);
             BiologyDictionaryEvent.openBookScreen((Minecraft) (Object) this);
             ci.cancel();
         }
