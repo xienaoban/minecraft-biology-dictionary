@@ -6,13 +6,11 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Added compatibility module
-
 ### Changed
 
 ### Fixed
 
-- Fixed variant setting issue
+- Improved compatibility and avoid using @Redirect.
 
 ## Previous Versions
 

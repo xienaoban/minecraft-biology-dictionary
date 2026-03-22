@@ -29,7 +29,7 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
         if (entityType == null) {
             buf.writeUtf("");
         } else {
-            buf.writeUtf(EntityUtils.getEntityTypeIdString(entityType));
+            buf.writeUtf(EntityUtils.getEntityTypeIdName(entityType));
         }
         buf.writeFloat(radius);
     }
