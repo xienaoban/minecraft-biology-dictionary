@@ -377,8 +377,7 @@ public final class ConfigsManager {
                 throw new RuntimeException(e);
             } catch (NoSuchFieldException | RuntimeException e) {
                 allGood = false;
-                LOGGER.warn("Bad configuration entry {}: {}", entry.getKey(), entry.getValue());
-                LOGGER.warn(Misc.getStackToString(e));
+                LOGGER.warn("Bad configuration entry {}: {}", entry.getKey(), entry.getValue(), e);
             }
         }
 

@@ -40,7 +40,7 @@ public final class BiologyDictionaryEvent {
             }
         } catch (Throwable e) {
             resetHit();
-            LOGGER.error("Failed to open Biology Dictionary screen: {}", Misc.getStackToString(e));
+            LOGGER.error("Failed to open Biology Dictionary screen", e);
         }
     }
 
@@ -90,8 +90,8 @@ public final class BiologyDictionaryEvent {
             ClientNetManager.requestEntityData(target);
             try {
                 ClientUtils.setScreen(client, new BdEntityDetailScreen(properties));
-            } catch (RuntimeException e) {
-                BiologyDictionaryClient.printThrowableToLoggerAndGame(e);
+            } catch (Exception e) {
+                BiologyDictionaryClient.printThrowableToLoggerAndGame("Failed to open detailed screen", e);
                 return;
             }
         }

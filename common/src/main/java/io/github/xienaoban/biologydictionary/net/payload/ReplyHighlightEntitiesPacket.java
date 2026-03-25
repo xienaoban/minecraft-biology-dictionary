@@ -37,7 +37,7 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class C { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
+        final class W { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
             if (!packet.allowed()) { return; }
 
             ClientUtils.playScreenSound(SoundEvents.ENDER_DRAGON_FLAP, 0.6F, -10.0F);
@@ -54,6 +54,6 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
                     cnt, packet.entityType().getDescription(), packet.radius()));
         }}
-        C.receive(this, ctx);
+        W.receive(this, ctx);
     }
 }

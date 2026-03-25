@@ -54,7 +54,7 @@ public final class EntityManager {
                     }
                 } catch (Throwable e) {
                     instance = null;
-                    LOGGER.error("Failed to init EntityManager: {}", Misc.getStackToString(e));
+                    LOGGER.error("Failed to init EntityManager", e);
                 }
             }
         }
@@ -382,7 +382,7 @@ public final class EntityManager {
                 }
                 return Optional.of(new EntityClassInfo(entityType, entity));
             } catch (Exception ex) {
-                LOGGER.error("Failed to create an EntityClassInfo of entity type \"{}\"! Skipped supporting this entity type.", EntityUtils.getEntityTypeName(entityType), ex);
+                LOGGER.error("Failed to create an EntityClassInfo of entity type \"{}\"! Skipped supporting this entity type.", EntityUtils.getEntityTypeIdName(entityType), ex);
             }
             return Optional.empty();
         }
