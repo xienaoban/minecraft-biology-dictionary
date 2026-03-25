@@ -108,7 +108,7 @@ public final class BiologySkills {
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(GeneralSkill skill) {
-        final class A { static boolean activate(GeneralSkill skill) {
+        final class W { static boolean activate(GeneralSkill skill) {
             try {
                 LocalPlayer player = ClientUtils.getClientPlayer();
                 skill.clientAdditionalCheck(new GeneralSkill.ClientContext(player));
@@ -124,12 +124,12 @@ public final class BiologySkills {
             }
             return false;
         }}
-        return A.activate(skill);
+        return W.activate(skill);
     }
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
-        final class A { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
+        final class W { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
             try {
                 LocalPlayer player = ClientUtils.getClientPlayer();
                 skill.clientAdditionalCheck(new EntityTargetedSkill.ClientContext<>(player, Misc.cast(entity)));
@@ -145,7 +145,7 @@ public final class BiologySkills {
             }
             return false;
         }}
-        return A.activate(entity, skill);
+        return W.activate(entity, skill);
     }
 
     public interface Registrar {
