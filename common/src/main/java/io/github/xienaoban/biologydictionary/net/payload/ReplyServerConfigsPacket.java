@@ -25,7 +25,7 @@ public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Pack
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class C { static void receive(ReplyServerConfigsPacket packet, ClientNetApi.Context ctx) {
+        final class W { static void receive(ReplyServerConfigsPacket packet, ClientNetApi.Context ctx) {
             Configs.ServerConfigs remoteConfigs = new Configs.ServerConfigs();
             boolean success = ConfigsManager.deserializeConfigCategory(packet.serverConfigsYaml(), remoteConfigs);
             if (success) {
@@ -35,6 +35,6 @@ public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Pack
                 LOGGER.warn("Server configs could not be deserialized.");
             }
         }}
-        C.receive(this, ctx);
+        W.receive(this, ctx);
     }
 }

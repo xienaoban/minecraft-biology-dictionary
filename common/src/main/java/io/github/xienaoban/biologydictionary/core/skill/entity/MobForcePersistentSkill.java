@@ -49,12 +49,12 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
     @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(ClientContext<Mob> ctx) {
-        final class C { static void check(Mob entity, boolean persistent) {
+        final class W { static void check(Mob entity, boolean persistent) {
             if (entity.hasCustomName() && !persistent) {
                 throw new NoPermissionException(TextUtils.translate(Lang.TEXT_CUSTOM_NAME_FORCE_PERSISTENT), "Entities with custom name should be forced persistent");
             }
         }}
-        C.check(ctx.entity(), persistent);
+        W.check(ctx.entity(), persistent);
     }
 
     @Override
