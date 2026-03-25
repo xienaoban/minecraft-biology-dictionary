@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,8 +15,6 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public final class BiologySkills {
 
@@ -99,22 +98,6 @@ public final class BiologySkills {
         return res;
     }
 
-    /**
-     * @deprecated Use {@link #getCommonSkillMeta(String)} instead
-     */
-    @Deprecated
-    public static GeneralSkill.Meta<?> getCommonSkillFactory(String key) {
-        return getCommonSkillMeta(key);
-    }
-
-    /**
-     * @deprecated Use {@link #getEntityTargetedSkillMeta(String)} instead
-     */
-    @Deprecated
-    public static EntityTargetedSkill.Meta<?> getEntityTargetedSkillFactory(String key) {
-        return getEntityTargetedSkillMeta(key);
-    }
-
     public static String key(Object skill) {
         return skill.getClass().getName();
     }
@@ -125,36 +108,44 @@ public final class BiologySkills {
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(GeneralSkill skill) {
-        try {
-            LocalPlayer player = ClientUtils.getClientPlayer();
-            skill.clientAdditionalCheck(new GeneralSkill.ClientContext(player));
-            SkillCost cost = skill.getRealCost();
-            cost.clientCheck(new SkillCost.ClientContext(player));
-            ClientNetManager.sendCommonSkill(skill);
-            return true;
-        } catch (NoPermissionException e) {
-            BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
-        } catch (Exception e) {
-            LOGGER.warn(Misc.getStackToString(e));
-        }
-        return false;
+        final class W { static boolean activate(GeneralSkill skill) {
+            try {
+                LocalPlayer player = ClientUtils.getClientPlayer();
+                skill.clientAdditionalCheck(new GeneralSkill.ClientContext(player));
+                SkillCost cost = skill.getRealCost();
+                cost.clientCheck(new SkillCost.ClientContext(player));
+                ClientNetManager.sendCommonSkill(skill);
+                return true;
+            } catch (NoPermissionException e) {
+                BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
+            } catch (Exception e) {
+                BiologyDictionaryClient.printThrowableToLoggerAndGame(
+                        "Failed to activate skill \"" + skill.getClass() + "\"", e);
+            }
+            return false;
+        }}
+        return W.activate(skill);
     }
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
-        try {
-            LocalPlayer player = ClientUtils.getClientPlayer();
-            skill.clientAdditionalCheck(new EntityTargetedSkill.ClientContext<>(player, Misc.cast(entity)));
-            SkillCost cost = skill.getRealCost(Misc.cast(entity));
-            cost.clientCheck(new SkillCost.ClientContext(player));
-            ClientNetManager.sendEntityTargetedSkill(entity, skill);
-            return true;
-        } catch (NoPermissionException e) {
-            BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
-        } catch (Exception e) {
-            LOGGER.warn(Misc.getStackToString(e));
-        }
-        return false;
+        final class W { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
+            try {
+                LocalPlayer player = ClientUtils.getClientPlayer();
+                skill.clientAdditionalCheck(new EntityTargetedSkill.ClientContext<>(player, Misc.cast(entity)));
+                SkillCost cost = skill.getRealCost(Misc.cast(entity));
+                cost.clientCheck(new SkillCost.ClientContext(player));
+                ClientNetManager.sendEntityTargetedSkill(entity, skill);
+                return true;
+            } catch (NoPermissionException e) {
+                BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
+            } catch (Exception e) {
+                BiologyDictionaryClient.printThrowableToLoggerAndGame(
+                        "Failed to activate skill \"" + skill.getClass() + "\" of entity \"" + EntityUtils.getEntityTypeIdName(entity) + "\"", e);
+            }
+            return false;
+        }}
+        return W.activate(entity, skill);
     }
 
     public interface Registrar {

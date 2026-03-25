@@ -41,10 +41,10 @@ public record RequestCommonSkillPacket(GeneralSkill skill) implements Packet {
             // Phase 3: Execute the skill
             skill.serverDo(skillCtx);
         } catch (NoPermissionException e) {
-            LOGGER.warn(Misc.getStackToString(e));
+            LOGGER.warn("No permission to use skill \"{}\"", skill.getClass(), e);
             BiologyDictionary.sendCenteredWarning(ctx.player(), e.getGameMessage());
         } catch (Exception e) {
-            LOGGER.warn(Misc.getStackToString(e));
+            LOGGER.warn("Unexpected error", e);
         }
     }
 }
