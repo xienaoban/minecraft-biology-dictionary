@@ -37,7 +37,7 @@ public abstract class ElementScreen extends CommonScreen {
             ++ticks; // yes the first `ticks` will be 1 instead of 0
             rootScreenElement.tick(ticks);
         } catch (Throwable e) {
-            showExceptionMessageAndCloseScreen(e);
+            showExceptionMessageAndCloseScreen("Error in tick on screen", e);
         }
     }
 
@@ -51,7 +51,7 @@ public abstract class ElementScreen extends CommonScreen {
                 return super.mouseClicked(mouseButtonEvent, bl);
             }
         } catch (Throwable e) {
-            showExceptionMessageAndCloseScreen(e);
+            showExceptionMessageAndCloseScreen("Error in mouse clicking on screen", e);
         }
         return true;
     }
@@ -74,7 +74,7 @@ public abstract class ElementScreen extends CommonScreen {
                 hovered.renderHovered(ctx);
             }
         } catch (Throwable e) {
-            showExceptionMessageAndCloseScreen(e);
+            showExceptionMessageAndCloseScreen("Error in rendering on screen", e);
         }
     }
 
@@ -125,9 +125,9 @@ public abstract class ElementScreen extends CommonScreen {
      */
     protected abstract void resizeBox(int width, int height);
 
-    private void showExceptionMessageAndCloseScreen(Throwable throwable) {
+    private void showExceptionMessageAndCloseScreen(String message, Throwable throwable) {
         onClose();
-        BiologyDictionaryClient.printThrowableToLoggerAndGame(throwable);
+        BiologyDictionaryClient.printThrowableToLoggerAndGame(message, throwable);
     }
 
     private final class RootScreenElement extends ScreenElement {

@@ -22,6 +22,10 @@ public final class TextUtils {
         return translate(Lang.TEXT_COMMA);
     }
 
+    public static MutableComponent newline() {
+        return literal("\n");
+    }
+
     public static MutableComponent literal(String text) {
         return Component.literal(text);
     }
