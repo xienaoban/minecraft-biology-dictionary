@@ -55,10 +55,10 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
     @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
-        final class C { static void check(ClientContext<Entity> ctx) {
+        final class W { static void check(ClientContext<Entity> ctx) {
             Permissions.checkTargetPlayerLowerGameMode(ctx.player(), ctx.entity());
         }}
-        C.check(ctx);
+        W.check(ctx);
     }
 
     @Override
