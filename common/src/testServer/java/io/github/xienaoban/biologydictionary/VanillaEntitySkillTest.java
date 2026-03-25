@@ -8,7 +8,6 @@ import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -90,7 +89,7 @@ public class VanillaEntitySkillTest {
         registerFactory(EntitySetVariantSkill.class, new EntitySkillFactory<Entity, EntitySetVariantSkill>() {
             @Override
             public EntitySetVariantSkill create(Entity entity, ServerPlayer player) {
-                String entityTypeId = EntityUtils.getEntityTypeIdString(entity);
+                String entityTypeId = EntityUtils.getEntityTypeIdName(entity);
                 EntityVariantPropertyBundle.VariantHandler<Entity, Object> handler = EntityVariantPropertyBundle.getHandlers(entity).get(0);
                 Tag variantTag = handler.variantToNbt(handler.getVariant(entity));
                 return new EntitySetVariantSkill(entityTypeId, 0, variantTag);

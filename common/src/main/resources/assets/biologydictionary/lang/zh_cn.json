@@ -199,6 +199,7 @@
   "text.biologydictionary.mod_not_installed": "如果您看到了此段文字，说明您本地并未安装“生物辞典”模组，您可以前往以下网址下载本模组：",
   "text.biologydictionary.click_me_to_download": "点我点我点我！（≧.≦）",
   "text.biologydictionary.info_from_this_mod": "【生物辞典】",
+  "text.biologydictionary.please_report_issue": "详细报错见“{游戏目录}/logs/latest.log”，若需求助作者，请务必附上此log文件（仅截图本段报错对定位问题毫无帮助！！）",
   "text.biologydictionary.no_biology_dictionary_book": "背包内无生物辞典书！",
   "text.biologydictionary.target_entity_too_far": "目标生物离你太远了！",
   "text.biologydictionary.highlighted_entities": "感知到了%d只%s，感知半径%d米！",

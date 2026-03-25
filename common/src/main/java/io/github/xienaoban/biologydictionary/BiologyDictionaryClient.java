@@ -11,7 +11,6 @@ import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionar
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.client.ClientEventRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -100,13 +99,16 @@ public final class BiologyDictionaryClient {
         sendCenteredMessage(text.withStyle(ChatFormatting.RED));
     }
 
-    public static void printThrowableToLoggerAndGame(Throwable throwable) {
-        String errStack = Misc.getStackToString(throwable);
-        LOGGER.error(errStack);
+    public static void printThrowableToLoggerAndGame(String message, Throwable throwable) {
+        LOGGER.error("{}", message, throwable);
         ClientUtils.sendTextBoxMessage(TextUtils.concat(
                 Arrays.asList(
                         TextUtils.translate(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN),
-                        TextUtils.literal(throwable.toString()).withStyle(ChatFormatting.RED)
+                        TextUtils.literal(message),
+                        TextUtils.newline(),
+                        TextUtils.literal(throwable.toString()).withStyle(ChatFormatting.RED),
+                        TextUtils.newline(),
+                        TextUtils.translate(Lang.TEXT_PLEASE_REPORT_ISSUE).withStyle(ChatFormatting.GOLD)
                 )
         ));
     }

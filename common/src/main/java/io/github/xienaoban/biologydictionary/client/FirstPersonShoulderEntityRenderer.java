@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -57,7 +58,7 @@ public final class FirstPersonShoulderEntityRenderer {
             run0(client, entityRenderDispatcher, tickDelta, poseStack, submitNodeCollector, player, light);
         } catch (Exception e) {
             banned = true;
-            LOGGER.error("Failed to render parrots on shoulders: {}", Misc.getStackToString(e));
+            BiologyDictionaryClient.printThrowableToLoggerAndGame("Failed to render parrots on shoulders", e);
         }
     }
 

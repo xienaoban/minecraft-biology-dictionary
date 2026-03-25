@@ -211,6 +211,7 @@ public final class Lang {
     TEXT_MOD_NOT_INSTALLED                   = "text.biologydictionary.mod_not_installed",
     TEXT_CLICK_ME_TO_DOWNLOAD                = "text.biologydictionary.click_me_to_download",
     TEXT_INFO_FROM_THIS_MOD                  = "text.biologydictionary.info_from_this_mod",
+    TEXT_PLEASE_REPORT_ISSUE                 = "text.biologydictionary.please_report_issue",
     TEXT_NO_BIOLOGY_DICTIONARY_BOOK          = "text.biologydictionary.no_biology_dictionary_book",
     TEXT_TARGET_ENTITY_TOO_FAR               = "text.biologydictionary.target_entity_too_far",
     TEXT_HIGHLIGHTED_ENTITIES                = "text.biologydictionary.highlighted_entities",
