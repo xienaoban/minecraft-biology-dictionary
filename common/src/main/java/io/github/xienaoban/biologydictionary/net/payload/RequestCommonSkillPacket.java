@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
-import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.network.FriendlyByteBuf;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
@@ -41,10 +40,10 @@ public record RequestCommonSkillPacket(GeneralSkill skill) implements Packet {
             // Phase 3: Execute the skill
             skill.serverDo(skillCtx);
         } catch (NoPermissionException e) {
-            LOGGER.warn(Misc.getStackToString(e));
+            LOGGER.warn("No permission to use skill \"{}\"", skill.getClass(), e);
             BiologyDictionary.sendCenteredWarning(ctx.player(), e.getGameMessage());
         } catch (Exception e) {
-            LOGGER.warn(Misc.getStackToString(e));
+            LOGGER.warn("Unexpected error", e);
         }
     }
 }

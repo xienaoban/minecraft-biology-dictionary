@@ -9,6 +9,8 @@ import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -31,14 +33,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.joml.Quaternionf;
 import org.joml.Vector2ic;
 import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Objects;
+
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @Environment(EnvType.CLIENT)
 public final class ScreenRenderingContext {
@@ -380,6 +389,27 @@ public final class ScreenRenderingContext {
         renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, 1.9F);
     }
 
+    private void renderEntity(Entity entity, float left, float top, float right, float bottom,
+                              float rotateX, float rotateY, float forceScale, float internalOffset) {
+        try {
+            renderEntity0(entity, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset);
+        } catch (Exception e) {
+            // Render a placeholder instead.
+            Misc.doOnce(() -> LOGGER.error("Error in rendering entity \"{}\" on screen", EntityUtils.getEntityTypeIdName(entity), e));
+            ArmorStand armorStand = new ArmorStand(EntityType.ARMOR_STAND, entity.level());
+            int chosen = (((int) System.currentTimeMillis()) / 400) % 4;
+            Item head = switch (chosen) {
+                case 0 -> Items.CREEPER_HEAD;
+                case 1 -> Items.ZOMBIE_HEAD;
+                case 2 -> Items.SKELETON_SKULL;
+                case 3 -> Items.WITHER_SKELETON_SKULL;
+                default -> throw new AssertionError();
+            };
+            armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(head));
+            renderEntity0(armorStand, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset);
+        }
+    }
+
     /**
      * {@snippet :
      *     InventoryScreen.renderEntityInInventoryFollowsMouse(getGuiGraphics(), (int) left, (int) top, (int) right, (int) bottom, 30, 0.0625F, rotateX * 20, rotateY * 20, livingEntity);
@@ -387,8 +417,8 @@ public final class ScreenRenderingContext {
      *
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, float, float, net.minecraft.world.entity.LivingEntity)
      */
-    private void renderEntity(Entity entity, float left, float top, float right, float bottom,
-                              float rotateX, float rotateY, float forceScale, float internalOffset) {
+    private void renderEntity0(Entity entity, float left, float top, float right, float bottom,
+                               float rotateX, float rotateY, float forceScale, float internalOffset) {
         final float width = right - left;
         final float height = bottom - top;
         final float entityWidth = entity.getBbWidth();

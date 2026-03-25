@@ -67,11 +67,11 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
     @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(ClientContext<Villager> ctx) {
-        final class C { static void check(ClientContext<Villager> ctx, Integer restocksToday, GlobalPos jobSitePos) {
+        final class W { static void check(ClientContext<Villager> ctx, Integer restocksToday, GlobalPos jobSitePos) {
             checkVillagerHasJobSite(restocksToday, jobSitePos);
             checkVillagerCloseToJobSite(ctx.entity(), jobSitePos);
         }}
-        C.check(ctx, restocksToday, jobSitePos);
+        W.check(ctx, restocksToday, jobSitePos);
     }
 
     @Override

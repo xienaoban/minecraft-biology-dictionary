@@ -5,8 +5,12 @@ import java.io.StringWriter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class Misc {
+    private static final Set<Class<?>> onceMap = ConcurrentHashMap.newKeySet();
+
+    private Misc() {}
     @SuppressWarnings("unchecked")
     public static <T> T cast(Object obj) {
         return (T) obj;
@@ -117,5 +121,11 @@ public final class Misc {
         ArrayList<T> list = new ArrayList<>(collection);
         Collections.shuffle(list);
         return list;
+    }
+
+    public static void doOnce(Runnable runnable) {
+        if (onceMap.add(runnable.getClass())) {
+            runnable.run();
+        }
     }
 }

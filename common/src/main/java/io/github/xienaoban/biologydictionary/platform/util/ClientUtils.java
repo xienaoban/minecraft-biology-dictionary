@@ -98,11 +98,17 @@ public final class ClientUtils {
     }
 
     public static void sendTextBoxMessage(Component text) {
-        Objects.requireNonNull(getClient().player).displayClientMessage(text, false);
+        LocalPlayer player = getClientPlayer();
+        if (player != null) {
+            player.displayClientMessage(text, false);
+        }
     }
 
     public static void sendCenteredMessage(Component text) {
-        Objects.requireNonNull(getClient().player).displayClientMessage(text, true);
+        LocalPlayer player = getClientPlayer();
+        if (player != null) {
+            player.displayClientMessage(text, true);
+        }
     }
 
     public static void playScreenSound(SoundEvent sound, float volume, float pitch) {
