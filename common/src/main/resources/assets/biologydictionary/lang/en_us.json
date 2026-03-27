@@ -74,6 +74,8 @@
   "widget.biologydictionary.highlight"            : "Highlight mobs of this type nearby",
   "widget.biologydictionary.highlight.left.desc"  : "Left click: Highlight radius %dm",
   "widget.biologydictionary.highlight.right.desc" : "Right click: Highlight radius %dm",
+  "widget.biologydictionary.overview"             : "View Entity Properties",
+  "widget.biologydictionary.overview.desc"        : "View default/reference properties for this entity type",
   "widget.biologydictionary.offer_spawn_egg"      : "Offer a spawn egg",
   "widget.biologydictionary.offer_spawn_egg.desc" : "Sent directly to inventory",
 
