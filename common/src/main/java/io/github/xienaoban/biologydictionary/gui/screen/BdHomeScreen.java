@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.WorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
@@ -45,13 +46,13 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         addBookmarkFromLast(new OpenBdAboutScreenBookmark());
         addBookmarkFromLast(new OpenBdConfigScreenBookmark());
         addBookmark(new AllEntitiesBookmark());
-        for (EntityManager.TagGroup group : EntityManager.getInstance().getTagGroups()) {
+        for (EntityManager.TagGroup group : WorldSession.get().getEntityManager().getTagGroups()) {
             addBookmark(new TagGroupBookmark(group));
         }
     }
 
     private void initEntityWidgets() {
-        List<Widget> list = getEntityWidgets(EntityManager.getInstance().getEntityClassInfos());
+        List<Widget> list = getEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
         addAllWidgetsOneByOne(list);
     }
 
@@ -89,7 +90,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                List<Widget> list = getEntityWidgets(EntityManager.getInstance().getEntityClassInfos());
+                List<Widget> list = getEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
                 resetAndAndWidgetsOneByOne(list);
                 return true;
             }
@@ -178,6 +179,10 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
+            if (!isMouseLeft(code)) {
+                return true;
+            }
+
             ScreenElementBox box = getBox();
             float mouseY = screenRenderingContext.getMouseY() - box.getTop();
 

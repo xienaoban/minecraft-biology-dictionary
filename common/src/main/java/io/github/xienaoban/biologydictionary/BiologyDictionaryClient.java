@@ -1,10 +1,9 @@
 package io.github.xienaoban.biologydictionary;
 
-import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRenderer;
-import io.github.xienaoban.biologydictionary.client.HighlightManager;
+import io.github.xienaoban.biologydictionary.client.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.WorldSession;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
@@ -44,19 +43,23 @@ public final class BiologyDictionaryClient {
         ClientEventRegistry.registerWorldConnected(client -> {
             // Only request server configs from remote servers, not local servers.
             if (!client.isLocalServer()) { ClientNetManager.requestServerConfigs(); }
-            EntityManager.init();
+            WorldSession.init(null);
+            ClientWorldSession.init();
         });
         ClientEventRegistry.registerWorldDisconnecting(client -> {
-            FirstPersonShoulderEntityRenderer.clear();
-            EntityManager.destroy();
+            ClientWorldSession.deinit();
+            WorldSession.deinit(null);
             ConfigsManager.setLocalServerConfigs();
         });
-        ClientEventRegistry.registerEndTick(this::tick);
+        ClientEventRegistry.registerEndTick(client -> {
+            tick(client);
+            ClientWorldSession ws = ClientWorldSession.get();
+            if (ws != null) { ws.tick(); }
+        });
 
         EntityPropertyWidgets.init();
         KeyMappingManager.init();
         ClientNetManager.init();
-        HighlightManager.init();
 
         LOGGER.info("BiologyDictionary (client) initialized.");
     }

@@ -3,25 +3,18 @@ package io.github.xienaoban.biologydictionary;
 import io.github.xienaoban.biologydictionary.compat.CompatibilityManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
-import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.WorldSession;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.server.ServerEventRegistry;
-import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
-import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class BiologyDictionary {
     public static final String MOD_ID = "biologydictionary";
@@ -34,11 +27,7 @@ public final class BiologyDictionary {
 
     public static final BiologyDictionary BD = new BiologyDictionary();
 
-    private final Set<MinecraftServer> servers;
-
     private BiologyDictionary() {
-        servers = ConcurrentHashMap.newKeySet();
-
         CompatibilityManager.init();
         EntityUtils.init();
         ServerNetManager.init();
@@ -47,41 +36,13 @@ public final class BiologyDictionary {
         BiologySkills.init();
         ConfigsManager.load();
 
-        ServerEventRegistry.registerStarted(server -> {
-            servers.add(server);
-            EntityManager.init();
-        });
-        ServerEventRegistry.registerStopping(server -> {
-            servers.remove(server);
-            if (servers.isEmpty()) {
-                EntityManager.destroy();
-            }
-        });
+        ServerEventRegistry.registerStarted(WorldSession::init);
+        ServerEventRegistry.registerStopping(WorldSession::deinit);
 
         LOGGER.info("BiologyDictionary initialized.");
     }
 
     public void forceInitialize() { /* do nothing but to trigger cinit */ }
-
-    public Set<MinecraftServer> getServers() {
-        return servers;
-    }
-
-    /**
-     * Get a server instance. Any server is OK. Usually be used in {@code EntityType.create}.
-     */
-    public Level justGiveMeALevel() {
-        if (DevUtils.isClient()) {
-            Level level = ClientUtils.getClientLevelCommon();
-            if (level != null) { return level; }
-        }
-        for (MinecraftServer server : getServers()) {
-            for (Level level : server.getAllLevels()) {
-                return level;
-            }
-        }
-        return null;
-    }
 
     public static void sendCenteredMessage(ServerPlayer player, Component text) {
         ServerNetManager.sendCenteredMessage(player, text);

@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.client.HighlightManager;
+import io.github.xienaoban.biologydictionary.client.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
@@ -47,7 +47,7 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
         super.tick();
 
         if (!player.isWithinEntityInteractionRange(entity, CLOSE_SCREEN_DISTANCE)) {
-            HighlightManager.highlightEntity(entity, 4 * 20);
+            ClientWorldSession.get().getHighlightManager().highlightEntity(entity, 4 * 20);
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
             onClose();
         }

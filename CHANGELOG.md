@@ -6,15 +6,18 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Support overview screen for entities (to view the entity's default / reference properties)
+- Added entity overview screen to view default/reference attributes
 
 ### Changed
 
-- OP can gift others' pets
+- OP can now gift pets owned by other players
 - Notify the player when closing the stealing screen due to being too far away
 - Support using the biology dictionary hotkey to close the stealing screen
+- Use WorldSession and WorldSessionClient to manage in-game world data
 
 ### Fixed
+
+- Fixed the issue where the recipient player was incorrectly identified
 
 ## Previous Versions
 

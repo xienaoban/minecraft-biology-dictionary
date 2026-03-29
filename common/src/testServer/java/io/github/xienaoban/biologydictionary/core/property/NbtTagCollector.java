@@ -8,7 +8,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.util.TestUtils;
 import net.minecraft.core.Holder;
@@ -55,7 +55,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         }
         try (BufferedWriter writer = Files.newBufferedWriter(LOGGER_PATH)) {
             nbtFileWriter = writer;
-            EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
+            WorldSession.get().getEntityManager().dfsEntityTree(true, (cur, depth) -> {
                 Class<? extends Entity> entityClazz = cur.getClazz();
                 // if (entityClazz != LivingEntity.class) return true;
                 LOGGER.info("Testing {}", entityClazz);

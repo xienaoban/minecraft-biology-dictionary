@@ -20,18 +20,18 @@ import net.minecraft.world.phys.Vec3;
 public final class HighlightRenderer {
     public static void submit(Minecraft client, EntityRenderDispatcher entityRenderDispatcher,
                               PoseStack poseStack, LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector) {
-        if (!HighlightManager.hasAnyHighlighted()) { return; }
+        HighlightManager hm = ClientWorldSession.get().getHighlightManager();
+        if (!hm.hasAnyHighlighted()) { return; }
 
         DeltaTracker deltaTracker = client.getDeltaTracker();
         TickRateManager tickRateManager = ClientUtils.getClientLevel(client).tickRateManager();
         Vec3 camera = levelRenderState.cameraRenderState.pos;
-
-        for (HighlightManager.HighlightedEntity ei : HighlightManager.getHighlightedEntities()) {
+        for (HighlightManager.HighlightedEntity ei : hm.getHighlightedEntities()) {
             Entity entity = ei.getEntity();
             submitEntity(entity, entityRenderDispatcher, deltaTracker, tickRateManager,
                     camera, poseStack, levelRenderState, submitNodeCollector);
         }
-        for (HighlightManager.HighlightedBlock bi : HighlightManager.getHighlightedBlocks()) {
+        for (HighlightManager.HighlightedBlock bi : hm.getHighlightedBlocks()) {
             BlockPos blockPos = bi.getBlockPos();
             BlockState blockState = bi.getBlockState();
             submitBlock(blockPos, blockState,

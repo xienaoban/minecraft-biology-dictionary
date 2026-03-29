@@ -1,19 +1,12 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
+import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
+import io.github.xienaoban.biologydictionary.core.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.platform.util.Misc;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.EntitySpawnReason;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -38,33 +31,13 @@ public record RequestEntityOverviewPacket(String entityTypeId) implements Packet
         EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
         ReplyEntityOverviewPacket toSend;
 
-        if (entityType == null) {
+        if (entityType != null) {
+            EntityOverviewCache.CacheEntry cached = WorldSession.get().getEntityOverviewCache()
+                    .getOrCreate(entityType, ctx.player().level());
+            toSend = new ReplyEntityOverviewPacket(true, entityTypeId, cached.vanillaNbt(), cached.extraNbt());
+        } else {
             LOGGER.error("Unknown entity type: {}", entityTypeId);
             toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);
-        } else {
-            try {
-                ServerLevel serverLevel = ctx.player().level();
-                Entity entity = EntityUtils.create(entityType, serverLevel);
-
-                // Initialize goal/ai for mob entities
-                // @see net.minecraft.world.entity.EntityType.create(net.minecraft.server.level.ServerLevel, java.util.function.Consumer<T>, net.minecraft.core.BlockPos, net.minecraft.world.entity.EntitySpawnReason, boolean, boolean)
-                if (entity instanceof Mob mob) {
-                    mob.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()),
-                                      EntitySpawnReason.NATURAL, null);
-                }
-
-                CompoundTag vanillaNbt = EntityUtils.getNbt(entity);
-                CompoundTag extraNbt = new CompoundTag();
-                for (EntityProperty<?> p : new EntityProperties<>(entity).getExtras()) {
-                    p.getFrom(Misc.cast(entity));
-                    p.writeTo(extraNbt);
-                }
-
-                toSend = new ReplyEntityOverviewPacket(true, entityTypeId, vanillaNbt, extraNbt);
-            } catch (Exception e) {
-                LOGGER.error("Failed to create entity overview for type: " + entityTypeId, e);
-                toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);
-            }
         }
 
         ServerNetApi.send(ctx.player(), toSend);

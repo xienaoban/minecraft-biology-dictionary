@@ -33,26 +33,19 @@ public final class FirstPersonShoulderEntityRenderer {
     private static final int NULL_VARIANT = -2333333;
     private static final float HEAD_ROT_SPEED = 0.02F;
 
-    private static final int[] lrData = { NULL_VARIANT, NULL_VARIANT };
-    private static final LivingEntity[] entities = new LivingEntity[2];
-    private static final EntityRenderer<Entity, EntityRenderState>[] entityRenderers = Misc.cast(new EntityRenderer[2]);
-    private static final EntityRenderState[] entityRenderStates = new EntityRenderState[2];
-    private static final float[] nextYHeadRot = new float[2];
-    private static final float[] nextXHeadRot = new float[2];
-    private static final long[] lastHeadYawTime = new long[2];
-    private static final long[] nextHeadYawTime = new long[2];
-    private static long lastTime;
+    private final int[] lrData = { NULL_VARIANT, NULL_VARIANT };
+    private final LivingEntity[] entities = new LivingEntity[2];
+    private final EntityRenderer<Entity, EntityRenderState>[] entityRenderers = Misc.cast(new EntityRenderer[2]);
+    private final EntityRenderState[] entityRenderStates = new EntityRenderState[2];
+    private final float[] nextYHeadRot = new float[2];
+    private final float[] nextXHeadRot = new float[2];
+    private final long[] lastHeadYawTime = new long[2];
+    private final long[] nextHeadYawTime = new long[2];
+    private long lastTime;
 
-    private static boolean banned = false;
+    private boolean banned = false;
 
-    public static void clear() {
-        lrData[0] = lrData[1] = NULL_VARIANT;
-        entities[0] = entities[1] = null;
-        entityRenderers[0] = entityRenderers[1] = null;
-        entityRenderStates[0] = entityRenderStates[1] = null;
-    }
-
-    public static void run(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
+    public void run(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
         if (banned) { return; }
         try {
             run0(client, entityRenderDispatcher, tickDelta, poseStack, submitNodeCollector, player, light);
@@ -66,7 +59,7 @@ public final class FirstPersonShoulderEntityRenderer {
      * @see net.minecraft.client.renderer.ItemInHandRenderer#renderHandsWithItems(float, com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.SubmitNodeCollector, net.minecraft.client.player.LocalPlayer, int)
      * @see net.minecraft.client.renderer.ItemInHandRenderer#renderPlayerArm(com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.SubmitNodeCollector, int, float, float, net.minecraft.world.entity.HumanoidArm)
      */
-    private static void run0(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
+    private void run0(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
         HudPosition hudPos = switch (ConfigsManager.getClient().getFirstPersonShoulderEntityPosition()) {
             case NONE -> null;
             case TOP -> HudPosition.TOP;
@@ -125,7 +118,7 @@ public final class FirstPersonShoulderEntityRenderer {
         }
     }
 
-    private static void update(EntityRenderDispatcher entityRenderDispatcher, LocalPlayer player, Parrot.Variant variant, int index) {
+    private void update(EntityRenderDispatcher entityRenderDispatcher, LocalPlayer player, Parrot.Variant variant, int index) {
         int variantId = variant == null ? NULL_VARIANT : variant.getId();
         if (lrData[index] == variantId) return;
         lrData[index] = variantId;
@@ -158,7 +151,7 @@ public final class FirstPersonShoulderEntityRenderer {
         entityRenderStates[index] = entityRenderState;
     }
 
-    private static void extract(int index) {
+    private void extract(int index) {
         EntityRenderState entityRenderState = entityRenderStates[index];
         RenderUtils.extractRenderState(entityRenderers[index], entities[index], entityRenderState);
         RenderUtils.renderBodyOnly(entityRenderState);
