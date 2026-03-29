@@ -18,7 +18,9 @@ import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
@@ -120,10 +122,17 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                if (lastEntity != ClientUtils.getClientPlayer()) {
+                if (((OwnableEntity) e()).getOwnerReference() == null) {
+                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_ENTITY_NOT_TAMED));
+                    return true;
+                }
+
+                LocalPlayer player = ClientUtils.getClientPlayer();
+                if (lastEntity != player && !(PlayerUtils.isCreative(player) && PlayerUtils.isOp(player))) {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT));
                     return true;
                 }
+
                 ClientUtils.setScreen(new PlayerSelectorScreen(ClientUtils.getCurrentScreen(), targetPlayer -> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(null);
                     BiologySkills.activate(e(), new EntityGiftPetSkill(targetPlayer));
