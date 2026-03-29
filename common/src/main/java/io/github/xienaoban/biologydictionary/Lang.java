@@ -256,6 +256,7 @@ public final class Lang {
     TEXT_ADULT                               = "text.biologydictionary.adult",
     TEXT_ALWAYS_BABY                         = "text.biologydictionary.always_baby",
     TEXT_NEVER_BREED                         = "text.biologydictionary.never_breed",
+    TEXT_ENTITY_NOT_TAMED                    = "text.biologydictionary.entity_not_tamed",
     TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT     = "text.biologydictionary.not_owner_no_permission_to_gift",
     TEXT_NO_BLOCK_TO_LOCATE                  = "text.biologydictionary.no_block_to_locate",
     TEXT_NO_BLOCK_TO_CLEAR                   = "text.biologydictionary.no_block_to_clear",

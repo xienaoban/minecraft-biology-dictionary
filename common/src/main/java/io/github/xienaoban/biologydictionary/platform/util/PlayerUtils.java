@@ -8,6 +8,7 @@ import net.minecraft.network.protocol.game.ClientboundSoundEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
@@ -38,6 +39,10 @@ public final class PlayerUtils {
 
     public static boolean isSurvival(Player player) {
         return gameMode(player) == GameType.SURVIVAL;
+    }
+
+    public static boolean isOp(Player player) {
+        return player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
     }
 
     public static Inventory getInventory(Player player) {
