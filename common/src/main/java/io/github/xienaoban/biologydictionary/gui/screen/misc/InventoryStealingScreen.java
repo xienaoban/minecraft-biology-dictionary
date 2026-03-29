@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -12,6 +13,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -88,6 +91,16 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
                 ClientNetManager.sendStealingDetected(entity);
             }
         }
+    }
+
+    @Override
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyEvent)
+                || ClientUtils.getClient().options.keyInventory.matches(keyEvent)) {
+            onClose();
+            return true;
+        }
+        return super.keyPressed(keyEvent);
     }
 
     /**

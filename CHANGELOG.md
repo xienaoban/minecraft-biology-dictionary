@@ -6,11 +6,15 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
+- Support overview screen for entities (to view the entity's default / reference properties)
+
 ### Changed
 
-### Fixed
+- OP can gift others' pets
+- Notify the player when closing the stealing screen due to being too far away
+- Support using the biology dictionary hotkey to close the stealing screen
 
-- Improved compatibility and avoid using @Redirect
+### Fixed
 
 ## Previous Versions
 
