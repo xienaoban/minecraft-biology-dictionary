@@ -182,3 +182,5 @@ public static final EntityPropertyWidget.Factory<LaborEntity, LaborEntityHealthW
 - Prioritize consulting and referencing Minecraft's official first-party code over searching for solutions online.
 - If online resources for Minecraft code are unavoidable, always verify version compatibility between the retrieved materials and your target Minecraft version. Implementations of Minecraft vary significantly across different versions, which may lead to compatibility issues.
 - Avoid using reflection in source code (except test code), as obfuscation is applied to field and method names in the production Minecraft runtime. Prefer using Mixin instead.
+- In 1.21.11 and higher, the class `ResourceLocation` has been renamed to `Identifier`.
+- Do not use `org.jetbrains.annotations.Nullable` or `org.jetbrains.annotations.NotNull`.

@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.client.HighlightManager;
+import io.github.xienaoban.biologydictionary.client.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
@@ -49,7 +49,7 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
                     continue;
                 }
                 ++cnt;
-                HighlightManager.highlightEntity(e, HighlightEntitiesSkill.TICKS);
+                ClientWorldSession.get().getHighlightManager().highlightEntity(e, HighlightEntitiesSkill.TICKS);
             }
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
                     cnt, packet.entityType().getDescription(), packet.radius()));

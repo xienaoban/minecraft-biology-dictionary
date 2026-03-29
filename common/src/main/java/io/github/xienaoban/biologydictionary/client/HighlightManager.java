@@ -1,11 +1,9 @@
 package io.github.xienaoban.biologydictionary.client;
 
-import io.github.xienaoban.biologydictionary.platform.client.ClientEventRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -20,22 +18,15 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 
 @Environment(EnvType.CLIENT)
 public final class HighlightManager {
-    private static volatile boolean hasHighlighted = false;
-    private static final List<HighlightedEntity> highlightedEntities = new CopyOnWriteArrayList<>();
-    private static final List<HighlightedBlock> highlightedBlocks = new CopyOnWriteArrayList<>();
+    private volatile boolean hasHighlighted = false;
+    private final List<HighlightedEntity> highlightedEntities = new CopyOnWriteArrayList<>();
+    private final List<HighlightedBlock> highlightedBlocks = new CopyOnWriteArrayList<>();
 
-    public static void init() {
-        ClientEventRegistry.registerEndTick(HighlightManager::tick);
-        ClientEventRegistry.registerWorldDisconnecting(client -> clear());
-    }
-
-    private static void tick(Minecraft client) {
+    void tick() {
         if (!hasHighlighted) { return; }
 
         int ticks = BDC.getTicks();
-        ClientLevel level = client.level;
-        if (level == null) { clear(); return; }
-
+        ClientLevel level = ClientUtils.getClientLevel();
         Context ctx = new Context(level);
         highlightedEntities.removeIf(h -> h.checkEnd(ticks, ctx));
         highlightedBlocks.removeIf(h -> h.checkEnd(ticks, ctx));
@@ -44,34 +35,28 @@ public final class HighlightManager {
         }
     }
 
-    public static void clear() {
-        highlightedEntities.clear();
-        highlightedBlocks.clear();
-        hasHighlighted = false;
-    }
-
-    public static boolean hasAnyHighlighted() {
+    public boolean hasAnyHighlighted() {
         return hasHighlighted;
     }
 
-    public static List<HighlightedEntity> getHighlightedEntities() {
+    public List<HighlightedEntity> getHighlightedEntities() {
         return highlightedEntities;
     }
 
-    public static List<HighlightedBlock> getHighlightedBlocks() {
+    public List<HighlightedBlock> getHighlightedBlocks() {
         return highlightedBlocks;
     }
 
-    public static void highlightEntity(Entity entity, int durationTicks) {
+    public void highlightEntity(Entity entity, int durationTicks) {
         if (!hasHighlighted) { hasHighlighted = true; }
         highlightedEntities.add(new HighlightedEntity(BDC.getTicks() + durationTicks, entity));
     }
 
-    public static void highlightBlock(BlockPos blockPos, int durationTicks) {
+    public void highlightBlock(BlockPos blockPos, int durationTicks) {
         highlightBlock(ClientUtils.getClientLevel(), blockPos, durationTicks);
     }
 
-    public static void highlightBlock(ClientLevel level, BlockPos blockPos, int durationTicks) {
+    public void highlightBlock(ClientLevel level, BlockPos blockPos, int durationTicks) {
         if (!hasHighlighted) { hasHighlighted = true; }
         BlockState blockState = level.getBlockState(blockPos);
         highlightedBlocks.add(new HighlightedBlock(BDC.getTicks() + durationTicks, blockState, blockPos, level.dimension()));

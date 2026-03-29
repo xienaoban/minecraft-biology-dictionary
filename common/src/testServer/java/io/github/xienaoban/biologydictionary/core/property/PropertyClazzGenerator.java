@@ -13,7 +13,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
-import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.WorldSession;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
 import io.github.xienaoban.biologydictionary.core.property.builtin.UnsupportedProperty;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferenceProperty;
@@ -63,7 +63,7 @@ public class PropertyClazzGenerator {
         addGeneralImports(cu);
 
         NbtTagCollector.loadAll();
-        EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
+        WorldSession.get().getEntityManager().dfsEntityTree(true, (cur, depth) -> {
             Class<? extends Entity> entityClazz = cur.getClazz();
             LOGGER.info("Testing {}", entityClazz);
 
