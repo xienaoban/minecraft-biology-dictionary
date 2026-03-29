@@ -62,11 +62,15 @@ public final class WorldSession {
     private final MinecraftServer server;
     private final EntityManager entityManager;
     private final EntityOverviewCache entityOverviewCache;
+    private final EntitySpawnManager entitySpawnManager;
 
     private WorldSession(MinecraftServer server) {
         this.server = server;
         this.entityManager = EntityManager.create(justGiveMeALevel(server));
         this.entityOverviewCache = new EntityOverviewCache();
+        this.entitySpawnManager = server != null
+            ? new EntitySpawnManager(server.registryAccess())
+            : null;
     }
 
     public MinecraftServer getServer() {
@@ -79,5 +83,9 @@ public final class WorldSession {
 
     public EntityOverviewCache getEntityOverviewCache() {
         return entityOverviewCache;
+    }
+
+    public EntitySpawnManager getEntitySpawnManager() {
+        return entitySpawnManager;
     }
 }

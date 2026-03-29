@@ -37,13 +37,13 @@ public final class ClientWorldSession {
         return instance;
     }
 
+    private final HighlightManager highlightManager;
+    private final FirstPersonShoulderEntityRenderer shoulderEntityRenderer;
+
     private ClientWorldSession() {
         highlightManager = new HighlightManager();
         shoulderEntityRenderer = new FirstPersonShoulderEntityRenderer();
     }
-
-    private final HighlightManager highlightManager;
-    private final FirstPersonShoulderEntityRenderer shoulderEntityRenderer;
 
     public HighlightManager getHighlightManager() {
         return highlightManager;
