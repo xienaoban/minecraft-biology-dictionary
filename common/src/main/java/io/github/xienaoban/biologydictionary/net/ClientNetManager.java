@@ -23,6 +23,10 @@ public final class ClientNetManager {
         ClientNetApi.send(new RequestBiologyDictionaryItemPacket());
     }
 
+    public static void requestEntityOverview(EntityType<?> entityType) {
+        ClientNetApi.send(new RequestEntityOverviewPacket(EntityUtils.getEntityTypeIdName(entityType)));
+    }
+
     public static void requestEntityData(Entity entity) {
         ClientNetApi.send(new RequestEntityDataPacket(EntityUtils.getId(entity)));
     }
@@ -45,9 +49,5 @@ public final class ClientNetManager {
 
     public static void requestServerConfigs() {
         ClientNetApi.send(new RequestServerConfigsPacket());
-    }
-
-    public static void requestEntityOverview(EntityType<?> entityType) {
-        ClientNetApi.send(new RequestEntityOverviewPacket(EntityUtils.getEntityTypeIdName(entityType)));
     }
 }

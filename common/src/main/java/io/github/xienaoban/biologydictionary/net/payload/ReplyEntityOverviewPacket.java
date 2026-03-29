@@ -40,16 +40,12 @@ public record ReplyEntityOverviewPacket(boolean notNull, String entityTypeId,
             static void receive(ReplyEntityOverviewPacket packet, ClientNetApi.Context ctx) {
                 if (!packet.notNull()) { return; }
 
-                try {
-                    EntityTypeOverviewCache.put(packet.entityTypeId(), packet.vanillaNbt(), packet.extraNbt());
+                EntityTypeOverviewCache.put(packet.entityTypeId(), packet.vanillaNbt(), packet.extraNbt());
 
-                    // Update current screen if it's an overview screen for this entity type
-                    if (ClientUtils.getCurrentScreen() instanceof BdEntityOverviewScreen screen
-                            && screen.matchesType(packet.entityTypeId())) {
-                        screen.updateProperties(packet.vanillaNbt(), packet.extraNbt());
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("Failed to process entity overview reply for type: " + packet.entityTypeId(), e);
+                // Update current screen if it's an overview screen for this entity type
+                if (ClientUtils.getCurrentScreen() instanceof BdEntityOverviewScreen screen
+                        && screen.matchesType(packet.entityTypeId())) {
+                    screen.updateProperties(packet.vanillaNbt(), packet.extraNbt());
                 }
             }
         }

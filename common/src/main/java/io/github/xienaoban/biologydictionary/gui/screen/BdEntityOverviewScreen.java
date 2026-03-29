@@ -46,9 +46,9 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
     public void initOrRequestProperties() {
         EntityTypeOverviewCache.CacheEntry cache = EntityTypeOverviewCache.get(entityType);
         if (cache != null) {
-            EntityUtils.setNbt(entity, cache.vanillaNbt);
-            properties.update(cache.vanillaNbt, cache.extraNbt);
+            updateProperties(cache.vanillaNbt, cache.extraNbt);
         } else {
+            // RequestEntityOverviewPacket -> ReplyEntityOverviewPacket -> put cache & updateProperties
             ClientNetManager.requestEntityOverview(entityType);
         }
     }
