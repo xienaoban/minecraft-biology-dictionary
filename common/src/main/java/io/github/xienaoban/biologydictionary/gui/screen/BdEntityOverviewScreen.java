@@ -1,11 +1,13 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.EntityTypeOverviewCache;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,7 +25,7 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
     private final EntityProperties<?> properties;
 
     public BdEntityOverviewScreen(EntityType<?> entityType) {
-        super(io.github.xienaoban.biologydictionary.platform.util.TextUtils.literal("[Reference] ").append(entityType.getDescription()));
+        super(TextUtils.concat(entityType.getDescription(), TextUtils.translate(Lang.ENTITY_OVERVIEW_TITLE_SUFFIX)));
         this.entityType = entityType;
         this.entity = EntityUtils.create(entityType, ClientUtils.getClientLevel());
         this.properties = new EntityProperties<>(entity);
