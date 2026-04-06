@@ -31,11 +31,11 @@ public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag v
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         final class W { static void receive(ReplyEntityDataPacket packet, ClientNetApi.Context ctx) {
-            if (!packet.notNull()) return;
+            if (!packet.notNull()) { return; }
 
             Entity entity = BDC.getHitEntity();
             EntityProperties<?> properties = BDC.getHitEntityProperties();
-            if (entity == null || EntityUtils.getId(entity) != packet.entityId() || properties == null) return;
+            if (entity == null || EntityUtils.getId(entity) != packet.entityId() || properties == null) { return; }
             properties.update(packet.vanillaNbt(), packet.extraNbt());
         }}
         W.receive(this, ctx);
