@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.client;
 
+import io.github.xienaoban.biologydictionary.core.discovery.DelegatingDiscoveryClientCache;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -39,10 +40,12 @@ public final class ClientWorldSession {
 
     private final HighlightManager highlightManager;
     private final FirstPersonShoulderEntityRenderer shoulderEntityRenderer;
+    private final DelegatingDiscoveryClientCache discoveryClientCache;
 
     private ClientWorldSession() {
         highlightManager = new HighlightManager();
         shoulderEntityRenderer = new FirstPersonShoulderEntityRenderer();
+        discoveryClientCache = new DelegatingDiscoveryClientCache();
     }
 
     public HighlightManager getHighlightManager() {
@@ -51,6 +54,10 @@ public final class ClientWorldSession {
 
     public FirstPersonShoulderEntityRenderer getShoulderEntityRenderer() {
         return shoulderEntityRenderer;
+    }
+
+    public DelegatingDiscoveryClientCache getDiscoveryClientCache() {
+        return discoveryClientCache;
     }
 
     public void tick() {

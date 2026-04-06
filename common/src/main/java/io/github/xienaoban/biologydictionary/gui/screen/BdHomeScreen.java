@@ -1,13 +1,17 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.client.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.WorldSession;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryClientCache;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
@@ -19,6 +23,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -164,6 +169,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         private final Entity entity;
         private final Component name;
         private final ItemStack spawnEgg;
+        private final Identifier entityTypeId;
 
         private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
                 = new ScreenRenderingContext.EntityRenderingCache();
@@ -172,14 +178,27 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             super(2, 2);
             this.entity = entity;
             EntityType<?> type = EntityUtils.getEntityType(entity);
+            this.entityTypeId = EntityUtils.getEntityTypeId(type);
             this.name = type.getDescription();
             Item item = SpawnEggItem.byId(type);
             this.spawnEgg = item == null ? null : new ItemStack(item);
         }
 
+        private boolean isDiscovered() {
+            DiscoveryClientCache cache = ClientWorldSession.get().getDiscoveryClientCache();
+            return cache.isDiscovered(entityTypeId);
+        }
+
+        private boolean isClickable() {
+            return ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities() || isDiscovered();
+        }
+
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (!isMouseLeft(code)) {
+                return true;
+            }
+            if (!isClickable()) {
                 return true;
             }
 
@@ -213,8 +232,10 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
+
             ScreenElementBox box = getBox();
-            ctx.renderEntityCentered(entity, entityRenderingCache, box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6, entityRotateX, entityRotateY);
+            ctx.renderEntityCentered(entity, entityRenderingCache, box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6, entityRotateX, entityRotateY,
+                    isDiscovered() ? 0 : Colors.UNDISCOVERED_ENTITY_COLOR);
             ctx.renderCenteredText(name, 0xFF000000, 0.5F, getZ(), (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
         }
 

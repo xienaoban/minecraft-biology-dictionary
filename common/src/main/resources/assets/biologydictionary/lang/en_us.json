@@ -29,11 +29,19 @@
   "config.biologydictionary.entry.inheritSilentFromParents.tooltip": "If true, baby animals will be born silent when both parents are silent.",
   "config.biologydictionary.entry.skillCosts": "Skill Costs Configuration",
   "config.biologydictionary.entry.skillCosts.tooltip": "Cost configuration for various skills. Please edit directly in the config file.",
+  "config.biologydictionary.entry.discoveryStrategy": "Discovery Strategy",
+  "config.biologydictionary.entry.discoveryStrategy.tooltip": "Determines how a entity is considered discovered by a player.",
+  "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities": "Allow Overview and Skills for Undiscovered Entities",
+  "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities.tooltip": "If true, the overview can be accessed even if the entity is undiscovered.",
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "None",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "Top",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.SIDES": "Sides",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.BOTTOM": "Bottom",
+
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.ALWAYS_UNLOCKED": "Always Unlocked",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.VANILLA_KILL": "Vanilla Kill",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.DICTIONARY": "Biology Dictionary (NOT DONE YET)",
 
   "modmenu.nameTranslation.biologydictionary": "Biology Dictionary",
   "modmenu.descriptionTranslation.biologydictionary": "To display or modify the properties and states of mobs.",

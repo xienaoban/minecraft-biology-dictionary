@@ -46,7 +46,7 @@ public final class ClientNetManager {
         ClientNetApi.send(new SendStealingDetectedPacket(EntityUtils.getId(entity)));
     }
 
-    public static void requestServerConfigs() {
-        ClientNetApi.send(new RequestServerConfigsPacket());
+    public static void requestFullSync() {
+        ClientNetApi.send(new RequestFullSyncPacket());
     }
 }

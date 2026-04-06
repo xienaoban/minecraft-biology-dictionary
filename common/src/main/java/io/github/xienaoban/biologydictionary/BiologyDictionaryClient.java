@@ -41,10 +41,10 @@ public final class BiologyDictionaryClient {
         hitEntityProperties = null;
 
         ClientEventRegistry.registerWorldConnected(client -> {
-            // Only request server configs from remote servers, not local servers.
-            if (!client.isLocalServer()) { ClientNetManager.requestServerConfigs(); }
             WorldSession.init(null);
             ClientWorldSession.init();
+            // Only request server configs from remote servers, not local servers.
+            if (!ClientUtils.isLocalServer(client)) { ClientNetManager.requestFullSync(); }
         });
         ClientEventRegistry.registerWorldDisconnecting(client -> {
             ClientWorldSession.deinit();

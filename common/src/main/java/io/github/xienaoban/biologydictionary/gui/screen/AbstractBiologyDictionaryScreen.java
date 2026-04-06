@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.ArrayList;
@@ -88,7 +89,11 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         if (client != minecraft) {
             throw new AssertionError("this.minecraft != super.minecraft");
         }
-        // add some vanilla-widgets here
+
+        // Sync entity kill data manually.
+        player.connection.send(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.REQUEST_STATS));
+
+        // Add some vanilla-widgets here.
     }
 
     @Override
