@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
 import io.github.xienaoban.biologydictionary.core.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
@@ -32,9 +33,16 @@ public record RequestEntityOverviewPacket(String entityTypeId) implements Packet
         ReplyEntityOverviewPacket toSend;
 
         if (entityType != null) {
-            EntityOverviewCache.CacheEntry cached = WorldSession.get().getEntityOverviewCache()
-                    .getOrCreate(entityType, ctx.player().level());
-            toSend = new ReplyEntityOverviewPacket(true, entityTypeId, cached.vanillaNbt(), cached.extraNbt());
+            // Server-side guard: check if entity is locked
+            var manager = WorldSession.get().getDiscoveryManager();
+            if (!ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities()
+                    && !manager.isDiscovered(entityType, ctx.player())) {
+                toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);
+            } else {
+                EntityOverviewCache.CacheEntry cached = WorldSession.get().getEntityOverviewCache()
+                        .getOrCreate(entityType, ctx.player().level());
+                toSend = new ReplyEntityOverviewPacket(true, entityTypeId, cached.vanillaNbt(), cached.extraNbt());
+            }
         } else {
             LOGGER.error("Unknown entity type: {}", entityTypeId);
             toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);

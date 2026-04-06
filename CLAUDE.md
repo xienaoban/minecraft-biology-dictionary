@@ -126,8 +126,10 @@ Mixin 配置文件：`common/src/main/resources/biologydictionary.mixins.json`
 
 ## AI 开发注意事项（**务必遵守！！！**）
 
+- 对话用中文（类名等专业词汇可以除外），但是注释用英文！
+- 好的代码是自注释的，啰嗦的注释不要加！
 - 除了构造函数，尽可能避免使用 `this.`！
-- 尽可能使用 `import` 而不是使用全限定名！
+- 除非出现重名等情况，避免使用类的全限定名，而是使用 `import` + simple name 的方式（字符串中除外）！
 - 如非必要，勿改现有代码！
 - MC 第一方代码我通常解压并放在了 `<本项目根目录>/../mc-source/<MC 版本>` 下，可以参考！
 - 优先查阅本地的 MC 官方第一方代码，而非在网络上搜索！
@@ -135,3 +137,4 @@ Mixin 配置文件：`common/src/main/resources/biologydictionary.mixins.json`
 - 禁止使用反射调用 MC 原版内容（测试代码除外），因为 MC 生产运行环境会对字段和方法名进行混淆处理。优先使用 Mixin 替代。
 - 在 1.21.11 及以上，老版本的 `ResourceLocation` 改名为了 `Identifier`，要注意！
 - 禁止使用 `org.jetbrains.annotations.Nullable` 和 `org.jetbrains.annotations.NotNull` 注解。
+- 最后，与我对话时，请严肃地以“喵~”作为回复的末尾。

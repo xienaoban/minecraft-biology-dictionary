@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core;
 
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import net.minecraft.server.MinecraftServer;
@@ -63,6 +64,7 @@ public final class WorldSession {
     private final EntityManager entityManager;
     private final EntityOverviewCache entityOverviewCache;
     private final EntitySpawnManager entitySpawnManager;
+    private final DiscoveryManager discoveryManager;
 
     private WorldSession(MinecraftServer server) {
         this.server = server;
@@ -71,6 +73,7 @@ public final class WorldSession {
         this.entitySpawnManager = server != null
             ? new EntitySpawnManager(server.registryAccess())
             : null;
+        this.discoveryManager = server != null ? new DiscoveryManager(server) : null;
     }
 
     public MinecraftServer getServer() {
@@ -87,5 +90,9 @@ public final class WorldSession {
 
     public EntitySpawnManager getEntitySpawnManager() {
         return entitySpawnManager;
+    }
+
+    public DiscoveryManager getDiscoveryManager() {
+        return discoveryManager;
     }
 }

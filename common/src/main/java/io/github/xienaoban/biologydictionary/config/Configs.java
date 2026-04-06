@@ -91,6 +91,20 @@ public final class Configs {
         boolean inheritSilentFromParents = true;
 
         /**
+         * Discovery strategy. Determines how entities are discovered by each player.
+         */
+        @ConfigEntry
+        DiscoveryStrategyMode discoveryStrategy = DiscoveryStrategyMode.ALWAYS_UNLOCKED;
+
+        /**
+         * Whether undiscovered entities are allowed to be viewed in the overview screen.
+         * When false, undiscovered entities cannot be clicked in the home screen
+         * and server refuses to send NBT data for entity overview.
+         */
+        @ConfigEntry
+        boolean allowOverviewForUndiscoveredEntities = false;
+
+        /**
          * Skill costs configuration in YAML-friendly format.
          * Maps skill short names to their cost data (from SkillCost.toMap()).
          * Always contains all registered skills after initialization.
@@ -130,6 +144,14 @@ public final class Configs {
 
         public boolean isInheritSilentFromParents() {
             return inheritSilentFromParents;
+        }
+
+        public DiscoveryStrategyMode getDiscoveryStrategy() {
+            return discoveryStrategy;
+        }
+
+        public boolean isAllowOverviewForUndiscoveredEntities() {
+            return allowOverviewForUndiscoveredEntities;
         }
 
         public SkillCost getSkillCost(Class<?> skillClass) {
@@ -188,6 +210,12 @@ public final class Configs {
             }
 
             skillCostsCache = cache;
+        }
+
+        public enum DiscoveryStrategyMode {
+            ALWAYS_UNLOCKED,
+            VANILLA_KILL,
+            DICTIONARY
         }
     }
 

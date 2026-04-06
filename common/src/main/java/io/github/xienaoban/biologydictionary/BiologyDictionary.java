@@ -37,7 +37,13 @@ public final class BiologyDictionary {
         ConfigsManager.load();
 
         ServerEventRegistry.registerStarted(WorldSession::init);
-        ServerEventRegistry.registerStopping(WorldSession::deinit);
+        ServerEventRegistry.registerStopping(server -> {
+            var session = WorldSession.get();
+            if (session != null && session.getDiscoveryManager() != null) {
+                session.getDiscoveryManager().save();
+            }
+            WorldSession.deinit(server);
+        });
 
         LOGGER.info("BiologyDictionary initialized.");
     }
