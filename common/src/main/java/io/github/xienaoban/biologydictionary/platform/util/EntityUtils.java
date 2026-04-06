@@ -155,6 +155,10 @@ public final class EntityUtils {
         return entity.getId();
     }
 
+    public static boolean isFakeEntity(Entity entity) {
+        return entity.level().getEntity(entity.getId()) != entity;
+    }
+
     public static void playSound(Entity entity, SoundEvent soundEvent) {
         entity.playSound(soundEvent);
     }

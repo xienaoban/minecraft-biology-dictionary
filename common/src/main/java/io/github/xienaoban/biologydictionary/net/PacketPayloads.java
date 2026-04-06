@@ -9,6 +9,8 @@ public final class PacketPayloads {
 
     public static void registerBuiltIn(Registrar registrar) {
         registrar.register(SendCenteredMessagePacket.class, SendCenteredMessagePacket.FACTORY);
+        registrar.register(RequestEntityOverviewPacket.class, RequestEntityOverviewPacket.FACTORY);
+        registrar.register(ReplyEntityOverviewPacket.class, ReplyEntityOverviewPacket.FACTORY);
         registrar.register(RequestEntityDataPacket.class, RequestEntityDataPacket.FACTORY);
         registrar.register(ReplyEntityDataPacket.class, ReplyEntityDataPacket.FACTORY);
         registrar.register(RequestBiologyDictionaryItemPacket.class, RequestBiologyDictionaryItemPacket.FACTORY);

@@ -17,12 +17,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
-    private final AbstractBiologyDictionaryScreen lastScreen;
     private final Consumer<AbstractClientPlayer> callback;
 
     public PlayerSelectorScreen(AbstractBiologyDictionaryScreen lastScreen, Consumer<AbstractClientPlayer> callback) {
         super(TextUtils.translate(Lang.SCREEN_PLAYER_SELECTOR));
-        this.lastScreen = lastScreen;
+        setLastScreen(lastScreen);
         this.callback = callback;
         addBookmark(new ReturnLastScreenBookmark());
 
@@ -37,14 +36,6 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
                         .toList()
         );
         addAllWidgetsOneByOne(list);
-    }
-
-    @Override
-    public void onClose() {
-        super.onClose();
-        if (lastScreen != null) {
-            ClientUtils.setScreen(lastScreen);
-        }
     }
 
     public final class ReturnLastScreenBookmark extends Bookmark {
