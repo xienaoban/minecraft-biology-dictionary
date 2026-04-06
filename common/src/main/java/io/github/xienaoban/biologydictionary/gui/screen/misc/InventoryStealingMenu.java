@@ -1,7 +1,10 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -58,6 +61,8 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
     final LivingEntity entity;
     final Container container;
     final EntityInventoryPropertyBundle.InventoryHandler<LivingEntity> handler;
+
+    private boolean closedByDistance = false;
 
     public InventoryStealingMenu(int containerId, Inventory inventory, LivingEntity entity, Container container) {
         super(null, containerId);
@@ -132,17 +137,28 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         return (handler == null || handler.getContainer(entity) == container)
             && container.stillValid(player)
             && entity.isAlive()
-            && player.isWithinEntityInteractionRange(entity, 4.0);
+            && isWithinTouchRange(player);
     }
 
     @Override
     public void removed(Player player) {
         super.removed(player);
         container.stopOpen(player);
+        if (closedByDistance) {
+            PlayerUtils.showClientCenteredMessage(player, TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
+        }
     }
 
     public Player getPlayer() {
         return inventory.player;
+    }
+
+    private boolean isWithinTouchRange(Player player) {
+        boolean good = player.isWithinEntityInteractionRange(entity, 4.0);
+        if (!good) {
+            closedByDistance = true;
+        }
+        return good;
     }
 
     /**
