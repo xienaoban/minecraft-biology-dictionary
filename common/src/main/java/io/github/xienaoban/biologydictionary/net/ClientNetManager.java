@@ -9,6 +9,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetManager {
@@ -19,6 +20,10 @@ public final class ClientNetManager {
 
     public static void requestBookItem() {
         ClientNetApi.send(new RequestBiologyDictionaryItemPacket());
+    }
+
+    public static void requestEntityOverview(EntityType<?> entityType) {
+        ClientNetApi.send(new RequestEntityOverviewPacket(EntityUtils.getEntityTypeIdName(entityType)));
     }
 
     public static void requestEntityData(Entity entity) {

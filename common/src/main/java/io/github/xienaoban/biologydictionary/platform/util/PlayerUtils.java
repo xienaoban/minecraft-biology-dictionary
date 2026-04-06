@@ -48,6 +48,16 @@ public final class PlayerUtils {
         return player.isSpectator();
     }
 
+    public static boolean isOp(Player player) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            return serverPlayer.server.getPlayerList().isOp(serverPlayer.getGameProfile());
+        }
+        // On client side, check if /data get is available in the command tree.
+        // The server sends commands filtered by permission level, so this is
+        // a reliable way to check if the player has at least permission level 2.
+        return ClientUtils.canUseDataGetCommand();
+    }
+
     public static boolean isSurvival(Player player) {
         return gameMode(player) == GameType.SURVIVAL;
     }

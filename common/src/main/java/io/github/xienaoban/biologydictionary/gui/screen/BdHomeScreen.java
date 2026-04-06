@@ -158,7 +158,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private final class EntityWidget extends Widget {
-        private static final int BUTTONS_CUT = (2 * Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * 2 / 3;
+        private static final int BUTTONS_TOTAL = 2 * Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN;
+        private static final int BUTTONS_CUT = BUTTONS_TOTAL * 2 / 3;
 
         private final Entity entity;
         private final Component name;
@@ -177,25 +178,28 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onMouseDown(float x, float y, int code) {
             ScreenElementBox box = getBox();
             float mouseY = screenRenderingContext.getMouseY() - box.getTop();
+
             if (mouseY < BUTTONS_CUT) {
-                int distance;
                 if (isMouseLeft(code)) {
-                    distance = HighlightEntitiesSkill.NEAR_RADIUS;
-                } else if (isMouseRight(code)) {
-                    distance = HighlightEntitiesSkill.FAR_RADIUS;
+                    // Overview button
+                    ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                    BdEntityOverviewScreen screen = new BdEntityOverviewScreen(EntityUtils.getEntityType(entity));
+                    screen.setLastScreen(BdHomeScreen.this);
+                    ClientUtils.setScreen(screen);
+                    screen.initOrRequestProperties();
                 } else {
-                    return true;
-                }
-                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
-                if (BiologySkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance))) {
-                    onClose();
+                    // Highlight button
+                    int distance = isMouseRight(code) ? HighlightEntitiesSkill.NEAR_RADIUS : HighlightEntitiesSkill.FAR_RADIUS;
+                    ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
+                    if (BiologySkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance))) {
+                        onClose();
+                    }
                 }
             } else {
-                if (isMouseLeft(code)) {
-                    BiologySkills.activate(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)));
-                }
-                return true;
+                // Spawn egg button - bottom section
+                BiologySkills.activate(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)));
             }
+
             return true;
         }
 
@@ -215,6 +219,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
                 float midX = (box.getLeft() + box.getRight()) / 2;
                 float mouseY = ctx.getMouseY() - box.getTop();
+
+                // Render button sections
                 int colorHighlight, colorEgg;
                 if (mouseY < BUTTONS_CUT) {
                     colorHighlight = 0xd4ffffff;
@@ -226,7 +232,10 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 ctx.renderRectangle(colorHighlight, ctx.getZ(), box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getTop() + BUTTONS_CUT);
                 ctx.renderRectangle(colorEgg, ctx.getZ(), box.getLeft() + 1, box.getTop() + BUTTONS_CUT, box.getRight() - 1, box.getBottom() - 1);
 
+                // Render icons for each section
                 final int wh = 10;
+
+                // Highlight icon (top) - animated
                 final int wink = 600, cycle = 2400;
                 long time = currTime % cycle;
                 int u;
@@ -236,24 +245,25 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     u = 0;
                 } else if (time < cycle / 2 + wink) {
                     u = 1;
-                } else {
-                    u = 0;
-                }
+                } else { u = 0; }
                 ctx.renderTexture(Textures.ICONS, (23 + u) * wh, 24 * wh, ctx.getZ(), midX - wh / 2F, box.getTop() + (BUTTONS_CUT - wh) / 2F, Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
 
+                // Spawn egg icon (bottom)
                 if (spawnEgg != null) {
                     ctx.renderItem(spawnEgg, 0.5F, midX - 4F, box.getTop() + BUTTONS_CUT);
                 }
 
+                // Tooltip
                 List<Component> tooltips;
                 if (mouseY < BUTTONS_CUT) {
                     tooltips = new ArrayList<>();
-                    tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_HIGHLIGHT));
+                    tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OVERVIEW));
+                    tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OVERVIEW_DESC));
                     tooltips.add(TextUtils.empty());
-                    tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_LEFT_DESC, HighlightEntitiesSkill.NEAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                    tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.NEAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                     tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.NEAR_RADIUS).getRealCost().toTooltipText());
                     tooltips.add(TextUtils.empty());
-                    tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.FAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                    tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC, HighlightEntitiesSkill.FAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                     tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.FAR_RADIUS).getRealCost().toTooltipText());
                     tooltips.add(TextUtils.empty());
                     tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withStyle(ChatFormatting.GRAY));
