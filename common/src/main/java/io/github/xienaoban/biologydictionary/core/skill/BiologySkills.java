@@ -131,6 +131,10 @@ public final class BiologySkills {
     public static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
         final class W { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
             try {
+                if (EntityUtils.isFakeEntity(entity)) {
+                    // Entity displayed in overview screen, not a real entity in world.
+                    return true;
+                }
                 LocalPlayer player = ClientUtils.getClientPlayer();
                 skill.clientAdditionalCheck(new EntityTargetedSkill.ClientContext<>(player, Misc.cast(entity)));
                 SkillCost cost = skill.getRealCost(Misc.cast(entity));

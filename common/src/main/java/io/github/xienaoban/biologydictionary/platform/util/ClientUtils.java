@@ -6,9 +6,12 @@ import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
@@ -128,5 +131,32 @@ public final class ClientUtils {
      */
     public static float getPartialTick() {
         return getClient().getTimer().getGameTimeDeltaPartialTick(false);
+    }
+
+    /**
+     * Check if the current player has permission to use {@code /data get} command.
+     * The server sends a command tree filtered by permission level, so if {@code data get}
+     * exists in the tree, the player has at least permission level 2.
+     */
+    public static boolean canUseDataGetCommand() {
+        ClientPacketListener connection = getClient().getConnection();
+        if (connection == null) return false;
+
+        CommandDispatcher<SharedSuggestionProvider> dispatcher = connection.getCommands();
+        if (dispatcher == null) return false;
+
+        // Find "data" node
+        for (var node : dispatcher.getRoot().getChildren()) {
+            if ("data".equals(node.getName())) {
+                // Check if "get" exists as a child of "data"
+                for (var child : node.getChildren()) {
+                    if ("get".equals(child.getName())) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        return false;
     }
 }
