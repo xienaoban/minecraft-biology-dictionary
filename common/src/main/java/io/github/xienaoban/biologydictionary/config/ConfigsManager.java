@@ -183,9 +183,11 @@ public final class ConfigsManager {
         if (session != null) {
             session.onConfigsUpdate();
         }
-        ClientWorldSession clientSession = ClientWorldSession.get();
-        if (clientSession != null) {
-            clientSession.onConfigsUpdate();
+        if (DevUtils.isClient()) {
+            ClientWorldSession clientSession = ClientWorldSession.get();
+            if (clientSession != null) {
+                clientSession.onConfigsUpdate();
+            }
         }
         ServerWorldSession serverSession = ServerWorldSession.get();
         if (serverSession != null) {
