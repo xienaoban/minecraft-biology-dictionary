@@ -1,9 +1,9 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryClientCache;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
@@ -75,14 +75,16 @@ public record ReplyFullSyncPacket(String serverConfigsYaml, Map<Identifier, Disc
             }
             ConfigsManager.setRemoteServerConfigs(remoteConfigs);
 
+            WorldSession session = WorldSession.get();
+            if (session != null) {
+                session.getSkillCostsCache().update(remoteConfigs);
+            }
+
             ClientWorldSession clientSession = ClientWorldSession.get();
             if (clientSession == null) {
                 return;
             }
-            clientSession.getDiscoveryClientCache().updateStrategy(remoteConfigs.getDiscoveryStrategy());
-            if (packet.discoveries() != null) {
-                clientSession.getDiscoveryClientCache().onFullSync(packet.discoveries());
-            }
+            clientSession.getDiscoveryClientCache().update(remoteConfigs, packet.discoveries());
         }}
         W.receive(this, ctx);
     }

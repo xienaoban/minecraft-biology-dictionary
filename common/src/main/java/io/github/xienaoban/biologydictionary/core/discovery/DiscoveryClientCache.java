@@ -24,5 +24,5 @@ public interface DiscoveryClientCache {
     /**
      * Called when a single entity is newly discovered.
      */
-    void onIncrementalUpdate(Identifier entityType, DiscoveryRecord record);
+    void onIncrementalSync(Identifier entityType, DiscoveryRecord record);
 }

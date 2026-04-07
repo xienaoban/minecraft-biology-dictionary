@@ -193,7 +193,16 @@ public final class ConfigsManager {
             // Client connected to remote server
             // Do nothing
             LOGGER.info("We are on a client connected to remote server. No need to broadcast new configs.");
-        } else if (server.isDedicatedServer()) {
+            return;
+        }
+
+        // Rebuild local cache when server configs are refreshed on server side.
+        WorldSession session = WorldSession.get();
+        if (session != null) {
+            session.getSkillCostsCache().update(ConfigsManager.getServer());
+        }
+
+        if (server.isDedicatedServer()) {
             // Dedicated server
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 ServerNetManager.replyFullSync(player, serverConfigsYaml, getDiscoveryRecords(player));

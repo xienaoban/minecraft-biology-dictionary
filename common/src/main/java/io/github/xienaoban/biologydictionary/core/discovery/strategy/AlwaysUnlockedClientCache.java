@@ -31,5 +31,5 @@ public final class AlwaysUnlockedClientCache implements DiscoveryClientCache {
     public void onFullSync(Map<Identifier, DiscoveryRecord> data) {}
 
     @Override
-    public void onIncrementalUpdate(Identifier entityType, DiscoveryRecord record) {}
+    public void onIncrementalSync(Identifier entityType, DiscoveryRecord record) {}
 }

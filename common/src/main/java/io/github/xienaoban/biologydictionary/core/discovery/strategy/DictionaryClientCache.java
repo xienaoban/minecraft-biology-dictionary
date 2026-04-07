@@ -36,7 +36,7 @@ public final class DictionaryClientCache implements DiscoveryClientCache {
     }
 
     @Override
-    public void onIncrementalUpdate(Identifier entityType, DiscoveryRecord record) {
+    public void onIncrementalSync(Identifier entityType, DiscoveryRecord record) {
         data.put(entityType, record);
     }
 
