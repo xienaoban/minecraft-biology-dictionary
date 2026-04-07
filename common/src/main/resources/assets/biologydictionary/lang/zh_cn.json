@@ -213,6 +213,7 @@
   "text.biologydictionary.please_report_issue": "详细报错见“{游戏目录}/logs/latest.log”，若需求助作者，请务必附上此log文件（仅截图本段报错对定位问题毫无帮助！！）",
   "text.biologydictionary.config_reload_success": "配置已重新加载",
   "text.biologydictionary.no_biology_dictionary_book": "背包内无生物辞典书！",
+  "text.biologydictionary.entity_not_discovered": "尚未发现该生物（解锁条件见配置）",
   "text.biologydictionary.target_entity_too_far": "目标生物离你太远了！",
   "text.biologydictionary.highlighted_entities": "感知到了%d只%s，感知半径%d米！",
   "text.biologydictionary.failed_to_highlight": "高亮失败：%s",

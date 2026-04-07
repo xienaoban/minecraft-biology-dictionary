@@ -196,6 +196,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (!isClickable()) {
+                AbstractBiologyDictionaryScreen.current()
+                        .sendScreenMessage(TextUtils.translate(Lang.TEXT_ENTITY_NOT_DISCOVERED));
                 return true;
             }
 

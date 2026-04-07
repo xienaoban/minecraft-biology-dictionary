@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.server;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
@@ -10,6 +11,8 @@ import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.permissions.Permissions;
+
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public final class CommandManager {
     private CommandManager() {}
@@ -27,9 +30,14 @@ public final class CommandManager {
     }
 
     private static int reloadConfig(CommandContext<CommandSourceStack> context) {
-        ConfigsManager.load();
-        ConfigsManager.onUpdated();
-        context.getSource().sendSuccess(() -> TextUtils.translate(Lang.TEXT_CONFIG_RELOAD_SUCCESS), true);
-        return 1;
+        try {
+            ConfigsManager.load();
+            ConfigsManager.onUpdated();
+            context.getSource().sendSuccess(() -> TextUtils.translate(Lang.TEXT_CONFIG_RELOAD_SUCCESS), true);
+            return Command.SINGLE_SUCCESS;
+        } catch (Exception e) {
+            LOGGER.error("Failed to reload config!", e);
+            return 0;
+        }
     }
 }
