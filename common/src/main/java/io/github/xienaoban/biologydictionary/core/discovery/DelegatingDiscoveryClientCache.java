@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
-import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedClientCache;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.DictionaryClientCache;
@@ -19,11 +18,11 @@ public final class DelegatingDiscoveryClientCache implements DiscoveryClientCach
     private volatile DiscoveryClientCache delegate;
 
     public DelegatingDiscoveryClientCache() {
-        onConfigsUpdate(ConfigsManager.getServer());
+        delegate = AlwaysUnlockedClientCache.INSTANCE;
     }
 
-    public void onConfigsUpdate(Configs.ServerConfigs serverConfigs) {
-        delegate = switch (serverConfigs.getDiscoveryStrategy()) {
+    public void onConfigsUpdate() {
+        delegate = switch (ConfigsManager.getServer().getDiscoveryStrategy()) {
             case ALWAYS_UNLOCKED -> AlwaysUnlockedClientCache.INSTANCE;
             case VANILLA_KILL -> KillBasedClientCache.INSTANCE;
             case DICTIONARY -> new DictionaryClientCache();

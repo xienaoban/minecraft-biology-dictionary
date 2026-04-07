@@ -211,6 +211,7 @@
   "text.biologydictionary.click_me_to_download": "Click me to download!",
   "text.biologydictionary.info_from_this_mod": "[Biology Dictionary] ",
   "text.biologydictionary.please_report_issue": "Please go to the GitHub page of this mod, create an issue and upload the {game directory}/logs/latest.log file for the author's analysis.",
+  "text.biologydictionary.config_reload_success": "Configuration reloaded",
   "text.biologydictionary.no_biology_dictionary_book": "No Biology Dictionary Book in inventory！",
   "text.biologydictionary.target_entity_too_far": "The target mob is too far from you!",
   "text.biologydictionary.highlighted_entities": "Sensed %d %s within %d meters!",

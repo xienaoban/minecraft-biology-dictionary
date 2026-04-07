@@ -195,9 +195,6 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            if (!isMouseLeft(code)) {
-                return true;
-            }
             if (!isClickable()) {
                 return true;
             }

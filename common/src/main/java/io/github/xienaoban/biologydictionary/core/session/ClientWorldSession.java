@@ -68,6 +68,6 @@ public final class ClientWorldSession {
     }
 
     public void onConfigsUpdate() {
-        discoveryClientCache.onConfigsUpdate(ConfigsManager.getServer());
+        discoveryClientCache.onConfigsUpdate();
     }
 }
