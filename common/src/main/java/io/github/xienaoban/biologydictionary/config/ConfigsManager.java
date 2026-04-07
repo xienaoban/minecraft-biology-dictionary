@@ -3,7 +3,8 @@ package io.github.xienaoban.biologydictionary.config;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
-import io.github.xienaoban.biologydictionary.core.WorldSession;
+import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -86,7 +87,7 @@ public final class ConfigsManager {
         WorldSession ws = WorldSession.get();
         Objects.requireNonNull(remoteConfigs);
         Objects.requireNonNull(ws);
-        if (ws.getServer() != null) {
+        if (ServerWorldSession.get() != null) {
             throw new IllegalStateException("Server configs should not be updated on server.");
         }
         serverConfigs = remoteConfigs;
@@ -215,8 +216,8 @@ public final class ConfigsManager {
     }
 
     private static Map<Identifier, DiscoveryRecord> getDiscoveryRecords(ServerPlayer player) {
-        var session = WorldSession.get();
-        if (session != null && session.getDiscoveryManager() != null) {
+        var session = ServerWorldSession.get();
+        if (session != null) {
             return session.getDiscoveryManager().getDiscoveryRecords(player);
         }
         return null;

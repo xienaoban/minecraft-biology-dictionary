@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.mixin.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.xienaoban.biologydictionary.client.HighlightRenderer;
-import io.github.xienaoban.biologydictionary.client.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;

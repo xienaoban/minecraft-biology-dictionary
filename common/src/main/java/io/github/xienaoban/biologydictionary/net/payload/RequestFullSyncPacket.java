@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.core.WorldSession;
+import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
@@ -33,10 +33,8 @@ public record RequestFullSyncPacket() implements Packet {
 
         Map<Identifier, DiscoveryRecord> discoveries = null;
         if (!player.isCreative()) {
-            WorldSession session = WorldSession.get();
-            if (session != null && session.getDiscoveryManager() != null) {
-                discoveries = session.getDiscoveryManager().getDiscoveryRecords(player);
-            }
+            ServerWorldSession session = ServerWorldSession.get();
+            discoveries = session.getDiscoveryManager().getDiscoveryRecords(player);
         }
 
         ServerNetManager.replyFullSync(player, serverConfigsYaml, discoveries);

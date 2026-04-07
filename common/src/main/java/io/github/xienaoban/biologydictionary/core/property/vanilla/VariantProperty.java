@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property.vanilla;
 
-import io.github.xienaoban.biologydictionary.core.WorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;

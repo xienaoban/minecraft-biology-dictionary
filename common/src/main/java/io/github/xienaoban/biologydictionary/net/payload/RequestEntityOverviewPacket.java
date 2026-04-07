@@ -2,7 +2,8 @@ package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
-import io.github.xienaoban.biologydictionary.core.WorldSession;
+import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -34,7 +35,7 @@ public record RequestEntityOverviewPacket(String entityTypeId) implements Packet
 
         if (entityType != null) {
             // Server-side guard: check if entity is locked
-            var manager = WorldSession.get().getDiscoveryManager();
+            var manager = ServerWorldSession.get().getDiscoveryManager();
             if (!ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities()
                     && !manager.isDiscovered(entityType, ctx.player())) {
                 toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);
