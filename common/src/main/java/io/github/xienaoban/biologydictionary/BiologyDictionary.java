@@ -5,11 +5,12 @@ import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
+import io.github.xienaoban.biologydictionary.platform.server.ServerEventRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
+import io.github.xienaoban.biologydictionary.server.CommandManager;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
-import io.github.xienaoban.biologydictionary.platform.server.ServerEventRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -36,6 +37,7 @@ public final class BiologyDictionary {
         EntityProperties.init();
         BiologySkills.init();
         ConfigsManager.load();
+        CommandManager.init();
 
         ServerEventRegistry.registerStarted(server -> {
             WorldSession.init(server.getAllLevels().iterator().next());

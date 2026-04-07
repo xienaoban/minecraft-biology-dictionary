@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.core.discovery.strategy.DictionaryS
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.KillBasedStrategy;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 
@@ -15,31 +14,30 @@ import java.util.Map;
 
 /**
  * Server-side entry point for the discovery system.
- * Attached to {@link io.github.xienaoban.biologydictionary.core.WorldSession}.
+ * Attached to {@link io.github.xienaoban.biologydictionary.core.session.WorldSession}.
  */
 public final class DiscoveryManager {
-    private final MinecraftServer server;
-    private DiscoveryStrategy strategy;
     private Configs.ServerConfigs.DiscoveryStrategyMode mode;
+    private DiscoveryStrategy strategy;
 
-    public DiscoveryManager(MinecraftServer server) {
-        this.server = server;
-        reloadStrategy();
+    public DiscoveryManager() {
+        this.mode = Configs.ServerConfigs.DiscoveryStrategyMode.ALWAYS_UNLOCKED;
+        this.strategy = AlwaysUnlockedStrategy.INSTANCE;
     }
 
     /**
      * Reload strategy from current config.
      */
-    public void reloadStrategy() {
+    public void onConfigsUpdate() {
         Configs.ServerConfigs.DiscoveryStrategyMode newMode = ConfigsManager.getServer().getDiscoveryStrategy();
-        if (newMode == this.mode) {
+        if (newMode == mode) {
             return;
         }
-        this.mode = newMode;
-        this.strategy = switch (newMode) {
+        mode = newMode;
+        strategy = switch (newMode) {
             case ALWAYS_UNLOCKED -> AlwaysUnlockedStrategy.INSTANCE;
             case VANILLA_KILL -> KillBasedStrategy.INSTANCE;
-            case DICTIONARY -> new DictionaryStrategy(server);
+            case DICTIONARY -> new DictionaryStrategy();
         };
     }
 

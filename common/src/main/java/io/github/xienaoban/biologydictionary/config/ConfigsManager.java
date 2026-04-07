@@ -192,6 +192,7 @@ public final class ConfigsManager {
             serverSession.onConfigsUpdate();
             broadcastServerConfigs(serverSession.getServer());
         }
+        LOGGER.info("Configs updated.");
     }
 
     /**

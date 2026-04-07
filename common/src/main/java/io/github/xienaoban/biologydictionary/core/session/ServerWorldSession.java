@@ -42,7 +42,7 @@ public final class ServerWorldSession {
 
     private ServerWorldSession(MinecraftServer server) {
         this.server = server;
-        this.discoveryManager = new DiscoveryManager(server);
+        this.discoveryManager = new DiscoveryManager();
         this.entitySpawnManager = new EntitySpawnManager(server.registryAccess());
     }
 
@@ -59,6 +59,6 @@ public final class ServerWorldSession {
     }
 
     public void onConfigsUpdate() {
-        discoveryManager.reloadStrategy();
+        discoveryManager.onConfigsUpdate();
     }
 }
