@@ -44,7 +44,7 @@ public final class BiologyDictionaryClient {
             WorldSession.init(ClientUtils.getClientLevel(client));
             ClientWorldSession.init();
             // Only request server configs from remote servers, not local servers.
-            if (!ClientUtils.isLocalServer(client)) { ClientNetManager.requestFullSync(); }
+            if (!ClientUtils.isLocalServer(client)) { ClientNetManager.requestServerConfigs(); }
         });
         ClientEventRegistry.registerWorldDisconnecting(client -> {
             ClientWorldSession.deinit();

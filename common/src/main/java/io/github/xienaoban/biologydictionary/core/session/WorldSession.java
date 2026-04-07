@@ -68,7 +68,6 @@ public final class WorldSession {
     private WorldSession(Level level) {
         this.entityManager = EntityManager.create(level);
         this.skillCostsCache = new SkillCostsCache();
-        this.skillCostsCache.update(ConfigsManager.getServer());
         this.entityOverviewCache = new EntityOverviewCache();
     }
 
@@ -82,5 +81,9 @@ public final class WorldSession {
 
     public EntityOverviewCache getEntityOverviewCache() {
         return entityOverviewCache;
+    }
+
+    public void onConfigsUpdate() {
+        skillCostsCache.update(ConfigsManager.getServer());
     }
 }

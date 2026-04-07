@@ -18,8 +18,16 @@ public final class ClientNetManager {
         PacketPayloads.registerBuiltIn(ClientNetApi::register);
     }
 
+    public static void requestServerConfigs() {
+        ClientNetApi.send(new RequestServerConfigsPacket());
+    }
+
     public static void requestBookItem() {
         ClientNetApi.send(new RequestBiologyDictionaryItemPacket());
+    }
+
+    public static void requestDictionaryDiscoveryFull() {
+        ClientNetApi.send(new RequestDictionaryDiscoveryFullPacket());
     }
 
     public static void requestEntityOverview(EntityType<?> entityType) {
@@ -44,9 +52,5 @@ public final class ClientNetManager {
 
     public static void sendStealingDetected(Entity entity) {
         ClientNetApi.send(new SendStealingDetectedPacket(EntityUtils.getId(entity)));
-    }
-
-    public static void requestFullSync() {
-        ClientNetApi.send(new RequestFullSyncPacket());
     }
 }
