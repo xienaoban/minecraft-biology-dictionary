@@ -1,9 +1,9 @@
 package io.github.xienaoban.biologydictionary;
 
-import io.github.xienaoban.biologydictionary.client.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.core.WorldSession;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
@@ -41,14 +41,14 @@ public final class BiologyDictionaryClient {
         hitEntityProperties = null;
 
         ClientEventRegistry.registerWorldConnected(client -> {
-            WorldSession.init(null);
+            WorldSession.init(ClientUtils.getClientLevel(client));
             ClientWorldSession.init();
             // Only request server configs from remote servers, not local servers.
             if (!ClientUtils.isLocalServer(client)) { ClientNetManager.requestFullSync(); }
         });
         ClientEventRegistry.registerWorldDisconnecting(client -> {
             ClientWorldSession.deinit();
-            WorldSession.deinit(null);
+            WorldSession.deinit();
             ConfigsManager.setLocalServerConfigs();
         });
         ClientEventRegistry.registerEndTick(client -> {

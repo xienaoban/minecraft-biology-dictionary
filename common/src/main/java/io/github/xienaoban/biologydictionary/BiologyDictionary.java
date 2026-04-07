@@ -3,7 +3,8 @@ package io.github.xienaoban.biologydictionary;
 import io.github.xienaoban.biologydictionary.compat.CompatibilityManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
-import io.github.xienaoban.biologydictionary.core.WorldSession;
+import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
@@ -36,13 +37,15 @@ public final class BiologyDictionary {
         BiologySkills.init();
         ConfigsManager.load();
 
-        ServerEventRegistry.registerStarted(WorldSession::init);
+        ServerEventRegistry.registerStarted(server -> {
+            WorldSession.init(server.getAllLevels().iterator().next());
+            ServerWorldSession.init(server);
+        });
         ServerEventRegistry.registerStopping(server -> {
-            var session = WorldSession.get();
-            if (session != null && session.getDiscoveryManager() != null) {
-                session.getDiscoveryManager().save();
-            }
-            WorldSession.deinit(server);
+            // TODO mov to deinit
+            ServerWorldSession.get().getDiscoveryManager().save();
+            ServerWorldSession.deinit();
+            WorldSession.deinit();
         });
 
         LOGGER.info("BiologyDictionary initialized.");

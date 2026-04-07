@@ -22,7 +22,7 @@ public final class HighlightManager {
     private final List<HighlightedEntity> highlightedEntities = new CopyOnWriteArrayList<>();
     private final List<HighlightedBlock> highlightedBlocks = new CopyOnWriteArrayList<>();
 
-    void tick() {
+    public void tick() {
         if (!hasHighlighted) { return; }
 
         int ticks = BDC.getTicks();

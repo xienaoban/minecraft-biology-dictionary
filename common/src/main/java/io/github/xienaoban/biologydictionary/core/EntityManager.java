@@ -31,7 +31,7 @@ import java.util.function.Function;
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public final class EntityManager {
-    static EntityManager create(Level level) {
+    public static EntityManager create(Level level) {
         try {
             EntityManager res = new EntityManager(level);
             LOGGER.info("WorldSession: EntityManager initialized.");

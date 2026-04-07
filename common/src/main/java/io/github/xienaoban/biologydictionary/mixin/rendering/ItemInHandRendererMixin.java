@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.mixin.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.xienaoban.biologydictionary.client.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;

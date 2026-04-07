@@ -1,6 +1,7 @@
-package io.github.xienaoban.biologydictionary.core;
+package io.github.xienaoban.biologydictionary.core.session;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryManager;
+import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import net.minecraft.server.MinecraftServer;
@@ -19,16 +20,16 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 public final class WorldSession {
     private static volatile WorldSession instance;
 
-    public static void init(MinecraftServer server) {
+    public static void init(Level level) {
         synchronized (WorldSession.class) {
             if (instance == null) {
-                instance = new WorldSession(server);
+                instance = new WorldSession(level);
                 LOGGER.info("WorldSession initialized.");
             }
         }
     }
 
-    public static void deinit(MinecraftServer server) {
+    public static void deinit() {
         synchronized (WorldSession.class) {
             if (instance != null) {
                 instance = null;
@@ -45,39 +46,25 @@ public final class WorldSession {
      * Get a level instance. Any level is OK. Usually be used in {@code EntityType.create}.
      */
     public static Level justGiveMeALevel() {
-        return justGiveMeALevel(instance.server);
-    }
-
-    private static Level justGiveMeALevel(MinecraftServer server) {
         if (DevUtils.isClient()) {
             Level level = ClientUtils.getClientLevelCommon();
             if (level != null) { return level; }
         }
-        if (server != null) {
+        ServerWorldSession serverSession = ServerWorldSession.get();
+        if (serverSession != null) {
+            MinecraftServer server = serverSession.getServer();
             Iterator<? extends Level> it = server.getAllLevels().iterator();
             if (it.hasNext()) { return it.next(); }
         }
         return null;
     }
 
-    private final MinecraftServer server;
     private final EntityManager entityManager;
     private final EntityOverviewCache entityOverviewCache;
-    private final EntitySpawnManager entitySpawnManager;
-    private final DiscoveryManager discoveryManager;
 
-    private WorldSession(MinecraftServer server) {
-        this.server = server;
-        this.entityManager = EntityManager.create(justGiveMeALevel(server));
+    private WorldSession(Level level) {
+        this.entityManager = EntityManager.create(level);
         this.entityOverviewCache = new EntityOverviewCache();
-        this.entitySpawnManager = server != null
-            ? new EntitySpawnManager(server.registryAccess())
-            : null;
-        this.discoveryManager = server != null ? new DiscoveryManager(server) : null;
-    }
-
-    public MinecraftServer getServer() {
-        return server;
     }
 
     public EntityManager getEntityManager() {
@@ -86,13 +73,5 @@ public final class WorldSession {
 
     public EntityOverviewCache getEntityOverviewCache() {
         return entityOverviewCache;
-    }
-
-    public EntitySpawnManager getEntitySpawnManager() {
-        return entitySpawnManager;
-    }
-
-    public DiscoveryManager getDiscoveryManager() {
-        return discoveryManager;
     }
 }
