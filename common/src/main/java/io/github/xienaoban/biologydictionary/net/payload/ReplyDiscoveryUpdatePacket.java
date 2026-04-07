@@ -44,7 +44,7 @@ public record ReplyDiscoveryUpdatePacket(Identifier entityTypeId, DiscoveryRecor
             if (clientSession == null) { return; }
             DiscoveryClientCache cache = clientSession.getDiscoveryClientCache();
             if (cache != null) {
-                cache.onIncrementalUpdate(packet.entityTypeId(), packet.record());
+                cache.onIncrementalSync(packet.entityTypeId(), packet.record());
             }
         }}
         W.receive(this, ctx);

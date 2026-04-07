@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
-import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -125,13 +124,6 @@ public final class Configs {
         @ConfigEntry
         Map<String, Map<String, Object>> skillCosts = new HashMap<>();
 
-        /**
-         * Cache of SkillCost objects by skill class for fast access.
-         * Always derived from {@link #skillCosts} after initialization.
-         * All skills are guaranteed to be present after initialization.
-         */
-        private transient Map<Class<?>, SkillCost> skillCostsCache;
-
         // =========================== Getters ============================
 
         public boolean isBookItemRequired() {
@@ -154,8 +146,8 @@ public final class Configs {
             return allowOverviewForUndiscoveredEntities;
         }
 
-        public SkillCost getSkillCost(Class<?> skillClass) {
-            return skillCostsCache.get(skillClass);
+        public Map<String, Map<String, Object>> getSkillCosts() {
+            return skillCosts;
         }
 
         // ============================= Misc =============================
@@ -167,7 +159,6 @@ public final class Configs {
         @Override
         public void postLoad() {
             completeSkillCosts();
-            rebuildSkillCacheCache();
         }
 
         /**
@@ -193,23 +184,6 @@ public final class Configs {
             });
             // Reduce the possibility of concurrency issues.
             skillCosts = newCosts;
-        }
-
-        /**
-         * Rebuild skillCostsDeserialized based on the current skillCosts.
-         * Must be called after skillCosts is fully populated.
-         */
-        private void rebuildSkillCacheCache() {
-            Map<Class<?>, SkillCost> cache = new HashMap<>();
-
-            for (Map.Entry<String, Map<String, Object>> entry : skillCosts.entrySet()) {
-                String shortName = entry.getKey();
-                Map<String, Object> costData = entry.getValue();
-                Class<?> skillClass = BiologySkills.getSkillClass(shortName);
-                cache.put(skillClass, SkillCost.fromMap(costData));
-            }
-
-            skillCostsCache = cache;
         }
 
         public enum DiscoveryStrategyMode {

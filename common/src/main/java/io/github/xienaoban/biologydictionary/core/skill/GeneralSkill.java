@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
-import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -29,7 +29,7 @@ public interface GeneralSkill {
      * @return The real cost for this skill
      */
     default SkillCost getRealCost() {
-        return ConfigsManager.getServer().getSkillCost(this.getClass());
+        return WorldSession.get().getSkillCostsCache().getSkillCost(this.getClass());
     }
 
     interface Meta<T extends GeneralSkill> {

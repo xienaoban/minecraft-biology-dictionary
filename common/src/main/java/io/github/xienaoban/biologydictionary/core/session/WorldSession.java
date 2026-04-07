@@ -2,6 +2,8 @@ package io.github.xienaoban.biologydictionary.core.session;
 
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCostsCache;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import net.minecraft.server.MinecraftServer;
@@ -60,15 +62,22 @@ public final class WorldSession {
     }
 
     private final EntityManager entityManager;
+    private final SkillCostsCache skillCostsCache;
     private final EntityOverviewCache entityOverviewCache;
 
     private WorldSession(Level level) {
         this.entityManager = EntityManager.create(level);
+        this.skillCostsCache = new SkillCostsCache();
+        this.skillCostsCache.update(ConfigsManager.getServer());
         this.entityOverviewCache = new EntityOverviewCache();
     }
 
     public EntityManager getEntityManager() {
         return entityManager;
+    }
+
+    public SkillCostsCache getSkillCostsCache() {
+        return skillCostsCache;
     }
 
     public EntityOverviewCache getEntityOverviewCache() {
