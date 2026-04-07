@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.session;
 
 import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRenderer;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DelegatingDiscoveryClientCache;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -64,5 +65,9 @@ public final class ClientWorldSession {
 
     public void tick() {
         highlightManager.tick();
+    }
+
+    public void onConfigsUpdate() {
+        discoveryClientCache.onConfigsUpdate(ConfigsManager.getServer());
     }
 }

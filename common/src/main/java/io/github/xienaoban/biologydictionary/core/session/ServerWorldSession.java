@@ -57,4 +57,8 @@ public final class ServerWorldSession {
     public EntitySpawnManager getEntitySpawnManager() {
         return entitySpawnManager;
     }
+
+    public void onConfigsUpdate() {
+        discoveryManager.reloadStrategy();
+    }
 }

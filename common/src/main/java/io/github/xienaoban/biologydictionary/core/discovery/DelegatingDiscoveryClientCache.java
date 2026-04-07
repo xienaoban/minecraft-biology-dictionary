@@ -19,17 +19,15 @@ public final class DelegatingDiscoveryClientCache implements DiscoveryClientCach
     private volatile DiscoveryClientCache delegate;
 
     public DelegatingDiscoveryClientCache() {
-        update(ConfigsManager.getServer(), Map.of());
+        onConfigsUpdate(ConfigsManager.getServer());
     }
 
-    public void update(Configs.ServerConfigs serverConfigs, Map<Identifier, DiscoveryRecord> data) {
+    public void onConfigsUpdate(Configs.ServerConfigs serverConfigs) {
         delegate = switch (serverConfigs.getDiscoveryStrategy()) {
             case ALWAYS_UNLOCKED -> AlwaysUnlockedClientCache.INSTANCE;
             case VANILLA_KILL -> KillBasedClientCache.INSTANCE;
             case DICTIONARY -> new DictionaryClientCache();
         };
-
-        onFullSync(data);
     }
 
     @Override

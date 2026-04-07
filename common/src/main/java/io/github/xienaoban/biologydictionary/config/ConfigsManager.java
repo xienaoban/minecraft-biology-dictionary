@@ -3,9 +3,9 @@ package io.github.xienaoban.biologydictionary.config;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
@@ -13,7 +13,6 @@ import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -88,7 +87,7 @@ public final class ConfigsManager {
         Objects.requireNonNull(remoteConfigs);
         Objects.requireNonNull(ws);
         if (ServerWorldSession.get() != null) {
-            throw new IllegalStateException("Server configs should not be updated on server.");
+            throw new IllegalStateException("Server configs should not be synchronized from remote on server.");
         }
         serverConfigs = remoteConfigs;
         LOGGER.info("Using remote server configs.");
@@ -176,60 +175,49 @@ public final class ConfigsManager {
     }
 
     /**
-     * Broadcast server configs to all relevant players.
-     * Behavior depends on the current environment:
-     * <ul>
-     *   <li>Integrated server: broadcasts to all players except the host</li>
-     *   <li>Dedicated server: broadcasts to all players</li>
-     *   <li>Client connected to remote server: does nothing (should not be called)</li>
-     * </ul>
-     *
-     * @param server The MinecraftServer instance, used to get the player list and check server type
+     * Called after server configs have been updated (saved, reloaded, or received from remote).
+     * Refreshes all local world session caches and broadcasts to remote players if on server side.
      */
-    public static void broadcast(MinecraftServer server) {
-        String serverConfigsYaml = serializeConfigCategory(INSTANCE.getServer());
-
-        if (server == null) {
-            // Client connected to remote server
-            // Do nothing
-            LOGGER.info("We are on a client connected to remote server. No need to broadcast new configs.");
-            return;
-        }
-
-        // Rebuild local cache when server configs are refreshed on server side.
+    public static void onUpdated() {
         WorldSession session = WorldSession.get();
         if (session != null) {
-            session.getSkillCostsCache().update(ConfigsManager.getServer());
+            session.onConfigsUpdate();
         }
+        ClientWorldSession clientSession = ClientWorldSession.get();
+        if (clientSession != null) {
+            clientSession.onConfigsUpdate();
+        }
+        ServerWorldSession serverSession = ServerWorldSession.get();
+        if (serverSession != null) {
+            serverSession.onConfigsUpdate();
+            broadcastServerConfigs(serverSession.getServer());
+        }
+    }
+
+    /**
+     * Broadcast current server configs to remote players.
+     */
+    private static void broadcastServerConfigs(MinecraftServer server) {
+        String serverConfigsYaml = serializeConfigCategory(INSTANCE.getServer());
 
         if (server.isDedicatedServer()) {
-            // Dedicated server
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                ServerNetManager.replyFullSync(player, serverConfigsYaml, getDiscoveryRecords(player));
+                ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
             }
             LOGGER.info("New server configs broadcasted to all players.");
         } else {
-            // Integrated server
             if (ClientUtils.isSingleplayer()) {
                 LOGGER.info("We are on a single-player server. No need to broadcast new configs.");
             } else {
                 Player owner = ClientUtils.getClientPlayerCommon();
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                     if (!Objects.equals(owner.getUUID(), player.getUUID())) {
-                        ServerNetManager.replyFullSync(player, serverConfigsYaml, getDiscoveryRecords(player));
+                        ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
                     }
                 }
                 LOGGER.info("New server configs broadcasted to remote players.");
             }
         }
-    }
-
-    private static Map<Identifier, DiscoveryRecord> getDiscoveryRecords(ServerPlayer player) {
-        var session = ServerWorldSession.get();
-        if (session != null) {
-            return session.getDiscoveryManager().getDiscoveryRecords(player);
-        }
-        return null;
     }
 
     // ==================== Config Entry Traversal ====================

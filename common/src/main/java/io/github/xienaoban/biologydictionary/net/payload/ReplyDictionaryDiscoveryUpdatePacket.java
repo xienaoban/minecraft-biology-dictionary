@@ -14,10 +14,10 @@ import net.minecraft.resources.Identifier;
  * Incremental update packet: S -> C.
  * Sent when a single entity is newly discovered.
  */
-public record ReplyDiscoveryUpdatePacket(Identifier entityTypeId, DiscoveryRecord record) implements Packet {
-    public static final Packet.Factory<ReplyDiscoveryUpdatePacket> FACTORY = ReplyDiscoveryUpdatePacket::new;
+public record ReplyDictionaryDiscoveryUpdatePacket(Identifier entityTypeId, DiscoveryRecord record) implements Packet {
+    public static final Packet.Factory<ReplyDictionaryDiscoveryUpdatePacket> FACTORY = ReplyDictionaryDiscoveryUpdatePacket::new;
 
-    private ReplyDiscoveryUpdatePacket(FriendlyByteBuf buf) {
+    private ReplyDictionaryDiscoveryUpdatePacket(FriendlyByteBuf buf) {
         this(Identifier.tryParse(buf.readUtf()), readRecord(buf));
     }
 
@@ -39,7 +39,7 @@ public record ReplyDiscoveryUpdatePacket(Identifier entityTypeId, DiscoveryRecor
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class W { static void receive(ReplyDiscoveryUpdatePacket packet, ClientNetApi.Context ctx) {
+        final class W { static void receive(ReplyDictionaryDiscoveryUpdatePacket packet, ClientNetApi.Context ctx) {
             ClientWorldSession clientSession = ClientWorldSession.get();
             if (clientSession == null) { return; }
             DiscoveryClientCache cache = clientSession.getDiscoveryClientCache();

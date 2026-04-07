@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryClientCache;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.Identifier;
@@ -17,6 +18,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Environment(EnvType.CLIENT)
 public final class DictionaryClientCache implements DiscoveryClientCache {
     private final Map<Identifier, DiscoveryRecord> data = new ConcurrentHashMap<>();
+
+    public DictionaryClientCache() {
+        ClientNetManager.requestDictionaryDiscoveryFull();
+    }
 
     @Override
     public boolean isDiscovered(Identifier entityType) {

@@ -1,10 +1,11 @@
 package io.github.xienaoban.biologydictionary.net;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyDiscoveryUpdatePacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyFullSyncPacket;
+import io.github.xienaoban.biologydictionary.net.payload.ReplyDictionaryDiscoveryFullPacket;
+import io.github.xienaoban.biologydictionary.net.payload.ReplyDictionaryDiscoveryUpdatePacket;
 import io.github.xienaoban.biologydictionary.net.payload.ReplyHighlightEntitiesPacket;
 import io.github.xienaoban.biologydictionary.net.payload.ReplyInventoryStealingScreenPacket;
+import io.github.xienaoban.biologydictionary.net.payload.ReplyServerConfigsPacket;
 import io.github.xienaoban.biologydictionary.net.payload.SendCenteredMessagePacket;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -27,19 +28,23 @@ public final class ServerNetManager {
         ServerNetApi.send(player, new SendCenteredMessagePacket(message));
     }
 
+    public static void replyServerConfigs(ServerPlayer player, String serverConfigsYaml) {
+        ServerNetApi.send(player, new ReplyServerConfigsPacket(serverConfigsYaml));
+    }
+
+    public static void replyDictionaryDiscoveryRecords(ServerPlayer player, Map<Identifier, DiscoveryRecord> discoveries) {
+        ServerNetApi.send(player, new ReplyDictionaryDiscoveryFullPacket(discoveries));
+    }
+
+    public static void replyDictionaryDiscoveryUpdate(ServerPlayer player, Identifier entityTypeId, DiscoveryRecord record) {
+        ServerNetApi.send(player, new ReplyDictionaryDiscoveryUpdatePacket(entityTypeId, record));
+    }
+
     public static void replyHighlightEntitiesSkill(ServerPlayer player, boolean allowed, EntityType<?> entityType, float radius) {
         ServerNetApi.send(player, new ReplyHighlightEntitiesPacket(allowed, entityType, radius));
     }
 
     public static void replyInventoryStealingScreen(ServerPlayer player, int counter, Entity entity, Container container) {
         ServerNetApi.send(player, new ReplyInventoryStealingScreenPacket(counter, EntityUtils.getId(entity), container.getContainerSize()));
-    }
-
-    public static void replyFullSync(ServerPlayer player, String serverConfigsYaml, Map<Identifier, DiscoveryRecord> discoveries) {
-        ServerNetApi.send(player, new ReplyFullSyncPacket(serverConfigsYaml, discoveries));
-    }
-
-    public static void replyDiscoveryUpdate(ServerPlayer player, Identifier entityTypeId, DiscoveryRecord record) {
-        ServerNetApi.send(player, new ReplyDiscoveryUpdatePacket(entityTypeId, record));
     }
 }
