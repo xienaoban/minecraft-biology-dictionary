@@ -219,6 +219,7 @@ public final class Lang {
     TEXT_CONFIG_RELOAD_SUCCESS               = "text.biologydictionary.config_reload_success",
     TEXT_NO_BIOLOGY_DICTIONARY_BOOK          = "text.biologydictionary.no_biology_dictionary_book",
     TEXT_ENTITY_NOT_DISCOVERED               = "text.biologydictionary.entity_not_discovered",
+    TEXT_NEW_ENTITY_DISCOVERED               = "text.biologydictionary.new_entity_discovered",
     TEXT_TARGET_ENTITY_TOO_FAR               = "text.biologydictionary.target_entity_too_far",
     TEXT_HIGHLIGHTED_ENTITIES                = "text.biologydictionary.highlighted_entities",
     TEXT_FAILED_TO_HIGHLIGHT                 = "text.biologydictionary.failed_to_highlight",

@@ -5,6 +5,8 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.Map;
@@ -16,29 +18,37 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Environment(EnvType.CLIENT)
 public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscoveryCache {
-    private final Map<EntityType<?>, DiscoveryRecord> data = new ConcurrentHashMap<>();
+    private final Map<EntityType<?>, DiscoveryRecord> cache = new ConcurrentHashMap<>();
 
     public BiologyDictionaryClientDiscoveryCache() {
-        ClientNetManager.requestDictionaryDiscoveryFull();
+        ClientNetManager.requestBiologyDictionaryDiscoveryFull();
     }
 
     @Override
     public boolean isDiscovered(EntityType<?> entityType) {
-        DiscoveryRecord record = data.get(entityType);
+        DiscoveryRecord record = cache.get(entityType);
         return record != null && record.discovered();
     }
 
     @Override
     public DiscoveryRecord getRecord(EntityType<?> entityType) {
-        return data.getOrDefault(entityType, DiscoveryRecord.UNDISCOVERED);
+        return cache.getOrDefault(entityType, DiscoveryRecord.UNDISCOVERED);
     }
 
     public void onFullSync(Map<EntityType<?>, DiscoveryRecord> data) {
-        this.data.clear();
-        this.data.putAll(data);
+        this.cache.clear();
+        this.cache.putAll(data);
     }
 
-    public void onIncrementalSync(EntityType<?> entityType, DiscoveryRecord record) {
-        data.put(entityType, record);
+    @Override
+    public boolean onEntityDetailScreenOpened(LocalPlayer player, Entity entity) {
+        EntityType<?> entityType = entity.getType();
+        if (isDiscovered(entityType)) {
+            return false;
+        }
+        DiscoveryRecord record = DiscoveryRecord.discoveredNow(player.level().getGameTime());
+        cache.put(entityType, record);
+        ClientNetManager.sendBiologyDictionaryDiscoveryIncremental(entityType, record);
+        return true;
     }
 }

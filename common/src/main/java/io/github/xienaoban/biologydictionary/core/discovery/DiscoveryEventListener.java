@@ -15,41 +15,49 @@ public interface DiscoveryEventListener<P extends Player> {
 
     /**
      * Called when the player opens the entity detail screen.
+     * @return true if this event resulted in a new discovery
      */
-    default void onEntityDetailScreenOpened(P player, Entity entity) {}
+    default boolean onEntityDetailScreenOpened(P player, Entity entity) { return false; }
 
     /**
      * Called when the player uses the highlight skill on an entity.
+     * @return true if this event resulted in a new discovery
      */
-    default void onEntityHighlighted(P player, Entity entity) {}
+    default boolean onEntityHighlighted(P player, Entity entity) { return false; }
 
     /**
      * Called when the player uses the telescope/spyglass to observe an entity.
+     * @return true if this event resulted in a new discovery
      */
-    default void onEntityObservedWithTelescope(P player, Entity entity) {}
+    default boolean onEntityObservedWithTelescope(P player, Entity entity) { return false; }
 
     /**
      * Called when the player kills an entity.
+     * @return true if this event resulted in a new discovery
      */
-    default void onEntityKilled(P player, Entity entity) {}
+    default boolean onEntityKilled(P player, Entity entity) { return false; }
 
     /**
      * Called when the player attacks an entity.
+     * @return true if this event resulted in a new discovery
      */
-    default void onEntityAttacked(P player, Entity entity) {}
+    default boolean onEntityAttacked(P player, Entity entity) { return false; }
 
     /**
      * Called when the player right-clicks / interacts with an entity.
+     * @return true if this event resulted in a new discovery
      */
-    default void onEntityInteracted(P player, Entity entity) {}
+    default boolean onEntityInteracted(P player, Entity entity) { return false; }
 
     /**
      * Called when the player feeds an entity.
+     * @return true if this event resulted in a new discovery
      */
-    default void onEntityFed(P player, Entity entity) {}
+    default boolean onEntityFed(P player, Entity entity) { return false; }
 
     /**
      * Called when the player tames an entity.
+     * @return true if this event resulted in a new discovery
      */
-    default void onEntityTamed(P player, Entity entity) {}
+    default boolean onEntityTamed(P player, Entity entity) { return false; }
 }

@@ -2,7 +2,6 @@ package io.github.xienaoban.biologydictionary.net;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.net.payload.*;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyBiologyDictionaryDiscoveryIncrementalPacket;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.network.chat.Component;
@@ -29,10 +28,6 @@ public final class ServerNetManager {
 
     public static void replyDictionaryDiscoveryRecords(ServerPlayer player, Map<EntityType<?>, DiscoveryRecord> discoveries) {
         ServerNetApi.send(player, new ReplyBiologyDictionaryDiscoveryFullPacket(discoveries));
-    }
-
-    public static void replyDictionaryDiscoveryUpdate(ServerPlayer player, EntityType<?> entityType, DiscoveryRecord record) {
-        ServerNetApi.send(player, new ReplyBiologyDictionaryDiscoveryIncrementalPacket(entityType, record));
     }
 
     public static void replyHighlightEntitiesSkill(ServerPlayer player, boolean allowed, EntityType<?> entityType, float radius) {
