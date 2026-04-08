@@ -2,12 +2,14 @@ package io.github.xienaoban.biologydictionary.core.discovery.storage;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStorage;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.storage.LevelResource;
 
 import java.io.IOException;
@@ -37,7 +39,7 @@ public final class SavedDataDiscoveryStorage implements DiscoveryStorage {
     private static final String KEY_TIME = "first_discovery_time";
     private static final String KEY_TICK = "first_discovery_tick";
 
-    private final Map<UUID, Map<Identifier, DiscoveryRecord>> data = new HashMap<>();
+    private final Map<UUID, Map<EntityType<?>, DiscoveryRecord>> data = new HashMap<>();
     private boolean dirty;
     private final Path filePath;
 
@@ -47,8 +49,8 @@ public final class SavedDataDiscoveryStorage implements DiscoveryStorage {
     }
 
     @Override
-    public DiscoveryRecord get(UUID playerUUID, Identifier entityType) {
-        Map<Identifier, DiscoveryRecord> playerData = data.get(playerUUID);
+    public DiscoveryRecord get(UUID playerUUID, EntityType<?> entityType) {
+        Map<EntityType<?>, DiscoveryRecord> playerData = data.get(playerUUID);
         if (playerData == null) {
             return DiscoveryRecord.UNDISCOVERED;
         }
@@ -56,13 +58,13 @@ public final class SavedDataDiscoveryStorage implements DiscoveryStorage {
     }
 
     @Override
-    public Map<Identifier, DiscoveryRecord> getAll(UUID playerUUID) {
-        Map<Identifier, DiscoveryRecord> playerData = data.get(playerUUID);
+    public Map<EntityType<?>, DiscoveryRecord> getAll(UUID playerUUID) {
+        Map<EntityType<?>, DiscoveryRecord> playerData = data.get(playerUUID);
         return playerData != null ? playerData : Collections.emptyMap();
     }
 
     @Override
-    public void put(UUID playerUUID, Identifier entityType, DiscoveryRecord record) {
+    public void put(UUID playerUUID, EntityType<?> entityType, DiscoveryRecord record) {
         data.computeIfAbsent(playerUUID, k -> new HashMap<>()).put(entityType, record);
         dirty = true;
     }
@@ -80,18 +82,18 @@ public final class SavedDataDiscoveryStorage implements DiscoveryStorage {
             Files.createDirectories(filePath.getParent());
             CompoundTag root = new CompoundTag();
             ListTag playersList = new ListTag();
-            for (Map.Entry<UUID, Map<Identifier, DiscoveryRecord>> entry : data.entrySet()) {
+            for (Map.Entry<UUID, Map<EntityType<?>, DiscoveryRecord>> entry : data.entrySet()) {
                 CompoundTag playerTag = new CompoundTag();
                 playerTag.putLong(KEY_UUID_MOST, entry.getKey().getMostSignificantBits());
                 playerTag.putLong(KEY_UUID_LEAST, entry.getKey().getLeastSignificantBits());
                 CompoundTag discoveriesTag = new CompoundTag();
-                for (Map.Entry<Identifier, DiscoveryRecord> discEntry : entry.getValue().entrySet()) {
+                for (Map.Entry<EntityType<?>, DiscoveryRecord> discEntry : entry.getValue().entrySet()) {
                     DiscoveryRecord record = discEntry.getValue();
                     CompoundTag recordTag = new CompoundTag();
                     recordTag.putBoolean(KEY_DISCOVERED, record.discovered());
                     recordTag.putLong(KEY_TIME, record.firstDiscoveryTime());
                     recordTag.putLong(KEY_TICK, record.firstDiscoveryTick());
-                    discoveriesTag.put(discEntry.getKey().toString(), recordTag);
+                    discoveriesTag.put(EntityUtils.getEntityTypeIdName(discEntry.getKey()), recordTag);
                 }
                 playerTag.put(KEY_DISCOVERIES, discoveriesTag);
                 playersList.add(playerTag);
@@ -119,7 +121,7 @@ public final class SavedDataDiscoveryStorage implements DiscoveryStorage {
                 long least = playerTag.getLong(KEY_UUID_LEAST).orElse(0L);
                 UUID uuid = new UUID(most, least);
                 CompoundTag discoveriesTag = playerTag.getCompound(KEY_DISCOVERIES).orElse(new CompoundTag());
-                Map<Identifier, DiscoveryRecord> playerData = new HashMap<>();
+                Map<EntityType<?>, DiscoveryRecord> playerData = new HashMap<>();
                 Set<String> keys = discoveriesTag.keySet();
                 for (String key : keys) {
                     CompoundTag recordTag = discoveriesTag.getCompound(key).orElse(new CompoundTag());
@@ -127,7 +129,10 @@ public final class SavedDataDiscoveryStorage implements DiscoveryStorage {
                     long time = recordTag.getLong(KEY_TIME).orElse(0L);
                     long tick = recordTag.getLong(KEY_TICK).orElse(0L);
                     if (discovered) {
-                        playerData.put(Identifier.tryParse(key), new DiscoveryRecord(true, time, tick));
+                        EntityType<?> type = EntityUtils.getEntityType(Identifier.tryParse(key));
+                        if (type != null) {
+                            playerData.put(type, new DiscoveryRecord(true, time, tick));
+                        }
                     }
                 }
                 data.put(uuid, playerData);

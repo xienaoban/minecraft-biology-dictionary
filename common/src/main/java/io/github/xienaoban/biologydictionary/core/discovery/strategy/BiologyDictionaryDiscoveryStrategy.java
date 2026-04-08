@@ -4,8 +4,9 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.storage.SavedDataDiscoveryStorage;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
 import java.util.Map;
 
@@ -22,18 +23,13 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
     }
 
     @Override
-    public boolean isDiscovered(Identifier entityType, ServerPlayer player) {
+    public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
         return storage.get(player.getUUID(), entityType).discovered();
     }
 
     @Override
-    public DiscoveryRecord onEntityViewedInDictionary(ServerPlayer player, Identifier entityType) {
-        return markDiscovered(player, entityType);
-    }
-
-    @Override
-    public DiscoveryRecord onEntityHighlightedWithResult(ServerPlayer player, Identifier entityType) {
-        return markDiscovered(player, entityType);
+    public void onEntityDetailScreenOpened(ServerPlayer player, Entity entity) {
+        markDiscovered(player, entity.getType());
     }
 
     @Override
@@ -41,21 +37,18 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         storage.save();
     }
 
-    public Map<Identifier, DiscoveryRecord> getAllRecords(ServerPlayer player) {
+    public Map<EntityType<?>, DiscoveryRecord> getAllRecords(ServerPlayer player) {
         return storage.getAll(player.getUUID());
     }
 
     /**
      * Mark the entity as discovered for the player.
-     * @return the discovery record if this is a new discovery, or null if already discovered.
      */
-    private DiscoveryRecord markDiscovered(ServerPlayer player, Identifier entityType) {
+    private void markDiscovered(ServerPlayer player, EntityType<?> entityType) {
         DiscoveryRecord record = storage.get(player.getUUID(), entityType);
         if (!record.discovered()) {
             DiscoveryRecord newRecord = DiscoveryRecord.discoveredNow(player.level().getGameTime());
             storage.put(player.getUUID(), entityType, newRecord);
-            return newRecord;
         }
-        return null;
     }
 }

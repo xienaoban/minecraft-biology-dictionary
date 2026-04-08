@@ -8,9 +8,7 @@ import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDict
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.VanillaKillClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
-import net.minecraft.resources.Identifier;
-
-import java.util.Map;
+import net.minecraft.world.entity.EntityType;
 
 /**
  * A {@link ClientDiscoveryCache} that delegates to another cache instance.
@@ -43,23 +41,13 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
     }
 
     @Override
-    public boolean isDiscovered(Identifier entityType) {
+    public boolean isDiscovered(EntityType<?> entityType) {
         if (PlayerUtils.isCreative(ClientUtils.getClientPlayer())) { return true; }
         return delegate.isDiscovered(entityType);
     }
 
     @Override
-    public DiscoveryRecord getRecord(Identifier entityType) {
+    public DiscoveryRecord getRecord(EntityType<?> entityType) {
         return delegate.getRecord(entityType);
-    }
-
-    @Override
-    public void onFullSync(Map<Identifier, DiscoveryRecord> data) {
-        delegate.onFullSync(data);
-    }
-
-    @Override
-    public void onIncrementalSync(Identifier entityType, DiscoveryRecord record) {
-        delegate.onIncrementalSync(entityType, record);
     }
 }

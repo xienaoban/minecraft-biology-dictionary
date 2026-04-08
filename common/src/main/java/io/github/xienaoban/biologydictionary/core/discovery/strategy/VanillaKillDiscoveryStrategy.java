@@ -1,8 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
-import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.EntityType;
@@ -14,11 +12,7 @@ import net.minecraft.world.entity.EntityType;
 public final class VanillaKillDiscoveryStrategy implements DiscoveryStrategy {
 
     @Override
-    public boolean isDiscovered(Identifier entityType, ServerPlayer player) {
-        EntityType<?> type = EntityUtils.getEntityType(entityType);
-        if (type == null) {
-            return false;
-        }
-        return player.getStats().getValue(Stats.ENTITY_KILLED, type) > 0;
+    public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
+        return player.getStats().getValue(Stats.ENTITY_KILLED, entityType) > 0;
     }
 }
