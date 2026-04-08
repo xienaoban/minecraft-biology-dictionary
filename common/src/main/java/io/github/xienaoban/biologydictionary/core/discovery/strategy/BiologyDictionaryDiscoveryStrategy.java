@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.storage.SavedDataDiscoveryStorage;
-import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 
@@ -17,8 +17,8 @@ import java.util.Map;
 public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrategy {
     private final SavedDataDiscoveryStorage storage;
 
-    public BiologyDictionaryDiscoveryStrategy() {
-        this.storage = new SavedDataDiscoveryStorage(ServerWorldSession.get().getServer());
+    public BiologyDictionaryDiscoveryStrategy(MinecraftServer server) {
+        this.storage = new SavedDataDiscoveryStorage(server);
     }
 
     @Override
