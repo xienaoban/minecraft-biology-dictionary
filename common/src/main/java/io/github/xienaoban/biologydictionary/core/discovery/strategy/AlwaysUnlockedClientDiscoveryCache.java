@@ -4,9 +4,7 @@ import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.resources.Identifier;
-
-import java.util.Map;
+import net.minecraft.world.entity.EntityType;
 
 /**
  * All entities are always discovered. No network sync needed.
@@ -15,18 +13,12 @@ import java.util.Map;
 public final class AlwaysUnlockedClientDiscoveryCache implements ClientDiscoveryCache {
 
     @Override
-    public boolean isDiscovered(Identifier entityType) {
+    public boolean isDiscovered(EntityType<?> entityType) {
         return true;
     }
 
     @Override
-    public DiscoveryRecord getRecord(Identifier entityType) {
+    public DiscoveryRecord getRecord(EntityType<?> entityType) {
         return new DiscoveryRecord(true);
     }
-
-    @Override
-    public void onFullSync(Map<Identifier, DiscoveryRecord> data) {}
-
-    @Override
-    public void onIncrementalSync(Identifier entityType, DiscoveryRecord record) {}
 }

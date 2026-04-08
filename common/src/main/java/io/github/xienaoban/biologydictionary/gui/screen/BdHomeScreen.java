@@ -23,7 +23,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -169,7 +168,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         private final Entity entity;
         private final Component name;
         private final ItemStack spawnEgg;
-        private final Identifier entityTypeId;
+        private final EntityType<?> entityType;
 
         private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
                 = new ScreenRenderingContext.EntityRenderingCache();
@@ -178,7 +177,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             super(2, 2);
             this.entity = entity;
             EntityType<?> type = EntityUtils.getEntityType(entity);
-            this.entityTypeId = EntityUtils.getEntityTypeId(type);
+            this.entityType = type;
             this.name = type.getDescription();
             Item item = SpawnEggItem.byId(type);
             this.spawnEgg = item == null ? null : new ItemStack(item);
@@ -186,7 +185,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
         private boolean isDiscovered() {
             ClientDiscoveryCache cache = ClientWorldSession.get().getDiscoveryClientCache();
-            return cache.isDiscovered(entityTypeId);
+            return cache.isDiscovered(entityType);
         }
 
         private boolean isClickable() {

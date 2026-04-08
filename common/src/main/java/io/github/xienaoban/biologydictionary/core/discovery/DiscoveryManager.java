@@ -6,8 +6,6 @@ import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedDiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryDiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.VanillaKillDiscoveryStrategy;
-import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 
@@ -40,15 +38,11 @@ public final class DiscoveryManager implements ConfigsUpdateCallback {
     /**
      * Check if an entity type is discovered by the player.
      */
-    public boolean isDiscovered(Identifier entityType, ServerPlayer player) {
+    public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
         if (player.isCreative()) {
             return true;
         }
-        return strategy.isDiscovered(entityType, player);
-    }
-
-    public boolean isDiscovered(EntityType<?> entityType, ServerPlayer player) {
-        return isDiscovered(Identifier.tryParse(EntityUtils.getEntityTypeIdName(entityType)), player);
+        return strategy.isDiscovered(player, entityType);
     }
 
     public DiscoveryStrategy getStrategy() {

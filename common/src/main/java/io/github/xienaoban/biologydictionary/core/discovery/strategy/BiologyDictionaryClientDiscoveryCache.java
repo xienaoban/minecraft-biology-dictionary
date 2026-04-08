@@ -5,9 +5,8 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,38 +16,29 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Environment(EnvType.CLIENT)
 public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscoveryCache {
-    private final Map<Identifier, DiscoveryRecord> data = new ConcurrentHashMap<>();
+    private final Map<EntityType<?>, DiscoveryRecord> data = new ConcurrentHashMap<>();
 
     public BiologyDictionaryClientDiscoveryCache() {
         ClientNetManager.requestDictionaryDiscoveryFull();
     }
 
     @Override
-    public boolean isDiscovered(Identifier entityType) {
+    public boolean isDiscovered(EntityType<?> entityType) {
         DiscoveryRecord record = data.get(entityType);
         return record != null && record.discovered();
     }
 
     @Override
-    public DiscoveryRecord getRecord(Identifier entityType) {
+    public DiscoveryRecord getRecord(EntityType<?> entityType) {
         return data.getOrDefault(entityType, DiscoveryRecord.UNDISCOVERED);
     }
 
-    @Override
-    public void onFullSync(Map<Identifier, DiscoveryRecord> data) {
+    public void onFullSync(Map<EntityType<?>, DiscoveryRecord> data) {
         this.data.clear();
         this.data.putAll(data);
     }
 
-    @Override
-    public void onIncrementalSync(Identifier entityType, DiscoveryRecord record) {
+    public void onIncrementalSync(EntityType<?> entityType, DiscoveryRecord record) {
         data.put(entityType, record);
-    }
-
-    /**
-     * Get an unmodifiable view of all discovery records.
-     */
-    public Map<Identifier, DiscoveryRecord> getAll() {
-        return Collections.unmodifiableMap(data);
     }
 }
