@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedDiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryDiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.VanillaKillDiscoveryStrategy;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 
@@ -14,10 +15,13 @@ import net.minecraft.world.entity.EntityType;
  * Attached to {@link io.github.xienaoban.biologydictionary.core.session.WorldSession}.
  */
 public final class DiscoveryManager implements ConfigsUpdateCallback {
+    private final MinecraftServer server;
+
     private volatile Configs.ServerConfigs.DiscoveryStrategyMode mode;
     private volatile DiscoveryStrategy strategy;
 
-    public DiscoveryManager() {
+    public DiscoveryManager(MinecraftServer server) {
+        this.server = server;
         onConfigsUpdate(ConfigsManager.getClient(), ConfigsManager.getServer());
     }
 
@@ -31,7 +35,7 @@ public final class DiscoveryManager implements ConfigsUpdateCallback {
         strategy = switch (newMode) {
             case ALWAYS_UNLOCKED -> new AlwaysUnlockedDiscoveryStrategy();
             case VANILLA_KILL -> new VanillaKillDiscoveryStrategy();
-            case BIOLOGY_DICTIONARY -> new BiologyDictionaryDiscoveryStrategy();
+            case BIOLOGY_DICTIONARY -> new BiologyDictionaryDiscoveryStrategy(server);
         };
     }
 

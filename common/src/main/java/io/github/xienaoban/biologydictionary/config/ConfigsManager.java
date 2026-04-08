@@ -54,7 +54,6 @@ public final class ConfigsManager {
      * Get the active client configuration.
      * Not like the server configs, it never changes.
      */
-    @Environment(EnvType.CLIENT)
     public static Configs.ClientConfigs getClient() {
         return clientConfigs;
     }
