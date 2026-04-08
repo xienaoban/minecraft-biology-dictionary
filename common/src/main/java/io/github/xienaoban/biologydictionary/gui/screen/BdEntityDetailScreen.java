@@ -29,6 +29,10 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
         this.properties = properties;
         initBookmarks();
         initEntityPropertyWidgets();
+
+        if (ClientWorldSession.get().getDiscoveryClientCache().onEntityDetailScreenOpened(player, entity)) {
+            sendScreenMessage(TextUtils.translate(Lang.TEXT_NEW_ENTITY_DISCOVERED));
+        }
     }
 
     private void initBookmarks() {
