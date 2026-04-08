@@ -7,7 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 /**
  * All entities are always discovered. No events trigger any action.
  */
-public final class AlwaysUnlockedStrategy implements DiscoveryStrategy {
+public final class AlwaysUnlockedDiscoveryStrategy implements DiscoveryStrategy {
 
     @Override
     public boolean isDiscovered(Identifier entityType, ServerPlayer player) {

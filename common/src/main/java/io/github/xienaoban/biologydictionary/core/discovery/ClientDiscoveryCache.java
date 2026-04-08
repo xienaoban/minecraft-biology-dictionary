@@ -11,7 +11,7 @@ import java.util.Map;
  * Each DiscoveryStrategyMode has a corresponding implementation.
  */
 @Environment(EnvType.CLIENT)
-public interface DiscoveryClientCache {
+public interface ClientDiscoveryCache {
     boolean isDiscovered(Identifier entityType);
 
     DiscoveryRecord getRecord(Identifier entityType);

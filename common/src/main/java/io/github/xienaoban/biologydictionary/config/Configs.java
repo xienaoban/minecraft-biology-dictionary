@@ -189,7 +189,7 @@ public final class Configs {
         public enum DiscoveryStrategyMode {
             ALWAYS_UNLOCKED,
             VANILLA_KILL,
-            DICTIONARY
+            BIOLOGY_DICTIONARY
         }
     }
 

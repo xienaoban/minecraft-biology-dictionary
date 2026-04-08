@@ -41,14 +41,14 @@
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.ALWAYS_UNLOCKED": "Always Unlocked",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.VANILLA_KILL": "Vanilla Kill",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.DICTIONARY": "Biology Dictionary (NOT DONE YET)",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.BIOLOGY_DICTIONARY": "Biology Dictionary (NOT DONE YET)",
 
   "modmenu.nameTranslation.biologydictionary": "Biology Dictionary",
   "modmenu.descriptionTranslation.biologydictionary": "To display or modify the properties and states of mobs.",
 
   "screen.biologydictionary.player_selector": "Player Selector",
   "screen.biologydictionary.player_selector.desc": "Please select an online player near you.",
-  "screen.biologydictionary.stealing" : "Stealing",
+  "screen.biologydictionary.stealing": "Stealing",
 
   "bookmark.biologydictionary.all"          : "All",
   "bookmark.biologydictionary.back_to_home" : "Home",

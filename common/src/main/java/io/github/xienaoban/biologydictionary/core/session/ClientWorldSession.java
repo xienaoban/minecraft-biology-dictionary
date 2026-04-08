@@ -4,7 +4,7 @@ import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRen
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
-import io.github.xienaoban.biologydictionary.core.discovery.DelegatingDiscoveryClientCache;
+import io.github.xienaoban.biologydictionary.core.discovery.DelegatingClientDiscoveryCache;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -43,12 +43,12 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
     }
 
     private final HighlightManager highlightManager;
-    private final DelegatingDiscoveryClientCache discoveryClientCache;
+    private final DelegatingClientDiscoveryCache discoveryClientCache;
     private final FirstPersonShoulderEntityRenderer shoulderEntityRenderer;
 
     private ClientWorldSession() {
         highlightManager = new HighlightManager();
-        discoveryClientCache = new DelegatingDiscoveryClientCache();
+        discoveryClientCache = new DelegatingClientDiscoveryCache();
         shoulderEntityRenderer = new FirstPersonShoulderEntityRenderer();
     }
 
@@ -61,7 +61,7 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
         return highlightManager;
     }
 
-    public DelegatingDiscoveryClientCache getDiscoveryClientCache() {
+    public DelegatingClientDiscoveryCache getDiscoveryClientCache() {
         return discoveryClientCache;
     }
 

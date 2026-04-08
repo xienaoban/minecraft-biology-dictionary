@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryClientCache;
+import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
@@ -185,7 +185,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
 
         private boolean isDiscovered() {
-            DiscoveryClientCache cache = ClientWorldSession.get().getDiscoveryClientCache();
+            ClientDiscoveryCache cache = ClientWorldSession.get().getDiscoveryClientCache();
             return cache.isDiscovered(entityTypeId);
         }
 

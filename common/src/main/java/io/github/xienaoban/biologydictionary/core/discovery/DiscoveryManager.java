@@ -3,15 +3,13 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
-import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedStrategy;
-import io.github.xienaoban.biologydictionary.core.discovery.strategy.DictionaryStrategy;
-import io.github.xienaoban.biologydictionary.core.discovery.strategy.KillBasedStrategy;
+import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedDiscoveryStrategy;
+import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryDiscoveryStrategy;
+import io.github.xienaoban.biologydictionary.core.discovery.strategy.VanillaKillDiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
-
-import java.util.Map;
 
 /**
  * Server-side entry point for the discovery system.
@@ -33,9 +31,9 @@ public final class DiscoveryManager implements ConfigsUpdateCallback {
         }
         mode = newMode;
         strategy = switch (newMode) {
-            case ALWAYS_UNLOCKED -> new AlwaysUnlockedStrategy();
-            case VANILLA_KILL -> new KillBasedStrategy();
-            case DICTIONARY -> new DictionaryStrategy();
+            case ALWAYS_UNLOCKED -> new AlwaysUnlockedDiscoveryStrategy();
+            case VANILLA_KILL -> new VanillaKillDiscoveryStrategy();
+            case BIOLOGY_DICTIONARY -> new BiologyDictionaryDiscoveryStrategy();
         };
     }
 
