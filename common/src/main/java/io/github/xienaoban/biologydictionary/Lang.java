@@ -51,9 +51,10 @@ public final class Lang {
     CONFIG_ENTRY_PREFIX    = "config.biologydictionary.entry.",
     CONFIG_TOOLTIP_SUFFIX  = ".tooltip",
 
-    SCREEN_PLAYER_SELECTOR      = "screen.biologydictionary.player_selector",
-    SCREEN_PLAYER_SELECTOR_DESC = "screen.biologydictionary.player_selector.desc",
-    SCREEN_STEALING             = "screen.biologydictionary.stealing",
+    SCREEN_ENTITY_OVERVIEW_TITLE_SUFFIX = "screen.biologydictionary.overview_title_suffix",
+    SCREEN_PLAYER_SELECTOR              = "screen.biologydictionary.player_selector",
+    SCREEN_PLAYER_SELECTOR_DESC         = "screen.biologydictionary.player_selector.desc",
+    SCREEN_STEALING                     = "screen.biologydictionary.stealing",
 
     BOOKMARK_ALL          = "bookmark.biologydictionary.all",
     BOOKMARK_BACK_TO_HOME = "bookmark.biologydictionary.back_to_home",
@@ -83,12 +84,12 @@ public final class Lang {
     TAG_DEFAULT_ENEMY_HUMANOID       = "tag.biologydictionary.default.enemy_humanoid",
     TAG_DEFAULT_ENEMY_PATROL         = "tag.biologydictionary.default.enemy_patrol",
 
+    WIDGET_ENTITY_OVERVIEW              = "widget.biologydictionary.overview",
+    WIDGET_ENTITY_OVERVIEW_DESC         = "widget.biologydictionary.overview.desc",
+    WIDGET_ENTITY_OVERVIEW_LEFT_DESC    = "widget.biologydictionary.overview.left.desc",
     WIDGET_ENTITY_HIGHLIGHT             = "widget.biologydictionary.highlight",
     WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC  = "widget.biologydictionary.highlight.right.desc",
     WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC = "widget.biologydictionary.highlight.middle.desc",
-    WIDGET_ENTITY_OVERVIEW              = "widget.biologydictionary.overview",
-    WIDGET_ENTITY_OVERVIEW_DESC         = "widget.biologydictionary.overview.desc",
-    ENTITY_OVERVIEW_TITLE_SUFFIX        = "entity.biologydictionary.overview_title_suffix",
     WIDGET_ENTITY_OFFER_SPAWN_EGG       = "widget.biologydictionary.offer_spawn_egg",
     WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC  = "widget.biologydictionary.offer_spawn_egg.desc",
 

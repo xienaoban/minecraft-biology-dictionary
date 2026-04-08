@@ -46,9 +46,10 @@
   "modmenu.nameTranslation.biologydictionary": "Biology Dictionary",
   "modmenu.descriptionTranslation.biologydictionary": "To display or modify the properties and states of mobs.",
 
-  "screen.biologydictionary.player_selector": "Player Selector",
-  "screen.biologydictionary.player_selector.desc": "Please select an online player near you.",
-  "screen.biologydictionary.stealing": "Stealing",
+  "screen.biologydictionary.overview_title_suffix" : " (Overview)",
+  "screen.biologydictionary.player_selector"       : "Player Selector",
+  "screen.biologydictionary.player_selector.desc"  : "Please select an online player near you.",
+  "screen.biologydictionary.stealing"              : "Stealing",
 
   "bookmark.biologydictionary.all"          : "All",
   "bookmark.biologydictionary.back_to_home" : "Home",
@@ -79,12 +80,12 @@
   "tag.biologydictionary.default.enemy_humanoid"       : "Humanoid",
   "tag.biologydictionary.default.enemy_patrol"         : "Patrol",
 
+  "widget.biologydictionary.overview"              : "View Entity Properties",
+  "widget.biologydictionary.overview.desc"         : "View default/reference properties for this entity type",
+  "widget.biologydictionary.overview.left.desc"    : "Lift click: View Entity Properties",
   "widget.biologydictionary.highlight"             : "Highlight mobs of this type nearby",
   "widget.biologydictionary.highlight.right.desc"  : "Right click: Highlight radius %dm",
   "widget.biologydictionary.highlight.middle.desc" : "Middle click: Highlight radius %dm",
-  "widget.biologydictionary.overview"              : "View Entity Properties",
-  "widget.biologydictionary.overview.desc"         : "View default/reference properties for this entity type",
-  "entity.biologydictionary.overview_title_suffix" : " (Overview)",
   "widget.biologydictionary.offer_spawn_egg"       : "Offer a spawn egg",
   "widget.biologydictionary.offer_spawn_egg.desc"  : "Sent directly to inventory",
 
@@ -213,7 +214,7 @@
   "text.biologydictionary.please_report_issue": "Please go to the GitHub page of this mod, create an issue and upload the {game directory}/logs/latest.log file for the author's analysis.",
   "text.biologydictionary.config_reload_success": "Configuration reloaded",
   "text.biologydictionary.no_biology_dictionary_book": "No Biology Dictionary Book in inventory！",
-  "text.biologydictionary.entity_not_discovered": "Not discovered yet (see config for unlock conditions)",
+  "text.biologydictionary.entity_not_discovered": "Not discovered yet (see server config for unlock conditions)",
   "text.biologydictionary.target_entity_too_far": "The target mob is too far from you!",
   "text.biologydictionary.highlighted_entities": "Sensed %d %s within %d meters!",
   "text.biologydictionary.failed_to_highlight": "Failed to highlight: %s",

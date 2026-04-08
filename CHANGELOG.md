@@ -8,7 +8,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 - Added entity discovery system: players can now unlock the entity overview screen upon discovering corresponding entities
 - Added `biologydictionary config reload` command to reload server configs from disk
-- Added entity spawn manager
+- Added entity spawn manager (no widget yet)
 
 ### Changed
 

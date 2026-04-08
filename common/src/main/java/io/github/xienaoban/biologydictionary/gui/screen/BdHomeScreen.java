@@ -283,6 +283,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OVERVIEW));
                 tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OVERVIEW_DESC));
                 tooltips.add(TextUtils.empty());
+                tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_OVERVIEW_LEFT_DESC).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                tooltips.add(TextUtils.empty());
                 tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.NEAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                 tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.NEAR_RADIUS).getRealCost().toTooltipText());
                 tooltips.add(TextUtils.empty());
