@@ -1,5 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.session;
 
+import io.github.xienaoban.biologydictionary.config.Configs;
+import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.EntitySpawnManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryManager;
 import net.minecraft.server.MinecraftServer;
@@ -10,7 +12,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Server-side data tied to the current world session.
  * Created when the server starts, destroyed when the server stops.
  */
-public final class ServerWorldSession {
+public final class ServerWorldSession implements ConfigsUpdateCallback {
     private static volatile ServerWorldSession instance;
 
     public static void init(MinecraftServer server) {
@@ -46,6 +48,11 @@ public final class ServerWorldSession {
         this.entitySpawnManager = new EntitySpawnManager(server.registryAccess());
     }
 
+    @Override
+    public void onConfigsUpdate(Configs.ClientConfigs clientConfigs, Configs.ServerConfigs serverConfigs) {
+        discoveryManager.onConfigsUpdate(clientConfigs, serverConfigs);
+    }
+
     public MinecraftServer getServer() {
         return server;
     }
@@ -56,9 +63,5 @@ public final class ServerWorldSession {
 
     public EntitySpawnManager getEntitySpawnManager() {
         return entitySpawnManager;
-    }
-
-    public void onConfigsUpdate() {
-        discoveryManager.onConfigsUpdate();
     }
 }

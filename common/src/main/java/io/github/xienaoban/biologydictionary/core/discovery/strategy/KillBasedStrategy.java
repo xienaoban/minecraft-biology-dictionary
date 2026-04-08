@@ -12,9 +12,6 @@ import net.minecraft.world.entity.EntityType;
  * Uses MC's native Stats.ENTITY_KILLED — no extra storage needed.
  */
 public final class KillBasedStrategy implements DiscoveryStrategy {
-    public static final KillBasedStrategy INSTANCE = new KillBasedStrategy();
-
-    private KillBasedStrategy() {}
 
     @Override
     public boolean isDiscovered(Identifier entityType, ServerPlayer player) {

@@ -18,9 +18,6 @@ import java.util.Map;
  */
 @Environment(EnvType.CLIENT)
 public final class KillBasedClientCache implements DiscoveryClientCache {
-    public static final KillBasedClientCache INSTANCE = new KillBasedClientCache();
-
-    private KillBasedClientCache() {}
 
     @Override
     public boolean isDiscovered(Identifier entityType) {

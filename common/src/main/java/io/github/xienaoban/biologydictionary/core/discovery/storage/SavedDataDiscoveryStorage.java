@@ -88,9 +88,9 @@ public final class SavedDataDiscoveryStorage implements DiscoveryStorage {
                 for (Map.Entry<Identifier, DiscoveryRecord> discEntry : entry.getValue().entrySet()) {
                     DiscoveryRecord record = discEntry.getValue();
                     CompoundTag recordTag = new CompoundTag();
-                    recordTag.putBoolean(KEY_DISCOVERED, record.isDiscovered());
-                    recordTag.putLong(KEY_TIME, record.getFirstDiscoveryTime());
-                    recordTag.putLong(KEY_TICK, record.getFirstDiscoveryTick());
+                    recordTag.putBoolean(KEY_DISCOVERED, record.discovered());
+                    recordTag.putLong(KEY_TIME, record.firstDiscoveryTime());
+                    recordTag.putLong(KEY_TICK, record.firstDiscoveryTick());
                     discoveriesTag.put(discEntry.getKey().toString(), recordTag);
                 }
                 playerTag.put(KEY_DISCOVERIES, discoveriesTag);

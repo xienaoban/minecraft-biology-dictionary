@@ -19,10 +19,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class DictionaryClientCache implements DiscoveryClientCache {
     private final Map<Identifier, DiscoveryRecord> data = new ConcurrentHashMap<>();
 
+    public DictionaryClientCache() {
+        ClientNetManager.requestDictionaryDiscoveryFull();
+    }
+
     @Override
     public boolean isDiscovered(Identifier entityType) {
         DiscoveryRecord record = data.get(entityType);
-        return record != null && record.isDiscovered();
+        return record != null && record.discovered();
     }
 
     @Override

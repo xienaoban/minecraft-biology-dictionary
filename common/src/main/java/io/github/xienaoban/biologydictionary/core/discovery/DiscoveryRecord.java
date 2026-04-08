@@ -2,34 +2,15 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 
 /**
  * Discovery record for a single entity type, belonging to a single player.
+ *
+ * @param firstDiscoveryTime epoch millis, 0 if not discovered
+ * @param firstDiscoveryTick game time tick, 0 if not discovered
  */
-public class DiscoveryRecord {
-    private final boolean discovered;
-    private final long firstDiscoveryTime; // epoch millis, 0 if not discovered
-    private final long firstDiscoveryTick; // game time tick, 0 if not discovered
-
+public record DiscoveryRecord(boolean discovered, long firstDiscoveryTime, long firstDiscoveryTick) {
     private static final long NO_TIME = -1L;
 
     public DiscoveryRecord(boolean discovered) {
         this(discovered, NO_TIME, NO_TIME);
-    }
-
-    public DiscoveryRecord(boolean discovered, long firstDiscoveryTime, long firstDiscoveryTick) {
-        this.discovered = discovered;
-        this.firstDiscoveryTime = firstDiscoveryTime;
-        this.firstDiscoveryTick = firstDiscoveryTick;
-    }
-
-    public boolean isDiscovered() {
-        return discovered;
-    }
-
-    public long getFirstDiscoveryTime() {
-        return firstDiscoveryTime;
-    }
-
-    public long getFirstDiscoveryTick() {
-        return firstDiscoveryTick;
     }
 
     /**

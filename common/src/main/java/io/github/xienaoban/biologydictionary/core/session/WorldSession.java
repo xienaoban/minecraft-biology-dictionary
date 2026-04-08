@@ -1,8 +1,9 @@
 package io.github.xienaoban.biologydictionary.core.session;
 
+import io.github.xienaoban.biologydictionary.config.Configs;
+import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
-import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCostsCache;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
@@ -19,7 +20,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * On integrated servers (single player), both client and server share the same JVM
  * instance, so only one WorldSession is created.
  */
-public final class WorldSession {
+public final class WorldSession implements ConfigsUpdateCallback {
     private static volatile WorldSession instance;
 
     public static void init(Level level) {
@@ -71,6 +72,11 @@ public final class WorldSession {
         this.entityOverviewCache = new EntityOverviewCache();
     }
 
+    @Override
+    public void onConfigsUpdate(Configs.ClientConfigs clientConfigs, Configs.ServerConfigs serverConfigs) {
+        skillCostsCache.onConfigsUpdate(clientConfigs, serverConfigs);
+    }
+
     public EntityManager getEntityManager() {
         return entityManager;
     }
@@ -81,9 +87,5 @@ public final class WorldSession {
 
     public EntityOverviewCache getEntityOverviewCache() {
         return entityOverviewCache;
-    }
-
-    public void onConfigsUpdate() {
-        skillCostsCache.update(ConfigsManager.getServer());
     }
 }

@@ -8,9 +8,6 @@ import net.minecraft.server.level.ServerPlayer;
  * All entities are always discovered. No events trigger any action.
  */
 public final class AlwaysUnlockedStrategy implements DiscoveryStrategy {
-    public static final AlwaysUnlockedStrategy INSTANCE = new AlwaysUnlockedStrategy();
-
-    private AlwaysUnlockedStrategy() {}
 
     @Override
     public boolean isDiscovered(Identifier entityType, ServerPlayer player) {

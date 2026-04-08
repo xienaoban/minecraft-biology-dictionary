@@ -13,9 +13,6 @@ import java.util.Map;
  */
 @Environment(EnvType.CLIENT)
 public final class AlwaysUnlockedClientCache implements DiscoveryClientCache {
-    public static final AlwaysUnlockedClientCache INSTANCE = new AlwaysUnlockedClientCache();
-
-    private AlwaysUnlockedClientCache() {}
 
     @Override
     public boolean isDiscovered(Identifier entityType) {

@@ -31,9 +31,9 @@ public record ReplyDictionaryDiscoveryUpdatePacket(Identifier entityTypeId, Disc
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeUtf(entityTypeId.toString());
-        buf.writeBoolean(record.isDiscovered());
-        buf.writeLong(record.getFirstDiscoveryTime());
-        buf.writeLong(record.getFirstDiscoveryTick());
+        buf.writeBoolean(record.discovered());
+        buf.writeLong(record.firstDiscoveryTime());
+        buf.writeLong(record.firstDiscoveryTick());
     }
 
     @Environment(EnvType.CLIENT)

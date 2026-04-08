@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryClientCache;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.strategy.DictionaryClientCache;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
@@ -12,6 +12,8 @@ import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 /**
  * Discovery records sync packet: S -> C.
@@ -45,9 +47,9 @@ public record ReplyDictionaryDiscoveryFullPacket(Map<Identifier, DiscoveryRecord
         for (Map.Entry<Identifier, DiscoveryRecord> entry : discoveries.entrySet()) {
             buf.writeUtf(entry.getKey().toString());
             DiscoveryRecord record = entry.getValue();
-            buf.writeBoolean(record.isDiscovered());
-            buf.writeLong(record.getFirstDiscoveryTime());
-            buf.writeLong(record.getFirstDiscoveryTick());
+            buf.writeBoolean(record.discovered());
+            buf.writeLong(record.firstDiscoveryTime());
+            buf.writeLong(record.firstDiscoveryTick());
         }
     }
 
@@ -55,13 +57,16 @@ public record ReplyDictionaryDiscoveryFullPacket(Map<Identifier, DiscoveryRecord
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         final class W { static void receive(ReplyDictionaryDiscoveryFullPacket packet) {
-            ClientWorldSession clientSession = ClientWorldSession.get();
-            if (clientSession == null) {
+            ClientWorldSession session = ClientWorldSession.get();
+            if (session == null) {
                 return;
             }
-            DiscoveryClientCache cache = clientSession.getDiscoveryClientCache();
-            // TODO: not interface anymore, do it if instanceof DictionaryClientCache
-            cache.onFullSync(packet.discoveries());
+            if (session.getDiscoveryClientCache().getDelegate() instanceof DictionaryClientCache cache) {
+                cache.onFullSync(packet.discoveries());
+                LOGGER.info("Full discovery records received.");
+            } else {
+                LOGGER.warn("Received wrong discovery strategy. Ignored.");
+            }
         }}
         W.receive(this);
     }
