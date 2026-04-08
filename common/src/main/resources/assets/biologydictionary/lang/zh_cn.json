@@ -46,9 +46,10 @@
   "modmenu.nameTranslation.biologydictionary": "生物辞典",
   "modmenu.descriptionTranslation.biologydictionary": "展示或修改生物的属性与状态。",
 
-  "screen.biologydictionary.player_selector": "玩家选择器",
-  "screen.biologydictionary.player_selector.desc": "请选择一个在您附近的在线玩家。",
-  "screen.biologydictionary.stealing": "偷窃",
+  "screen.biologydictionary.overview_title_suffix" : "（总览）",
+  "screen.biologydictionary.player_selector"       : "玩家选择器",
+  "screen.biologydictionary.player_selector.desc"  : "请选择一个在您附近的在线玩家。",
+  "screen.biologydictionary.stealing"              : "偷窃",
 
   "bookmark.biologydictionary.all"          : "所有生物",
   "bookmark.biologydictionary.back_to_home" : "返回主页",
@@ -79,12 +80,12 @@
   "tag.biologydictionary.default.enemy_humanoid"       : "人形生物",
   "tag.biologydictionary.default.enemy_patrol"         : "灾厄小队",
 
+  "widget.biologydictionary.overview"              : "查看生物信息",
+  "widget.biologydictionary.overview.desc"         : "查看此生物类型的默认/参考属性值",
+  "widget.biologydictionary.overview.left.desc"    : "左键：查看生物信息",
   "widget.biologydictionary.highlight"             : "感知并高亮附近的该类生物",
   "widget.biologydictionary.highlight.right.desc"  : "右键：高亮半径%d米",
   "widget.biologydictionary.highlight.middle.desc" : "中键：高亮半径%d米",
-  "widget.biologydictionary.overview"              : "查看生物信息",
-  "widget.biologydictionary.overview.desc"         : "查看此生物类型的默认/参考属性值",
-  "entity.biologydictionary.overview_title_suffix" : "（总览）",
   "widget.biologydictionary.offer_spawn_egg"       : "获取刷怪蛋",
   "widget.biologydictionary.offer_spawn_egg.desc"  : "直接发到背包里",
 
@@ -213,7 +214,7 @@
   "text.biologydictionary.please_report_issue": "详细报错见“{游戏目录}/logs/latest.log”，若需求助作者，请务必附上此log文件（仅截图本段报错对定位问题毫无帮助！！）",
   "text.biologydictionary.config_reload_success": "配置已重新加载",
   "text.biologydictionary.no_biology_dictionary_book": "背包内无生物辞典书！",
-  "text.biologydictionary.entity_not_discovered": "尚未发现该生物（解锁条件见配置）",
+  "text.biologydictionary.entity_not_discovered": "尚未发现该生物（解锁条件见服务端配置）",
   "text.biologydictionary.target_entity_too_far": "目标生物离你太远了！",
   "text.biologydictionary.highlighted_entities": "感知到了%d只%s，感知半径%d米！",
   "text.biologydictionary.failed_to_highlight": "高亮失败：%s",
