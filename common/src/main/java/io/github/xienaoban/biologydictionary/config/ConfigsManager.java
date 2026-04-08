@@ -181,17 +181,17 @@ public final class ConfigsManager {
     public static void onUpdated() {
         WorldSession session = WorldSession.get();
         if (session != null) {
-            session.onConfigsUpdate();
+            session.onConfigsUpdate(getClient(), getServer());
         }
         if (DevUtils.isClient()) {
             ClientWorldSession clientSession = ClientWorldSession.get();
             if (clientSession != null) {
-                clientSession.onConfigsUpdate();
+                clientSession.onConfigsUpdate(getClient(), getServer());
             }
         }
         ServerWorldSession serverSession = ServerWorldSession.get();
         if (serverSession != null) {
-            serverSession.onConfigsUpdate();
+            serverSession.onConfigsUpdate(getClient(), getServer());
             broadcastServerConfigs(serverSession.getServer());
         }
         LOGGER.info("Configs updated.");

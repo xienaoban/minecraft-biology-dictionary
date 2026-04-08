@@ -3,8 +3,6 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.Map;
-
 /**
  * Server-side strategy for determining if an entity is discovered by a player.
  * Each strategy decides which event callbacks to respond to.
@@ -42,11 +40,6 @@ public interface DiscoveryStrategy {
      * @return the discovery record for incremental network sync, or null if no sync needed.
      */
     default DiscoveryRecord onEntityHighlightedWithResult(ServerPlayer player, Identifier entityType) { return null; }
-
-    /**
-     * Get all discovery records for the player. Returns null if not applicable.
-     */
-    default Map<Identifier, DiscoveryRecord> getAllRecords(ServerPlayer player) { return null; }
 
     /**
      * Save pending discovery data. Called on world save.

@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,19 +10,19 @@ import java.util.Map;
 /**
  * Cache of {@link SkillCost} objects by skill class, derived from {@link Configs.ServerConfigs}.
  */
-public final class SkillCostsCache {
+public final class SkillCostsCache implements ConfigsUpdateCallback {
     private volatile Map<Class<?>, SkillCost> cache;
 
     public SkillCostsCache() {
-        cache = new HashMap<>();
-        update(ConfigsManager.getServer());
+        onConfigsUpdate(ConfigsManager.getClient(), ConfigsManager.getServer());
     }
 
     /**
      * Rebuild the cache from the given server configs.
-     * Iterates skillCosts and builds a Map&lt;Class&lt;?&gt;, SkillCost&gt;.
+     * Iterates skillCosts and builds the map class->SkillCost.
      */
-    public void update(Configs.ServerConfigs serverConfigs) {
+    @Override
+    public void onConfigsUpdate(Configs.ClientConfigs clientConfigs, Configs.ServerConfigs serverConfigs) {
         Map<Class<?>, SkillCost> newCache = new HashMap<>();
 
         for (Map.Entry<String, Map<String, Object>> entry : serverConfigs.getSkillCosts().entrySet()) {

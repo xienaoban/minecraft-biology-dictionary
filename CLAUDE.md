@@ -36,9 +36,6 @@
 
 ```bash
 ./gradlew fabric:testServer        # Run Fabric server tests
-# ./gradlew fabric:testClient        # Run Fabric client tests
-# ./gradlew neoforge:testServer      # Run NeoForge server tests
-# ./gradlew neoforge:testClient      # Run NeoForge client tests
 ```
 
 ### 其他
@@ -131,6 +128,7 @@ Mixin 配置文件：`common/src/main/resources/biologydictionary.mixins.json`
 - 除了构造函数，尽可能避免使用 `this.`！
 - 除非出现重名等情况，避免使用类的全限定名，而是使用 `import` + simple name 的方式（字符串中除外）！
 - 如非必要，勿改现有代码！
+- 编码时注意当前的 MC 版本（见 `gradle.properties` 的 `minecraft_version=?`），不同版本差异大！
 - MC 第一方代码我通常解压并放在了 `<本项目根目录>/../mc-source/<MC 版本>` 下，可以参考！
 - 优先查阅本地的 MC 官方第一方代码，而非在网络上搜索！
 - 若必须网络检索 MC 相关内容，务必校验所参考内容与目标 MC 版本的兼容性。MC 不同版本间源码差异极大！

@@ -5,7 +5,6 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.storage.SavedDataDiscoveryStorage;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
@@ -24,7 +23,7 @@ public final class DictionaryStrategy implements DiscoveryStrategy {
 
     @Override
     public boolean isDiscovered(Identifier entityType, ServerPlayer player) {
-        return storage.get(player.getUUID(), entityType).isDiscovered();
+        return storage.get(player.getUUID(), entityType).discovered();
     }
 
     @Override
@@ -38,13 +37,12 @@ public final class DictionaryStrategy implements DiscoveryStrategy {
     }
 
     @Override
-    public Map<Identifier, DiscoveryRecord> getAllRecords(ServerPlayer player) {
-        return storage.getAll(player.getUUID());
-    }
-
-    @Override
     public void save() {
         storage.save();
+    }
+
+    public Map<Identifier, DiscoveryRecord> getAllRecords(ServerPlayer player) {
+        return storage.getAll(player.getUUID());
     }
 
     /**
@@ -53,7 +51,7 @@ public final class DictionaryStrategy implements DiscoveryStrategy {
      */
     private DiscoveryRecord markDiscovered(ServerPlayer player, Identifier entityType) {
         DiscoveryRecord record = storage.get(player.getUUID(), entityType);
-        if (!record.isDiscovered()) {
+        if (!record.discovered()) {
             DiscoveryRecord newRecord = DiscoveryRecord.discoveredNow(player.level().getGameTime());
             storage.put(player.getUUID(), entityType, newRecord);
             return newRecord;

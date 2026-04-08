@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.DictionaryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.KillBasedStrategy;
@@ -16,27 +17,24 @@ import java.util.Map;
  * Server-side entry point for the discovery system.
  * Attached to {@link io.github.xienaoban.biologydictionary.core.session.WorldSession}.
  */
-public final class DiscoveryManager {
-    private Configs.ServerConfigs.DiscoveryStrategyMode mode;
-    private DiscoveryStrategy strategy;
+public final class DiscoveryManager implements ConfigsUpdateCallback {
+    private volatile Configs.ServerConfigs.DiscoveryStrategyMode mode;
+    private volatile DiscoveryStrategy strategy;
 
     public DiscoveryManager() {
-        this.mode = Configs.ServerConfigs.DiscoveryStrategyMode.ALWAYS_UNLOCKED;
-        this.strategy = AlwaysUnlockedStrategy.INSTANCE;
+        onConfigsUpdate(ConfigsManager.getClient(), ConfigsManager.getServer());
     }
 
-    /**
-     * Reload strategy from current config.
-     */
-    public void onConfigsUpdate() {
-        Configs.ServerConfigs.DiscoveryStrategyMode newMode = ConfigsManager.getServer().getDiscoveryStrategy();
+    @Override
+    public void onConfigsUpdate(Configs.ClientConfigs clientConfigs, Configs.ServerConfigs serverConfigs) {
+        Configs.ServerConfigs.DiscoveryStrategyMode newMode = serverConfigs.getDiscoveryStrategy();
         if (newMode == mode) {
             return;
         }
         mode = newMode;
         strategy = switch (newMode) {
-            case ALWAYS_UNLOCKED -> AlwaysUnlockedStrategy.INSTANCE;
-            case VANILLA_KILL -> KillBasedStrategy.INSTANCE;
+            case ALWAYS_UNLOCKED -> new AlwaysUnlockedStrategy();
+            case VANILLA_KILL -> new KillBasedStrategy();
             case DICTIONARY -> new DictionaryStrategy();
         };
     }
@@ -61,13 +59,6 @@ public final class DiscoveryManager {
 
     public Configs.ServerConfigs.DiscoveryStrategyMode getMode() {
         return mode;
-    }
-
-    /**
-     * Get all discovery records for the player. Returns null if not applicable (e.g. non-DICTIONARY strategy).
-     */
-    public Map<Identifier, DiscoveryRecord> getDiscoveryRecords(ServerPlayer player) {
-        return strategy.getAllRecords(player);
     }
 
     /**

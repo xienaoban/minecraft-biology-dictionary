@@ -2,7 +2,8 @@ package io.github.xienaoban.biologydictionary.core.session;
 
 import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRenderer;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
-import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.config.Configs;
+import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.discovery.DelegatingDiscoveryClientCache;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,7 +15,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Created when entering a world, destroyed when leaving.
  */
 @Environment(EnvType.CLIENT)
-public final class ClientWorldSession {
+public final class ClientWorldSession implements ConfigsUpdateCallback {
     private static volatile ClientWorldSession instance;
 
     public static void init() {
@@ -51,6 +52,11 @@ public final class ClientWorldSession {
         shoulderEntityRenderer = new FirstPersonShoulderEntityRenderer();
     }
 
+    @Override
+    public void onConfigsUpdate(Configs.ClientConfigs clientConfigs, Configs.ServerConfigs serverConfigs) {
+        discoveryClientCache.onConfigsUpdate(clientConfigs, serverConfigs);
+    }
+
     public HighlightManager getHighlightManager() {
         return highlightManager;
     }
@@ -65,9 +71,5 @@ public final class ClientWorldSession {
 
     public void tick() {
         highlightManager.tick();
-    }
-
-    public void onConfigsUpdate() {
-        discoveryClientCache.onConfigsUpdate();
     }
 }
