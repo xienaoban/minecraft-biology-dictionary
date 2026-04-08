@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryClientCache;
+import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -12,7 +12,7 @@ import java.util.Map;
  * All entities are always discovered. No network sync needed.
  */
 @Environment(EnvType.CLIENT)
-public final class AlwaysUnlockedClientCache implements DiscoveryClientCache {
+public final class AlwaysUnlockedClientDiscoveryCache implements ClientDiscoveryCache {
 
     @Override
     public boolean isDiscovered(Identifier entityType) {

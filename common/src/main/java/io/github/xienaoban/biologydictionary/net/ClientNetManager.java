@@ -27,7 +27,7 @@ public final class ClientNetManager {
     }
 
     public static void requestDictionaryDiscoveryFull() {
-        ClientNetApi.send(new RequestDictionaryDiscoveryFullPacket());
+        ClientNetApi.send(new RequestBiologyDictionaryDiscoveryFullPacket());
     }
 
     public static void requestEntityOverview(EntityType<?> entityType) {

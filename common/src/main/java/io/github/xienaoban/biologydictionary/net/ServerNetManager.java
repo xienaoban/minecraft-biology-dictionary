@@ -1,12 +1,8 @@
 package io.github.xienaoban.biologydictionary.net;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyDictionaryDiscoveryFullPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyDictionaryDiscoveryUpdatePacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyHighlightEntitiesPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyInventoryStealingScreenPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyServerConfigsPacket;
-import io.github.xienaoban.biologydictionary.net.payload.SendCenteredMessagePacket;
+import io.github.xienaoban.biologydictionary.net.payload.*;
+import io.github.xienaoban.biologydictionary.net.payload.ReplyBiologyDictionaryDiscoveryIncrementalPacket;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.network.chat.Component;
@@ -33,11 +29,11 @@ public final class ServerNetManager {
     }
 
     public static void replyDictionaryDiscoveryRecords(ServerPlayer player, Map<Identifier, DiscoveryRecord> discoveries) {
-        ServerNetApi.send(player, new ReplyDictionaryDiscoveryFullPacket(discoveries));
+        ServerNetApi.send(player, new ReplyBiologyDictionaryDiscoveryFullPacket(discoveries));
     }
 
     public static void replyDictionaryDiscoveryUpdate(ServerPlayer player, Identifier entityTypeId, DiscoveryRecord record) {
-        ServerNetApi.send(player, new ReplyDictionaryDiscoveryUpdatePacket(entityTypeId, record));
+        ServerNetApi.send(player, new ReplyBiologyDictionaryDiscoveryIncrementalPacket(entityTypeId, record));
     }
 
     public static void replyHighlightEntitiesSkill(ServerPlayer player, boolean allowed, EntityType<?> entityType, float radius) {

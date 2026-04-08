@@ -12,9 +12,9 @@ public final class PacketPayloads {
         registrar.register(RequestServerConfigsPacket.class, RequestServerConfigsPacket.FACTORY);
         registrar.register(ReplyServerConfigsPacket.class, ReplyServerConfigsPacket.FACTORY);
         registrar.register(RequestBiologyDictionaryItemPacket.class, RequestBiologyDictionaryItemPacket.FACTORY);
-        registrar.register(RequestDictionaryDiscoveryFullPacket.class, RequestDictionaryDiscoveryFullPacket.FACTORY);
-        registrar.register(ReplyDictionaryDiscoveryFullPacket.class, ReplyDictionaryDiscoveryFullPacket.FACTORY);
-        registrar.register(ReplyDictionaryDiscoveryUpdatePacket.class, ReplyDictionaryDiscoveryUpdatePacket.FACTORY);
+        registrar.register(RequestBiologyDictionaryDiscoveryFullPacket.class, RequestBiologyDictionaryDiscoveryFullPacket.FACTORY);
+        registrar.register(ReplyBiologyDictionaryDiscoveryFullPacket.class, ReplyBiologyDictionaryDiscoveryFullPacket.FACTORY);
+        registrar.register(ReplyBiologyDictionaryDiscoveryIncrementalPacket.class, ReplyBiologyDictionaryDiscoveryIncrementalPacket.FACTORY);
         registrar.register(RequestEntityOverviewPacket.class, RequestEntityOverviewPacket.FACTORY);
         registrar.register(ReplyEntityOverviewPacket.class, ReplyEntityOverviewPacket.FACTORY);
         registrar.register(RequestEntityDataPacket.class, RequestEntityDataPacket.FACTORY);

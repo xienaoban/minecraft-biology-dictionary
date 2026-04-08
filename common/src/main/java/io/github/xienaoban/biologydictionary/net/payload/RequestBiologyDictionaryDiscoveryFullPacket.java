@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.core.discovery.strategy.DictionaryStrategy;
+import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryDiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
@@ -15,10 +15,10 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Request discovery records from server: C -> S.
  * Only sent when the server's discovery strategy is DICTIONARY.
  */
-public record RequestDictionaryDiscoveryFullPacket() implements Packet {
-    public static final Packet.Factory<RequestDictionaryDiscoveryFullPacket> FACTORY = RequestDictionaryDiscoveryFullPacket::new;
+public record RequestBiologyDictionaryDiscoveryFullPacket() implements Packet {
+    public static final Packet.Factory<RequestBiologyDictionaryDiscoveryFullPacket> FACTORY = RequestBiologyDictionaryDiscoveryFullPacket::new;
 
-    private RequestDictionaryDiscoveryFullPacket(FriendlyByteBuf buf) {
+    private RequestBiologyDictionaryDiscoveryFullPacket(FriendlyByteBuf buf) {
         this();
     }
 
@@ -32,7 +32,7 @@ public record RequestDictionaryDiscoveryFullPacket() implements Packet {
         if (session == null) {
             return;
         }
-        if (session.getDiscoveryManager().getStrategy() instanceof DictionaryStrategy strategy) {
+        if (session.getDiscoveryManager().getStrategy() instanceof BiologyDictionaryDiscoveryStrategy strategy) {
             ServerNetManager.replyDictionaryDiscoveryRecords(player, strategy.getAllRecords(player));
             LOGGER.info("Full discovery records sent to player {}.", EntityUtils.getNameString(player));
         } else {

@@ -41,14 +41,14 @@
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.ALWAYS_UNLOCKED": "全部解锁",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.VANILLA_KILL": "原版击杀",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.DICTIONARY": "生物辞典（未完成）",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.BIOLOGY_DICTIONARY": "生物辞典（未完成）",
 
   "modmenu.nameTranslation.biologydictionary": "生物辞典",
   "modmenu.descriptionTranslation.biologydictionary": "展示或修改生物的属性与状态。",
 
   "screen.biologydictionary.player_selector": "玩家选择器",
   "screen.biologydictionary.player_selector.desc": "请选择一个在您附近的在线玩家。",
-  "screen.biologydictionary.stealing" : "偷窃",
+  "screen.biologydictionary.stealing": "偷窃",
 
   "bookmark.biologydictionary.all"          : "所有生物",
   "bookmark.biologydictionary.back_to_home" : "返回主页",

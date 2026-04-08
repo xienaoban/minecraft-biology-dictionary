@@ -3,9 +3,9 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
-import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedClientCache;
-import io.github.xienaoban.biologydictionary.core.discovery.strategy.DictionaryClientCache;
-import io.github.xienaoban.biologydictionary.core.discovery.strategy.KillBasedClientCache;
+import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedClientDiscoveryCache;
+import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryClientDiscoveryCache;
+import io.github.xienaoban.biologydictionary.core.discovery.strategy.VanillaKillClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.resources.Identifier;
@@ -13,14 +13,14 @@ import net.minecraft.resources.Identifier;
 import java.util.Map;
 
 /**
- * A {@link DiscoveryClientCache} that delegates to another cache instance.
+ * A {@link ClientDiscoveryCache} that delegates to another cache instance.
  * Allows the delegate to be swapped based on the current server config.
  */
-public final class DelegatingDiscoveryClientCache implements DiscoveryClientCache, ConfigsUpdateCallback {
+public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCache, ConfigsUpdateCallback {
     private volatile Configs.ServerConfigs.DiscoveryStrategyMode mode;
-    private volatile DiscoveryClientCache delegate;
+    private volatile ClientDiscoveryCache delegate;
 
-    public DelegatingDiscoveryClientCache() {
+    public DelegatingClientDiscoveryCache() {
         onConfigsUpdate(ConfigsManager.getClient(), ConfigsManager.getServer());
     }
 
@@ -32,13 +32,13 @@ public final class DelegatingDiscoveryClientCache implements DiscoveryClientCach
         }
         mode = newMode;
         delegate = switch (newMode) {
-            case ALWAYS_UNLOCKED -> new AlwaysUnlockedClientCache();
-            case VANILLA_KILL -> new KillBasedClientCache();
-            case DICTIONARY -> new DictionaryClientCache();
+            case ALWAYS_UNLOCKED -> new AlwaysUnlockedClientDiscoveryCache();
+            case VANILLA_KILL -> new VanillaKillClientDiscoveryCache();
+            case BIOLOGY_DICTIONARY -> new BiologyDictionaryClientDiscoveryCache();
         };
     }
 
-    public DiscoveryClientCache getDelegate() {
+    public ClientDiscoveryCache getDelegate() {
         return delegate;
     }
 

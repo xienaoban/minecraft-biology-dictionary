@@ -14,10 +14,10 @@ import java.util.Map;
  * (highlight skill or entity overview screen).
  * Uses mod-managed persistent data (SavedDataDiscoveryStorage).
  */
-public final class DictionaryStrategy implements DiscoveryStrategy {
+public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrategy {
     private final SavedDataDiscoveryStorage storage;
 
-    public DictionaryStrategy() {
+    public BiologyDictionaryDiscoveryStrategy() {
         this.storage = new SavedDataDiscoveryStorage(ServerWorldSession.get().getServer());
     }
 

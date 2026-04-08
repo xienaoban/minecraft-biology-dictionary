@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryClientCache;
+import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -17,7 +17,7 @@ import java.util.Map;
  * No network sync needed — MC syncs kill stats to the client automatically.
  */
 @Environment(EnvType.CLIENT)
-public final class KillBasedClientCache implements DiscoveryClientCache {
+public final class VanillaKillClientDiscoveryCache implements ClientDiscoveryCache {
 
     @Override
     public boolean isDiscovered(Identifier entityType) {

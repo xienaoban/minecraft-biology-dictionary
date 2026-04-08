@@ -11,7 +11,7 @@ import net.minecraft.world.entity.EntityType;
  * Entity is discovered when the player has killed it at least once.
  * Uses MC's native Stats.ENTITY_KILLED — no extra storage needed.
  */
-public final class KillBasedStrategy implements DiscoveryStrategy {
+public final class VanillaKillDiscoveryStrategy implements DiscoveryStrategy {
 
     @Override
     public boolean isDiscovered(Identifier entityType, ServerPlayer player) {

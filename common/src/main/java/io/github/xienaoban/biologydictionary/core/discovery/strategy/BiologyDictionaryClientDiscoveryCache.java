@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryClientCache;
+import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
@@ -16,10 +16,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * Used for the DICTIONARY strategy on the client side.
  */
 @Environment(EnvType.CLIENT)
-public final class DictionaryClientCache implements DiscoveryClientCache {
+public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscoveryCache {
     private final Map<Identifier, DiscoveryRecord> data = new ConcurrentHashMap<>();
 
-    public DictionaryClientCache() {
+    public BiologyDictionaryClientDiscoveryCache() {
         ClientNetManager.requestDictionaryDiscoveryFull();
     }
 

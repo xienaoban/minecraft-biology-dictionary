@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.strategy.DictionaryClientCache;
+import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
@@ -17,12 +17,12 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 /**
  * Discovery records sync packet: S -> C.
- * Sent in response to {@link RequestDictionaryDiscoveryFullPacket}.
+ * Sent in response to {@link RequestBiologyDictionaryDiscoveryFullPacket}.
  */
-public record ReplyDictionaryDiscoveryFullPacket(Map<Identifier, DiscoveryRecord> discoveries) implements Packet {
-    public static final Packet.Factory<ReplyDictionaryDiscoveryFullPacket> FACTORY = ReplyDictionaryDiscoveryFullPacket::new;
+public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<Identifier, DiscoveryRecord> discoveries) implements Packet {
+    public static final Packet.Factory<ReplyBiologyDictionaryDiscoveryFullPacket> FACTORY = ReplyBiologyDictionaryDiscoveryFullPacket::new;
 
-    private ReplyDictionaryDiscoveryFullPacket(FriendlyByteBuf buf) {
+    private ReplyBiologyDictionaryDiscoveryFullPacket(FriendlyByteBuf buf) {
         this(readDiscoveries(buf));
     }
 
@@ -56,12 +56,12 @@ public record ReplyDictionaryDiscoveryFullPacket(Map<Identifier, DiscoveryRecord
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class W { static void receive(ReplyDictionaryDiscoveryFullPacket packet) {
+        final class W { static void receive(ReplyBiologyDictionaryDiscoveryFullPacket packet) {
             ClientWorldSession session = ClientWorldSession.get();
             if (session == null) {
                 return;
             }
-            if (session.getDiscoveryClientCache().getDelegate() instanceof DictionaryClientCache cache) {
+            if (session.getDiscoveryClientCache().getDelegate() instanceof BiologyDictionaryClientDiscoveryCache cache) {
                 cache.onFullSync(packet.discoveries());
                 LOGGER.info("Full discovery records received.");
             } else {
