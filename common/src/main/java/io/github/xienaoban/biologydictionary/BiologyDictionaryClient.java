@@ -1,10 +1,9 @@
 package io.github.xienaoban.biologydictionary;
 
-import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRenderer;
-import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
@@ -42,22 +41,25 @@ public final class BiologyDictionaryClient {
         hitEntityProperties = null;
 
         ClientEventRegistry.registerWorldConnected(client -> {
+            WorldSession.init(ClientUtils.getClientLevel(client));
+            ClientWorldSession.init();
             // Only request server configs from remote servers, not local servers.
-            if (!client.isLocalServer()) { ClientNetManager.requestServerConfigs(); }
-            EntityManager.init();
+            if (!ClientUtils.isLocalServer(client)) { ClientNetManager.requestServerConfigs(); }
         });
         ClientEventRegistry.registerWorldDisconnecting(client -> {
-            // TODO
-            FirstPersonShoulderEntityRenderer.clear();
-            EntityManager.destroy();
+            ClientWorldSession.deinit();
+            WorldSession.deinit();
             ConfigsManager.setLocalServerConfigs();
         });
-        ClientEventRegistry.registerEndTick(this::tick);
+        ClientEventRegistry.registerEndTick(client -> {
+            tick(client);
+            ClientWorldSession ws = ClientWorldSession.get();
+            if (ws != null) { ws.tick(); }
+        });
 
         EntityPropertyWidgets.init();
         KeyMappingManager.init();
         ClientNetManager.init();
-        HighlightManager.init();
 
         LOGGER.info("BiologyDictionary (client) initialized.");
     }

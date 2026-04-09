@@ -1,13 +1,12 @@
 package io.github.xienaoban.biologydictionary.core.property;
 
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.Entity;
@@ -60,7 +59,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         }
         try (BufferedWriter writer = Files.newBufferedWriter(LOGGER_PATH)) {
             nbtFileWriter = writer;
-            EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
+            WorldSession.get().getEntityManager().dfsEntityTree(true, (cur, depth) -> {
                 Class<? extends Entity> entityClazz = cur.getClazz();
                 LOGGER.info("Testing {}", entityClazz);
                 NbtTagCollector collector = collect(entityClazz);

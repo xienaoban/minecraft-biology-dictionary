@@ -14,6 +14,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.property.builtin.UnsupportedProperty;
 import io.github.xienaoban.biologydictionary.util.TestUtils;
 import net.minecraft.world.entity.Entity;
@@ -58,7 +59,7 @@ public class PropertyClazzGenerator {
         addGeneralImports(cu);
 
         NbtTagCollector.loadAll();
-        EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
+        WorldSession.get().getEntityManager().dfsEntityTree(true, (cur, depth) -> {
             Class<? extends Entity> entityClazz = cur.getClazz();
             LOGGER.info("Testing {}", entityClazz);
 

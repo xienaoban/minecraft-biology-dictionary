@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.mixin.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRenderer;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -40,6 +40,9 @@ public class ItemInHandRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V")
     )
     private void biologydictionary$renderFirstPerson(float f, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LocalPlayer localPlayer, int i, CallbackInfo ci) {
-        FirstPersonShoulderEntityRenderer.run(entityRenderDispatcher, f, poseStack, bufferSource, localPlayer, i);
+        ClientWorldSession session = ClientWorldSession.get();
+        if (session != null) {
+            session.getShoulderEntityRenderer().run(entityRenderDispatcher, f, poseStack, bufferSource, localPlayer, i);
+        }
     }
 }

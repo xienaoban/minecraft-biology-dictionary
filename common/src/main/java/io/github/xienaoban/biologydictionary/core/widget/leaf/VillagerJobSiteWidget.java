@@ -1,9 +1,9 @@
 package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -113,7 +113,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_LOCATE));
                     return true;
                 }
-                HighlightManager.highlightBlock(currJobSitePos.pos(), HighlightEntitiesSkill.BLOCK_TICKS);
+                ClientWorldSession.get().getHighlightManager().highlightBlock(currJobSitePos.pos(), HighlightEntitiesSkill.BLOCK_TICKS);
                 ClientUtils.setScreen(null);
             }
             return true;

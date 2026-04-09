@@ -3,6 +3,9 @@ package io.github.xienaoban.biologydictionary.config;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
@@ -51,7 +54,6 @@ public final class ConfigsManager {
      * Get the active client configuration.
      * Not like the server configs, it never changes.
      */
-    @Environment(EnvType.CLIENT)
     public static Configs.ClientConfigs getClient() {
         return clientConfigs;
     }
@@ -80,6 +82,12 @@ public final class ConfigsManager {
      */
     @Environment(EnvType.CLIENT)
     public static void setRemoteServerConfigs(Configs.ServerConfigs remoteConfigs) {
+        WorldSession ws = WorldSession.get();
+        Objects.requireNonNull(remoteConfigs);
+        Objects.requireNonNull(ws);
+        if (ServerWorldSession.get() != null) {
+            throw new IllegalStateException("Server configs should not be synchronized from remote on server.");
+        }
         serverConfigs = remoteConfigs;
         LOGGER.info("Using remote server configs.");
     }
@@ -166,31 +174,40 @@ public final class ConfigsManager {
     }
 
     /**
-     * Broadcast server configs to all relevant players.
-     * Behavior depends on the current environment:
-     * <ul>
-     *   <li>Integrated server: broadcasts to all players except the host</li>
-     *   <li>Dedicated server: broadcasts to all players</li>
-     *   <li>Client connected to remote server: does nothing (should not be called)</li>
-     * </ul>
-     *
-     * @param server The MinecraftServer instance, used to get the player list and check server type
+     * Called after server configs have been updated (saved, reloaded, or received from remote).
+     * Refreshes all local world session caches and broadcasts to remote players if on server side.
      */
-    public static void broadcast(MinecraftServer server) {
+    public static void onUpdated() {
+        WorldSession session = WorldSession.get();
+        if (session != null) {
+            session.onConfigsUpdate(getClient(), getServer());
+        }
+        if (DevUtils.isClient()) {
+            ClientWorldSession clientSession = ClientWorldSession.get();
+            if (clientSession != null) {
+                clientSession.onConfigsUpdate(getClient(), getServer());
+            }
+        }
+        ServerWorldSession serverSession = ServerWorldSession.get();
+        if (serverSession != null) {
+            serverSession.onConfigsUpdate(getClient(), getServer());
+            broadcastServerConfigs(serverSession.getServer());
+        }
+        LOGGER.info("Configs updated.");
+    }
+
+    /**
+     * Broadcast current server configs to remote players.
+     */
+    private static void broadcastServerConfigs(MinecraftServer server) {
         String serverConfigsYaml = serializeConfigCategory(INSTANCE.getServer());
 
-        if (server == null) {
-            // Client connected to remote server
-            // Do nothing
-            LOGGER.info("We are on a client connected to remote server. No need to broadcast new configs.");
-        } else if (server.isDedicatedServer()) {
-            // Dedicated server
+        if (server.isDedicatedServer()) {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
             }
             LOGGER.info("New server configs broadcasted to all players.");
         } else {
-            // Integrated server
             if (ClientUtils.isSingleplayer()) {
                 LOGGER.info("We are on a single-player server. No need to broadcast new configs.");
             } else {

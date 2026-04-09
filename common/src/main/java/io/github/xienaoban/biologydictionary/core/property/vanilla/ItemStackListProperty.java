@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.BD;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 
 public class ItemStackListProperty<E extends Entity> extends AbstractProperty<E, List<ItemStack>> {
     public ItemStackListProperty(String propertyName) {
@@ -23,7 +23,7 @@ public class ItemStackListProperty<E extends Entity> extends AbstractProperty<E,
             ListTag listTag = nbt.getList(name(), Tag.TAG_COMPOUND);
             ArrayList<ItemStack> list = new ArrayList<>();
             for (int i = 0; i < listTag.size(); i++) {
-                list.add(ItemStack.parseOptional(BD.justGiveMeALevel().registryAccess(), listTag.getCompound(i)));
+                list.add(ItemStack.parseOptional(WorldSession.justGiveMeALevel().registryAccess(), listTag.getCompound(i)));
             }
             setVal(list);
         } else {
@@ -37,7 +37,7 @@ public class ItemStackListProperty<E extends Entity> extends AbstractProperty<E,
             ListTag listTag = new ListTag();
             for (var e : getVal()) {
                 if (e != null && !e.isEmpty()) {
-                    listTag.add(e.save(BD.justGiveMeALevel().registryAccess()));
+                    listTag.add(e.save(WorldSession.justGiveMeALevel().registryAccess()));
                 } else {
                     listTag.add(new CompoundTag());
                 }
