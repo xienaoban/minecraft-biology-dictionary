@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.client.HighlightManager;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
@@ -121,7 +121,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_LOCATE));
                     return true;
                 }
-                HighlightManager.highlightBlock(currHivePos, HighlightEntitiesSkill.BLOCK_TICKS);
+                ClientWorldSession.get().getHighlightManager().highlightBlock(currHivePos, HighlightEntitiesSkill.BLOCK_TICKS);
                 ClientUtils.setScreen(null);
             }
             return true;

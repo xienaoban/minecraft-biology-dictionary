@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
-import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
 import io.github.xienaoban.biologydictionary.gui.component.CenteredMessage;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     private void check() {
-        if (EntityManager.getInstance() == null) {
+        if (WorldSession.get().getEntityManager() == null) {
             ClientUtils.sendTextBoxMessage(TextUtils.literal("Failed to init EntityManager??").withStyle(ChatFormatting.RED));
             throw new RuntimeException("Failed to init EntityManager??");
         }
@@ -88,7 +89,11 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         if (client != minecraft) {
             throw new AssertionError("this.minecraft != super.minecraft");
         }
-        // add some vanilla-widgets here
+
+        // Sync entity kill data manually.
+        player.connection.send(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.REQUEST_STATS));
+
+        // Add some vanilla-widgets here.
     }
 
     @Override

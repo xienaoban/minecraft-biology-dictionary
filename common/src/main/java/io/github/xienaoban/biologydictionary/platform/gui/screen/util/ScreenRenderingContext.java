@@ -458,10 +458,27 @@ public final class ScreenRenderingContext {
         renderEntity(entity, cache, left, top, right, bottom, rotateX, rotateY, forceScale, 1.9F);
     }
 
+    public void renderEntityCentered(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache,
+                                     float left, float top, float right, float bottom,
+                                     float rotateX, float rotateY, int silhouetteColor) {
+        renderEntity(entity, cache, left, top, right, bottom, rotateX, rotateY, -1, 1.9F, silhouetteColor);
+    }
+
+    public void renderEntityCentered(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache,
+                                     float left, float top, float right, float bottom,
+                                     float rotateX, float rotateY, float forceScale, int silhouetteColor) {
+        renderEntity(entity, cache, left, top, right, bottom, rotateX, rotateY, forceScale, 1.9F, silhouetteColor);
+    }
+
     private void renderEntity(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset) {
+        renderEntity(entity, cache, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, 0);
+    }
+
+    private void renderEntity(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache, float left, float top, float right, float bottom,
+                              float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
         try {
-            renderEntity0(entity, cache, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset);
+            renderEntity0(entity, cache, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, silhouetteColor);
         } catch (Exception e) {
             // Render a placeholder instead.
             Misc.doOnce(() -> {
@@ -477,7 +494,7 @@ public final class ScreenRenderingContext {
                 default -> throw new AssertionError();
             };
             armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(head));
-            renderEntity0(armorStand, cache, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset);
+            renderEntity0(armorStand, cache, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, silhouetteColor);
         }
     }
 
@@ -489,7 +506,7 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
      */
     private void renderEntity0(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache, float left, float top, float right, float bottom,
-                              float rotateX, float rotateY, float forceScale, float internalOffset) {
+                              float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
         // This function does not compatible with guiGraphics.pose().scale(size, size).
         if (screenScale != 1F) {
             left   *= screenScale;
@@ -550,6 +567,11 @@ public final class ScreenRenderingContext {
         entityRenderState.lightCoords = 15728880;
         entityRenderState.shadowPieces.clear();
         entityRenderState.outlineColor = 0;
+        if (silhouetteColor != 0) {
+            // In 1.21.11, it's not easy to create a silhouette and this is an alternative solution.
+            entityRenderState.isInvisible = true;
+            entityRenderState.lightCoords = 0xFFFFFFFF;
+        }
         getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);
 
         if (isDebug() && width > 0 && height > 0) {

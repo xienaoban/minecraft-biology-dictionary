@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.net;
 
-import io.github.xienaoban.biologydictionary.client.EntityTypeOverviewCache;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.net.payload.*;
@@ -19,8 +19,20 @@ public final class ClientNetManager {
         PacketPayloads.registerBuiltIn(ClientNetApi::register);
     }
 
+    public static void requestServerConfigs() {
+        ClientNetApi.send(new RequestServerConfigsPacket());
+    }
+
     public static void requestBookItem() {
         ClientNetApi.send(new RequestBiologyDictionaryItemPacket());
+    }
+
+    public static void requestBiologyDictionaryDiscoveryFull() {
+        ClientNetApi.send(new RequestBiologyDictionaryDiscoveryFullPacket());
+    }
+
+    public static void sendBiologyDictionaryDiscoveryIncremental(EntityType<?> entityType, DiscoveryRecord record) {
+        ClientNetApi.send(new SendBiologyDictionaryDiscoveryIncrementalPacket(entityType, record));
     }
 
     public static void requestEntityOverview(EntityType<?> entityType) {
@@ -45,9 +57,5 @@ public final class ClientNetManager {
 
     public static void sendStealingDetected(Entity entity) {
         ClientNetApi.send(new SendStealingDetectedPacket(EntityUtils.getId(entity)));
-    }
-
-    public static void requestServerConfigs() {
-        ClientNetApi.send(new RequestServerConfigsPacket());
     }
 }

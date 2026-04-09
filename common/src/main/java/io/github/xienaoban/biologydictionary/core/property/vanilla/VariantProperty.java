@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property.vanilla;
 
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -12,7 +13,6 @@ import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.BD;
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 /**
@@ -35,7 +35,7 @@ public final class VariantProperty<E extends Entity, T> extends AbstractProperty
         Optional<Holder<T>> o1 = nbt.read(name(), Identifier.CODEC)
                 .map(identifier -> ResourceKey.create(resourceKey, identifier))
                 .flatMap(key -> {
-                    Level level = BD.justGiveMeALevel(); // TODO: Thread local level
+                    Level level = WorldSession.justGiveMeALevel();
                     if (level == null) { return Optional.empty(); }
                     return level.registryAccess().get(key);
                 });
