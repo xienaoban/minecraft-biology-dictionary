@@ -383,10 +383,25 @@ public final class ScreenRenderingContext {
         renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, 1.9F);
     }
 
+    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
+                                     float rotateX, float rotateY, int silhouetteColor) {
+        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, -1, 1.9F, silhouetteColor);
+    }
+
+    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
+                                     float rotateX, float rotateY, float forceScale, int silhouetteColor) {
+        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, 1.9F, silhouetteColor);
+    }
+
     private void renderEntity(Entity entity, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset) {
+        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, 0);
+    }
+
+    private void renderEntity(Entity entity, float left, float top, float right, float bottom,
+                              float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
         try {
-            renderEntity0(entity, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset);
+            renderEntity0(entity, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, silhouetteColor);
         } catch (Exception e) {
             // Render a placeholder instead.
             Misc.doOnce(() -> {
@@ -402,7 +417,7 @@ public final class ScreenRenderingContext {
                 default -> throw new AssertionError();
             };
             armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(head));
-            renderEntity0(armorStand, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset);
+            renderEntity0(armorStand, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, silhouetteColor);
         }
     }
 
@@ -414,7 +429,8 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
      */
     private void renderEntity0(Entity entity, float left, float top, float right, float bottom,
-                               float rotateX, float rotateY, float forceScale, float internalOffset) {
+                               float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
+        // TODO: adapt silhouette rendering for 1.21.1
         final float width = right - left;
         final float height = bottom - top;
         final float entityWidth = entity.getBbWidth();

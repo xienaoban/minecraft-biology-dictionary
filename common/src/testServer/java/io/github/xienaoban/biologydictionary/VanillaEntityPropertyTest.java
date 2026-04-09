@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
@@ -28,7 +29,7 @@ public class VanillaEntityPropertyTest {
             for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
                 try {
                     // Skip entities that are not in our entity tree
-                    EntityManager.EntityClassInfo classInfo = EntityManager.getInstance().getEntityClassInfo(entityType);
+                    EntityManager.EntityClassInfo classInfo = WorldSession.get().getEntityManager().getEntityClassInfo(entityType);
                     if (classInfo == null) {
                         LOGGER.debug("Skipped entity type (no class info): {}", EntityType.getKey(entityType));
                         skipCount++;

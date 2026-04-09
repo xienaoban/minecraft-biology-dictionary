@@ -28,46 +28,18 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Function;
 
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.BD;
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public final class EntityManager {
-    private static EntityManager instance = null;
 
-    /**
-     * Don't invoke it before joining a world because we need a minecraft level.
-     */
-    public static EntityManager getInstance() {
-        return instance;
-    }
-
-    public static void init() {
-        synchronized (EntityManager.class) {
-            if (instance == null) {
-                try {
-                    Level level = BD.justGiveMeALevel();
-                    if (level != null) {
-                        instance = new EntityManager(BD.justGiveMeALevel());
-                        LOGGER.info("EntityManager initialized.");
-                    } else {
-                        LOGGER.info("EntityManager not initialized.");
-                    }
-                } catch (Throwable e) {
-                    instance = null;
-                    LOGGER.error("Failed to init EntityManager", e);
-                }
-            }
-        }
-    }
-
-    public static void destroy() {
-        synchronized (EntityManager.class) {
-            if (instance != null) {
-                instance = null;
-                LOGGER.info("EntityManager destroyed.");
-            } else {
-                LOGGER.info("EntityManager has been destroyed.");
-            }
+    public static EntityManager create(Level level) {
+        try {
+            EntityManager res = new EntityManager(level);
+            LOGGER.info("WorldSession: EntityManager initialized.");
+            return res;
+        } catch (Throwable e) {
+            LOGGER.error("WorldSession: Failed to init EntityManager.", e);
+            return null;
         }
     }
 

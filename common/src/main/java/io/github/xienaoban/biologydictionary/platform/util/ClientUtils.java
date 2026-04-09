@@ -65,6 +65,14 @@ public final class ClientUtils {
         return getClient().isSingleplayer();
     }
 
+    public static boolean isLocalServer() {
+        return isLocalServer(getClient());
+    }
+
+    public static boolean isLocalServer(Minecraft client) {
+        return client.isLocalServer();
+    }
+
     /**
      * @see net.minecraft.client.gui.components.PlayerTabOverlay#getPlayerInfos()
      */

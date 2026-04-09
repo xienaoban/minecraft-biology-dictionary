@@ -1,7 +1,8 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.client.EntityTypeOverviewCache;
+import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
@@ -16,16 +17,15 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.List;
-import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
     private final EntityType<?> entityType;
     private final Entity entity;
-    private final EntityProperties<?> properties;
+    private final EntityProperties<Entity> properties;
 
     public BdEntityOverviewScreen(EntityType<?> entityType) {
-        super(TextUtils.concat(entityType.getDescription(), TextUtils.translate(Lang.ENTITY_OVERVIEW_TITLE_SUFFIX)));
+        super(TextUtils.concat(entityType.getDescription(), TextUtils.translate(Lang.SCREEN_ENTITY_OVERVIEW_TITLE_SUFFIX)));
         this.entityType = entityType;
         this.entity = EntityUtils.create(entityType, ClientUtils.getClientLevel());
         this.properties = new EntityProperties<>(entity);
@@ -46,9 +46,9 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
     }
 
     public void initOrRequestProperties() {
-        EntityTypeOverviewCache.CacheEntry cache = EntityTypeOverviewCache.get(entityType);
+        EntityOverviewCache.CacheEntry cache = WorldSession.get().getEntityOverviewCache().get(entityType);
         if (cache != null) {
-            updateProperties(cache.vanillaNbt, cache.extraNbt);
+            updateProperties(cache.vanillaNbt(), cache.extraNbt());
         } else {
             // RequestEntityOverviewPacket -> ReplyEntityOverviewPacket -> put cache & updateProperties
             ClientNetManager.requestEntityOverview(entityType);
@@ -60,7 +60,7 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
         properties.update(vanillaNbt, extraNbt);
     }
 
-    public boolean matchesType(String entityTypeId) {
-        return Objects.equals(entityTypeId,  EntityUtils.getEntityTypeIdName(entityType));
+    public boolean matchesType(EntityType<?> entityType) {
+        return this.entityType == entityType;
     }
 }

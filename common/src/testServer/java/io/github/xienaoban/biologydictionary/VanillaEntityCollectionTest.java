@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -27,7 +28,7 @@ public class VanillaEntityCollectionTest {
     public void testDeobfuscationBatch(GameTestHelper helper) {
         AtomicBoolean success = new AtomicBoolean(true);
 
-        EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
+        WorldSession.get().getEntityManager().dfsEntityTree(true, (cur, depth) -> {
             Class<? extends Entity> clazz = cur.getClazz();
 
             // skip non-vanilla classes
@@ -63,7 +64,7 @@ public class VanillaEntityCollectionTest {
         boolean success = true;
 
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
-            EntityManager.EntityClassInfo classInfo = EntityManager.getInstance().getEntityClassInfo(entityType);
+            EntityManager.EntityClassInfo classInfo = WorldSession.get().getEntityManager().getEntityClassInfo(entityType);
 
             // skip entities that are not LivingEntity (like arrow or boat)
             if (classInfo == null) {
@@ -92,7 +93,7 @@ public class VanillaEntityCollectionTest {
         final Set<Class<?>> interfazes = new HashSet<>();
         out.println(space + "// classes");
 
-        EntityManager.getInstance().dfsEntityTree(true, (cur, depth) -> {
+        WorldSession.get().getEntityManager().dfsEntityTree(true, (cur, depth) -> {
             Class<?> clazz = cur.getClazz();
 
             // skip non-vanilla classes

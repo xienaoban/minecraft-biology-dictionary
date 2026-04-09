@@ -51,9 +51,10 @@ public final class Lang {
     CONFIG_ENTRY_PREFIX    = "config.biologydictionary.entry.",
     CONFIG_TOOLTIP_SUFFIX  = ".tooltip",
 
-    SCREEN_PLAYER_SELECTOR      = "screen.biologydictionary.player_selector",
-    SCREEN_PLAYER_SELECTOR_DESC = "screen.biologydictionary.player_selector.desc",
-    SCREEN_STEALING             = "screen.biologydictionary.stealing",
+    SCREEN_ENTITY_OVERVIEW_TITLE_SUFFIX = "screen.biologydictionary.overview_title_suffix",
+    SCREEN_PLAYER_SELECTOR              = "screen.biologydictionary.player_selector",
+    SCREEN_PLAYER_SELECTOR_DESC         = "screen.biologydictionary.player_selector.desc",
+    SCREEN_STEALING                     = "screen.biologydictionary.stealing",
 
     BOOKMARK_ALL          = "bookmark.biologydictionary.all",
     BOOKMARK_BACK_TO_HOME = "bookmark.biologydictionary.back_to_home",
@@ -88,7 +89,7 @@ public final class Lang {
     WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC = "widget.biologydictionary.highlight.middle.desc",
     WIDGET_ENTITY_OVERVIEW              = "widget.biologydictionary.overview",
     WIDGET_ENTITY_OVERVIEW_DESC         = "widget.biologydictionary.overview.desc",
-    ENTITY_OVERVIEW_TITLE_SUFFIX        = "entity.biologydictionary.overview_title_suffix",
+    WIDGET_ENTITY_OVERVIEW_LEFT_DESC    = "widget.biologydictionary.overview.left.desc",
     WIDGET_ENTITY_OFFER_SPAWN_EGG       = "widget.biologydictionary.offer_spawn_egg",
     WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC  = "widget.biologydictionary.offer_spawn_egg.desc",
 
@@ -215,7 +216,10 @@ public final class Lang {
     TEXT_CLICK_ME_TO_DOWNLOAD                = "text.biologydictionary.click_me_to_download",
     TEXT_INFO_FROM_THIS_MOD                  = "text.biologydictionary.info_from_this_mod",
     TEXT_PLEASE_REPORT_ISSUE                 = "text.biologydictionary.please_report_issue",
+    TEXT_CONFIG_RELOAD_SUCCESS               = "text.biologydictionary.config_reload_success",
     TEXT_NO_BIOLOGY_DICTIONARY_BOOK          = "text.biologydictionary.no_biology_dictionary_book",
+    TEXT_ENTITY_NOT_DISCOVERED               = "text.biologydictionary.entity_not_discovered",
+    TEXT_NEW_ENTITY_DISCOVERED               = "text.biologydictionary.new_entity_discovered",
     TEXT_TARGET_ENTITY_TOO_FAR               = "text.biologydictionary.target_entity_too_far",
     TEXT_HIGHLIGHTED_ENTITIES                = "text.biologydictionary.highlighted_entities",
     TEXT_FAILED_TO_HIGHLIGHT                 = "text.biologydictionary.failed_to_highlight",
@@ -270,8 +274,6 @@ public final class Lang {
     TEXT_BEE_PRODUCING_NECTAR                = "text.biologydictionary.bee_producing_nectar",
     TEXT_BEE_RESTING                         = "text.biologydictionary.bee_resting",
     TEXT_TIME_IN_BEEHIVE                     = "text.biologydictionary.time_in_beehive",
-
-    VARIANT_PREFIX  = "variant.",
 
     __END__ = "";
 }
