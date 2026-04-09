@@ -121,10 +121,10 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
             if (isMouseLeft(code)) {
                 synchronized (ReloadLocalConfigsScreenWidget.class) {
                     ConfigsManager.load();
-                    ConfigsManager.broadcast(ClientUtils.getServer());
+                    ConfigsManager.onUpdated();
                 }
                 if (AbstractBiologyDictionaryScreen.current() instanceof BdConfigScreen screen) {
-                    screen.sendScreenMessage(TextUtils.translate(Lang.GUI_OK));
+                    screen.sendScreenMessage(TextUtils.translate(Lang.TEXT_CONFIG_RELOAD_SUCCESS));
                 }
                 return true;
             }

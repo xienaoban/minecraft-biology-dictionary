@@ -4,7 +4,6 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.annotation.Config;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
-import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -47,7 +46,7 @@ public class ClothConfigScreenProvider {
                 .setTitle(TextUtils.translate(configAnnotation.value()))
                 .setSavingRunnable(() -> {
                     ConfigsManager.save();
-                    ConfigsManager.broadcast(ClientUtils.getServer());
+                    ConfigsManager.onUpdated();
                 });
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();

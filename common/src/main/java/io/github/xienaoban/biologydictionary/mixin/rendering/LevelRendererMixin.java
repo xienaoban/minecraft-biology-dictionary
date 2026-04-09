@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.mixin.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.HighlightRenderer;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -27,7 +27,7 @@ public abstract class LevelRendererMixin {
     @Inject(method = "extractVisibleEntities(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/culling/Frustum;Lnet/minecraft/client/DeltaTracker;Lnet/minecraft/client/renderer/state/LevelRenderState;)V",
             at = @At(value = "TAIL"))
     private void biologydictionary$setGlowing(Camera camera, Frustum frustum, DeltaTracker deltaTracker, LevelRenderState levelRenderState, CallbackInfo ci) {
-        if (HighlightManager.hasAnyHighlighted()) {
+        if (ClientWorldSession.get().getHighlightManager().hasAnyHighlighted()) {
             levelRenderState.haveGlowingEntities = true;
         }
     }

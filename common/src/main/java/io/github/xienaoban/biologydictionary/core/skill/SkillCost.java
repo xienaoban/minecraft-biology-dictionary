@@ -389,11 +389,18 @@ public final class SkillCost {
             res.add(TextUtils.concat(TextUtils.translate(Lang.TEXT_ITEMS_COST), itemsText));
         }
 
-        if (res.isEmpty()) {
-            res.add(TextUtils.concat(TextUtils.translate(Lang.TEXT_SKILL_COST).withStyle(ChatFormatting.BOLD),
-                    TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS)));
+        if (true) {
+            if (res.isEmpty()) {
+                res.add(TextUtils.concat(TextUtils.translate(Lang.TEXT_SKILL_COST),
+                        TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS)));
+            }
         } else {
-            res.addFirst(TextUtils.translate(Lang.TEXT_SKILL_COST).withStyle(ChatFormatting.BOLD));
+            if (res.isEmpty()) {
+                res.add(TextUtils.concat(TextUtils.translate(Lang.TEXT_SKILL_COST).withStyle(ChatFormatting.BOLD),
+                        TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS)));
+            } else {
+                res.addFirst(TextUtils.translate(Lang.TEXT_SKILL_COST).withStyle(ChatFormatting.BOLD));
+            }
         }
         return res.stream().map(txt -> (Component) txt.withStyle(ChatFormatting.GOLD)).toList();
     }

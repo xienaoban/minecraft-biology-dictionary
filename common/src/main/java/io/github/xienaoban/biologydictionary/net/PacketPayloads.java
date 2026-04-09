@@ -9,11 +9,16 @@ public final class PacketPayloads {
 
     public static void registerBuiltIn(Registrar registrar) {
         registrar.register(SendCenteredMessagePacket.class, SendCenteredMessagePacket.FACTORY);
+        registrar.register(RequestServerConfigsPacket.class, RequestServerConfigsPacket.FACTORY);
+        registrar.register(ReplyServerConfigsPacket.class, ReplyServerConfigsPacket.FACTORY);
+        registrar.register(RequestBiologyDictionaryItemPacket.class, RequestBiologyDictionaryItemPacket.FACTORY);
+        registrar.register(RequestBiologyDictionaryDiscoveryFullPacket.class, RequestBiologyDictionaryDiscoveryFullPacket.FACTORY);
+        registrar.register(ReplyBiologyDictionaryDiscoveryFullPacket.class, ReplyBiologyDictionaryDiscoveryFullPacket.FACTORY);
+        registrar.register(SendBiologyDictionaryDiscoveryIncrementalPacket.class, SendBiologyDictionaryDiscoveryIncrementalPacket.FACTORY);
         registrar.register(RequestEntityOverviewPacket.class, RequestEntityOverviewPacket.FACTORY);
         registrar.register(ReplyEntityOverviewPacket.class, ReplyEntityOverviewPacket.FACTORY);
         registrar.register(RequestEntityDataPacket.class, RequestEntityDataPacket.FACTORY);
         registrar.register(ReplyEntityDataPacket.class, ReplyEntityDataPacket.FACTORY);
-        registrar.register(RequestBiologyDictionaryItemPacket.class, RequestBiologyDictionaryItemPacket.FACTORY);
         registrar.register(RequestCommonSkillPacket.class, RequestCommonSkillPacket.FACTORY);
         registrar.register(RequestEntityTargetedSkillPacket.class, RequestEntityTargetedSkillPacket.FACTORY);
         registrar.register(ReplyHighlightEntitiesPacket.class, ReplyHighlightEntitiesPacket.FACTORY);
@@ -21,8 +26,6 @@ public final class PacketPayloads {
         registrar.register(SendStealingDetectedPacket.class, SendStealingDetectedPacket.FACTORY);
         registrar.register(RequestBeehiveInfoPacket.class, RequestBeehiveInfoPacket.FACTORY);
         registrar.register(ReplyBeehiveInfoPacket.class, ReplyBeehiveInfoPacket.FACTORY);
-        registrar.register(RequestServerConfigsPacket.class, RequestServerConfigsPacket.FACTORY);
-        registrar.register(ReplyServerConfigsPacket.class, ReplyServerConfigsPacket.FACTORY);
     }
 
     @FunctionalInterface
