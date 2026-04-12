@@ -12,6 +12,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.FastColor;
+import com.mojang.blaze3d.vertex.VertexSorting;
+import org.joml.Matrix4f;
+
+import com.mojang.blaze3d.platform.Window;
 
 import java.util.Optional;
 
@@ -149,6 +153,17 @@ import java.util.Optional;
  * enchantment glints, and certain eye layers will not appear in the silhouette.
  * This is intentional — these are decorative/overlay elements, not part of the
  * entity's body shape.</p>
+ *
+ * <p><b>5. {@code RenderTarget.blitToScreen()} corrupts global GL state.</b>
+ * Despite its name, {@code blitToScreen} does NOT use {@code glBlitFramebuffer}.
+ * Instead, it renders a fullscreen quad via a blit shader, which changes the
+ * projection matrix ({@code Ortho(0, windowW, windowH, 0, 1000, 3000)}) and
+ * disables depth test. Neither is restored internally. After {@link #end()},
+ * we must manually restore the GUI projection matrix
+ * ({@code Ortho(0, guiW, guiH, 0, 1000, 21000)}) and re-enable depth test.
+ * The viewport is left as-is because {@code bindWrite(true)} sets it to
+ * {@code entityTarget}'s size (which equals the window size), matching what
+ * the GUI rendering pipeline expects.</p>
  */
 @Environment(EnvType.CLIENT)
 public final class SilhouetteMultiBufferSource implements MultiBufferSource {
@@ -259,11 +274,32 @@ public final class SilhouetteMultiBufferSource implements MultiBufferSource {
         // Restore default blend. Do NOT call disableBlend() — see pitfall #2.
         RenderSystem.defaultBlendFunc();
 
+        // _blitToScreen() corrupts two global GL states that it never restores:
+        //   - Projection matrix: set to Ortho(0, windowW, windowH, 0, 1000, 3000)
+        //   - Depth test: disabled via _disableDepthTest()
+        // We must restore these before returning, otherwise all subsequent GUI rendering
+        // (entities, text, widgets) will use the wrong projection and produce no visible
+        // output. The viewport is NOT restored here — bindWrite(true) below overwrites
+        // it with entityTarget's size (which equals the window size), and the GUI rendering
+        // pipeline uses the window-sized viewport with a scaled projection matrix.
+        Minecraft mc = Minecraft.getInstance();
+        RenderSystem.enableDepthTest();
+
         // Clear entityTarget to prevent stale data in subsequent world rendering.
         // We avoid entityTarget.clear() — see pitfall #1.
         entityTarget.bindWrite(true);
         GlStateManager._clear(16384 | 256, Minecraft.ON_OSX);
         mainTarget.bindWrite(false);
+
+        // Restore the GUI projection matrix (overwritten by _blitToScreen).
+        // GUI rendering uses Ortho(0, guiW, guiH, 0, 1000, 21000) — see GameRenderer.
+        Window window = mc.getWindow();
+        double guiScale = window.getGuiScale();
+        float guiW = (float)(window.getWidth() / guiScale);
+        float guiH = (float)(window.getHeight() / guiScale);
+        Matrix4f guiProjection = new Matrix4f()
+                .setOrtho(0.0F, guiW, guiH, 0.0F, 1000.0F, 21000.0F);
+        RenderSystem.setProjectionMatrix(guiProjection, VertexSorting.ORTHOGRAPHIC_Z);
     }
 
     /**
