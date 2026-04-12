@@ -111,8 +111,8 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
             ItemStack itemStack2 = slot.getItem();
-            // Equipment slots (7) + Saddle slot (1) + container slots
-            int containerEnd = EQUIPMENT_SLOTS + 1 + Math.min(container.getContainerSize(), MAX_SLOTS);
+            // Equipment slots (7) + container slots
+            int containerEnd = EQUIPMENT_SLOTS + Math.min(container.getContainerSize(), MAX_SLOTS);
             if (index < containerEnd) {
                 return ItemStack.EMPTY;
             } else {

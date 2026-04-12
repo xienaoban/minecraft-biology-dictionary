@@ -320,7 +320,10 @@ public final class ScreenRenderingContext {
                                float x, float y, float size
     ) {
         Font font = getFont();
-        List<ClientTooltipComponent> list = texts.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
+        List<ClientTooltipComponent> list = texts.stream()
+                .flatMap(c -> font.split(c, 240).stream())
+                .map(ClientTooltipComponent::create)
+                .toList();
         ClientTooltipPositioner clientTooltipPositioner = DefaultTooltipPositioner.INSTANCE;
 
         if (!list.isEmpty()) {
