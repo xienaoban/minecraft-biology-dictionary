@@ -430,7 +430,6 @@ public final class ScreenRenderingContext {
      */
     private void renderEntity0(Entity entity, float left, float top, float right, float bottom,
                                float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
-        // TODO: adapt silhouette rendering for 1.21.1
         final float width = right - left;
         final float height = bottom - top;
         final float entityWidth = entity.getBbWidth();
@@ -482,9 +481,18 @@ public final class ScreenRenderingContext {
         EntityRenderDispatcher entityRenderDispatcher = getClient().getEntityRenderDispatcher();
 
         entityRenderDispatcher.setRenderShadow(false);
-        RenderSystem.runAsFancy(
-                () -> entityRenderDispatcher.render(entity, 0D, 0D, 0D, 0F, 1F, getPose(), bufferSource(), 15728880)
-        );
+        if (silhouetteColor == 0) {
+            RenderSystem.runAsFancy(
+                    () -> entityRenderDispatcher.render(entity, 0D, 0D, 0D, 0F, 1F, getPose(), bufferSource(), 15728880)
+            );
+        } else {
+            SilhouetteMultiBufferSource silhouetteBuffer = new SilhouetteMultiBufferSource(silhouetteColor);
+            RenderSystem.runAsFancy(
+                    () -> entityRenderDispatcher.render(entity, 0D, 0D, 0D, 0F, 1F, getPose(), silhouetteBuffer, 15728880)
+            );
+            getGuiGraphics().flush();
+            silhouetteBuffer.end();
+        }
         getGuiGraphics().flush();
         entityRenderDispatcher.setRenderShadow(true);
         poseStack.popPose();
