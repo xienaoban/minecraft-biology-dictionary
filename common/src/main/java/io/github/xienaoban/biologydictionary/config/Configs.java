@@ -93,7 +93,7 @@ public final class Configs {
          * Discovery strategy. Determines how entities are discovered by each player.
          */
         @ConfigEntry
-        DiscoveryStrategyMode discoveryStrategy = DiscoveryStrategyMode.ALWAYS_UNLOCKED;
+        DiscoveryStrategyMode discoveryStrategy = DiscoveryStrategyMode.VANILLA_KILL;
 
         /**
          * Whether undiscovered entities are allowed to be viewed in the overview screen.

@@ -66,7 +66,7 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
                                 + (owner == null ? "null or not online" : EntityUtils.getNameString(owner)) + "\"");
             }
 
-            if (Objects.equals(targetPlayerUuid, ownable.getOwner().getUUID())) {
+            if (Objects.equals(targetPlayerUuid, ownable.getOwnerUUID())) {
                 throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
                         "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
             }
@@ -89,7 +89,7 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
                             + (owner == null ? "null or not online" : EntityUtils.getNameString(owner)) + "\"");
         }
 
-        if (Objects.equals(targetPlayerUuid, ownable.getOwner().getUUID())) {
+        if (Objects.equals(targetPlayerUuid, ownable.getOwnerUUID())) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
                     "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
         }
