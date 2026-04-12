@@ -1,12 +1,16 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScaleRAII;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
@@ -46,13 +50,13 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         addBookmarkFromLast(new OpenBdAboutScreenBookmark());
         addBookmarkFromLast(new OpenBdConfigScreenBookmark());
         addBookmark(new AllEntitiesBookmark());
-        for (EntityManager.TagGroup group : EntityManager.getInstance().getTagGroups()) {
+        for (EntityManager.TagGroup group : WorldSession.get().getEntityManager().getTagGroups()) {
             addBookmark(new TagGroupBookmark(group));
         }
     }
 
     private void initEntityWidgets() {
-        List<Widget> list = getEntityWidgets(EntityManager.getInstance().getEntityClassInfos());
+        List<Widget> list = getEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
         addAllWidgetsOneByOne(list);
     }
 
@@ -90,7 +94,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                List<Widget> list = getEntityWidgets(EntityManager.getInstance().getEntityClassInfos());
+                List<Widget> list = getEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
                 resetAndAndWidgetsOneByOne(list);
                 return true;
             }
@@ -164,18 +168,34 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         private final Entity entity;
         private final Component name;
         private final ItemStack spawnEgg;
+        private final EntityType<?> entityType;
 
         public EntityWidget(Entity entity) {
             super(2, 2);
             this.entity = entity;
             EntityType<?> type = EntityUtils.getEntityType(entity);
+            this.entityType = type;
             this.name = type.getDescription();
             Item item = ItemUtils.getSpawnEggItem(type);
             this.spawnEgg = item == null ? null : new ItemStack(item);
         }
 
+        private boolean isDiscovered() {
+            return ClientWorldSession.get() != null && ClientWorldSession.get().getDiscoveryClientCache().isDiscovered(entityType);
+        }
+
+        private boolean isClickable() {
+            return ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities() || isDiscovered();
+        }
+
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
+            if (!isClickable()) {
+                AbstractBiologyDictionaryScreen.current()
+                        .sendScreenMessage(TextUtils.translate(Lang.TEXT_ENTITY_NOT_DISCOVERED));
+                return true;
+            }
+
             ScreenElementBox box = getBox();
             float mouseY = screenRenderingContext.getMouseY() - box.getTop();
 
@@ -207,7 +227,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
-            ctx.renderEntityCentered(entity, box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6, entityRotateX, entityRotateY);
+            ctx.renderEntityCentered(entity, box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6, entityRotateX, entityRotateY,
+                    isDiscovered() ? 0 : Colors.UNDISCOVERED_ENTITY_COLOR);
             ctx.renderCenteredText(name, 0xFF000000, 0.5F, getZ(), (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
         }
 
@@ -259,6 +280,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     tooltips = new ArrayList<>();
                     tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OVERVIEW));
                     tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OVERVIEW_DESC));
+                    tooltips.add(TextUtils.empty());
+                    tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_OVERVIEW_LEFT_DESC).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                     tooltips.add(TextUtils.empty());
                     tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.NEAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                     tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.NEAR_RADIUS).getRealCost().toTooltipText());

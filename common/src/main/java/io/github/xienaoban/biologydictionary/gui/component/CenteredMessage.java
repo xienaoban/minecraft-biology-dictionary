@@ -9,7 +9,8 @@ public class CenteredMessage extends ScreenElement {
     private static int alpha(long curr, long end) {
         long beginFade = end - 2000;
         if (curr <= beginFade) { return 0xFF; }
-        return 0xFF * (int) (end - curr) / 2000;
+        // A strange vanilla bug: If `alpha < 4`, it acts just like `alpha == 0xFF`.
+        return Math.max(4, 0xFF * (int) (end - curr) / 2000);
     }
 
     private Component text = null;

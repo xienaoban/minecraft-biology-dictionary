@@ -32,8 +32,14 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
         return new RC(5, 4);
     }
 
-    private static Entity createModelEntity(Entity entity) {
-        Entity model = EntityUtils.create(EntityUtils.getEntityType(entity), EntityUtils.getLevel(entity));
+    private static Entity createModelEntity(EntityProperties<Entity> properties) {
+        Entity entity = properties.entity();
+        Entity model;
+        if (EntityUtils.isFakeEntity(entity)) {
+            model = entity;
+        } else {
+            model = EntityUtils.create(EntityUtils.getEntityType(entity), EntityUtils.getLevel(entity));
+        }
         if (model == null) {
             if (entity instanceof LocalPlayer me) {
                 GameProfile profile = me.getGameProfile();
@@ -62,7 +68,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     private final Entity model;
 
     public EntityDisplayWidget(EntityProperties<Entity> properties) {
-        this(properties, createModelEntity(properties.entity()));
+        this(properties, createModelEntity(properties));
     }
 
     private EntityDisplayWidget(EntityProperties<Entity> properties, Entity model) {
