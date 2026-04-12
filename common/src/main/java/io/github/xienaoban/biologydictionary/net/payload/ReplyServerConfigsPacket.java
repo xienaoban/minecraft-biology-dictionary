@@ -8,8 +8,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
-
+/**
+ * Server configs sync packet: S -> C.
+ * Sent in response to {@link RequestServerConfigsPacket}.
+ */
 public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Packet {
     public static final Packet.Factory<ReplyServerConfigsPacket> FACTORY = ReplyServerConfigsPacket::new;
 
@@ -25,16 +27,15 @@ public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Pack
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class C { static void receive(ReplyServerConfigsPacket packet, ClientNetApi.Context ctx) {
+        final class C { static void receive(ReplyServerConfigsPacket packet) {
             Configs.ServerConfigs remoteConfigs = new Configs.ServerConfigs();
             boolean success = ConfigsManager.deserializeConfigCategory(packet.serverConfigsYaml(), remoteConfigs);
-            if (success) {
-                ConfigsManager.setRemoteServerConfigs(remoteConfigs);
-                LOGGER.info("Server configs received:\n{}", packet.serverConfigsYaml());
-            } else  {
-                LOGGER.warn("Server configs could not be deserialized.");
+            if (!success) {
+                return;
             }
+            ConfigsManager.setRemoteServerConfigs(remoteConfigs);
+            ConfigsManager.onUpdated();
         }}
-        C.receive(this, ctx);
+        C.receive(this);
     }
 }

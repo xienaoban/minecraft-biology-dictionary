@@ -6,15 +6,23 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Support overview screen for entities (to view the entity's default / reference properties)
+- Added entity discovery system: players can now unlock the entity overview screen upon discovering corresponding entities
+- Added `biologydictionary config reload` command to reload server configs from disk
+- Added entity spawn manager (no widget yet)
+- Implement rendering silhouettes of entities
 
 ### Changed
 
-- OP can gift others' pets
-- Notify the player when closing the stealing screen due to being too far away
-- Support using the biology dictionary hotkey to close the stealing screen
+- Refactored data structure lifecycles: added client/server/common world sessions to manage them
+- Refactored the configuration system: caches and managers are now automatically updated following config modifications
+- Entities are discovered when killed by default
 
 ### Fixed
+
+- Fixed an EntityGiftPetSkill issue: NullPointerException thrown if owner is not online
+- Fixed centered text flickering in Biology Dictionary screens after vanishing
+- Fixed quick move on stealing screen
+- Tooltip now supports newline
 
 ## Previous Versions
 

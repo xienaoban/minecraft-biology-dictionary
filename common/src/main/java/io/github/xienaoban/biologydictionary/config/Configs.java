@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
-import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -91,6 +90,20 @@ public final class Configs {
         boolean inheritSilentFromParents = true;
 
         /**
+         * Discovery strategy. Determines how entities are discovered by each player.
+         */
+        @ConfigEntry
+        DiscoveryStrategyMode discoveryStrategy = DiscoveryStrategyMode.VANILLA_KILL;
+
+        /**
+         * Whether undiscovered entities are allowed to be viewed in the overview screen.
+         * When false, undiscovered entities cannot be clicked in the home screen
+         * and server refuses to send NBT data for entity overview.
+         */
+        @ConfigEntry
+        boolean allowOverviewForUndiscoveredEntities = false;
+
+        /**
          * Skill costs configuration in YAML-friendly format.
          * Maps skill short names to their cost data (from SkillCost.toMap()).
          * Always contains all registered skills after initialization.
@@ -111,13 +124,6 @@ public final class Configs {
         @ConfigEntry
         Map<String, Map<String, Object>> skillCosts = new HashMap<>();
 
-        /**
-         * Cache of SkillCost objects by skill class for fast access.
-         * Always derived from {@link #skillCosts} after initialization.
-         * All skills are guaranteed to be present after initialization.
-         */
-        private transient Map<Class<?>, SkillCost> skillCostsCache;
-
         // =========================== Getters ============================
 
         public boolean isBookItemRequired() {
@@ -132,8 +138,16 @@ public final class Configs {
             return inheritSilentFromParents;
         }
 
-        public SkillCost getSkillCost(Class<?> skillClass) {
-            return skillCostsCache.get(skillClass);
+        public DiscoveryStrategyMode getDiscoveryStrategy() {
+            return discoveryStrategy;
+        }
+
+        public boolean isAllowOverviewForUndiscoveredEntities() {
+            return allowOverviewForUndiscoveredEntities;
+        }
+
+        public Map<String, Map<String, Object>> getSkillCosts() {
+            return skillCosts;
         }
 
         // ============================= Misc =============================
@@ -145,7 +159,6 @@ public final class Configs {
         @Override
         public void postLoad() {
             completeSkillCosts();
-            rebuildSkillCacheCache();
         }
 
         /**
@@ -173,21 +186,10 @@ public final class Configs {
             skillCosts = newCosts;
         }
 
-        /**
-         * Rebuild skillCostsDeserialized based on the current skillCosts.
-         * Must be called after skillCosts is fully populated.
-         */
-        private void rebuildSkillCacheCache() {
-            Map<Class<?>, SkillCost> cache = new HashMap<>();
-
-            for (Map.Entry<String, Map<String, Object>> entry : skillCosts.entrySet()) {
-                String shortName = entry.getKey();
-                Map<String, Object> costData = entry.getValue();
-                Class<?> skillClass = BiologySkills.getSkillClass(shortName);
-                cache.put(skillClass, SkillCost.fromMap(costData));
-            }
-
-            skillCostsCache = cache;
+        public enum DiscoveryStrategyMode {
+            ALWAYS_UNLOCKED,
+            VANILLA_KILL,
+            BIOLOGY_DICTIONARY
         }
     }
 

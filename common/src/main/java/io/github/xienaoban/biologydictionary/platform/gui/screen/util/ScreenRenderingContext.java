@@ -326,7 +326,10 @@ public final class ScreenRenderingContext {
                                float x, float y, float size
     ) {
         Font font = getFont();
-        List<ClientTooltipComponent> list = texts.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
+        List<ClientTooltipComponent> list = texts.stream()
+                .flatMap(c -> font.split(c, 240).stream())
+                .map(ClientTooltipComponent::create)
+                .toList();
         ClientTooltipPositioner clientTooltipPositioner = DefaultTooltipPositioner.INSTANCE;
 
         if (!list.isEmpty()) {
@@ -389,10 +392,25 @@ public final class ScreenRenderingContext {
         renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, 1.9F);
     }
 
+    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
+                                     float rotateX, float rotateY, int silhouetteColor) {
+        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, -1, 1.9F, silhouetteColor);
+    }
+
+    public void renderEntityCentered(Entity entity, float left, float top, float right, float bottom,
+                                     float rotateX, float rotateY, float forceScale, int silhouetteColor) {
+        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, 1.9F, silhouetteColor);
+    }
+
     private void renderEntity(Entity entity, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset) {
+        renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, 0);
+    }
+
+    private void renderEntity(Entity entity, float left, float top, float right, float bottom,
+                              float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
         try {
-            renderEntity0(entity, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset);
+            renderEntity0(entity, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, silhouetteColor);
         } catch (Exception e) {
             // Render a placeholder instead.
             Misc.doOnce(() -> LOGGER.error("Error in rendering entity \"{}\" on screen", EntityUtils.getEntityTypeIdName(entity), e));
@@ -406,7 +424,7 @@ public final class ScreenRenderingContext {
                 default -> throw new AssertionError();
             };
             armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(head));
-            renderEntity0(armorStand, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset);
+            renderEntity0(armorStand, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, silhouetteColor);
         }
     }
 
@@ -418,7 +436,7 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, float, float, net.minecraft.world.entity.LivingEntity)
      */
     private void renderEntity0(Entity entity, float left, float top, float right, float bottom,
-                               float rotateX, float rotateY, float forceScale, float internalOffset) {
+                               float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
         final float width = right - left;
         final float height = bottom - top;
         final float entityWidth = entity.getBbWidth();
@@ -471,9 +489,18 @@ public final class ScreenRenderingContext {
         EntityRenderDispatcher entityRenderDispatcher = getClient().getEntityRenderDispatcher();
 
         entityRenderDispatcher.setRenderShadow(false);
-        RenderSystem.runAsFancy(
-                () -> entityRenderDispatcher.render(entity, 0D, 0D, 0D, 0F, 1F, getPose(), bufferSource(), 15728880)
-        );
+        if (silhouetteColor == 0) {
+            RenderSystem.runAsFancy(
+                    () -> entityRenderDispatcher.render(entity, 0D, 0D, 0D, 0F, 1F, getPose(), bufferSource(), 15728880)
+            );
+        } else {
+            SilhouetteMultiBufferSource silhouetteBuffer = new SilhouetteMultiBufferSource(silhouetteColor);
+            RenderSystem.runAsFancy(
+                    () -> entityRenderDispatcher.render(entity, 0D, 0D, 0D, 0F, 1F, getPose(), silhouetteBuffer, 15728880)
+            );
+            getGuiGraphics().flush();
+            silhouetteBuffer.end();
+        }
         getGuiGraphics().flush();
         entityRenderDispatcher.setRenderShadow(true);
         poseStack.popPose();

@@ -12,7 +12,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
@@ -67,7 +66,7 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
                                 + (owner == null ? "null or not online" : EntityUtils.getNameString(owner)) + "\"");
             }
 
-            if (Objects.equals(targetPlayerUuid, ctx.player().getUUID())) {
+            if (Objects.equals(targetPlayerUuid, ownable.getOwnerUUID())) {
                 throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
                         "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
             }
@@ -77,7 +76,6 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
 
     @Override
     public void serverAdditionalCheck(ServerContext<Entity> ctx) {
-        ServerPlayer targetPlayer = ctx.server().getPlayerList().getPlayer(targetPlayerUuid);
         OwnableEntity ownable = (OwnableEntity) ctx.entity();
         if (ownable.getOwnerUUID() == null) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_ENTITY_NOT_TAMED),
@@ -91,7 +89,7 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
                             + (owner == null ? "null or not online" : EntityUtils.getNameString(owner)) + "\"");
         }
 
-        if (ctx.player() == targetPlayer) {
+        if (Objects.equals(targetPlayerUuid, ownable.getOwnerUUID())) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
                     "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
         }

@@ -25,20 +25,15 @@ import net.minecraft.world.entity.LivingEntity;
 public final class FirstPersonShoulderEntityRenderer {
     private static final float HEAD_ROT_SPEED = 0.02F;
 
-    private static final CompoundTag[] nbts = new CompoundTag[2];
-    private static final LivingEntity[] entities = new LivingEntity[2];
-    private static final float[] nextYHeadRot = new float[2];
-    private static final float[] nextXHeadRot = new float[2];
-    private static final long[] lastHeadYawTime = new long[2];
-    private static final long[] nextHeadYawTime = new long[2];
-    private static long lastTime;
+    private final CompoundTag[] nbts = new CompoundTag[2];
+    private final LivingEntity[] entities = new LivingEntity[2];
+    private final float[] nextYHeadRot = new float[2];
+    private final float[] nextXHeadRot = new float[2];
+    private final long[] lastHeadYawTime = new long[2];
+    private final long[] nextHeadYawTime = new long[2];
+    private long lastTime;
 
-    private static boolean banned = false;
-
-    public static void clear() {
-        nbts[0] = nbts[1] = null;
-        entities[0] = entities[1] = null;
-    }
+    private boolean banned = false;
 
     /**
      * Renders shoulder entities (e.g., parrots) in first-person view.
@@ -50,7 +45,7 @@ public final class FirstPersonShoulderEntityRenderer {
      * @param player The local player
      * @param light The light coordinates
      */
-    public static void run(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LocalPlayer player, int light) {
+    public void run(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LocalPlayer player, int light) {
         if (banned) { return; }
         try {
             run0(entityRenderDispatcher, tickDelta, poseStack, bufferSource, player, light);
@@ -60,7 +55,7 @@ public final class FirstPersonShoulderEntityRenderer {
         }
     }
 
-    private static void run0(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LocalPlayer player, int light) {
+    private void run0(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LocalPlayer player, int light) {
         HudPosition hudPos = switch (ConfigsManager.getClient().getFirstPersonShoulderEntityPosition()) {
             case NONE -> null;
             case TOP -> HudPosition.TOP;
@@ -109,7 +104,7 @@ public final class FirstPersonShoulderEntityRenderer {
         }
     }
 
-    private static void update(LocalPlayer player, CompoundTag nbt, int index) {
+    private void update(LocalPlayer player, CompoundTag nbt, int index) {
         if (nbts[index] == nbt) return;
         nbts[index] = nbt;
         LivingEntity entity;
