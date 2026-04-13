@@ -32,8 +32,10 @@
         "MinecraftMixin",
         "rendering.GuiGraphicsIMixin",
         "rendering.GuiTextRenderStateIMixin",
+        "rendering.FeatureRenderDispatcherIMixin",
         "rendering.ItemInHandRendererMixin",
-        "rendering.LevelRendererMixin"
+        "rendering.LevelRendererMixin",
+        "rendering.PictureInPictureRendererMixin"
     ],
     "injectors": {
         "defaultRequire": 1
