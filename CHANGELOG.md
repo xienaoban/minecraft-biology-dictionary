@@ -10,6 +10,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 - Use safe & limited YAML
 - Allow setting variants in overview screen
+- Changed screen colors
+- Improved undiscovered entity rendering
 
 ### Fixed
 

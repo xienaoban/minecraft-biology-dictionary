@@ -24,7 +24,7 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
     private final EntityProperties<? extends Entity> properties;
 
     public BdEntityDetailScreen(EntityProperties<? extends Entity> properties) {
-        super(properties.entity().getType().getDescription());
+        super(properties.entity().getType().getDescription().copy());
         this.entity = properties.entity();
         this.properties = properties;
         initBookmarks();
