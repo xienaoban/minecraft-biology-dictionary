@@ -6,20 +6,16 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Added entity discovery system: players can now unlock the entity overview screen upon discovering corresponding entities
-- Added `biologydictionary config reload` command to reload server configs from disk
-- Added entity spawn manager (no widget yet)
-
 ### Changed
 
-- Refactored data structure lifecycles: added client/server/common world sessions to manage them
-- Refactored the configuration system: caches and managers are now automatically updated following config modifications
-- Entities are discovered when killed by default
+- Use safe & limited YAML
+- Allow setting variants in overview screen
 
 ### Fixed
 
-- Fixed an EntityGiftPetSkill issue: now OPs can gift others' pets
-- Tooltip now supports newline
+- Fixed an EntityManager initialization failure issue
+- Fixed the background flickering when going back to the previous interface
+- Fixed truncated empty lines in tooltips
 
 ## Previous Versions
 
