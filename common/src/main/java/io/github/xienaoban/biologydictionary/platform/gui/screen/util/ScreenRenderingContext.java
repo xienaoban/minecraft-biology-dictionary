@@ -398,7 +398,10 @@ public final class ScreenRenderingContext {
                                float x, float y, float size
     ) {
         Font font = getFont();
-        List<ClientTooltipComponent> list = texts.stream().map(Component::getVisualOrderText).map(ClientTooltipComponent::create).toList();
+        List<ClientTooltipComponent> list = texts.stream()
+                .flatMap(c -> font.split(c, 240).stream())
+                .map(ClientTooltipComponent::create)
+                .toList();
         ClientTooltipPositioner clientTooltipPositioner = DefaultTooltipPositioner.INSTANCE;
 
         int width = 0;
@@ -566,12 +569,16 @@ public final class ScreenRenderingContext {
         entityRenderer.extractRenderState(entity, entityRenderState, 1F);
         entityRenderState.lightCoords = 15728880;
         entityRenderState.shadowPieces.clear();
-        entityRenderState.outlineColor = 0;
-        if (silhouetteColor != 0) {
-            // In 1.21.11, it's not easy to create a silhouette and this is an alternative solution.
-            entityRenderState.isInvisible = true;
-            entityRenderState.lightCoords = 0xFFFFFFFF;
-        }
+
+        // @see PictureInPictureRendererMixin
+        entityRenderState.outlineColor = silhouetteColor;
+
+        // An alternative solution for silhouette.
+        // if (silhouetteColor != 0) {
+        //      entityRenderState.isInvisible = true;
+        //      entityRenderState.lightCoords = 0;
+        // }
+
         getGuiGraphics().submitEntityRenderState(entityRenderState, scale / sc, vector3f, quaternionf, null, x0, y0, x1, y1);
 
         if (isDebug() && width > 0 && height > 0) {

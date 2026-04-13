@@ -14,10 +14,12 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 - Refactored data structure lifecycles: added client/server/common world sessions to manage them
 - Refactored the configuration system: caches and managers are now automatically updated following config modifications
+- Entities are discovered when killed by default
 
 ### Fixed
 
 - Fixed an EntityGiftPetSkill issue: now OPs can gift others' pets
+- Tooltip now supports newline
 
 ## Previous Versions
 
