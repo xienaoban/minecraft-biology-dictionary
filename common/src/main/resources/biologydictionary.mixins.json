@@ -6,7 +6,9 @@
     "mixins": [
         "CreativeModeTabsIMixin",
         "CustomDataIMixin",
+        "ListPoolElementIMixin",
         "MobEffectInstanceIMixin",
+        "StructureTemplateIMixin",
         "TemptGoalIMixin",
         "entity.AbstractHorseIMixin",
         "entity.AgeableMobMixin",
