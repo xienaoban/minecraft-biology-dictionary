@@ -44,6 +44,7 @@ public final class Lang {
     ACTIVITY_PREFIX = "activity.minecraft.",
     LOOT_CONDITION_PREFIX = "loot_condition.",
     BIOME_PREFIX = "biome.",
+    STRUCTURE_PREFIX = "structure.",
 
     CONFIG_PREFIX          = "config.biologydictionary.",
     CONFIG_TITLE           = "config.biologydictionary.title",
