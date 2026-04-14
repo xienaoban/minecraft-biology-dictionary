@@ -25,7 +25,7 @@ public final class ServerNetApiImpl {
             PayloadTypeRegistry.playC2S().register(type, codec);
             ServerPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
                 ServerNetApi.Context ctx = new ServerNetApi.Context(context.server(), context.player());
-                payload.serverReceive(ctx);
+                ctx.server().execute(() -> payload.serverReceive(ctx));
             });
         }
     }
