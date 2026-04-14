@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyBar;
@@ -108,10 +109,11 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
     }
 
     private ItemStack[] getFoodItems() {
-        return BuiltInRegistries.ITEM.stream()
-                .map(ItemStack::new)
-                .filter(itemStack -> e().isFood(itemStack))
-                .sorted(Comparator.comparingInt(o -> BuiltInRegistries.ITEM.getId(o.getItem())))
-                .toArray(ItemStack[]::new);
+        return WorldSession.get().getStaticEntityPropertyCache().getOrCompute(
+                e().getType(), AnimalFoodWidget.class, () -> BuiltInRegistries.ITEM.stream()
+                        .map(ItemStack::new)
+                        .filter(itemStack -> e().isFood(itemStack))
+                        .sorted(Comparator.comparingInt(o -> BuiltInRegistries.ITEM.getId(o.getItem())))
+                        .toArray(ItemStack[]::new));
     }
 }
