@@ -49,29 +49,11 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
         if (foods.length == 0) {
             list.add(tooltipBody(Lang.TEXT_EMPTY_WITH_BRACKETS));
         } else {
-            List<Component> currentLine = new ArrayList<>();
-            int lineWidth = 0;
-            Component separator = TextUtils.comma();
-            int separatorWidth = ctx.calcTextWidth(separator);
-            final int maxWidth = (int) (getBox().getWidth() * 1.5F * 2 /* font size = 0.5 */);
-
+            List<Component> itemNames = new ArrayList<>();
             for (ItemStack food : foods) {
-                Component itemName = food.getHoverName().copy().withStyle(ChatFormatting.WHITE);
-                int itemWidth = ctx.calcTextWidth(itemName);
-
-                if (!currentLine.isEmpty() && lineWidth + separatorWidth + itemWidth > maxWidth) {
-                    list.add(TextUtils.concat(currentLine, separator));
-                    currentLine = new ArrayList<>();
-                    lineWidth = 0;
-                }
-
-                currentLine.add(itemName);
-                lineWidth += itemWidth + (currentLine.size() > 1 ? separatorWidth : 0);
+                itemNames.add(food.getHoverName().copy().withStyle(ChatFormatting.WHITE));
             }
-
-            if (!currentLine.isEmpty()) {
-                list.add(TextUtils.concat(currentLine, separator));
-            }
+            appendWrappedItems(list, ctx, itemNames);
         }
         renderTooltip(ctx, list);
         return true;

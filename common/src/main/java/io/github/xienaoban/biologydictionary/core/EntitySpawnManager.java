@@ -61,16 +61,19 @@ public class EntitySpawnManager {
             Entry<Biome> entry = new Entry<>(biomeId, biome);
             MobSpawnSettings spawnSettings = biome.getMobSettings();
 
+            Set<EntityType<?>> seenBiomeEntities = new HashSet<>();
             for (MobCategory category : MobCategory.values()) {
                 WeightedList<MobSpawnSettings.SpawnerData> spawners = spawnSettings.getMobs(category);
                 for (Weighted<MobSpawnSettings.SpawnerData> weighted : spawners.unwrap()) {
                     MobSpawnSettings.SpawnerData spawnerData = weighted.value();
                     EntityType<?> entityType = spawnerData.type();
 
-                    spawnBiomes.computeIfAbsent(entityType, k -> new ArrayList<>())
-                        .add(entry);
-                    biomeEntities.computeIfAbsent(biomeId, k -> new ArrayList<>())
-                        .add(entityType);
+                    if (seenBiomeEntities.add(entityType)) {
+                        spawnBiomes.computeIfAbsent(entityType, k -> new ArrayList<>())
+                            .add(entry);
+                        biomeEntities.computeIfAbsent(biomeId, k -> new ArrayList<>())
+                            .add(entityType);
+                    }
                 }
             }
         }
@@ -84,15 +87,18 @@ public class EntitySpawnManager {
             Structure structure = structureEntry.getValue();
             Entry<Structure> entry = new Entry<>(structureId, structure);
 
+            Set<EntityType<?>> seenStructureEntities = new HashSet<>();
             structure.spawnOverrides().forEach((category, override) -> {
                 for (Weighted<MobSpawnSettings.SpawnerData> weighted : override.spawns().unwrap()) {
                     MobSpawnSettings.SpawnerData spawnerData = weighted.value();
                     EntityType<?> entityType = spawnerData.type();
 
-                    spawnStructures.computeIfAbsent(entityType, k -> new ArrayList<>())
-                        .add(entry);
-                    structureEntities.computeIfAbsent(structureId, k -> new ArrayList<>())
-                        .add(entityType);
+                    if (seenStructureEntities.add(entityType)) {
+                        spawnStructures.computeIfAbsent(entityType, k -> new ArrayList<>())
+                            .add(entry);
+                        structureEntities.computeIfAbsent(structureId, k -> new ArrayList<>())
+                            .add(entityType);
+                    }
                 }
             });
         }

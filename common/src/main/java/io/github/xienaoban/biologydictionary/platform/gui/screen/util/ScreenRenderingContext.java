@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.biologydictionary.compat.CompatibilityOptions;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiTextRenderStateIMixin;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
@@ -398,7 +399,7 @@ public final class ScreenRenderingContext {
         Font font = getFont();
         List<ClientTooltipComponent> list = texts.stream()
                 .flatMap(c -> {
-                    List<FormattedCharSequence> lines = font.split(c, 240);
+                    List<FormattedCharSequence> lines = font.split(c, Widget.TOOLTIP_WIDTH);
                     return lines.isEmpty() ? Stream.of(TextUtils.empty().getVisualOrderText()) : lines.stream();
                 })
                 .map(ClientTooltipComponent::create)

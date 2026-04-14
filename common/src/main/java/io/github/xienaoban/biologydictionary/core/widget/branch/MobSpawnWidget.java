@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public final class MobSpawnWidget extends EntityPropertyStandardWidget<Mob> {
+public final class  MobSpawnWidget extends EntityPropertyStandardWidget<Mob> {
     public static final Factory<Mob> FACTORY = MobSpawnWidget::new;
 
-    private static final int L = 21, T = 1;
+    private static final int L = 14, T = 4;
 
     private final MobSpawnProperty spawnProperty = p().getExtra(MobSpawnProperty.class);
 
@@ -49,11 +49,12 @@ public final class MobSpawnWidget extends EntityPropertyStandardWidget<Mob> {
             if (!data.biomes().isEmpty()) {
                 list.add(tooltipBody(TextUtils.translate(
                         Lang.PROPERTY_WIDGET_SPAWN_BIOMES, data.biomes().size())).withStyle(ChatFormatting.YELLOW));
-                for (Identifier biomeId : data.biomes()) {
-                    String biomeKey = Lang.BIOME_PREFIX + biomeId.getNamespace() + "." + biomeId.getPath();
-                    list.add(tooltipBody(TextUtils.translate(biomeKey))
-                            .withStyle(ChatFormatting.GRAY));
+                List<Component> biomeNames = new ArrayList<>();
+                for (Identifier id : data.biomes()) {
+                    String key = Lang.BIOME_PREFIX + id.getNamespace() + "." + id.getPath();
+                    biomeNames.add(TextUtils.translate(key).withStyle(ChatFormatting.WHITE));
                 }
+                appendWrappedItems(list, ctx, biomeNames);
             }
             if (!data.structures().isEmpty()) {
                 if (!data.biomes().isEmpty()) {
@@ -61,10 +62,12 @@ public final class MobSpawnWidget extends EntityPropertyStandardWidget<Mob> {
                 }
                 list.add(tooltipBody(TextUtils.translate(
                         Lang.PROPERTY_WIDGET_SPAWN_STRUCTURES, data.structures().size())).withStyle(ChatFormatting.YELLOW));
-                for (Identifier structureId : data.structures()) {
-                    list.add(tooltipBody(TextUtils.literal("  " + structureId.toString()))
-                            .withStyle(ChatFormatting.GRAY));
+                List<Component> structureNames = new ArrayList<>();
+                for (Identifier id : data.structures()) {
+                    String key = Lang.STRUCTURE_PREFIX + id.getNamespace() + "." + id.getPath();
+                    structureNames.add(TextUtils.translate(key).withStyle(ChatFormatting.WHITE));
                 }
+                appendWrappedItems(list, ctx, structureNames);
             }
         }
 
@@ -87,7 +90,7 @@ public final class MobSpawnWidget extends EntityPropertyStandardWidget<Mob> {
                 renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS), Colors.GRAY_FOR_TEXT_EMPTY);
                 return;
             }
-            String text = data.biomes().size() + ", " + data.structures().size();
+            String text = data.biomes().size() + " + " + data.structures().size();
             renderInnerText(ctx, TextUtils.literal(text));
         }
     }
