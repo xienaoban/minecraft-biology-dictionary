@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.property.extra;
 
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.LootTableUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -24,15 +25,14 @@ public class EntityLootTableProperty extends AbstractProperty<Entity, List<LootT
 
     @Override
     public void getFrom(Entity entity) {
-        Optional<ResourceKey<LootTable>> key = LootTableUtils.getLootTableKey(entity);
-        if (key.isEmpty()) {
-            setVal(null);
-        } else {
-            LootTable lootTable = Objects.requireNonNull(EntityUtils.getLevel(entity).getServer())
-                    .reloadableRegistries()
-                    .getLootTable(key.get());
-            setVal(LootTableUtils.parseLootEntries(lootTable));
+        WorldSession ws = WorldSession.get();
+        if (ws == null) {
+            setVal(getParsedLootEntries(entity));
+            return;
         }
+        setVal(ws.getStaticEntityPropertyCache().getOrCompute(
+                EntityUtils.getEntityType(entity), EntityLootTableProperty.class,
+                () -> getParsedLootEntries(entity)));
     }
 
     @Override
@@ -66,5 +66,16 @@ public class EntityLootTableProperty extends AbstractProperty<Entity, List<LootT
             entries.add(entry.toNbt());
         }
         nbt.put(name(), entries);
+    }
+
+    private static List<LootTableUtils.LootEntry> getParsedLootEntries(Entity entity) {
+        Optional<ResourceKey<LootTable>> key = LootTableUtils.getLootTableKey(entity);
+        if (key.isEmpty()) {
+            return null;
+        }
+        LootTable lootTable = Objects.requireNonNull(EntityUtils.getLevel(entity).getServer())
+                .reloadableRegistries()
+                .getLootTable(key.get());
+        return LootTableUtils.parseLootEntries(lootTable);
     }
 }
