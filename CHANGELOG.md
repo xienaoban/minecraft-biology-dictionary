@@ -6,18 +6,23 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
+- Added spawn property and widget
+- Added cache of static properties
+
 ### Changed
 
 - Use safe & limited YAML
 - Allow setting variants in overview screen
 - Changed screen colors
 - Improved undiscovered entity rendering
+- Moved networking logic from net thread to client/server thread
 
 ### Fixed
 
 - Fixed an EntityManager initialization failure issue
 - Fixed the background flickering when going back to the previous interface
 - Fixed truncated empty lines in tooltips
+- Fixed spawn structure support
 
 ## Previous Versions
 
