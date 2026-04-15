@@ -2,6 +2,7 @@
 # Triggered by creating a GitHub release or pushing a tag
 
 name: release
+
 on:
   push:
     tags:
@@ -9,13 +10,13 @@ on:
   workflow_dispatch:  # Allow manual triggering from GitHub Actions page
 
 jobs:
-  publish:
+  prepare:
     runs-on: ubuntu-24.04
-    if: startsWith(github.ref, 'refs/tags/')  # Only run on tags, not branches
-
-    permissions:
-      contents: write
-
+    if: startsWith(github.ref, 'refs/tags/')
+    outputs:
+      mod_version: ${{ steps.export.outputs.mod_version }}
+      mc_version: ${{ steps.export.outputs.mc_version }}
+      release_type: ${{ steps.export.outputs.release_type }}
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
@@ -27,6 +28,25 @@ jobs:
         env:
           GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_ENV: ${{ github.env }}
+
+      - name: export outputs
+        id: export
+        run: |
+          echo "mod_version=${MOD_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "mc_version=${MC_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "release_type=${RELEASE_TYPE}" >> "$GITHUB_OUTPUT"
+
+  build-fabric:
+    needs: prepare
+    runs-on: ubuntu-24.04
+    outputs:
+      mod_version: ${{ steps.export.outputs.mod_version }}
+      mc_version: ${{ steps.export.outputs.mc_version }}
+      release_type: ${{ steps.export.outputs.release_type }}
+      mod_jar: ${{ steps.export-jar.outputs.mod_jar }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
 
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
@@ -40,44 +60,330 @@ jobs:
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
 
+      - name: export outputs
+        id: export
+        env:
+          MOD_VERSION: ${{ needs.prepare.outputs.mod_version }}
+          MC_VERSION: ${{ needs.prepare.outputs.mc_version }}
+          RELEASE_TYPE: ${{ needs.prepare.outputs.release_type }}
+        run: |
+          chmod +x .github/scripts/export-outputs.sh
+          .github/scripts/export-outputs.sh no-jar-name
+
       - name: build fabric
         run: ./gradlew fabric:build -Dbuild.release=true
+
+      - name: test fabric
+        run: ./gradlew fabric:testServer
+
+      - name: rename fabric jar
+        env:
+          GITHUB_ENV: ${{ github.env }}
+        run: |
+          chmod +x .github/scripts/rename-jar.sh
+          .github/scripts/rename-jar.sh fabric
+
+      - name: export jar name
+        id: export-jar
+        run: |
+          echo "mod_jar=$(basename "$MOD_JAR_FABRIC")" >> "$GITHUB_OUTPUT"
+          echo "MOD_JAR=$(basename "$MOD_JAR_FABRIC")" >> "$GITHUB_ENV"
+
+      - name: upload fabric jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: fabric-jar
+          path: ${{ env.MOD_JAR_FABRIC }}
+          retention-days: 1
+          if-no-files-found: error
+
+  build-neoforge:
+    needs: prepare
+    runs-on: ubuntu-24.04
+    outputs:
+      mod_version: ${{ steps.export.outputs.mod_version }}
+      mc_version: ${{ steps.export.outputs.mc_version }}
+      release_type: ${{ steps.export.outputs.release_type }}
+      mod_jar: ${{ steps.export-jar.outputs.mod_jar }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: setup jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: export outputs
+        id: export
+        env:
+          MOD_VERSION: ${{ needs.prepare.outputs.mod_version }}
+          MC_VERSION: ${{ needs.prepare.outputs.mc_version }}
+          RELEASE_TYPE: ${{ needs.prepare.outputs.release_type }}
+        run: |
+          chmod +x .github/scripts/export-outputs.sh
+          .github/scripts/export-outputs.sh no-jar-name
 
       - name: build neoforge
         run: ./gradlew neoforge:build -Dbuild.release=true
 
-      - name: test fabric
-        run: ./gradlew fabric:testServer
-#
-#      - name: test neoforge
-#        run: ./gradlew neoforge:testServer
+      # - name: test neoforge
+      #   run: ./gradlew neoforge:testServer
 
-      - name: rename jar
+      - name: rename neoforge jar
+        env:
+          GITHUB_ENV: ${{ github.env }}
         run: |
           chmod +x .github/scripts/rename-jar.sh
-          .github/scripts/rename-jar.sh
+          .github/scripts/rename-jar.sh neoforge
+
+      - name: export jar name
+        id: export-jar
+        run: |
+          echo "mod_jar=$(basename "$MOD_JAR_NEOFORGE")" >> "$GITHUB_OUTPUT"
+          echo "MOD_JAR=$(basename "$MOD_JAR_NEOFORGE")" >> "$GITHUB_ENV"
+
+      - name: upload neoforge jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: neoforge-jar
+          path: ${{ env.MOD_JAR_NEOFORGE }}
+          retention-days: 1
+          if-no-files-found: error
+
+  integration-test-fabric:
+    needs: build-fabric
+    runs-on: ubuntu-24.04
+    outputs:
+      mod_version: ${{ steps.export.outputs.mod_version }}
+      mc_version: ${{ steps.export.outputs.mc_version }}
+      release_type: ${{ steps.export.outputs.release_type }}
+      mod_jar: ${{ steps.export.outputs.mod_jar }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: setup jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+
+      - name: export outputs
+        id: export
         env:
-          MOD_VERSION: ${{ env.MOD_VERSION }}
-          MC_VERSION: ${{ env.MC_VERSION }}
-          GITHUB_ENV: ${{ github.env }}
+          MOD_VERSION: ${{ needs.build-fabric.outputs.mod_version }}
+          MC_VERSION: ${{ needs.build-fabric.outputs.mc_version }}
+          RELEASE_TYPE: ${{ needs.build-fabric.outputs.release_type }}
+          MOD_JAR: ${{ needs.build-fabric.outputs.mod_jar }}
+        run: |
+          chmod +x .github/scripts/export-outputs.sh
+          .github/scripts/export-outputs.sh
+
+      - name: download fabric jar
+        uses: actions/download-artifact@v4
+        with:
+          name: fabric-jar
+          path: .
 
       - name: integration test fabric - run minecraft server
         run: |
           chmod +x .github/scripts/integration-test.sh
           .github/scripts/integration-test.sh
         env:
-          MOD_JAR: ${{ env.MOD_JAR_FABRIC }}
-          MC_VERSION: ${{ env.MC_VERSION }}
           LOADER_TYPE: fabric
+
+  integration-test-neoforge:
+    needs: build-neoforge
+    runs-on: ubuntu-24.04
+    outputs:
+      mod_version: ${{ steps.export.outputs.mod_version }}
+      mc_version: ${{ steps.export.outputs.mc_version }}
+      release_type: ${{ steps.export.outputs.release_type }}
+      mod_jar: ${{ steps.export.outputs.mod_jar }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: setup jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+
+      - name: export outputs
+        id: export
+        env:
+          MOD_VERSION: ${{ needs.build-neoforge.outputs.mod_version }}
+          MC_VERSION: ${{ needs.build-neoforge.outputs.mc_version }}
+          RELEASE_TYPE: ${{ needs.build-neoforge.outputs.release_type }}
+          MOD_JAR: ${{ needs.build-neoforge.outputs.mod_jar }}
+        run: |
+          chmod +x .github/scripts/export-outputs.sh
+          .github/scripts/export-outputs.sh
+
+      - name: download neoforge jar
+        uses: actions/download-artifact@v4
+        with:
+          name: neoforge-jar
+          path: .
 
       - name: integration test neoforge - run minecraft server
         run: |
           chmod +x .github/scripts/integration-test.sh
           .github/scripts/integration-test.sh
         env:
-          MOD_JAR: ${{ env.MOD_JAR_NEOFORGE }}
-          MC_VERSION: ${{ env.MC_VERSION }}
           LOADER_TYPE: neoforge
+
+  publish-fabric:
+    needs: integration-test-fabric
+    runs-on: ubuntu-24.04
+    outputs:
+      mod_version: ${{ steps.export.outputs.mod_version }}
+      mc_version: ${{ steps.export.outputs.mc_version }}
+      release_type: ${{ steps.export.outputs.release_type }}
+      mod_jar: ${{ steps.export.outputs.mod_jar }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: export outputs
+        id: export
+        env:
+          MOD_VERSION: ${{ needs.integration-test-fabric.outputs.mod_version }}
+          MC_VERSION: ${{ needs.integration-test-fabric.outputs.mc_version }}
+          RELEASE_TYPE: ${{ needs.integration-test-fabric.outputs.release_type }}
+          MOD_JAR: ${{ needs.integration-test-fabric.outputs.mod_jar }}
+        run: |
+          chmod +x .github/scripts/export-outputs.sh
+          .github/scripts/export-outputs.sh
+
+      - name: download fabric jar
+        uses: actions/download-artifact@v4
+        with:
+          name: fabric-jar
+          path: .
+
+      - name: publish fabric version to modrinth and curseforge
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: biology-dictionary
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 1426515
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          name: "Biology Dictionary ${{ github.ref_name }}-fabric"
+          version: "${{ github.ref_name }}-fabric"
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: CHANGELOG.md
+
+          game-versions: ${{ env.MC_VERSION }}
+          loaders: fabric
+          java: |
+            21
+            25
+
+          files: ${{ env.MOD_JAR }}
+
+          dependencies: |
+            fabric-api
+            cloth-config
+
+  publish-neoforge:
+    needs: integration-test-neoforge
+    runs-on: ubuntu-24.04
+    outputs:
+      mod_version: ${{ steps.export.outputs.mod_version }}
+      mc_version: ${{ steps.export.outputs.mc_version }}
+      release_type: ${{ steps.export.outputs.release_type }}
+      mod_jar: ${{ steps.export.outputs.mod_jar }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: export outputs
+        id: export
+        env:
+          MOD_VERSION: ${{ needs.integration-test-neoforge.outputs.mod_version }}
+          MC_VERSION: ${{ needs.integration-test-neoforge.outputs.mc_version }}
+          RELEASE_TYPE: ${{ needs.integration-test-neoforge.outputs.release_type }}
+          MOD_JAR: ${{ needs.integration-test-neoforge.outputs.mod_jar }}
+        run: |
+          chmod +x .github/scripts/export-outputs.sh
+          .github/scripts/export-outputs.sh
+
+      - name: download neoforge jar
+        uses: actions/download-artifact@v4
+        with:
+          name: neoforge-jar
+          path: .
+
+      - name: publish neoforge version to modrinth and curseforge
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: biology-dictionary
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 1426515
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          name: "Biology Dictionary ${{ github.ref_name }}-neoforge"
+          version: "${{ github.ref_name }}-neoforge"
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: CHANGELOG.md
+
+          game-versions: ${{ env.MC_VERSION }}
+          loaders: neoforge
+          java: |
+            21
+            25
+
+          files: ${{ env.MOD_JAR }}
+
+          dependencies: |
+            architectury-api
+            cloth-config
+
+  publish-github:
+    needs: [publish-fabric, publish-neoforge]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: export outputs
+        id: export
+        env:
+          MOD_VERSION: ${{ needs.publish-fabric.outputs.mod_version }}
+          MC_VERSION: ${{ needs.publish-fabric.outputs.mc_version }}
+          RELEASE_TYPE: ${{ needs.publish-fabric.outputs.release_type }}
+          MOD_JAR_FABRIC: ${{ needs.publish-fabric.outputs.mod_jar }}
+          MOD_JAR_NEOFORGE: ${{ needs.publish-neoforge.outputs.mod_jar }}
+        run: |
+          chmod +x .github/scripts/export-outputs.sh
+          .github/scripts/export-outputs.sh both-jars
+
+      - name: download fabric jar
+        uses: actions/download-artifact@v4
+        with:
+          name: fabric-jar
+          path: .
+
+      - name: download neoforge jar
+        uses: actions/download-artifact@v4
+        with:
+          name: neoforge-jar
+          path: .
 
       - name: publish fabric & neoforge version to github
         uses: Kir-Antipov/mc-publish@v3.3
@@ -103,59 +409,5 @@ jobs:
 
           dependencies: |
             fabric-api
-            architectury-api
-            cloth-config
-
-      - name: publish fabric version to modrinth and curseforge
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: biology-dictionary
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          curseforge-id: 1426515
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          name: "Biology Dictionary ${{ github.ref_name }}-fabric"
-          version: "${{ github.ref_name }}-fabric"
-          version-type: ${{ env.RELEASE_TYPE }}
-          changelog-file: CHANGELOG.md
-
-          game-versions: ${{ env.MC_VERSION }}
-          loaders: fabric
-          java: |
-            21
-            25
-
-          files: |
-            ${{ env.MOD_JAR_FABRIC }}
-
-          dependencies: |
-            fabric-api
-            cloth-config
-
-      - name: publish neoforge version to modrinth and curseforge
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: biology-dictionary
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          curseforge-id: 1426515
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          name: "Biology Dictionary ${{ github.ref_name }}-neoforge"
-          version: "${{ github.ref_name }}-neoforge"
-          version-type: ${{ env.RELEASE_TYPE }}
-          changelog-file: CHANGELOG.md
-
-          game-versions: ${{ env.MC_VERSION }}
-          loaders: neoforge
-          java: |
-            21
-            25
-
-          files: |
-            ${{ env.MOD_JAR_NEOFORGE }}
-
-          dependencies: |
             architectury-api
             cloth-config
