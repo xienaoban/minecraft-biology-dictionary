@@ -7,6 +7,11 @@ if [ -z "$MOD_JAR" ] || [ -z "$MC_VERSION" ] || [ -z "$LOADER_TYPE" ]; then
   exit 1
 fi
 
+if [ ! -f "$MOD_JAR" ]; then
+  echo "Error: Jar file '$MOD_JAR' not found!"
+  exit 1
+fi
+
 SERVER_DIR="${SERVER_DIR:-${LOADER_TYPE}/build/vanillaServer}"
 
 echo "Setting up Minecraft server integration test..."
