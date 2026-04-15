@@ -27,8 +27,7 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
 
         @Override
         public SkillCost getDefaultCost() {
-            // Simulate the eyes of Medusa
-            return new SkillCost(0, 5, 0, 20, 0, 0, List.of(new ItemStack(Items.SPIDER_EYE, 2)));
+            return new SkillCost(0, 5, 0, 20, 0, 0, List.of(new ItemStack(Items.TOTEM_OF_UNDYING)));
         }
 
         @Override

@@ -15,6 +15,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Allow setting variants in overview screen
 - Changed screen colors
 - Improved undiscovered entity rendering
+- Changed default cost item of EntitySetSoundSkill to white wool
+- Changed default cost item of MobSetNoAiSkill to totem of undying
 - Moved networking logic from net thread to client/server thread
 
 ### Fixed
