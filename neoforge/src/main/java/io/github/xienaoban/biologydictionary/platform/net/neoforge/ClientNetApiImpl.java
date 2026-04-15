@@ -1,10 +1,10 @@
 package io.github.xienaoban.biologydictionary.platform.net.neoforge;
 
 import dev.architectury.networking.NetworkManager;
-import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.PacketUtil;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
