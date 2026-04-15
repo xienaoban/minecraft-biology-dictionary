@@ -2,20 +2,19 @@ package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultedVertexConsumer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexSorting;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.FastColor;
-import com.mojang.blaze3d.vertex.VertexSorting;
 import org.joml.Matrix4f;
-
-import com.mojang.blaze3d.platform.Window;
 
 import java.util.Optional;
 

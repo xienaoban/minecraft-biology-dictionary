@@ -1,18 +1,14 @@
 package io.github.xienaoban.biologydictionary.core;
 
 import com.google.common.collect.ImmutableList;
-import io.github.xienaoban.biologydictionary.mixin.JigsawStructureIMixin;
-import io.github.xienaoban.biologydictionary.mixin.ListPoolElementIMixin;
-import io.github.xienaoban.biologydictionary.mixin.SinglePoolElementIMixin;
-import io.github.xienaoban.biologydictionary.mixin.StructureTemplateIMixin;
-import io.github.xienaoban.biologydictionary.mixin.StructureTemplatePoolIMixin;
+import io.github.xienaoban.biologydictionary.mixin.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -20,11 +16,11 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import net.minecraft.world.level.levelgen.structure.pools.ListPoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
