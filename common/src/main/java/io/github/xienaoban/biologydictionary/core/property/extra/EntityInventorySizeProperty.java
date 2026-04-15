@@ -18,7 +18,7 @@ public class EntityInventorySizeProperty extends IntProperty<Entity> {
         if (container != null) {
             setVal(container.getContainerSize());
         } else {
-            setVal(0);
+            setVal(null);
         }
     }
 

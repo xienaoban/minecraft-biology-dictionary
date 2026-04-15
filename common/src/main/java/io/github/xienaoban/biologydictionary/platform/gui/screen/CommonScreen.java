@@ -108,9 +108,10 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
 
     @Override
     public void onClose() {
-        super.onClose();
         if (lastScreen != null) {
             ClientUtils.setScreen(lastScreen);
+        } else {
+            super.onClose();
         }
     }
 

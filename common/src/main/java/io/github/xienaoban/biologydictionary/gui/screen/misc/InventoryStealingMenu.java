@@ -158,7 +158,7 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
     }
 
     private boolean isWithinTouchRange(Player player) {
-        boolean good = player.distanceToSqr(entity) <= 16.0;
+        boolean good = PlayerUtils.isWithinInteractionRange(player, entity, 4.0);
         if (!good) {
             closedByDistance = true;
         }
@@ -236,7 +236,7 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
         @Override
         public boolean stillValid(Player player) {
-            return entity.isAlive() && player.distanceToSqr(entity) <= 16.0; // 4.0 blocks, squared
+            return entity.isAlive() && PlayerUtils.isWithinInteractionRange(player, entity, 4.0);
         }
 
         @Override

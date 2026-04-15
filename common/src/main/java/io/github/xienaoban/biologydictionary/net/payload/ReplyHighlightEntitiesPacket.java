@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -45,7 +46,7 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
             int cnt = 0;
             for (Entity e : ClientUtils.getClientLevel().entitiesForRendering()) {
                 if (e.getType() != packet.entityType()) { continue; }
-                if (player.distanceToSqr(e) > packet.radius() * packet.radius()) {
+                if (!PlayerUtils.isWithinInteractionRange(player, e, packet.radius())) {
                     continue;
                 }
                 ++cnt;

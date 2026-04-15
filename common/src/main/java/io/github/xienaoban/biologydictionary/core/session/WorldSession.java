@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
+import io.github.xienaoban.biologydictionary.core.property.StaticEntityPropertyCache;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCostsCache;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
@@ -65,11 +66,13 @@ public final class WorldSession implements ConfigsUpdateCallback {
     private final EntityManager entityManager;
     private final SkillCostsCache skillCostsCache;
     private final EntityOverviewCache entityOverviewCache;
+    private final StaticEntityPropertyCache staticEntityPropertyCache;
 
     private WorldSession(Level level) {
         this.entityManager = EntityManager.create(level);
         this.skillCostsCache = new SkillCostsCache();
         this.entityOverviewCache = new EntityOverviewCache();
+        this.staticEntityPropertyCache = new StaticEntityPropertyCache();
     }
 
     @Override
@@ -87,5 +90,9 @@ public final class WorldSession implements ConfigsUpdateCallback {
 
     public EntityOverviewCache getEntityOverviewCache() {
         return entityOverviewCache;
+    }
+
+    public StaticEntityPropertyCache getStaticEntityPropertyCache() {
+        return staticEntityPropertyCache;
     }
 }
