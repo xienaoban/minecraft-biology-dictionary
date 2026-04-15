@@ -1,6 +1,9 @@
 package io.github.xienaoban.biologydictionary.core.property.builtin;
 
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;

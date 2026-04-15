@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;

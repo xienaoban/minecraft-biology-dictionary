@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.property.vanilla;
 
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -9,8 +10,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 
 public class ItemStackListProperty<E extends Entity> extends AbstractProperty<E, List<ItemStack>> {
     public ItemStackListProperty(String propertyName) {

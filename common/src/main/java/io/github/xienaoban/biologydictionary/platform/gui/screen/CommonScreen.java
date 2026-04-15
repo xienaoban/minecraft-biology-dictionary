@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen;
 
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.mixin.rendering.ScreenIMixin;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScaleRAII;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenConsts;
