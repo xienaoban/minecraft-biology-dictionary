@@ -25,6 +25,7 @@ public final class EntityPropertyWidgets {
         registrar.register(AnimalFoodWidget.class, AnimalFoodWidget.FACTORY);
         registrar.register(MobTemptWidget.class, MobTemptWidget.FACTORY);
         registrar.register(LivingEntityLootTableWidget.class, LivingEntityLootTableWidget.FACTORY);
+        registrar.register(MobSpawnWidget.class, MobSpawnWidget.FACTORY);
         registrar.register(LivingEntityMovementSpeedWidget.class, LivingEntityMovementSpeedWidget.FACTORY);
         registrar.register(LivingEntityJumpStrengthWidget.class, LivingEntityJumpStrengthWidget.FACTORY);
         registrar.register(EntityLeashableWidget.class, EntityLeashableWidget.FACTORY);

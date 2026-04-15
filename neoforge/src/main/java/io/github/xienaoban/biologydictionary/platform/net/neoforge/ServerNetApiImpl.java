@@ -26,7 +26,7 @@ public final class ServerNetApiImpl {
             NetworkManager.registerReceiver(NetworkManager.Side.C2S, type, codec, (payload, context) -> {
                 ServerPlayer player = (ServerPlayer) context.getPlayer();
                 ServerNetApi.Context ctx = new ServerNetApi.Context(PlayerUtils.getServer(player), player);
-                payload.serverReceive(ctx);
+                ctx.server().execute(() -> payload.serverReceive(ctx));
             });
         }
     }

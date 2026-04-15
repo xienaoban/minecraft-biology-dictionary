@@ -67,7 +67,10 @@
 
 ### 1. 资源定位符
 
-`Identifier` → `ResourceLocation`（全项目机械替换，含 import）
+| 1.21.11 | 1.21.1 |
+|---------|--------|
+| `Identifier` | `ResourceLocation`（全项目机械替换，含 import） |
+| `new Identifier("namespace:path")` | `new ResourceLocation(...)` 公共构造可能受限，用 `ResourceLocation.tryParse("namespace:path")`（返回 `@Nullable`） |
 
 ### 2. 渲染管线（最大差异）
 
@@ -99,14 +102,20 @@
 |---------|--------|
 | `getBoolean/getList/getCompound` 返回 `Optional` | 直接返回值（默认空值） |
 | `nbt.read(name, codec)` / `nbt.store(name, codec, value)` | 不存在 |
+| `getList(key)` 无类型过滤 | `getList(key, type)` **按 type 过滤元素**，不匹配返回空列表 |
 
-**适配规则**：`.orElse(default)` → 直接返回；`.getList(key)` → `.getList(key, ListTag.TAG_COMPOUND)`。
+**适配规则**：
+- `.orElse(default)` → 直接返回
+- `getList(key)` → `getList(key, Tag.TAG_STRING)` 等，**type 参数必须与实际写入的元素类型一致**
 
-### 5. 注册表 / Tag / 权限 / NeoForge 入口
+> **踩坑**：移植时从 1.21.11 复制的 `getList(key, TAG_COMPOUND)` 如果元素实际是 `StringTag`，在 1.21.1 中会静默返回空列表而不报错。
+
+### 5. 注册表 / 权限 / NeoForge 入口
 
 | 1.21.11 | 1.21.1 |
 |---------|--------|
 | `registryAccess.lookupOrThrow(Registries.X)` | `registryAccess.registryOrThrow(Registries.X)` |
+| `registry.getOptional(id)` 可能返回 `Optional<Holder<T>>` | 返回 `Optional<T>`（直接值，非 Holder） |
 | `holders.key().location()` | `holders.getFirst().location()` |
 | `holders.stream()` | `holders.getSecond().stream()` |
 | `Permissions.COMMANDS_ADMIN` | `source.hasPermission(2)` |
@@ -131,32 +140,22 @@
 | `weighted.value()` | `WeightedRandomList.unwrap()` |
 | `spawnerData.type()` | `spawnerData.type` 公共字段 |
 
-### 9. 权限系统
-
-| 1.21.11 | 1.21.1 |
-|---------|--------|
-| `Permissions.COMMANDS_ADMIN` | `source.hasPermission(2)` |
-
-### 10. 生物分类
-
-| 1.21.11 | 1.21.1 |
-|---------|--------|
-| `net.minecraft.world.entity.animal.fish.WaterAnimal` | `net.minecraft.world.entity.animal.WaterAnimal` |
-| 实体包结构有大量子包重组 | 较平的包结构 |
-
-### 11. Packet 系统
+### 8. Packet 系统
 
 两个版本的 payload-based packet 系统架构相同。唯一区别是 `ResourceLocation` vs `Identifier`。
 
-### 12. Mixin 差异
+### 9. Mixin 差异
 
 Mixin 的 target method descriptor 在不同 MC 版本中几乎肯定不同。需要：
 1. 在目标版本的 MC 源码中找到对应方法
 2. 理解源版本 mixin 要拦截的逻辑
 3. 用目标版本的方法签名重新编写
 
-### 13. NeoForge 入口
+**Accessor 编译时转型**：Mixin 接口只在运行时注入到目标类，编译时直接转型会失败，**必须通过 `(Object)` 中间转型**：
+```java
+// 编译错误：Cannot cast JigsawStructure to JigsawStructureIMixin
+((JigsawStructureIMixin) jigsawStructure).method()
+// 正确
+((JigsawStructureIMixin) (Object) jigsawStructure).method()
+```
 
-| 1.21.11 | 1.21.1 |
-|---------|--------|
-| 无参构造 `BiologyDictionaryNeoForge()` | 有参构造 `BiologyDictionaryNeoForge(IEventBus modBus)` |

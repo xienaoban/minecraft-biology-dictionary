@@ -6,7 +6,12 @@
     "mixins": [
         "CreativeModeTabsIMixin",
         "EatBlockGoalIMixin",
+        "JigsawStructureIMixin",
+        "ListPoolElementIMixin",
         "MobEffectInstanceIMixin",
+        "SinglePoolElementIMixin",
+        "StructureTemplateIMixin",
+        "StructureTemplatePoolIMixin",
         "TemptGoalIMixin",
         "entity.AbstractHorseIMixin",
         "entity.AgeableMobMixin",
