@@ -32,9 +32,9 @@
     ],
     "client": [
         "MinecraftMixin",
+        "rendering.FeatureRenderDispatcherIMixin",
         "rendering.GuiGraphicsIMixin",
         "rendering.GuiTextRenderStateIMixin",
-        "rendering.FeatureRenderDispatcherIMixin",
         "rendering.ItemInHandRendererMixin",
         "rendering.LevelRendererMixin",
         "rendering.PictureInPictureRendererMixin"

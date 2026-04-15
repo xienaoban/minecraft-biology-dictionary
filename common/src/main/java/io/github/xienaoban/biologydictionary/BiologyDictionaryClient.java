@@ -2,9 +2,9 @@ package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
-import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;

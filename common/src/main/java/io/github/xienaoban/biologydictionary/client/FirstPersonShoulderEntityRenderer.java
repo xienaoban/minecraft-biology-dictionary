@@ -26,8 +26,6 @@ import net.minecraft.world.entity.animal.parrot.Parrot;
 
 import java.util.Optional;
 
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
-
 @Environment(EnvType.CLIENT)
 public final class FirstPersonShoulderEntityRenderer {
     private static final int NULL_VARIANT = -2333333;
