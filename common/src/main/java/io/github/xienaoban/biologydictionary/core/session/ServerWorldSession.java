@@ -45,7 +45,7 @@ public final class ServerWorldSession implements ConfigsUpdateCallback {
     private ServerWorldSession(MinecraftServer server) {
         this.server = server;
         this.discoveryManager = new DiscoveryManager(server);
-        this.entitySpawnManager = new EntitySpawnManager(server.registryAccess());
+        this.entitySpawnManager = new EntitySpawnManager(server.registryAccess(), server.getStructureManager());
     }
 
     @Override
