@@ -13,7 +13,7 @@ public final class ClientNetApiImpl {
             CustomPacketPayload.Type<T> type = PacketUtil.getType(clazz);
             ClientPlayNetworking.registerGlobalReceiver(type, (payload, context) -> {
                 ClientNetApi.Context ctx = new ClientNetApi.Context(context.client(), context.player());
-                payload.clientReceive(ctx);
+                ctx.client().execute(() -> payload.clientReceive(ctx));
             });
         }
     }

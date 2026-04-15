@@ -17,7 +17,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
@@ -37,6 +39,8 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Handles loading, saving, and remote config synchronization.
  */
 public final class ConfigsManager {
+    private static final int MAX_YAML_SIZE = 64 * 1024; // 64KB
+
     private static final Configs INSTANCE = new Configs();
     private static final Configs.ClientConfigs clientConfigs = INSTANCE.getClient();
     private static volatile Configs.ServerConfigs serverConfigs = INSTANCE.getServer();
@@ -142,7 +146,7 @@ public final class ConfigsManager {
         }
 
         try (FileInputStream input = new FileInputStream(configPath.toFile())) {
-            Yaml yaml = new Yaml();
+            Yaml yaml = createYamlForLoad();
             Map<String, Object> data = yaml.load(input);
 
             boolean allGood = true;
@@ -296,8 +300,12 @@ public final class ConfigsManager {
      * @return true if deserialization succeeded, false otherwise
      */
     public static boolean deserializeConfigCategory(String yamlString, Object targetObject) {
+        if (yamlString.length() > MAX_YAML_SIZE) {
+            LOGGER.error("Config YAML string too large ({} bytes), max is {}", yamlString.length(), MAX_YAML_SIZE);
+            return false;
+        }
         try (StringReader reader = new StringReader(yamlString)) {
-            Yaml yaml = new Yaml();
+            Yaml yaml = createYamlForLoad();
             Map<?, ?> dataMap = yaml.load(reader);
             if (dataMap == null) {
                 return false;
@@ -309,12 +317,27 @@ public final class ConfigsManager {
         }
     }
 
+    private static Yaml createYamlForLoad() {
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setCodePointLimit(MAX_YAML_SIZE);
+        return new Yaml(new SafeConstructor(loaderOptions));
+    }
+
     private static Yaml createYamlForDump() {
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         options.setPrettyFlow(true);
         // Use custom representer to output empty arrays, maps as [], {}
         return new Yaml(new Representer(options) {
+            @Override
+            protected Node representScalar(Tag tag, String value, DumperOptions.ScalarStyle style) {
+                // Force strings to double-quoted; leave numbers, booleans, etc. unquoted
+                if (Tag.STR.equals(tag)) {
+                    style = DumperOptions.ScalarStyle.DOUBLE_QUOTED;
+                }
+                return super.representScalar(tag, value, style);
+            }
+
             @Override
             protected Node representSequence(Tag tag, Iterable<?> sequence,
                                              DumperOptions.FlowStyle flowStyle) {

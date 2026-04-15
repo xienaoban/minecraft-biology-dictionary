@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
@@ -152,6 +153,10 @@ public final class PlayerUtils {
             // On client side, play locally at position
             player.level().playSound(player, x, y, z, soundEvent, SoundSource.UI, volume, pitch);
         }
+    }
+
+    public static boolean isWithinInteractionRange(Player player, Entity entity, double distance) {
+        return player.isWithinEntityInteractionRange(entity, distance);
     }
 
     public static void showClientTextBoxMessage(Player player, Component component) {

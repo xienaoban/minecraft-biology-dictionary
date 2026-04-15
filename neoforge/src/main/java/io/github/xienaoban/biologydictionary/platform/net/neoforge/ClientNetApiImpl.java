@@ -23,7 +23,7 @@ public final class ClientNetApiImpl {
             NetworkManager.registerReceiver(NetworkManager.Side.S2C, type, codec, (payload, context) -> {
                 Minecraft client = Minecraft.getInstance();
                 ClientNetApi.Context ctx = new ClientNetApi.Context(client, ClientUtils.getClientPlayer(client));
-                payload.clientReceive(ctx);
+                ctx.client().execute(() -> payload.clientReceive(ctx));
             });
         }
     }

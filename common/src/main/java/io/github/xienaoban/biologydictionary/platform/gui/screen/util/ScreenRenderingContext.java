@@ -3,15 +3,13 @@ package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.biologydictionary.compat.CompatibilityOptions;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiTextRenderStateIMixin;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
-import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.platform.util.Misc;
-import io.github.xienaoban.biologydictionary.platform.util.RenderUtils;
+import io.github.xienaoban.biologydictionary.platform.util.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -57,6 +55,7 @@ import org.joml.*;
 import java.lang.Math;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -399,7 +398,10 @@ public final class ScreenRenderingContext {
     ) {
         Font font = getFont();
         List<ClientTooltipComponent> list = texts.stream()
-                .flatMap(c -> font.split(c, 240).stream())
+                .flatMap(c -> {
+                    List<FormattedCharSequence> lines = font.split(c, Widget.TOOLTIP_WIDTH);
+                    return lines.isEmpty() ? Stream.of(TextUtils.empty().getVisualOrderText()) : lines.stream();
+                })
                 .map(ClientTooltipComponent::create)
                 .toList();
         ClientTooltipPositioner clientTooltipPositioner = DefaultTooltipPositioner.INSTANCE;
