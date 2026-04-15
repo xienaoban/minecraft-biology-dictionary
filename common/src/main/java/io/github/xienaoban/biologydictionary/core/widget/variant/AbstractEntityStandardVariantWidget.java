@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.Component;
@@ -68,7 +69,7 @@ public abstract class AbstractEntityStandardVariantWidget<E extends Entity, V> e
         if (allowedToChoose == null) {
             boolean creativeOnly = new EntitySetVariantSkill(e(), getVariantHandlerIdx(), getVariantClient(e()))
                     .getRealCost(e()).isCreativeOnly();
-            allowedToChoose = !creativeOnly || PlayerUtils.isCreative(getPlayer());
+            allowedToChoose = !creativeOnly || PlayerUtils.isCreative(getPlayer()) || EntityUtils.isFakeEntity(e());
         }
         return allowedToChoose;
     }

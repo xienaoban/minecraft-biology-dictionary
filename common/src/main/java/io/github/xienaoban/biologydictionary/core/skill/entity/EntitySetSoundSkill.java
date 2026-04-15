@@ -22,8 +22,7 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
 
         @Override
         public SkillCost getDefaultCost() {
-            // 辣条把嗓子辣哑了
-            return SkillCost.ofItems(new ItemStack(Items.ROTTEN_FLESH));
+            return SkillCost.ofItems(new ItemStack(Items.WHITE_WOOL));
         }
 
         @Override

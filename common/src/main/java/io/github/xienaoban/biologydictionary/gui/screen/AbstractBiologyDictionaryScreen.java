@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import net.minecraft.sounds.SoundEvents;
 
@@ -64,8 +65,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     private final CenteredMessage centeredMessage = new CenteredMessage();
 
-    public AbstractBiologyDictionaryScreen(Component title) {
-        super(title);
+    public AbstractBiologyDictionaryScreen(MutableComponent title) {
+        super(title.withColor(Colors.TITLE));
         check();
 
         leftPageNum.setParent(getRootScreenElement());
@@ -494,7 +495,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                     cache = TextUtils.empty();
                 }
             }
-            ctx.renderCenteredText(cache, 0xFFAF711F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
+            ctx.renderCenteredText(cache, 0x88DECEC2, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
+            ctx.renderCenteredText(cache, Colors.TITLE, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
         }
     }
 
