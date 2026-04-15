@@ -184,6 +184,10 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             return ClientWorldSession.get() != null && ClientWorldSession.get().getDiscoveryClientCache().isDiscovered(entityType);
         }
 
+        private boolean shouldRenderDetail() {
+            return isDiscovered() || ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities();
+        }
+
         private boolean isClickable() {
             return ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities() || isDiscovered();
         }
@@ -226,20 +230,24 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
+            int silhouetteColor = isDiscovered() ? 0 : Colors.UNDISCOVERED_ENTITY_COLOR;
             ScreenElementBox box = getBox();
-            ctx.renderEntityCentered(entity, box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6, entityRotateX, entityRotateY,
-                    isDiscovered() ? 0 : Colors.UNDISCOVERED_ENTITY_COLOR);
-            ctx.renderCenteredText(name, 0xFF000000, 0.5F, getZ(), (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
+            ctx.renderEntityCentered(entity,
+                    box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6,
+                    entityRotateX, entityRotateY,
+                    silhouetteColor);
+
+            Component text = shouldRenderDetail() ? name : TextUtils.literal("??");
+            ctx.renderCenteredText(text, Colors.BROWN, 0.5F, getZ(), (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
         }
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             try (ScaleRAII ignored = ctx.scaleOnce(1F, 100F)) {
                 ScreenElementBox box = getBox();
-                ctx.renderRectangle(0x77794500, ctx.getZ(), box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
-
                 float midX = (box.getLeft() + box.getRight()) / 2;
                 float mouseY = ctx.getMouseY() - box.getTop();
+                ctx.renderRectangle(0x77794500, ctx.getZ(), box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
 
                 // Render button sections
                 int colorHighlight, colorEgg;
@@ -270,7 +278,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 ctx.renderTexture(Textures.ICONS, (23 + u) * wh, 24 * wh, ctx.getZ(), midX - wh / 2F, box.getTop() + (BUTTONS_CUT - wh) / 2F, Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
 
                 // Spawn egg icon (bottom)
-                if (spawnEgg != null) {
+                if (shouldRenderDetail() && spawnEgg != null) {
                     ctx.renderItem(spawnEgg, 0.5F, midX - 4F, box.getTop() + BUTTONS_CUT);
                 }
 

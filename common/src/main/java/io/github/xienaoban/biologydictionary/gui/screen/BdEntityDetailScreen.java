@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,7 +25,7 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
     private final EntityProperties<? extends Entity> properties;
 
     public BdEntityDetailScreen(EntityProperties<? extends Entity> properties) {
-        super(properties.entity().getType().getDescription());
+        super(properties.entity().getType().getDescription().copy());
         this.entity = properties.entity();
         this.properties = properties;
         initBookmarks();
@@ -50,7 +51,7 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
     public void tick() {
         super.tick();
 
-        if (player.distanceToSqr(entity) > CLOSE_SCREEN_DISTANCE * CLOSE_SCREEN_DISTANCE) {
+        if (!PlayerUtils.isWithinInteractionRange(player, entity, CLOSE_SCREEN_DISTANCE)) {
             ClientWorldSession.get().getHighlightManager().highlightEntity(entity, 4 * 20);
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
             onClose();

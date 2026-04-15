@@ -16,6 +16,7 @@ public final class ExtraEntityProperties {
         registrar.register(LivingEntityLootTableProperty.class, LivingEntityLootTableProperty.FACTORY);
         registrar.register(MobNaturalPersistenceProperty.class, MobNaturalPersistenceProperty.FACTORY);
         registrar.register(MobTemptProperty.class, MobTemptProperty.FACTORY);
+        registrar.register(MobSpawnProperty.class, MobSpawnProperty.FACTORY);
         registrar.register(VillagerJobSiteProperty.class, VillagerJobSiteProperty.FACTORY);
     }
 

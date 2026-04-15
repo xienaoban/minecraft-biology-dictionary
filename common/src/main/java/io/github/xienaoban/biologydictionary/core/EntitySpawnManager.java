@@ -1,18 +1,32 @@
 package io.github.xienaoban.biologydictionary.core;
 
 import com.google.common.collect.ImmutableList;
+import io.github.xienaoban.biologydictionary.mixin.JigsawStructureIMixin;
+import io.github.xienaoban.biologydictionary.mixin.ListPoolElementIMixin;
+import io.github.xienaoban.biologydictionary.mixin.SinglePoolElementIMixin;
+import io.github.xienaoban.biologydictionary.mixin.StructureTemplateIMixin;
+import io.github.xienaoban.biologydictionary.mixin.StructureTemplatePoolIMixin;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
+import net.minecraft.world.level.levelgen.structure.pools.ListPoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 import java.util.*;
 
@@ -20,7 +34,7 @@ import java.util.*;
  * Retrieves bidirectional spawn information between entity types and biomes/structures.
  * <ul>
  *   <li>Entity <-> Biomes: natural spawn mapping</li>
- *   <li>Entity <-> Structures: structure spawn overrides mapping</li>
+ *   <li>Entity <-> Structures: structure spawn overrides + template entity mapping</li>
  * </ul>
  * Requires {@link RegistryAccess} containing WORLDGEN-layer registries (i.e. server-side).
  */
@@ -31,9 +45,9 @@ public class EntitySpawnManager {
     private final Map<EntityType<?>, List<Entry<Structure>>> spawnStructures = new HashMap<>();
     private final Map<ResourceLocation, List<EntityType<?>>> structureEntities = new HashMap<>();
 
-    public EntitySpawnManager(RegistryAccess registryAccess) {
+    public EntitySpawnManager(RegistryAccess registryAccess, StructureTemplateManager templateManager) {
         buildSpawnBiomes(registryAccess);
-        buildSpawnStructures(registryAccess);
+        buildSpawnStructures(registryAccess, templateManager);
     }
 
     public List<Entry<Biome>> getSpawnBiomes(EntityType<?> entityType) {
@@ -61,39 +75,167 @@ public class EntitySpawnManager {
             Entry<Biome> entry = new Entry<>(biomeId, biome);
             MobSpawnSettings spawnSettings = biome.getMobSettings();
 
+            Set<EntityType<?>> seenBiomeEntities = new HashSet<>();
             for (MobCategory category : MobCategory.values()) {
                 WeightedRandomList<MobSpawnSettings.SpawnerData> spawners = spawnSettings.getMobs(category);
                 for (MobSpawnSettings.SpawnerData spawnerData : spawners.unwrap()) {
                     EntityType<?> entityType = spawnerData.type;
 
-                    spawnBiomes.computeIfAbsent(entityType, k -> new ArrayList<>())
-                        .add(entry);
-                    biomeEntities.computeIfAbsent(biomeId, k -> new ArrayList<>())
-                        .add(entityType);
+                    if (seenBiomeEntities.add(entityType)) {
+                        spawnBiomes.computeIfAbsent(entityType, k -> new ArrayList<>())
+                            .add(entry);
+                        biomeEntities.computeIfAbsent(biomeId, k -> new ArrayList<>())
+                            .add(entityType);
+                    }
                 }
             }
         }
     }
 
-    private void buildSpawnStructures(RegistryAccess registryAccess) {
+    private void buildSpawnStructures(RegistryAccess registryAccess, StructureTemplateManager templateManager) {
         Registry<Structure> structureRegistry = registryAccess.registryOrThrow(Registries.STRUCTURE);
+        Registry<StructureTemplatePool> poolRegistry = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL);
 
         for (Map.Entry<ResourceKey<Structure>, Structure> structureEntry : structureRegistry.entrySet()) {
             ResourceLocation structureId = structureEntry.getKey().location();
             Structure structure = structureEntry.getValue();
             Entry<Structure> entry = new Entry<>(structureId, structure);
 
+            Set<EntityType<?>> seenStructureEntities = new HashSet<>();
+
+            // 1. spawnOverrides (e.g. guardians in ocean monuments)
             structure.spawnOverrides().forEach((category, override) -> {
                 for (MobSpawnSettings.SpawnerData spawnerData : override.spawns().unwrap()) {
                     EntityType<?> entityType = spawnerData.type;
 
-                    spawnStructures.computeIfAbsent(entityType, k -> new ArrayList<>())
-                        .add(entry);
-                    structureEntities.computeIfAbsent(structureId, k -> new ArrayList<>())
-                        .add(entityType);
+                    if (seenStructureEntities.add(entityType)) {
+                        spawnStructures.computeIfAbsent(entityType, k -> new ArrayList<>())
+                            .add(entry);
+                        structureEntities.computeIfAbsent(structureId, k -> new ArrayList<>())
+                            .add(entityType);
+                    }
                 }
             });
+
+            // 2. Template entities for Jigsaw structures (e.g. villagers in villages)
+            if (structure instanceof JigsawStructure) {
+                Holder<StructureTemplatePool> startPool = ((JigsawStructureIMixin) (Object) structure).biologydictionary$getStartPool();
+                collectTemplateEntities(
+                    startPool, poolRegistry, templateManager,
+                    structureId, entry, seenStructureEntities
+                );
+            }
         }
+    }
+
+    private void collectTemplateEntities(
+        Holder<StructureTemplatePool> startPool,
+        Registry<StructureTemplatePool> poolRegistry,
+        StructureTemplateManager templateManager,
+        ResourceLocation structureId,
+        Entry<Structure> structureEntry,
+        Set<EntityType<?>> seenStructureEntities
+    ) {
+        Set<ResourceLocation> visitedPools = new HashSet<>();
+        Queue<StructureTemplatePool> queue = new ArrayDeque<>();
+
+        ResourceLocation startPoolId = startPool.unwrapKey()
+            .map(ResourceKey::location)
+            .orElseThrow(() -> new IllegalStateException("Start pool has no resource key"));
+        visitedPools.add(startPoolId);
+        queue.add(startPool.value());
+
+        while (!queue.isEmpty()) {
+            StructureTemplatePool pool = queue.poll();
+            Set<ResourceLocation> referencedPools = new HashSet<>();
+
+            // Collect entities from all templates in this pool
+            for (StructurePoolElement element : ((StructureTemplatePoolIMixin) pool).biologydictionary$getTemplates()) {
+                collectElementEntities(
+                    element, templateManager, structureId, structureEntry, seenStructureEntities, referencedPools
+                );
+            }
+
+            // Also follow fallback pool
+            Holder<StructureTemplatePool> fallback = pool.getFallback();
+            if (fallback.value() != pool) {
+                fallback.unwrapKey().ifPresent(poolKey -> {
+                    ResourceLocation poolId = poolKey.location();
+                    if (visitedPools.add(poolId)) {
+                        poolRegistry.getOptional(poolId).ifPresent(queue::add);
+                    }
+                });
+            }
+
+            // Follow jigsaw-referenced pools from templates
+            for (ResourceLocation poolId : referencedPools) {
+                if (visitedPools.add(poolId)) {
+                    poolRegistry.getOptional(poolId).ifPresent(queue::add);
+                }
+            }
+        }
+    }
+
+    private void collectElementEntities(
+        StructurePoolElement element,
+        StructureTemplateManager templateManager,
+        ResourceLocation structureId,
+        Entry<Structure> structureEntry,
+        Set<EntityType<?>> seenStructureEntities,
+        Set<ResourceLocation> referencedPools
+    ) {
+        if (element instanceof SinglePoolElement singlePoolElement) {
+            ResourceLocation templateId = getTemplateLocation(singlePoolElement);
+            if (templateId == null) return;
+            Optional<StructureTemplate> template = templateManager.get(templateId);
+            if (template.isEmpty()) {
+                return;
+            }
+            StructureTemplate tmpl = template.get();
+            List<StructureTemplate.StructureEntityInfo> entities =
+                ((StructureTemplateIMixin) tmpl).biologydictionary$getEntityInfoList();
+
+            for (StructureTemplate.StructureEntityInfo entityInfo : entities) {
+                CompoundTag nbt = entityInfo.nbt;
+                if (nbt == null || !nbt.contains("id")) {
+                    continue;
+                }
+                String id = nbt.getString("id");
+                EntityType.byString(id).ifPresent(entityType -> {
+                    if (seenStructureEntities.add(entityType)) {
+                        spawnStructures.computeIfAbsent(entityType, k -> new ArrayList<>())
+                            .add(structureEntry);
+                        structureEntities.computeIfAbsent(structureId, k -> new ArrayList<>())
+                            .add(entityType);
+                    }
+                });
+            }
+
+            // Collect jigsaw-referenced pools from template blocks
+            for (StructureTemplate.Palette palette : ((StructureTemplateIMixin) tmpl).biologydictionary$getPalettes()) {
+                for (StructureTemplate.StructureBlockInfo blockInfo : palette.blocks()) {
+                    if (blockInfo.state().is(Blocks.JIGSAW) && blockInfo.nbt() != null) {
+                        String poolStr = blockInfo.nbt().getString("pool");
+                        if (!poolStr.isEmpty()) {
+                            try {
+                                ResourceLocation poolLoc = ResourceLocation.tryParse(poolStr);
+                                if (poolLoc != null && !poolLoc.equals(new ResourceLocation("minecraft", "empty"))) {
+                                    referencedPools.add(poolLoc);
+                                }
+                            } catch (Exception ignored) {}
+                        }
+                    }
+                }
+            }
+        } else if (element instanceof ListPoolElement listPoolElement) {
+            for (StructurePoolElement child : ((ListPoolElementIMixin) listPoolElement).biologydictionary$getElements()) {
+                collectElementEntities(child, templateManager, structureId, structureEntry, seenStructureEntities, referencedPools);
+            }
+        }
+    }
+
+    private static ResourceLocation getTemplateLocation(SinglePoolElement element) {
+        return ((SinglePoolElementIMixin) element).biologydictionary$getTemplate().left().orElse(null);
     }
 
     public record Entry<T>(ResourceLocation id, T value) {}

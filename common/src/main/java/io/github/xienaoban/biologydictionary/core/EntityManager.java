@@ -352,7 +352,7 @@ public final class EntityManager {
                     return Optional.empty();
                 }
                 return Optional.of(new EntityClassInfo(entityType, entity));
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 LOGGER.error("Failed to create an EntityClassInfo of entity type \"{}\"! Skipped supporting this entity type.", EntityUtils.getEntityTypeName(entityType), ex);
             }
             return Optional.empty();
