@@ -8,6 +8,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 - Added spawn property and widget
 - Added cache of static properties
+- Left/right-click the entity in EntityDisplayWidget to play hurt/death/ambient sound
 
 ### Changed
 
