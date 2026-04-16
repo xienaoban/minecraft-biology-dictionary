@@ -25,6 +25,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Fixed the background flickering when going back to the previous interface
 - Fixed truncated empty lines in tooltips
 - Fixed spawn structure support
+- Render placeholder if failed to render entity
 
 ## Previous Versions
 

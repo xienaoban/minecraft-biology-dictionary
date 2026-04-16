@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.gui.PlaceholderFallbackEntityRenderer;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -67,8 +68,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
 
     private final Entity model;
 
-    private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
-            = new ScreenRenderingContext.EntityRenderingCache();
+    private final PlaceholderFallbackEntityRenderer entityRenderer;
 
     public EntityDisplayWidget(EntityProperties<Entity> properties) {
         this(properties, createModelEntity(properties));
@@ -77,6 +77,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     private EntityDisplayWidget(EntityProperties<Entity> properties, Entity model) {
         super(properties, calculateRowsAndColumns(model));
         this.model = model;
+        this.entityRenderer = new PlaceholderFallbackEntityRenderer(model);
         p().setModel(model);
     }
 
@@ -91,7 +92,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        ctx.renderEntityCentered(model, entityRenderingCache, getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
+        entityRenderer.renderEntityCentered(ctx, getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
                 (float) Math.atan(ctx.getMouseX() / 40F) / 10,
                 (float) Math.atan(ctx.getMouseY() / 40F) / 20);
     }

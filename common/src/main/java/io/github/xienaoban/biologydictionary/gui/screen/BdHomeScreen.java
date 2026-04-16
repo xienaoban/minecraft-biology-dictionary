@@ -9,6 +9,7 @@ import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
+import io.github.xienaoban.biologydictionary.gui.PlaceholderFallbackEntityRenderer;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
@@ -170,12 +171,12 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         private final ItemStack spawnEgg;
         private final EntityType<?> entityType;
 
-        private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
-                = new ScreenRenderingContext.EntityRenderingCache();
+        private final PlaceholderFallbackEntityRenderer entityRenderer;
 
         public EntityWidget(Entity entity) {
             super(2, 2);
             this.entity = entity;
+            this.entityRenderer = new PlaceholderFallbackEntityRenderer(entity);
             EntityType<?> type = EntityUtils.getEntityType(entity);
             this.entityType = type;
             this.name = type.getDescription();
@@ -233,7 +234,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
             int silhouetteColor = isDiscovered() ? 0 : Colors.UNDISCOVERED_ENTITY_COLOR;
             ScreenElementBox box = getBox();
-            ctx.renderEntityCentered(entity, entityRenderingCache,
+            entityRenderer.renderEntityCentered(ctx,
                     box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6,
                     entityRotateX, entityRotateY,
                     silhouetteColor);

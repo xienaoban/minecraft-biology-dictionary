@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
+import io.github.xienaoban.biologydictionary.gui.PlaceholderFallbackEntityRenderer;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -266,8 +267,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         private float widthFix;
         private float heightFix;
 
-        private final ScreenRenderingContext.EntityRenderingCache entityRenderingCache
-                = new ScreenRenderingContext.EntityRenderingCache();
+        private final PlaceholderFallbackEntityRenderer entityRenderer;
 
         public VariantElement(int index, V variant) {
             this.index = index;
@@ -278,6 +278,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             this.model.setYBodyRot(0);
             setVariantClient(model, variant);
             this.name = getVariantName(variant);
+            this.entityRenderer = new PlaceholderFallbackEntityRenderer(model);
 
             getBox().setSize(variantWidth, variantHeight);
         }
@@ -378,7 +379,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         private void renderEntity(ScreenRenderingContext ctx) {
-            ctx.renderEntityCentered(model, entityRenderingCache,
+            entityRenderer.renderEntityCentered(ctx,
                     getBox().getLeft() - 1- widthFix / 2,
                     getBox().getTop() + 1 - heightFix,
                     getBox().getRight() + 1 + widthFix / 2,
