@@ -17,6 +17,7 @@
         "entity.EntityIMixin",
         "entity.EntityMixin",
         "entity.HorseIMixin",
+        "entity.LivingEntityIMixin",
         "entity.MobIMixin",
         "entity.ServerPlayerIMixin",
         "entity.WanderingTraderMixin",

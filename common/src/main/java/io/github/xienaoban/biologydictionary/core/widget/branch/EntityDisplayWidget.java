@@ -12,8 +12,11 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -70,6 +73,8 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
 
     private final PlaceholderFallbackEntityRenderer entityRenderer;
 
+    private int leftClickCount;
+
     public EntityDisplayWidget(EntityProperties<Entity> properties) {
         this(properties, createModelEntity(properties));
     }
@@ -95,5 +100,46 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
         entityRenderer.renderEntityCentered(ctx, getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
                 (float) Math.atan(ctx.getMouseX() / 40F) / 10,
                 (float) Math.atan(ctx.getMouseY() / 40F) / 20);
+    }
+
+    @Override
+    protected boolean onMouseDown(float x, float y, int code) {
+        Entity entity = e();
+        if (isMouseLeft(code)) {
+            if (entity instanceof LivingEntity livingEntity) {
+                leftClickCount++;
+                if (leftClickCount % 5 == 0) {
+                    playDeathSound(livingEntity);
+                } else {
+                    playHurtSound(livingEntity);
+                }
+            }
+        } else if (isMouseRight(code)) {
+            if (entity instanceof Mob mob) {
+                playAmbientSound(mob);
+            }
+        }
+        return true;
+    }
+
+    private void playHurtSound(LivingEntity entity) {
+        SoundEvent sound = EntityUtils.getHurtSound(entity);
+        if (sound != null) {
+            ClientUtils.playScreenSound(sound, 1.0F, 1.0F);
+        }
+    }
+
+    private void playDeathSound(LivingEntity entity) {
+        SoundEvent sound = EntityUtils.getDeathSound(entity);
+        if (sound != null) {
+            ClientUtils.playScreenSound(sound, 1.0F, 1.0F);
+        }
+    }
+
+    private void playAmbientSound(Mob entity) {
+        SoundEvent sound = EntityUtils.getAmbientSound(entity);
+        if (sound != null) {
+            ClientUtils.playScreenSound(sound, 1.0F, 1.0F);
+        }
     }
 }
