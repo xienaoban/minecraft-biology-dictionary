@@ -42,13 +42,8 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 
@@ -56,8 +51,6 @@ import java.lang.Math;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @Environment(EnvType.CLIENT)
 public final class ScreenRenderingContext {
@@ -480,29 +473,6 @@ public final class ScreenRenderingContext {
         renderEntity(entity, cache, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, 0);
     }
 
-    private void renderEntity(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache, float left, float top, float right, float bottom,
-                              float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
-        try {
-            renderEntity0(entity, cache, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, silhouetteColor);
-        } catch (Exception e) {
-            // Render a placeholder instead.
-            Misc.doOnce(() -> {
-                LOGGER.error("Error in rendering entity \"{}\" on screen", EntityUtils.getEntityTypeIdName(entity), e);
-            });
-            ArmorStand armorStand = new ArmorStand(EntityType.ARMOR_STAND, entity.level());
-            int chosen = (((int) System.currentTimeMillis()) / 400) % 4;
-            Item head = switch (chosen) {
-                case 0 -> Items.CREEPER_HEAD;
-                case 1 -> Items.ZOMBIE_HEAD;
-                case 2 -> Items.SKELETON_SKULL;
-                case 3 -> Items.WITHER_SKELETON_SKULL;
-                default -> throw new AssertionError();
-            };
-            armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(head));
-            renderEntity0(armorStand, cache, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, silhouetteColor);
-        }
-    }
-
     /**
      * {@snippet :
      *     InventoryScreen.renderEntityInInventoryFollowsMouse(getGuiGraphics(), (int) left, (int) top, (int) right, (int) bottom, 30, 0.0625F, rotateX * 20, rotateY * 20, livingEntity);
@@ -510,7 +480,7 @@ public final class ScreenRenderingContext {
      *
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
      */
-    private void renderEntity0(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache, float left, float top, float right, float bottom,
+    private void renderEntity(Entity entity, @Nullable ScreenRenderingContext.EntityRenderingCache cache, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
         // This function does not compatible with guiGraphics.pose().scale(size, size).
         if (screenScale != 1F) {
