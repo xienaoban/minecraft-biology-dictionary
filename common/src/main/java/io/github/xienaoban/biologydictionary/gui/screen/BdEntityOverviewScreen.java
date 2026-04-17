@@ -25,7 +25,7 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
     private final EntityProperties<Entity> properties;
 
     public BdEntityOverviewScreen(EntityType<?> entityType) {
-        super(TextUtils.concat(entityType.getDescription(), TextUtils.translate(Lang.SCREEN_ENTITY_OVERVIEW_TITLE_SUFFIX)));
+        super(TextUtils.translate(Lang.SCREEN_ENTITY_OVERVIEW_TITLE, entityType.getDescription()));
         this.entityType = entityType;
         this.entity = EntityUtils.create(entityType, ClientUtils.getClientLevel());
         this.properties = new EntityProperties<>(entity);

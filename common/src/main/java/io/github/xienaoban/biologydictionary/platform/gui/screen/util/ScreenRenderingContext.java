@@ -133,15 +133,19 @@ public final class ScreenRenderingContext {
         return getFont().width(component);
     }
 
+    public int calcTextWidth(FormattedCharSequence text) {
+        return getFont().width(text);
+    }
+
     /**
-     * getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
+     * getGuiGraphics().drawString(getFont(), text, (int) x, (int) y, color, false);
      *
-     * @see net.minecraft.client.gui.GuiGraphics#drawString(net.minecraft.client.gui.Font, net.minecraft.network.chat.Component, int, int, int, boolean)
+     * @see net.minecraft.client.gui.GuiGraphics#drawString(net.minecraft.client.gui.Font, net.minecraft.util.FormattedCharSequence, int, int, int, boolean)
      * @see net.minecraft.client.gui.render.state.GuiTextRenderState#ensurePrepared()
      */
-    public void renderText(Component component, int color, float z, float x, float y) {
+    public void renderText(FormattedCharSequence text, int color, float z, float x, float y) {
         if (!CompatibilityOptions.useAdvancedTextRendering()) {
-            getGuiGraphics().drawString(getFont(), component, (int) x, (int) y, color, false);
+            getGuiGraphics().drawString(getFont(), text, (int) x, (int) y, color, false);
             return;
         }
 
@@ -178,15 +182,23 @@ public final class ScreenRenderingContext {
         }
 
         if (ARGB.alpha(color) == 0) { return; }
-        getGuiRenderState().submitText(new TextState(getFont(), component.getVisualOrderText(),
+        getGuiRenderState().submitText(new TextState(getFont(), text,
                 new Matrix3x2f(getPose()), x, y, color, 0, false, false,
                 getScissorStack().peek()));
     }
 
-    public void renderText(Component component, int color, float size, float z, float x, float y) {
+    public void renderText(FormattedCharSequence text, int color, float size, float z, float x, float y) {
         try (ScaleRAII ignored = scaleOnce(size)) {
-            renderText(component, color, z, x / size, y / size);
+            renderText(text, color, z, x / size, y / size);
         }
+    }
+
+    public void renderText(Component component, int color, float z, float x, float y) {
+        renderText(component.getVisualOrderText(), color, z, x, y);
+    }
+
+    public void renderText(Component component, int color, float size, float z, float x, float y) {
+        renderText(component.getVisualOrderText(), color, size, z, x, y);
     }
 
     public void renderCenteredText(Component component, int color, float z, float x, float y) {
@@ -358,12 +370,12 @@ public final class ScreenRenderingContext {
     }
 
     public void renderComponentTooltip(List<Component> texts, float leftX, float topY) {
-        renderTooltip(texts, leftX, topY, 1F);
+        renderTooltipTexts(texts, 1F, leftX, topY);
     }
 
     public void renderComponentTooltip(List<Component> texts, float size, float leftX, float topY) {
         try (ScaleRAII ignored = scaleOnce(size)) {
-            renderTooltip(texts, leftX, topY, size);
+            renderTooltipTexts(texts, size, leftX, topY);
         }
     }
 
@@ -375,8 +387,41 @@ public final class ScreenRenderingContext {
     public void renderComponentTooltipCentered(List<Component> texts, float size, float midX, float topY) {
         try (ScaleRAII ignored = scaleOnce(size)) {
             int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
-            renderTooltip(texts, midX - (maxLength + 6) * size / 2F, topY, size);
+            renderTooltipTexts(texts, size, midX - (maxLength + 6) * size / 2F, topY);
         }
+    }
+
+    public void renderLinedTooltip(List<FormattedCharSequence> lines, float leftX, float topY) {
+        renderTooltipLines(lines, 1F, leftX, topY);
+    }
+
+    public void renderLinedTooltip(List<FormattedCharSequence> lines, float size, float leftX, float topY) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            renderTooltipLines(lines, size, leftX, topY);
+        }
+    }
+
+    public void renderLinedTooltipCentered(List<FormattedCharSequence> lines, float midX, float topY) {
+        int maxLength = lines.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+        renderTooltipLines(lines, 1F, midX - (maxLength + 6) / 2F, topY);
+    }
+
+    public void renderLinedTooltipCentered(List<FormattedCharSequence> lines, float size, float midX, float topY) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            int maxLength = lines.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+            renderTooltipLines(lines, size, midX - (maxLength + 6) * size / 2F, topY);
+        }
+    }
+
+    private void renderTooltipTexts(List<Component> texts, float size, float x, float y) {
+        Font font = getFont();
+        List<FormattedCharSequence> list = texts.stream()
+                .flatMap(c -> {
+                    List<FormattedCharSequence> lines = font.split(c, Widget.TOOLTIP_WIDTH);
+                    return lines.isEmpty() ? Stream.of(TextUtils.empty().getVisualOrderText()) : lines.stream();
+                })
+                .toList();
+        renderTooltipLines(list, size, x, y);
     }
 
     /**
@@ -386,15 +431,9 @@ public final class ScreenRenderingContext {
      *
      * @see net.minecraft.client.gui.GuiGraphics#renderTooltip(net.minecraft.client.gui.Font, java.util.List, int, int, net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner, net.minecraft.resources.Identifier)
      */
-    private void renderTooltip(List<Component> texts,
-                               float x, float y, float size
-    ) {
+    private void renderTooltipLines(List<FormattedCharSequence> lines, float size, float x, float y) {
         Font font = getFont();
-        List<ClientTooltipComponent> list = texts.stream()
-                .flatMap(c -> {
-                    List<FormattedCharSequence> lines = font.split(c, Widget.TOOLTIP_WIDTH);
-                    return lines.isEmpty() ? Stream.of(TextUtils.empty().getVisualOrderText()) : lines.stream();
-                })
+        List<ClientTooltipComponent> list = lines.stream()
                 .map(ClientTooltipComponent::create)
                 .toList();
         ClientTooltipPositioner clientTooltipPositioner = DefaultTooltipPositioner.INSTANCE;
