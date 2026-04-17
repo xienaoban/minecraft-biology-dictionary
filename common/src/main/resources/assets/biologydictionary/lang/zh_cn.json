@@ -19,6 +19,8 @@
   "config.biologydictionary.entry.screenScale.tooltip": "当「界面尺寸」很小时，默认的生物辞典界面可能有点小。",
   "config.biologydictionary.entry.firstPersonShoulderEntityPosition": "第一人称肩宠位置",
   "config.biologydictionary.entry.firstPersonShoulderEntityPosition.tooltip": "第一人称下玩家肩膀上生物在屏幕上的显示位置。",
+  "config.biologydictionary.entry.hideEntityDescriptionWidgetIfNotFound": "未找到生物简介时隐藏简介组件",
+  "config.biologydictionary.entry.hideEntityDescriptionWidgetIfNotFound.tooltip": "当没有数据包/模组提供当前生物的简介信息时，不展示简介组件。",
 
   "config.biologydictionary.category.server": "服务端",
   "config.biologydictionary.entry.bookItemRequired": "需要生物辞典物品",
@@ -46,7 +48,7 @@
   "modmenu.nameTranslation.biologydictionary": "生物辞典",
   "modmenu.descriptionTranslation.biologydictionary": "展示或修改生物的属性与状态。",
 
-  "screen.biologydictionary.overview_title_suffix" : "（总览）",
+  "screen.biologydictionary.overview_title"        : "「%s」",
   "screen.biologydictionary.player_selector"       : "玩家选择器",
   "screen.biologydictionary.player_selector.desc"  : "请选择一个在您附近的在线玩家。",
   "screen.biologydictionary.stealing"              : "偷窃",
@@ -251,6 +253,7 @@
   "text.biologydictionary.stealing_detected": "你被发现了！",
   "text.biologydictionary.entity_looking_at_you": "目标生物正看着你呢！",
 
+  "text.biologydictionary.no_entity_description": "（未查询到生物简介）",
   "text.biologydictionary.no_data_with_brackets": "（无数据）",
   "text.biologydictionary.none_with_brackets": "（无）",
   "text.biologydictionary.empty_with_brackets": "（空）",

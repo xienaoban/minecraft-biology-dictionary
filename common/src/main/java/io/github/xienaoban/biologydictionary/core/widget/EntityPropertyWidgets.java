@@ -17,6 +17,7 @@ import java.util.*;
 public final class EntityPropertyWidgets {
 
     public static void registerBuiltIn(Registrar registrar) {
+        registrar.register(EntityDescriptionWidget.class, EntityDescriptionWidget.FACTORY);
         registrar.register(EntityDisplayWidget.class, EntityDisplayWidget.FACTORY);
         registrar.register(LivingEntityHealthWidget.class, LivingEntityHealthWidget.FACTORY);
         registrar.register(EntityAirWidget.class, EntityAirWidget.FACTORY);
