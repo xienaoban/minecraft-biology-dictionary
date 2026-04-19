@@ -8,6 +8,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 - Added spawn property and widget
 - Added cache of static properties
+- Left/right-click the entity in EntityDisplayWidget to play hurt/death/ambient sound
+- Support entity description datapacks/mods
 
 ### Changed
 
@@ -25,6 +27,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Fixed the background flickering when going back to the previous screen
 - Fixed truncated empty lines in tooltips
 - Fixed spawn structure support
+- Render placeholder if failed to render entity
 
 ## Previous Versions
 

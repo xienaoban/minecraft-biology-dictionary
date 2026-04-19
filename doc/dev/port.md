@@ -88,6 +88,14 @@
 
 移植渲染代码时需要完全理解源版本的渲染逻辑，然后用目标版本的 API 重新实现。**不要尝试机械替换**。
 
+#### ScreenRenderingContext.renderEntity 差异
+
+| 方面 | 1.21.11 | 1.21.1 |
+|------|---------|--------|
+| **EntityRenderingCache** | 存在，`renderEntityCentered` 等方法需要传入 cache 参数 | 不存在，方法签名中无 cache 参数 |
+| **调用方式** | `ctx.renderEntityCentered(entity, cache, left, top, right, bottom, rotateX, rotateY)` | `ctx.renderEntityCentered(entity, left, top, right, bottom, rotateX, rotateY)` |
+| **占位符回退** | 由 `PlaceholderFallbackEntityRenderer` 类封装（内部持有 cache） | 同，但类中无 cache 字段 |
+
 ### 3. 高亮系统
 
 | 方面 | 1.21.11 | 1.21.1 |

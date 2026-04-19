@@ -34,13 +34,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.joml.Quaternionf;
 import org.joml.Vector2ic;
 import org.joml.Vector3f;
@@ -48,8 +43,6 @@ import org.joml.Vector3f;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @Environment(EnvType.CLIENT)
 public final class ScreenRenderingContext {
@@ -133,24 +126,35 @@ public final class ScreenRenderingContext {
         return getFont().width(component);
     }
 
+    public int calcTextWidth(FormattedCharSequence text) {
+        return getFont().width(text);
+    }
+
     /**
      * Render text with float precision.
      *
      * @see net.minecraft.client.gui.GuiGraphics#drawString(net.minecraft.client.gui.Font, net.minecraft.network.chat.Component, int, int, int, boolean)
      * @see net.minecraft.client.gui.GuiGraphics#drawString(net.minecraft.client.gui.Font, net.minecraft.util.FormattedCharSequence, int, int, int, boolean)
      */
-    public void renderText(Component component, int color, float z, float x, float y) {
+    public void renderText(FormattedCharSequence text, int color, float z, float x, float y) {
         Font font = getFont();
-        FormattedCharSequence text = component.getVisualOrderText();
         font.drawInBatch(text, x, y, color, false, getPose().last().pose(), bufferSource(),
                 Font.DisplayMode.NORMAL, 0, 15728880);
         getGuiGraphics().flush();
     }
 
-    public void renderText(Component component, int color, float size, float z, float x, float y) {
+    public void renderText(FormattedCharSequence text, int color, float size, float z, float x, float y) {
         try (ScaleRAII ignored = scaleOnce(size)) {
-            renderText(component, color, z, x / size, y / size);
+            renderText(text, color, z, x / size, y / size);
         }
+    }
+
+    public void renderText(Component component, int color, float z, float x, float y) {
+        renderText(component.getVisualOrderText(), color, z, x, y);
+    }
+
+    public void renderText(Component component, int color, float size, float z, float x, float y) {
+        renderText(component.getVisualOrderText(), color, size, z, x, y);
     }
 
     public void renderCenteredText(Component component, int color, float z, float x, float y) {
@@ -285,12 +289,12 @@ public final class ScreenRenderingContext {
     //=======================================================================================
 
     public void renderComponentTooltip(List<Component> texts, float leftX, float topY) {
-        renderTooltip(texts, leftX, topY, 1F);
+        renderTooltipTexts(texts, 1F, leftX, topY);
     }
 
     public void renderComponentTooltip(List<Component> texts, float size, float leftX, float topY) {
         try (ScaleRAII ignored = scaleOnce(size)) {
-            renderTooltip(texts, leftX, topY, size);
+            renderTooltipTexts(texts, size, leftX, topY);
         }
     }
 
@@ -307,8 +311,41 @@ public final class ScreenRenderingContext {
     public void renderComponentTooltipCentered(List<Component> texts, float size, float midX, float topY) {
         try (ScaleRAII ignored = scaleOnce(size)) {
             int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
-            renderTooltip(texts, midX - (maxLength + 6) * size / 2F, topY, size);
+            renderTooltipTexts(texts, size, midX - (maxLength + 6) * size / 2F, topY);
         }
+    }
+
+    public void renderLinedTooltip(List<FormattedCharSequence> lines, float leftX, float topY) {
+        renderTooltipLines(lines, 1F, leftX, topY);
+    }
+
+    public void renderLinedTooltip(List<FormattedCharSequence> lines, float size, float leftX, float topY) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            renderTooltipLines(lines, size, leftX, topY);
+        }
+    }
+
+    public void renderLinedTooltipCentered(List<FormattedCharSequence> lines, float midX, float topY) {
+        int maxLength = lines.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+        renderTooltipLines(lines, 1F, midX - (maxLength + 6) / 2F, topY);
+    }
+
+    public void renderLinedTooltipCentered(List<FormattedCharSequence> lines, float size, float midX, float topY) {
+        try (ScaleRAII ignored = scaleOnce(size)) {
+            int maxLength = lines.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+            renderTooltipLines(lines, size, midX - (maxLength + 6) * size / 2F, topY);
+        }
+    }
+
+    private void renderTooltipTexts(List<Component> texts, float size, float x, float y) {
+        Font font = getFont();
+        List<FormattedCharSequence> list = texts.stream()
+                .flatMap(c -> {
+                    List<FormattedCharSequence> lines = font.split(c, Widget.TOOLTIP_WIDTH);
+                    return lines.isEmpty() ? Stream.of(TextUtils.empty().getVisualOrderText()) : lines.stream();
+                })
+                .toList();
+        renderTooltipLines(list, size, x, y);
     }
 
     /**
@@ -319,15 +356,9 @@ public final class ScreenRenderingContext {
      * @see net.minecraft.client.gui.GuiGraphics#renderComponentTooltip(net.minecraft.client.gui.Font, java.util.List, int, int)
      * @see net.minecraft.client.gui.GuiGraphics#renderTooltipInternal(net.minecraft.client.gui.Font, java.util.List, int, int, net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner)
      */
-    private void renderTooltip(List<Component> texts,
-                               float x, float y, float size
-    ) {
+    private void renderTooltipLines(List<FormattedCharSequence> lines, float size, float x, float y) {
         Font font = getFont();
-        List<ClientTooltipComponent> list = texts.stream()
-                .flatMap(c -> {
-                    List<FormattedCharSequence> lines = font.split(c, Widget.TOOLTIP_WIDTH);
-                    return lines.isEmpty() ? Stream.of(TextUtils.empty().getVisualOrderText()) : lines.stream();
-                })
+        List<ClientTooltipComponent> list = lines.stream()
                 .map(ClientTooltipComponent::create)
                 .toList();
         ClientTooltipPositioner clientTooltipPositioner = DefaultTooltipPositioner.INSTANCE;
@@ -409,36 +440,6 @@ public final class ScreenRenderingContext {
 
     private void renderEntity(Entity entity, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
-        try {
-            renderEntity0(entity, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, silhouetteColor);
-        } catch (Exception e) {
-            // Render a placeholder instead.
-            Misc.doOnce(() -> {
-                LOGGER.error("Error in rendering entity \"{}\" on screen", EntityUtils.getEntityTypeIdName(entity), e);
-            });
-            ArmorStand armorStand = new ArmorStand(EntityType.ARMOR_STAND, entity.level());
-            int chosen = (((int) System.currentTimeMillis()) / 400) % 4;
-            Item head = switch (chosen) {
-                case 0 -> Items.CREEPER_HEAD;
-                case 1 -> Items.ZOMBIE_HEAD;
-                case 2 -> Items.SKELETON_SKULL;
-                case 3 -> Items.WITHER_SKELETON_SKULL;
-                default -> throw new AssertionError();
-            };
-            armorStand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(head));
-            renderEntity0(armorStand, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, silhouetteColor);
-        }
-    }
-
-    /**
-     * {@snippet :
-     *     InventoryScreen.renderEntityInInventoryFollowsMouse(getGuiGraphics(), (int) left, (int) top, (int) right, (int) bottom, 30, 0.0625F, rotateX * 20, rotateY * 20, livingEntity);
-     * }
-     *
-     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
-     */
-    private void renderEntity0(Entity entity, float left, float top, float right, float bottom,
-                               float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
         final float width = right - left;
         final float height = bottom - top;
         final float entityWidth = entity.getBbWidth();
