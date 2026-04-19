@@ -10,8 +10,6 @@ import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -438,6 +436,9 @@ public final class ScreenRenderingContext {
         renderEntity(entity, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, 0);
     }
 
+    /**
+     * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse(net.minecraft.client.gui.GuiGraphics, int, int, int, int, int, float, float, float, net.minecraft.world.entity.LivingEntity)
+     */
     private void renderEntity(Entity entity, float left, float top, float right, float bottom,
                               float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
         final float width = right - left;
@@ -490,6 +491,22 @@ public final class ScreenRenderingContext {
         Lighting.setupForEntityInInventory();
         EntityRenderDispatcher entityRenderDispatcher = getClient().getEntityRenderDispatcher();
 
+        float prevYRot = entity.getYRot();
+        float prevXRot = entity.getXRot();
+        float prevYBodyRot = 0, prevYBodyRotO = 0, prevYHeadRot = 0, prevYHeadRotO = 0;
+        if (entity instanceof LivingEntity living) {
+            prevYBodyRot = living.yBodyRot;
+            prevYBodyRotO = living.yBodyRotO;
+            prevYHeadRot = living.yHeadRot;
+            prevYHeadRotO = living.yHeadRotO;
+            living.yBodyRot = 0F;
+            living.yBodyRotO = 0F;
+            living.yHeadRot = 0F;
+            living.yHeadRotO = 0F;
+        }
+        entity.setYRot(0F);
+        entity.setXRot(0F);
+
         entityRenderDispatcher.setRenderShadow(false);
         if (silhouetteColor == 0) {
             RenderSystem.runAsFancy(
@@ -505,6 +522,15 @@ public final class ScreenRenderingContext {
         }
         getGuiGraphics().flush();
         entityRenderDispatcher.setRenderShadow(true);
+
+        entity.setYRot(prevYRot);
+        entity.setXRot(prevXRot);
+        if (entity instanceof LivingEntity living) {
+            living.yBodyRot = prevYBodyRot;
+            living.yBodyRotO = prevYBodyRotO;
+            living.yHeadRot = prevYHeadRot;
+            living.yHeadRotO = prevYHeadRotO;
+        }
         poseStack.popPose();
         Lighting.setupFor3DItems();
 
