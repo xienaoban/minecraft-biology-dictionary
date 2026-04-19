@@ -53,7 +53,7 @@ public final class Lang {
     CONFIG_ENTRY_PREFIX    = "config.biologydictionary.entry.",
     CONFIG_TOOLTIP_SUFFIX  = ".tooltip",
 
-    SCREEN_ENTITY_OVERVIEW_TITLE_SUFFIX = "screen.biologydictionary.overview_title_suffix",
+    SCREEN_ENTITY_OVERVIEW_TITLE        = "screen.biologydictionary.overview_title",
     SCREEN_PLAYER_SELECTOR              = "screen.biologydictionary.player_selector",
     SCREEN_PLAYER_SELECTOR_DESC         = "screen.biologydictionary.player_selector.desc",
     SCREEN_STEALING                     = "screen.biologydictionary.stealing",
@@ -257,6 +257,7 @@ public final class Lang {
     TEXT_STEALING_DETECTED                   = "text.biologydictionary.stealing_detected",
     TEXT_ENTITY_LOOKING_AT_YOU               = "text.biologydictionary.entity_looking_at_you",
 
+    TEXT_NO_ENTITY_DESCRIPTION               = "text.biologydictionary.no_entity_description",
     TEXT_NO_DATA_WITH_BRACKETS               = "text.biologydictionary.no_data_with_brackets",
     TEXT_NONE_WITH_BRACKETS                  = "text.biologydictionary.none_with_brackets",
     TEXT_EMPTY_WITH_BRACKETS                 = "text.biologydictionary.empty_with_brackets",

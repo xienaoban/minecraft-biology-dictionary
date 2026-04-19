@@ -41,6 +41,12 @@ public final class Configs {
         @ConfigEntry
         FirstPersonShoulderEntityPosition firstPersonShoulderEntityPosition = FirstPersonShoulderEntityPosition.BOTTOM;
 
+        /**
+         * Hide the entity description widget when no description is available for the current entity.
+         */
+        @ConfigEntry
+        boolean hideEntityDescriptionWidgetIfNotFound = true;
+
         // =========================== Getters ============================
 
         public float getScreenScale() {
@@ -49,6 +55,10 @@ public final class Configs {
 
         public FirstPersonShoulderEntityPosition getFirstPersonShoulderEntityPosition() {
             return firstPersonShoulderEntityPosition;
+        }
+
+        public boolean isHideEntityDescriptionWidgetIfNotFound() {
+            return hideEntityDescriptionWidgetIfNotFound;
         }
 
         // ============================= Misc =============================

@@ -22,6 +22,7 @@
         "entity.EntityMixin",
         "entity.FallingBlockEntityIMixin",
         "entity.HorseIMixin",
+        "entity.LivingEntityIMixin",
         "entity.MobIMixin",
         "entity.ServerPlayerIMixin",
         "entity.WanderingTraderMixin",
