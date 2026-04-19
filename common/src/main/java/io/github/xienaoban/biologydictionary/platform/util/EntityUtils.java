@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.platform.util;
 
 import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.HorseIMixin;
+import io.github.xienaoban.biologydictionary.mixin.entity.LivingEntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.MobIMixin;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -165,6 +166,19 @@ public final class EntityUtils {
 
     public static void playSound(Entity entity, SoundEvent soundEvent, float volume, float pitch) {
         entity.playSound(soundEvent, volume, pitch);
+    }
+
+    public static SoundEvent getHurtSound(LivingEntity entity) {
+        return ((LivingEntityIMixin) entity).biologydictionary$getHurtSound(
+                entity.level().damageSources().generic());
+    }
+
+    public static SoundEvent getDeathSound(LivingEntity entity) {
+        return ((LivingEntityIMixin) entity).biologydictionary$getDeathSound();
+    }
+
+    public static SoundEvent getAmbientSound(Mob entity) {
+        return ((MobIMixin) entity).biologydictionary$getAmbientSound();
     }
 
     public static float getHealth(LivingEntity entity) {

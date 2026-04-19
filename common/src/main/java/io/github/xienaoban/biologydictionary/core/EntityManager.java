@@ -115,15 +115,7 @@ public final class EntityManager {
                 return cmp;
             }
             String pa = ia.getPath(), pb = ib.getPath();
-            int i = pa.length() - 1, j = pb.length() - 1;
-            while (i >= 0 && j >= 0) {
-                cmp = pa.charAt(i) - pb.charAt(j);
-                if (cmp != 0) {
-                    return cmp;
-                }
-                --i; --j;
-            }
-            return i - j;
+            return new StringBuilder(pa).reverse().compareTo(new StringBuilder(pb).reverse());
         });
         for (int i = sortedInfos.size() - 1; i >= 0; --i) {
             sortedInfos.get(i).setSortId(i);
