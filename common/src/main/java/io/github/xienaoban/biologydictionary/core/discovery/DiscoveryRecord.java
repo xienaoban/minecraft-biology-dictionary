@@ -1,5 +1,8 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 /**
  * Discovery record for a single entity type, belonging to a single player.
  *
@@ -7,6 +10,11 @@ package io.github.xienaoban.biologydictionary.core.discovery;
  * @param firstDiscoveryTick game time tick, 0 if not discovered
  */
 public record DiscoveryRecord(boolean discovered, long firstDiscoveryTime, long firstDiscoveryTick) {
+    public static final Codec<DiscoveryRecord> CODEC = RecordCodecBuilder.create(i -> i.group(
+        Codec.BOOL.fieldOf("discovered").forGetter(DiscoveryRecord::discovered),
+        Codec.LONG.fieldOf("time").forGetter(DiscoveryRecord::firstDiscoveryTime),
+        Codec.LONG.fieldOf("tick").forGetter(DiscoveryRecord::firstDiscoveryTick)
+    ).apply(i, DiscoveryRecord::new));
     /**
      * Undiscovered record singleton.
      */
