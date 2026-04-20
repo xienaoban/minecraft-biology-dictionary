@@ -12,23 +12,18 @@ import java.util.Map;
 /**
  * Entity is discovered when the player interacts with it via the mod
  * (highlight skill or entity overview screen).
- * Uses mod-managed persistent data (SavedDataDiscoveryStorage).
+ * Uses MC's SavedData framework for persistence.
  */
 public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrategy {
     private final SavedDataDiscoveryStorage storage;
 
     public BiologyDictionaryDiscoveryStrategy(MinecraftServer server) {
-        this.storage = new SavedDataDiscoveryStorage(server);
+        this.storage = server.overworld().getDataStorage().computeIfAbsent(SavedDataDiscoveryStorage.TYPE);
     }
 
     @Override
     public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
         return storage.get(player.getUUID(), entityType).discovered();
-    }
-
-    @Override
-    public void save() {
-        storage.save();
     }
 
     public Map<EntityType<?>, DiscoveryRecord> getAllRecords(ServerPlayer player) {

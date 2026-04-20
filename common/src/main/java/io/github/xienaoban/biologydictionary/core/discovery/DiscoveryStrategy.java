@@ -14,8 +14,4 @@ public interface DiscoveryStrategy extends DiscoveryEventListener<ServerPlayer> 
      */
     boolean isDiscovered(ServerPlayer player, EntityType<?> entityType);
 
-    /**
-     * Save pending discovery data. Called on world save.
-     */
-    default void save() {}
 }

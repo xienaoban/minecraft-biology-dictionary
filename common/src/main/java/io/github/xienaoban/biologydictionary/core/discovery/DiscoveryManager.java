@@ -56,11 +56,4 @@ public final class DiscoveryManager implements ConfigsUpdateCallback {
     public Configs.ServerConfigs.DiscoveryStrategyMode getMode() {
         return mode;
     }
-
-    /**
-     * Save pending discovery data. Called on world save.
-     */
-    public void save() {
-        strategy.save();
-    }
 }
