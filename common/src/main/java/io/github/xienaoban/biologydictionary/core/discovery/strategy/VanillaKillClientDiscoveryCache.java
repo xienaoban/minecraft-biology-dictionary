@@ -26,8 +26,6 @@ public final class VanillaKillClientDiscoveryCache implements ClientDiscoveryCac
 
     @Override
     public DiscoveryRecord getRecord(EntityType<?> entityType) {
-        return isDiscovered(entityType)
-                ? new DiscoveryRecord(true)
-                : DiscoveryRecord.UNDISCOVERED;
+        return isDiscovered(entityType) ? new DiscoveryRecord() : null;
     }
 }

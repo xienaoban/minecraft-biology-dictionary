@@ -26,13 +26,12 @@ public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscov
 
     @Override
     public boolean isDiscovered(EntityType<?> entityType) {
-        DiscoveryRecord record = cache.get(entityType);
-        return record != null && record.discovered();
+        return cache.containsKey(entityType);
     }
 
     @Override
     public DiscoveryRecord getRecord(EntityType<?> entityType) {
-        return cache.getOrDefault(entityType, DiscoveryRecord.UNDISCOVERED);
+        return cache.get(entityType);
     }
 
     public void onFullSync(Map<EntityType<?>, DiscoveryRecord> data) {

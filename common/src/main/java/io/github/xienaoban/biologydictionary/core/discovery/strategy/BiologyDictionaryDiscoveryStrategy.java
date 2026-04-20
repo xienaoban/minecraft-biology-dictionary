@@ -23,7 +23,7 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
 
     @Override
     public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
-        return storage.get(player.getUUID(), entityType).discovered();
+        return storage.isDiscovered(player.getUUID(), entityType);
     }
 
     public Map<EntityType<?>, DiscoveryRecord> getAllRecords(ServerPlayer player) {
@@ -33,8 +33,8 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
     /**
      * Store the discovery record from client. Does nothing if already discovered.
      */
-    public void markDiscovered(ServerPlayer player, EntityType<?> entityType, DiscoveryRecord record) {
-        if (storage.get(player.getUUID(), entityType).discovered()) {
+    public void setDiscovered(ServerPlayer player, EntityType<?> entityType, DiscoveryRecord record) {
+        if (storage.isDiscovered(player.getUUID(), entityType)) {
             return;
         }
         storage.put(player.getUUID(), entityType, record);
