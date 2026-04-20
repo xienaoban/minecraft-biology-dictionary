@@ -55,6 +55,7 @@ public final class EntityPropertyWidgets {
         registrar.register(BeeHivePropertyWidget.class, BeeHivePropertyWidget.FACTORY);
         registrar.register(WanderingTraderDespawnDelayWidget.class, WanderingTraderDespawnDelayWidget.FACTORY);
         registrar.register(TurnPagePlaceholder.TurnPage2Widget.class, TurnPagePlaceholder.TurnPage2Widget.FACTORY);
+        registrar.register(EntityDiscoveryRecordWidget.class, EntityDiscoveryRecordWidget.FACTORY);
     }
 
     private static final Map<Class<? extends Entity>, List<Entry>> registry = new HashMap<>();

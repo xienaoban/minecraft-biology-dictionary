@@ -82,6 +82,16 @@
   "tag.biologydictionary.default.enemy_humanoid"       : "Humanoid",
   "tag.biologydictionary.default.enemy_patrol"         : "Patrol",
 
+  "discovery_source.biologydictionary.entity_detail_screen" : "Entity Detail Screen",
+  "discovery_source.biologydictionary.highlight"            : "Highlight",
+  "discovery_source.biologydictionary.telescope_observe"    : "Telescope",
+  "discovery_source.biologydictionary.kill"                 : "Kill",
+  "discovery_source.biologydictionary.attack"               : "Attacked",
+  "discovery_source.biologydictionary.interact"             : "Interact",
+  "discovery_source.biologydictionary.feed"                 : "Feed",
+  "discovery_source.biologydictionary.tame"                 : "Tame",
+  "discovery_source.biologydictionary.unknown"              : "Unknown",
+
   "widget.biologydictionary.overview"              : "View Entity Properties",
   "widget.biologydictionary.overview.desc"         : "View default/reference properties for this entity type",
   "widget.biologydictionary.overview.left.desc"    : "Lift click: View Entity Properties",
@@ -202,6 +212,15 @@
   "property_widget.biologydictionary.despawn_delay.retain"        : "Persuade to stay",
   "property_widget.biologydictionary.despawn_delay.retain.desc"   : "Have a sip of water and stay for 2 more minutes",
 
+  "property_widget.biologydictionary.discovery.bond"            : "First Discovery",
+  "property_widget.biologydictionary.discovery.source"          : "Source: ",
+  "property_widget.biologydictionary.discovery.real_time"       : "Real Time: ",
+  "property_widget.biologydictionary.discovery.game_time"       : "Game Time: ",
+  "property_widget.biologydictionary.discovery.game_time_value" : "Game Day %1$d, %2$02d:%3$02d",
+  "property_widget.biologydictionary.discovery.location"        : "Location: ",
+  "property_widget.biologydictionary.discovery.coordinates"     : "Coordinates: ",
+  "property_widget.biologydictionary.discovery.weather"         : "Weather: ",
+
   "text.biologydictionary.comma": ", ",
 
   "text.biologydictionary.open_local_configs_screen"  : "Open Local Configs Screen",
@@ -277,6 +296,14 @@
   "text.biologydictionary.bee_producing_nectar": "Producing nectar",
   "text.biologydictionary.bee_resting": "Resting",
   "text.biologydictionary.time_in_beehive": "Time in hive: %s",
+
+  "weather.none": "Clear",
+  "weather.rain": "Rain",
+  "weather.snow": "Snow",
+
+  "dimension.minecraft.overworld" : "Overworld",
+  "dimension.minecraft.the_nether": "The Nether",
+  "dimension.minecraft.the_end"   : "The End",
 
   "activity.minecraft.idle" : "Idle",
   "activity.minecraft.work" : "Work",
