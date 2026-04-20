@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import net.fabricmc.api.EnvType;
@@ -45,7 +46,7 @@ public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscov
         if (isDiscovered(entityType)) {
             return false;
         }
-        DiscoveryRecord record = DiscoveryRecord.discoveredNow(player.level().getGameTime());
+        DiscoveryRecord record = DiscoveryRecord.discoveredNow(player.level().getGameTime(), entity, DiscoverySource.ENTITY_DETAIL_SCREEN);
         cache.put(entityType, record);
         ClientNetManager.sendBiologyDictionaryDiscoveryIncremental(entityType, record);
         return true;
