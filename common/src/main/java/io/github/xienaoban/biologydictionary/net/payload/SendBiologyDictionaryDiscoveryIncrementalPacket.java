@@ -1,21 +1,20 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryManager;
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryDiscoveryStrategy;
-import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
-import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 
 /**
- * Client reports a discovery event to server: C -> S.
- * Sent when the player opens the entity detail screen.
- * The record (including timestamps) is generated on the client side.
+ * Server notifies client of a new discovery: S -> C.
+ * // TODO: implement client-side handling
  */
 public record SendBiologyDictionaryDiscoveryIncrementalPacket(EntityType<?> entityType, DiscoveryRecord record) implements Packet {
     public static final Packet.Factory<SendBiologyDictionaryDiscoveryIncrementalPacket> FACTORY = SendBiologyDictionaryDiscoveryIncrementalPacket::new;
@@ -35,16 +34,14 @@ public record SendBiologyDictionaryDiscoveryIncrementalPacket(EntityType<?> enti
         record.writeToBuf(buf);
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
-    public void serverReceive(ServerNetApi.Context ctx) {
-        ServerPlayer player = ctx.player();
-        ServerWorldSession session = ServerWorldSession.get();
-        if (session == null) {
-            return;
+    public void clientReceive(ClientNetApi.Context ctx) {
+        // TODO: proper client-side discovery handling
+        ClientWorldSession session = ClientWorldSession.get();
+        if (session != null) {
+            session.getDiscoveryClientCache().onIncrementalSync(entityType, record);
         }
-        DiscoveryManager manager = session.getDiscoveryManager();
-        if (manager.getStrategy() instanceof BiologyDictionaryDiscoveryStrategy strategy) {
-            strategy.setDiscovered(player, entityType, record);
-        }
+        BiologyDictionaryClient.sendCenteredInfo(EntityUtils.getEntityTypeNameText(entityType).copy());
     }
 }

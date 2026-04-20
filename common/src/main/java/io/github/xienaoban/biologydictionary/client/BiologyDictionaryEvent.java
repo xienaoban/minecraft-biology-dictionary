@@ -87,7 +87,7 @@ public final class BiologyDictionaryEvent {
             EntityProperties<Entity> properties = new EntityProperties<>(target);
             BDC.setHitEntity(target);
             BDC.setHitEntityProperties(properties);
-            ClientNetManager.requestEntityData(target);
+            ClientNetManager.requestEntityData(target, true);
             try {
                 ClientUtils.setScreen(client, new BdEntityDetailScreen(properties));
             } catch (Exception e) {

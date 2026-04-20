@@ -66,14 +66,23 @@ public final class SavedDataDiscoveryStorage extends SavedData {
         return playerData != null ? playerData : Map.of();
     }
 
-    public void put(UUID playerUUID, EntityType<?> entityType, DiscoveryRecord record) {
-        data.computeIfAbsent(playerUUID, k -> new HashMap<>()).put(entityType, record);
+    public DiscoveryRecord get(UUID playerUUID, EntityType<?> entityType) {
+        Map<EntityType<?>, DiscoveryRecord> playerData = data.get(playerUUID);
+        return playerData != null ? playerData.get(entityType) : null;
+    }
+
+    public boolean put(UUID playerUUID, EntityType<?> entityType, DiscoveryRecord record) {
+        Map<EntityType<?>, DiscoveryRecord> playerData = data.computeIfAbsent(playerUUID, k -> new HashMap<>());
+        if (playerData.putIfAbsent(entityType, record) != null) {
+            return false;
+        }
         setDirty();
+        return true;
     }
 
     record Packed(Map<UUID, Map<Identifier, DiscoveryRecord>> players) {
         public static final Codec<Packed> CODEC = RecordCodecBuilder.create(i -> i.group(
-            Codec.unboundedMap(UUIDUtil.CODEC, Codec.unboundedMap(Identifier.CODEC, DiscoveryRecord.CODEC))
+            Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.unboundedMap(Identifier.CODEC, DiscoveryRecord.CODEC))
                 .fieldOf("players").forGetter(Packed::players)
         ).apply(i, Packed::new));
     }

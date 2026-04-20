@@ -167,21 +167,21 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         private static final int BUTTONS_CUT = BUTTONS_TOTAL * 2 / 3;
 
         private final Entity entity;
+        private final EntityType<?> entityType;
         private final Component name;
         private final ItemStack spawnEgg;
-        private final EntityType<?> entityType;
 
         private final PlaceholderFallbackEntityRenderer entityRenderer;
 
         public EntityWidget(Entity entity) {
             super(2, 2);
             this.entity = entity;
-            this.entityRenderer = new PlaceholderFallbackEntityRenderer(entity);
             EntityType<?> type = EntityUtils.getEntityType(entity);
             this.entityType = type;
             this.name = type.getDescription();
             Item item = SpawnEggItem.byId(type);
             this.spawnEgg = item == null ? null : new ItemStack(item);
+            this.entityRenderer = new PlaceholderFallbackEntityRenderer(entity);
         }
 
         private boolean isDiscovered() {

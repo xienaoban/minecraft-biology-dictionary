@@ -39,8 +39,8 @@ public final class ClientNetManager {
         ClientNetApi.send(new RequestEntityOverviewPacket(EntityUtils.getEntityTypeIdName(entityType)));
     }
 
-    public static void requestEntityData(Entity entity) {
-        ClientNetApi.send(new RequestEntityDataPacket(EntityUtils.getId(entity)));
+    public static void requestEntityData(Entity entity, boolean firstAndFullSync) {
+        ClientNetApi.send(new RequestEntityDataPacket(EntityUtils.getId(entity), firstAndFullSync));
     }
 
     public static void requestBeehiveInfo(BlockPos pos) {
