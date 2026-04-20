@@ -30,16 +30,14 @@ public record SendBiologyDictionaryDiscoveryIncrementalPacket(EntityType<?> enti
     }
 
     private static DiscoveryRecord readRecord(FriendlyByteBuf buf) {
-        boolean discovered = buf.readBoolean();
         long time = buf.readLong();
         long tick = buf.readLong();
-        return new DiscoveryRecord(discovered, time, tick);
+        return new DiscoveryRecord(time, tick);
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeUtf(EntityUtils.getEntityTypeIdName(entityType));
-        buf.writeBoolean(record.discovered());
         buf.writeLong(record.firstDiscoveryTime());
         buf.writeLong(record.firstDiscoveryTick());
     }
@@ -53,7 +51,7 @@ public record SendBiologyDictionaryDiscoveryIncrementalPacket(EntityType<?> enti
         }
         DiscoveryManager manager = session.getDiscoveryManager();
         if (manager.getStrategy() instanceof BiologyDictionaryDiscoveryStrategy strategy) {
-            strategy.markDiscovered(player, entityType, record);
+            strategy.setDiscovered(player, entityType, record);
         }
     }
 }

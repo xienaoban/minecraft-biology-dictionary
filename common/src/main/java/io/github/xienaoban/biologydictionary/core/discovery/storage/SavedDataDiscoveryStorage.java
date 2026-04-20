@@ -36,7 +36,7 @@ public final class SavedDataDiscoveryStorage extends SavedData {
             Map<EntityType<?>, DiscoveryRecord> entityMap = new HashMap<>();
             for (var discEntry : entry.getValue().entrySet()) {
                 EntityType<?> type = EntityUtils.getEntityType(discEntry.getKey());
-                if (type != null && discEntry.getValue().discovered()) {
+                if (type != null) {
                     entityMap.put(type, discEntry.getValue());
                 }
             }
@@ -49,21 +49,16 @@ public final class SavedDataDiscoveryStorage extends SavedData {
         for (var entry : data.entrySet()) {
             Map<Identifier, DiscoveryRecord> entityMap = new HashMap<>();
             for (var discEntry : entry.getValue().entrySet()) {
-                if (discEntry.getValue().discovered()) {
-                    entityMap.put(EntityUtils.getEntityTypeId(discEntry.getKey()), discEntry.getValue());
-                }
+                entityMap.put(EntityUtils.getEntityTypeId(discEntry.getKey()), discEntry.getValue());
             }
             result.put(entry.getKey(), entityMap);
         }
         return new Packed(result);
     }
 
-    public DiscoveryRecord get(UUID playerUUID, EntityType<?> entityType) {
+    public boolean isDiscovered(UUID playerUUID, EntityType<?> entityType) {
         Map<EntityType<?>, DiscoveryRecord> playerData = data.get(playerUUID);
-        if (playerData == null) {
-            return DiscoveryRecord.UNDISCOVERED;
-        }
-        return playerData.getOrDefault(entityType, DiscoveryRecord.UNDISCOVERED);
+        return playerData != null && playerData.containsKey(entityType);
     }
 
     public Map<EntityType<?>, DiscoveryRecord> getAll(UUID playerUUID) {
