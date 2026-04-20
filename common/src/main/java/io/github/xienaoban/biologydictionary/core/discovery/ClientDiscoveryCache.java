@@ -14,4 +14,6 @@ public interface ClientDiscoveryCache extends DiscoveryEventListener<LocalPlayer
     boolean isDiscovered(EntityType<?> entityType);
 
     DiscoveryRecord getRecord(EntityType<?> entityType);
+
+    default void onIncrementalSync(EntityType<?> entityType, DiscoveryRecord record) {}
 }

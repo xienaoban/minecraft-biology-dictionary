@@ -30,6 +30,10 @@ public final class ServerNetManager {
         ServerNetApi.send(player, new ReplyBiologyDictionaryDiscoveryFullPacket(discoveries));
     }
 
+    public static void sendDiscoveryIncremental(ServerPlayer player, EntityType<?> entityType, DiscoveryRecord record) {
+        ServerNetApi.send(player, new SendBiologyDictionaryDiscoveryIncrementalPacket(entityType, record));
+    }
+
     public static void replyHighlightEntitiesSkill(ServerPlayer player, boolean allowed, EntityType<?> entityType, float radius) {
         ServerNetApi.send(player, new ReplyHighlightEntitiesPacket(allowed, entityType, radius));
     }

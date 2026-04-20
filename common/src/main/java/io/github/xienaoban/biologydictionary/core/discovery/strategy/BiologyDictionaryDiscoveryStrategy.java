@@ -1,10 +1,13 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.storage.SavedDataDiscoveryStorage;
+import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.Map;
@@ -30,13 +33,17 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         return storage.getAll(player.getUUID());
     }
 
-    /**
-     * Store the discovery record from client. Does nothing if already discovered.
-     */
-    public void setDiscovered(ServerPlayer player, EntityType<?> entityType, DiscoveryRecord record) {
+    @Override
+    public boolean onEntityDetailScreenOpened(ServerPlayer player, Entity entity) {
+        EntityType<?> entityType = entity.getType();
         if (storage.isDiscovered(player.getUUID(), entityType)) {
-            return;
+            return false;
         }
-        storage.put(player.getUUID(), entityType, record);
+        DiscoveryRecord record = DiscoveryRecord.discoveredNow(player.level().getGameTime(), entity, DiscoverySource.ENTITY_DETAIL_SCREEN);
+        if (storage.put(player.getUUID(), entityType, record)) {
+            ServerNetManager.sendDiscoveryIncremental(player, entityType, record);
+            return true;
+        }
+        return false;
     }
 }
