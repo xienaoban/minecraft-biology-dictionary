@@ -33,11 +33,10 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
         Map<EntityType<?>, DiscoveryRecord> map = new HashMap<>(size);
         for (int i = 0; i < size; i++) {
             Identifier id = Identifier.tryParse(buf.readUtf());
-            long time = buf.readLong();
-            long tick = buf.readLong();
+            DiscoveryRecord record = DiscoveryRecord.readFromBuf(buf);
             EntityType<?> type = EntityUtils.getEntityType(id);
             if (type != null) {
-                map.put(type, new DiscoveryRecord(time, tick));
+                map.put(type, record);
             }
         }
         return map;
@@ -48,9 +47,7 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
         buf.writeVarInt(discoveries.size());
         for (Map.Entry<EntityType<?>, DiscoveryRecord> entry : discoveries.entrySet()) {
             buf.writeUtf(EntityUtils.getEntityTypeIdName(entry.getKey()));
-            DiscoveryRecord record = entry.getValue();
-            buf.writeLong(record.firstDiscoveryTime());
-            buf.writeLong(record.firstDiscoveryTick());
+            entry.getValue().writeToBuf(buf);
         }
     }
 

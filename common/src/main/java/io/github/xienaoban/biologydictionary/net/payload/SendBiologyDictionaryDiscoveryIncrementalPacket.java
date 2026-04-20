@@ -21,7 +21,7 @@ public record SendBiologyDictionaryDiscoveryIncrementalPacket(EntityType<?> enti
     public static final Packet.Factory<SendBiologyDictionaryDiscoveryIncrementalPacket> FACTORY = SendBiologyDictionaryDiscoveryIncrementalPacket::new;
 
     private SendBiologyDictionaryDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
-        this(readEntityType(buf), readRecord(buf));
+        this(readEntityType(buf), DiscoveryRecord.readFromBuf(buf));
     }
 
     private static EntityType<?> readEntityType(FriendlyByteBuf buf) {
@@ -29,17 +29,10 @@ public record SendBiologyDictionaryDiscoveryIncrementalPacket(EntityType<?> enti
         return EntityUtils.getEntityType(id);
     }
 
-    private static DiscoveryRecord readRecord(FriendlyByteBuf buf) {
-        long time = buf.readLong();
-        long tick = buf.readLong();
-        return new DiscoveryRecord(time, tick);
-    }
-
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeUtf(EntityUtils.getEntityTypeIdName(entityType));
-        buf.writeLong(record.firstDiscoveryTime());
-        buf.writeLong(record.firstDiscoveryTick());
+        record.writeToBuf(buf);
     }
 
     @Override
