@@ -28,11 +28,7 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Entity> {
-    public static final Factory<Entity> FACTORY = properties -> {
-        ClientDiscoveryCache cache = ClientWorldSession.get().getDiscoveryClientCache();
-        DiscoveryRecord record = cache.getRecord(properties.entity().getType());
-        return new EntityDiscoveryRecordWidget(properties, record);
-    };
+    public static final Factory<Entity> FACTORY = EntityDiscoveryRecordWidget::new;
 
     private static final float TEXT_SCALE = 0.5F;
     private static final float H_PADDING = 1F;
@@ -42,10 +38,14 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
     private static final int TICKS_PER_DAY = 24000;
     private static final int TICKS_PER_HOUR = 1000;
 
-    private final List<FormattedCharSequence> lines;
+    private boolean noRecord;
+    private List<FormattedCharSequence> lines;
 
-    private EntityDiscoveryRecordWidget(EntityProperties<Entity> properties, DiscoveryRecord record) {
+    private EntityDiscoveryRecordWidget(EntityProperties<Entity> properties) {
         super(properties, 3, COLUMNS);
+        ClientDiscoveryCache cache = ClientWorldSession.get().getDiscoveryClientCache();
+        DiscoveryRecord record = cache.getRecord(e().getType());
+        this.noRecord = (record == null);
         this.lines = buildLines(record);
     }
 
@@ -56,6 +56,15 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
         float x = getBox().getLeft() + H_PADDING;
         int color = Colors.COMMON_DARK_LIGHTER_TEXT;
         float z = ctx.getZ();
+
+        if (noRecord) {
+            ClientDiscoveryCache cache = ClientWorldSession.get().getDiscoveryClientCache();
+            DiscoveryRecord record = cache.getRecord(e().getType());
+            if (record != null) {
+                this.noRecord = false;
+                this.lines = buildLines(record);
+            }
+        }
 
         for (FormattedCharSequence line : lines) {
             ctx.renderText(line, color, TEXT_SCALE, z, x, y);

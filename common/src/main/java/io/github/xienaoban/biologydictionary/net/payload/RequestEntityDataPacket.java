@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
@@ -34,14 +33,6 @@ public record RequestEntityDataPacket(int entityId, boolean firstAndFullSync) im
             for (EntityProperty<?> p : new EntityProperties<>(entity).getExtras()) {
                 p.getFrom(Misc.cast(entity));
                 p.writeTo(extraNbt);
-            }
-
-            if (firstAndFullSync) {
-                ServerWorldSession session = ServerWorldSession.get();
-                if (session != null) {
-                    DiscoveryStrategy strategy = session.getDiscoveryManager().getStrategy();
-                    strategy.onEntityDetailScreenOpened(ctx.player(), entity);
-                }
             }
 
             toSend = new ReplyEntityDataPacket(true, EntityUtils.getId(entity), vanillaNbt, extraNbt);
