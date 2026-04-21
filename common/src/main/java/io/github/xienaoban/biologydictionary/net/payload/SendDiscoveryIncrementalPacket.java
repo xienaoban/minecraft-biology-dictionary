@@ -14,12 +14,11 @@ import net.minecraft.world.entity.EntityType;
 
 /**
  * Server notifies client of a new discovery: S -> C.
- * // TODO: implement client-side handling
  */
-public record SendBiologyDictionaryDiscoveryIncrementalPacket(EntityType<?> entityType, DiscoveryRecord record) implements Packet {
-    public static final Packet.Factory<SendBiologyDictionaryDiscoveryIncrementalPacket> FACTORY = SendBiologyDictionaryDiscoveryIncrementalPacket::new;
+public record SendDiscoveryIncrementalPacket(EntityType<?> entityType, DiscoveryRecord record) implements Packet {
+    public static final Packet.Factory<SendDiscoveryIncrementalPacket> FACTORY = SendDiscoveryIncrementalPacket::new;
 
-    private SendBiologyDictionaryDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
+    private SendDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
         this(readEntityType(buf), DiscoveryRecord.readFromBuf(buf));
     }
 
@@ -37,11 +36,13 @@ public record SendBiologyDictionaryDiscoveryIncrementalPacket(EntityType<?> enti
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        // TODO: proper client-side discovery handling
-        ClientWorldSession session = ClientWorldSession.get();
-        if (session != null) {
-            session.getDiscoveryClientCache().onIncrementalSync(entityType, record);
-        }
-        BiologyDictionaryClient.sendCenteredInfo(EntityUtils.getEntityTypeNameText(entityType).copy());
+        final class W { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
+            ClientWorldSession session = ClientWorldSession.get();
+            if (session != null) {
+                session.getDiscoveryClientCache().onIncrementalSync(packet.entityType, packet.record);
+            }
+            BiologyDictionaryClient.sendCenteredInfo(EntityUtils.getEntityTypeNameText(packet.entityType).copy());
+        }}
+        W.receive(this, ctx);
     }
 }

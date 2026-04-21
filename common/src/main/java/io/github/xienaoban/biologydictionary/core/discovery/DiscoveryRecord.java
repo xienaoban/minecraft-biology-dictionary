@@ -52,7 +52,11 @@ public record DiscoveryRecord(
     ).apply(i, DiscoveryRecord::new));
 
     public DiscoveryRecord() {
-        this(NO_TIME, NO_TIME, DiscoverySource.UNKNOWN, NO_ID, NO_ID, BlockPos.ZERO, Biome.Precipitation.NONE, NO_UUID, NO_NBT);
+        this(DiscoverySource.UNKNOWN);
+    }
+
+    public DiscoveryRecord(DiscoverySource source) {
+        this(NO_TIME, NO_TIME, source, NO_ID, NO_ID, BlockPos.ZERO, Biome.Precipitation.NONE, NO_UUID, NO_NBT);
     }
 
     public static DiscoveryRecord readFromBuf(FriendlyByteBuf buf) {

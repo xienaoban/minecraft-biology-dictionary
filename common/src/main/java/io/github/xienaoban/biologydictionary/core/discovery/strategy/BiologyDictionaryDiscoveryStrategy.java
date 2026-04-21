@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Entity is discovered when the player interacts with it via the mod
@@ -31,6 +32,10 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
 
     public Map<EntityType<?>, DiscoveryRecord> getAllRecords(ServerPlayer player) {
         return storage.getAll(player.getUUID());
+    }
+
+    public DiscoveryRecord getRecord(UUID playerUUID, EntityType<?> entityType) {
+        return storage.get(playerUUID, entityType);
     }
 
     @Override
