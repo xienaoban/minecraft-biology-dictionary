@@ -36,6 +36,6 @@ public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource so
         if (entity == null) {
             return;
         }
-        source.dispatch(session.getDiscoveryManager().getStrategy(), player, entity);
+        source.dispatch(session.getDiscoveryManager(), player, entity);
     }
 }

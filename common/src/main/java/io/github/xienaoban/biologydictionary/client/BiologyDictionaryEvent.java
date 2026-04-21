@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.gui.screen.BdEntityDetailScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.BdHomeScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
@@ -40,7 +41,7 @@ public final class BiologyDictionaryEvent {
             }
         } catch (Throwable e) {
             resetHit();
-            LOGGER.error("Failed to open Biology Dictionary screen", e);
+            BiologyDictionaryClient.printThrowableToLoggerAndGame("Failed to open Biology Dictionary screen", e);
         }
     }
 
@@ -88,12 +89,8 @@ public final class BiologyDictionaryEvent {
             BDC.setHitEntity(target);
             BDC.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target, true);
-            try {
-                ClientUtils.setScreen(client, new BdEntityDetailScreen(properties));
-            } catch (Exception e) {
-                BiologyDictionaryClient.printThrowableToLoggerAndGame("Failed to open detailed screen", e);
-                return;
-            }
+            ClientWorldSession.get().getDiscoveryClientCache().onEntityDetailScreenOpened(player, target);
+            ClientUtils.setScreen(client, new BdEntityDetailScreen(properties));
         }
         ClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
     }

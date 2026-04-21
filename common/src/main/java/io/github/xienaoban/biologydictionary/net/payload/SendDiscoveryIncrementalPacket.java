@@ -39,7 +39,7 @@ public record SendDiscoveryIncrementalPacket(EntityType<?> entityType, Discovery
         final class W { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
             ClientWorldSession session = ClientWorldSession.get();
             if (session != null) {
-                session.getDiscoveryClientCache().onIncrementalSync(packet.entityType, packet.record);
+                session.getDiscoveryClientCache().incrementalSync(packet.entityType, packet.record);
             }
             BiologyDictionaryClient.sendCenteredInfo(EntityUtils.getEntityTypeNameText(packet.entityType).copy());
         }}

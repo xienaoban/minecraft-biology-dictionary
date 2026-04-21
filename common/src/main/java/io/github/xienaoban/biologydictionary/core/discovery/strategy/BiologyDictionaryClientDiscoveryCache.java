@@ -2,9 +2,13 @@ package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.Map;
@@ -38,7 +42,14 @@ public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscov
     }
 
     @Override
-    public void onIncrementalSync(EntityType<?> entityType, DiscoveryRecord discoveryRecord) {
+    public void incrementalSync(EntityType<?> entityType, DiscoveryRecord discoveryRecord) {
         cache.put(entityType, discoveryRecord);
+    }
+
+    @Override
+    public boolean onEntityDetailScreenOpened(LocalPlayer player, Entity entity) {
+        if (isDiscovered(EntityUtils.getEntityType(entity))) { return false; }
+        ClientNetManager.requestDiscoveryIncremental(EntityUtils.getId(entity), DiscoverySource.ENTITY_DETAIL_SCREEN);
+        return true;
     }
 }

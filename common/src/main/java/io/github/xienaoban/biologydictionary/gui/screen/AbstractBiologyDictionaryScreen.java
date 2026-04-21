@@ -366,8 +366,14 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
+                BdHomeScreen home;
+                if (getLastScreen() instanceof BdHomeScreen lastHome) {
+                    home = lastHome;
+                } else {
+                    home = new BdHomeScreen();
+                }
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                ClientUtils.setScreen(client, new BdHomeScreen());
+                ClientUtils.setScreen(client, home);
                 return true;
             }
             return super.onMouseDown(x, y, code);

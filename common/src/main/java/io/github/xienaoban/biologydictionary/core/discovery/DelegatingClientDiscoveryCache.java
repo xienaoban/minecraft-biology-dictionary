@@ -57,8 +57,8 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
     }
 
     @Override
-    public void onIncrementalSync(EntityType<?> entityType, DiscoveryRecord record) {
-        delegate.onIncrementalSync(entityType, record);
+    public void incrementalSync(EntityType<?> entityType, DiscoveryRecord record) {
+        delegate.incrementalSync(entityType, record);
     }
 
     @Override
