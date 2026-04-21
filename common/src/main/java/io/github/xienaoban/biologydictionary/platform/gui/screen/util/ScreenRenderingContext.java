@@ -578,6 +578,11 @@ public final class ScreenRenderingContext {
             entityRenderState = RenderUtils.createRenderState(entityRenderer);
         }
         entityRenderer.extractRenderState(entity, entityRenderState, 1F);
+        if (entityRenderState instanceof net.minecraft.client.renderer.entity.state.LivingEntityRenderState livingState) {
+            livingState.bodyRot = 0F;
+            livingState.yRot = 0F;
+            livingState.xRot = 0F;
+        }
         entityRenderState.lightCoords = 15728880;
         entityRenderState.shadowPieces.clear();
 
