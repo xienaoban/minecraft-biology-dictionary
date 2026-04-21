@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.net;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.net.payload.*;
@@ -31,8 +31,8 @@ public final class ClientNetManager {
         ClientNetApi.send(new RequestBiologyDictionaryDiscoveryFullPacket());
     }
 
-    public static void sendBiologyDictionaryDiscoveryIncremental(EntityType<?> entityType, DiscoveryRecord record) {
-        ClientNetApi.send(new SendBiologyDictionaryDiscoveryIncrementalPacket(entityType, record));
+    public static void requestDiscoveryIncremental(int entityId, DiscoverySource source) {
+        ClientNetApi.send(new RequestDiscoveryIncrementalPacket(entityId, source));
     }
 
     public static void requestEntityOverview(EntityType<?> entityType) {

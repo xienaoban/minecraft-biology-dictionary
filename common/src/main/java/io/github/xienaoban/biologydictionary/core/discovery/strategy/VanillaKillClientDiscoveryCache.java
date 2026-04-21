@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -26,6 +27,6 @@ public final class VanillaKillClientDiscoveryCache implements ClientDiscoveryCac
 
     @Override
     public DiscoveryRecord getRecord(EntityType<?> entityType) {
-        return isDiscovered(entityType) ? new DiscoveryRecord() : null;
+        return isDiscovered(entityType) ? new DiscoveryRecord(DiscoverySource.KILL) : null;
     }
 }
