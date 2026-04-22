@@ -50,11 +50,14 @@ public final class BiologyDictionaryClient {
             ClientWorldSession.deinit();
             WorldSession.deinit();
             ConfigsManager.setLocalServerConfigs();
+            hitEntity = null;
+            hitBlock = null;
+            hitEntityProperties = null;
         });
         ClientEventRegistry.registerEndTick(client -> {
             tick(client);
-            ClientWorldSession ws = ClientWorldSession.get();
-            if (ws != null) { ws.tick(); }
+            ClientWorldSession cws = ClientWorldSession.get();
+            if (cws != null) { cws.tick(); }
         });
 
         EntityPropertyWidgets.init();

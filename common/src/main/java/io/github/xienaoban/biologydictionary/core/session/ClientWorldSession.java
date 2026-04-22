@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.session;
 
 import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRenderer;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
+import io.github.xienaoban.biologydictionary.client.TelescopeManager;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.discovery.DelegatingClientDiscoveryCache;
@@ -45,11 +46,13 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
     private final HighlightManager highlightManager;
     private final DelegatingClientDiscoveryCache discoveryClientCache;
     private final FirstPersonShoulderEntityRenderer shoulderEntityRenderer;
+    private final TelescopeManager telescopeManager;
 
     private ClientWorldSession() {
         highlightManager = new HighlightManager();
         discoveryClientCache = new DelegatingClientDiscoveryCache();
         shoulderEntityRenderer = new FirstPersonShoulderEntityRenderer();
+        telescopeManager = new TelescopeManager();
     }
 
     @Override
@@ -69,7 +72,12 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
         return shoulderEntityRenderer;
     }
 
+    public TelescopeManager getTelescopeManager() {
+        return telescopeManager;
+    }
+
     public void tick() {
         highlightManager.tick();
+        telescopeManager.tick();
     }
 }

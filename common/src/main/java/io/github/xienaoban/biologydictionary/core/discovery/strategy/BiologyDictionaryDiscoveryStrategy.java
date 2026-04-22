@@ -67,6 +67,15 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         return tryDiscover(player, entity, DiscoverySource.KILLED_BY);
     }
 
+    @Override
+    public boolean onEntityObservedWithTelescope(ServerPlayer player, Entity entity) {
+        if (!player.isScoping()
+                || !PlayerUtils.isWithinRangeAndUnobstructed(player, entity, PlayerUtils.TELESCOPE_RANGE)) {
+            return false;
+        }
+        return tryDiscover(player, entity, DiscoverySource.TELESCOPE_OBSERVE);
+    }
+
     private boolean tryDiscover(ServerPlayer player, Entity entity, DiscoverySource source) {
         EntityType<?> entityType = EntityUtils.getEntityType(entity);
         if (storage.isDiscovered(player.getUUID(), entityType)) {
@@ -75,7 +84,7 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         DiscoveryRecord record = DiscoveryRecord.discoveredNow(
                 player.level().getGameTime(), entity, source);
         if (storage.put(player.getUUID(), entityType, record)) {
-            ServerNetManager.sendDiscoveryIncremental(player, entityType, record);
+            ServerNetManager.sendDiscoveryIncremental(player, entity, entityType, record);
             return true;
         }
         return false;

@@ -29,7 +29,7 @@ public final class VanillaKillDiscoveryStrategy implements DiscoveryStrategy {
         if (player.getStats().getValue(Stats.ENTITY_KILLED, entityType) == 0) {
             DiscoveryRecord record = DiscoveryRecord.discoveredNow(
                     player.level().getGameTime(), entity, DiscoverySource.KILL);
-            ServerNetManager.sendDiscoveryIncremental(player, entityType, record);
+            ServerNetManager.sendDiscoveryIncremental(player, entity, entityType, record);
             return true;
         }
         return false;
@@ -42,7 +42,7 @@ public final class VanillaKillDiscoveryStrategy implements DiscoveryStrategy {
         if (player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) == 0) {
             DiscoveryRecord record = DiscoveryRecord.discoveredNow(
                     player.level().getGameTime(), entity, DiscoverySource.KILLED_BY);
-            ServerNetManager.sendDiscoveryIncremental(player, entityType, record);
+            ServerNetManager.sendDiscoveryIncremental(player, entity, entityType, record);
             return true;
         }
         return false;
