@@ -6,10 +6,12 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.storage.SavedDataDiscoveryStorage;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Enemy;
 
 import java.util.Map;
 import java.util.UUID;
@@ -41,6 +43,9 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
 
     @Override
     public boolean onEntityDetailScreenOpened(ServerPlayer player, Entity entity) {
+        if (!PlayerUtils.isWithinInteractionRange(player, entity, 10)) {
+            return false;
+        }
         return tryDiscover(player, entity, DiscoverySource.ENTITY_DETAIL_SCREEN);
     }
 
@@ -51,6 +56,9 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
 
     @Override
     public boolean onEntityInteracted(ServerPlayer player, Entity entity) {
+        if (entity instanceof Enemy) {
+            return false;
+        }
         return tryDiscover(player, entity, DiscoverySource.INTERACT);
     }
 
