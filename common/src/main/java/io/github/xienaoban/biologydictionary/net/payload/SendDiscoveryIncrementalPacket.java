@@ -1,10 +1,11 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
+import io.github.xienaoban.biologydictionary.client.DiscoveryToast;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -41,7 +42,7 @@ public record SendDiscoveryIncrementalPacket(EntityType<?> entityType, Discovery
             if (session != null) {
                 session.getDiscoveryClientCache().incrementalSync(packet.entityType, packet.record);
             }
-            BiologyDictionaryClient.sendCenteredInfo(EntityUtils.getEntityTypeNameText(packet.entityType).copy());
+            ClientUtils.getClient().getToastManager().addToast(new DiscoveryToast(packet.entityType));
         }}
         W.receive(this, ctx);
     }
