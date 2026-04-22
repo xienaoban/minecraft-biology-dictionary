@@ -32,7 +32,7 @@
   "config.biologydictionary.entry.skillCosts": "Skill Costs Configuration",
   "config.biologydictionary.entry.skillCosts.tooltip": "Cost configuration for various skills. Please edit directly in the config file.",
   "config.biologydictionary.entry.discoveryStrategy": "Discovery Strategy",
-  "config.biologydictionary.entry.discoveryStrategy.tooltip": "Determines how a entity is considered discovered by a player.",
+  "config.biologydictionary.entry.discoveryStrategy.tooltip": "Defines how an entity is \"discovered\".\nAlways Unlocked: All discovered on start.\nVanilla Kill: Kill or be killed by the entity (uses vanilla stats).\nBiology Dictionary: Detail screen / telescope / kill / killed by / interact (requires extra save data).",
   "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities": "Allow Overview and Skills for Undiscovered Entities",
   "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities.tooltip": "If true, the overview can be accessed even if the entity is undiscovered.",
 
@@ -43,7 +43,7 @@
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.ALWAYS_UNLOCKED": "Always Unlocked",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.VANILLA_KILL": "Vanilla Kill",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.BIOLOGY_DICTIONARY": "Biology Dictionary (NOT DONE YET)",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.BIOLOGY_DICTIONARY": "Biology Dictionary",
 
   "modmenu.nameTranslation.biologydictionary": "Biology Dictionary",
   "modmenu.descriptionTranslation.biologydictionary": "To display or modify the properties and states of mobs.",
@@ -241,7 +241,7 @@
   "text.biologydictionary.config_reload_success": "Configuration reloaded",
   "text.biologydictionary.no_biology_dictionary_book": "No Biology Dictionary Book in inventory！",
   "text.biologydictionary.entity_not_discovered": "Not discovered yet (see server config for unlock conditions)",
-  "text.biologydictionary.new_entity_discovered": "New creature discovered!",
+  "text.biologydictionary.new_entity_discovered": "New Entity Discovered!",
   "text.biologydictionary.target_entity_too_far": "The target mob is too far from you!",
   "text.biologydictionary.highlighted_entities": "Sensed %d %s within %d meters!",
   "text.biologydictionary.failed_to_highlight": "Failed to highlight: %s",
@@ -302,9 +302,12 @@
   "weather.rain": "Rain",
   "weather.snow": "Snow",
 
+  "dimension.minecraft.unknown"   : "Unknown",
   "dimension.minecraft.overworld" : "Overworld",
   "dimension.minecraft.the_nether": "The Nether",
   "dimension.minecraft.the_end"   : "The End",
+
+  "biome.minecraft.unknown": "Unknown",
 
   "activity.minecraft.idle" : "Idle",
   "activity.minecraft.work" : "Work",

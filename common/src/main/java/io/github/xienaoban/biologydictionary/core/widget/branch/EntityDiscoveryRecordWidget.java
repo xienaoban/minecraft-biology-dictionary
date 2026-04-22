@@ -156,17 +156,13 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
     }
 
     private static Component getDimensionText(DiscoveryRecord record) {
-        String dimKey = "dimension." + record.dimension().getNamespace() + "." + record.dimension().getPath();
-        return TextUtils.hasTranslation(dimKey)
-            ? TextUtils.translate(dimKey)
-            : Component.literal(record.dimension().toString());
+        String dimKey = Lang.DIMENSION_PREFIX + record.dimension().getNamespace() + "." + record.dimension().getPath();
+        return TextUtils.translate(dimKey);
     }
 
     private static Component getBiomeText(DiscoveryRecord record) {
         String biomeKey = Lang.BIOME_PREFIX + record.biome().getNamespace() + "." + record.biome().getPath();
-        return TextUtils.hasTranslation(biomeKey)
-            ? TextUtils.translate(biomeKey)
-            : Component.literal(record.biome().toString());
+        return TextUtils.translate(biomeKey);
     }
 
     private static Component getCoordinateText(DiscoveryRecord record) {

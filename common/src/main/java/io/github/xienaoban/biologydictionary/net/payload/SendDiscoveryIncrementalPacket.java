@@ -74,12 +74,12 @@ public record SendDiscoveryIncrementalPacket(EntityType<?> entityType, Discovery
             if (target != null && level != null) {
                 Vec3 center = target.getBoundingBox().getCenter();
                 var rng = level.random;
-                for (int i = 0; i < 8; i++) {
-                    double ox = (rng.nextDouble() - 0.5) * target.getBbWidth();
-                    double oy = (rng.nextDouble() - 0.5) * target.getBbHeight();
-                    double oz = (rng.nextDouble() - 0.5) * target.getBbWidth();
+                for (int i = 0; i < 6; i++) {
                     level.addParticle(ParticleTypes.END_ROD,
-                            center.x + ox, center.y + oy, center.z + oz, 0, 0.5, 0);
+                            center.x + (rng.nextDouble() - 0.5) * target.getBbWidth(),
+                            center.y + (rng.nextDouble() - 0.5) * target.getBbHeight(),
+                            center.z + (rng.nextDouble() - 0.5) * target.getBbWidth(),
+                            0, 0.05, 0);
                 }
             }
         }}

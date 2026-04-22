@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
 @Environment(EnvType.CLIENT)
 public class DiscoveryToast implements Toast {
     private static final Identifier BACKGROUND_SPRITE = Identifier.withDefaultNamespace("toast/advancement");
-    private static final int DISPLAY_TIME = 5000;
+    private static final int DISPLAY_TIME = 7000;
     private final Component entityName;
     @Nullable
     private final ItemStack eggStack;
