@@ -41,10 +41,11 @@ public final class Lang {
     KEY_OPEN_HANDBOOK = "key.biologydictionary.open_handbook",
     KEY_DEBUG = "key.biologydictionary.debug",
 
-    ACTIVITY_PREFIX = "activity.minecraft.",
-    LOOT_CONDITION_PREFIX = "loot_condition.",
-    BIOME_PREFIX = "biome.",
-    STRUCTURE_PREFIX = "structure.",
+    ACTIVITY_PREFIX         = "activity.minecraft.",
+    LOOT_CONDITION_PREFIX   = "loot_condition.",
+    DIMENSION_PREFIX        = "dimension.",
+    BIOME_PREFIX            = "biome.",
+    STRUCTURE_PREFIX        = "structure.",
 
     CONFIG_PREFIX          = "config.biologydictionary.",
     CONFIG_TITLE           = "config.biologydictionary.title",

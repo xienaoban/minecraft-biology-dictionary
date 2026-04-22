@@ -9,7 +9,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Added spawn property and widget
 - Added cache of static properties
 - Left/right-click the entity in EntityDisplayWidget to play hurt/death/ambient sound
-- Support entity description datapacks/mods
+- Added support for entity description datapacks/mods
+- Added toast prompt for new discoveries
 
 ### Changed
 
@@ -20,6 +21,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Changed default cost item of EntitySetSoundSkill to white wool
 - Changed default cost item of MobSetNoAiSkill to totem of undying
 - Moved networking logic from net thread to client/server thread
+- Refactored discovery system
 
 ### Fixed
 

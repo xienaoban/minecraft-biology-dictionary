@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.stats.Stats;
+import net.minecraft.stats.StatsCounter;
 import net.minecraft.world.entity.EntityType;
 
 /**
@@ -21,12 +22,13 @@ public final class VanillaKillClientDiscoveryCache implements ClientDiscoveryCac
         if (ClientUtils.getClientPlayer() == null) {
             return false;
         }
-        return ClientUtils.getClientPlayer().getStats()
-                .getValue(Stats.ENTITY_KILLED, entityType) > 0;
+        StatsCounter stats = ClientUtils.getClientPlayer().getStats();
+        return stats.getValue(Stats.ENTITY_KILLED, entityType) > 0
+                || stats.getValue(Stats.ENTITY_KILLED_BY, entityType) > 0;
     }
 
     @Override
     public DiscoveryRecord getRecord(EntityType<?> entityType) {
-        return isDiscovered(entityType) ? new DiscoveryRecord(DiscoverySource.KILL) : null;
+        return isDiscovered(entityType) ? new DiscoveryRecord() : null;
     }
 }
