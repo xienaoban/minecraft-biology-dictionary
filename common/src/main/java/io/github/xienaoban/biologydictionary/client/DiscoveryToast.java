@@ -56,7 +56,7 @@ public class DiscoveryToast implements Toast {
         }
         MutableComponent title = TextUtils.translate(Lang.TEXT_NEW_ENTITY_DISCOVERED)
             .withStyle(ChatFormatting.YELLOW);
-        guiGraphics.drawString(font, title, 30, 7, -30465, false);
+        guiGraphics.drawString(font, title, 30, 7, -256, false);
         guiGraphics.drawString(font, entityName, 30, 18, -1, false);
     }
 }
