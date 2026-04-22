@@ -90,6 +90,7 @@
   "discovery_source.biologydictionary.interact"             : "Interact",
   "discovery_source.biologydictionary.feed"                 : "Feed",
   "discovery_source.biologydictionary.tame"                 : "Tame",
+  "discovery_source.biologydictionary.killed_by"            : "Killed By",
   "discovery_source.biologydictionary.unknown"              : "Unknown",
 
   "widget.biologydictionary.overview"              : "View Entity Properties",

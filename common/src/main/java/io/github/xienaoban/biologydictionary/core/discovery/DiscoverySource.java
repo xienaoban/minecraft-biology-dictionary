@@ -16,7 +16,8 @@ public enum DiscoverySource {
     INTERACT(DiscoveryEventListener::onEntityInteracted),
     FEED(DiscoveryEventListener::onEntityFed),
     TAME(DiscoveryEventListener::onEntityTamed),
-    UNKNOWN(null);
+    KILLED_BY(DiscoveryEventListener::onPlayerKilledByEntity),
+    UNKNOWN((l, p, e) -> false);
 
     private final Invoker<?> invoker;
 
@@ -25,7 +26,6 @@ public enum DiscoverySource {
     }
 
     public <P extends Player> boolean dispatch(DiscoveryEventListener<P> listener, P player, Entity entity) {
-        if (invoker == null) return false;
         @SuppressWarnings("unchecked")
         boolean res = ((Invoker<P>) invoker).invoke(listener, player, entity);
         return res;

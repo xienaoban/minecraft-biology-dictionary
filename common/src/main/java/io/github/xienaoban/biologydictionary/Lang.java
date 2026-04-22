@@ -94,6 +94,7 @@ public final class Lang {
     DISCOVERY_SOURCE_INTERACT             = "discovery_source.biologydictionary.interact",
     DISCOVERY_SOURCE_FEED                 = "discovery_source.biologydictionary.feed",
     DISCOVERY_SOURCE_TAME                 = "discovery_source.biologydictionary.tame",
+    DISCOVERY_SOURCE_KILLED_BY            = "discovery_source.biologydictionary.killed_by",
     DISCOVERY_SOURCE_UNKNOWN              = "discovery_source.biologydictionary.unknown",
 
     WIDGET_ENTITY_OVERVIEW              = "widget.biologydictionary.overview",
