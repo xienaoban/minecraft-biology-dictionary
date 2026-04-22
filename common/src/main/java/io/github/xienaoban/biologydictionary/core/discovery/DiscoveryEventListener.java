@@ -60,4 +60,10 @@ public interface DiscoveryEventListener<P extends Player> {
      * @return true if this event resulted in a new discovery
      */
     default boolean onEntityTamed(P player, Entity entity) { return false; }
+
+    /**
+     * Called when the player is killed by an entity.
+     * @return true if this event resulted in a new discovery
+     */
+    default boolean onPlayerKilledByEntity(P player, Entity entity) { return false; }
 }

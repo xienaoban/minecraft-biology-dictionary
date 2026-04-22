@@ -95,4 +95,9 @@ public final class DiscoveryManager implements DiscoveryStrategy, ConfigsUpdateC
     public boolean onEntityTamed(ServerPlayer player, Entity entity) {
         return strategy.onEntityTamed(player, entity);
     }
+
+    @Override
+    public boolean onPlayerKilledByEntity(ServerPlayer player, Entity entity) {
+        return strategy.onPlayerKilledByEntity(player, entity);
+    }
 }

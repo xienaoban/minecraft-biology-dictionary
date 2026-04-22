@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.storage.SavedDataDiscoveryStorage;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -40,11 +41,31 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
 
     @Override
     public boolean onEntityDetailScreenOpened(ServerPlayer player, Entity entity) {
-        EntityType<?> entityType = entity.getType();
+        return tryDiscover(player, entity, DiscoverySource.ENTITY_DETAIL_SCREEN);
+    }
+
+    @Override
+    public boolean onEntityKilled(ServerPlayer player, Entity entity) {
+        return tryDiscover(player, entity, DiscoverySource.KILL);
+    }
+
+    @Override
+    public boolean onEntityInteracted(ServerPlayer player, Entity entity) {
+        return tryDiscover(player, entity, DiscoverySource.INTERACT);
+    }
+
+    @Override
+    public boolean onPlayerKilledByEntity(ServerPlayer player, Entity entity) {
+        return tryDiscover(player, entity, DiscoverySource.KILLED_BY);
+    }
+
+    private boolean tryDiscover(ServerPlayer player, Entity entity, DiscoverySource source) {
+        EntityType<?> entityType = EntityUtils.getEntityType(entity);
         if (storage.isDiscovered(player.getUUID(), entityType)) {
             return false;
         }
-        DiscoveryRecord record = DiscoveryRecord.discoveredNow(player.level().getGameTime(), entity, DiscoverySource.ENTITY_DETAIL_SCREEN);
+        DiscoveryRecord record = DiscoveryRecord.discoveredNow(
+                player.level().getGameTime(), entity, source);
         if (storage.put(player.getUUID(), entityType, record)) {
             ServerNetManager.sendDiscoveryIncremental(player, entityType, record);
             return true;

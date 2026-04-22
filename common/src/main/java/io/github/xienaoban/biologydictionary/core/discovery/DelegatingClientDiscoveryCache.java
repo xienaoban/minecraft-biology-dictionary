@@ -100,4 +100,9 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
     public boolean onEntityTamed(LocalPlayer player, Entity entity) {
         return delegate.onEntityTamed(player, entity);
     }
+
+    @Override
+    public boolean onPlayerKilledByEntity(LocalPlayer player, Entity entity) {
+        return delegate.onPlayerKilledByEntity(player, entity);
+    }
 }

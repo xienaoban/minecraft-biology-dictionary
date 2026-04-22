@@ -129,6 +129,7 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
             case INTERACT -> TextUtils.translate(Lang.DISCOVERY_SOURCE_INTERACT);
             case FEED -> TextUtils.translate(Lang.DISCOVERY_SOURCE_FEED);
             case TAME -> TextUtils.translate(Lang.DISCOVERY_SOURCE_TAME);
+            case KILLED_BY -> TextUtils.translate(Lang.DISCOVERY_SOURCE_KILLED_BY);
             case UNKNOWN -> TextUtils.translate(Lang.DISCOVERY_SOURCE_UNKNOWN);
         };
     }
