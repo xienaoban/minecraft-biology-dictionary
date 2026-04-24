@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
@@ -70,8 +71,7 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
 
     @Override
     public boolean onEntityObservedWithTelescope(ServerPlayer player, Entity entity) {
-        if (!player.isScoping()
-                || !PlayerUtils.isWithinRangeAndUnobstructed(player, entity, PlayerUtils.TELESCOPE_RANGE)) {
+        if (!player.isScoping() || !PlayerUtils.isWithinRangeAndUnobstructed(player, entity, ConfigsManager.getServer().getTelescopeRange())) {
             return false;
         }
         return tryDiscover(player, entity, DiscoverySource.TELESCOPE_OBSERVE);
