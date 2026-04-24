@@ -18,6 +18,7 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElem
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -167,21 +168,21 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         private static final int BUTTONS_CUT = BUTTONS_TOTAL * 2 / 3;
 
         private final Entity entity;
+        private final EntityType<?> entityType;
         private final Component name;
         private final ItemStack spawnEgg;
-        private final EntityType<?> entityType;
 
         private final PlaceholderFallbackEntityRenderer entityRenderer;
 
         public EntityWidget(Entity entity) {
             super(2, 2);
             this.entity = entity;
-            this.entityRenderer = new PlaceholderFallbackEntityRenderer(entity);
             EntityType<?> type = EntityUtils.getEntityType(entity);
             this.entityType = type;
             this.name = type.getDescription();
             Item item = SpawnEggItem.byId(type);
             this.spawnEgg = item == null ? null : new ItemStack(item);
+            this.entityRenderer = new PlaceholderFallbackEntityRenderer(entity);
         }
 
         private boolean isDiscovered() {
@@ -189,8 +190,12 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             return cache.isDiscovered(entityType);
         }
 
+        private boolean isDiscoveredOrCreative() {
+            return isDiscovered() || PlayerUtils.isCreative(ClientUtils.getClientPlayer());
+        }
+
         private boolean isClickable() {
-            return ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities() || isDiscovered();
+            return ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities() || isDiscoveredOrCreative();
         }
 
         @Override
@@ -232,7 +237,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
 
-            int silhouetteColor = isDiscovered() ? 0 : Colors.UNDISCOVERED_ENTITY_COLOR;
+            int silhouetteColor = isDiscoveredOrCreative() ? 0 : Colors.UNDISCOVERED_ENTITY_COLOR;
             ScreenElementBox box = getBox();
             entityRenderer.renderEntityCentered(ctx,
                     box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6,
@@ -314,7 +319,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
 
         private boolean shouldRenderDetail() {
-            return isDiscovered() || ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities();
+            return isDiscoveredOrCreative() || ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities();
         }
     }
 }

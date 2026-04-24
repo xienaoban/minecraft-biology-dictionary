@@ -32,9 +32,11 @@
   "config.biologydictionary.entry.skillCosts": "Skill Costs Configuration",
   "config.biologydictionary.entry.skillCosts.tooltip": "Cost configuration for various skills. Please edit directly in the config file.",
   "config.biologydictionary.entry.discoveryStrategy": "Discovery Strategy",
-  "config.biologydictionary.entry.discoveryStrategy.tooltip": "Determines how a entity is considered discovered by a player.",
+  "config.biologydictionary.entry.discoveryStrategy.tooltip": "Defines how an entity is \"discovered\".\nAlways Unlocked: All discovered on start.\nVanilla Kill: Kill or be killed by the entity (uses vanilla stats).\nBiology Dictionary: Detail screen / telescope / kill / killed by / interact (requires extra save data).",
   "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities": "Allow Overview and Skills for Undiscovered Entities",
   "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities.tooltip": "If true, the overview can be accessed even if the entity is undiscovered.",
+  "config.biologydictionary.entry.telescopeRange": "Telescope Range",
+  "config.biologydictionary.entry.telescopeRange.tooltip": "Maximum range (in blocks) for discovering entities with a spyglass.",
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "None",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "Top",
@@ -43,7 +45,7 @@
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.ALWAYS_UNLOCKED": "Always Unlocked",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.VANILLA_KILL": "Vanilla Kill",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.BIOLOGY_DICTIONARY": "Biology Dictionary (NOT DONE YET)",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.BIOLOGY_DICTIONARY": "Biology Dictionary",
 
   "modmenu.nameTranslation.biologydictionary": "Biology Dictionary",
   "modmenu.descriptionTranslation.biologydictionary": "To display or modify the properties and states of mobs.",
@@ -81,6 +83,17 @@
   "tag.biologydictionary.default.enemy"                : "Enemy",
   "tag.biologydictionary.default.enemy_humanoid"       : "Humanoid",
   "tag.biologydictionary.default.enemy_patrol"         : "Patrol",
+
+  "discovery_source.biologydictionary.entity_detail_screen" : "Entity Detail Screen",
+  "discovery_source.biologydictionary.highlight"            : "Highlight",
+  "discovery_source.biologydictionary.telescope_observe"    : "Telescope",
+  "discovery_source.biologydictionary.kill"                 : "Kill",
+  "discovery_source.biologydictionary.attack"               : "Attacked",
+  "discovery_source.biologydictionary.interact"             : "Interact",
+  "discovery_source.biologydictionary.feed"                 : "Feed",
+  "discovery_source.biologydictionary.tame"                 : "Tame",
+  "discovery_source.biologydictionary.killed_by"            : "Killed By",
+  "discovery_source.biologydictionary.unknown"              : "Unknown",
 
   "widget.biologydictionary.overview"              : "View Entity Properties",
   "widget.biologydictionary.overview.desc"         : "View default/reference properties for this entity type",
@@ -202,6 +215,15 @@
   "property_widget.biologydictionary.despawn_delay.retain"        : "Persuade to stay",
   "property_widget.biologydictionary.despawn_delay.retain.desc"   : "Have a sip of water and stay for 2 more minutes",
 
+  "property_widget.biologydictionary.discovery.bond"            : "First Discovery",
+  "property_widget.biologydictionary.discovery.source"          : "Source: ",
+  "property_widget.biologydictionary.discovery.real_time"       : "Real Time: ",
+  "property_widget.biologydictionary.discovery.game_time"       : "Game Time: ",
+  "property_widget.biologydictionary.discovery.game_time_value" : "Game Day %1$d, %2$02d:%3$02d",
+  "property_widget.biologydictionary.discovery.location"        : "Location: ",
+  "property_widget.biologydictionary.discovery.coordinates"     : "Coordinates: ",
+  "property_widget.biologydictionary.discovery.weather"         : "Weather: ",
+
   "text.biologydictionary.comma": ", ",
 
   "text.biologydictionary.open_local_configs_screen"  : "Open Local Configs Screen",
@@ -221,7 +243,7 @@
   "text.biologydictionary.config_reload_success": "Configuration reloaded",
   "text.biologydictionary.no_biology_dictionary_book": "No Biology Dictionary Book in inventory！",
   "text.biologydictionary.entity_not_discovered": "Not discovered yet (see server config for unlock conditions)",
-  "text.biologydictionary.new_entity_discovered": "New creature discovered!",
+  "text.biologydictionary.new_entity_discovered": "New Entity Discovered!",
   "text.biologydictionary.target_entity_too_far": "The target mob is too far from you!",
   "text.biologydictionary.highlighted_entities": "Sensed %d %s within %d meters!",
   "text.biologydictionary.failed_to_highlight": "Failed to highlight: %s",
@@ -277,6 +299,17 @@
   "text.biologydictionary.bee_producing_nectar": "Producing nectar",
   "text.biologydictionary.bee_resting": "Resting",
   "text.biologydictionary.time_in_beehive": "Time in hive: %s",
+
+  "weather.none": "Clear",
+  "weather.rain": "Rain",
+  "weather.snow": "Snow",
+
+  "dimension.minecraft.unknown"   : "Unknown",
+  "dimension.minecraft.overworld" : "Overworld",
+  "dimension.minecraft.the_nether": "The Nether",
+  "dimension.minecraft.the_end"   : "The End",
+
+  "biome.minecraft.unknown": "Unknown",
 
   "activity.minecraft.idle" : "Idle",
   "activity.minecraft.work" : "Work",

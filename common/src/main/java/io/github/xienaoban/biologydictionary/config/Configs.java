@@ -114,6 +114,12 @@ public final class Configs {
         boolean allowOverviewForUndiscoveredEntities = false;
 
         /**
+         * Maximum range (in blocks) for telescope entity discovery.
+         */
+        @ConfigEntry
+        double telescopeRange = 150.0;
+
+        /**
          * Skill costs configuration in YAML-friendly format.
          * Maps skill short names to their cost data (from SkillCost.toMap()).
          * Always contains all registered skills after initialization.
@@ -154,6 +160,10 @@ public final class Configs {
 
         public boolean isAllowOverviewForUndiscoveredEntities() {
             return allowOverviewForUndiscoveredEntities;
+        }
+
+        public double getTelescopeRange() {
+            return telescopeRange;
         }
 
         public Map<String, Map<String, Object>> getSkillCosts() {
