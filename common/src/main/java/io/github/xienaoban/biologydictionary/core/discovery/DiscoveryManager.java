@@ -8,13 +8,14 @@ import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDict
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.VanillaKillDiscoveryStrategy;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 /**
  * Server-side entry point for the discovery system.
- * Attached to {@link io.github.xienaoban.biologydictionary.core.session.WorldSession}.
+ * Attached to {@link io.github.xienaoban.biologydictionary.core.session.ServerWorldSession}.
  */
-public final class DiscoveryManager implements ConfigsUpdateCallback {
+public final class DiscoveryManager implements DiscoveryStrategy, ConfigsUpdateCallback {
     private final MinecraftServer server;
 
     private volatile Configs.ServerConfigs.DiscoveryStrategyMode mode;
@@ -39,16 +40,6 @@ public final class DiscoveryManager implements ConfigsUpdateCallback {
         };
     }
 
-    /**
-     * Check if an entity type is discovered by the player.
-     */
-    public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
-        if (player.isCreative()) {
-            return true;
-        }
-        return strategy.isDiscovered(player, entityType);
-    }
-
     public DiscoveryStrategy getStrategy() {
         return strategy;
     }
@@ -57,10 +48,56 @@ public final class DiscoveryManager implements ConfigsUpdateCallback {
         return mode;
     }
 
-    /**
-     * Save pending discovery data. Called on world save.
-     */
-    public void save() {
-        strategy.save();
+    @Override
+    public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
+        if (player.isCreative()) {
+            return true;
+        }
+        return strategy.isDiscovered(player, entityType);
+    }
+
+    @Override
+    public boolean onEntityDetailScreenOpened(ServerPlayer player, Entity entity) {
+        return strategy.onEntityDetailScreenOpened(player, entity);
+    }
+
+    @Override
+    public boolean onEntityHighlighted(ServerPlayer player, Entity entity) {
+        return strategy.onEntityHighlighted(player, entity);
+    }
+
+    @Override
+    public boolean onEntityObservedWithTelescope(ServerPlayer player, Entity entity) {
+        return strategy.onEntityObservedWithTelescope(player, entity);
+    }
+
+    @Override
+    public boolean onEntityKilled(ServerPlayer player, Entity entity) {
+        return strategy.onEntityKilled(player, entity);
+    }
+
+    @Override
+    public boolean onEntityAttacked(ServerPlayer player, Entity entity) {
+        return strategy.onEntityAttacked(player, entity);
+    }
+
+    @Override
+    public boolean onEntityInteracted(ServerPlayer player, Entity entity) {
+        return strategy.onEntityInteracted(player, entity);
+    }
+
+    @Override
+    public boolean onEntityFed(ServerPlayer player, Entity entity) {
+        return strategy.onEntityFed(player, entity);
+    }
+
+    @Override
+    public boolean onEntityTamed(ServerPlayer player, Entity entity) {
+        return strategy.onEntityTamed(player, entity);
+    }
+
+    @Override
+    public boolean onPlayerKilledByEntity(ServerPlayer player, Entity entity) {
+        return strategy.onPlayerKilledByEntity(player, entity);
     }
 }

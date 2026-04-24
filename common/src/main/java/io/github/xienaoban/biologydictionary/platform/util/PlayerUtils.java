@@ -16,6 +16,11 @@ import net.minecraft.world.food.FoodData;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
 
@@ -163,5 +168,25 @@ public final class PlayerUtils {
 
     public static boolean isWithinInteractionRange(Player player, Entity entity, double distance) {
         return player.canInteractWithEntity(entity, distance);
+    }
+
+    public static final double TELESCOPE_RANGE = 100.0;
+
+    public static boolean isWithinRangeAndUnobstructed(Player player, Entity entity, double range) {
+        Level level = player.level();
+        Vec3 eyePos = player.getEyePosition(1.0F);
+        double entityDistSq = eyePos.distanceToSqr(entity.getBoundingBox().getCenter());
+        if (entityDistSq > range * range) {
+            return false;
+        }
+        Vec3 viewVec = player.getViewVector(1.0F);
+        Vec3 endPos = eyePos.add(viewVec.scale(range));
+        BlockHitResult blockHit = level.clip(new ClipContext(eyePos, endPos,
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+        if (blockHit.getType() != HitResult.Type.MISS
+                && eyePos.distanceToSqr(blockHit.getLocation()) < entityDistSq) {
+            return false;
+        }
+        return true;
     }
 }

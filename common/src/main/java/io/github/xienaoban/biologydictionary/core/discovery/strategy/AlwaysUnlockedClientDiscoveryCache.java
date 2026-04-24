@@ -19,6 +19,6 @@ public final class AlwaysUnlockedClientDiscoveryCache implements ClientDiscovery
 
     @Override
     public DiscoveryRecord getRecord(EntityType<?> entityType) {
-        return new DiscoveryRecord(true);
+        return new DiscoveryRecord();
     }
 }

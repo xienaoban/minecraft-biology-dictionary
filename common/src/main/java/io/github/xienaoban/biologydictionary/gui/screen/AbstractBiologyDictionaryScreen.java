@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
-import io.github.xienaoban.biologydictionary.core.widget.TurnPageTriggerWidget;
+import io.github.xienaoban.biologydictionary.core.widget.TurnPagePlaceholder;
 import io.github.xienaoban.biologydictionary.gui.component.CenteredMessage;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -296,7 +296,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         boolean add = true;
         Page page = null;
         for (var widget : widgets) {
-            if (widget instanceof TurnPageTriggerWidget) {
+            if (widget instanceof TurnPagePlaceholder) {
                 add = true;
                 continue;
             }
@@ -359,8 +359,14 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
+                BdHomeScreen home;
+                if (getLastScreen() instanceof BdHomeScreen lastHome) {
+                    home = lastHome;
+                } else {
+                    home = new BdHomeScreen();
+                }
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                ClientUtils.setScreen(client, new BdHomeScreen());
+                ClientUtils.setScreen(client, home);
                 return true;
             }
             return super.onMouseDown(x, y, code);
