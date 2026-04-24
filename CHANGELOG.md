@@ -10,6 +10,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Added cache of static properties
 - Left/right-click the entity in EntityDisplayWidget to play hurt/death/ambient sound
 - Support entity description datapacks/mods
+- Added toast prompt for new discoveries
+- Add support for creature discovery via telescope, kill, death and interaction events
 
 ### Changed
 

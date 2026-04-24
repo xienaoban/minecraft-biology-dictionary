@@ -170,8 +170,6 @@ public final class PlayerUtils {
         return player.canInteractWithEntity(entity, distance);
     }
 
-    public static final double TELESCOPE_RANGE = 100.0;
-
     public static boolean isWithinRangeAndUnobstructed(Player player, Entity entity, double range) {
         Level level = player.level();
         Vec3 eyePos = player.getEyePosition(1.0F);
