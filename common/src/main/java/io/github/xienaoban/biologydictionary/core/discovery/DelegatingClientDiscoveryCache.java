@@ -6,8 +6,6 @@ import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.VanillaKillClientDiscoveryCache;
-import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -47,7 +45,6 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
 
     @Override
     public boolean isDiscovered(EntityType<?> entityType) {
-        if (PlayerUtils.isCreative(ClientUtils.getClientPlayer())) { return true; }
         return delegate.isDiscovered(entityType);
     }
 

@@ -42,6 +42,7 @@
         "entity.AbstractClientPlayerIMixin",
         "rendering.FallingBlockRendererMixin",
         "rendering.GuiGraphicsIMixin",
+        "rendering.GuiMixin",
         "rendering.ItemInHandRendererMixin",
         "rendering.LevelRendererMixin",
         "rendering.ScreenIMixin"

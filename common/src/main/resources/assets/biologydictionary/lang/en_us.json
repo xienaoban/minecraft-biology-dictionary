@@ -35,6 +35,8 @@
   "config.biologydictionary.entry.discoveryStrategy.tooltip": "Defines how an entity is \"discovered\".\nAlways Unlocked: All discovered on start.\nVanilla Kill: Kill or be killed by the entity (uses vanilla stats).\nBiology Dictionary: Detail screen / telescope / kill / killed by / interact (requires extra save data).",
   "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities": "Allow Overview and Skills for Undiscovered Entities",
   "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities.tooltip": "If true, the overview can be accessed even if the entity is undiscovered.",
+  "config.biologydictionary.entry.telescopeRange": "Telescope Range",
+  "config.biologydictionary.entry.telescopeRange.tooltip": "Maximum range (in blocks) for discovering entities with a spyglass.",
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "None",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "Top",
