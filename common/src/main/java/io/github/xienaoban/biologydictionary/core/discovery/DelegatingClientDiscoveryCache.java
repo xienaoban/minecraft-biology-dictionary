@@ -6,8 +6,6 @@ import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.VanillaKillClientDiscoveryCache;
-import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -47,13 +45,17 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
 
     @Override
     public boolean isDiscovered(EntityType<?> entityType) {
-        if (PlayerUtils.isCreative(ClientUtils.getClientPlayer())) { return true; }
         return delegate.isDiscovered(entityType);
     }
 
     @Override
     public DiscoveryRecord getRecord(EntityType<?> entityType) {
         return delegate.getRecord(entityType);
+    }
+
+    @Override
+    public void incrementalSync(EntityType<?> entityType, DiscoveryRecord record) {
+        delegate.incrementalSync(entityType, record);
     }
 
     @Override
@@ -94,5 +96,10 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
     @Override
     public boolean onEntityTamed(LocalPlayer player, Entity entity) {
         return delegate.onEntityTamed(player, entity);
+    }
+
+    @Override
+    public boolean onPlayerKilledByEntity(LocalPlayer player, Entity entity) {
+        return delegate.onPlayerKilledByEntity(player, entity);
     }
 }

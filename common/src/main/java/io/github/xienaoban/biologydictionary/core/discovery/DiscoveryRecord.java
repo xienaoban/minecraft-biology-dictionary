@@ -1,27 +1,106 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.storage.TagValueOutput;
+
+import java.util.UUID;
+
 /**
  * Discovery record for a single entity type, belonging to a single player.
- *
- * @param firstDiscoveryTime epoch millis, 0 if not discovered
- * @param firstDiscoveryTick game time tick, 0 if not discovered
+ * Presence in the map implies discovered; absence implies undiscovered.
  */
-public record DiscoveryRecord(boolean discovered, long firstDiscoveryTime, long firstDiscoveryTick) {
-    /**
-     * Undiscovered record singleton.
-     */
-    public static final DiscoveryRecord UNDISCOVERED = new DiscoveryRecord(false);
-
+public record DiscoveryRecord(
+    long firstDiscoveryTime,
+    long firstDiscoveryTick,
+    DiscoverySource source,
+    Identifier dimension,
+    Identifier biome,
+    BlockPos position,
+    Biome.Precipitation weather,
+    UUID entityUUID,
+    CompoundTag entityNbt
+) {
     private static final long NO_TIME = -1L;
+    private static final UUID NO_UUID = new UUID(-1, -1);
+    private static final CompoundTag NO_NBT = new CompoundTag();
+    private static final Identifier NO_ID = Identifier.withDefaultNamespace("unknown");
 
-    public DiscoveryRecord(boolean discovered) {
-        this(discovered, NO_TIME, NO_TIME);
+    private static final Codec<DiscoverySource> SOURCE_CODEC = Codec.STRING.xmap(DiscoverySource::valueOf, DiscoverySource::name);
+    private static final Codec<Biome.Precipitation> WEATHER_CODEC = Codec.STRING.xmap(Biome.Precipitation::valueOf, Biome.Precipitation::name);
+
+    public static final Codec<DiscoveryRecord> CODEC = RecordCodecBuilder.create(i -> i.group(
+        Codec.LONG.optionalFieldOf("time", NO_TIME).forGetter(DiscoveryRecord::firstDiscoveryTime),
+        Codec.LONG.optionalFieldOf("tick", NO_TIME).forGetter(DiscoveryRecord::firstDiscoveryTick),
+        SOURCE_CODEC.optionalFieldOf("source", DiscoverySource.UNKNOWN).forGetter(DiscoveryRecord::source),
+        Identifier.CODEC.optionalFieldOf("dimension", NO_ID).forGetter(DiscoveryRecord::dimension),
+        Identifier.CODEC.optionalFieldOf("biome", NO_ID).forGetter(DiscoveryRecord::biome),
+        BlockPos.CODEC.optionalFieldOf("position", BlockPos.ZERO).forGetter(DiscoveryRecord::position),
+        WEATHER_CODEC.optionalFieldOf("weather", Biome.Precipitation.NONE).forGetter(DiscoveryRecord::weather),
+        UUIDUtil.CODEC.optionalFieldOf("entity_uuid", NO_UUID).forGetter(DiscoveryRecord::entityUUID),
+        CompoundTag.CODEC.optionalFieldOf("entity_nbt", NO_NBT).forGetter(DiscoveryRecord::entityNbt)
+    ).apply(i, DiscoveryRecord::new));
+
+    public DiscoveryRecord() {
+        this(DiscoverySource.UNKNOWN);
     }
 
-    /**
-     * Create a discovered record with the current real time and given game tick.
-     */
-    public static DiscoveryRecord discoveredNow(long gameTick) {
-        return new DiscoveryRecord(true, System.currentTimeMillis(), gameTick);
+    public DiscoveryRecord(DiscoverySource source) {
+        this(NO_TIME, NO_TIME, source, NO_ID, NO_ID, BlockPos.ZERO, Biome.Precipitation.NONE, NO_UUID, NO_NBT);
+    }
+
+    public static DiscoveryRecord readFromBuf(FriendlyByteBuf buf) {
+        long time = buf.readLong();
+        long tick = buf.readLong();
+        DiscoverySource source = DiscoverySource.valueOf(buf.readUtf());
+        String dimStr = buf.readUtf();
+        Identifier dimension = dimStr.isEmpty() ? null : Identifier.tryParse(dimStr);
+        String bioStr = buf.readUtf();
+        Identifier biome = bioStr.isEmpty() ? null : Identifier.tryParse(bioStr);
+        BlockPos position = buf.readBlockPos();
+        Biome.Precipitation weather = Biome.Precipitation.valueOf(buf.readUtf());
+        UUID entityUUID = buf.readUUID();
+        CompoundTag entityNbt = buf.readNbt();
+        return new DiscoveryRecord(time, tick, source, dimension, biome, position, weather, entityUUID, entityNbt);
+    }
+
+    public void writeToBuf(FriendlyByteBuf buf) {
+        buf.writeLong(firstDiscoveryTime);
+        buf.writeLong(firstDiscoveryTick);
+        buf.writeUtf(source.name());
+        buf.writeUtf(dimension != null ? dimension.toString() : "");
+        buf.writeUtf(biome != null ? biome.toString() : "");
+        buf.writeBlockPos(position);
+        buf.writeUtf(weather.name());
+        buf.writeUUID(entityUUID);
+        buf.writeNbt(entityNbt);
+    }
+
+    public static DiscoveryRecord discoveredNow(long gameTick, Entity entity, DiscoverySource source) {
+        Level level = entity.level();
+        BlockPos pos = entity.blockPosition();
+        TagValueOutput output = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+        entity.saveWithoutId(output);
+        return new DiscoveryRecord(
+            System.currentTimeMillis(),
+            gameTick,
+            source,
+            level.dimension().identifier(),
+            level.getBiome(pos).unwrapKey().map(ResourceKey::identifier).orElse(NO_ID),
+            pos,
+            level.getBiome(pos).value().getPrecipitationAt(pos, level.getSeaLevel()),
+            entity.getUUID(),
+            output.buildResult()
+        );
     }
 }

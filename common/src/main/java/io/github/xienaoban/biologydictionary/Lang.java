@@ -41,10 +41,11 @@ public final class Lang {
     KEY_OPEN_HANDBOOK = "key.biologydictionary.open_handbook",
     KEY_DEBUG = "key.biologydictionary.debug",
 
-    ACTIVITY_PREFIX = "activity.minecraft.",
-    LOOT_CONDITION_PREFIX = "loot_condition.",
-    BIOME_PREFIX = "biome.",
-    STRUCTURE_PREFIX = "structure.",
+    ACTIVITY_PREFIX         = "activity.minecraft.",
+    LOOT_CONDITION_PREFIX   = "loot_condition.",
+    DIMENSION_PREFIX        = "dimension.",
+    BIOME_PREFIX            = "biome.",
+    STRUCTURE_PREFIX        = "structure.",
 
     CONFIG_PREFIX          = "config.biologydictionary.",
     CONFIG_TITLE           = "config.biologydictionary.title",
@@ -85,6 +86,17 @@ public final class Lang {
     TAG_DEFAULT_ENEMY                = "tag.biologydictionary.default.enemy",
     TAG_DEFAULT_ENEMY_HUMANOID       = "tag.biologydictionary.default.enemy_humanoid",
     TAG_DEFAULT_ENEMY_PATROL         = "tag.biologydictionary.default.enemy_patrol",
+
+    DISCOVERY_SOURCE_ENTITY_DETAIL_SCREEN = "discovery_source.biologydictionary.entity_detail_screen",
+    DISCOVERY_SOURCE_HIGHLIGHT            = "discovery_source.biologydictionary.highlight",
+    DISCOVERY_SOURCE_TELESCOPE_OBSERVE    = "discovery_source.biologydictionary.telescope_observe",
+    DISCOVERY_SOURCE_KILL                 = "discovery_source.biologydictionary.kill",
+    DISCOVERY_SOURCE_ATTACK               = "discovery_source.biologydictionary.attack",
+    DISCOVERY_SOURCE_INTERACT             = "discovery_source.biologydictionary.interact",
+    DISCOVERY_SOURCE_FEED                 = "discovery_source.biologydictionary.feed",
+    DISCOVERY_SOURCE_TAME                 = "discovery_source.biologydictionary.tame",
+    DISCOVERY_SOURCE_KILLED_BY            = "discovery_source.biologydictionary.killed_by",
+    DISCOVERY_SOURCE_UNKNOWN              = "discovery_source.biologydictionary.unknown",
 
     WIDGET_ENTITY_OVERVIEW              = "widget.biologydictionary.overview",
     WIDGET_ENTITY_OVERVIEW_DESC         = "widget.biologydictionary.overview.desc",
@@ -205,6 +217,15 @@ public final class Lang {
     PROPERTY_WIDGET_INVENTORY_STEAL_DESC2       = "property_widget.biologydictionary.inventory.steal.desc2",
     PROPERTY_WIDGET_INVENTORY_STEAL_CREATIVE    = "property_widget.biologydictionary.inventory.steal.creative",
     PROPERTY_WIDGET_INVENTORY_STEAL_SURVIVAL    = "property_widget.biologydictionary.inventory.steal.survival",
+
+    PROPERTY_WIDGET_DISCOVERY_BOND              = "property_widget.biologydictionary.discovery.bond",
+    PROPERTY_WIDGET_DISCOVERY_SOURCE            = "property_widget.biologydictionary.discovery.source",
+    PROPERTY_WIDGET_DISCOVERY_REAL_TIME         = "property_widget.biologydictionary.discovery.real_time",
+    PROPERTY_WIDGET_DISCOVERY_GAME_TIME         = "property_widget.biologydictionary.discovery.game_time",
+    PROPERTY_WIDGET_DISCOVERY_GAME_TIME_VALUE   = "property_widget.biologydictionary.discovery.game_time_value",
+    PROPERTY_WIDGET_DISCOVERY_LOCATION          = "property_widget.biologydictionary.discovery.location",
+    PROPERTY_WIDGET_DISCOVERY_COORDINATES       = "property_widget.biologydictionary.discovery.coordinates",
+    PROPERTY_WIDGET_DISCOVERY_WEATHER           = "property_widget.biologydictionary.discovery.weather",
 
     TEXT_COMMA  = "text.biologydictionary.comma",
 
