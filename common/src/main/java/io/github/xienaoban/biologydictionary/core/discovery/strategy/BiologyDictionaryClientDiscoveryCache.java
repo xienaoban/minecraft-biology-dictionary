@@ -2,7 +2,9 @@ package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -26,13 +28,12 @@ public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscov
 
     @Override
     public boolean isDiscovered(EntityType<?> entityType) {
-        DiscoveryRecord record = cache.get(entityType);
-        return record != null && record.discovered();
+        return cache.containsKey(entityType);
     }
 
     @Override
     public DiscoveryRecord getRecord(EntityType<?> entityType) {
-        return cache.getOrDefault(entityType, DiscoveryRecord.UNDISCOVERED);
+        return cache.get(entityType);
     }
 
     public void onFullSync(Map<EntityType<?>, DiscoveryRecord> data) {
@@ -41,14 +42,21 @@ public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscov
     }
 
     @Override
+    public void incrementalSync(EntityType<?> entityType, DiscoveryRecord discoveryRecord) {
+        cache.put(entityType, discoveryRecord);
+    }
+
+    @Override
     public boolean onEntityDetailScreenOpened(LocalPlayer player, Entity entity) {
-        EntityType<?> entityType = entity.getType();
-        if (isDiscovered(entityType)) {
-            return false;
-        }
-        DiscoveryRecord record = DiscoveryRecord.discoveredNow(player.level().getGameTime());
-        cache.put(entityType, record);
-        ClientNetManager.sendBiologyDictionaryDiscoveryIncremental(entityType, record);
+        if (isDiscovered(EntityUtils.getEntityType(entity))) { return false; }
+        ClientNetManager.requestDiscoveryIncremental(EntityUtils.getId(entity), DiscoverySource.ENTITY_DETAIL_SCREEN);
+        return true;
+    }
+
+    @Override
+    public boolean onEntityObservedWithTelescope(LocalPlayer player, Entity entity) {
+        if (isDiscovered(EntityUtils.getEntityType(entity))) { return false; }
+        ClientNetManager.requestDiscoveryIncremental(EntityUtils.getId(entity), DiscoverySource.TELESCOPE_OBSERVE);
         return true;
     }
 }
