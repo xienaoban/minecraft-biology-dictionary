@@ -1,140 +1,137 @@
 package io.github.xienaoban.biologydictionary.core.discovery.storage;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStorage;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.storage.LevelResource;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.saveddata.SavedData;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
- * SavedData-based implementation of {@link DiscoveryStorage}.
- * Manages a single NBT file per world: {@code data/biologydictionary_discovery.dat}.
+ * Persisted per-world discovery data using MC's SavedData framework.
+ * File: {@code data/biologydictionary_discovery.dat}
  */
-public final class SavedDataDiscoveryStorage implements DiscoveryStorage {
-    private static final String FILE_NAME = "biologydictionary_discovery.dat";
-    private static final String KEY_PLAYERS = "players";
-    private static final String KEY_UUID_MOST = "uuid_most";
-    private static final String KEY_UUID_LEAST = "uuid_least";
-    private static final String KEY_DISCOVERIES = "discoveries";
-    private static final String KEY_DISCOVERED = "discovered";
-    private static final String KEY_TIME = "first_discovery_time";
-    private static final String KEY_TICK = "first_discovery_tick";
+public final class SavedDataDiscoveryStorage extends SavedData {
+    private static final String KEY_SOURCE = "source";
+    private static final String KEY_DIMENSION = "dimension";
+    private static final String KEY_BIOME = "biome";
+    private static final String KEY_POS_X = "pos_x";
+    private static final String KEY_POS_Y = "pos_y";
+    private static final String KEY_POS_Z = "pos_z";
+    private static final String KEY_WEATHER = "weather";
+    private static final String KEY_ENTITY_UUID = "entity_uuid";
+    private static final String KEY_ENTITY_NBT = "entity_nbt";
+    private static final String KEY_TIME = "time";
+    private static final String KEY_TICK = "tick";
 
     private final Map<UUID, Map<EntityType<?>, DiscoveryRecord>> data = new HashMap<>();
-    private boolean dirty;
-    private final Path filePath;
 
-    public SavedDataDiscoveryStorage(MinecraftServer server) {
-        this.filePath = server.getWorldPath(LevelResource.ROOT).resolve("data").resolve(FILE_NAME);
-        load();
-    }
+    public SavedDataDiscoveryStorage() {}
 
-    @Override
-    public DiscoveryRecord get(UUID playerUUID, EntityType<?> entityType) {
-        Map<EntityType<?>, DiscoveryRecord> playerData = data.get(playerUUID);
-        if (playerData == null) {
-            return DiscoveryRecord.UNDISCOVERED;
+    public static SavedDataDiscoveryStorage load(CompoundTag tag) {
+        SavedDataDiscoveryStorage storage = new SavedDataDiscoveryStorage();
+        ListTag playersList = tag.getList("players", Tag.TAG_COMPOUND);
+        for (int i = 0; i < playersList.size(); i++) {
+            CompoundTag playerTag = playersList.getCompound(i);
+            UUID uuid = playerTag.getUUID("uuid");
+            CompoundTag discoveriesTag = playerTag.getCompound("discoveries");
+            Map<EntityType<?>, DiscoveryRecord> entityMap = new HashMap<>();
+            for (String key : discoveriesTag.getAllKeys()) {
+                EntityType<?> type = EntityUtils.getEntityType(ResourceLocation.tryParse(key));
+                if (type != null) {
+                    entityMap.put(type, readRecord(discoveriesTag.getCompound(key)));
+                }
+            }
+            storage.data.put(uuid, entityMap);
         }
-        return playerData.getOrDefault(entityType, DiscoveryRecord.UNDISCOVERED);
+        return storage;
     }
 
     @Override
+    public CompoundTag save(CompoundTag tag) {
+        ListTag playersList = new ListTag();
+        for (Map.Entry<UUID, Map<EntityType<?>, DiscoveryRecord>> entry : data.entrySet()) {
+            CompoundTag playerTag = new CompoundTag();
+            playerTag.putUUID("uuid", entry.getKey());
+            CompoundTag discoveriesTag = new CompoundTag();
+            for (Map.Entry<EntityType<?>, DiscoveryRecord> discEntry : entry.getValue().entrySet()) {
+                discoveriesTag.put(EntityUtils.getEntityTypeIdName(discEntry.getKey()), writeRecord(discEntry.getValue()));
+            }
+            playerTag.put("discoveries", discoveriesTag);
+            playersList.add(playerTag);
+        }
+        tag.put("players", playersList);
+        return tag;
+    }
+
+    private static DiscoveryRecord readRecord(CompoundTag tag) {
+        DiscoverySource source = tag.contains(KEY_SOURCE) ? DiscoverySource.valueOf(tag.getString(KEY_SOURCE)) : DiscoverySource.UNKNOWN;
+        String dimStr = tag.getString(KEY_DIMENSION);
+        ResourceLocation dimension = dimStr.isEmpty() ? new ResourceLocation("unknown") : ResourceLocation.tryParse(dimStr);
+        String bioStr = tag.getString(KEY_BIOME);
+        ResourceLocation biome = bioStr.isEmpty() ? new ResourceLocation("unknown") : ResourceLocation.tryParse(bioStr);
+        int posX = tag.getInt(KEY_POS_X);
+        int posY = tag.getInt(KEY_POS_Y);
+        int posZ = tag.getInt(KEY_POS_Z);
+        String weatherStr = tag.getString(KEY_WEATHER);
+        Biome.Precipitation weather = weatherStr.isEmpty() ? Biome.Precipitation.NONE : Biome.Precipitation.valueOf(weatherStr);
+        UUID entityUUID = tag.hasUUID(KEY_ENTITY_UUID) ? tag.getUUID(KEY_ENTITY_UUID) : new UUID(-1, -1);
+        CompoundTag entityNbt = tag.contains(KEY_ENTITY_NBT, Tag.TAG_COMPOUND) ? tag.getCompound(KEY_ENTITY_NBT) : new CompoundTag();
+        return new DiscoveryRecord(
+            tag.getLong(KEY_TIME), tag.getLong(KEY_TICK),
+            source, dimension, biome,
+            new BlockPos(posX, posY, posZ), weather,
+            entityUUID, entityNbt
+        );
+    }
+
+    private static CompoundTag writeRecord(DiscoveryRecord record) {
+        CompoundTag tag = new CompoundTag();
+        tag.putLong(KEY_TIME, record.firstDiscoveryTime());
+        tag.putLong(KEY_TICK, record.firstDiscoveryTick());
+        tag.putString(KEY_SOURCE, record.source().name());
+        tag.putString(KEY_DIMENSION, record.dimension() != null ? record.dimension().toString() : "");
+        tag.putString(KEY_BIOME, record.biome() != null ? record.biome().toString() : "");
+        BlockPos pos = record.position();
+        tag.putInt(KEY_POS_X, pos.getX());
+        tag.putInt(KEY_POS_Y, pos.getY());
+        tag.putInt(KEY_POS_Z, pos.getZ());
+        tag.putString(KEY_WEATHER, record.weather().name());
+        tag.putUUID(KEY_ENTITY_UUID, record.entityUUID());
+        tag.put(KEY_ENTITY_NBT, record.entityNbt());
+        return tag;
+    }
+
+    public boolean isDiscovered(UUID playerUUID, EntityType<?> entityType) {
+        Map<EntityType<?>, DiscoveryRecord> playerData = data.get(playerUUID);
+        return playerData != null && playerData.containsKey(entityType);
+    }
+
     public Map<EntityType<?>, DiscoveryRecord> getAll(UUID playerUUID) {
         Map<EntityType<?>, DiscoveryRecord> playerData = data.get(playerUUID);
-        return playerData != null ? playerData : Collections.emptyMap();
+        return playerData != null ? playerData : Map.of();
     }
 
-    @Override
-    public void put(UUID playerUUID, EntityType<?> entityType, DiscoveryRecord record) {
-        data.computeIfAbsent(playerUUID, k -> new HashMap<>()).put(entityType, record);
-        dirty = true;
+    public DiscoveryRecord get(UUID playerUUID, EntityType<?> entityType) {
+        Map<EntityType<?>, DiscoveryRecord> playerData = data.get(playerUUID);
+        return playerData != null ? playerData.get(entityType) : null;
     }
 
-    @Override
-    public void setDirty() {
-        dirty = true;
-    }
-
-    public void save() {
-        if (!dirty) {
-            return;
+    public boolean put(UUID playerUUID, EntityType<?> entityType, DiscoveryRecord record) {
+        Map<EntityType<?>, DiscoveryRecord> playerData = data.computeIfAbsent(playerUUID, k -> new HashMap<>());
+        if (playerData.putIfAbsent(entityType, record) != null) {
+            return false;
         }
-        try {
-            Files.createDirectories(filePath.getParent());
-            CompoundTag root = new CompoundTag();
-            ListTag playersList = new ListTag();
-            for (Map.Entry<UUID, Map<EntityType<?>, DiscoveryRecord>> entry : data.entrySet()) {
-                CompoundTag playerTag = new CompoundTag();
-                playerTag.putLong(KEY_UUID_MOST, entry.getKey().getMostSignificantBits());
-                playerTag.putLong(KEY_UUID_LEAST, entry.getKey().getLeastSignificantBits());
-                CompoundTag discoveriesTag = new CompoundTag();
-                for (Map.Entry<EntityType<?>, DiscoveryRecord> discEntry : entry.getValue().entrySet()) {
-                    DiscoveryRecord record = discEntry.getValue();
-                    CompoundTag recordTag = new CompoundTag();
-                    recordTag.putBoolean(KEY_DISCOVERED, record.discovered());
-                    recordTag.putLong(KEY_TIME, record.firstDiscoveryTime());
-                    recordTag.putLong(KEY_TICK, record.firstDiscoveryTick());
-                    discoveriesTag.put(EntityUtils.getEntityTypeIdName(discEntry.getKey()), recordTag);
-                }
-                playerTag.put(KEY_DISCOVERIES, discoveriesTag);
-                playersList.add(playerTag);
-            }
-            root.put(KEY_PLAYERS, playersList);
-            try (OutputStream out = Files.newOutputStream(filePath)) {
-                NbtIo.writeCompressed(root, out);
-            }
-            dirty = false;
-        } catch (IOException e) {
-            LOGGER.error("Failed to save discovery data", e);
-        }
-    }
-
-    private void load() {
-        if (!Files.exists(filePath)) {
-            return;
-        }
-        try (InputStream in = Files.newInputStream(filePath)) {
-            CompoundTag root = NbtIo.readCompressed(in);
-            ListTag playersList = root.getList(KEY_PLAYERS, 10);
-            for (int i = 0; i < playersList.size(); i++) {
-                CompoundTag playerTag = playersList.getCompound(i);
-                long most = playerTag.getLong(KEY_UUID_MOST);
-                long least = playerTag.getLong(KEY_UUID_LEAST);
-                UUID uuid = new UUID(most, least);
-                CompoundTag discoveriesTag = playerTag.getCompound(KEY_DISCOVERIES);
-                Map<EntityType<?>, DiscoveryRecord> playerData = new HashMap<>();
-                Set<String> keys = discoveriesTag.getAllKeys();
-                for (String key : keys) {
-                    CompoundTag recordTag = discoveriesTag.getCompound(key);
-                    boolean discovered = recordTag.getBoolean(KEY_DISCOVERED);
-                    long time = recordTag.getLong(KEY_TIME);
-                    long tick = recordTag.getLong(KEY_TICK);
-                    if (discovered) {
-                        EntityType<?> type = EntityUtils.getEntityType(ResourceLocation.tryParse(key));
-                        if (type != null) {
-                            playerData.put(type, new DiscoveryRecord(true, time, tick));
-                        }
-                    }
-                }
-                data.put(uuid, playerData);
-            }
-            LOGGER.info("Discovery data loaded ({} players)", data.size());
-        } catch (IOException e) {
-            LOGGER.error("Failed to load discovery data", e);
-        }
+        setDirty();
+        return true;
     }
 }

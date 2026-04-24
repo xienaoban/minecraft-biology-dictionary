@@ -32,7 +32,7 @@
   "config.biologydictionary.entry.skillCosts": "技能消耗配置",
   "config.biologydictionary.entry.skillCosts.tooltip": "自定义各种技能的所需消耗。请直接在配置文件中编辑。",
   "config.biologydictionary.entry.discoveryStrategy": "「发现生物」的解锁策略",
-  "config.biologydictionary.entry.discoveryStrategy.tooltip": "定义怎么样才算「发现」一个新生物。\n全部解锁：初始就全部解锁\n原版击杀：击杀生物解锁（基于原版「统计信息」的生物数据，不对存档新增数据存储）\n生物辞典：预设策略，打开生物详情页+击杀（需要在存档中存储额外数据）（未完成）",
+  "config.biologydictionary.entry.discoveryStrategy.tooltip": "定义怎么样才算「发现」一个新生物。\n全部解锁：初始就全部解锁\n原版击杀：击杀生物解锁（基于原版「统计信息」的生物数据，不对存档新增数据存储）\n生物辞典：预设策略，打开生物详情页+击杀（需要在存档中存储额外数据）",
   "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities": "允许对「未发现生物」查看信息与施展技能",
   "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities.tooltip": "使「发现」成为一个独立的系统，不影响其他玩法。",
 
@@ -43,7 +43,7 @@
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.ALWAYS_UNLOCKED": "全部解锁",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.VANILLA_KILL": "原版击杀",
-  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.BIOLOGY_DICTIONARY": "生物辞典（未完成）",
+  "enum.io.github.xienaoban.biologydictionary.config.Configs.ServerConfigs.DiscoveryStrategyMode.BIOLOGY_DICTIONARY": "生物辞典",
 
   "modmenu.nameTranslation.biologydictionary": "生物辞典",
   "modmenu.descriptionTranslation.biologydictionary": "展示或修改生物的属性与状态。",
@@ -81,6 +81,17 @@
   "tag.biologydictionary.default.enemy"                : "敌对生物",
   "tag.biologydictionary.default.enemy_humanoid"       : "人形生物",
   "tag.biologydictionary.default.enemy_patrol"         : "灾厄小队",
+
+  "discovery_source.biologydictionary.entity_detail_screen" : "生物详情页",
+  "discovery_source.biologydictionary.highlight"            : "高亮感知",
+  "discovery_source.biologydictionary.telescope_observe"    : "望远镜",
+  "discovery_source.biologydictionary.kill"                 : "击杀",
+  "discovery_source.biologydictionary.attack"               : "被攻击",
+  "discovery_source.biologydictionary.interact"             : "交互",
+  "discovery_source.biologydictionary.feed"                 : "喂食",
+  "discovery_source.biologydictionary.tame"                 : "驯服",
+  "discovery_source.biologydictionary.killed_by"            : "被击杀",
+  "discovery_source.biologydictionary.unknown"              : "未知",
 
   "widget.biologydictionary.overview"              : "查看生物信息",
   "widget.biologydictionary.overview.desc"         : "查看此生物类型的默认/参考属性值",
@@ -183,6 +194,14 @@
   "property_widget.biologydictionary.inventory.steal.desc2"       : "别被目标生物的眼睛看到！",
   "property_widget.biologydictionary.inventory.steal.creative"    : "创造模式下无限制随便摸",
   "property_widget.biologydictionary.inventory.steal.survival"    : "身上装备不可窃取",
+  "property_widget.biologydictionary.discovery.bond"            : "首次发现",
+  "property_widget.biologydictionary.discovery.source"          : "来源：",
+  "property_widget.biologydictionary.discovery.real_time"       : "现实时间：",
+  "property_widget.biologydictionary.discovery.game_time"       : "游戏时间：",
+  "property_widget.biologydictionary.discovery.game_time_value" : "第%1$d天，%2$02d:%3$02d",
+  "property_widget.biologydictionary.discovery.location"        : "位置：",
+  "property_widget.biologydictionary.discovery.coordinates"     : "坐标：",
+  "property_widget.biologydictionary.discovery.weather"         : "天气：",
   "property_widget.biologydictionary.job_site"                    : "工作站点方块",
   "property_widget.biologydictionary.job_site.desc"               : "决定了村民的职业，接近方块才能补货",
   "property_widget.biologydictionary.job_site.locate"             : "定位工作站点方块",
@@ -221,7 +240,7 @@
   "text.biologydictionary.config_reload_success": "配置已重新加载",
   "text.biologydictionary.no_biology_dictionary_book": "背包内无生物辞典书！",
   "text.biologydictionary.entity_not_discovered": "尚未发现该生物（解锁条件见服务端配置）",
-  "text.biologydictionary.new_entity_discovered": "发现新生物！",
+  "text.biologydictionary.new_entity_discovered": "发现新生物",
   "text.biologydictionary.target_entity_too_far": "目标生物离你太远了！",
   "text.biologydictionary.highlighted_entities": "感知到了%d只%s，感知半径%d米！",
   "text.biologydictionary.failed_to_highlight": "高亮失败：%s",
@@ -277,6 +296,17 @@
   "text.biologydictionary.bee_producing_nectar": "产蜜中",
   "text.biologydictionary.bee_resting": "休息中",
   "text.biologydictionary.time_in_beehive": "逗留时间：%s",
+
+  "weather.none": "晴天",
+  "weather.rain": "雨天",
+  "weather.snow": "雪天",
+
+  "dimension.minecraft.unknown"   : "未知",
+  "dimension.minecraft.overworld" : "主世界",
+  "dimension.minecraft.the_nether": "下界",
+  "dimension.minecraft.the_end"   : "末地",
+
+  "biome.minecraft.unknown": "未知",
 
   "activity.minecraft.idle" : "游荡",
   "activity.minecraft.work" : "工作",
