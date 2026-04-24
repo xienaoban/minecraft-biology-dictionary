@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.net;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.net.payload.*;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -24,6 +25,10 @@ public final class ServerNetManager {
 
     public static void replyServerConfigs(ServerPlayer player, String serverConfigsYaml) {
         ServerNetApi.send(player, new ReplyServerConfigsPacket(serverConfigsYaml));
+    }
+
+    public static void sendDiscoveryIncremental(ServerPlayer player, Entity entity, EntityType<?> entityType, DiscoveryRecord record) {
+        ServerNetApi.send(player, new SendDiscoveryIncrementalPacket(EntityUtils.getId(entity), entityType, record));
     }
 
     public static void replyDictionaryDiscoveryRecords(ServerPlayer player, Map<EntityType<?>, DiscoveryRecord> discoveries) {

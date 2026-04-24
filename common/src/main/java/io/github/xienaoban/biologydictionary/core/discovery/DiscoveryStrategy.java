@@ -13,9 +13,4 @@ public interface DiscoveryStrategy extends DiscoveryEventListener<ServerPlayer> 
      * Creative mode check should be done by the caller (DiscoveryManager).
      */
     boolean isDiscovered(ServerPlayer player, EntityType<?> entityType);
-
-    /**
-     * Save pending discovery data. Called on world save.
-     */
-    default void save() {}
 }

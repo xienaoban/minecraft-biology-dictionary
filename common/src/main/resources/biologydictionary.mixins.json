@@ -25,6 +25,8 @@
         "entity.LivingEntityIMixin",
         "entity.MobIMixin",
         "entity.ServerPlayerIMixin",
+        "entity.ServerPlayerMixin",
+        "entity.PlayerMixin",
         "entity.WanderingTraderMixin",
         "loot.BonusLevelTableConditionIMixin",
         "loot.CompositeEntryBaseIMixin",

@@ -44,8 +44,6 @@ public final class BiologyDictionary {
             ServerWorldSession.init(server);
         });
         ServerEventRegistry.registerStopping(server -> {
-            // TODO: move to deinit
-            ServerWorldSession.get().getDiscoveryManager().save();
             ServerWorldSession.deinit();
             WorldSession.deinit();
         });

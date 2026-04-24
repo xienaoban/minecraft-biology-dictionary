@@ -57,6 +57,11 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
     }
 
     @Override
+    public void incrementalSync(EntityType<?> entityType, DiscoveryRecord record) {
+        delegate.incrementalSync(entityType, record);
+    }
+
+    @Override
     public boolean onEntityDetailScreenOpened(LocalPlayer player, Entity entity) {
         return delegate.onEntityDetailScreenOpened(player, entity);
     }
@@ -94,5 +99,10 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
     @Override
     public boolean onEntityTamed(LocalPlayer player, Entity entity) {
         return delegate.onEntityTamed(player, entity);
+    }
+
+    @Override
+    public boolean onPlayerKilledByEntity(LocalPlayer player, Entity entity) {
+        return delegate.onPlayerKilledByEntity(player, entity);
     }
 }

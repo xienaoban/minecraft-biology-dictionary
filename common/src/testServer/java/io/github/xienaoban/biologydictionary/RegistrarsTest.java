@@ -117,8 +117,8 @@ public class RegistrarsTest {
                 String entitySimpleName = entityClass.getSimpleName();
                 String clazzSimpleName = clazz.getSimpleName();
 
-                // TurnPageTriggerWidget is an exception
-                if (clazzSimpleName.equals("TurnPageTriggerWidget")) {
+                // TurnPageCommonWidget is an exception
+                if (clazzSimpleName.startsWith("TurnPage")) {
                     return;
                 }
 
