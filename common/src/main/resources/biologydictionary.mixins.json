@@ -36,6 +36,7 @@
     "client": [
         "MinecraftMixin",
         "rendering.FeatureRenderDispatcherIMixin",
+        "rendering.GuiMixin",
         "rendering.GuiGraphicsIMixin",
         "rendering.GuiTextRenderStateIMixin",
         "rendering.ItemInHandRendererMixin",

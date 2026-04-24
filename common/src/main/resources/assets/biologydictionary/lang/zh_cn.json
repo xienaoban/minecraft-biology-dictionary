@@ -35,6 +35,8 @@
   "config.biologydictionary.entry.discoveryStrategy.tooltip": "定义怎么样才算「发现」一个新生物。\n全部解锁：初始就全部解锁\n原版击杀：通过击杀生物或被生物击杀解锁\n（基于原版「统计信息」数据，无需存储额外数据到存档）\n生物辞典：预设，打开生物详情页+望远镜+击杀+被击杀+互动\n（注意：需要新增额外存档数据）",
   "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities": "允许对「未发现生物」查看信息与施展技能",
   "config.biologydictionary.entry.allowOverviewForUndiscoveredEntities.tooltip": "使「发现」成为一个独立的系统，不影响其他玩法。",
+  "config.biologydictionary.entry.telescopeRange": "望远镜范围",
+  "config.biologydictionary.entry.telescopeRange.tooltip": "使用望远镜发现生物的最大距离（方块数）。",
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "不显示",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "顶部",
