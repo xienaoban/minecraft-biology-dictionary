@@ -75,4 +75,12 @@ public final class TextUtils {
     public static List<FormattedCharSequence> toLines(FormattedText text, Font font, int maxWidth) {
         return font.split(text, maxWidth);
     }
+
+    public static float getLineHeight(Font font) {
+        return getLineHeight(font, 1F);
+    }
+
+    public static float getLineHeight(Font font, float scale) {
+        return font.lineHeight * scale;
+    }
 }
