@@ -53,7 +53,7 @@ public final class EntityDescriptionWidget extends EntityPropertyWidget<Entity> 
 
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
-        float lineHeight = ctx.getFont().lineHeight * TEXT_SCALE;
+        float lineHeight = TextUtils.getLineHeight(ctx.getFont(), TEXT_SCALE);
         int displayCount = Math.min(lines.size(), MAX_VISIBLE_LINES);
         float availableHeight = getBox().getHeight() - 2 * V_PADDING;
 
@@ -74,7 +74,7 @@ public final class EntityDescriptionWidget extends EntityPropertyWidget<Entity> 
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        float lineHeight = ctx.getFont().lineHeight * TEXT_SCALE;
+        float lineHeight = TextUtils.getLineHeight(ctx.getFont(), TEXT_SCALE);
         int displayCount = Math.min(lines.size(), MAX_VISIBLE_LINES);
         float availableHeight = getBox().getHeight() - 2 * V_PADDING;
         float y = getBox().getTop() + V_PADDING + (availableHeight - displayCount * lineHeight) / 2F;
