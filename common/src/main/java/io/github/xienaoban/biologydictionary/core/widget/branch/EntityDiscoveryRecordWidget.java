@@ -51,7 +51,7 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
 
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
-        float lineHeight = ctx.getFont().lineHeight * TEXT_SCALE;
+        float lineHeight = TextUtils.getLineHeight(ctx.getFont(), TEXT_SCALE);
         float y = getBox().getTop() + V_PADDING;
         float x = getBox().getLeft() + H_PADDING;
         int color = Colors.COMMON_DARK_LIGHTER_TEXT;
