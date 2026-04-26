@@ -117,7 +117,7 @@ public final class Configs {
          * Maximum range (in blocks) for telescope entity discovery.
          */
         @ConfigEntry
-        double telescopeRange = 150.0;
+        double telescopeRange = 160.0;
 
         /**
          * Skill costs configuration in YAML-friendly format.

@@ -112,6 +112,9 @@ public final class EntityManager {
                 if (ia.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
                     return 1;
                 }
+                if (ib.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+                    return -1;
+                }
                 return cmp;
             }
             String pa = ia.getPath(), pb = ib.getPath();
