@@ -28,11 +28,13 @@ public record RequestBiologyDictionaryDiscoveryFullPacket() implements Packet {
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
         ServerPlayer player = ctx.player();
-        ServerWorldSession session = ServerWorldSession.get();
-        if (session == null) {
+        ServerWorldSession sws = ServerWorldSession.get();
+        if (sws == null) {
+            LOGGER.warn("Null ServerWorldSession. Ignored.", new RuntimeException());
             return;
         }
-        if (session.getDiscoveryManager().getStrategy() instanceof BiologyDictionaryDiscoveryStrategy strategy) {
+
+        if (sws.getDiscoveryManager().getStrategy() instanceof BiologyDictionaryDiscoveryStrategy strategy) {
             ServerNetManager.replyDictionaryDiscoveryRecords(player, strategy.getAllRecords(player));
             LOGGER.info("Full discovery records sent to player {}.", EntityUtils.getNameString(player));
         } else {

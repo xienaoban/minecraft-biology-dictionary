@@ -186,7 +186,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
 
         private boolean isDiscovered() {
-            return ClientWorldSession.get() != null && ClientWorldSession.get().getDiscoveryClientCache().isDiscovered(entityType);
+            return ClientWorldSession.get().getDiscoveryClientCache().isDiscovered(entityType);
         }
 
         private boolean isDiscoveredOrCreative() {

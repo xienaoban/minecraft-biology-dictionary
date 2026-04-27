@@ -31,6 +31,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Fixed spawn structure support
 - Render placeholder if failed to render entity
 - Fixed entity rotation jump when rendering in detail screen
+- Fixed crash from spawn manager
+- Fixed OOM of rendering silhouettes
 
 ## Previous Versions
 

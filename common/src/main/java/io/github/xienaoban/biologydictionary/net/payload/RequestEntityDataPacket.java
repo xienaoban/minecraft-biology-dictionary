@@ -11,6 +11,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
+
 public record RequestEntityDataPacket(int entityId, boolean firstAndFullSync) implements Packet {
     public static final Packet.Factory<RequestEntityDataPacket> FACTORY = RequestEntityDataPacket::new;
 
@@ -21,6 +23,12 @@ public record RequestEntityDataPacket(int entityId, boolean firstAndFullSync) im
 
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
+        ServerWorldSession sws = ServerWorldSession.get();
+        if (sws == null) {
+            LOGGER.warn("Null ServerWorldSession. Ignored.", new RuntimeException());
+            return;
+        }
+
         Entity entity = ctx.player().level().getEntity(entityId);
 
         ReplyEntityDataPacket toSend;
@@ -36,10 +44,7 @@ public record RequestEntityDataPacket(int entityId, boolean firstAndFullSync) im
             }
 
             if (firstAndFullSync) {
-                ServerWorldSession session = ServerWorldSession.get();
-                if (session != null) {
-                    session.getDiscoveryManager().onEntityDetailScreenOpened(ctx.player(), entity);
-                }
+                sws.getDiscoveryManager().onEntityDetailScreenOpened(ctx.player(), entity);
             }
 
             toSend = new ReplyEntityDataPacket(true, EntityUtils.getId(entity), vanillaNbt, extraNbt);
