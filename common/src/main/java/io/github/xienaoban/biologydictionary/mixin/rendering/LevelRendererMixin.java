@@ -21,17 +21,17 @@ public abstract class LevelRendererMixin {
 
     @Inject(method = "shouldShowEntityOutlines", at = @At("HEAD"), cancellable = true)
     private void biologydictionary$injectShouldShowEntityOutlines(CallbackInfoReturnable<Boolean> cir) {
-        ClientWorldSession session = ClientWorldSession.get();
-        if (session != null && session.getHighlightManager().hasAnyHighlighted()) {
+        ClientWorldSession cws = ClientWorldSession.get();
+        if (cws != null && cws.getHighlightManager().hasAnyHighlighted()) {
             cir.setReturnValue(true);
         }
     }
 
     @ModifyExpressionValue(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;entitiesForRendering()Ljava/lang/Iterable;"))
     private Iterable<Entity> biologydictionary$modifyEntitiesForRendering(Iterable<Entity> original) {
-        ClientWorldSession session = ClientWorldSession.get();
-        if (session != null) {
-            HighlightManager hm = session.getHighlightManager();
+        ClientWorldSession cws = ClientWorldSession.get();
+        if (cws != null) {
+            HighlightManager hm = cws.getHighlightManager();
             if (hm.hasAnyHighlighted() && !hm.getHighlightedBlocks().isEmpty()) {
                 Stream<Entity> entitiesStream = StreamSupport.stream(original.spliterator(), false);
                 Stream<Entity> blocksStream = hm.getHighlightedBlocks().stream()
@@ -44,8 +44,8 @@ public abstract class LevelRendererMixin {
 
     @ModifyExpressionValue(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;shouldRender(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/client/renderer/culling/Frustum;DDD)Z"))
     private boolean biologydictionary$modifyShouldRender(boolean original, @Local Entity entity) {
-        ClientWorldSession session = ClientWorldSession.get();
-        if (session != null && session.getHighlightManager().isEntityHighlighted(entity)) {
+        ClientWorldSession cws = ClientWorldSession.get();
+        if (cws != null && cws.getHighlightManager().isEntityHighlighted(entity)) {
             biologydictionary$shouldHighlightEntity = true;
             return true;
         }

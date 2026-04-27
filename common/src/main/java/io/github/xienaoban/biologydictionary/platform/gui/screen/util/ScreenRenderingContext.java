@@ -521,11 +521,14 @@ public final class ScreenRenderingContext {
             );
         } else {
             SilhouetteMultiBufferSource silhouetteBuffer = new SilhouetteMultiBufferSource(silhouetteColor);
-            RenderSystem.runAsFancy(
-                    () -> entityRenderDispatcher.render(entity, 0D, 0D, 0D, 0F, 1F, getPose(), silhouetteBuffer, 15728880)
-            );
-            getGuiGraphics().flush();
-            silhouetteBuffer.end();
+            try {
+                RenderSystem.runAsFancy(
+                        () -> entityRenderDispatcher.render(entity, 0D, 0D, 0D, 0F, 1F, getPose(), silhouetteBuffer, 15728880)
+                );
+                getGuiGraphics().flush();
+            } finally {
+                silhouetteBuffer.end();
+            }
         }
         getGuiGraphics().flush();
         entityRenderDispatcher.setRenderShadow(true);

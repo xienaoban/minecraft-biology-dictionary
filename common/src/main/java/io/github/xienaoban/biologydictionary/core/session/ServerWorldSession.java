@@ -1,8 +1,10 @@
 package io.github.xienaoban.biologydictionary.core.session;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.EntitySpawnManager;
+import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryManager;
 import net.minecraft.server.MinecraftServer;
 
@@ -18,8 +20,15 @@ public final class ServerWorldSession implements ConfigsUpdateCallback {
     public static void init(MinecraftServer server) {
         synchronized (ServerWorldSession.class) {
             if (instance == null) {
-                instance = new ServerWorldSession(server);
-                LOGGER.info("ServerWorldSession initialized.");
+                try {
+                    instance = new ServerWorldSession(server);
+                    LOGGER.info("ServerWorldSession initialized.");
+                } catch (Throwable e) {
+                    LOGGER.error("Failed to initialize ServerWorldSession!", e);
+                    if (DevUtils.isClient()) {
+                        BiologyDictionaryClient.printThrowableToLoggerAndGame("ServerWorldSession failed to initialize!", e);
+                    }
+                }
             }
         }
     }

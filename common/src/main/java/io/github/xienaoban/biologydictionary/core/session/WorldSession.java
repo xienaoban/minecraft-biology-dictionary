@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
 import io.github.xienaoban.biologydictionary.core.property.StaticEntityPropertyCache;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCostsCache;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -27,8 +28,15 @@ public final class WorldSession implements ConfigsUpdateCallback {
     public static void init(Level level) {
         synchronized (WorldSession.class) {
             if (instance == null) {
-                instance = new WorldSession(level);
-                LOGGER.info("WorldSession initialized.");
+                try {
+                    instance = new WorldSession(level);
+                    LOGGER.info("WorldSession initialized.");
+                } catch (Throwable e) {
+                    LOGGER.error("Failed to initialize WorldSession!", e);
+                    if (DevUtils.isClient()) {
+                        BiologyDictionaryClient.printThrowableToLoggerAndGame("WorldSession failed to initialize!", e);
+                    }
+                }
             }
         }
     }
@@ -69,7 +77,7 @@ public final class WorldSession implements ConfigsUpdateCallback {
     private final StaticEntityPropertyCache staticEntityPropertyCache;
 
     private WorldSession(Level level) {
-        this.entityManager = EntityManager.create(level);
+        this.entityManager = new EntityManager(level);
         this.skillCostsCache = new SkillCostsCache();
         this.entityOverviewCache = new EntityOverviewCache();
         this.staticEntityPropertyCache = new StaticEntityPropertyCache();
