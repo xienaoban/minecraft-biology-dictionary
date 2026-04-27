@@ -55,15 +55,17 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         final class W { static void receive(ReplyBiologyDictionaryDiscoveryFullPacket packet) {
-            ClientWorldSession session = ClientWorldSession.get();
-            if (session == null) {
+            ClientWorldSession cws = ClientWorldSession.get();
+            if (cws == null) {
+                LOGGER.warn("Null ClientWorldSession. Ignored.", new RuntimeException());
                 return;
             }
-            if (session.getDiscoveryClientCache().getDelegate() instanceof BiologyDictionaryClientDiscoveryCache cache) {
+
+            if (cws.getDiscoveryClientCache().getDelegate() instanceof BiologyDictionaryClientDiscoveryCache cache) {
                 cache.onFullSync(packet.discoveries());
                 LOGGER.info("Full discovery records received.");
             } else {
-                LOGGER.warn("Received wrong discovery strategy. Ignored.");
+                LOGGER.warn("Received wrong discovery strategy. Ignored.", new RuntimeException());
             }
         }}
         W.receive(this);

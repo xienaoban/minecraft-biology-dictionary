@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
@@ -15,6 +16,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entityType, float radius) implements Packet {
     public static final Packet.Factory<ReplyHighlightEntitiesPacket> FACTORY = ReplyHighlightEntitiesPacket::new;
@@ -40,6 +43,12 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
         final class W { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
             if (!packet.allowed()) { return; }
 
+            ClientWorldSession cws = ClientWorldSession.get();
+            if (cws == null) {
+                LOGGER.warn("Null ClientWorldSession. Ignored.", new RuntimeException());
+                return;
+            }
+
             ClientUtils.playScreenSound(SoundEvents.ENDER_DRAGON_FLAP, 0.6F, -10.0F);
             LocalPlayer player = ctx.player();
             int cnt = 0;
@@ -49,7 +58,7 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
                     continue;
                 }
                 ++cnt;
-                ClientWorldSession.get().getHighlightManager().highlightEntity(e, HighlightEntitiesSkill.TICKS);
+                cws.getHighlightManager().highlightEntity(e, HighlightEntitiesSkill.TICKS);
             }
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
                     cnt, packet.entityType().getDescription(), packet.radius()));

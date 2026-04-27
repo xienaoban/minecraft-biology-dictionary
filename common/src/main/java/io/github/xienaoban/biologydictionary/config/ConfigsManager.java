@@ -86,9 +86,11 @@ public final class ConfigsManager {
      */
     @Environment(EnvType.CLIENT)
     public static void setRemoteServerConfigs(Configs.ServerConfigs remoteConfigs) {
-        WorldSession ws = WorldSession.get();
         Objects.requireNonNull(remoteConfigs);
-        Objects.requireNonNull(ws);
+        if (WorldSession.get() == null) {
+            LOGGER.warn("Cannot set remote configs: WorldSession is null.", new RuntimeException());
+            return;
+        }
         if (ServerWorldSession.get() != null) {
             throw new IllegalStateException("Server configs should not be synchronized from remote on server.");
         }
@@ -182,20 +184,20 @@ public final class ConfigsManager {
      * Refreshes all local world session caches and broadcasts to remote players if on server side.
      */
     public static void onUpdated() {
-        WorldSession session = WorldSession.get();
-        if (session != null) {
-            session.onConfigsUpdate(getClient(), getServer());
+        WorldSession ws = WorldSession.get();
+        if (ws != null) {
+            ws.onConfigsUpdate(getClient(), getServer());
         }
         if (DevUtils.isClient()) {
-            ClientWorldSession clientSession = ClientWorldSession.get();
-            if (clientSession != null) {
-                clientSession.onConfigsUpdate(getClient(), getServer());
+            ClientWorldSession cws = ClientWorldSession.get();
+            if (cws != null) {
+                cws.onConfigsUpdate(getClient(), getServer());
             }
         }
-        ServerWorldSession serverSession = ServerWorldSession.get();
-        if (serverSession != null) {
-            serverSession.onConfigsUpdate(getClient(), getServer());
-            broadcastServerConfigs(serverSession.getServer());
+        ServerWorldSession sws = ServerWorldSession.get();
+        if (sws != null) {
+            sws.onConfigsUpdate(getClient(), getServer());
+            broadcastServerConfigs(sws.getServer());
         }
         LOGGER.info("Configs updated.");
     }

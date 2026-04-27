@@ -33,8 +33,8 @@ public final class TelescopeManager {
     }
 
     public void tick() {
-        ClientWorldSession session = ClientWorldSession.get();
-        if (session == null) { return; }
+        ClientWorldSession cws = ClientWorldSession.get();
+        if (cws == null) { return; }
 
         Minecraft client = ClientUtils.getClient();
         LocalPlayer player = ClientUtils.getClientPlayer(client);
@@ -55,7 +55,7 @@ public final class TelescopeManager {
             target = entityHit.getEntity();
         }
 
-        ClientDiscoveryCache cache = session.getDiscoveryClientCache();
+        ClientDiscoveryCache cache = cws.getDiscoveryClientCache();
 
         if (target == null) {
             discoveryProgress = Math.max(0, discoveryProgress - 2);

@@ -41,7 +41,7 @@ public final class BiologyDictionaryEvent {
             }
         } catch (Throwable e) {
             resetHit();
-            BiologyDictionaryClient.printThrowableToLoggerAndGame("Failed to open Biology Dictionary screen", e);
+            BiologyDictionaryClient.printThrowableToLoggerAndGame("Failed to open Biology Dictionary screen!", e);
         }
     }
 

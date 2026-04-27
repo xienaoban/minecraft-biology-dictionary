@@ -21,6 +21,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
+
 /**
  * Server notifies client of a new discovery: S -> C.
  */
@@ -47,15 +49,18 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         final class W { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
-            ClientWorldSession session = ClientWorldSession.get();
-            if (session == null) { return; }
+            ClientWorldSession cws = ClientWorldSession.get();
+            if (cws == null) {
+                LOGGER.warn("Null ClientWorldSession. Ignored.", new RuntimeException());
+                return;
+            }
 
             Minecraft client = ctx.client();
             LocalPlayer player = ctx.player();
             ClientLevel level = ClientUtils.getClientLevel(client);
 
             // Update discovery cache
-            session.getDiscoveryClientCache().incrementalSync(packet.entityType, packet.record);
+            cws.getDiscoveryClientCache().incrementalSync(packet.entityType, packet.record);
 
             // Show toast
             client.getToastManager().addToast(new DiscoveryToast(packet.entityType));

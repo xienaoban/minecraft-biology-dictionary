@@ -206,9 +206,9 @@ elif [ "$LOADER_TYPE" = "neoforge" ]; then
   SERVER_PID=$!
 fi
 
-# Wait for mod to load (look for "EntityManager initialized." in logs)
+# Wait for mod to load (look for "WorldSession initialized." and "ServerWorldSession initialized." in logs)
 for i in {1..60}; do
-  if grep -q "EntityManager initialized\." logs/latest.log 2>/dev/null; then
+  if grep -q "WorldSession initialized\." logs/latest.log 2>/dev/null && grep -q "ServerWorldSession initialized\." logs/latest.log 2>/dev/null; then
     echo "✓ Mod loaded successfully!"
     break
   fi
@@ -221,7 +221,7 @@ for i in {1..60}; do
 done
 
 # Check if mod loaded successfully
-if ! grep -q "EntityManager initialized\." logs/latest.log 2>/dev/null; then
+if ! grep -q "WorldSession initialized\." logs/latest.log 2>/dev/null || ! grep -q "ServerWorldSession initialized\." logs/latest.log 2>/dev/null; then
   echo "✗ Mod failed to load within timeout"
   tail -n 50 logs/latest.log
   exit 1
