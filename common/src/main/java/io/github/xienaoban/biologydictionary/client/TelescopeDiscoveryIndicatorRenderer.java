@@ -18,20 +18,15 @@ public final class TelescopeDiscoveryIndicatorRenderer {
     private static final int TEXT_COLOR = 0xFFAAAAAA;
 
     public static void render(Minecraft client, GuiGraphics guiGraphics) {
-        ClientWorldSession session = ClientWorldSession.get();
-        if (session == null) {
-            return;
-        }
-        LocalPlayer player = client.player;
-        if (player == null || !player.isScoping()) {
-            return;
-        }
+        ClientWorldSession cws = ClientWorldSession.get();
+        if (cws == null) { return; }
 
-        TelescopeManager telescopeManager = session.getTelescopeManager();
+        LocalPlayer player = client.player;
+        if (player == null || !player.isScoping()) { return; }
+
+        TelescopeManager telescopeManager = cws.getTelescopeManager();
         int progress = telescopeManager.getDiscoveryProgress();
-        if (progress <= 0) {
-            return;
-        }
+        if (progress <= 0) { return; }
 
         float centerX = guiGraphics.guiWidth() / 2F;
         float barY = guiGraphics.guiHeight() / 2F + 9;

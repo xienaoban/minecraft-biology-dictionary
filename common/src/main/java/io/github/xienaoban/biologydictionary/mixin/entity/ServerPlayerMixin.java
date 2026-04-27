@@ -17,9 +17,9 @@ public class ServerPlayerMixin {
         ServerPlayer self = (ServerPlayer) (Object) this;
         LivingEntity killer = self.getKillCredit();
         if (killer != null) {
-            ServerWorldSession session = ServerWorldSession.get();
-            if (session != null) {
-                session.getDiscoveryManager().onPlayerKilledByEntity(self, killer);
+            ServerWorldSession sws = ServerWorldSession.get();
+            if (sws != null) {
+                sws.getDiscoveryManager().onPlayerKilledByEntity(self, killer);
             }
         }
     }

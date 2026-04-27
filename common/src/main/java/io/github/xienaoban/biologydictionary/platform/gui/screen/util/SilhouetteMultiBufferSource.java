@@ -162,12 +162,11 @@ public final class SilhouetteMultiBufferSource implements MultiBufferSource {
     };
 
     /**
-     * The underlying buffer source that accumulates outline vertex data.
-     * When flushed (via {@link MultiBufferSource.BufferSource#endBatch()}),
-     * the outline render types draw into {@code entityTarget} because their
-     * output state is {@code OUTLINE_TARGET}.
+     * Shared buffer source reused across all silhouette renders.
+     * Retains the underlying {@link BufferBuilder}'s allocated memory so it doesn't
+     * need to be reallocated every frame. See class-level Javadoc for usage.
      */
-    private final MultiBufferSource.BufferSource outlineBuffer;
+    private static final MultiBufferSource.BufferSource outlineBuffer = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
 
     /** ARGB32 silhouette color, normalized via {@link FastColor.ARGB32#color(int, int, int, int)}. */
     private final int color;
@@ -182,7 +181,6 @@ public final class SilhouetteMultiBufferSource implements MultiBufferSource {
      * @param color ARGB32 silhouette color
      */
     public SilhouetteMultiBufferSource(int color) {
-        this.outlineBuffer = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
         int a = (color >> 24) & 0xFF;
         int r = (color >> 16) & 0xFF;
         int g = (color >> 8) & 0xFF;

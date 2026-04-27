@@ -40,9 +40,9 @@ public class ItemInHandRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V")
     )
     private void biologydictionary$renderFirstPerson(float f, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LocalPlayer localPlayer, int i, CallbackInfo ci) {
-        ClientWorldSession session = ClientWorldSession.get();
-        if (session != null) {
-            session.getShoulderEntityRenderer().run(entityRenderDispatcher, f, poseStack, bufferSource, localPlayer, i);
+        ClientWorldSession cws = ClientWorldSession.get();
+        if (cws != null) {
+            cws.getShoulderEntityRenderer().run(entityRenderDispatcher, f, poseStack, bufferSource, localPlayer, i);
         }
     }
 }

@@ -2,7 +2,6 @@ package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
-import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;

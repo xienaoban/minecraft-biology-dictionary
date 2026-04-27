@@ -110,7 +110,7 @@ public final class BiologyDictionaryClient {
         ClientUtils.sendTextBoxMessage(TextUtils.concat(
                 Arrays.asList(
                         TextUtils.translate(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN),
-                        TextUtils.literal(message),
+                        TextUtils.literal(message).withStyle(ChatFormatting.RED),
                         TextUtils.newline(),
                         TextUtils.literal(throwable.toString()).withStyle(ChatFormatting.RED),
                         TextUtils.newline(),
