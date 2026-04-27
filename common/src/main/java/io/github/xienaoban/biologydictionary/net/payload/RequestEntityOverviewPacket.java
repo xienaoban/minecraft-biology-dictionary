@@ -30,17 +30,27 @@ public record RequestEntityOverviewPacket(String entityTypeId) implements Packet
 
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
-        EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
-        ReplyEntityOverviewPacket toSend;
+        WorldSession ws = WorldSession.get();
+        if (ws == null) {
+            LOGGER.warn("Null WorldSession. Ignored.", new RuntimeException());
+            return;
+        }
+        ServerWorldSession sws = ServerWorldSession.get();
+        if (sws == null) {
+            LOGGER.warn("Null ServerWorldSession. Ignored.", new RuntimeException());
+            return;
+        }
 
+        ReplyEntityOverviewPacket toSend;
+        EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
         if (entityType != null) {
             // Server-side guard: check if entity is locked
-            var manager = ServerWorldSession.get().getDiscoveryManager();
+            var manager = sws.getDiscoveryManager();
             if (!ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities()
                     && !manager.isDiscovered(ctx.player(), entityType)) {
                 toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);
             } else {
-                EntityOverviewCache.CacheEntry cached = WorldSession.get().getEntityOverviewCache()
+                EntityOverviewCache.CacheEntry cached = ws.getEntityOverviewCache()
                         .getOrCreate(entityType, ctx.player().serverLevel());
                 toSend = new ReplyEntityOverviewPacket(true, entityTypeId, cached.vanillaNbt(), cached.extraNbt());
             }

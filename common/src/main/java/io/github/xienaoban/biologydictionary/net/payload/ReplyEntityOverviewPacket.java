@@ -42,10 +42,16 @@ public record ReplyEntityOverviewPacket(boolean notNull, String entityTypeId,
             static void receive(ReplyEntityOverviewPacket packet, ClientNetApi.Context ctx) {
                 if (!packet.notNull()) { return; }
 
+                WorldSession ws = WorldSession.get();
+                if (ws == null) {
+                    LOGGER.warn("Null WorldSession. Ignored.", new RuntimeException());
+                    return;
+                }
+
                 EntityType<?> entityType = EntityUtils.getEntityType(packet.entityTypeId());
                 if (entityType != null) {
-                    WorldSession.get().getEntityOverviewCache().put(entityType,
-                            new EntityOverviewCache.CacheEntry(packet.vanillaNbt(), packet.extraNbt()));
+                    ws.getEntityOverviewCache().put(entityType,
+                        new EntityOverviewCache.CacheEntry(packet.vanillaNbt(), packet.extraNbt()));
 
                     // Update current screen if it's an overview screen for this entity type
                     if (ClientUtils.getCurrentScreen() instanceof BdEntityOverviewScreen screen

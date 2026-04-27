@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.session;
 import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRenderer;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.TelescopeManager;
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.discovery.DelegatingClientDiscoveryCache;
@@ -22,8 +23,13 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
     public static void init() {
         synchronized (ClientWorldSession.class) {
             if (instance == null) {
-                instance = new ClientWorldSession();
-                LOGGER.info("ClientWorldSession initialized.");
+                try {
+                    instance = new ClientWorldSession();
+                    LOGGER.info("ClientWorldSession initialized.");
+                } catch (Throwable e) {
+                    LOGGER.error("Failed to initialize ClientWorldSession!", e);
+                    BiologyDictionaryClient.printThrowableToLoggerAndGame("ClientWorldSession failed to initialize!", e);
+                }
             }
         }
     }

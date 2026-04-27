@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core;
 
 import com.google.common.collect.ImmutableList;
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.mixin.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -25,6 +26,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 import java.util.*;
+
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 /**
  * Retrieves bidirectional spawn information between entity types and biomes/structures.
@@ -66,24 +69,28 @@ public class EntitySpawnManager {
         Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
 
         for (Map.Entry<ResourceKey<Biome>, Biome> biomeEntry : biomeRegistry.entrySet()) {
-            ResourceLocation biomeId = biomeEntry.getKey().location();
-            Biome biome = biomeEntry.getValue();
-            Entry<Biome> entry = new Entry<>(biomeId, biome);
-            MobSpawnSettings spawnSettings = biome.getMobSettings();
+            try {
+                ResourceLocation biomeId = biomeEntry.getKey().location();
+                Biome biome = biomeEntry.getValue();
+                Entry<Biome> entry = new Entry<>(biomeId, biome);
+                MobSpawnSettings spawnSettings = biome.getMobSettings();
 
-            Set<EntityType<?>> seenBiomeEntities = new HashSet<>();
-            for (MobCategory category : MobCategory.values()) {
-                WeightedRandomList<MobSpawnSettings.SpawnerData> spawners = spawnSettings.getMobs(category);
-                for (MobSpawnSettings.SpawnerData spawnerData : spawners.unwrap()) {
-                    EntityType<?> entityType = spawnerData.type;
+                Set<EntityType<?>> seenBiomeEntities = new HashSet<>();
+                for (MobCategory category : MobCategory.values()) {
+                    WeightedRandomList<MobSpawnSettings.SpawnerData> spawners = spawnSettings.getMobs(category);
+                    for (MobSpawnSettings.SpawnerData spawnerData : spawners.unwrap()) {
+                        EntityType<?> entityType = spawnerData.type;
 
-                    if (seenBiomeEntities.add(entityType)) {
-                        spawnBiomes.computeIfAbsent(entityType, k -> new ArrayList<>())
-                            .add(entry);
-                        biomeEntities.computeIfAbsent(biomeId, k -> new ArrayList<>())
-                            .add(entityType);
+                        if (seenBiomeEntities.add(entityType)) {
+                            spawnBiomes.computeIfAbsent(entityType, k -> new ArrayList<>())
+                                .add(entry);
+                            biomeEntities.computeIfAbsent(biomeId, k -> new ArrayList<>())
+                                .add(entityType);
+                        }
                     }
                 }
+            } catch (Throwable e) {
+                LOGGER.warn("Failed to process spawn settings for biome {}", biomeEntry.getKey(), e);
             }
         }
     }
@@ -93,33 +100,37 @@ public class EntitySpawnManager {
         Registry<StructureTemplatePool> poolRegistry = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL);
 
         for (Map.Entry<ResourceKey<Structure>, Structure> structureEntry : structureRegistry.entrySet()) {
-            ResourceLocation structureId = structureEntry.getKey().location();
-            Structure structure = structureEntry.getValue();
-            Entry<Structure> entry = new Entry<>(structureId, structure);
+            try {
+                ResourceLocation structureId = structureEntry.getKey().location();
+                Structure structure = structureEntry.getValue();
+                Entry<Structure> entry = new Entry<>(structureId, structure);
 
-            Set<EntityType<?>> seenStructureEntities = new HashSet<>();
+                Set<EntityType<?>> seenStructureEntities = new HashSet<>();
 
-            // 1. spawnOverrides (e.g. guardians in ocean monuments)
-            structure.spawnOverrides().forEach((category, override) -> {
-                for (MobSpawnSettings.SpawnerData spawnerData : override.spawns().unwrap()) {
-                    EntityType<?> entityType = spawnerData.type;
+                // 1. spawnOverrides (e.g. guardians in ocean monuments)
+                structure.spawnOverrides().forEach((category, override) -> {
+                    for (MobSpawnSettings.SpawnerData spawnerData : override.spawns().unwrap()) {
+                        EntityType<?> entityType = spawnerData.type;
 
-                    if (seenStructureEntities.add(entityType)) {
-                        spawnStructures.computeIfAbsent(entityType, k -> new ArrayList<>())
-                            .add(entry);
-                        structureEntities.computeIfAbsent(structureId, k -> new ArrayList<>())
-                            .add(entityType);
+                        if (seenStructureEntities.add(entityType)) {
+                            spawnStructures.computeIfAbsent(entityType, k -> new ArrayList<>())
+                                .add(entry);
+                            structureEntities.computeIfAbsent(structureId, k -> new ArrayList<>())
+                                .add(entityType);
+                        }
                     }
-                }
-            });
+                });
 
-            // 2. Template entities for Jigsaw structures (e.g. villagers in villages)
-            if (structure instanceof JigsawStructure) {
-                Holder<StructureTemplatePool> startPool = ((JigsawStructureIMixin) (Object) structure).biologydictionary$getStartPool();
-                collectTemplateEntities(
-                    startPool, poolRegistry, templateManager,
-                    structureId, entry, seenStructureEntities
-                );
+                // 2. Template entities for Jigsaw structures (e.g. villagers in villages)
+                if (structure instanceof JigsawStructure) {
+                    Holder<StructureTemplatePool> startPool = ((JigsawStructureIMixin) (Object) structure).biologydictionary$getStartPool();
+                    collectTemplateEntities(
+                        startPool, poolRegistry, templateManager,
+                        structureId, entry, seenStructureEntities
+                    );
+                }
+            } catch (Throwable e) {
+                LOGGER.warn("Failed to process spawn settings for structure {}", structureEntry.getKey(), e);
             }
         }
     }
@@ -136,8 +147,8 @@ public class EntitySpawnManager {
         Queue<StructureTemplatePool> queue = new ArrayDeque<>();
 
         ResourceLocation startPoolId = startPool.unwrapKey()
-            .map(ResourceKey::location)
-            .orElseThrow(() -> new IllegalStateException("Start pool has no resource key"));
+            .map(ResourceKey::location).orElse(null);
+        if (startPoolId == null) return;
         visitedPools.add(startPoolId);
         queue.add(startPool.value());
 
@@ -147,20 +158,28 @@ public class EntitySpawnManager {
 
             // Collect entities from all templates in this pool
             for (StructurePoolElement element : ((StructureTemplatePoolIMixin) pool).biologydictionary$getTemplates()) {
-                collectElementEntities(
-                    element, templateManager, structureId, structureEntry, seenStructureEntities, referencedPools
-                );
+                try {
+                    collectElementEntities(
+                        element, templateManager, structureId, structureEntry, seenStructureEntities, referencedPools
+                    );
+                } catch (Exception e) {
+                    LOGGER.warn("Failed to process element in template pool {}", startPoolId, e);
+                }
             }
 
             // Also follow fallback pool
-            Holder<StructureTemplatePool> fallback = pool.getFallback();
-            if (fallback.value() != pool) {
-                fallback.unwrapKey().ifPresent(poolKey -> {
-                    ResourceLocation poolId = poolKey.location();
-                    if (visitedPools.add(poolId)) {
-                        poolRegistry.getOptional(poolId).ifPresent(queue::add);
-                    }
-                });
+            try {
+                Holder<StructureTemplatePool> fallback = pool.getFallback();
+                if (fallback.value() != pool) {
+                    fallback.unwrapKey().ifPresent(poolKey -> {
+                        ResourceLocation poolId = poolKey.location();
+                        if (visitedPools.add(poolId)) {
+                            poolRegistry.getOptional(poolId).ifPresent(queue::add);
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Failed to process fallback pool for {}", startPoolId, e);
             }
 
             // Follow jigsaw-referenced pools from templates
