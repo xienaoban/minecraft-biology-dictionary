@@ -21,9 +21,9 @@ public class PlayerMixin {
     private void biologydictionary$onEntityKilled(ServerLevel serverLevel, LivingEntity livingEntity, DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
         Player self = (Player) (Object) this;
         if (self instanceof ServerPlayer serverPlayer) {
-            ServerWorldSession session = ServerWorldSession.get();
-            if (session != null) {
-                session.getDiscoveryManager().onEntityKilled(serverPlayer, livingEntity);
+            ServerWorldSession sws = ServerWorldSession.get();
+            if (sws != null) {
+                sws.getDiscoveryManager().onEntityKilled(serverPlayer, livingEntity);
             }
         }
     }
@@ -32,9 +32,9 @@ public class PlayerMixin {
     private void biologydictionary$onEntityInteracted(Entity entity, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
         Player self = (Player) (Object) this;
         if (self instanceof ServerPlayer serverPlayer) {
-            ServerWorldSession session = ServerWorldSession.get();
-            if (session != null) {
-                session.getDiscoveryManager().onEntityInteracted(serverPlayer, entity);
+            ServerWorldSession sws = ServerWorldSession.get();
+            if (sws != null) {
+                sws.getDiscoveryManager().onEntityInteracted(serverPlayer, entity);
             }
         }
     }

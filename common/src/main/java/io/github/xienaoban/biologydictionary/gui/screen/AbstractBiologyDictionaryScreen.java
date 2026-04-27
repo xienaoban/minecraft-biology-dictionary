@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPageCommonWidget;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPagePlaceholder;
@@ -18,7 +19,6 @@ import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
@@ -79,10 +79,14 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     private void check() {
-        if (WorldSession.get().getEntityManager() == null) {
-            ClientUtils.sendTextBoxMessage(TextUtils.literal("Failed to init EntityManager??").withStyle(ChatFormatting.RED));
-            throw new RuntimeException("Failed to init EntityManager??");
+        WorldSession ws = WorldSession.get();
+        if (ws == null) {
+            throw new IllegalStateException("WorldSession failed to initialize!");
         }
+        if (ClientWorldSession.get() == null) {
+            throw new IllegalStateException("ClientWorldSession failed to initialize!");
+        }
+        Objects.requireNonNull(ws.getEntityManager());
     }
 
     @Override

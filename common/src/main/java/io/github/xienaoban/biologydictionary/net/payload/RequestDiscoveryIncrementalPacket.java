@@ -8,6 +8,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
+
 /**
  * Client requests to register a discovery: C -> S.
  * The caller should optimistically insert into the local cache before sending.
@@ -27,15 +29,17 @@ public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource so
 
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
-        ServerPlayer player = ctx.player();
-        ServerWorldSession session = ServerWorldSession.get();
-        if (session == null) {
+        ServerWorldSession sws = ServerWorldSession.get();
+        if (sws == null) {
+            LOGGER.warn("Null ServerWorldSession. Ignored.", new RuntimeException());
             return;
         }
+
+        ServerPlayer player = ctx.player();
         Entity entity = player.level().getEntity(entityId);
         if (entity == null) {
             return;
         }
-        source.dispatch(session.getDiscoveryManager(), player, entity);
+        source.dispatch(sws.getDiscoveryManager(), player, entity);
     }
 }

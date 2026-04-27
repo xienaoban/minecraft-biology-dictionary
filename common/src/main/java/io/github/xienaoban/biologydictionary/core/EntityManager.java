@@ -31,17 +31,6 @@ import java.util.function.Function;
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public final class EntityManager {
-    public static EntityManager create(Level level) {
-        try {
-            EntityManager res = new EntityManager(level);
-            LOGGER.info("WorldSession: EntityManager initialized.");
-            return res;
-        } catch (Throwable e) {
-            LOGGER.error("WorldSession: Failed to init EntityManager.", e);
-            return null;
-        }
-    }
-
     /**
      * Get my preferred order of the vanilla entity.
      * Returns Integer rather than int because it can be null.
@@ -63,7 +52,7 @@ public final class EntityManager {
 
     private final List<TagGroup> tagGroups = new ArrayList<>(Arrays.asList(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
 
-    private EntityManager(Level level) {
+    public EntityManager(Level level) {
         EntityOrder.init();
 
         initEntities(level);
@@ -79,12 +68,11 @@ public final class EntityManager {
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
             EntityClassInfo entityClassInfo;
             try {
-                Optional<EntityClassInfo> o = EntityClassInfo.create(entityType, level);
-                if (o.isEmpty()) continue;
-                entityClassInfo = o.get();
-            } catch (Exception e) {
-                LOGGER.error("Cannot init EntityClassInfo of\"{}\": {}", EntityType.getKey(entityType), e);
-                throw e;
+                entityClassInfo = EntityClassInfo.create(entityType, level);
+                if (entityClassInfo == null) continue;
+            } catch (Throwable e) {
+                LOGGER.error("Failed to create an EntityClassInfo of entity type \"{}\"! Skipped supporting this entity type.", EntityUtils.getEntityTypeName(entityType), e);
+                continue;
             }
             infos.put(entityClassInfo.getType(), entityClassInfo);
             sortedInfos.add(entityClassInfo);
@@ -336,22 +324,15 @@ public final class EntityManager {
     }
 
     public static class EntityClassInfo implements Comparable<EntityClassInfo> {
-        public static Optional<EntityClassInfo> create(EntityType<?> entityType, Level level) {
-            try {
-                Entity entity = EntityUtils.create(entityType, level);
-                if (entity == null) {
-                    if (entityType == EntityType.PLAYER) return Optional.empty();
-                    if (!entityType.isEnabled(level.enabledFeatures())) return Optional.empty();
-                    String name = EntityType.getKey(entityType).toString();
-                    throw new RuntimeException("Failed to create \"" + name + "\".");
-                } else if (!(entity instanceof LivingEntity)) {
-                    return Optional.empty();
-                }
-                return Optional.of(new EntityClassInfo(entityType, entity));
-            } catch (Throwable ex) {
-                LOGGER.error("Failed to create an EntityClassInfo of entity type \"{}\"! Skipped supporting this entity type.", EntityUtils.getEntityTypeIdName(entityType), ex);
+        public static EntityClassInfo create(EntityType<?> entityType, Level level) {
+            Entity entity = EntityUtils.create(entityType, level);
+            if (entity == null) {
+                if (entityType == EntityType.PLAYER) return null;
+                if (!entityType.isEnabled(level.enabledFeatures())) return null;
+                throw new RuntimeException("Failed to create \"" + EntityType.getKey(entityType) + "\".");
             }
-            return Optional.empty();
+            if (!(entity instanceof LivingEntity)) return null;
+            return new EntityClassInfo(entityType, entity);
         }
 
         private final EntityType<?> type;
