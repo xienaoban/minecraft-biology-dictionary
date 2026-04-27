@@ -72,7 +72,7 @@ public final class EntityManager {
                 if (entityClassInfo == null) continue;
             } catch (Throwable e) {
                 LOGGER.error("Failed to create an EntityClassInfo of entity type \"{}\"! Skipped supporting this entity type.", EntityUtils.getEntityTypeName(entityType), e);
-                throw e;
+                continue;
             }
             infos.put(entityClassInfo.getType(), entityClassInfo);
             sortedInfos.add(entityClassInfo);

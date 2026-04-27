@@ -2,7 +2,6 @@ package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
-import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -10,8 +9,6 @@ import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public record RequestEntityDataPacket(int entityId, boolean firstAndFullSync) implements Packet {
     public static final Packet.Factory<RequestEntityDataPacket> FACTORY = RequestEntityDataPacket::new;
@@ -23,12 +20,6 @@ public record RequestEntityDataPacket(int entityId, boolean firstAndFullSync) im
 
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
-        ServerWorldSession sws = ServerWorldSession.get();
-        if (sws == null) {
-            LOGGER.warn("Null ServerWorldSession. Ignored.", new RuntimeException());
-            return;
-        }
-
         Entity entity = ctx.player().level().getEntity(entityId);
 
         ReplyEntityDataPacket toSend;
@@ -41,10 +32,6 @@ public record RequestEntityDataPacket(int entityId, boolean firstAndFullSync) im
             for (EntityProperty<?> p : new EntityProperties<>(entity).getExtras()) {
                 p.getFrom(Misc.cast(entity));
                 p.writeTo(extraNbt);
-            }
-
-            if (firstAndFullSync) {
-                sws.getDiscoveryManager().onEntityDetailScreenOpened(ctx.player(), entity);
             }
 
             toSend = new ReplyEntityDataPacket(true, EntityUtils.getId(entity), vanillaNbt, extraNbt);
