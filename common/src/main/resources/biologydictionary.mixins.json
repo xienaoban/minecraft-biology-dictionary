@@ -10,7 +10,6 @@
         "ListPoolElementIMixin",
         "MobEffectInstanceIMixin",
         "SinglePoolElementIMixin",
-        "StructureTemplateIMixin",
         "StructureTemplatePoolIMixin",
         "TemptGoalIMixin",
         "entity.AbstractHorseIMixin",

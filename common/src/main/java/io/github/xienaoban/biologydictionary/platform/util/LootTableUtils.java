@@ -214,7 +214,7 @@ public final class LootTableUtils {
 
     /**
      * Extract chance multiplier from conditions.
-     * Looks for random_chance or random_chance_with_enchanted_bonus conditions.
+     * Looks for random_chance or random_chance_with_looting conditions.
      * Returns 1.0 if no such condition is found (no multiplier).
      */
     private static float extractConditionChance(LootItemCondition[] conditions) {

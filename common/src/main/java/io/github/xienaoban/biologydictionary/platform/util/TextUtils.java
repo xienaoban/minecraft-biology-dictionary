@@ -83,4 +83,20 @@ public final class TextUtils {
     public static float getLineHeight(Font font, float scale) {
         return font.lineHeight * scale;
     }
+
+    public static MutableComponent truncateByWidth(Component text, Font font, float maxWidth, float fontSize) {
+        String str = text.getString();
+        float ellipsisWidth = font.width("...") * fontSize;
+        if (ellipsisWidth >= maxWidth) {
+            return Component.empty();
+        }
+        float maxTextWidth = maxWidth - ellipsisWidth;
+        float scale = fontSize;
+        int end = str.length();
+        while (end > 0 && font.width(str.substring(0, end)) * scale > maxTextWidth) {
+            end--;
+        }
+        if (end == str.length()) return text.copy();
+        return Component.literal(str.substring(0, end) + "...");
+    }
 }
