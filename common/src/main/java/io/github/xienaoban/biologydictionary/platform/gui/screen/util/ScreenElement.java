@@ -118,8 +118,9 @@ public abstract class ScreenElement implements ScreenConsts {
             ctx.renderRectangle(color | alpha, 0.6F, screen.getZ(),
                     box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
             if (this == screen.getHoveredElement()) {
-                ctx.renderText(TextUtils.literal(getClass().getSimpleName()), 0xFF7719AA,
-                        0.5F, ctx.getZ(), box.getLeft() + 1, box.getTop() - 4.5F);
+                ctx.renderText(TextUtils.literal(getClass().getSimpleName()
+                                + " (" + box.getWidth() + "*" + box.getHeight() + ")"),
+                        0xFF7719AA,0.5F, ctx.getZ(), box.getLeft() + 1, box.getTop() - 4.5F);
             }
         }
         for (ScreenElement subEle : subScreenElements) {

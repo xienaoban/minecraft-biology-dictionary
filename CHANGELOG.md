@@ -33,6 +33,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Fixed entity rotation jump when rendering in detail screen
 - Fixed crash from spawn manager
 - Fixed OOM of rendering silhouettes
+- Speed up template parsing
+- Fixed long config entry names overflowing in config screen
 
 ## Previous Versions
 
