@@ -1,16 +1,19 @@
 package io.github.xienaoban.biologydictionary.core;
 
 import com.google.common.collect.ImmutableList;
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.mixin.ListPoolElementIMixin;
-import io.github.xienaoban.biologydictionary.mixin.StructureTemplateIMixin;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.EntityType;
@@ -23,9 +26,8 @@ import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
+import java.io.InputStream;
 import java.util.*;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
@@ -39,15 +41,17 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Requires {@link RegistryAccess} containing WORLDGEN-layer registries (i.e. server-side).
  */
 public class EntitySpawnManager {
+    private static final FileToIdConverter STRUCTURE_LISTER = new FileToIdConverter("structure", ".nbt");
+
     private final Map<EntityType<?>, List<Entry<Biome>>> spawnBiomes = new HashMap<>();
     private final Map<Identifier, List<EntityType<?>>> biomeEntities = new HashMap<>();
 
     private final Map<EntityType<?>, List<Entry<Structure>>> spawnStructures = new HashMap<>();
     private final Map<Identifier, List<EntityType<?>>> structureEntities = new HashMap<>();
 
-    public EntitySpawnManager(RegistryAccess registryAccess, StructureTemplateManager templateManager) {
+    public EntitySpawnManager(RegistryAccess registryAccess, ResourceManager resourceManager) {
         buildSpawnBiomes(registryAccess);
-        buildSpawnStructures(registryAccess, templateManager);
+        buildSpawnStructures(registryAccess, resourceManager);
     }
 
     public List<Entry<Biome>> getSpawnBiomes(EntityType<?> entityType) {
@@ -97,9 +101,11 @@ public class EntitySpawnManager {
         }
     }
 
-    private void buildSpawnStructures(RegistryAccess registryAccess, StructureTemplateManager templateManager) {
+    private void buildSpawnStructures(RegistryAccess registryAccess, ResourceManager resourceManager) {
         Registry<Structure> structureRegistry = registryAccess.lookupOrThrow(Registries.STRUCTURE);
         Registry<StructureTemplatePool> poolRegistry = registryAccess.lookupOrThrow(Registries.TEMPLATE_POOL);
+
+        Map<Identifier, CompoundTag> templateCache = new HashMap<>();
 
         for (Map.Entry<ResourceKey<Structure>, Structure> structureEntry : structureRegistry.entrySet()) {
             try {
@@ -127,7 +133,7 @@ public class EntitySpawnManager {
                 // 2. Template entities for Jigsaw structures (e.g. villagers in villages)
                 if (structure instanceof JigsawStructure jigsawStructure) {
                     collectTemplateEntities(
-                        jigsawStructure.getStartPool(), poolRegistry, templateManager,
+                        jigsawStructure.getStartPool(), poolRegistry, resourceManager, templateCache,
                         structureId, entry, seenStructureEntities
                     );
                 }
@@ -140,7 +146,8 @@ public class EntitySpawnManager {
     private void collectTemplateEntities(
         Holder<StructureTemplatePool> startPool,
         Registry<StructureTemplatePool> poolRegistry,
-        StructureTemplateManager templateManager,
+        ResourceManager resourceManager,
+        Map<Identifier, CompoundTag> templateCache,
         Identifier structureId,
         Entry<Structure> structureEntry,
         Set<EntityType<?>> seenStructureEntities
@@ -156,37 +163,37 @@ public class EntitySpawnManager {
 
         while (!queue.isEmpty()) {
             StructureTemplatePool pool = queue.poll();
+            Set<Identifier> referencedPools = new HashSet<>();
 
             // Collect entities from all templates in this pool
             for (var elementPair : pool.getTemplates()) {
                 try {
                     collectElementEntities(
-                        elementPair.getFirst(), templateManager, structureId, structureEntry, seenStructureEntities
+                        elementPair.getFirst(), resourceManager, templateCache,
+                        structureId, structureEntry, seenStructureEntities, referencedPools
                     );
                 } catch (Exception e) {
                     LOGGER.warn("Failed to process element in template pool {}", startPoolId, e);
                 }
             }
 
-            // Discover referenced pools via jigsaw blocks in templates
-            Set<ResourceKey<StructureTemplatePool>> referencedPoolKeys = new HashSet<>();
-            for (var elementPair : pool.getTemplates()) {
-                collectReferencedPools(elementPair.getFirst(), templateManager, referencedPoolKeys);
-            }
-
             // Also follow fallback pool
             try {
                 Holder<StructureTemplatePool> fallback = pool.getFallback();
                 if (fallback.value() != pool) {
-                    fallback.unwrapKey().ifPresent(referencedPoolKeys::add);
+                    fallback.unwrapKey().ifPresent(poolKey -> {
+                        Identifier poolId = poolKey.identifier();
+                        if (visitedPools.add(poolId)) {
+                            poolRegistry.get(poolId).ifPresent(holder -> queue.add(holder.value()));
+                        }
+                    });
                 }
             } catch (Exception e) {
                 LOGGER.warn("Failed to process fallback pool for {}", startPoolId, e);
             }
 
-            // Enqueue unvisited pools
-            for (ResourceKey<StructureTemplatePool> poolKey : referencedPoolKeys) {
-                Identifier poolId = poolKey.identifier();
+            // Follow jigsaw-referenced pools from templates
+            for (Identifier poolId : referencedPools) {
                 if (visitedPools.add(poolId)) {
                     poolRegistry.get(poolId).ifPresent(holder -> queue.add(holder.value()));
                 }
@@ -196,26 +203,35 @@ public class EntitySpawnManager {
 
     private void collectElementEntities(
         StructurePoolElement element,
-        StructureTemplateManager templateManager,
+        ResourceManager resourceManager,
+        Map<Identifier, CompoundTag> templateCache,
         Identifier structureId,
         Entry<Structure> structureEntry,
-        Set<EntityType<?>> seenStructureEntities
+        Set<EntityType<?>> seenStructureEntities,
+        Set<Identifier> referencedPools
     ) {
         if (element instanceof SinglePoolElement singlePoolElement) {
             Identifier templateId = singlePoolElement.getTemplateLocation();
-            Optional<StructureTemplate> template = templateManager.get(templateId);
-            if (template.isEmpty()) {
-                return;
-            }
-            StructureTemplate tmpl = template.get();
-            List<StructureTemplate.StructureEntityInfo> entities =
-                ((StructureTemplateIMixin) tmpl).biologydictionary$getEntityInfoList();
+            if (templateId == null) return;
 
-            for (StructureTemplate.StructureEntityInfo entityInfo : entities) {
-                CompoundTag nbt = entityInfo.nbt;
-                if (nbt == null || !nbt.contains("id")) {
-                    continue;
+            CompoundTag rootNbt = templateCache.computeIfAbsent(templateId, id -> {
+                try {
+                    Identifier resourceLoc = STRUCTURE_LISTER.idToFile(id);
+                    try (InputStream is = resourceManager.open(resourceLoc)) {
+                        return NbtIo.readCompressed(is, NbtAccounter.unlimitedHeap());
+                    }
+                } catch (Throwable e) {
+                    LOGGER.warn("Failed to read structure template {}", id, e);
+                    return null;
                 }
+            });
+            if (rootNbt == null) return;
+
+            // Extract entities
+            ListTag entities = rootNbt.getListOrEmpty("entities");
+            for (int i = 0; i < entities.size(); i++) {
+                CompoundTag entityTag = entities.getCompoundOrEmpty(i);
+                CompoundTag nbt = entityTag.getCompoundOrEmpty("nbt");
                 nbt.getString("id").flatMap(EntityType::byString).ifPresent(entityType -> {
                     if (seenStructureEntities.add(entityType)) {
                         spawnStructures.computeIfAbsent(entityType, k -> new ArrayList<>())
@@ -225,33 +241,26 @@ public class EntitySpawnManager {
                     }
                 });
             }
-        } else if (element instanceof ListPoolElement listPoolElement) {
-            for (StructurePoolElement child : ((ListPoolElementIMixin) listPoolElement).biologydictionary$getElements()) {
-                collectElementEntities(child, templateManager, structureId, structureEntry, seenStructureEntities);
-            }
-        }
-    }
 
-    private void collectReferencedPools(
-        StructurePoolElement element,
-        StructureTemplateManager templateManager,
-        Set<ResourceKey<StructureTemplatePool>> referencedPools
-    ) {
-        if (element instanceof SinglePoolElement singlePoolElement) {
-            Identifier templateId = singlePoolElement.getTemplateLocation();
-            Optional<StructureTemplate> template = templateManager.get(templateId);
-            if (template.isEmpty()) {
-                return;
-            }
-            StructureTemplate tmpl = template.get();
-            for (StructureTemplate.Palette palette : ((StructureTemplateIMixin) tmpl).biologydictionary$getPalettes()) {
-                for (StructureTemplate.JigsawBlockInfo jigsaw : palette.jigsaws()) {
-                    referencedPools.add(jigsaw.pool());
+            // Find jigsaw-referenced pools from blocks (only jigsaw blocks have "pool" in their nbt)
+            ListTag blocks = rootNbt.getListOrEmpty("blocks");
+            for (int i = 0; i < blocks.size(); i++) {
+                CompoundTag blockTag = blocks.getCompoundOrEmpty(i);
+                CompoundTag blockNbt = blockTag.getCompoundOrEmpty("nbt");
+                String poolStr = blockNbt.getStringOr("pool", "");
+                if (!poolStr.isEmpty()) {
+                    try {
+                        Identifier poolLoc = Identifier.tryParse(poolStr);
+                        if (poolLoc != null && !poolLoc.equals(Identifier.withDefaultNamespace("empty"))) {
+                            referencedPools.add(poolLoc);
+                        }
+                    } catch (Exception ignored) {}
                 }
             }
         } else if (element instanceof ListPoolElement listPoolElement) {
             for (StructurePoolElement child : ((ListPoolElementIMixin) listPoolElement).biologydictionary$getElements()) {
-                collectReferencedPools(child, templateManager, referencedPools);
+                collectElementEntities(child, resourceManager, templateCache,
+                    structureId, structureEntry, seenStructureEntities, referencedPools);
             }
         }
     }
