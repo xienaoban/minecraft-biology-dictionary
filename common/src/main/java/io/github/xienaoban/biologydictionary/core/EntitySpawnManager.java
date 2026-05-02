@@ -39,13 +39,13 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Requires {@link RegistryAccess} containing WORLDGEN-layer registries (i.e. server-side).
  */
 public class EntitySpawnManager {
+    private static final FileToIdConverter STRUCTURE_LISTER = new FileToIdConverter("structures", ".nbt");
+
     private final Map<EntityType<?>, List<Entry<Biome>>> spawnBiomes = new HashMap<>();
     private final Map<ResourceLocation, List<EntityType<?>>> biomeEntities = new HashMap<>();
 
     private final Map<EntityType<?>, List<Entry<Structure>>> spawnStructures = new HashMap<>();
     private final Map<ResourceLocation, List<EntityType<?>>> structureEntities = new HashMap<>();
-
-    private static final FileToIdConverter STRUCTURE_LISTER = new FileToIdConverter("structures", ".nbt");
 
     public EntitySpawnManager(RegistryAccess registryAccess, ResourceManager resourceManager) {
         buildSpawnBiomes(registryAccess);

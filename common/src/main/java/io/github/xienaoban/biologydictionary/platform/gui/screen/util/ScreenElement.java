@@ -120,7 +120,7 @@ public abstract class ScreenElement implements ScreenConsts {
             if (this == screen.getHoveredElement()) {
                 ctx.renderText(TextUtils.literal(getClass().getSimpleName()
                                 + " (" + box.getWidth() + "*" + box.getHeight() + ")"),
-                        0xFF7719AA,0.5F, ctx.getZ(), box.getLeft() + 1, box.getTop() - 4.5F);
+                        0xFF7719AA, 0.5F, ctx.getZ(), box.getLeft() + 1, box.getTop() - 4.5F);
             }
         }
         for (ScreenElement subEle : subScreenElements) {
