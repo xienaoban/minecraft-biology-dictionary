@@ -140,12 +140,14 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
         private final ConfigsManager.ConfigEntryInfo entryInfo;
         private final MutableComponent configText;
         private final MutableComponent configTooltipText;
+        private final MutableComponent configTextDisplay;
 
         public ConfigWidget(ConfigsManager.ConfigEntryInfo entryInfo) {
             super(1, Page.COLUMNS);
             this.entryInfo = entryInfo;
             this.configText = TextUtils.translate(Configs.getConfigNameTranslationKey(entryInfo.getName()));
             this.configTooltipText = TextUtils.translate(Configs.getConfigNameTranslationKey(entryInfo.getName()) + ".tooltip");
+            this.configTextDisplay = TextUtils.truncateByWidth(configText, TextUtils.getGlobalFont(), 60, 0.5F);
             setSelectable(false);
         }
 
@@ -162,7 +164,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
                     ctx.getZ(), box.getRight(), box.getBottom(), box.getRight() - tw, box.getBottom() - th);
 
             // Render translated config name on the left
-            ctx.renderText(configText, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
+            ctx.renderText(configTextDisplay, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
                     box.getLeft() + 12, box.getTop() + 3.2F);
 
             // Render current value on the right
