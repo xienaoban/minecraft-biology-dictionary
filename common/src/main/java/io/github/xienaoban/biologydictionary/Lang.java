@@ -91,10 +91,7 @@ public final class Lang {
     DISCOVERY_SOURCE_HIGHLIGHT            = "discovery_source.biologydictionary.highlight",
     DISCOVERY_SOURCE_TELESCOPE_OBSERVE    = "discovery_source.biologydictionary.telescope_observe",
     DISCOVERY_SOURCE_KILL                 = "discovery_source.biologydictionary.kill",
-    DISCOVERY_SOURCE_ATTACK               = "discovery_source.biologydictionary.attack",
     DISCOVERY_SOURCE_INTERACT             = "discovery_source.biologydictionary.interact",
-    DISCOVERY_SOURCE_FEED                 = "discovery_source.biologydictionary.feed",
-    DISCOVERY_SOURCE_TAME                 = "discovery_source.biologydictionary.tame",
     DISCOVERY_SOURCE_KILLED_BY            = "discovery_source.biologydictionary.killed_by",
     DISCOVERY_SOURCE_UNKNOWN              = "discovery_source.biologydictionary.unknown",
 

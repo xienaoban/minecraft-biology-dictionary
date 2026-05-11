@@ -77,23 +77,8 @@ public final class DiscoveryManager implements DiscoveryStrategy, ConfigsUpdateC
     }
 
     @Override
-    public boolean onEntityAttacked(ServerPlayer player, Entity entity) {
-        return strategy.onEntityAttacked(player, entity);
-    }
-
-    @Override
     public boolean onEntityInteracted(ServerPlayer player, Entity entity) {
         return strategy.onEntityInteracted(player, entity);
-    }
-
-    @Override
-    public boolean onEntityFed(ServerPlayer player, Entity entity) {
-        return strategy.onEntityFed(player, entity);
-    }
-
-    @Override
-    public boolean onEntityTamed(ServerPlayer player, Entity entity) {
-        return strategy.onEntityTamed(player, entity);
     }
 
     @Override
