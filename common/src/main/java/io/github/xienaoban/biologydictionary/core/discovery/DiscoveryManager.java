@@ -58,31 +58,37 @@ public final class DiscoveryManager implements DiscoveryStrategy, ConfigsUpdateC
 
     @Override
     public boolean onEntityDetailScreenOpened(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByDetailScreen()) { return false; }
         return strategy.onEntityDetailScreenOpened(player, entity);
     }
 
     @Override
     public boolean onEntityHighlighted(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByHighlight()) { return false; }
         return strategy.onEntityHighlighted(player, entity);
     }
 
     @Override
     public boolean onEntityObservedWithTelescope(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByTelescope()) { return false; }
         return strategy.onEntityObservedWithTelescope(player, entity);
     }
 
     @Override
     public boolean onEntityKilled(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByKill()) { return false; }
         return strategy.onEntityKilled(player, entity);
     }
 
     @Override
     public boolean onEntityInteracted(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByInteract()) { return false; }
         return strategy.onEntityInteracted(player, entity);
     }
 
     @Override
     public boolean onPlayerKilledByEntity(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByKilledBy()) { return false; }
         return strategy.onPlayerKilledByEntity(player, entity);
     }
 }
