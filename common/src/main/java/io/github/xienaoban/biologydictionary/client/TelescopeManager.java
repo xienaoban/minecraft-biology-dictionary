@@ -58,7 +58,7 @@ public final class TelescopeManager {
         }
 
         Entity target = null;
-        double range = ConfigsManager.getServer().getTelescopeRange();
+        double range = ConfigsManager.getServer().getTelescopeDiscoveryRange();
         HitResult hitResult = ProjectileUtil.getHitResultOnViewVector(
                 player, entity -> !entity.isSpectator() && entity.isPickable(), range);
         if (hitResult instanceof EntityHitResult entityHit
@@ -81,7 +81,7 @@ public final class TelescopeManager {
             } else {
                 double rangeCubed = range * range;
                 double distCubed = player.getEyePosition().distanceToSqr(target.getBoundingBox().getCenter());
-                int increment = Math.min(Math.max(1, (int)(rangeCubed / distCubed)), 20);
+                int increment = Math.min(Math.max(1, (int)(rangeCubed / distCubed)), 10);
                 discoveryProgress = Math.min(MAX_PROGRESS, discoveryProgress + increment);
                 if (discoveryProgress == MAX_PROGRESS) {
                     cache.onEntityObservedWithTelescope(player, target);

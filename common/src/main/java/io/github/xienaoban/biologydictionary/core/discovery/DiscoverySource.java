@@ -13,7 +13,7 @@ public enum DiscoverySource {
     TELESCOPE_OBSERVE(DiscoveryEventListener::onEntityObservedWithTelescope),
     KILL(DiscoveryEventListener::onEntityKilled),
     INTERACT(DiscoveryEventListener::onEntityInteracted),
-    KILLED_BY(DiscoveryEventListener::onPlayerKilledByEntity),
+    KILLED_BY(DiscoveryEventListener::onPlayerKilledBy),
     UNKNOWN((l, p, e) -> false);
 
     private final Invoker<?> invoker;
