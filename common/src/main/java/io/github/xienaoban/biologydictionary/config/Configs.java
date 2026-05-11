@@ -120,6 +120,48 @@ public final class Configs {
         double telescopeRange = 160.0;
 
         /**
+         * Enable discovery by opening entity detail screen.
+         * Only effective if the active strategy supports this method.
+         */
+        @ConfigEntry
+        boolean discoveryByDetailScreen = true;
+
+        /**
+         * Enable discovery by highlighting an entity.
+         * Only effective if the active strategy supports this method.
+         */
+        @ConfigEntry
+        boolean discoveryByHighlight = true;
+
+        /**
+         * Enable discovery by observing with telescope.
+         * Only effective if the active strategy supports this method.
+         */
+        @ConfigEntry
+        boolean discoveryByTelescope = true;
+
+        /**
+         * Enable discovery by killing an entity.
+         * Only effective if the active strategy supports this method.
+         */
+        @ConfigEntry
+        boolean discoveryByKill = true;
+
+        /**
+         * Enable discovery by interacting with an entity.
+         * Only effective if the active strategy supports this method.
+         */
+        @ConfigEntry
+        boolean discoveryByInteract = true;
+
+        /**
+         * Enable discovery by being killed by an entity.
+         * Only effective if the active strategy supports this method.
+         */
+        @ConfigEntry
+        boolean discoveryByKilledBy = true;
+
+        /**
          * Skill costs configuration in YAML-friendly format.
          * Maps skill short names to their cost data (from SkillCost.toMap()).
          * Always contains all registered skills after initialization.
@@ -164,6 +206,30 @@ public final class Configs {
 
         public double getTelescopeRange() {
             return telescopeRange;
+        }
+
+        public boolean isDiscoveryByDetailScreen() {
+            return discoveryByDetailScreen;
+        }
+
+        public boolean isDiscoveryByHighlight() {
+            return discoveryByHighlight;
+        }
+
+        public boolean isDiscoveryByTelescope() {
+            return discoveryByTelescope;
+        }
+
+        public boolean isDiscoveryByKill() {
+            return discoveryByKill;
+        }
+
+        public boolean isDiscoveryByInteract() {
+            return discoveryByInteract;
+        }
+
+        public boolean isDiscoveryByKilledBy() {
+            return discoveryByKilledBy;
         }
 
         public Map<String, Map<String, Object>> getSkillCosts() {

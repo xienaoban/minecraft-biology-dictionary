@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.client;
 
+import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
@@ -35,6 +36,16 @@ public final class TelescopeManager {
     public void tick() {
         ClientWorldSession cws = ClientWorldSession.get();
         if (cws == null) { return; }
+
+        Configs.ServerConfigs serverConfig = ConfigsManager.getServer();
+        if (serverConfig.getDiscoveryStrategy() != Configs.ServerConfigs.DiscoveryStrategyMode.BIOLOGY_DICTIONARY
+                || !serverConfig.isDiscoveryByTelescope()) {
+            if (lastScopingEntity != null) {
+                lastScopingEntity = null;
+                discoveryProgress = 0;
+            }
+            return;
+        }
 
         Minecraft client = ClientUtils.getClient();
         LocalPlayer player = ClientUtils.getClientPlayer(client);
