@@ -141,18 +141,18 @@ public final class Configs {
         boolean discoveryByTelescope = true;
 
         /**
-         * Enable discovery by killing an entity.
-         * Only effective if the active strategy supports this method.
-         */
-        @ConfigEntry
-        boolean discoveryByKill = true;
-
-        /**
          * Enable discovery by interacting with an entity.
          * Only effective if the active strategy supports this method.
          */
         @ConfigEntry
         boolean discoveryByInteract = true;
+
+        /**
+         * Enable discovery by killing an entity.
+         * Only effective if the active strategy supports this method.
+         */
+        @ConfigEntry
+        boolean discoveryByKill = true;
 
         /**
          * Enable discovery by being killed by an entity.
@@ -220,12 +220,12 @@ public final class Configs {
             return discoveryByTelescope;
         }
 
-        public boolean isDiscoveryByKill() {
-            return discoveryByKill;
-        }
-
         public boolean isDiscoveryByInteract() {
             return discoveryByInteract;
+        }
+
+        public boolean isDiscoveryByKill() {
+            return discoveryByKill;
         }
 
         public boolean isDiscoveryByKilledBy() {

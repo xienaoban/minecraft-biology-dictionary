@@ -32,16 +32,16 @@ public interface DiscoveryEventListener<P extends Player> {
     default boolean onEntityObservedWithTelescope(P player, Entity entity) { return false; }
 
     /**
-     * Called when the player kills an entity.
-     * @return true if this event resulted in a new discovery
-     */
-    default boolean onEntityKilled(P player, Entity entity) { return false; }
-
-    /**
      * Called when the player right-clicks / interacts with an entity.
      * @return true if this event resulted in a new discovery
      */
     default boolean onEntityInteracted(P player, Entity entity) { return false; }
+
+    /**
+     * Called when the player kills an entity.
+     * @return true if this event resulted in a new discovery
+     */
+    default boolean onEntityKilled(P player, Entity entity) { return false; }
 
     /**
      * Called when the player is killed by an entity.

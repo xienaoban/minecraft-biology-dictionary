@@ -77,15 +77,15 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
     }
 
     @Override
-    public boolean onEntityKilled(LocalPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByKill()) { return false; }
-        return delegate.onEntityKilled(player, entity);
-    }
-
-    @Override
     public boolean onEntityInteracted(LocalPlayer player, Entity entity) {
         if (!ConfigsManager.getServer().isDiscoveryByInteract()) { return false; }
         return delegate.onEntityInteracted(player, entity);
+    }
+
+    @Override
+    public boolean onEntityKilled(LocalPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByKill()) { return false; }
+        return delegate.onEntityKilled(player, entity);
     }
 
     @Override

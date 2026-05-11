@@ -43,10 +43,10 @@
   "config.biologydictionary.entry.discoveryByHighlight.tooltip": "Enable discovery when highlighting an entity.\nOnly effective if the active strategy supports this method.",
   "config.biologydictionary.entry.discoveryByTelescope": "Discovery by Telescope",
   "config.biologydictionary.entry.discoveryByTelescope.tooltip": "Enable discovery when observing an entity with a spyglass.\nOnly effective if the active strategy supports this method.",
-  "config.biologydictionary.entry.discoveryByKill": "Discovery by Kill",
-  "config.biologydictionary.entry.discoveryByKill.tooltip": "Enable discovery when killing an entity.\nOnly effective if the active strategy supports this method.",
   "config.biologydictionary.entry.discoveryByInteract": "Discovery by Interact",
   "config.biologydictionary.entry.discoveryByInteract.tooltip": "Enable discovery when interacting with an entity.\nOnly effective if the active strategy supports this method.",
+  "config.biologydictionary.entry.discoveryByKill": "Discovery by Kill",
+  "config.biologydictionary.entry.discoveryByKill.tooltip": "Enable discovery when killing an entity.\nOnly effective if the active strategy supports this method.",
   "config.biologydictionary.entry.discoveryByKilledBy": "Discovery by Killed By",
   "config.biologydictionary.entry.discoveryByKilledBy.tooltip": "Enable discovery when being killed by an entity.\nOnly effective if the active strategy supports this method.",
 
@@ -99,8 +99,8 @@
   "discovery_source.biologydictionary.entity_detail_screen" : "Entity Detail Screen",
   "discovery_source.biologydictionary.highlight"            : "Highlight",
   "discovery_source.biologydictionary.telescope_observe"    : "Telescope",
-  "discovery_source.biologydictionary.kill"                 : "Kill",
   "discovery_source.biologydictionary.interact"             : "Interact",
+  "discovery_source.biologydictionary.kill"                 : "Kill",
   "discovery_source.biologydictionary.killed_by"            : "Killed By",
   "discovery_source.biologydictionary.unknown"              : "Unknown",
 
