@@ -79,23 +79,8 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
     }
 
     @Override
-    public boolean onEntityAttacked(LocalPlayer player, Entity entity) {
-        return delegate.onEntityAttacked(player, entity);
-    }
-
-    @Override
     public boolean onEntityInteracted(LocalPlayer player, Entity entity) {
         return delegate.onEntityInteracted(player, entity);
-    }
-
-    @Override
-    public boolean onEntityFed(LocalPlayer player, Entity entity) {
-        return delegate.onEntityFed(player, entity);
-    }
-
-    @Override
-    public boolean onEntityTamed(LocalPlayer player, Entity entity) {
-        return delegate.onEntityTamed(player, entity);
     }
 
     @Override
