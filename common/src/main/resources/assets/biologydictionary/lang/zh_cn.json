@@ -43,10 +43,10 @@
   "config.biologydictionary.entry.discoveryByHighlight.tooltip": "高亮生物时触发发现。\n仅在当前策略支持该方式时生效。",
   "config.biologydictionary.entry.discoveryByTelescope": "将「望远镜远眺」视为「发现」",
   "config.biologydictionary.entry.discoveryByTelescope.tooltip": "用望远镜观察生物时触发发现。\n仅在当前策略支持该方式时生效。",
-  "config.biologydictionary.entry.discoveryByKill": "将「击杀」视为「发现」",
-  "config.biologydictionary.entry.discoveryByKill.tooltip": "击杀生物时触发发现。\n仅在当前策略支持该方式时生效。",
   "config.biologydictionary.entry.discoveryByInteract": "将「交互」视为「发现」",
   "config.biologydictionary.entry.discoveryByInteract.tooltip": "与生物交互（右键）时触发发现。\n仅在当前策略支持该方式时生效。",
+  "config.biologydictionary.entry.discoveryByKill": "将「击杀」视为「发现」",
+  "config.biologydictionary.entry.discoveryByKill.tooltip": "击杀生物时触发发现。\n仅在当前策略支持该方式时生效。",
   "config.biologydictionary.entry.discoveryByKilledBy": "将「被杀」视为「发现」",
   "config.biologydictionary.entry.discoveryByKilledBy.tooltip": "被生物击杀时触发发现。\n仅在当前策略支持该方式时生效。",
 
@@ -99,8 +99,8 @@
   "discovery_source.biologydictionary.entity_detail_screen" : "生物辞典查阅",
   "discovery_source.biologydictionary.highlight"            : "高亮",
   "discovery_source.biologydictionary.telescope_observe"    : "望远镜远眺",
-  "discovery_source.biologydictionary.kill"                 : "击杀",
   "discovery_source.biologydictionary.interact"             : "交互",
+  "discovery_source.biologydictionary.kill"                 : "击杀",
   "discovery_source.biologydictionary.killed_by"            : "被击杀",
   "discovery_source.biologydictionary.unknown"              : "未知",
 

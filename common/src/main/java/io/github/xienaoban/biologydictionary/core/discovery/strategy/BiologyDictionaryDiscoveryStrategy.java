@@ -51,8 +51,8 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
     }
 
     @Override
-    public boolean onEntityKilled(ServerPlayer player, Entity entity) {
-        return tryDiscover(player, entity, DiscoverySource.KILL);
+    public boolean onEntityHighlighted(ServerPlayer player, Entity entity) {
+        return tryDiscover(player, entity, DiscoverySource.HIGHLIGHT);
     }
 
     @Override
@@ -61,6 +61,11 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
             return false;
         }
         return tryDiscover(player, entity, DiscoverySource.INTERACT);
+    }
+
+    @Override
+    public boolean onEntityKilled(ServerPlayer player, Entity entity) {
+        return tryDiscover(player, entity, DiscoverySource.KILL);
     }
 
     @Override
