@@ -47,5 +47,5 @@ public interface DiscoveryEventListener<P extends Player> {
      * Called when the player is killed by an entity.
      * @return true if this event resulted in a new discovery
      */
-    default boolean onPlayerKilledByEntity(P player, Entity entity) { return false; }
+    default boolean onPlayerKilledBy(P player, Entity entity) { return false; }
 }

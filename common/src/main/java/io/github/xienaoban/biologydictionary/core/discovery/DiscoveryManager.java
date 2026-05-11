@@ -87,8 +87,8 @@ public final class DiscoveryManager implements DiscoveryStrategy, ConfigsUpdateC
     }
 
     @Override
-    public boolean onPlayerKilledByEntity(ServerPlayer player, Entity entity) {
+    public boolean onPlayerKilledBy(ServerPlayer player, Entity entity) {
         if (!ConfigsManager.getServer().isDiscoveryByKilledBy()) { return false; }
-        return strategy.onPlayerKilledByEntity(player, entity);
+        return strategy.onPlayerKilledBy(player, entity);
     }
 }
