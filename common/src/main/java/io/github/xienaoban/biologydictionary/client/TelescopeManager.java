@@ -21,9 +21,11 @@ import net.minecraft.world.phys.HitResult;
 public final class TelescopeManager {
 
     static final int MAX_PROGRESS = 100;
+    private static final int COMPLETED_DISPLAY_TICKS = 20; // 1s
 
     private Entity lastScopingEntity = null;
     private int discoveryProgress = 0;
+    private int completedDisplayTicks = 0;
 
     public Entity getScopingEntity() {
         return lastScopingEntity;
@@ -33,6 +35,10 @@ public final class TelescopeManager {
         return discoveryProgress;
     }
 
+    public boolean isCompletedDisplay() {
+        return completedDisplayTicks > 0;
+    }
+
     public void tick() {
         ClientWorldSession cws = ClientWorldSession.get();
         if (cws == null) { return; }
@@ -40,20 +46,14 @@ public final class TelescopeManager {
         Configs.ServerConfigs serverConfig = ConfigsManager.getServer();
         if (serverConfig.getDiscoveryStrategy() != Configs.ServerConfigs.DiscoveryStrategyMode.BIOLOGY_DICTIONARY
                 || !serverConfig.isDiscoveryByTelescope()) {
-            if (lastScopingEntity != null) {
-                lastScopingEntity = null;
-                discoveryProgress = 0;
-            }
+            reset();
             return;
         }
 
         Minecraft client = ClientUtils.getClient();
         LocalPlayer player = ClientUtils.getClientPlayer(client);
         if (player == null || !player.isScoping()) {
-            if (lastScopingEntity != null) {
-                lastScopingEntity = null;
-                discoveryProgress = 0;
-            }
+            reset();
             return;
         }
 
@@ -64,6 +64,15 @@ public final class TelescopeManager {
         if (hitResult instanceof EntityHitResult entityHit
                 && PlayerUtils.isWithinRangeAndUnobstructed(player, entityHit.getEntity(), range)) {
             target = entityHit.getEntity();
+        }
+
+        // New target interrupts the completed display
+        if (completedDisplayTicks > 0) {
+            if (target == null) {
+                completedDisplayTicks--;
+            } else if (target != lastScopingEntity) {
+                completedDisplayTicks = 0;
+            }
         }
 
         ClientDiscoveryCache cache = cws.getDiscoveryClientCache();
@@ -85,8 +94,17 @@ public final class TelescopeManager {
                 discoveryProgress = Math.min(MAX_PROGRESS, discoveryProgress + increment);
                 if (discoveryProgress == MAX_PROGRESS) {
                     cache.onEntityObservedWithTelescope(player, target);
+                    completedDisplayTicks = COMPLETED_DISPLAY_TICKS;
                 }
             }
         }
+    }
+
+    private void reset() {
+        if (lastScopingEntity != null) {
+            lastScopingEntity = null;
+            discoveryProgress = 0;
+        }
+        completedDisplayTicks = 0;
     }
 }

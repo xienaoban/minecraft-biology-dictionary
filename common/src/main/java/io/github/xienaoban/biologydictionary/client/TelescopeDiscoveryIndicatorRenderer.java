@@ -26,13 +26,19 @@ public final class TelescopeDiscoveryIndicatorRenderer {
 
         TelescopeManager telescopeManager = cws.getTelescopeManager();
         int progress = telescopeManager.getDiscoveryProgress();
-        if (progress <= 0) { return; }
+        boolean completed = telescopeManager.isCompletedDisplay();
+        if (progress <= 0 && !completed) { return; }
 
         float centerX = guiGraphics.guiWidth() / 2F;
         float barY = guiGraphics.guiHeight() / 2F + 9;
 
         ScreenRenderingContext ctx = new ScreenRenderingContext(null);
         ctx.update(guiGraphics, 1f, 1F, 0, 0, 0);
+
+        if (completed) {
+            ctx.renderTexture(Textures.GENE, 0, 0, 0, centerX - BAR_WIDTH / 2F, barY, BAR_WIDTH, BAR_HEIGHT);
+            return;
+        }
 
         // Background: top half of texture (v=0)
         ctx.renderTexture(Textures.GENE, 0, 0, 0, centerX - BAR_WIDTH / 2F, barY, BAR_WIDTH, BAR_HEIGHT);
