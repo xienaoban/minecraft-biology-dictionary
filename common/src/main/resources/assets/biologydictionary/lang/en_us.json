@@ -233,6 +233,10 @@
   "property_widget.biologydictionary.discovery.coordinates"     : "Coordinates: ",
   "property_widget.biologydictionary.discovery.weather"         : "Weather: ",
 
+  "property_widget.biologydictionary.spawn_counted"                   : "Spawn Counted",
+  "property_widget.biologydictionary.spawn_counted.desc"              : "Whether this entity counts toward the mob spawning cap",
+  "property_widget.biologydictionary.spawn_counted.category"          : "Category: %s",
+
   "text.biologydictionary.comma": ", ",
 
   "text.biologydictionary.open_local_configs_screen"  : "Open Local Configs Screen",

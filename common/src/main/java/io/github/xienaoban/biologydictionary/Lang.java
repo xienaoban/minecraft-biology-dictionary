@@ -224,6 +224,10 @@ public final class Lang {
     PROPERTY_WIDGET_DISCOVERY_COORDINATES       = "property_widget.biologydictionary.discovery.coordinates",
     PROPERTY_WIDGET_DISCOVERY_WEATHER           = "property_widget.biologydictionary.discovery.weather",
 
+    PROPERTY_WIDGET_SPAWN_COUNTED                   = "property_widget.biologydictionary.spawn_counted",
+    PROPERTY_WIDGET_SPAWN_COUNTED_DESC              = "property_widget.biologydictionary.spawn_counted.desc",
+    PROPERTY_WIDGET_SPAWN_COUNTED_CATEGORY          = "property_widget.biologydictionary.spawn_counted.category",
+
     TEXT_COMMA  = "text.biologydictionary.comma",
 
     TEXT_OPEN_LOCAL_CONFIGS_SCREEN   = "text.biologydictionary.open_local_configs_screen",
