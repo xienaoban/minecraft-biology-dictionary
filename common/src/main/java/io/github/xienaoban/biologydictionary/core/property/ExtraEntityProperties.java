@@ -18,6 +18,7 @@ public final class ExtraEntityProperties {
         registrar.register(MobTemptProperty.class, MobTemptProperty.FACTORY);
         registrar.register(MobSpawnProperty.class, MobSpawnProperty.FACTORY);
         registrar.register(VillagerJobSiteProperty.class, VillagerJobSiteProperty.FACTORY);
+        registrar.register(SpawnCountedProperty.class, SpawnCountedProperty.FACTORY);
     }
 
     static final Map<Class<? extends Entity>, List<EntityProperty.Factory<?>>> registry = new HashMap<>();
