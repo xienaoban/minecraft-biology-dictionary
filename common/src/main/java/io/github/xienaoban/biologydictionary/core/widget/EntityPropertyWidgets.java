@@ -31,6 +31,7 @@ public final class EntityPropertyWidgets {
         registrar.register(LivingEntityJumpStrengthWidget.class, LivingEntityJumpStrengthWidget.FACTORY);
         registrar.register(EntityLeashableWidget.class, EntityLeashableWidget.FACTORY);
         registrar.register(GoatScreamingWidget.class, GoatScreamingWidget.FACTORY);
+        registrar.register(EntitySpawnCountedWidget.class, EntitySpawnCountedWidget.FACTORY);
         registrar.register(EntityBoundingBoxWidget.class, EntityBoundingBoxWidget.FACTORY);
         registrar.register(TurnPagePlaceholder.TurnPage1Widget.class, TurnPagePlaceholder.TurnPage1Widget.FACTORY);
         registrar.register(EntityStandardVariantWidget.class, EntityStandardVariantWidget.FACTORY);
@@ -56,7 +57,6 @@ public final class EntityPropertyWidgets {
         registrar.register(WanderingTraderDespawnDelayWidget.class, WanderingTraderDespawnDelayWidget.FACTORY);
         registrar.register(TurnPagePlaceholder.TurnPage2Widget.class, TurnPagePlaceholder.TurnPage2Widget.FACTORY);
         registrar.register(EntityDiscoveryRecordWidget.class, EntityDiscoveryRecordWidget.FACTORY);
-        registrar.register(EntitySpawnCountedWidget.class, EntitySpawnCountedWidget.FACTORY);
     }
 
     private static final Map<Class<? extends Entity>, List<Entry>> registry = new HashMap<>();
