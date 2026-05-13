@@ -141,6 +141,9 @@
   "property_widget.biologydictionary.eat_grass.desc"              : "Force the sheep eat grass at once",
   "property_widget.biologydictionary.screaming_goat"              : "Is Screaming Goat",
   "property_widget.biologydictionary.screaming_goat.desc"         : "Ahhhhhh!!!!!!!!!",
+  "property_widget.biologydictionary.spawn_counted"               : "Spawn Counted",
+  "property_widget.biologydictionary.spawn_counted.desc"          : "Whether this entity counts toward the mob spawning cap",
+  "property_widget.biologydictionary.spawn_counted.category"      : "Category: %s",
   "property_widget.biologydictionary.bounding_box"                : "Bounding Box (X Y Z)",
   "property_widget.biologydictionary.bounding_box.desc"           : "Entities X in MC should all be equal to Z",
   "property_widget.biologydictionary.variant"                     : "Variant",
@@ -232,10 +235,6 @@
   "property_widget.biologydictionary.discovery.location"        : "Location: ",
   "property_widget.biologydictionary.discovery.coordinates"     : "Coordinates: ",
   "property_widget.biologydictionary.discovery.weather"         : "Weather: ",
-
-  "property_widget.biologydictionary.spawn_counted"                   : "Spawn Counted",
-  "property_widget.biologydictionary.spawn_counted.desc"              : "Whether this entity counts toward the mob spawning cap",
-  "property_widget.biologydictionary.spawn_counted.category"          : "Category: %s",
 
   "text.biologydictionary.comma": ", ",
 

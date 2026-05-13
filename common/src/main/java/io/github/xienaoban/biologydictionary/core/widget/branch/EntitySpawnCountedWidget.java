@@ -19,7 +19,7 @@ import net.minecraft.world.entity.MobCategory;
 public final class EntitySpawnCountedWidget extends EntityPropertyStandardWidget<Entity> {
     public static final Factory<Entity> FACTORY = EntitySpawnCountedWidget::new;
 
-    private static final int L = 22, T = 1;
+    private static final int L = 17, T = 3;
 
     private final SpawnCountedProperty property = p().getExtra(SpawnCountedProperty.class);
 
