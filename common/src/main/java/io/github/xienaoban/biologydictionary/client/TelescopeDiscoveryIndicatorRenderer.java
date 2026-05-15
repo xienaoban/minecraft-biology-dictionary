@@ -14,7 +14,7 @@ import net.minecraft.world.entity.Entity;
 @Environment(EnvType.CLIENT)
 public final class TelescopeDiscoveryIndicatorRenderer {
     private static final int BAR_WIDTH = 32;
-    private static final int BAR_HEIGHT = 16;
+    private static final int BAR_HEIGHT = 11;
     private static final int TEXT_COLOR = 0xFFAAAAAA;
 
     public static void render(Minecraft client, GuiGraphics guiGraphics) {
@@ -36,12 +36,12 @@ public final class TelescopeDiscoveryIndicatorRenderer {
         ctx.update(guiGraphics, 1f, 1F, 0, 0, 0);
 
         if (completed) {
-            ctx.renderTexture(Textures.GENE, 0, 0, 0, centerX - BAR_WIDTH / 2F, barY, BAR_WIDTH, BAR_HEIGHT);
+            ctx.renderTexture(Textures.GENE, 0, BAR_HEIGHT * 2, 0, centerX - BAR_WIDTH / 2F, barY, BAR_WIDTH, BAR_HEIGHT - 1);
             return;
         }
 
         // Background: top half of texture (v=0)
-        ctx.renderTexture(Textures.GENE, 0, 0, 0, centerX - BAR_WIDTH / 2F, barY, BAR_WIDTH, BAR_HEIGHT);
+        ctx.renderTexture(Textures.GENE, 0, 0, 0, centerX - BAR_WIDTH / 2F, barY, BAR_WIDTH, BAR_HEIGHT - 1);
 
         // Progress: bottom half of texture (v=16), expand from center
         float progressWidth = (float) progress / TelescopeManager.MAX_PROGRESS * BAR_WIDTH;
@@ -50,16 +50,16 @@ public final class TelescopeDiscoveryIndicatorRenderer {
 
         if (halfWidth > 0) {
             // Right half: from center to right
-            ctx.renderTexture(Textures.GENE, srcMid, BAR_HEIGHT, 0, centerX, barY, halfWidth, BAR_HEIGHT);
+            ctx.renderTexture(Textures.GENE, srcMid, BAR_HEIGHT, 0, centerX, barY, halfWidth, BAR_HEIGHT - 1);
             // Left half: from center to left
-            ctx.renderTexture(Textures.GENE, srcMid - halfWidth, BAR_HEIGHT, 0, centerX - halfWidth, barY, halfWidth, BAR_HEIGHT);
+            ctx.renderTexture(Textures.GENE, srcMid - halfWidth, BAR_HEIGHT, 0, centerX - halfWidth, barY, halfWidth, BAR_HEIGHT - 1);
         }
 
         Entity target = telescopeManager.getScopingEntity();
         if (target != null) {
             double dist = player.getEyePosition().distanceTo(target.getBoundingBox().getCenter());
             Component text = Component.literal(String.format("%.0fm", dist));
-            int textY = (int) barY + BAR_HEIGHT - 8;
+            int textY = (int) barY + BAR_HEIGHT - 3;
             guiGraphics.drawCenteredString(client.font, text, (int) centerX, textY, TEXT_COLOR);
         }
     }
