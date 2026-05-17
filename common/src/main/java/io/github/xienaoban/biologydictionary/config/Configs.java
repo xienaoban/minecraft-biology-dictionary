@@ -117,7 +117,7 @@ public final class Configs {
          * Maximum range (in blocks) for telescope entity discovery.
          */
         @ConfigEntry
-        double telescopeDiscoveryRange = 160.0;
+        int telescopeDiscoveryRange = 160;
 
         /**
          * Enable discovery by opening entity detail screen.
@@ -204,7 +204,7 @@ public final class Configs {
             return allowOverviewForUndiscoveredEntities;
         }
 
-        public double getTelescopeDiscoveryRange() {
+        public int getTelescopeDiscoveryRange() {
             return telescopeDiscoveryRange;
         }
 
