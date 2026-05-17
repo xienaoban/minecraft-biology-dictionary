@@ -25,6 +25,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Moved networking logic from net thread to client/server thread
 - Refactored discovery system
 - Improved telescope discovery logic
+- Distinguish reloading of local and server‑side configurations
 
 ### Fixed
 
