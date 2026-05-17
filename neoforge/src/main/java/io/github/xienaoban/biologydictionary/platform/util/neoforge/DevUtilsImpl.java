@@ -22,6 +22,11 @@ public final class DevUtilsImpl {
                 .orElse("<unknown>");
     }
 
+    public static String getModName(String modId) {
+        Optional<? extends ModContainer> container = ModList.get().getModContainerById(modId);
+        return container.map(c -> c.getModInfo().getDisplayName()).orElse("<unknown>");
+    }
+
     public static boolean isClient() {
         return Platform.getEnvironment() == Env.CLIENT;
     }
