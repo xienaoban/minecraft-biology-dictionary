@@ -11,11 +11,11 @@ import net.minecraft.world.entity.MobCategory;
  * @see net.minecraft.world.level.NaturalSpawner.SpawnState#createState(int, Iterable, NaturalSpawner.ChunkGetter, LocalMobCapCalculator)
  * Note: the mob cap logic varies across MC versions, verify when backporting.
  */
-public class SpawnCountedProperty extends BooleanProperty<Entity> {
-    public static final Factory<Entity> FACTORY = SpawnCountedProperty::new;
+public class EntitySpawnCountedProperty extends BooleanProperty<Entity> {
+    public static final Factory<Entity> FACTORY = EntitySpawnCountedProperty::new;
 
-    public SpawnCountedProperty() {
-        super(SpawnCountedProperty.class.getSimpleName());
+    public EntitySpawnCountedProperty() {
+        super(EntitySpawnCountedProperty.class.getSimpleName());
     }
 
     @Override
