@@ -58,46 +58,37 @@ public final class DiscoveryManager implements DiscoveryStrategy, ConfigsUpdateC
 
     @Override
     public boolean onEntityDetailScreenOpened(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByDetailScreen()) { return false; }
         return strategy.onEntityDetailScreenOpened(player, entity);
     }
 
     @Override
     public boolean onEntityHighlighted(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByHighlight()) { return false; }
         return strategy.onEntityHighlighted(player, entity);
     }
 
     @Override
     public boolean onEntityObservedWithTelescope(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByTelescope()) { return false; }
         return strategy.onEntityObservedWithTelescope(player, entity);
     }
 
     @Override
-    public boolean onEntityKilled(ServerPlayer player, Entity entity) {
-        return strategy.onEntityKilled(player, entity);
-    }
-
-    @Override
-    public boolean onEntityAttacked(ServerPlayer player, Entity entity) {
-        return strategy.onEntityAttacked(player, entity);
-    }
-
-    @Override
     public boolean onEntityInteracted(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByInteract()) { return false; }
         return strategy.onEntityInteracted(player, entity);
     }
 
     @Override
-    public boolean onEntityFed(ServerPlayer player, Entity entity) {
-        return strategy.onEntityFed(player, entity);
+    public boolean onEntityKilled(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByKill()) { return false; }
+        return strategy.onEntityKilled(player, entity);
     }
 
     @Override
-    public boolean onEntityTamed(ServerPlayer player, Entity entity) {
-        return strategy.onEntityTamed(player, entity);
-    }
-
-    @Override
-    public boolean onPlayerKilledByEntity(ServerPlayer player, Entity entity) {
-        return strategy.onPlayerKilledByEntity(player, entity);
+    public boolean onPlayerKilledBy(ServerPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByKilledBy()) { return false; }
+        return strategy.onPlayerKilledBy(player, entity);
     }
 }

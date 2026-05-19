@@ -4,6 +4,7 @@
     "allow": [
       "Read",
       "Edit",
+      "Write",
       "Glob",
       "Grep",
       "Bash(./gradlew fabric:build *)",

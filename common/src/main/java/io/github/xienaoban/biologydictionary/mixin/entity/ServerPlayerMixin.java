@@ -19,7 +19,7 @@ public class ServerPlayerMixin {
         if (killer != null) {
             ServerWorldSession sws = ServerWorldSession.get();
             if (sws != null) {
-                sws.getDiscoveryManager().onPlayerKilledByEntity(self, killer);
+                sws.getDiscoveryManager().onPlayerKilledBy(self, killer);
             }
         }
     }
