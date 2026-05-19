@@ -13,12 +13,12 @@ public final class ExtraEntityProperties {
 
     public static void registerBuiltIn(Registrar registrar) {
         registrar.register(EntityLootTableProperty.class, EntityLootTableProperty.FACTORY);
+        registrar.register(EntitySpawnCountedProperty.class, EntitySpawnCountedProperty.FACTORY);
         registrar.register(EntityInventorySizeProperty.class, EntityInventorySizeProperty.FACTORY);
         registrar.register(MobNaturalPersistenceProperty.class, MobNaturalPersistenceProperty.FACTORY);
         registrar.register(MobTemptProperty.class, MobTemptProperty.FACTORY);
         registrar.register(MobSpawnProperty.class, MobSpawnProperty.FACTORY);
         registrar.register(VillagerJobSiteProperty.class, VillagerJobSiteProperty.FACTORY);
-        registrar.register(SpawnCountedProperty.class, SpawnCountedProperty.FACTORY);
     }
 
     static final Map<Class<? extends Entity>, List<EntityProperty.Factory<?>>> registry = new HashMap<>();

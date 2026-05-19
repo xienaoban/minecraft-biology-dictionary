@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.property.extra.SpawnCountedProperty;
+import io.github.xienaoban.biologydictionary.core.property.extra.EntitySpawnCountedProperty;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -21,7 +21,7 @@ public final class EntitySpawnCountedWidget extends EntityPropertyStandardWidget
 
     private static final int L = 17, T = 3;
 
-    private final SpawnCountedProperty property = p().getExtra(SpawnCountedProperty.class);
+    private final EntitySpawnCountedProperty property = p().getExtra(EntitySpawnCountedProperty.class);
 
     public EntitySpawnCountedWidget(EntityProperties<Entity> properties) {
         super(properties, Page.COLUMNS / 4);
