@@ -15,10 +15,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.SpawnEggItem;
 
 @Environment(EnvType.CLIENT)
 public class DiscoveryToast implements Toast {
+    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.tryParse("biologydictionary:textures/gui/discovery_toast.png");
     private static final int DISPLAY_TIME = 7000;
     private final Component entityName;
     private final ItemStack eggStack;
@@ -33,7 +35,7 @@ public class DiscoveryToast implements Toast {
 
     @Override
     public Visibility render(GuiGraphics guiGraphics, ToastComponent toastComponent, long l) {
-        guiGraphics.blit(TEXTURE, 0, 0, 0, 0, width(), height());
+        guiGraphics.blit(BACKGROUND_TEXTURE, 0, 0, 0, 0, width(), height(), width(), height());
         if (eggStack != null) {
             guiGraphics.renderFakeItem(eggStack, 8, 8);
         }

@@ -54,6 +54,13 @@ public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscov
     }
 
     @Override
+    public boolean onEntityHighlighted(LocalPlayer player, Entity entity) {
+        if (isDiscovered(EntityUtils.getEntityType(entity))) { return false; }
+        ClientNetManager.requestDiscoveryIncremental(EntityUtils.getId(entity), DiscoverySource.HIGHLIGHT);
+        return true;
+    }
+
+    @Override
     public boolean onEntityObservedWithTelescope(LocalPlayer player, Entity entity) {
         if (isDiscovered(EntityUtils.getEntityType(entity))) { return false; }
         ClientNetManager.requestDiscoveryIncremental(EntityUtils.getId(entity), DiscoverySource.TELESCOPE_OBSERVE);

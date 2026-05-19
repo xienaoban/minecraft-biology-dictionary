@@ -31,6 +31,7 @@ public final class EntityPropertyWidgets {
         registrar.register(LivingEntityJumpStrengthWidget.class, LivingEntityJumpStrengthWidget.FACTORY);
         registrar.register(EntityLeashableWidget.class, EntityLeashableWidget.FACTORY);
         registrar.register(GoatScreamingWidget.class, GoatScreamingWidget.FACTORY);
+        registrar.register(EntitySpawnCountedWidget.class, EntitySpawnCountedWidget.FACTORY);
         registrar.register(EntityBoundingBoxWidget.class, EntityBoundingBoxWidget.FACTORY);
         registrar.register(TurnPagePlaceholder.TurnPage1Widget.class, TurnPagePlaceholder.TurnPage1Widget.FACTORY);
         registrar.register(EntityStandardVariantWidget.class, EntityStandardVariantWidget.FACTORY);

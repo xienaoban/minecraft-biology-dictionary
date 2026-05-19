@@ -124,11 +124,8 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
             case ENTITY_DETAIL_SCREEN -> TextUtils.translate(Lang.DISCOVERY_SOURCE_ENTITY_DETAIL_SCREEN);
             case HIGHLIGHT -> TextUtils.translate(Lang.DISCOVERY_SOURCE_HIGHLIGHT);
             case TELESCOPE_OBSERVE -> TextUtils.translate(Lang.DISCOVERY_SOURCE_TELESCOPE_OBSERVE);
-            case KILL -> TextUtils.translate(Lang.DISCOVERY_SOURCE_KILL);
-            case ATTACK -> TextUtils.translate(Lang.DISCOVERY_SOURCE_ATTACK);
             case INTERACT -> TextUtils.translate(Lang.DISCOVERY_SOURCE_INTERACT);
-            case FEED -> TextUtils.translate(Lang.DISCOVERY_SOURCE_FEED);
-            case TAME -> TextUtils.translate(Lang.DISCOVERY_SOURCE_TAME);
+            case KILL -> TextUtils.translate(Lang.DISCOVERY_SOURCE_KILL);
             case KILLED_BY -> TextUtils.translate(Lang.DISCOVERY_SOURCE_KILLED_BY);
             case UNKNOWN -> TextUtils.translate(Lang.DISCOVERY_SOURCE_UNKNOWN);
         };
