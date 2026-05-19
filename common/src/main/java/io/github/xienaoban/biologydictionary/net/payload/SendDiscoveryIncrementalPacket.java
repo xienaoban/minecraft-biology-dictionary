@@ -13,13 +13,11 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.phys.Vec3;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -70,18 +68,10 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
                 player.swing(InteractionHand.MAIN_HAND);
             }
 
-            // Add some particles
+            // Highlight the discovered entity for 4 seconds
             Entity target = level != null ? level.getEntity(packet.entityId) : null;
             if (target != null) {
-                Vec3 center = target.getBoundingBox().getCenter();
-                var rng = level.random;
-                for (int i = 0; i < 6; i++) {
-                    level.addParticle(ParticleTypes.END_ROD,
-                            center.x + (rng.nextDouble() - 0.5) * target.getBbWidth(),
-                            center.y + (rng.nextDouble() - 0.5) * target.getBbHeight(),
-                            center.z + (rng.nextDouble() - 0.5) * target.getBbWidth(),
-                            0, 0.05, 0);
-                }
+                ClientWorldSession.get().getHighlightManager().highlightEntity(target, 4 * 20);
             }
         }}
         W.receive(this, ctx);

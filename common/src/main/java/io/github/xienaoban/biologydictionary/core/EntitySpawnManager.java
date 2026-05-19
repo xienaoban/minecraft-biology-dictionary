@@ -40,6 +40,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  */
 public class EntitySpawnManager {
     private static final FileToIdConverter STRUCTURE_LISTER = new FileToIdConverter("structures", ".nbt");
+    private static final CompoundTag MISSING_TEMPLATE = new CompoundTag();
 
     private final Map<EntityType<?>, List<Entry<Biome>>> spawnBiomes = new HashMap<>();
     private final Map<ResourceLocation, List<EntityType<?>>> biomeEntities = new HashMap<>();
@@ -150,16 +151,19 @@ public class EntitySpawnManager {
         Set<EntityType<?>> seenStructureEntities
     ) {
         Set<ResourceLocation> visitedPools = new HashSet<>();
-        Queue<StructureTemplatePool> queue = new ArrayDeque<>();
+        Queue<ResourceLocation> poolQueue = new ArrayDeque<>();
 
         ResourceLocation startPoolId = startPool.unwrapKey()
             .map(ResourceKey::location).orElse(null);
         if (startPoolId == null) return;
         visitedPools.add(startPoolId);
-        queue.add(startPool.value());
+        poolQueue.add(startPoolId);
 
-        while (!queue.isEmpty()) {
-            StructureTemplatePool pool = queue.poll();
+        while (!poolQueue.isEmpty()) {
+            ResourceLocation currentPoolId = poolQueue.poll();
+            Optional<StructureTemplatePool> poolHolder = poolRegistry.getOptional(currentPoolId);
+            if (poolHolder.isEmpty()) continue;
+            StructureTemplatePool pool = poolHolder.get();
             Set<ResourceLocation> referencedPools = new HashSet<>();
 
             // Collect entities from all templates in this pool
@@ -170,7 +174,7 @@ public class EntitySpawnManager {
                         structureId, structureEntry, seenStructureEntities, referencedPools
                     );
                 } catch (Exception e) {
-                    LOGGER.warn("Failed to process element in template pool {}", startPoolId, e);
+                    LOGGER.warn("Failed to process element in template pool {}", currentPoolId, e);
                 }
             }
 
@@ -179,20 +183,20 @@ public class EntitySpawnManager {
                 Holder<StructureTemplatePool> fallback = pool.getFallback();
                 if (fallback.value() != pool) {
                     fallback.unwrapKey().ifPresent(poolKey -> {
-                        ResourceLocation poolId = poolKey.location();
-                        if (visitedPools.add(poolId)) {
-                            poolRegistry.getOptional(poolId).ifPresent(queue::add);
+                        ResourceLocation fallbackId = poolKey.location();
+                        if (visitedPools.add(fallbackId)) {
+                            poolQueue.add(fallbackId);
                         }
                     });
                 }
             } catch (Exception e) {
-                LOGGER.warn("Failed to process fallback pool for {}", startPoolId, e);
+                LOGGER.warn("Failed to process fallback pool for {}", currentPoolId, e);
             }
 
             // Follow jigsaw-referenced pools from templates
             for (ResourceLocation poolId : referencedPools) {
                 if (visitedPools.add(poolId)) {
-                    poolRegistry.getOptional(poolId).ifPresent(queue::add);
+                    poolQueue.add(poolId);
                 }
             }
         }
@@ -219,10 +223,10 @@ public class EntitySpawnManager {
                     }
                 } catch (Throwable e) {
                     LOGGER.warn("Failed to read structure template {}", id, e);
-                    return null;
+                    return MISSING_TEMPLATE;
                 }
             });
-            if (rootNbt == null) return;
+            if (rootNbt == MISSING_TEMPLATE) { return; }
 
             // Extract entities
             ListTag entities = rootNbt.getList("entities", 10);
@@ -250,12 +254,10 @@ public class EntitySpawnManager {
                 CompoundTag blockNbt = blockTag.getCompound("nbt");
                 String poolStr = blockNbt.getString("pool");
                 if (!poolStr.isEmpty()) {
-                    try {
-                        ResourceLocation poolLoc = ResourceLocation.tryParse(poolStr);
-                        if (poolLoc != null && !poolLoc.equals(new ResourceLocation("minecraft", "empty"))) {
-                            referencedPools.add(poolLoc);
-                        }
-                    } catch (Exception ignored) {}
+                    ResourceLocation poolLoc = ResourceLocation.tryParse(poolStr);
+                    if (poolLoc != null && !poolLoc.equals(new ResourceLocation("minecraft", "empty"))) {
+                        referencedPools.add(poolLoc);
+                    }
                 }
             }
         } else if (element instanceof ListPoolElement listPoolElement) {

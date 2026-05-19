@@ -35,6 +35,11 @@ public final class DevUtils {
     }
 
     @ExpectPlatform
+    public static String getModName(String modId) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
     public static boolean isClient() {
         throw new AssertionError();
     }

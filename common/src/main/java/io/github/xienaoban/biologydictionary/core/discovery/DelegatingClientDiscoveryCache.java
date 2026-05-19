@@ -60,46 +60,37 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
 
     @Override
     public boolean onEntityDetailScreenOpened(LocalPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByDetailScreen()) { return false; }
         return delegate.onEntityDetailScreenOpened(player, entity);
     }
 
     @Override
     public boolean onEntityHighlighted(LocalPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByHighlight()) { return false; }
         return delegate.onEntityHighlighted(player, entity);
     }
 
     @Override
     public boolean onEntityObservedWithTelescope(LocalPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByTelescope()) { return false; }
         return delegate.onEntityObservedWithTelescope(player, entity);
     }
 
     @Override
-    public boolean onEntityKilled(LocalPlayer player, Entity entity) {
-        return delegate.onEntityKilled(player, entity);
-    }
-
-    @Override
-    public boolean onEntityAttacked(LocalPlayer player, Entity entity) {
-        return delegate.onEntityAttacked(player, entity);
-    }
-
-    @Override
     public boolean onEntityInteracted(LocalPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByInteract()) { return false; }
         return delegate.onEntityInteracted(player, entity);
     }
 
     @Override
-    public boolean onEntityFed(LocalPlayer player, Entity entity) {
-        return delegate.onEntityFed(player, entity);
+    public boolean onEntityKilled(LocalPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByKill()) { return false; }
+        return delegate.onEntityKilled(player, entity);
     }
 
     @Override
-    public boolean onEntityTamed(LocalPlayer player, Entity entity) {
-        return delegate.onEntityTamed(player, entity);
-    }
-
-    @Override
-    public boolean onPlayerKilledByEntity(LocalPlayer player, Entity entity) {
-        return delegate.onPlayerKilledByEntity(player, entity);
+    public boolean onPlayerKilledBy(LocalPlayer player, Entity entity) {
+        if (!ConfigsManager.getServer().isDiscoveryByKilledBy()) { return false; }
+        return delegate.onPlayerKilledBy(player, entity);
     }
 }
