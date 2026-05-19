@@ -21,6 +21,11 @@ public final class DevUtilsImpl {
         return version;
     }
 
+    public static String getModName(String modId) {
+        Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(modId);
+        return modContainer.map(c -> c.getMetadata().getName()).orElse("<unknown>");
+    }
+
     public static boolean isClient() {
         return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     }

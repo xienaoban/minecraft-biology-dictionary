@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyTextBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -58,9 +59,9 @@ public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<
             AABB currBox = e().getBoundingBox();
             if (lastBox == currBox) return;
             lastBox = currBox;
-            textX = TextUtils.literal(String.format("%.2f", lastBox.getXsize()));
-            textY = TextUtils.literal(String.format("%.2f", lastBox.getYsize()));
-            textZ = TextUtils.literal(String.format("%.2f", lastBox.getZsize()));
+            textX = TextUtils.literal(StringUtils.format3Digits(lastBox.getXsize()));
+            textY = TextUtils.literal(StringUtils.format3Digits(lastBox.getYsize()));
+            textZ = TextUtils.literal(StringUtils.format3Digits(lastBox.getZsize()));
         }
     }
 }
