@@ -21,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public class DiscoveryToast implements Toast {
-    private static final Identifier BACKGROUND_SPRITE = Identifier.withDefaultNamespace("toast/advancement");
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.fromNamespaceAndPath("biologydictionary", "textures/gui/discovery_toast.png");
     private static final int DISPLAY_TIME = 7000;
     private final Component entityName;
     @Nullable
@@ -50,7 +50,7 @@ public class DiscoveryToast implements Toast {
 
     @Override
     public void render(GuiGraphics guiGraphics, Font font, long l) {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_SPRITE, 0, 0, width(), height());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0f, 0f, width(), height(), width(), height());
         if (eggStack != null) {
             guiGraphics.renderFakeItem(eggStack, 8, 8);
         }

@@ -52,13 +52,18 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
             ClientUtils.playScreenSound(SoundEvents.ENDER_DRAGON_FLAP, 0.6F, -10.0F);
             LocalPlayer player = ctx.player();
             int cnt = 0;
+            Entity first = null;
             for (Entity e : ClientUtils.getClientLevel().entitiesForRendering()) {
                 if (e.getType() != packet.entityType()) { continue; }
                 if (player.distanceToSqr(e) > packet.radius() * packet.radius()) {
                     continue;
                 }
+                if (first == null) { first = e; }
                 ++cnt;
                 cws.getHighlightManager().highlightEntity(e, HighlightEntitiesSkill.TICKS);
+            }
+            if (first != null) {
+                cws.getDiscoveryClientCache().onEntityHighlighted(player, first);
             }
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
                     cnt, packet.entityType().getDescription(), packet.radius()));

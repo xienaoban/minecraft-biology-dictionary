@@ -11,7 +11,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Left/right-click the entity in EntityDisplayWidget to play hurt/death/ambient sound
 - Added support for entity description datapacks/mods
 - Added toast prompt for new discoveries
-- Add support for creature discovery via telescope, kill, death and interaction events
+- Added support for creature discovery via telescope, kill, death and interaction events
+- Added config entries for discovery sources
 
 ### Changed
 
@@ -23,6 +24,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Changed default cost item of MobSetNoAiSkill to totem of undying
 - Moved networking logic from net thread to client/server thread
 - Refactored discovery system
+- Improved telescope discovery logic
+- Distinguish reloading of local and server‑side configurations
 
 ### Fixed
 
@@ -35,6 +38,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Fixed crash from spawn manager
 - Speed up template parsing
 - Fixed long config entry names overflowing in config screen
+- Fixed bounding box display for x/y/z ≥ 10
 
 ## Previous Versions
 
