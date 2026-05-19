@@ -51,8 +51,8 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
     }
 
     @Override
-    public boolean onEntityKilled(ServerPlayer player, Entity entity) {
-        return tryDiscover(player, entity, DiscoverySource.KILL);
+    public boolean onEntityHighlighted(ServerPlayer player, Entity entity) {
+        return tryDiscover(player, entity, DiscoverySource.HIGHLIGHT);
     }
 
     @Override
@@ -64,13 +64,18 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
     }
 
     @Override
-    public boolean onPlayerKilledByEntity(ServerPlayer player, Entity entity) {
+    public boolean onEntityKilled(ServerPlayer player, Entity entity) {
+        return tryDiscover(player, entity, DiscoverySource.KILL);
+    }
+
+    @Override
+    public boolean onPlayerKilledBy(ServerPlayer player, Entity entity) {
         return tryDiscover(player, entity, DiscoverySource.KILLED_BY);
     }
 
     @Override
     public boolean onEntityObservedWithTelescope(ServerPlayer player, Entity entity) {
-        if (!player.isScoping() || !PlayerUtils.isWithinRangeAndUnobstructed(player, entity, ConfigsManager.getServer().getTelescopeRange())) {
+        if (!player.isScoping() || !PlayerUtils.isWithinRangeAndUnobstructed(player, entity, ConfigsManager.getServer().getTelescopeDiscoveryRange())) {
             return false;
         }
         return tryDiscover(player, entity, DiscoverySource.TELESCOPE_OBSERVE);

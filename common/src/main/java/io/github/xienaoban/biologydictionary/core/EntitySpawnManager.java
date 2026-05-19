@@ -42,6 +42,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  */
 public class EntitySpawnManager {
     private static final FileToIdConverter STRUCTURE_LISTER = new FileToIdConverter("structure", ".nbt");
+    private static final CompoundTag MISSING_TEMPLATE = new CompoundTag();
 
     private final Map<EntityType<?>, List<Entry<Biome>>> spawnBiomes = new HashMap<>();
     private final Map<Identifier, List<EntityType<?>>> biomeEntities = new HashMap<>();
@@ -153,16 +154,19 @@ public class EntitySpawnManager {
         Set<EntityType<?>> seenStructureEntities
     ) {
         Set<Identifier> visitedPools = new HashSet<>();
-        Queue<StructureTemplatePool> queue = new ArrayDeque<>();
+        Queue<Identifier> poolQueue = new ArrayDeque<>();
 
         Identifier startPoolId = startPool.unwrapKey()
             .map(ResourceKey::identifier).orElse(null);
         if (startPoolId == null) return;
         visitedPools.add(startPoolId);
-        queue.add(startPool.value());
+        poolQueue.add(startPoolId);
 
-        while (!queue.isEmpty()) {
-            StructureTemplatePool pool = queue.poll();
+        while (!poolQueue.isEmpty()) {
+            Identifier currentPoolId = poolQueue.poll();
+            Optional<? extends Holder<StructureTemplatePool>> poolHolder = poolRegistry.get(currentPoolId);
+            if (poolHolder.isEmpty()) continue;
+            StructureTemplatePool pool = poolHolder.get().value();
             Set<Identifier> referencedPools = new HashSet<>();
 
             // Collect entities from all templates in this pool
@@ -173,7 +177,7 @@ public class EntitySpawnManager {
                         structureId, structureEntry, seenStructureEntities, referencedPools
                     );
                 } catch (Exception e) {
-                    LOGGER.warn("Failed to process element in template pool {}", startPoolId, e);
+                    LOGGER.warn("Failed to process element in template pool {}", currentPoolId, e);
                 }
             }
 
@@ -182,20 +186,20 @@ public class EntitySpawnManager {
                 Holder<StructureTemplatePool> fallback = pool.getFallback();
                 if (fallback.value() != pool) {
                     fallback.unwrapKey().ifPresent(poolKey -> {
-                        Identifier poolId = poolKey.identifier();
-                        if (visitedPools.add(poolId)) {
-                            poolRegistry.get(poolId).ifPresent(holder -> queue.add(holder.value()));
+                        Identifier fallbackId = poolKey.identifier();
+                        if (visitedPools.add(fallbackId)) {
+                            poolQueue.add(fallbackId);
                         }
                     });
                 }
             } catch (Exception e) {
-                LOGGER.warn("Failed to process fallback pool for {}", startPoolId, e);
+                LOGGER.warn("Failed to process fallback pool for {}", currentPoolId, e);
             }
 
             // Follow jigsaw-referenced pools from templates
             for (Identifier poolId : referencedPools) {
                 if (visitedPools.add(poolId)) {
-                    poolRegistry.get(poolId).ifPresent(holder -> queue.add(holder.value()));
+                    poolQueue.add(poolId);
                 }
             }
         }
@@ -218,14 +222,14 @@ public class EntitySpawnManager {
                 try {
                     Identifier resourceLoc = STRUCTURE_LISTER.idToFile(id);
                     try (InputStream is = resourceManager.open(resourceLoc)) {
-                        return NbtIo.readCompressed(is, NbtAccounter.unlimitedHeap());
+                        return NbtIo.readCompressed(is, NbtAccounter.create(64 * 1024 * 1024));
                     }
                 } catch (Throwable e) {
                     LOGGER.warn("Failed to read structure template {}", id, e);
-                    return null;
+                    return MISSING_TEMPLATE;
                 }
             });
-            if (rootNbt == null) return;
+            if (rootNbt == MISSING_TEMPLATE) { return; }
 
             // Extract entities
             ListTag entities = rootNbt.getListOrEmpty("entities");
@@ -249,12 +253,10 @@ public class EntitySpawnManager {
                 CompoundTag blockNbt = blockTag.getCompoundOrEmpty("nbt");
                 String poolStr = blockNbt.getStringOr("pool", "");
                 if (!poolStr.isEmpty()) {
-                    try {
-                        Identifier poolLoc = Identifier.tryParse(poolStr);
-                        if (poolLoc != null && !poolLoc.equals(Identifier.withDefaultNamespace("empty"))) {
-                            referencedPools.add(poolLoc);
-                        }
-                    } catch (Exception ignored) {}
+                    Identifier poolLoc = Identifier.tryParse(poolStr);
+                    if (poolLoc != null && !poolLoc.equals(Identifier.withDefaultNamespace("empty"))) {
+                        referencedPools.add(poolLoc);
+                    }
                 }
             }
         } else if (element instanceof ListPoolElement listPoolElement) {

@@ -11,12 +11,9 @@ public enum DiscoverySource {
     ENTITY_DETAIL_SCREEN(DiscoveryEventListener::onEntityDetailScreenOpened),
     HIGHLIGHT(DiscoveryEventListener::onEntityHighlighted),
     TELESCOPE_OBSERVE(DiscoveryEventListener::onEntityObservedWithTelescope),
-    KILL(DiscoveryEventListener::onEntityKilled),
-    ATTACK(DiscoveryEventListener::onEntityAttacked),
     INTERACT(DiscoveryEventListener::onEntityInteracted),
-    FEED(DiscoveryEventListener::onEntityFed),
-    TAME(DiscoveryEventListener::onEntityTamed),
-    KILLED_BY(DiscoveryEventListener::onPlayerKilledByEntity),
+    KILL(DiscoveryEventListener::onEntityKilled),
+    KILLED_BY(DiscoveryEventListener::onPlayerKilledBy),
     UNKNOWN((l, p, e) -> false);
 
     private final Invoker<?> invoker;

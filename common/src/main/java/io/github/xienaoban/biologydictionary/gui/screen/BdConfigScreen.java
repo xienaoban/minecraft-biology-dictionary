@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ClothConfigScreenProvider;
 import io.github.xienaoban.biologydictionary.config.Configs;
@@ -16,6 +17,7 @@ import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
@@ -39,7 +41,8 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
 
         widgets.add(new DescriptionWidget(1, Page.COLUMNS, TextUtils.translate(Lang.TEXT_LOCAL_CONFIGS_DESC)));
         widgets.add(new OpenLocalConfigsScreenWidget());
-        widgets.add(new ReloadLocalConfigsScreenWidget());
+        widgets.add(new ReloadLocalConfigsWidget());
+        widgets.add(new ReloadServerConfigsWidget());
 
         widgets.add(new PlaceHolderWidget(1, Page.COLUMNS));
         widgets.add(new TurnPageCommonWidget());
@@ -91,8 +94,8 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    public static class ReloadLocalConfigsScreenWidget extends Widget {
-        public ReloadLocalConfigsScreenWidget() {
+    public static class ReloadLocalConfigsWidget extends Widget {
+        public ReloadLocalConfigsWidget() {
             super(1, Page.COLUMNS);
         }
 
@@ -112,20 +115,58 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
                     ctx.getZ(), box.getRight(), box.getBottom(), box.getRight() - tw, box.getBottom() - th);
 
             int color = hovered ? Colors.BLACK : Colors.COMMON_DARK_TEXT;
-            ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_RELOAD_LOCAL_CONFIGS_SCREEN),
+            ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_RELOAD_LOCAL_CONFIGS),
                     color, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 3 + TXT_TO);
         }
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
-                synchronized (ReloadLocalConfigsScreenWidget.class) {
+                synchronized (ReloadLocalConfigsWidget.class) {
                     ConfigsManager.load();
                     ConfigsManager.onUpdated();
                 }
                 if (AbstractBiologyDictionaryScreen.current() instanceof BdConfigScreen screen) {
-                    screen.sendScreenMessage(TextUtils.translate(Lang.TEXT_CONFIG_RELOAD_SUCCESS));
+                    screen.sendScreenMessage(TextUtils.translate(Lang.TEXT_LOCAL_CONFIGS_RELOAD_SUCCESS));
                 }
+                return true;
+            }
+            return super.onMouseDown(x, y, code);
+        }
+    }
+
+    public static class ReloadServerConfigsWidget extends Widget {
+        private static final String COMMAND = "/" + BiologyDictionary.MOD_ID + " config reload";
+
+        public ReloadServerConfigsWidget() {
+            super(1, Page.COLUMNS);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            boolean hovered = ctx.getElementScreen().getHoveredElement() == this;
+
+            int tt = hovered ? 21 : 24;
+            int ww = Widget.WIDGET_WIDTH, wh = Widget.WIDGET_HEIGHT;
+            ctx.renderTexture(Textures.ICONS, 8 * ww, tt * wh,
+                    ctx.getZ(), box.getLeft(), box.getTop(), 3 * ww, wh);
+            int tw = 3 * ww, th = 1 * wh;
+            ctx.renderTexture(Textures.ICONS,
+                    8 * ww, tt * ww, 8 * ww + tw, tt * ww + th,
+                    ctx.getZ(), box.getRight(), box.getBottom(), box.getRight() - tw, box.getBottom() - th);
+
+            int color = hovered ? Colors.BLACK : Colors.COMMON_DARK_TEXT;
+            ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_RELOAD_SERVER_CONFIGS),
+                    color, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 3 + TXT_TO);
+        }
+
+        @Override
+        protected boolean onMouseDown(float x, float y, int code) {
+            if (isMouseLeft(code)) {
+                ClientUtils.playScreenSound(ClientUtils.getClient(), SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                ClientUtils.setScreen(ClientUtils.getClient(), new ChatScreen(COMMAND, false));
                 return true;
             }
             return super.onMouseDown(x, y, code);

@@ -33,7 +33,7 @@ public final class CommandManager {
         try {
             ConfigsManager.load();
             ConfigsManager.onUpdated();
-            context.getSource().sendSuccess(() -> TextUtils.translate(Lang.TEXT_CONFIG_RELOAD_SUCCESS), true);
+            context.getSource().sendSuccess(() -> TextUtils.translate(Lang.TEXT_SERVER_CONFIGS_RELOAD_SUCCESS), true);
             return Command.SINGLE_SUCCESS;
         } catch (Exception e) {
             LOGGER.error("Failed to reload config!", e);

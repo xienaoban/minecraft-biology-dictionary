@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
@@ -18,8 +19,14 @@ public final class VanillaKillDiscoveryStrategy implements DiscoveryStrategy {
 
     @Override
     public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
-        return player.getStats().getValue(Stats.ENTITY_KILLED, entityType) > 0
-                || player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) > 0;
+        boolean discovered = false;
+        if (ConfigsManager.getServer().isDiscoveryByKill()) {
+            discovered |= player.getStats().getValue(Stats.ENTITY_KILLED, entityType) > 0;
+        }
+        if (ConfigsManager.getServer().isDiscoveryByKilledBy()) {
+            discovered |= player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) > 0;
+        }
+        return discovered;
     }
 
     @Override
@@ -36,7 +43,7 @@ public final class VanillaKillDiscoveryStrategy implements DiscoveryStrategy {
     }
 
     @Override
-    public boolean onPlayerKilledByEntity(ServerPlayer player, Entity entity) {
+    public boolean onPlayerKilledBy(ServerPlayer player, Entity entity) {
         EntityType<?> entityType = EntityUtils.getEntityType(entity);
         // Injected before awardStat in ServerPlayer.die, stats not yet updated
         if (player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) == 0) {
