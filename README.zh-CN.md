@@ -1,134 +1,172 @@
+![Biology Dictionary](res/header.png)
+
+<div style="text-align: right;">
+
+**[English](README.md)** | 简体中文
+
+</div>
+
+<div style="text-align: center;">
+
 # 生物辞典
 
-[**English**](README.md) | **简体中文**
+**图鉴收集、高亮搜索、查看属性、修改行为 —— 你的原版+模组生物百科全书**
 
-[![下载 - Modrinth](https://img.shields.io/badge/下载-Modrinth-43b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
-[![下载 - Curseforge](https://img.shields.io/badge/下载-CurseForge-ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
-![开源协议](https://img.shields.io/badge/开源协议-LGPL_3-blue?style=for-the-badge)
+[![Download - Modrinth](https://img.shields.io/badge/下载-Modrinth-43b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
+[![Download - CurseForge](https://img.shields.io/badge/下载-CurseForge-ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
 
-![我的世界 1.21.11 1.21.1 1.20.1](https://img.shields.io/badge/我的世界-1.21.11_1.21.1_1.20.1-59A922?style=for-the-badge)
+![Fabric](https://img.shields.io/badge/Fabric-A99774?style=flat-square&logo=fabric)
+![NeoForge](https://img.shields.io/badge/NeoForge-D7742F?style=flat-square&logo=neoforge)
+![Forge](https://img.shields.io/badge/Forge-667E9F?style=flat-square&logo=neoforge)
+![MC 1.21.11](https://img.shields.io/badge/MC-1.21.11%20%7C%201.21.1%20%7C%201.20.1-59A922?style=flat-square&logo=minecraft)
 
-![Fabric 依赖](https://img.shields.io/badge/依赖-Fabric-A99774?style=for-the-badge&logo=fabric) ![Fabric API](https://img.shields.io/badge/Fabric_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
-
-![NeoForge 依赖](https://img.shields.io/badge/依赖-NeoForge-D7742F?style=for-the-badge&logo=neoforge) ![Architectury API](https://img.shields.io/badge/Architectury_API-gray?style=for-the-badge) ![Cloth Config](https://img.shields.io/badge/Cloth_Config-gray?style=for-the-badge)
+</div>
 
 ---
 
-## 简介
+## 遇到过这些困扰？
 
-**生物辞典**是一个用于查看生物详细信息、并允许部分修改生物属性的**工具类**模组。本模组**未添加任何新方块/生物**，可以随时卸载/重装本模组、或升级我的世界版本。
+| 场景                          | 生物辞典能做什么               |
+|-----------------------------|------------------------|
+| 想知道自己还有哪些生物没发现              | 打开图鉴，查看所有生物的发现进度       |
+| 想知道生物的生成群系、掉落物、食物、速度、碰撞箱... | 一页纵览所有基础属性             |
+| 想知道马、熊猫、村民等有多少种类            | 查看生物的所有种类（并可在创造模式修改）   |
+| 幼年动物太可爱了不想让它长大              | 一键锁定生长阶段，永远保持宝宝模样      |
+| 烤鸡机里的几十只鸡太吵了                | 一键静音，且子代遗传静音属性         |
+| 村民交易厅建好了，但找不到村民工作站          | 一键定位村民工作站点，再也不用盲目挖工作方块 |
+| 村民总是制作面包，影响自动农村工作           | 偷窃村民背包并塞满垃圾，阻止捡起小麦     |
+| 蜜蜂放飞后不知道去了哪个蜂巢              | 查看蜂巢蜂蜜存量和蜜蜂数量，追踪蜜蜂的家   |
+| 跨维度运输生物太痛苦                  | 锁定或强制生物通过地狱门，轻松搬运      |
+| 想把生物放进装饰建筑里当 NPC            | 一键关闭 AI 并设为无敌，在生存中造景   |
 
-> 严格来讲本模组添加了一本书，但该书是通过 writable book + NBT（现在叫“组件”了）实现的，卸载本模组后就是一本普通的书，重新安装回模组后即可使用。
+---
 
-本模组最初旨在补充**原版生存电路**玩家的游戏体验，例如：
+## 界面一览
 
-- 高亮周围 100 米内的某类生物，方便寻找鹦鹉/熊猫等稀有生物
-- 查看马匹的跳跃/奔跑能力，快速寻找高性能马匹
-- 查看可吸引/投喂生物的物品，方便驯服、繁殖生物
-- 查看村民的工作方块，方便定位搭建交易中心时遇到的麻烦
-- 生物禁止/立即被地狱传送门传送，方便生物运输工程
-- 给生物静音，避免一些造景（例如小鸡+拴绳做的秋千）露馅
-- 禁止幼年生物长大，留住幼崽的可爱（正巧 `26.1 Snapshot 2` 实现了更好的幼年生物，该功能现在更有用了！）
-- 修改村民背包物品（以“窃取”的功能形式表现），以便制作自动农场
-- 剥除生物AI并设为无敌，做一些 NPC 或造景
-- 查看蜂箱里的蜂蜜与蜜蜂信息
-- 等等等等
+|                     主菜单                     |                    实体详情                     |
+|:-------------------------------------------:|:-------------------------------------------:|
+| ![screenshot 1](res/screenshot_zh_cn_1.jpg) | ![screenshot 2](res/screenshot_zh_cn_2.jpg) |
+| ![screenshot 3](res/screenshot_zh_cn_3.jpg) | ![screenshot 4](res/screenshot_zh_cn_4.jpg) |
 
-但生电玩家有时过于没有人性、不在乎使用的模组的美观性，但我还是希望本模组是尽可能沉浸的、能够融入原版游戏规则的，因此我给它的功能做了一些轻量级的设定、做了一个相对沉浸的 UI，玩家对生物属性的修改需要付出一定合理的成本。
+<details>
+<summary>点击展开更多截图</summary>
 
-> 不过本人像素画不太专业，也欢迎大家一起来优化生物辞典的 UI。
+|                                             |                                             |
+|:-------------------------------------------:|:-------------------------------------------:|
+| ![screenshot 5](res/screenshot_zh_cn_5.jpg) | ![screenshot 6](res/screenshot_zh_cn_6.jpg) |
+| ![screenshot 7](res/screenshot_zh_cn_7.jpg) | ![screenshot 8](res/screenshot_zh_cn_8.jpg) |
+| ![screenshot 9](res/screenshot_zh_cn_9.jpg) |                                             |
 
-|                                 |                                 |                                 |
-|---------------------------------|---------------------------------|---------------------------------|
-| ![](res/screenshot_zh_cn_1.jpg) | ![](res/screenshot_zh_cn_2.jpg) | ![](res/screenshot_zh_cn_3.jpg) |
-| ![](res/screenshot_zh_cn_4.jpg) | ![](res/screenshot_zh_cn_5.jpg) | ![](res/screenshot_zh_cn_6.jpg) |
-| ![](res/screenshot_zh_cn_7.jpg) | ![](res/screenshot_zh_cn_8.jpg) | ![](res/screenshot_zh_cn_9.jpg) |
+</details>
 
-本模组当前支持 **Fabric** 和 **NeoForge** 两个加载器。
+---
 
-- Fabric 版本依赖 **<span style="color: red;">Fabric API</span>** 和 **<span style="color: red;">Cloth Config API</span>**。
-- NeoForge 版本依赖 **<span style="color: red;">Architectury API</span>** 和 **<span style="color: red;">Cloth Config API</span>**。
+## 功能速览
 
-## 详细功能与设定
+- **不新增任何方块或实体，原版友好，随时可安全卸载。**
+- **完美支持原版生物+模组生物。**
 
-本模组的前身是[**伯乐**](https://github.com/xienaoban/minecraft-bole)，但我对之前的底层实现不满意，**生物辞典**本质上是**伯乐**的一次全面重构，并没有添加太多新功能。
+### 信息查看
 
-### 生物辞典获取与使用
+- **图鉴收集** — 查看所有生物的发现进度，支持多种发现方式（打开详情、高亮搜索、望远镜扫描、击杀、交互等）
+- **附近实体高亮** — 100 米范围内高亮指定类型实体，快速寻找稀有生物
+- **生命值与状态效果** — 实时显示血量和所有药水效果
+- **移速与跳跃力** — 以 m/s 和 m 为单位的精确数值
+- **战利品表** — 查看生物的完整掉落物
+- **生成信息** — 查看生物的生成群系、结构（支持模组自定义）
+- **碰撞箱尺寸** — 查看实体精确碰撞箱大小
+- **生物品种/外观** — 查看村民的服饰、马的花纹与斑点、牛的群系外观、熊猫的基因等
+- **诱饵食物与繁殖食物** — 查看哪些物品可以吸引该生物/喂养该生物
+- **繁殖状态** — 查看繁殖冷却、恋爱状态
+- **村民工作站** — 显示并定位村民工作站点
+- **村民日程与补货** — 查看村民日程安排、每日补货次数
+- **蜂巢信息** — 蜂蜜存量、蜜蜂数量、蜂巢位置
+- **海豚湿润度** — 查看海豚皮肤湿润度
+- **尖叫山羊** — 查看山羊是否为尖叫山羊
+- **宠物主人** — 查看可驯服生物的主人信息
+- ... ...
 
-#### 如何获取物品“生物辞典”
+### 属性修改
 
-- 创造模式下，在“工具与实用物品”目录的最后可以找到
-- 生存模式下，可以在流浪商人那买到，随着游戏时间推进，售卖概率从 100% 逐步下降，最终稳定在 20%
-  > 主打一个刚开局没绿宝石时到处刷，玩到后面不缺绿宝石了就刷不到了嘿嘿
+所有修改操作均需消耗合理资源（经验值、物品等），保持游戏平衡。
 
-以及可以在设置里禁止流浪商人刷此交易，此时生存模式将无任何方式获得此书，需要整合包作者自行添加配方。
+- **锁定生长** — 阻止幼年生物长大
+- **阻止繁殖** — 防止生物进入繁殖状态
+- **传送门控制** — 阻止或强制实体通过地狱门
+- **移除 AI** — 关闭生物 AI，用于装饰或 NPC
+- **强制持久化** — 防止生物自然消失
+- **设置无敌** — 使实体不会受到任何伤害
+- **静音** — 隐藏实体发出的声音，且子代遗传静音属性
+- **查看/修改物品栏** — 查看村民等生物的物品栏内容
+- **修改生物品种/外观** — 更改村民的服饰、马的花纹与斑点、牛的群系外观、熊猫的基因等
+- **强制补货** — 立即刷新村民交易
+- **保留流浪商人** — 防止流浪商人消失
+- **强制吃草** — 强制绵羊吃草
+- **赠送宠物** — 将可驯服生物赠予其他玩家
+- **修改变种** — 更改生物的种类/变种（创造模式）
+- **获取刷怪蛋** — 获取对应生物的刷怪蛋（创造模式）
+- ... ...
 
-#### 如何打开界面
+### 打开方式
 
-- 创造模式下，直接使用热键（默认 `~`）即可打开生物辞典界面
-- 生存模式下，
-  - 若物品栏不存在物品“生物辞典”，则无法打开界面
-  - 若物品栏存在本书，则
-    - 右键书本即可打开
-    - 使用热键也可以打开
+本模组的承载形式是一个个的界面。生物辞典界面打开方法：
+1. 手持《生物辞典》书本物品时，右键使用
+2. 生存模式且物品栏存在《生物辞典》时、或配置了无需书本时、或创造模式时，按快捷键（默认`` ` ``）
 
-#### 瞄准不同目标打开的界面
+玩家瞄准不同目标时会打开不同界面。
 
-- 瞄准生物时，打开该生物的详情信息页
-- 瞄准蜂箱时，打开蜂箱页面
-- 瞄准其他方块或空气时，打开主界面
-- 瞄准正上方时，无视是否指向生物，强制打开主界面
-- 瞄准正下方时，打开玩家自己的详情信息界面
+| 瞄准目标    | 打开页面    |
+|---------|---------|
+| 方块 / 空气 | 主菜单     |
+| 生物      | 该生物的详情页 |
+| 蜂巢      | 蜂巢信息页   |
+| 正上方     | 主菜单（强制） |
+| 正下方     | 玩家自身详情页 |
 
-### 支持的所有属性展示或修改
+---
 
-以下按实体类的继承关系列出了所有支持的属性展示和修改功能：
+### 获取方式
 
-- **Entity**（实体基类）
-  - 显示实体模型（可旋转查看）
-  - 空气值/氧气值显示
-  - 碰撞箱尺寸显示
-  - 无敌状态开关（仅创造模式）
-  - 是否可拴绳显示
-  - 传送门冷却锁定（禁止/允许传送）
-  - 静音开关
-  - **LivingEntity**（生物实体）
-    - 生命值显示
-    - 状态效果显示
-    - 移动速度显示（m/s）
-    - 跳跃强度显示（m）
-    - 背包物品查看/窃取
-    - **Mob**（怪物/生物）
-      - AI 开关
-      - 持久性显示/修改（防止自然消失）
-      - 吸引物品显示
-      - **AgeableMob**（可成长的生物）
-        - 生长进度显示/锁定幼年
-        - 繁殖冷却显示/禁止繁殖
-        - **Animal**（动物）
-          - 可喂食物品显示
-          - 繁殖状态显示
-          - **Bee**（蜜蜂）
-            - 蜂巢位置显示/定位
-            - 清除蜂巢记忆
-          - **Dolphin**（海豚）
-            - 皮肤湿润度显示
-          - **Goat**（山羊）
-            - 是否为尖叫山羊显示
-          - **Panda**（熊猫）
-            - 主基因显示/修改
-            - 隐藏基因显示/修改
-          - **Sheep**（绵羊）
-            - 强制吃草（剪毛）
-          - **Villager**（村民）
-            - 工作站点位置显示/定位
-            - 每日补货次数显示/强制补货
-            - 日程表显示
-            - 村民类型显示/修改
-          - **WanderingTrader**（流浪商人）
-            - 消失延迟显示/保留
-          - **Horse**（马及其变种）
-            - 颜色和斑纹显示/修改
-  - **OwnableEntity**（可驯服生物，如狼、猫、鹦鹉等）
-    - 主人信息显示/赠送宠物
+《生物辞典》书本物品的获取方式。注：
+1. 创造模式、或配置了生存模式可使用快捷键时，本书没有存在的必要
+2. 本书本质为 `minecraft:writable_book` + NBT，未创建新物品，原版友好
 
+#### 创造模式
+
+在「工具与实用物品」分类末尾找到《生物辞典》书本物品。
+
+#### 生存模式
+
+向**流浪商人**购买即可。游戏初期出售概率 100%，随游戏时间推移逐渐降至稳定的 20%。不占用流浪商人原版销售栏位。
+
+> 主打前期买不起、后期买不到（发出了反派的笑声）~
+> 
+> 其实还好啦，要玩到**现实时间**的 2 天后（也就是游戏时间的 144 天后），概率才降到 20%，相信你那时候早就绿宝石自由了。
+
+也可在配置中关闭流浪商人出售，由整合包作者自行添加合成配方。
+
+---
+
+## 依赖
+
+| 加载器 | 依赖模组 |
+|--------|---------|
+| Fabric | Fabric API、Cloth Config |
+| NeoForge / Forge | Architectury API、Cloth Config |
+
+---
+
+## 关于
+
+- **原版友好** — 不新增方块或实体，卸载后辞典变为普通可书写书，重装即恢复
+- **模组友好** — 几乎完美兼容所有模组的生物，并提供模组扩展能力
+- **游戏平衡** — 所有修改操作都需要消耗合理资源，保持游戏平衡
+- 本模组是 [Bole](https://github.com/xienaoban/minecraft-bole) 的完全重构版本
+
+---
+
+<div style="text-align: center;">
+
+[![License](https://img.shields.io/badge/License-LGPL_3-blue?style=for-the-badge)](LICENSE)
+
+</div>

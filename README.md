@@ -1,134 +1,165 @@
+![Biology Dictionary](res/header.png)
+
+<div style="text-align: right;">
+
+English | **[简体中文](README.zh-CN.md)**
+
+</div>
+
+<div style="text-align: center;">
+
 # Biology Dictionary
 
-**English** | [**简体中文**](README.zh-CN.md)
+**Discover, highlight, inspect, modify — your vanilla & modded mob encyclopedia**
 
-[![Download - Modrinth](https://img.shields.io/badge/download-Modrinth-43b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
-[![Download - Curseforge](https://img.shields.io/badge/download-CurseForge-ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
+[![Download - Modrinth](https://img.shields.io/badge/Download-Modrinth-43b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
+[![Download - CurseForge](https://img.shields.io/badge/Download-CurseForge-ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
 
-![Available For Fabric](https://img.shields.io/badge/Available_For-Fabric-A99774?style=for-the-badge&logo=fabric) ![Available For Forge](https://img.shields.io/badge/Available_For-Forge-667E9F?style=for-the-badge&logo=neoforge) ![Available For NeoForge](https://img.shields.io/badge/Available_For-NeoForge-D7742F?style=for-the-badge&logo=neoforge)
+![Fabric](https://img.shields.io/badge/Fabric-A99774?style=flat-square&logo=fabric)
+![NeoForge](https://img.shields.io/badge/NeoForge-D7742F?style=flat-square&logo=neoforge)
+![Forge](https://img.shields.io/badge/Forge-667E9F?style=flat-square&logo=neoforge)
+![MC 1.21.11](https://img.shields.io/badge/MC-1.21.11%20%7C%201.21.1%20%7C%201.20.1-59A922?style=flat-square&logo=minecraft)
 
-![Minecraft 1.21.11 1.21.1 1.20.1](https://img.shields.io/badge/Minecraft-1.21.11_1.21.1_1.20.1-59A922?style=for-the-badge)
-
-![License](https://img.shields.io/badge/License-LGPL_3-blue?style=for-the-badge)
+</div>
 
 ---
 
-## Introduction
+## Sound familiar?
 
-**Biology Dictionary** is a **utility** Minecraft mod for viewing detailed information about mobs and modifying certain mob properties. This mod **does not add any new blocks/entities**, and can be safely uninstalled/reinstalled at any time, or when upgrading Minecraft versions.
+| Problem | Solution |
+|---------|----------|
+| Don't know which mobs you're still missing | Check your discovery progress in the encyclopedia |
+| Want spawn biomes, drops, food, speed, hitbox... all at once | View all base properties on a single page |
+| Curious about horse, panda, or villager variants | Browse all variants (and change them in Creative) |
+| Baby mobs are too adorable to grow up | Lock growth, keep them babies forever |
+| Dozens of chickens in a cooker are deafening | One-click mute — offspring inherit it too |
+| Can't find the villager's job site in your trading hall | One-click locate, no more blind digging |
+| Villagers keep crafting bread, breaking your auto-farm | Steal their inventory, fill with junk, stop wheat pickup |
+| Bees flew off — which hive did they go to? | View hive honey levels and bee counts, track them home |
+| Cross-dimension mob transport is a nightmare | Lock or force nether portal teleportation |
+| Want NPCs in your survival builds | Disable AI + set invulnerable, done |
 
-> Strictly speaking, this mod adds a book item. However, the book is implemented using a writable book + NBT (now called "components"). After uninstalling the mod, it becomes a regular writable book. Reinstalling the mod will restore its functionality.
+---
 
-This mod was originally designed to enhance the experience for **technical survival players**, for example:
+## Screenshots
 
-- Highlight entities within 100 meters to easily find rare mobs like parrots and pandas
-- View horse jump/speed stats to quickly find high-performance horses
-- View items that can attract/feed mobs for easier taming and breeding
-- View villager work sites to help locate trading halls
-- Block mobs from/force instant teleport through nether portals for easier mob transport
-- Mute entities to avoid revealing decoration builds (e.g., chicken swings made with leads)
-- Prevent baby animals from growing up to keep them cute (conveniently, `26.1 Snapshot 2` implemented better baby animals, making this feature even more useful!)
-- Modify villager inventory items (presented as "stealing") for automatic farm designs
-- Remove mob AI and make invincible for NPCs or decoration builds
-- View honey and bee information in bee hives
-- And much more
+|                                             |                                             |
+|:-------------------------------------------:|:-------------------------------------------:|
+| ![screenshot 1](res/screenshot_en_us_1.jpg) | ![screenshot 2](res/screenshot_en_us_2.jpg) |
+| ![screenshot 3](res/screenshot_en_us_3.jpg) | ![screenshot 4](res/screenshot_en_us_4.jpg) |
 
-However, technical survival players sometimes don't care about mod aesthetics. I still hope this mod can be as immersive as possible and blend into vanilla game mechanics, so I added some lightweight settings and created a relatively immersive UI. Players need to pay a reasonable cost to modify entity properties.
+<details>
+<summary>Click to expand more screenshots</summary>
 
-> But my pixel art skills aren't great. Contributions to improve Biology Dictionary's UI are welcome!
+|                                             |                                             |
+|:-------------------------------------------:|:-------------------------------------------:|
+| ![screenshot 5](res/screenshot_en_us_5.jpg) | ![screenshot ](res/screenshot_en_us_6.jpg)  |
+| ![screenshot 7](res/screenshot_en_us_7.jpg) | ![screenshot 8](res/screenshot_en_us_8.jpg) |
+| ![screenshot 9](res/screenshot_en_us_9.jpg) |                                             |
 
-|                                 |                                 |                                 |
-|---------------------------------|---------------------------------|---------------------------------|
-| ![](res/screenshot_en_us_1.jpg) | ![](res/screenshot_en_us_2.jpg) | ![](res/screenshot_en_us_3.jpg) |
-| ![](res/screenshot_en_us_4.jpg) | ![](res/screenshot_en_us_5.jpg) | ![](res/screenshot_en_us_6.jpg) |
-| ![](res/screenshot_en_us_7.jpg) | ![](res/screenshot_en_us_8.jpg) | ![](res/screenshot_en_us_9.jpg) |
+</details>
 
-This mod currently supports **Fabric**, **Forge** and **NeoForge** loaders.
+---
 
-- Fabric versions depends on **<span style="color: red;">Fabric API</span>** and **<span style="color: red;">Cloth Config API</span>**.
-- Forge and NeoForge versions depends on **<span style="color: red;">Architectury API</span>** and **<span style="color: red;">Cloth Config API</span>**.
+## Features
 
-> I'm becoming increasingly busy with work, but I'll still try my best to keep up with official Minecraft updates. However, I won't be adding too many complex features going forward.
+- **No new blocks or entities. Vanilla-friendly and safe to uninstall anytime.**
+- **Full support for vanilla and modded mobs alike.**
 
-## Detailed Features and Settings
+### Inspection
 
-This mod is a complete restructure of [**Bole**](https://github.com/xienaoban/minecraft-bole), as I wasn't satisfied with the previous implementation. **Biology Dictionary** is essentially a full rewrite of **Bole** without adding too many new features.
+- **Mob Discovery** — Track your encyclopedia progress; discover mobs by viewing details, scanning with the telescope, highlighting, killing, interacting, and more
+- **Entity Highlight** — Highlight a specific mob type within 100 m to quickly track down rare spawns
+- **Health & Effects** — Real-time health bar and active status effects
+- **Speed & Jump** — Precise movement speed (m/s) and jump strength (m)
+- **Loot Table** — Full drop table for any mob
+- **Spawn Info** — Spawn biomes and structures (modded content supported)
+- **Hitbox** — Exact bounding box dimensions
+- **Variants** — Villager outfits, horse markings, cow biome variants, panda genes, and more
+- **Food** — Items that tempt or breed the mob
+- **Breeding Status** — Cooldown timer and love status
+- **Villager Job Site** — Locate the workstation with one click
+- **Villager Schedule & Restock** — Daily schedule and restock count
+- **Beehive** — Honey level, bee count, hive location
+- **And more** — Dolphin moisture, screaming goat check, pet owner info, etc.
 
-### Obtaining and Using Biology Dictionary
+### Modification
 
-#### How to Obtain Biology Dictionary Item
+All modifications cost in-game resources (XP, items, etc.) to keep things balanced.
 
-- In Creative mode, find it at the end of the "Tools & Utilities" category
-- In Survival mode, buy it from Wandering Traders. As game time progresses, the sale probability gradually decreases from 100% to a stable 20%
-  > This design means you can find it everywhere when you start without emeralds, but once you're rich enough, it becomes rare hehe
+- **Lock Growth** — Freeze baby mobs permanently
+- **Prevent Breeding** — Block mobs from entering love mode
+- **Portal Control** — Prevent or force nether portal teleportation
+- **Remove AI** — Disable AI for static NPCs or decoration
+- **Force Persistence** — Stop mobs from despawning
+- **Set Invulnerable** — Make a mob immune to all damage
+- **Mute** — Silence mob sounds; offspring inherit the trait
+- **Inventory** — View and take items from villager inventories
+- **Change Variants** — Swap villager outfits, horse markings, cow variants, panda genes, etc.
+- **Force Restock** — Instantly refresh villager trades
+- **Retain Trader** — Keep a wandering trader from despawning
+- **Gift Pet** — Transfer a tamed mob to another player
+- **Spawn Egg** — Obtain the corresponding spawn egg (Creative only)
+- **And more** — Force sheep to eat grass, modify mob variants (Creative only), etc.
 
-You can also disable Wandering Trader sales in the config. In this case, there's no way to obtain the book in survival mode, and pack authors need to add their own recipes.
+### Controls
 
-#### How to Open Biology Dictionary Screen
+Open the Biology Dictionary by:
+1. Right-clicking the book item while holding it
+2. Pressing the hotkey (default `` ` ``) — requires the book in inventory (Survival), or is always available (Creative / configured)
 
-- In Creative mode, simply use the hotkey (default `~`) to open the Biology Dictionary screen
-- In Survival mode:
-  - If you don't have Biology Dictionary in your inventory, you cannot open the screen
-  - If you have the book:
-    - Right-click the book to open
-    - You can also use the hotkey to open
+The screen you get depends on where you're looking:
 
-#### Screens for Different Targets
+| Looking at | Opens |
+|:----------:|:-----:|
+| Block / Air | Main menu |
+| Entity | Entity detail |
+| Beehive | Beehive info |
+| Straight up | Main menu (always) |
+| Straight down | Your own stats |
 
-- Aiming at an entity opens that entity's detail page
-- Aiming at a bee hive opens the bee hive page
-- Aiming at other blocks or air opens the main menu
-- Aiming straight up opens the main menu, regardless of whether you're targeting an entity
-- Aiming straight down opens your own player detail page
+---
 
-### All Supported Properties Display/Modification
+### Obtaining
 
-The following lists all supported property display and modification features by entity class hierarchy:
+The book is a plain `minecraft:writable_book` with embedded NBT — no custom items, fully vanilla-compatible. In Creative mode (or with hotkey configured for Survival), you don't even need it.
 
-- **Entity**
-  - Entity model display (rotatable)
-  - Air/oxygen value display
-  - Bounding box size display
-  - Invulnerable state toggle (Creative mode only)
-  - Leashable status display
-  - Portal cooldown lock (prevent/allow teleportation)
-  - Mute toggle
-  - **LivingEntity**
-    - Health value display
-    - Status effects display
-    - Movement speed display (m/s)
-    - Jump strength display (m)
-    - Inventory viewing/stealing
-    - **Mob**
-      - AI toggle
-      - Persistence display/modify (prevent natural despawning)
-      - Tempt items display
-      - **AgeableMob**
-        - Growth progress display/lock as baby
-        - Breeding cooldown display/prevent breeding
-        - **Animal**
-          - Breedable food items display
-          - In-love status display
-          - **Bee**
-            - Hive location display/locate
-            - Clear hive memory
-          - **Dolphin**
-            - Skin moistness display
-          - **Goat**
-            - Screaming goat status display
-          - **Panda**
-            - Main gene display/modify
-            - Hidden gene display/modify
-          - **Sheep**
-            - Force eat grass (shearing)
-          - **Villager**
-            - Job site location display/locate
-            - Daily restock count display/force restock
-            - Schedule display
-            - Villager type display/modify
-          - **WanderingTrader**
-            - Despawn delay display/retain
-          - **Horse**
-            - Color and markings display/modify
-  - **OwnableEntity** (tamable mobs like wolves, cats, parrots, etc.)
-    - Owner info display/gift pet
+#### Creative
+
+Find it at the end of the **Tools & Utilities** tab.
+
+#### Survival
+
+Buy from **Wandering Traders**. Sell chance starts at 100% and gradually drops to 20% over time, without taking up any vanilla trade slots.
+
+> Easy to find early when you're broke, impossible to find later when you're rich (cue evil laugh)~
+>
+> Kidding — it takes about **2 real-time hours** (144 in-game days) to hit 20%. You'll be fine.
+
+Pack authors can disable trader sales in the config and add their own recipes instead.
+
+---
+
+## Dependencies
+
+| Loader | Required |
+|--------|----------|
+| Fabric | Fabric API, Cloth Config |
+| NeoForge / Forge | Architectury API, Cloth Config |
+
+---
+
+## About
+
+- **Vanilla-Friendly** — No new blocks or entities. The book reverts to a normal writable book on uninstall; reinstall to restore it.
+- **Mod-Friendly** — Compatible with virtually all modded mobs, with extension support for mod developers.
+- **Balanced** — Every modification has a resource cost to respect game balance.
+- A complete rewrite of [Bole](https://github.com/xienaoban/minecraft-bole).
+
+---
+
+<div style="text-align: center;">
+
+[![License](https://img.shields.io/badge/License-LGPL_3-blue?style=for-the-badge)](LICENSE)
+
+</div>
