@@ -84,6 +84,10 @@ public final class TextUtils {
         return font.lineHeight * scale;
     }
 
+    public static MutableComponent truncateByWidth(Component text, float maxWidth, float fontSize) {
+        return truncateByWidth(text, getGlobalFont(), maxWidth, fontSize);
+    }
+
     public static MutableComponent truncateByWidth(Component text, Font font, float maxWidth, float fontSize) {
         String str = text.getString();
         float ellipsisWidth = font.width("...") * fontSize;
