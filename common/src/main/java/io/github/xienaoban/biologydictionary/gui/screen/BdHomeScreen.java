@@ -3,7 +3,6 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
-import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
@@ -243,7 +242,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     entityRotateX, entityRotateY,
                     silhouetteColor);
 
-            Component text = shouldRenderDetail() ? name : TextUtils.literal("??");
+            Component text = shouldRenderDetail() ? TextUtils.truncateByWidth(name, getBox().getWidth() + 2, 0.5F) : TextUtils.literal("??");
             ctx.renderCenteredText(text, Colors.BROWN, 0.5F, getZ(), (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
         }
 
