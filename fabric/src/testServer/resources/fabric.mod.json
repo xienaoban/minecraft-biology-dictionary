@@ -11,7 +11,8 @@
       "io.github.xienaoban.biologydictionary.fabric.VanillaEntityCollectionTestImpl",
       "io.github.xienaoban.biologydictionary.fabric.VanillaEntityNbtTestImpl",
       "io.github.xienaoban.biologydictionary.fabric.VanillaEntityPropertyTestImpl",
-      "io.github.xienaoban.biologydictionary.fabric.VanillaEntitySkillTestImpl"
+      "io.github.xienaoban.biologydictionary.fabric.VanillaEntitySkillTestImpl",
+      "io.github.xienaoban.biologydictionary.fabric.EntitySpawnManagerTestImpl"
     ]
   }
 }
