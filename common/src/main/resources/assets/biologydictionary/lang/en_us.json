@@ -112,6 +112,7 @@
   "widget.biologydictionary.highlight.middle.desc" : "Middle click: Highlight radius %dm",
   "widget.biologydictionary.offer_spawn_egg"       : "Offer a spawn egg",
   "widget.biologydictionary.offer_spawn_egg.desc"  : "Sent directly to inventory",
+  "widget.biologydictionary.discovery_progress"    : "Discovery progress in current category",
 
   "property_widget.biologydictionary.health"                      : "Health Points",
   "property_widget.biologydictionary.health.desc"                 : "Target dies if health is 0",
