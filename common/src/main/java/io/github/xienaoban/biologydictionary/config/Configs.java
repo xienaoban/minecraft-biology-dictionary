@@ -100,6 +100,12 @@ public final class Configs {
         boolean inheritSilentFromParents = true;
 
         /**
+         * Whether players are allowed to steal items from other players' inventories.
+         */
+        @ConfigEntry
+        boolean allowStealingPlayerInventory = false;
+
+        /**
          * Discovery strategy. Determines how entities are discovered by each player.
          */
         @ConfigEntry
@@ -194,6 +200,10 @@ public final class Configs {
 
         public boolean isInheritSilentFromParents() {
             return inheritSilentFromParents;
+        }
+
+        public boolean isAllowStealingPlayerInventory() {
+            return allowStealingPlayerInventory;
         }
 
         public DiscoveryStrategyMode getDiscoveryStrategy() {
