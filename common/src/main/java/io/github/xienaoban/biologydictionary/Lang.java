@@ -103,6 +103,7 @@ public final class Lang {
     WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC = "widget.biologydictionary.highlight.middle.desc",
     WIDGET_ENTITY_OFFER_SPAWN_EGG       = "widget.biologydictionary.offer_spawn_egg",
     WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC  = "widget.biologydictionary.offer_spawn_egg.desc",
+    WIDGET_DISCOVERY_PROGRESS           = "widget.biologydictionary.discovery_progress",
 
     PROPERTY_WIDGET_HEALTH                      = "property_widget.biologydictionary.health",
     PROPERTY_WIDGET_HEALTH_DESC                 = "property_widget.biologydictionary.health.desc",

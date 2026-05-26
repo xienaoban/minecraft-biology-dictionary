@@ -112,6 +112,7 @@
   "widget.biologydictionary.highlight.middle.desc" : "中键：高亮半径%d米",
   "widget.biologydictionary.offer_spawn_egg"       : "获取刷怪蛋",
   "widget.biologydictionary.offer_spawn_egg.desc"  : "直接发到背包里",
+  "widget.biologydictionary.discovery_progress"    : "当前分类下的探索进度",
 
   "property_widget.biologydictionary.health"                      : "血量",
   "property_widget.biologydictionary.health.desc"                 : "血量耗尽时即死亡",

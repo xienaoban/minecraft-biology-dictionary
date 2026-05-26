@@ -57,8 +57,28 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private void initEntityWidgets() {
-        List<Widget> list = getEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
-        addAllWidgetsOneByOne(list);
+        resetAndAddEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
+    }
+
+    private void resetAndAddEntityWidgets(List<EntityManager.EntityClassInfo> entityInfos) {
+        List<Widget> list = getEntityWidgets(entityInfos);
+        resetAndAndWidgetsOneByOne(list);
+        for (int i = 0; i < getPageSize(); i++) {
+            if (i % 2 == 0) {
+                getPage(i).setWidget(new DiscoveryProgressWidget(entityInfos), Page.ROWS - 1, 0);
+            } else {
+                boolean fullyDiscovered = true;
+                var cache = ClientWorldSession.get().getDiscoveryClientCache();
+                for (var info : entityInfos) {
+                    if (!cache.isDiscovered(info.getType())) {
+                        fullyDiscovered = false;
+                        break;
+                    }
+                }
+                getPage(i).setWidget(new DecorativeBarWidget(fullyDiscovered), Page.ROWS - 1, 0);
+            }
+        }
+        updateBoxSizes();
     }
 
     private List<Widget> getEntityWidgets(List<EntityManager.EntityClassInfo> infos) {
@@ -95,8 +115,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                List<Widget> list = getEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
-                resetAndAndWidgetsOneByOne(list);
+                resetAndAddEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
                 return true;
             }
             return super.onMouseDown(x, y, code);
@@ -142,9 +161,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 1.5F);
-                clearAllPages();
-                List<Widget> list = getEntityWidgets(tag.getEntities());
-                resetAndAndWidgetsOneByOne(list);
+                resetAndAddEntityWidgets(tag.getEntities());
                 return true;
             }
             return super.onMouseDown(x, y, code);
@@ -318,6 +335,107 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
         private boolean shouldRenderDetail() {
             return isDiscoveredOrCreative() || ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities();
+        }
+    }
+
+    private static final class DiscoveryProgressWidget extends Widget {
+        private static final int BAR_LEFT_CAP = 2;
+        private static final int BAR_TILE = 36;
+        private static final int BAR_TILE_COUNT = 2;
+        private static final int BAR_RIGHT_CAP = 2;
+        private static final int BAR_WIDTH = BAR_LEFT_CAP + BAR_TILE * BAR_TILE_COUNT + BAR_RIGHT_CAP;
+
+        private final int total;
+        private final int discovered;
+
+        public DiscoveryProgressWidget(List<EntityManager.EntityClassInfo> entityInfos) {
+            super(1, Page.COLUMNS);
+            setSelectable(false);
+            var cache = ClientWorldSession.get().getDiscoveryClientCache();
+            this.total = entityInfos.size();
+            int count = 0;
+            for (var info : entityInfos) {
+                if (cache.isDiscovered(info.getType())) count++;
+            }
+            this.discovered = count;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            float barLeft = box.getLeft() + (box.getWidth() - BAR_WIDTH) / 2F;
+            float barTop = box.getTop();
+            float barBottom = box.getBottom();
+            float z = ctx.getZ();
+            float x = barLeft;
+
+            // Background
+            ctx.renderTexture(Textures.ICONS, 150, 240, 152, 250, z, x, barTop, x + BAR_LEFT_CAP, barBottom);
+            x += BAR_LEFT_CAP;
+            for (int i = 0; i < BAR_TILE_COUNT; i++) {
+                ctx.renderTexture(Textures.ICONS, 152, 240, 188, 250, z, x, barTop, x + BAR_TILE, barBottom);
+                x += BAR_TILE;
+            }
+            ctx.renderTexture(Textures.ICONS, 188, 240, 190, 250, z, x, barTop, x + BAR_RIGHT_CAP, barBottom);
+
+            // Foreground
+            if (discovered > 0) {
+                float progress = (float) discovered / total;
+                float totalProgressWidth = (float) BAR_TILE * BAR_TILE_COUNT * progress;
+                x = barLeft;
+                ctx.renderTexture(Textures.ICONS, 150, 230, 152, 240, z, x, barTop, x + BAR_LEFT_CAP, barBottom);
+                x += BAR_LEFT_CAP;
+                float remaining = totalProgressWidth;
+                for (int i = 0; i < BAR_TILE_COUNT && remaining > 0; i++) {
+                    float w = Math.min(remaining, BAR_TILE);
+                    ctx.renderTexture(Textures.ICONS, 152, 230, 152 + w, 240, z, x, barTop, x + w, barBottom);
+                    x += w;
+                    remaining -= w;
+                }
+                ctx.renderTexture(Textures.ICONS, 188, 230, 190, 240, z, x, barTop, x + BAR_RIGHT_CAP, barBottom);
+            }
+
+            Component text = TextUtils.literal(discovered + "/" + total);
+            ctx.renderCenteredText(text, Colors.COMMON_LIGHT_TEXT, 0.5F, ctx.getZ(),
+                    box.getLeft() + box.getWidth() / 2F, barTop + 3.25F);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            ScreenElementBox box = getBox();
+            float midX = (box.getLeft() + box.getRight()) / 2;
+            ctx.renderComponentTooltipCentered(
+                    List.of(TextUtils.translate(Lang.WIDGET_DISCOVERY_PROGRESS)),
+                    0.5F, midX, box.getBottom());
+            return true;
+        }
+    }
+
+    private static final class DecorativeBarWidget extends Widget {
+        private static final int BAR_WIDTH = 6;
+
+        private final boolean filled;
+
+        public DecorativeBarWidget(boolean filled) {
+            super(1, Page.COLUMNS);
+            setSelectable(false);
+            this.filled = filled;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            float barLeft = box.getLeft() + (box.getWidth() - BAR_WIDTH) / 2F;
+            float barTop = box.getTop();
+            float barBottom = box.getBottom();
+            float z = ctx.getZ();
+            int texY = filled ? 230 : 240;
+            int texYEnd = texY + 10;
+            ctx.renderTexture(Textures.ICONS, 150, texY, 152, texYEnd, z, barLeft, barTop, barLeft + 2, barBottom);
+            ctx.renderTexture(Textures.ICONS, 152, texY, 154, texYEnd, z, barLeft + 2, barTop, barLeft + 4, barBottom);
+            ctx.renderTexture(Textures.ICONS, 188, texY, 190, texYEnd, z, barLeft + 4, barTop, barLeft + 6, barBottom);
         }
     }
 }

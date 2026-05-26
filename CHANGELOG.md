@@ -13,6 +13,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Added toast prompt for new discoveries
 - Added support for creature discovery via telescope, kill, death and interaction events
 - Added config entries for discovery sources
+- Added support for custom spawn datapacks
+- Added discovery progress bar UI
 
 ### Changed
 
