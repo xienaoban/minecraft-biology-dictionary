@@ -156,8 +156,8 @@ public final class SkillCost {
 
     @Environment(EnvType.CLIENT)
     public void clientCheck(ClientContext ctx) throws NoPermissionException {
-        final class W { static Player check(ClientContext ctx) { return ctx.player(); } }
-        checkCommon(W.check(ctx));
+        final class ClientOnly { static Player player(ClientContext ctx) { return ctx.player(); } }
+        checkCommon(ClientOnly.player(ctx));
     }
 
     public void serverCheck(ServerContext ctx) throws NoPermissionException {

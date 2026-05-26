@@ -38,10 +38,10 @@ public record EntitySetPortalCooldownSkill(int cooldown) implements EntityTarget
     @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
-        final class W { static void check(ClientContext<Entity> ctx) {
+        final class ClientOnly { static void check(ClientContext<Entity> ctx) {
             Permissions.checkTargetPlayerLowerGameMode(ctx.player(), ctx.entity());
         }}
-        W.check(ctx);
+        ClientOnly.check(ctx);
     }
 
     @Override
