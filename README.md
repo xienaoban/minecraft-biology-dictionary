@@ -28,7 +28,7 @@ English | **[简体中文](README.zh-CN.md)**
 
 | Problem | Solution |
 |---------|----------|
-| Don't know which mobs you're still missing | Check your discovery progress in the encyclopedia |
+| Want to explore all mobs | Check your discovery progress in the dictionary |
 | Want spawn biomes, drops, food, speed, hitbox... all at once | View all base properties on a single page |
 | Curious about horse, panda, or villager variants | Browse all variants (and change them in Creative) |
 | Baby mobs are too adorable to grow up | Lock growth, keep them babies forever |
@@ -37,7 +37,7 @@ English | **[简体中文](README.zh-CN.md)**
 | Villagers keep crafting bread, breaking your auto-farm | Steal their inventory, fill with junk, stop wheat pickup |
 | Bees flew off — which hive did they go to? | View hive honey levels and bee counts, track them home |
 | Cross-dimension mob transport is a nightmare | Lock or force nether portal teleportation |
-| Want NPCs in your survival builds | Disable AI + set invulnerable, done |
+| Want static NPCs in your survival builds | Disable AI + set invulnerable, done |
 
 ---
 
@@ -68,7 +68,7 @@ English | **[简体中文](README.zh-CN.md)**
 
 ### Inspection
 
-- **Mob Discovery** — Track your encyclopedia progress; discover mobs by viewing details, scanning with the telescope, highlighting, killing, interacting, and more
+- **Mob Discovery** — Track your dictionary progress; discover mobs by viewing details, scanning with the telescope, highlighting, killing, interacting, and more
 - **Entity Highlight** — Highlight a specific mob type within 100 m to quickly track down rare spawns
 - **Health & Effects** — Real-time health bar and active status effects
 - **Speed & Jump** — Precise movement speed (m/s) and jump strength (m)
@@ -100,7 +100,12 @@ All modifications cost in-game resources (XP, items, etc.) to keep things balanc
 - **Retain Trader** — Keep a wandering trader from despawning
 - **Gift Pet** — Transfer a tamed mob to another player
 - **Spawn Egg** — Obtain the corresponding spawn egg (Creative only)
-- **And more** — Force sheep to eat grass, modify mob variants (Creative only), etc.
+- **And more** — Force sheep to eat grass, and more
+
+### Mod & Datapack Support
+
+- **Custom Entity Descriptions** — Add or override mob descriptions via resource pack ([docs](doc/custom-data.md))
+- **Custom Spawn Descriptions** — Manually adjust spawn biome and structure descriptions via datapack ([docs](doc/custom-data.md))
 
 ### Controls
 
@@ -112,11 +117,11 @@ The screen you get depends on where you're looking:
 
 | Looking at | Opens |
 |:----------:|:-----:|
-| Block / Air | Main menu |
-| Entity | Entity detail |
-| Beehive | Beehive info |
-| Straight up | Main menu (always) |
-| Straight down | Your own stats |
+| Block / Air | Home screen |
+| Entity | Entity detail screen |
+| Beehive | Beehive info screen |
+| Straight up | Home screen (always) |
+| Straight down | Your own detail screen |
 
 ---
 
@@ -134,7 +139,7 @@ Buy from **Wandering Traders**. Sell chance starts at 100% and gradually drops t
 
 > Easy to find early when you're broke, impossible to find later when you're rich (cue evil laugh)~
 >
-> Kidding — it takes about **2 real-time hours** (144 in-game days) to hit 20%. You'll be fine.
+> Kidding — it takes about **2 real-time days** (144 in-game days) to hit 20%. You'll be fine.
 
 Pack authors can disable trader sales in the config and add their own recipes instead.
 

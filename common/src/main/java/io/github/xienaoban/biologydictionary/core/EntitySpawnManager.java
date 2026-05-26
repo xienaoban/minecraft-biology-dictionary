@@ -47,9 +47,10 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * </ul>
  * Requires {@link RegistryAccess} containing WORLDGEN-layer registries (i.e. server-side).
  */
-public class EntitySpawnManager {
+public final class EntitySpawnManager {
+    private static final String SPAWN_OVERRIDE_PATH = "biologydictionary/entity_spawn";
     private static final FileToIdConverter STRUCTURE_LISTER = new FileToIdConverter("structure", ".nbt");
-    private static final FileToIdConverter SPAWN_OVERRIDE_LISTER = FileToIdConverter.json("biologydictionary/entity_spawn");
+    private static final FileToIdConverter SPAWN_OVERRIDE_LISTER = FileToIdConverter.json(SPAWN_OVERRIDE_PATH);
     private static final CompoundTag MISSING_TEMPLATE = new CompoundTag();
 
     private static final String KEY_BIOMES = "biomes";
@@ -273,16 +274,27 @@ public class EntitySpawnManager {
 
     // ---- Data Pack Override ----
 
+    private static final String SPAWN_OVERRIDE_PATH_PREFIX = SPAWN_OVERRIDE_PATH + "/";
+
     private void applyDataPackOverrides() {
         Map<Identifier, List<Resource>> stacks = SPAWN_OVERRIDE_LISTER.listMatchingResourceStacks(resourceManager);
         for (Map.Entry<Identifier, List<Resource>> entry : stacks.entrySet()) {
-            Identifier entityId = SPAWN_OVERRIDE_LISTER.fileToId(entry.getKey());
+            String fullPath = entry.getKey().getPath();
+            String fileName = fullPath.substring(SPAWN_OVERRIDE_PATH_PREFIX.length());
+            String entityStr = fileName.substring(0, fileName.length() - ".json".length());
+            int dotIndex = entityStr.indexOf('.');
+            if (dotIndex < 0) {
+                LOGGER.warn("Invalid spawn override filename '{}', expected format '<namespace>.<entity_path>.json'", fileName);
+                continue;
+            }
+            Identifier entityId = Identifier.tryParse(entityStr.replace('.', ':'));
             EntityType<?> entityType = EntityType.byString(entityId.toString()).orElse(null);
             if (entityType == null) {
                 LOGGER.warn("Unknown entity type '{}' in spawn override data pack, skipping.", entityId);
                 continue;
             }
-            for (Resource resource : entry.getValue()) {
+            // Why ".reversed()": Traverse from low to high priority
+            for (Resource resource : entry.getValue().reversed()) {
                 try (BufferedReader reader = resource.openAsReader()) {
                     JsonObject json = StrictJsonParser.parse(reader).getAsJsonObject();
                     applyOverrides(entityType, json, KEY_BIOMES, biomeSpawnMap);
