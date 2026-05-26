@@ -29,6 +29,8 @@
   "config.biologydictionary.entry.bookItemObtainableFromWanderingTrader.tooltip": "If false, The book cannot be obtained in survival mode (add the recipe manually).",
   "config.biologydictionary.entry.inheritSilentFromParents": "Inherit Silent Status from Parents",
   "config.biologydictionary.entry.inheritSilentFromParents.tooltip": "If true, baby animals will be born silent when both parents are silent.",
+  "config.biologydictionary.entry.allowStealingPlayerInventory": "Allow Stealing Player Inventory",
+  "config.biologydictionary.entry.allowStealingPlayerInventory.tooltip": "If true, players can steal items from other players' inventories. Default is false.",
   "config.biologydictionary.entry.skillCosts": "Skill Costs Configuration",
   "config.biologydictionary.entry.skillCosts.tooltip": "Cost configuration for various skills. Please edit directly in the config file.",
   "config.biologydictionary.entry.discoveryStrategy": "Discovery Strategy",
