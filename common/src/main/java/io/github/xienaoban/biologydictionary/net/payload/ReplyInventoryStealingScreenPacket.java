@@ -36,7 +36,7 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class W { static void receive(ReplyInventoryStealingScreenPacket packet, ClientNetApi.Context ctx) {
+        final class ClientOnly { static void receive(ReplyInventoryStealingScreenPacket packet, ClientNetApi.Context ctx) {
             if (!ctx.client().packetProcessor().isSameThread()) {
                 throw new RuntimeException("Not same thread");
             }
@@ -53,6 +53,6 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
             ctx.player().containerMenu = menu;
             ctx.client().setScreen(new InventoryStealingScreen(menu, ctx.player().getInventory(), livingEntity));
         }}
-        W.receive(this, ctx);
+        ClientOnly.receive(this, ctx);
     }
 }

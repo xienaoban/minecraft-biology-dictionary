@@ -46,7 +46,7 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class W { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
+        final class ClientOnly { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
             ClientWorldSession cws = ClientWorldSession.get();
             if (cws == null) {
                 LOGGER.warn("Null ClientWorldSession. Ignored.", new RuntimeException());
@@ -74,6 +74,6 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
                 ClientWorldSession.get().getHighlightManager().highlightEntity(target, 4 * 20);
             }
         }}
-        W.receive(this, ctx);
+        ClientOnly.receive(this, ctx);
     }
 }

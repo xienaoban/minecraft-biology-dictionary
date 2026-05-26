@@ -108,7 +108,7 @@ public final class BiologySkills {
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(GeneralSkill skill) {
-        final class W { static boolean activate(GeneralSkill skill) {
+        final class ClientOnly { static boolean activate(GeneralSkill skill) {
             try {
                 LocalPlayer player = ClientUtils.getClientPlayer();
                 skill.clientAdditionalCheck(new GeneralSkill.ClientContext(player));
@@ -124,12 +124,12 @@ public final class BiologySkills {
             }
             return false;
         }}
-        return W.activate(skill);
+        return ClientOnly.activate(skill);
     }
 
     @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
-        final class W { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
+        final class ClientOnly { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
             try {
                 if (EntityUtils.isFakeEntity(entity)) {
                     // Entity displayed in overview screen, not a real entity in world.
@@ -149,7 +149,7 @@ public final class BiologySkills {
             }
             return false;
         }}
-        return W.activate(entity, skill);
+        return ClientOnly.activate(entity, skill);
     }
 
     public interface Registrar {

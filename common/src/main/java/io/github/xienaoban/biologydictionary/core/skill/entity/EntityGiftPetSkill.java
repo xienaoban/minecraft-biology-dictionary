@@ -53,7 +53,7 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
     @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
-        final class W { static void check(ClientContext<Entity> ctx, UUID targetPlayerUuid) {
+        final class ClientOnly { static void check(ClientContext<Entity> ctx, UUID targetPlayerUuid) {
             OwnableEntity ownable = (OwnableEntity) ctx.entity();
             if (ownable.getOwnerReference() == null) {
                 throw new NoPermissionException(TextUtils.translate(Lang.TEXT_ENTITY_NOT_TAMED),
@@ -72,7 +72,7 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
                         "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
             }
         }}
-        W.check(ctx, targetPlayerUuid);
+        ClientOnly.check(ctx, targetPlayerUuid);
     }
 
     @Override

@@ -27,7 +27,7 @@ public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Pack
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class W { static void receive(ReplyServerConfigsPacket packet) {
+        final class ClientOnly { static void receive(ReplyServerConfigsPacket packet) {
             Configs.ServerConfigs remoteConfigs = new Configs.ServerConfigs();
             boolean success = ConfigsManager.deserializeConfigCategory(packet.serverConfigsYaml(), remoteConfigs);
             if (!success) {
@@ -36,6 +36,6 @@ public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Pack
             ConfigsManager.setRemoteServerConfigs(remoteConfigs);
             ConfigsManager.onUpdated();
         }}
-        W.receive(this);
+        ClientOnly.receive(this);
     }
 }

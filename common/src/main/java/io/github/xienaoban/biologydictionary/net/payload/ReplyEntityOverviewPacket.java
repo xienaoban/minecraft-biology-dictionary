@@ -38,7 +38,7 @@ public record ReplyEntityOverviewPacket(boolean notNull, String entityTypeId,
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class W {
+        final class ClientOnly {
             static void receive(ReplyEntityOverviewPacket packet, ClientNetApi.Context ctx) {
                 if (!packet.notNull()) { return; }
 
@@ -63,6 +63,6 @@ public record ReplyEntityOverviewPacket(boolean notNull, String entityTypeId,
                 }
             }
         }
-        W.receive(this, ctx);
+        ClientOnly.receive(this, ctx);
     }
 }

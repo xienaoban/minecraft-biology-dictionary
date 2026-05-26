@@ -54,7 +54,7 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class W { static void receive(ReplyBiologyDictionaryDiscoveryFullPacket packet) {
+        final class ClientOnly { static void receive(ReplyBiologyDictionaryDiscoveryFullPacket packet) {
             ClientWorldSession cws = ClientWorldSession.get();
             if (cws == null) {
                 LOGGER.warn("Null ClientWorldSession. Ignored.", new RuntimeException());
@@ -68,6 +68,6 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
                 LOGGER.warn("Received wrong discovery strategy. Ignored.", new RuntimeException());
             }
         }}
-        W.receive(this);
+        ClientOnly.receive(this);
     }
 }

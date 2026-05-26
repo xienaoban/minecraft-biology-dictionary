@@ -23,7 +23,7 @@ public record ReplyBeehiveInfoPacket(CompoundTag bees) implements Packet {
     @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class W { static void receive(ReplyBeehiveInfoPacket packet, ClientNetApi.Context ctx) {
+        final class ClientOnly { static void receive(ReplyBeehiveInfoPacket packet, ClientNetApi.Context ctx) {
             if (ctx.client().screen instanceof BeehiveScreen screen) {
                 BeehiveBlockEntity.Occupant.LIST_CODEC
                         .parse(NbtOps.INSTANCE, packet.bees().get("bees"))
@@ -31,6 +31,6 @@ public record ReplyBeehiveInfoPacket(CompoundTag bees) implements Packet {
                         .ifPresent(screen::updateBeeInfo);
             }
         }}
-        W.receive(this, ctx);
+        ClientOnly.receive(this, ctx);
     }
 }
