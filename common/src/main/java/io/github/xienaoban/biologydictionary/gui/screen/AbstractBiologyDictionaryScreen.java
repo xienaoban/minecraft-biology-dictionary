@@ -12,6 +12,7 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
@@ -31,6 +32,7 @@ import java.util.Objects;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
+@ClientOnly
 public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     public static final int BOOK_TEXTURE_LEFT = 96, BOOK_TEXTURE_TOP = 0, BOOK_TEXTURE_RIGHT = 416, BOOK_TEXTURE_BOTTOM = 224;
     public static final int BOOK_TEXTURE_WIDTH = BOOK_TEXTURE_RIGHT - BOOK_TEXTURE_LEFT, BOOK_TEXTURE_HEIGHT = BOOK_TEXTURE_BOTTOM - BOOK_TEXTURE_TOP;

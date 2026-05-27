@@ -15,6 +15,7 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 
+@ClientOnly
 public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Villager> {
     public static final Factory<Villager> FACTORY = VillagerRestocksTodayWidget::new;
 

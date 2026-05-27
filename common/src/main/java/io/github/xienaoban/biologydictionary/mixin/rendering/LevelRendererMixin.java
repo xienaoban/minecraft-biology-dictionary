@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.mixin.rendering;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.xienaoban.biologydictionary.client.HighlightRenderer;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@ClientOnly
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
     @Shadow @Final private Minecraft minecraft;

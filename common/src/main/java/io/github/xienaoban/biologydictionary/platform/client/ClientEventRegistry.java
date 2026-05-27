@@ -1,8 +1,10 @@
 package io.github.xienaoban.biologydictionary.platform.client;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.Minecraft;
 
+@ClientOnly
 public final class ClientEventRegistry {
     @ExpectPlatform
     public static void registerStarted(ClientListener listener) { throw new AssertionError(); }

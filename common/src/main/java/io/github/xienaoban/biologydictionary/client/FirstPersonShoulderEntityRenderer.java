@@ -5,6 +5,7 @@ import com.mojang.math.Axis;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
@@ -24,6 +25,7 @@ import net.minecraft.world.entity.animal.parrot.Parrot;
 
 import java.util.Optional;
 
+@ClientOnly
 public final class FirstPersonShoulderEntityRenderer {
     private static final int NULL_VARIANT = -2333333;
     private static final float HEAD_ROT_SPEED = 0.02F;

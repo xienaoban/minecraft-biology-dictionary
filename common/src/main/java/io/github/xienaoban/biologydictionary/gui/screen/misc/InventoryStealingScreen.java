@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -22,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * @see net.minecraft.client.gui.screens.inventory.HorseInventoryScreen
  */
+@ClientOnly
 public class InventoryStealingScreen extends AbstractContainerScreen<InventoryStealingMenu> {
     private final LivingEntity entity;
     private final int containerSize;

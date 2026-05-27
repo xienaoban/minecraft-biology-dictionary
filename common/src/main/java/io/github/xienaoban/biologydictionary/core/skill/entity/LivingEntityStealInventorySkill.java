@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingMenu;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -46,10 +47,10 @@ public record LivingEntityStealInventorySkill() implements EntityTargetedSkill<L
 
     @Override
     public void clientAdditionalCheck(ClientContext<LivingEntity> ctx) throws NoPermissionException {
-        final class ClientOnly { static void check(ClientContext<LivingEntity> ctx) {
+        @ClientOnly final class CO { static void check(ClientContext<LivingEntity> ctx) {
             checkAllowStealingPlayerInventory(ctx.entity(), ctx.player());
         }}
-        ClientOnly.check(ctx);
+        CO.check(ctx);
     }
 
     @Override

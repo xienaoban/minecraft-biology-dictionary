@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import java.util.ArrayList;
 import java.util.List;
 
+@ClientOnly
 public class DebugScreen extends Screen {
     private final List<LivingEntity> entities = new ArrayList<>();
 

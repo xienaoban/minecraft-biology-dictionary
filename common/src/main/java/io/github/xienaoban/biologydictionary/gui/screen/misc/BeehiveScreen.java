@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -27,6 +28,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+@ClientOnly
 public class BeehiveScreen extends ElementScreen {
     private static final int[][] LATTICES = {{0, 0}, {32, 0}, {0, 50}, {32, 50}, {16, 25}, {-16, 25}, {48, 25}};
     private static final int MAX_HONEY_CNT = BeehiveBlock.MAX_HONEY_LEVELS;

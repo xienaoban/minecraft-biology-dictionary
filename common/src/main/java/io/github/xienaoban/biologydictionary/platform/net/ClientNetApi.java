@@ -1,9 +1,11 @@
 package io.github.xienaoban.biologydictionary.platform.net;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 
+@ClientOnly
 public final class ClientNetApi {
 
     @ExpectPlatform

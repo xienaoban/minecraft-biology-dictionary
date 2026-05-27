@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.List;
 
+@ClientOnly
 public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
     private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT = (int) (ClientUtils.getClientTickCountPerSecond() * 1.5);
     private static final int CLOSE_SCREEN_DISTANCE = 10;

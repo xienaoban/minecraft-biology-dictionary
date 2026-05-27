@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.gui.screen.misc.DebugScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
@@ -16,6 +17,7 @@ import net.minecraft.ChatFormatting;
 import java.util.Arrays;
 import java.util.List;
 
+@ClientOnly
 public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
     public BdAboutScreen() {
         super(TextUtils.translate(Lang.BOOKMARK_ABOUT));

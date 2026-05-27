@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -34,6 +35,7 @@ public interface GeneralSkill {
         String shortName(); // for yaml config
     }
 
+    @ClientOnly
     record ClientContext(LocalPlayer player) {}
     record ServerContext(MinecraftServer server, ServerPlayer player) {}
 }

@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.core.skill.entity.*;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
@@ -105,7 +106,7 @@ public final class BiologySkills {
     }
 
     public static boolean activate(GeneralSkill skill) {
-        final class ClientOnly { static boolean activate(GeneralSkill skill) {
+        @ClientOnly final class CO { static boolean activate(GeneralSkill skill) {
             try {
                 LocalPlayer player = ClientUtils.getClientPlayer();
                 skill.clientAdditionalCheck(new GeneralSkill.ClientContext(player));
@@ -121,11 +122,11 @@ public final class BiologySkills {
             }
             return false;
         }}
-        return ClientOnly.activate(skill);
+        return CO.activate(skill);
     }
 
     public static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
-        final class ClientOnly { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
+        @ClientOnly final class CO { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
             try {
                 if (EntityUtils.isFakeEntity(entity)) {
                     // Entity displayed in overview screen, not a real entity in world.
@@ -145,7 +146,7 @@ public final class BiologySkills {
             }
             return false;
         }}
-        return ClientOnly.activate(entity, skill);
+        return CO.activate(entity, skill);
     }
 
     public interface Registrar {

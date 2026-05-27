@@ -2,8 +2,8 @@ package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
-import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -37,7 +37,7 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
 
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class ClientOnly { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
             if (!packet.allowed()) { return; }
 
             ClientWorldSession cws = ClientWorldSession.get();
@@ -65,6 +65,6 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
                     cnt, packet.entityType().getDescription(), packet.radius()));
         }}
-        ClientOnly.receive(this, ctx);
+        CO.receive(this, ctx);
     }
 }

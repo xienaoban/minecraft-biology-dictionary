@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
+@ClientOnly
 public final class TelescopeManager {
 
     static final int MAX_PROGRESS = 100;

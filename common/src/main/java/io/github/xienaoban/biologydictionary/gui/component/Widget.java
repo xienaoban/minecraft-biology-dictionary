@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui.component;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -8,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+@ClientOnly
 public abstract class Widget extends ScreenElement {
     public static final int WIDGET_WIDTH = 10, WIDGET_WIDTH_MARGIN = 4;
     public static final int WIDGET_HEIGHT = 10, WIDGET_HEIGHT_MARGIN = 6;

@@ -1,6 +1,9 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+
+@ClientOnly
 public final class ScreenElementBox {
     private float left, top, right, bottom, width, height;
 

@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.net.payload;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -51,7 +52,7 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
 
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class ClientOnly { static void receive(ReplyBiologyDictionaryDiscoveryFullPacket packet) {
+        @ClientOnly final class CO { static void receive(ReplyBiologyDictionaryDiscoveryFullPacket packet) {
             ClientWorldSession cws = ClientWorldSession.get();
             if (cws == null) {
                 LOGGER.warn("Null ClientWorldSession. Ignored.", new RuntimeException());
@@ -65,6 +66,6 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
                 LOGGER.warn("Received wrong discovery strategy. Ignored.", new RuntimeException());
             }
         }}
-        ClientOnly.receive(this);
+        CO.receive(this);
     }
 }

@@ -12,6 +12,7 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -25,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@ClientOnly
 public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Entity> {
     public static final Factory<Entity> FACTORY = EntityDiscoveryRecordWidget::new;
 

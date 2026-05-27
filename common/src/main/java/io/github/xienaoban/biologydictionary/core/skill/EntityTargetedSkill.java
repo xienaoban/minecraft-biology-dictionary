@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -37,6 +38,7 @@ public interface EntityTargetedSkill<E extends Entity> {
         String shortName(); // for yaml config
     }
 
+    @ClientOnly
     record ClientContext<E extends Entity>(LocalPlayer player, E entity) {}
     record ServerContext<E extends Entity>(MinecraftServer server, ServerPlayer player, E entity) {}
 }

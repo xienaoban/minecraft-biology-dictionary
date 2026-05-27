@@ -12,6 +12,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -23,6 +24,7 @@ import net.minecraft.sounds.SoundEvents;
 
 import java.util.*;
 
+@ClientOnly
 public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
     public BdConfigScreen() {
         super(TextUtils.translate(Lang.BOOKMARK_CONFIG));

@@ -4,10 +4,12 @@ import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.world.entity.Entity;
 
 import java.util.List;
 
+@ClientOnly
 public class EntityStandardVariantWidget extends AbstractEntityStandardVariantWidget<Entity, Object> {
     private static final int VH_IDX = 0;
 

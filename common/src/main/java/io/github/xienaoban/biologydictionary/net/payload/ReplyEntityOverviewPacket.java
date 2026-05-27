@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.net.payload;
 import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.screen.BdEntityOverviewScreen;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -35,7 +36,7 @@ public record ReplyEntityOverviewPacket(boolean notNull, String entityTypeId,
 
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class ClientOnly {
+        @ClientOnly final class CO {
             static void receive(ReplyEntityOverviewPacket packet, ClientNetApi.Context ctx) {
                 if (!packet.notNull()) { return; }
 
@@ -60,6 +61,6 @@ public record ReplyEntityOverviewPacket(boolean notNull, String entityTypeId,
                 }
             }
         }
-        ClientOnly.receive(this, ctx);
+        CO.receive(this, ctx);
     }
 }
