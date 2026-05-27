@@ -18,6 +18,7 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRend
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -256,7 +257,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     entityRotateX, entityRotateY,
                     silhouetteColor);
 
-            Component text = shouldRenderDetail() ? TextUtils.truncateByWidth(name, getBox().getWidth() + 2, 0.5F) : TextUtils.literal("??");
+            Component text = shouldRenderDetail() ? FontUtils.truncateByWidth(name, getBox().getWidth() + 2, 0.5F) : TextUtils.literal("??");
             ctx.renderCenteredText(text, Colors.BROWN, 0.5F, getZ(), (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
         }
 

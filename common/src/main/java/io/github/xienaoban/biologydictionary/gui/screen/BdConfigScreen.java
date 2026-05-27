@@ -13,6 +13,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -185,7 +186,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
             this.entryInfo = entryInfo;
             this.configText = TextUtils.translate(Configs.getConfigNameTranslationKey(entryInfo.getName()));
             this.configTooltipText = TextUtils.translate(Configs.getConfigNameTranslationKey(entryInfo.getName()) + ".tooltip");
-            this.configTextDisplay = TextUtils.truncateByWidth(configText, TextUtils.getGlobalFont(), 60, 0.5F);
+            this.configTextDisplay = FontUtils.truncateByWidth(configText, FontUtils.getGlobalFont(), 60, 0.5F);
             setSelectable(false);
         }
 

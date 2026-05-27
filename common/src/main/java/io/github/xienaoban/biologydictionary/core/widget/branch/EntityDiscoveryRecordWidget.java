@@ -11,6 +11,7 @@ import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -48,7 +49,7 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
 
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
-        float lineHeight = TextUtils.getLineHeight(ctx.getFont(), TEXT_SCALE);
+        float lineHeight = FontUtils.getLineHeight(ctx.getFont(), TEXT_SCALE);
         float y = getBox().getTop() + V_PADDING;
         float x = getBox().getLeft() + H_PADDING;
         int color = Colors.COMMON_DARK_LIGHTER_TEXT;
@@ -71,41 +72,41 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
 
     private static List<FormattedCharSequence> buildLines(DiscoveryRecord record) {
         int maxTextWidth = (int) ((Widget.calcWidth(COLUMNS) - H_PADDING * 2) / TEXT_SCALE);
-        Font font = TextUtils.getGlobalFont();
+        Font font = FontUtils.getGlobalFont();
         Component noData = TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS);
 
-        List<FormattedCharSequence> lines = new ArrayList<>(TextUtils.toLines(
+        List<FormattedCharSequence> lines = new ArrayList<>(FontUtils.toLines(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_BOND)
                         .withStyle(ChatFormatting.BOLD),
                 font, maxTextWidth));
 
         if (record != null) {
-            lines.addAll(TextUtils.toLines(TextUtils.concat(
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_SOURCE).withStyle(ChatFormatting.BOLD),
                 getDiscoverySourceText(record.source())
             ), font, maxTextWidth));
 
-            lines.addAll(TextUtils.toLines(TextUtils.concat(
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_REAL_TIME).withStyle(ChatFormatting.BOLD),
                 getRealWorldTimeText(record.firstDiscoveryTime())
             ), font, maxTextWidth));
 
-            lines.addAll(TextUtils.toLines(TextUtils.concat(
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_GAME_TIME).withStyle(ChatFormatting.BOLD),
                 getGameTimeText(record.firstDiscoveryTick())
             ), font, maxTextWidth));
 
-            lines.addAll(TextUtils.toLines(TextUtils.concat(
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_LOCATION).withStyle(ChatFormatting.BOLD),
                 TextUtils.concat(getDimensionText(record), TextUtils.comma(), getBiomeText(record))
             ), font, maxTextWidth));
 
-            lines.addAll(TextUtils.toLines(TextUtils.concat(
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_COORDINATES).withStyle(ChatFormatting.BOLD),
                 getCoordinateText(record)
             ), font, maxTextWidth));
 
-            lines.addAll(TextUtils.toLines(TextUtils.concat(
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_WEATHER).withStyle(ChatFormatting.BOLD),
                 TextUtils.translate("weather." + record.weather().name().toLowerCase())
             ), font, maxTextWidth));

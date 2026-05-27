@@ -9,6 +9,7 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -43,14 +44,14 @@ public final class EntityDescriptionWidget extends EntityPropertyWidget<Entity> 
     private EntityDescriptionWidget(EntityProperties<Entity> properties, Component description) {
         super(properties, 1, COLUMNS);
         this.fullDescription = description;
-        Font font = TextUtils.getGlobalFont();
+        Font font = FontUtils.getGlobalFont();
         int maxTextWidth = (int)((Widget.calcWidth(COLUMNS) - H_PADDING * 2) / TEXT_SCALE);
-        this.lines = TextUtils.toLines(fullDescription, font, maxTextWidth);
+        this.lines = FontUtils.toLines(fullDescription, font, maxTextWidth);
     }
 
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
-        float lineHeight = TextUtils.getLineHeight(ctx.getFont(), TEXT_SCALE);
+        float lineHeight = FontUtils.getLineHeight(ctx.getFont(), TEXT_SCALE);
         int displayCount = Math.min(lines.size(), MAX_VISIBLE_LINES);
         float availableHeight = getBox().getHeight() - 2 * V_PADDING;
 
@@ -73,7 +74,7 @@ public final class EntityDescriptionWidget extends EntityPropertyWidget<Entity> 
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        float lineHeight = TextUtils.getLineHeight(ctx.getFont(), TEXT_SCALE);
+        float lineHeight = FontUtils.getLineHeight(ctx.getFont(), TEXT_SCALE);
         int displayCount = Math.min(lines.size(), MAX_VISIBLE_LINES);
         float availableHeight = getBox().getHeight() - 2 * V_PADDING;
         float y = getBox().getTop() + V_PADDING + (availableHeight - displayCount * lineHeight) / 2F;

@@ -37,7 +37,6 @@ public final class Lang {
     MOD_NAME_TWO_LANG = "mode_name.biologydictionary.two_lang",
     AUTHOR_NAME_TWO_LANG = "author_name.biologydictionary.two_lang",
 
-    KEY_CATEGORY = "key.category.biologydictionary",
     KEY_OPEN_HANDBOOK = "key.biologydictionary.open_handbook",
     KEY_DEBUG = "key.biologydictionary.debug",
 
