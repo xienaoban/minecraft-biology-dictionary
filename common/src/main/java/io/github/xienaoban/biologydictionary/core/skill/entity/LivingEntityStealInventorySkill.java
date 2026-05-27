@@ -10,8 +10,6 @@ import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingMe
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,14 +41,15 @@ public record LivingEntityStealInventorySkill() implements EntityTargetedSkill<L
         }
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {}
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(ClientContext<LivingEntity> ctx) throws NoPermissionException {
-        checkAllowStealingPlayerInventory(ctx.entity(), ctx.player());
+        final class ClientOnly { static void check(ClientContext<LivingEntity> ctx) {
+            checkAllowStealingPlayerInventory(ctx.entity(), ctx.player());
+        }}
+        ClientOnly.check(ctx);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -18,7 +16,6 @@ import net.minecraft.world.level.Level;
 import java.util.Collection;
 import java.util.Objects;
 
-@Environment(EnvType.CLIENT)
 public final class ClientUtils {
     public static Minecraft getClient() {
         return Minecraft.getInstance();

@@ -8,8 +8,6 @@ import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -43,7 +41,6 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
         record.writeToBuf(buf);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         final class ClientOnly { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {

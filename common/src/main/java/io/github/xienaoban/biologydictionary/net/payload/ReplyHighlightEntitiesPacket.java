@@ -9,8 +9,6 @@ import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
@@ -37,7 +35,6 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
         buf.writeFloat(radius);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         final class ClientOnly { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {

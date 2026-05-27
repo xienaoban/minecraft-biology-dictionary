@@ -12,11 +12,8 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.animal.Animal;
 
-@Environment(EnvType.CLIENT)
 public final class AnimalInLoveWidget extends EntityPropertyStandardWidget<Animal> {
     public static final Factory<Animal> FACTORY = AnimalInLoveWidget::new;
 

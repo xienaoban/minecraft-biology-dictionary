@@ -14,8 +14,6 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElem
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.Component;
@@ -24,7 +22,6 @@ import net.minecraft.sounds.SoundEvents;
 
 import java.util.*;
 
-@Environment(EnvType.CLIENT)
 public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
     public BdConfigScreen() {
         super(TextUtils.translate(Lang.BOOKMARK_CONFIG));

@@ -8,8 +8,6 @@ import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -24,7 +22,6 @@ import net.minecraft.world.phys.Vec3;
 /**
  * @see net.minecraft.client.gui.screens.inventory.HorseInventoryScreen
  */
-@Environment(EnvType.CLIENT)
 public class InventoryStealingScreen extends AbstractContainerScreen<InventoryStealingMenu> {
     private final LivingEntity entity;
     private final int containerSize;

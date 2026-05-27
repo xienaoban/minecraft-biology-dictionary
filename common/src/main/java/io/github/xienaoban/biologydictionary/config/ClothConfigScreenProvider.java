@@ -10,8 +10,6 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.AbstractFieldBuilder;
 import me.shedaniel.clothconfig2.impl.builders.AbstractRangeFieldBuilder;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -26,7 +24,6 @@ import java.util.function.Consumer;
 /**
  * Automated Cloth Config screen provider using reflection and annotations.
  */
-@Environment(EnvType.CLIENT)
 public class ClothConfigScreenProvider {
 
     // Cache default config instance to avoid repeated instantiation

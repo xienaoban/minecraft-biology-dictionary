@@ -2,10 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.component;
 
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
-@Environment(EnvType.CLIENT)
 public final class Page extends ScreenElement {
     public static final int ROWS = 9, COLUMNS = 8;
     public static final int PAGE_WIDTH = Widget.calcWidth(COLUMNS), PAGE_HEIGHT = Widget.calcHeight(ROWS);

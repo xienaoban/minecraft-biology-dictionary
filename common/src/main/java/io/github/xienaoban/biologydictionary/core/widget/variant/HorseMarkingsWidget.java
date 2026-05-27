@@ -8,8 +8,6 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.entity.animal.equine.Markings;
@@ -17,7 +15,6 @@ import net.minecraft.world.entity.animal.equine.Markings;
 import java.util.ArrayList;
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
 public final class HorseMarkingsWidget extends AbstractEntityStandardVariantWidget<Horse, Markings> {
     public static final Factory<Horse> FACTORY = HorseMarkingsWidget::new;
 

@@ -7,8 +7,6 @@ import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -42,7 +40,6 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
     public static final int BLINDNESS_TICKS = 40;
     public static final int BLOCK_TICKS = 6 * 20;
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdName(entityType));

@@ -8,8 +8,6 @@ import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -38,19 +36,16 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
         }
     };
 
-    @Environment(EnvType.CLIENT)
     public EntityGiftPetSkill(AbstractClientPlayer player) {
         this(player.getUUID());
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeLong(targetPlayerUuid.getMostSignificantBits());
         buf.writeLong(targetPlayerUuid.getLeastSignificantBits());
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
         final class ClientOnly { static void check(ClientContext<Entity> ctx, UUID targetPlayerUuid) {

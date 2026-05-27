@@ -4,8 +4,6 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 
@@ -29,13 +27,11 @@ public record EntitySetPortalCooldownSkill(int cooldown) implements EntityTarget
 
     public static final int ENTITY_PORTAL_COOLDOWN_INFINITY = 303;
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeInt(cooldown);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
         final class ClientOnly { static void check(ClientContext<Entity> ctx) {

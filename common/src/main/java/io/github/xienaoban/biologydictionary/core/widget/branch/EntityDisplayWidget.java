@@ -7,8 +7,6 @@ import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
@@ -25,7 +23,6 @@ import net.minecraft.world.phys.Vec3;
  * A widget that displays the target entity. <br/>
  * The entity can be rotated according to the mouse.
  */
-@Environment(EnvType.CLIENT)
 public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     public static final Factory<Entity> FACTORY = EntityDisplayWidget::new;
 

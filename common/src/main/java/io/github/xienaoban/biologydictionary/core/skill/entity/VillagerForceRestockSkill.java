@@ -10,8 +10,6 @@ import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
@@ -57,14 +55,12 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
         }
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeInt(restocksToday);
         buf.writeGlobalPos(jobSitePos);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(ClientContext<Villager> ctx) {
         final class ClientOnly { static void check(ClientContext<Villager> ctx, Integer restocksToday, GlobalPos jobSitePos) {
