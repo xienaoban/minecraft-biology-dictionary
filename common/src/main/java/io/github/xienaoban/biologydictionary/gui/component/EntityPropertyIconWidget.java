@@ -2,8 +2,10 @@ package io.github.xienaoban.biologydictionary.gui.component;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.world.entity.Entity;
 
+@ClientOnly
 public abstract class EntityPropertyIconWidget<E extends Entity> extends EntityPropertyWidget<E> {
     private EntityPropertyIcon icon;
 

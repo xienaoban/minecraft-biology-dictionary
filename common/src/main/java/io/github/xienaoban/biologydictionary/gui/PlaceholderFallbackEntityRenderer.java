@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.world.entity.Entity;
@@ -23,6 +24,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * This method is primarily for 1.20.1 & 1.21.1.
  * In 1.21.11, the rendering task is simply added to a list here and rendered later.
  */
+@ClientOnly
 public class PlaceholderFallbackEntityRenderer {
     private final Entity entity;
     private ArmorStand placeholder;

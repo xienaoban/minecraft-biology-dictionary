@@ -4,9 +4,11 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.minecraft.network.chat.Component;
 
+@ClientOnly
 public class EntityPropertyBar extends ScreenElement {
     private final TextureInfo texture;
     private final float textureLeft, textureTop;

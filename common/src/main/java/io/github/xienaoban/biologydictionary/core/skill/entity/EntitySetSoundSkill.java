@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.NeutralMob;
@@ -50,10 +51,10 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
 
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
-        final class ClientOnly { static void check(ClientContext<Entity> ctx) {
+        @ClientOnly final class CO { static void check(ClientContext<Entity> ctx) {
             Permissions.checkTargetPlayerLowerGameMode(ctx.player(), ctx.entity());
         }}
-        ClientOnly.check(ctx);
+        CO.check(ctx);
     }
 
     @Override

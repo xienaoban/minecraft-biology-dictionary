@@ -1,7 +1,9 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.gui.GuiGraphics;
 
+@ClientOnly
 public final class ScaleRAII implements AutoCloseable {
     private final GuiGraphics guiGraphics;
 

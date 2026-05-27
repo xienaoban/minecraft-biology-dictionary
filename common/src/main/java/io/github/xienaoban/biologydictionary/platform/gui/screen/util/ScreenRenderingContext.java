@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.compat.CompatibilityOptions;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiTextRenderStateIMixin;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+@ClientOnly
 public final class ScreenRenderingContext {
     private final Screen screen;
 

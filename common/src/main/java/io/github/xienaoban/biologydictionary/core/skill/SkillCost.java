@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
@@ -153,8 +154,8 @@ public final class SkillCost {
     // ==================== CCheck & Consume ====================
 
     public void clientCheck(ClientContext ctx) throws NoPermissionException {
-        final class ClientOnly { static Player player(ClientContext ctx) { return ctx.player(); } }
-        checkCommon(ClientOnly.player(ctx));
+        @ClientOnly final class CO { static Player player(ClientContext ctx) { return ctx.player(); } }
+        checkCommon(CO.player(ctx));
     }
 
     public void serverCheck(ServerContext ctx) throws NoPermissionException {
@@ -397,6 +398,7 @@ public final class SkillCost {
         return res.stream().map(txt -> (Component) txt.withStyle(ChatFormatting.GOLD)).toList();
     }
 
+    @ClientOnly
     public record ClientContext(LocalPlayer player) {}
     public record ServerContext(ServerPlayer player) {}
 }

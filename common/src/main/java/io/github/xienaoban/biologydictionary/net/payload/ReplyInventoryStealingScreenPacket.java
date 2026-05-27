@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingMenu;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingScreen;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -33,7 +34,7 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
      */
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class ClientOnly { static void receive(ReplyInventoryStealingScreenPacket packet, ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(ReplyInventoryStealingScreenPacket packet, ClientNetApi.Context ctx) {
             if (!ctx.client().packetProcessor().isSameThread()) {
                 throw new RuntimeException("Not same thread");
             }
@@ -50,6 +51,6 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
             ctx.player().containerMenu = menu;
             ctx.client().setScreen(new InventoryStealingScreen(menu, ctx.player().getInventory(), livingEntity));
         }}
-        ClientOnly.receive(this, ctx);
+        CO.receive(this, ctx);
     }
 }

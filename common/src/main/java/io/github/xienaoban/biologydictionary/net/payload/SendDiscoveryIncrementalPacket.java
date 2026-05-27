@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.client.DiscoveryToast;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -43,7 +44,7 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
 
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class ClientOnly { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
             ClientWorldSession cws = ClientWorldSession.get();
             if (cws == null) {
                 LOGGER.warn("Null ClientWorldSession. Ignored.", new RuntimeException());
@@ -71,6 +72,6 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
                 ClientWorldSession.get().getHighlightManager().highlightEntity(target, 4 * 20);
             }
         }}
-        ClientOnly.receive(this, ctx);
+        CO.receive(this, ctx);
     }
 }

@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import org.jspecify.annotations.Nullable;
 
+@ClientOnly
 public class DiscoveryToast implements Toast {
     private static final Identifier BACKGROUND_TEXTURE = Identifier.fromNamespaceAndPath("biologydictionary", "textures/gui/discovery_toast.png");
     private static final int DISPLAY_TIME = 7000;

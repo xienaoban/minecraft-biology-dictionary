@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.List;
 
+@ClientOnly
 public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
     private final EntityType<?> entityType;
     private final Entity entity;

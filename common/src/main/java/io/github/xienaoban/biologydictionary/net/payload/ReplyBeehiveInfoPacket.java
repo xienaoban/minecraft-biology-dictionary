@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +21,7 @@ public record ReplyBeehiveInfoPacket(CompoundTag bees) implements Packet {
 
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class ClientOnly { static void receive(ReplyBeehiveInfoPacket packet, ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(ReplyBeehiveInfoPacket packet, ClientNetApi.Context ctx) {
             if (ctx.client().screen instanceof BeehiveScreen screen) {
                 BeehiveBlockEntity.Occupant.LIST_CODEC
                         .parse(NbtOps.INSTANCE, packet.bees().get("bees"))
@@ -28,6 +29,6 @@ public record ReplyBeehiveInfoPacket(CompoundTag bees) implements Packet {
                         .ifPresent(screen::updateBeeInfo);
             }
         }}
-        ClientOnly.receive(this, ctx);
+        CO.receive(this, ctx);
     }
 }

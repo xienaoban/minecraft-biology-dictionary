@@ -13,6 +13,7 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -22,6 +23,7 @@ import net.minecraft.world.entity.AgeableMob;
 import java.util.ArrayList;
 import java.util.List;
 
+@ClientOnly
 public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<AgeableMob> {
     public static final Factory<AgeableMob> FACTORY = AgeableMobGrowthWidget::new;
 

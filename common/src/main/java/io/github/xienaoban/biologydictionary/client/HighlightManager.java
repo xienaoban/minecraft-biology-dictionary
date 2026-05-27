@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.client;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -14,6 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 
+@ClientOnly
 public final class HighlightManager {
     private volatile boolean hasHighlighted = false;
     private final List<HighlightedEntity> highlightedEntities = new CopyOnWriteArrayList<>();

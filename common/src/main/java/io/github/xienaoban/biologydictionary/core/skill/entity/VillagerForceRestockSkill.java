@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.GlobalPos;
@@ -63,11 +64,11 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
 
     @Override
     public void clientAdditionalCheck(ClientContext<Villager> ctx) {
-        final class ClientOnly { static void check(ClientContext<Villager> ctx, Integer restocksToday, GlobalPos jobSitePos) {
+        @ClientOnly final class CO { static void check(ClientContext<Villager> ctx, Integer restocksToday, GlobalPos jobSitePos) {
             checkVillagerHasJobSite(restocksToday, jobSitePos);
             checkVillagerCloseToJobSite(ctx.entity(), jobSitePos);
         }}
-        ClientOnly.check(ctx, restocksToday, jobSitePos);
+        CO.check(ctx, restocksToday, jobSitePos);
     }
 
     @Override

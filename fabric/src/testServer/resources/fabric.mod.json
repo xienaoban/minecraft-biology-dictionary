@@ -13,7 +13,8 @@
       "io.github.xienaoban.biologydictionary.fabric.VanillaEntityPropertyTestImpl",
       "io.github.xienaoban.biologydictionary.fabric.VanillaEntitySkillTestImpl",
       "io.github.xienaoban.biologydictionary.fabric.EntitySpawnManagerTestImpl",
-      "io.github.xienaoban.biologydictionary.fabric.TextUtilsTestImpl"
+      "io.github.xienaoban.biologydictionary.fabric.TextUtilsTestImpl",
+      "io.github.xienaoban.biologydictionary.fabric.ClientOnlyCheckTestImpl"
     ]
   }
 }

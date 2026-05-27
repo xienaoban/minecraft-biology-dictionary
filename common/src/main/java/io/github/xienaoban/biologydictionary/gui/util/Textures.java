@@ -1,10 +1,12 @@
 package io.github.xienaoban.biologydictionary.gui.util;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
 import net.minecraft.resources.Identifier;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.MOD_ID;
 
+@ClientOnly
 public final class Textures {
     private static Identifier mc(String path) {
         return Identifier.withDefaultNamespace(path);

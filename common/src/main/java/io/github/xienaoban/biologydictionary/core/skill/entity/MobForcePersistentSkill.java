@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Mob;
@@ -45,12 +46,12 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
 
     @Override
     public void clientAdditionalCheck(ClientContext<Mob> ctx) {
-        final class ClientOnly { static void check(Mob entity, boolean persistent) {
+        @ClientOnly final class CO { static void check(Mob entity, boolean persistent) {
             if (entity.hasCustomName() && !persistent) {
                 throw new NoPermissionException(TextUtils.translate(Lang.TEXT_CUSTOM_NAME_FORCE_PERSISTENT), "Entities with custom name should be forced persistent");
             }
         }}
-        ClientOnly.check(ctx.entity(), persistent);
+        CO.check(ctx.entity(), persistent);
     }
 
     @Override

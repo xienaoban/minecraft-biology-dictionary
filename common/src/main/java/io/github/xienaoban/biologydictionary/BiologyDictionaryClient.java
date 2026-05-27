@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.client.ClientEventRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
+@ClientOnly
 public final class BiologyDictionaryClient {
     public static final BiologyDictionaryClient BDC = new BiologyDictionaryClient();
 

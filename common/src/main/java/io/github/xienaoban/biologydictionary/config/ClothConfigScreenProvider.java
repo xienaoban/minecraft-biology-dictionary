@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.annotation.Config;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 /**
  * Automated Cloth Config screen provider using reflection and annotations.
  */
+@ClientOnly
 public class ClothConfigScreenProvider {
 
     // Cache default config instance to avoid repeated instantiation

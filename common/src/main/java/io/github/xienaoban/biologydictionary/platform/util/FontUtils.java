@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -9,6 +10,7 @@ import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
 
+@ClientOnly
 public final class FontUtils {
     public static Font getGlobalFont() {
         return Minecraft.getInstance().font;

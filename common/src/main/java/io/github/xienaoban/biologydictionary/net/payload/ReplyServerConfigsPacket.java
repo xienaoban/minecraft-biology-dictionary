@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import net.minecraft.network.FriendlyByteBuf;
@@ -24,7 +25,7 @@ public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Pack
 
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class ClientOnly { static void receive(ReplyServerConfigsPacket packet) {
+        @ClientOnly final class CO { static void receive(ReplyServerConfigsPacket packet) {
             Configs.ServerConfigs remoteConfigs = new Configs.ServerConfigs();
             boolean success = ConfigsManager.deserializeConfigCategory(packet.serverConfigsYaml(), remoteConfigs);
             if (!success) {
@@ -33,6 +34,6 @@ public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Pack
             ConfigsManager.setRemoteServerConfigs(remoteConfigs);
             ConfigsManager.onUpdated();
         }}
-        ClientOnly.receive(this);
+        CO.receive(this);
     }
 }
