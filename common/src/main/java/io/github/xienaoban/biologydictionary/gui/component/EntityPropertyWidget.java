@@ -2,15 +2,12 @@ package io.github.xienaoban.biologydictionary.gui.component;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
 public abstract class EntityPropertyWidget<E extends Entity> extends Widget {
     private final EntityProperties<E> properties;
 

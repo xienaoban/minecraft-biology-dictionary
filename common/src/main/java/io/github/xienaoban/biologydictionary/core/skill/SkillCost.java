@@ -2,8 +2,6 @@ package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.platform.util.*;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
@@ -154,7 +152,6 @@ public final class SkillCost {
 
     // ==================== CCheck & Consume ====================
 
-    @Environment(EnvType.CLIENT)
     public void clientCheck(ClientContext ctx) throws NoPermissionException {
         final class ClientOnly { static Player player(ClientContext ctx) { return ctx.player(); } }
         checkCommon(ClientOnly.player(ctx));
@@ -348,7 +345,6 @@ public final class SkillCost {
      * Format this skill cost as a single Component for compact display.
      * Useful for simple tooltips.
      */
-    @Environment(EnvType.CLIENT)
     public List<Component> toTooltipText() {
         List<MutableComponent> res = new ArrayList<>();
 

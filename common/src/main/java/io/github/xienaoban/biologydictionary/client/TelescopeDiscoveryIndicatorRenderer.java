@@ -3,15 +3,12 @@ package io.github.xienaoban.biologydictionary.client;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
-@Environment(EnvType.CLIENT)
 public final class TelescopeDiscoveryIndicatorRenderer {
     private static final int BAR_WIDTH = 32;
     private static final int BAR_HEIGHT = 11;

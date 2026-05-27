@@ -6,8 +6,6 @@ import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -40,13 +38,11 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
         }
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeBoolean(persistent);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(ClientContext<Mob> ctx) {
         final class ClientOnly { static void check(Mob entity, boolean persistent) {

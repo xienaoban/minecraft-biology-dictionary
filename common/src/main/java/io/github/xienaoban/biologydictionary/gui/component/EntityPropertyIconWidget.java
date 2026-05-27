@@ -2,11 +2,8 @@ package io.github.xienaoban.biologydictionary.gui.component;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
 
-@Environment(EnvType.CLIENT)
 public abstract class EntityPropertyIconWidget<E extends Entity> extends EntityPropertyWidget<E> {
     private EntityPropertyIcon icon;
 

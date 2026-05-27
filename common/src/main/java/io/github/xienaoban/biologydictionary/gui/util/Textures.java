@@ -1,13 +1,10 @@
 package io.github.xienaoban.biologydictionary.gui.util;
 
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.resources.Identifier;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.MOD_ID;
 
-@Environment(EnvType.CLIENT)
 public final class Textures {
     private static Identifier mc(String path) {
         return Identifier.withDefaultNamespace(path);

@@ -7,8 +7,6 @@ import io.github.xienaoban.biologydictionary.client.TelescopeManager;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.discovery.DelegatingClientDiscoveryCache;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -16,7 +14,6 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Client-side data tied to the current world session.
  * Created when entering a world, destroyed when leaving.
  */
-@Environment(EnvType.CLIENT)
 public final class ClientWorldSession implements ConfigsUpdateCallback {
     private static volatile ClientWorldSession instance;
 

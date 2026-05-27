@@ -8,8 +8,6 @@ import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 
@@ -106,7 +104,6 @@ public final class BiologySkills {
         return skillClass.getName();
     }
 
-    @Environment(EnvType.CLIENT)
     public static boolean activate(GeneralSkill skill) {
         final class ClientOnly { static boolean activate(GeneralSkill skill) {
             try {
@@ -127,7 +124,6 @@ public final class BiologySkills {
         return ClientOnly.activate(skill);
     }
 
-    @Environment(EnvType.CLIENT)
     public static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
         final class ClientOnly { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
             try {

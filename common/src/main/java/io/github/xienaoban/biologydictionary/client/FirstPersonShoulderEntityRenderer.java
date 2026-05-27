@@ -9,8 +9,6 @@ import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.RenderUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -26,7 +24,6 @@ import net.minecraft.world.entity.animal.parrot.Parrot;
 
 import java.util.Optional;
 
-@Environment(EnvType.CLIENT)
 public final class FirstPersonShoulderEntityRenderer {
     private static final int NULL_VARIANT = -2333333;
     private static final float HEAD_ROT_SPEED = 0.02F;

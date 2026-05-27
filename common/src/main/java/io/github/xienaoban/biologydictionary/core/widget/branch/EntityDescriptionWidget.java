@@ -10,8 +10,6 @@ import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -20,7 +18,6 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
 public final class EntityDescriptionWidget extends EntityPropertyWidget<Entity> {
     public static final Factory<Entity> FACTORY = properties -> {
         Component desc = resolveDescription(properties.entity());

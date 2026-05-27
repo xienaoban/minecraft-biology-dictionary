@@ -1,9 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui.util;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
-@Environment(EnvType.CLIENT)
 public final class Colors {
     public static final int TITLE = 0xFFA57A5A;
     public static final int GRAY_FOR_TEXT_EMPTY = 0x88111111;

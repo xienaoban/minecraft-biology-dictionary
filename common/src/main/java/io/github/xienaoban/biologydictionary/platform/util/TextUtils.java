@@ -1,8 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.locale.Language;
@@ -18,7 +16,6 @@ import java.util.List;
 import java.util.function.Function;
 
 public final class TextUtils {
-    @Environment(EnvType.CLIENT)
     public static Font getGlobalFont() {
         return Minecraft.getInstance().font;
     }

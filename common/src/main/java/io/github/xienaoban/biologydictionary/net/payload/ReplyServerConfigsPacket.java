@@ -4,8 +4,6 @@ import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 
 /**
@@ -24,7 +22,6 @@ public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Pack
         buf.writeUtf(serverConfigsYaml);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         final class ClientOnly { static void receive(ReplyServerConfigsPacket packet) {

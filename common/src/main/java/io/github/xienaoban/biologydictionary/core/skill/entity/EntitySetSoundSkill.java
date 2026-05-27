@@ -4,8 +4,6 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.NeutralMob;
@@ -45,13 +43,11 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
         }
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeBoolean(silent);
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
         final class ClientOnly { static void check(ClientContext<Entity> ctx) {

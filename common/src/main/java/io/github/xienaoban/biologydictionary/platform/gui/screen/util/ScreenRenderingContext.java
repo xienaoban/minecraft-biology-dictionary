@@ -10,8 +10,6 @@ import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.util.*;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -52,7 +50,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-@Environment(EnvType.CLIENT)
 public final class ScreenRenderingContext {
     private final Screen screen;
 

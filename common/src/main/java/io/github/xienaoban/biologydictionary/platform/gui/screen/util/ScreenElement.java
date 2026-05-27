@@ -2,8 +2,6 @@ package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -16,7 +14,6 @@ import java.util.ArrayList;
  * A rectangular element on the screen.
  * Each element does not overlap in pairs.
  */
-@Environment(EnvType.CLIENT)
 public abstract class ScreenElement implements ScreenConsts {
     @Nullable protected ScreenElement parent;
     private final ScreenElementBox box;

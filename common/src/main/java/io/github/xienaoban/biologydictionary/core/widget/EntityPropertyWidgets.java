@@ -7,13 +7,10 @@ import io.github.xienaoban.biologydictionary.core.widget.variant.*;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.Entity;
 
 import java.util.*;
 
-@Environment(EnvType.CLIENT)
 public final class EntityPropertyWidgets {
 
     public static void registerBuiltIn(Registrar registrar) {

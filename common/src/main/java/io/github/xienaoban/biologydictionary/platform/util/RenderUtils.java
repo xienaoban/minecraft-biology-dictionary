@@ -1,13 +1,10 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
 
-@Environment(EnvType.CLIENT)
 public final class RenderUtils {
 
     public static <E extends Entity, S extends EntityRenderState> EntityRenderer<E, S> getRenderer(EntityRenderDispatcher renderDispatcher, E entity) {

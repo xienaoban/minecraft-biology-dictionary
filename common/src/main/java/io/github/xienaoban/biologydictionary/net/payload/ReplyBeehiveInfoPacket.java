@@ -3,8 +3,6 @@ package io.github.xienaoban.biologydictionary.net.payload;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
@@ -20,7 +18,6 @@ public record ReplyBeehiveInfoPacket(CompoundTag bees) implements Packet {
     @Override
     public void write(FriendlyByteBuf buf) { buf.writeNbt(bees); }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         final class ClientOnly { static void receive(ReplyBeehiveInfoPacket packet, ClientNetApi.Context ctx) {
