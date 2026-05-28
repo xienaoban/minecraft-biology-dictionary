@@ -78,8 +78,8 @@
   "tag_group.biologydictionary.default"   : "默认分类",
   "tag_group.biologydictionary.tag"       : "标签分类",
   "tag_group.biologydictionary.mod"       : "模组分类",
-  "tag_group.biologydictionary.class"     : "Java类分类",
-  "tag_group.biologydictionary.interface" : "Java接口分类",
+  "tag_group.biologydictionary.class"     : "类分类",
+  "tag_group.biologydictionary.interface" : "接口分类",
 
   "tag_group.biologydictionary.default.desc"   : "生物辞典预设的分类。",
   "tag_group.biologydictionary.tag.desc"       : "基于我的世界标签的分类。",

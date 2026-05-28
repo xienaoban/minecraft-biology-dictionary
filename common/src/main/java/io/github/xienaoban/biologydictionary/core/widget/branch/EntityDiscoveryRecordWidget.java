@@ -41,6 +41,9 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
     private boolean noRecord;
     private List<FormattedCharSequence> lines;
 
+    private final Component title = TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_BOND)
+            .withStyle(ChatFormatting.BOLD);
+
     private EntityDiscoveryRecordWidget(EntityProperties<Entity> properties) {
         super(properties, 3, COLUMNS);
         ClientDiscoveryCache cache = ClientWorldSession.get().getDiscoveryClientCache();
@@ -66,6 +69,8 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
             }
         }
 
+        ctx.renderText(title, Colors.BLACK, TEXT_SCALE, z, x, y);
+        y += lineHeight;
         for (FormattedCharSequence line : lines) {
             ctx.renderText(line, color, TEXT_SCALE, z, x, y);
             y += lineHeight;
@@ -77,10 +82,7 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
         Font font = FontUtils.getGlobalFont();
         Component noData = TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS);
 
-        List<FormattedCharSequence> lines = new ArrayList<>(FontUtils.toLines(
-                TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_BOND)
-                        .withStyle(ChatFormatting.BOLD),
-                font, maxTextWidth));
+        List<FormattedCharSequence> lines = new ArrayList<>();
 
         if (record != null) {
             lines.addAll(FontUtils.toLines(TextUtils.concat(

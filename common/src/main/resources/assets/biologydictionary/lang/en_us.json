@@ -76,10 +76,10 @@
   "bookmark.biologydictionary.about"        : "About",
 
   "tag_group.biologydictionary.default"   : "Default",
-  "tag_group.biologydictionary.tag"       : "Tag",
-  "tag_group.biologydictionary.mod"       : "Mods",
-  "tag_group.biologydictionary.class"     : "Classes",
-  "tag_group.biologydictionary.interface" : "Interfaces",
+  "tag_group.biologydictionary.tag"       : "By Tag",
+  "tag_group.biologydictionary.mod"       : "By Mod",
+  "tag_group.biologydictionary.class"     : "By Class",
+  "tag_group.biologydictionary.interface" : "By Intf",
 
   "tag_group.biologydictionary.default.desc"   : "Preset categories provided by this mod.",
   "tag_group.biologydictionary.tag.desc"       : "Categories classified by Minecraft tags.",
