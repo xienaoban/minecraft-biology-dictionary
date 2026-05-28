@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui;
 
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -32,7 +33,12 @@ public class PlaceholderFallbackEntityRenderer {
 
     public PlaceholderFallbackEntityRenderer(Entity entity) {
         this.entity = entity;
-        this.placeholder = null;
+        ClientWorldSession cws = ClientWorldSession.get();
+        if (cws != null && cws.hasRenderFailed(entity.getType())) {
+            this.placeholder = new ArmorStand(EntityType.ARMOR_STAND, entity.level());
+        } else {
+            this.placeholder = null;
+        }
         this.cache = new ScreenRenderingContext.EntityRenderingCache();
     }
 
@@ -43,6 +49,10 @@ public class PlaceholderFallbackEntityRenderer {
                 return;
             } catch (Throwable e) {
                 LOGGER.error("Error in rendering entity \"{}\" on screen", EntityUtils.getEntityTypeIdName(entity), e);
+                ClientWorldSession cws = ClientWorldSession.get();
+                if (cws != null) {
+                    cws.markRenderFailed(entity.getType());
+                }
                 placeholder = new ArmorStand(EntityType.ARMOR_STAND, entity.level());
                 cache = new ScreenRenderingContext.EntityRenderingCache();
             }

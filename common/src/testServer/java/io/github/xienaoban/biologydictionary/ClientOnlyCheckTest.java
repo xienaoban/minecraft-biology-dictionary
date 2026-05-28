@@ -102,12 +102,10 @@ final class ClientOnlyCheck {
                             continue;
                         }
                     }
-                    // Both regular and @ClientAndServer methods are checked against MC @Environment(CLIENT)
-                    if (call.owner.startsWith("net/minecraft/")) {
-                        McClassInfo mcInfo = mcCache.computeIfAbsent(call.owner, k -> loadMcClassInfo(k, cl));
-                        if (mcInfo.isClientClass) { violations.add(entry); continue; }
-                        if (mcInfo.clientMethods.contains(call)) violations.add(entry);
-                    }
+                    // Both regular and @ClientAndServer methods are checked against @Environment(CLIENT)
+                    McClassInfo mcInfo = mcCache.computeIfAbsent(call.owner, k -> loadMcClassInfo(k, cl));
+                    if (mcInfo.isClientClass) { violations.add(entry); continue; }
+                    if (mcInfo.clientMethods.contains(call)) violations.add(entry);
                 }
             }
         }
@@ -126,10 +124,8 @@ final class ClientOnlyCheck {
             violations.add(label + " -> " + target);
             return;
         }
-        if (ref.startsWith("net/minecraft/client/")) {
-            McClassInfo mcInfo = mcCache.computeIfAbsent(ref, k -> loadMcClassInfo(k, cl));
-            if (mcInfo.isClientClass) violations.add(label + " -> " + target);
-        }
+        McClassInfo mcInfo = mcCache.computeIfAbsent(ref, k -> loadMcClassInfo(k, cl));
+        if (mcInfo.isClientClass) violations.add(label + " -> " + target);
     }
 
     private static List<byte[]> loadProjectClasses() throws IOException, URISyntaxException {
