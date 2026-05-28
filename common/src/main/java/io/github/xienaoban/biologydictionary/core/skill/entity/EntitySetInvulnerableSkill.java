@@ -31,6 +31,7 @@ public record EntitySetInvulnerableSkill(boolean invulnerable) implements Entity
         buf.writeBoolean(invulnerable);
     }
 
+    @ClientOnly
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
         @ClientOnly final class CO { static void check(ClientContext<Entity> ctx) {

@@ -42,6 +42,7 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
         record.writeToBuf(buf);
     }
 
+    @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {

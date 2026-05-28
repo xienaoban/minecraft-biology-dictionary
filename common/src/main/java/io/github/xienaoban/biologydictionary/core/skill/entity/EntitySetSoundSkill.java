@@ -49,6 +49,7 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
         buf.writeBoolean(silent);
     }
 
+    @ClientOnly
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
         @ClientOnly final class CO { static void check(ClientContext<Entity> ctx) {

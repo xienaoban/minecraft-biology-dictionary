@@ -26,7 +26,6 @@ import net.minecraft.world.ticks.ContainerSingleItem;
 /**
  * @see net.minecraft.world.inventory.HorseInventoryMenu
  */
-@ClientOnly
 public class InventoryStealingMenu extends AbstractContainerMenu {
     public static final int EQUIPMENT_SLOTS = EquipmentSlot.values().length;
     public static final int MAX_SLOTS = 4 * 9;

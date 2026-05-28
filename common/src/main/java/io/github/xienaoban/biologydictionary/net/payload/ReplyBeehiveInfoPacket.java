@@ -19,6 +19,7 @@ public record ReplyBeehiveInfoPacket(CompoundTag bees) implements Packet {
     @Override
     public void write(FriendlyByteBuf buf) { buf.writeNbt(bees); }
 
+    @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO { static void receive(ReplyBeehiveInfoPacket packet, ClientNetApi.Context ctx) {

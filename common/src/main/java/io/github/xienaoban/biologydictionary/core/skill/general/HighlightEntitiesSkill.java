@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -46,6 +47,7 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
         buf.writeFloat(radius);
     }
 
+    @ClientOnly
     @Override
     public void clientAdditionalCheck(ClientContext ctx) throws NoPermissionException {
         commonCheck();

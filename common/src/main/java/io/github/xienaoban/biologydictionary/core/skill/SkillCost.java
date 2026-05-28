@@ -153,6 +153,7 @@ public final class SkillCost {
 
     // ==================== CCheck & Consume ====================
 
+    @ClientOnly
     public void clientCheck(ClientContext ctx) throws NoPermissionException {
         @ClientOnly final class CO { static Player player(ClientContext ctx) { return ctx.player(); } }
         checkCommon(CO.player(ctx));

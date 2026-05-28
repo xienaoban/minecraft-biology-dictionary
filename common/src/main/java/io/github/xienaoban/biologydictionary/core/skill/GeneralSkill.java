@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 public interface GeneralSkill {
     void write(FriendlyByteBuf buf);
 
+    @ClientOnly
     default void clientAdditionalCheck(ClientContext ctx) throws NoPermissionException {}
 
     default void serverAdditionalCheck(ServerContext ctx) throws NoPermissionException {}

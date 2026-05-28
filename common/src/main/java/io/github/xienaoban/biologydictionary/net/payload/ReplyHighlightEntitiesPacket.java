@@ -35,6 +35,7 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
         buf.writeFloat(radius);
     }
 
+    @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {

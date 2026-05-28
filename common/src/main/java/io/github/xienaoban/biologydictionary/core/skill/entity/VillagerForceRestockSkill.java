@@ -62,6 +62,7 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
         buf.writeGlobalPos(jobSitePos);
     }
 
+    @ClientOnly
     @Override
     public void clientAdditionalCheck(ClientContext<Villager> ctx) {
         @ClientOnly final class CO { static void check(ClientContext<Villager> ctx, Integer restocksToday, GlobalPos jobSitePos) {

@@ -20,6 +20,7 @@ public record SendCenteredMessagePacket(Component message) implements Packet {
         ComponentSerialization.TRUSTED_CONTEXT_FREE_STREAM_CODEC.encode(buf, message);
     }
 
+    @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO { static void receive(SendCenteredMessagePacket packet, ClientNetApi.Context ctx) {

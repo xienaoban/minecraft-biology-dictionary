@@ -26,6 +26,7 @@ public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag v
         buf.writeNbt(extraNbt);
     }
 
+    @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO { static void receive(ReplyEntityDataPacket packet, ClientNetApi.Context ctx) {

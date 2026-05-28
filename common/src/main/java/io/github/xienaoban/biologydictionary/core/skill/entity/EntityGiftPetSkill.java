@@ -47,6 +47,7 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
         buf.writeLong(targetPlayerUuid.getLeastSignificantBits());
     }
 
+    @ClientOnly
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
         @ClientOnly final class CO { static void check(ClientContext<Entity> ctx, UUID targetPlayerUuid) {

@@ -4,12 +4,14 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.net.payload.*;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
+@ClientOnly
 public final class ClientNetManager {
 
     public static void init() {

@@ -45,6 +45,7 @@ public record LivingEntityStealInventorySkill() implements EntityTargetedSkill<L
     @Override
     public void write(FriendlyByteBuf buf) {}
 
+    @ClientOnly
     @Override
     public void clientAdditionalCheck(ClientContext<LivingEntity> ctx) throws NoPermissionException {
         @ClientOnly final class CO { static void check(ClientContext<LivingEntity> ctx) {

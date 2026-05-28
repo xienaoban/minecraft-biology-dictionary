@@ -32,6 +32,7 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
     /**
      * @see net.minecraft.client.multiplayer.ClientPacketListener#handleMountScreenOpen(net.minecraft.network.protocol.game.ClientboundMountScreenOpenPacket)
      */
+    @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO { static void receive(ReplyInventoryStealingScreenPacket packet, ClientNetApi.Context ctx) {
