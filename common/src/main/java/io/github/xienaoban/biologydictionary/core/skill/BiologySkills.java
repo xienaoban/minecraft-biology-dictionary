@@ -105,6 +105,7 @@ public final class BiologySkills {
         return skillClass.getName();
     }
 
+    @ClientOnly
     public static boolean activate(GeneralSkill skill) {
         @ClientOnly final class CO { static boolean activate(GeneralSkill skill) {
             try {
@@ -125,6 +126,7 @@ public final class BiologySkills {
         return CO.activate(skill);
     }
 
+    @ClientOnly
     public static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
         @ClientOnly final class CO { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
             try {

@@ -33,6 +33,7 @@ public class ClientOnlyCheckTest {
 
 final class ClientOnlyCheck {
     private static final String CLIENT_ONLY_DESC = "Lio/github/xienaoban/biologydictionary/platform/ClientOnly;";
+    private static final String CLIENT_AND_SERVER_DESC = "Lio/github/xienaoban/biologydictionary/platform/ClientAndServer;";
 
     public static List<String> check() throws Exception {
         List<byte[]> projectClasses = loadProjectClasses();
@@ -43,41 +44,92 @@ final class ClientOnlyCheck {
                 .filter(Objects::nonNull)
                 .toList();
 
-        Set<String> clientOnlyNames = new HashSet<>();
+        Set<String> clientOnlyClassNames = new HashSet<>();
+        Set<MethodRef> clientOnlyMethodRefs = new HashSet<>();
         for (ClassInfo info : allInfos) {
-            if (info.isClientOnly) clientOnlyNames.add(info.internalName);
-        }
-
-        List<Violation> violations = new ArrayList<>();
-        Map<String, Boolean> mcClientCache = new HashMap<>();
-
-        for (ClassInfo info : allInfos) {
-            if (info.isClientOnly) continue;
-            String outerName = info.internalName.contains("$")
-                    ? info.internalName.substring(0, info.internalName.indexOf('$')) : null;
-            if (outerName != null && clientOnlyNames.contains(outerName)) continue;
-            for (String ref : info.references) {
-                if (!ref.startsWith("net/minecraft/client/")) continue;
-                Boolean isClient = mcClientCache.get(ref);
-                if (isClient == null) {
-                    isClient = checkMcClientAnnotation(ref, cl);
-                    mcClientCache.put(ref, isClient);
+            if (info.isClientOnly) clientOnlyClassNames.add(info.internalName);
+            for (MethodInfo method : info.methods) {
+                if (method.isClientOnly) {
+                    clientOnlyMethodRefs.add(new MethodRef(info.internalName, method.name, method.descriptor));
                 }
-                if (isClient) {
-                    violations.add(new Violation(
-                            info.internalName.replace('/', '.'),
-                            ref.replace('/', '.')
-                    ));
+            }
+        }
+        // Expand to include inner classes of @ClientOnly classes
+        for (ClassInfo info : allInfos) {
+            if (clientOnlyClassNames.contains(info.internalName)) continue;
+            String enclosing = info.internalName;
+            while (enclosing.contains("$")) {
+                enclosing = enclosing.substring(0, enclosing.lastIndexOf('$'));
+                if (clientOnlyClassNames.contains(enclosing)) {
+                    clientOnlyClassNames.add(info.internalName);
+                    break;
                 }
             }
         }
 
-        violations.sort(Comparator.comparing(v -> v.projectClass));
-        List<String> result = new ArrayList<>();
-        for (Violation v : violations) {
-            result.add(v.projectClass + " -> " + v.mcClass);
+        Set<String> violations = new TreeSet<>();
+        Map<String, McClassInfo> mcCache = new HashMap<>();
+
+        for (ClassInfo info : allInfos) {
+            if (clientOnlyClassNames.contains(info.internalName)) continue;
+
+            String className = info.internalName.replace('/', '.');
+
+            // Class-level check (superclass, interfaces, field types)
+            for (String ref : info.classRefs) {
+                checkTypeRef(ref, className, null, true, clientOnlyClassNames, mcCache, cl, violations);
+            }
+
+            // Method-level check
+            for (MethodInfo method : info.methods) {
+                if (method.isClientOnly) continue;
+                // @ClientAndServer: only check MC @Environment(CLIENT), skip project @ClientOnly
+                boolean checkProjectClientOnly = !method.isClientAndServer;
+
+                for (String ref : method.typeRefs) {
+                    checkTypeRef(ref, className, method.name, checkProjectClientOnly, clientOnlyClassNames, mcCache, cl, violations);
+                }
+
+                for (MethodRef call : method.methodCalls) {
+                    String entry = className + "." + method.name + " -> " + call.owner.replace('/', '.') + "." + call.name;
+                    if (checkProjectClientOnly) {
+                        if (clientOnlyClassNames.contains(call.owner)) {
+                            violations.add(entry);
+                            continue;
+                        }
+                        if (clientOnlyMethodRefs.contains(call)) {
+                            violations.add(entry);
+                            continue;
+                        }
+                    }
+                    // Both regular and @ClientAndServer methods are checked against MC @Environment(CLIENT)
+                    if (call.owner.startsWith("net/minecraft/")) {
+                        McClassInfo mcInfo = mcCache.computeIfAbsent(call.owner, k -> loadMcClassInfo(k, cl));
+                        if (mcInfo.isClientClass) { violations.add(entry); continue; }
+                        if (mcInfo.clientMethods.contains(call)) violations.add(entry);
+                    }
+                }
+            }
         }
-        return result;
+
+        return new ArrayList<>(violations);
+    }
+
+    private static void checkTypeRef(String ref, String className, String methodName,
+                                      boolean checkProjectClientOnly,
+                                      Set<String> clientOnlyClassNames,
+                                      Map<String, McClassInfo> mcCache, ClassLoader cl,
+                                      Set<String> violations) {
+        String label = methodName != null ? className + "." + methodName : className;
+        String target = ref.replace('/', '.');
+        if (checkProjectClientOnly && clientOnlyClassNames.contains(ref)) {
+            violations.add(label + " -> " + target);
+            return;
+        }
+        if (ref.startsWith("net/minecraft/client/")) {
+            McClassInfo mcInfo = mcCache.computeIfAbsent(ref, k -> loadMcClassInfo(k, cl));
+            if (mcInfo.isClientClass) violations.add(label + " -> " + target);
+        }
     }
 
     private static List<byte[]> loadProjectClasses() throws IOException, URISyntaxException {
@@ -113,15 +165,16 @@ final class ClientOnlyCheck {
     private static ClassInfo analyzeProjectClass(byte[] bytes) {
         String[] internalName = {null};
         boolean[] isClientOnly = {false};
-        Set<String> refs = new HashSet<>();
+        Set<String> classRefs = new HashSet<>();
+        List<MethodInfo> methods = new ArrayList<>();
 
         ClassVisitor cv = new ClassVisitor(Opcodes.ASM9) {
             @Override
             public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
                 internalName[0] = name;
-                if (superName != null) refs.add(superName);
+                if (superName != null) classRefs.add(superName);
                 if (interfaces != null) {
-                    for (String iface : interfaces) refs.add(iface);
+                    for (String iface : interfaces) classRefs.add(iface);
                 }
                 super.visit(version, access, name, signature, superName, interfaces);
             }
@@ -136,51 +189,74 @@ final class ClientOnlyCheck {
 
             @Override
             public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-                extractRefsFromDescriptor(descriptor, refs);
+                extractRefsFromDescriptor(descriptor, classRefs);
                 return super.visitField(access, name, descriptor, signature, value);
             }
 
             @Override
             public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-                extractRefsFromDescriptor(descriptor, refs);
+                Set<String> methodTypeRefs = new HashSet<>();
+                Set<MethodRef> methodCalls = new HashSet<>();
+                boolean[] methodIsClientOnly = {false};
+                boolean[] methodIsClientAndServer = {false};
+
+                extractRefsFromDescriptor(descriptor, methodTypeRefs);
+
                 return new MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
                     @Override
+                    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+                        if (CLIENT_ONLY_DESC.equals(desc)) {
+                            methodIsClientOnly[0] = true;
+                        } else if (CLIENT_AND_SERVER_DESC.equals(desc)) {
+                            methodIsClientAndServer[0] = true;
+                        }
+                        return super.visitAnnotation(desc, visible);
+                    }
+
+                    @Override
                     public void visitTypeInsn(int opcode, String type) {
-                        refs.add(type);
+                        methodTypeRefs.add(type);
                     }
 
                     @Override
-                    public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
-                        refs.add(owner);
-                        extractRefsFromDescriptor(descriptor, refs);
+                    public void visitFieldInsn(int opcode, String owner, String name, String desc) {
+                        methodTypeRefs.add(owner);
+                        extractRefsFromDescriptor(desc, methodTypeRefs);
                     }
 
                     @Override
-                    public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                        refs.add(owner);
-                        extractRefsFromDescriptor(descriptor, refs);
+                    public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean isInterface) {
+                        methodTypeRefs.add(owner);
+                        extractRefsFromDescriptor(desc, methodTypeRefs);
+                        methodCalls.add(new MethodRef(owner, name, desc));
                     }
 
                     @Override
                     public void visitLdcInsn(Object value) {
                         if (value instanceof Type t && t.getSort() == Type.OBJECT) {
-                            refs.add(t.getInternalName());
+                            methodTypeRefs.add(t.getInternalName());
                         }
                     }
 
                     @Override
                     public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
-                        if (type != null) refs.add(type);
+                        if (type != null) methodTypeRefs.add(type);
                     }
 
                     @Override
-                    public void visitLocalVariable(String name, String descriptor, String signature, Label start, Label end, int index) {
-                        extractRefsFromDescriptor(descriptor, refs);
+                    public void visitLocalVariable(String name, String desc, String sig, Label start, Label end, int index) {
+                        extractRefsFromDescriptor(desc, methodTypeRefs);
                     }
 
                     @Override
-                    public void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
-                        extractRefsFromDescriptor(descriptor, refs);
+                    public void visitInvokeDynamicInsn(String name, String desc, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
+                        extractRefsFromDescriptor(desc, methodTypeRefs);
+                    }
+
+                    @Override
+                    public void visitEnd() {
+                        methods.add(new MethodInfo(name, descriptor, methodIsClientOnly[0],
+                                methodIsClientAndServer[0], methodTypeRefs, methodCalls));
                     }
                 };
             }
@@ -188,15 +264,16 @@ final class ClientOnlyCheck {
 
         ClassReader cr = new ClassReader(bytes);
         cr.accept(cv, 0);
-        return new ClassInfo(internalName[0], isClientOnly[0], refs);
+        return new ClassInfo(internalName[0], isClientOnly[0], classRefs, methods);
     }
 
-    private static boolean checkMcClientAnnotation(String internalName, ClassLoader cl) {
+    private static McClassInfo loadMcClassInfo(String internalName, ClassLoader cl) {
         String path = internalName + ".class";
         try (InputStream is = cl.getResourceAsStream(path)) {
-            if (is == null) return false;
+            if (is == null) return new McClassInfo(false, Set.of());
             byte[] bytes = is.readAllBytes();
-            boolean[] isClient = {false};
+            boolean[] isClientClass = {false};
+            Set<MethodRef> clientMethods = new HashSet<>();
             ClassVisitor cv = new ClassVisitor(Opcodes.ASM9) {
                 @Override
                 public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
@@ -204,17 +281,41 @@ final class ClientOnlyCheck {
                         return new AnnotationVisitor(Opcodes.ASM9) {
                             @Override
                             public void visitEnum(String name, String descriptor, String value) {
-                                if ("CLIENT".equals(value)) isClient[0] = true;
+                                if ("CLIENT".equals(value)) isClientClass[0] = true;
                             }
                         };
                     }
                     return null;
                 }
+
+                @Override
+                public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+                    boolean[] methodIsClient = {false};
+                    return new MethodVisitor(Opcodes.ASM9) {
+                        @Override
+                        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+                            if ("Lnet/fabricmc/api/Environment;".equals(desc)) {
+                                return new AnnotationVisitor(Opcodes.ASM9) {
+                                    @Override
+                                    public void visitEnum(String name, String descriptor, String value) {
+                                        if ("CLIENT".equals(value)) methodIsClient[0] = true;
+                                    }
+                                };
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        public void visitEnd() {
+                            if (methodIsClient[0]) clientMethods.add(new MethodRef(internalName, name, descriptor));
+                        }
+                    };
+                }
             };
             new ClassReader(bytes).accept(cv, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
-            return isClient[0];
+            return new McClassInfo(isClientClass[0], clientMethods);
         } catch (IOException e) {
-            return false;
+            return new McClassInfo(false, Set.of());
         }
     }
 
@@ -235,6 +336,11 @@ final class ClientOnlyCheck {
         if (type.getSort() == Type.OBJECT) refs.add(type.getInternalName());
     }
 
-    private record ClassInfo(String internalName, boolean isClientOnly, Set<String> references) {}
-    private record Violation(String projectClass, String mcClass) {}
+    private record MethodRef(String owner, String name, String descriptor) {}
+    private record McClassInfo(boolean isClientClass, Set<MethodRef> clientMethods) {}
+    private record MethodInfo(String name, String descriptor, boolean isClientOnly,
+                              boolean isClientAndServer, Set<String> typeRefs,
+                              Set<MethodRef> methodCalls) {}
+    private record ClassInfo(String internalName, boolean isClientOnly,
+                             Set<String> classRefs, List<MethodInfo> methods) {}
 }
