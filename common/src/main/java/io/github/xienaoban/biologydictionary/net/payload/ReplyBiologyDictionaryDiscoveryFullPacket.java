@@ -50,6 +50,7 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
         }
     }
 
+    @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO { static void receive(ReplyBiologyDictionaryDiscoveryFullPacket packet) {

@@ -44,6 +44,7 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
         buf.writeBoolean(persistent);
     }
 
+    @ClientOnly
     @Override
     public void clientAdditionalCheck(ClientContext<Mob> ctx) {
         @ClientOnly final class CO { static void check(Mob entity, boolean persistent) {

@@ -34,6 +34,7 @@ public record ReplyEntityOverviewPacket(boolean notNull, String entityTypeId,
         buf.writeNbt(extraNbt);
     }
 
+    @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO {

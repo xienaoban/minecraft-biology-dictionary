@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 public interface EntityTargetedSkill<E extends Entity> {
     void write(FriendlyByteBuf buf);
 
+    @ClientOnly
     default void clientAdditionalCheck(ClientContext<E> ctx) throws NoPermissionException {}
 
     default void serverAdditionalCheck(ServerContext<E> ctx) throws NoPermissionException {}

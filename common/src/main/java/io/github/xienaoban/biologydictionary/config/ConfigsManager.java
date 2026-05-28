@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
@@ -179,6 +180,7 @@ public final class ConfigsManager {
      * Called after server configs have been updated (saved, reloaded, or received from remote).
      * Refreshes all local world session caches and broadcasts to remote players if on server side.
      */
+    @ClientAndServer
     public static void onUpdated() {
         WorldSession ws = WorldSession.get();
         if (ws != null) {
@@ -201,6 +203,7 @@ public final class ConfigsManager {
     /**
      * Broadcast current server configs to remote players.
      */
+    @ClientAndServer
     private static void broadcastServerConfigs(MinecraftServer server) {
         String serverConfigsYaml = serializeConfigCategory(INSTANCE.getServer());
 

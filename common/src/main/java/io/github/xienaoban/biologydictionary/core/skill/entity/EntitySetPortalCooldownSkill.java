@@ -33,6 +33,7 @@ public record EntitySetPortalCooldownSkill(int cooldown) implements EntityTarget
         buf.writeInt(cooldown);
     }
 
+    @ClientOnly
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
         @ClientOnly final class CO { static void check(ClientContext<Entity> ctx) {

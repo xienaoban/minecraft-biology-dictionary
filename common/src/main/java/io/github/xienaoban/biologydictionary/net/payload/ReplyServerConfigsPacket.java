@@ -23,6 +23,7 @@ public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Pack
         buf.writeUtf(serverConfigsYaml);
     }
 
+    @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO { static void receive(ReplyServerConfigsPacket packet) {
