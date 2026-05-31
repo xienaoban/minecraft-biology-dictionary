@@ -22,10 +22,15 @@ public final class CompatibilityOptions {
      * <p>If not installed, this option is true, using my own text rendering.</p>
      */
     static boolean useAdvancedTextRendering = true;
+    static boolean entityOutlineCompatStarOpt = false;
 
     // Public getter methods
 
     public static boolean useAdvancedTextRendering() {
         return useAdvancedTextRendering;
+    }
+
+    public static boolean entityOutlineCompatStarOpt() {
+        return entityOutlineCompatStarOpt;
     }
 }
