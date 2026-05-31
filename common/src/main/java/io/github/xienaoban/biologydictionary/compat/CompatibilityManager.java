@@ -12,11 +12,13 @@ import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
  */
 public final class CompatibilityManager {
     public static final String MOD_MODERN_UI = "modernui";
+    public static final String MOD_STAR_OPTIMIZED = "star_optimized";
 
     private CompatibilityManager() {}
 
     public static void init() {
         detectModernUIMods();
+        detectStarOpt();
     }
 
     /**
@@ -26,6 +28,13 @@ public final class CompatibilityManager {
         if (DevUtils.isModLoaded(MOD_MODERN_UI)) {
             CompatibilityOptions.useAdvancedTextRendering = false;
             BiologyDictionary.LOGGER.info("Detected Modern UI. Disabled advanced text rendering.");
+        }
+    }
+
+    private static void detectStarOpt() {
+        if (DevUtils.isModLoaded(MOD_STAR_OPTIMIZED)) {
+            CompatibilityOptions.entityOutlineCompatStarOpt = true;
+            BiologyDictionary.LOGGER.info("Detected Star Optimized. Enabled entity outline compat.");
         }
     }
 }
