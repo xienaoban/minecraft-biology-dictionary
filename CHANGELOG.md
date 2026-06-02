@@ -40,7 +40,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Speed up template parsing
 - Fixed long config entry names overflowing in config screen
 - Fixed bounding box display for x/y/z ≥ 10
-- Fixed entity highlight disappearing when Star Optimized is installed
+- Fixed entity highlight disappearing when Star Optimized is installed (again)
+- Fixed mixin-extra failure on forge
 
 ## Previous Versions
 
