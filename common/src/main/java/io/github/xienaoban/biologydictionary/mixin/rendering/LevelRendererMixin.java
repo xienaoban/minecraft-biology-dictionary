@@ -27,7 +27,8 @@ public abstract class LevelRendererMixin {
     @Inject(method = "extractVisibleEntities(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/culling/Frustum;Lnet/minecraft/client/DeltaTracker;Lnet/minecraft/client/renderer/state/LevelRenderState;)V",
             at = @At(value = "TAIL"))
     private void biologydictionary$setGlowing(Camera camera, Frustum frustum, DeltaTracker deltaTracker, LevelRenderState levelRenderState, CallbackInfo ci) {
-        if (ClientWorldSession.get().getHighlightManager().hasAnyHighlighted()) {
+        ClientWorldSession cws = ClientWorldSession.get();
+        if (cws != null && cws.getHighlightManager().hasAnyHighlighted()) {
             levelRenderState.haveGlowingEntities = true;
         }
     }
