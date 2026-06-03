@@ -21,7 +21,9 @@ import net.minecraft.world.phys.Vec3;
 public final class HighlightRenderer {
     public static void submit(Minecraft client, EntityRenderDispatcher entityRenderDispatcher,
                               PoseStack poseStack, LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector) {
-        HighlightManager hm = ClientWorldSession.get().getHighlightManager();
+        ClientWorldSession cws = ClientWorldSession.get();
+        if (cws == null) { return; }
+        HighlightManager hm = cws.getHighlightManager();
         if (!hm.hasAnyHighlighted()) { return; }
 
         DeltaTracker deltaTracker = client.getDeltaTracker();
