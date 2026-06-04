@@ -24,4 +24,6 @@ public final class Textures {
     public static final TextureInfo GENE = new TextureInfo(my("textures/gui/telescope_discovery.png"), 32, 32);
     public static final TextureInfo BEEHIVE = new TextureInfo(my("textures/gui/beehive.png"), 256, 256);
     public static final TextureInfo STEALING_INVENTORY = new TextureInfo(my("textures/gui/stealing_inventory.png"), 256, 256);
+
+    public static final Identifier BOOK_TOOLTIP = my("book_tooltip");
 }

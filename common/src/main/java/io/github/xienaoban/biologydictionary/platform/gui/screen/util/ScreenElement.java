@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
+import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -249,7 +250,7 @@ public abstract class ScreenElement implements ScreenConsts {
     }
 
     public static MutableComponent tooltipDescription(MutableComponent text) {
-        return text.withStyle(ChatFormatting.GRAY);
+        return text.withColor(Colors.LIGHT_GRAY_GREEN);
     }
 
     public static MutableComponent tooltipBody(String trans) {

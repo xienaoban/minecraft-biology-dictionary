@@ -218,9 +218,9 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             List<Component> list = Arrays.asList(
                     configText.withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
-                    configTooltipText.withStyle(ChatFormatting.GRAY)
+                    configTooltipText.withColor(Colors.LIGHT_GRAY_GREEN)
             );
-            ctx.renderComponentTooltip(list, 0.5F, getBox().getLeft(), getBox().getBottom() + 1);
+            ctx.renderComponentTooltip(list, 0.5F, getBox().getLeft(), getBox().getBottom() + 2);
             return true;
         }
 
