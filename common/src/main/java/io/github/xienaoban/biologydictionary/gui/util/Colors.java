@@ -9,6 +9,7 @@ public final class Colors {
     public static final int COMMON_LIGHT_TEXT = 0xAAFFFFFF;
     public static final int COMMON_DARK_LIGHTER_TEXT = 0x88000000;
     public static final int COMMON_DARK_TEXT = 0xBB000000;
+    public static final int LIGHT_GRAY_GREEN = 0xFFCEDEB8;
     public static final int WHITE = 0xFFFFFFFF;
     public static final int GRAY = 0xFF7F7F7F;
     public static final int BROWN = 0xFF5B2E00;

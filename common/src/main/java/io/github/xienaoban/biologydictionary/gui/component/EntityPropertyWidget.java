@@ -32,11 +32,11 @@ public abstract class EntityPropertyWidget<E extends Entity> extends Widget {
     public final EntityProperties<E> p() { return properties; }
 
     protected void renderTooltip(ScreenRenderingContext ctx, Component... texts) {
-        ctx.renderComponentTooltip(Arrays.asList(texts), 0.5F, getBox().getLeft(), getBox().getBottom() + 1);
+        ctx.renderComponentTooltip(Arrays.asList(texts), 0.5F, getBox().getLeft(), getBox().getBottom() + 2);
     }
 
     protected void renderTooltip(ScreenRenderingContext ctx, List<Component> texts) {
-        ctx.renderComponentTooltip(texts, 0.5F, getBox().getLeft(), getBox().getBottom() + 1);
+        ctx.renderComponentTooltip(texts, 0.5F, getBox().getLeft(), getBox().getBottom() + 2);
     }
 
     public record RC(int rows, int columns) {}

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.biologydictionary.compat.CompatibilityOptions;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiTextRenderStateIMixin;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
@@ -452,7 +453,7 @@ public final class ScreenRenderingContext {
         int p = vector2ic.x();
         int q = vector2ic.y();
         getPose().pushMatrix();
-        TooltipRenderUtil.renderTooltipBackground(getGuiGraphics(), p, q, width, height, null);
+        TooltipRenderUtil.renderTooltipBackground(getGuiGraphics(), p, q, width, height, Textures.BOOK_TOOLTIP);
         int r = q;
 
         for (int s = 0; s < list.size(); s++) {

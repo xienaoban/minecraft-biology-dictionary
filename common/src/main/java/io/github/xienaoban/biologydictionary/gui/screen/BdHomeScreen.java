@@ -174,7 +174,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             ScreenElementBox box = getBox();
             List<Component> texts = new ArrayList<>();
             texts.add(tag.getDescription());
-            ctx.renderComponentTooltip(texts, 0.5F, box.getLeft() + d + Widget.WIDGET_WIDTH, box.getBottom());
+            ctx.renderComponentTooltip(texts, 0.5F, box.getLeft() + d + Widget.WIDGET_WIDTH, box.getBottom() + 1);
             return true;
         }
     }
@@ -318,7 +318,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC, HighlightEntitiesSkill.FAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                 tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.FAR_RADIUS).getRealCost().toTooltipText());
                 tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withStyle(ChatFormatting.GRAY));
+                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withColor(Colors.LIGHT_GRAY_GREEN));
             } else {
                 tooltips = new ArrayList<>();
                 tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG));
@@ -326,10 +326,10 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 tooltips.add(TextUtils.empty());
                 tooltips.addAll(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)).getRealCost().toTooltipText());
                 tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withStyle(ChatFormatting.GRAY));
+                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withColor(Colors.LIGHT_GRAY_GREEN));
             }
 
-            ctx.renderComponentTooltipCentered(tooltips, 0.5F, midX, box.getBottom() + 1);
+            ctx.renderComponentTooltipCentered(tooltips, 0.5F, midX, box.getBottom() + 2);
             return true;
         }
 
@@ -397,7 +397,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             }
 
             Component text = TextUtils.literal(discovered + "/" + total);
-            ctx.renderCenteredText(text, Colors.COMMON_LIGHT_TEXT, 0.5F, ctx.getZ(),
+            int color = discovered * 2 < total ? Colors.COMMON_DARK_LIGHTER_TEXT : Colors.COMMON_LIGHT_TEXT;
+            ctx.renderCenteredText(text, color, 0.5F, ctx.getZ(),
                     box.getLeft() + box.getWidth() / 2F, barTop + 3.25F);
         }
 
@@ -407,7 +408,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             float midX = (box.getLeft() + box.getRight()) / 2;
             ctx.renderComponentTooltipCentered(
                     List.of(TextUtils.translate(Lang.WIDGET_DISCOVERY_PROGRESS)),
-                    0.5F, midX, box.getBottom());
+                    0.5F, midX, box.getBottom() + 1);
             return true;
         }
     }
