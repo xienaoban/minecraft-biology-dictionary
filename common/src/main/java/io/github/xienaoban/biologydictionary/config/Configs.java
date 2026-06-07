@@ -47,6 +47,12 @@ public final class Configs {
         @ConfigEntry
         boolean hideEntityDescriptionWidgetIfNotFound = true;
 
+        /**
+         * Use a pure black background for Biology Dictionary screens.
+         */
+        @ConfigEntry
+        boolean demoMode = false;
+
         // =========================== Getters ============================
 
         public float getScreenScale() {
@@ -59,6 +65,10 @@ public final class Configs {
 
         public boolean isHideEntityDescriptionWidgetIfNotFound() {
             return hideEntityDescriptionWidgetIfNotFound;
+        }
+
+        public boolean isDemoMode() {
+            return demoMode;
         }
 
         // ============================= Misc =============================

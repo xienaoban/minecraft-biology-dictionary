@@ -1,4 +1,4 @@
-![Biology Dictionary](res/header.png)
+![Biology Dictionary](docs/assets/header.png)
 
 <div style="text-align: right;">
 
@@ -10,7 +10,7 @@ English | **[简体中文](README.zh-CN.md)**
 
 # Biology Dictionary
 
-**Discover, highlight, inspect, modify — your vanilla & modded mob encyclopedia**
+**Discover, highlight, inspect, modify - your vanilla & modded mob encyclopedia**
 
 [![Download - Modrinth](https://img.shields.io/badge/Download-Modrinth-43b581?style=for-the-badge&logo=modrinth)](https://modrinth.com/mod/biology-dictionary)
 [![Download - CurseForge](https://img.shields.io/badge/Download-CurseForge-ff6b6b?style=for-the-badge&logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/biology-dictionary)
@@ -39,101 +39,95 @@ English | **[简体中文](README.zh-CN.md)**
 | Cross-dimension mob transport is a nightmare | Lock or force nether portal teleportation |
 | Want static NPCs in your survival builds | Disable AI + set invulnerable, done |
 
----
+![Animated entity detail screen showing Biology Dictionary widgets](docs/assets/detail-screen.gif)
 
-## Screenshots
-
-|                                             |                                             |
-|:-------------------------------------------:|:-------------------------------------------:|
-| ![screenshot 1](res/screenshot_en_us_1.jpg) | ![screenshot 2](res/screenshot_en_us_2.jpg) |
-| ![screenshot 3](res/screenshot_en_us_3.jpg) | ![screenshot 4](res/screenshot_en_us_4.jpg) |
-
-<details>
-<summary>Click to expand more screenshots</summary>
-
-|                                             |                                             |
-|:-------------------------------------------:|:-------------------------------------------:|
-| ![screenshot 5](res/screenshot_en_us_5.jpg) | ![screenshot ](res/screenshot_en_us_6.jpg)  |
-| ![screenshot 7](res/screenshot_en_us_7.jpg) | ![screenshot 8](res/screenshot_en_us_8.jpg) |
-| ![screenshot 9](res/screenshot_en_us_9.jpg) |                                             |
-
-</details>
+*One screen for all of those problems.*
 
 ---
 
-## Features
+## Gameplay Preview
 
-- **No new blocks or entities. Vanilla-friendly and safe to uninstall anytime.**
-- **Full support for vanilla and modded mobs alike.**
+- **No new blocks or entities.** The book is implemented with NBT and stays vanilla-friendly.
+- **Works with vanilla and modded mobs.**
 
-### Inspection
+### Open the Dictionary
 
-- **Mob Discovery** — Track your dictionary progress; discover mobs by viewing details, scanning with the telescope, highlighting, killing, interacting, and more
-- **Entity Highlight** — Highlight a specific mob type within 100 m to quickly track down rare spawns
-- **Health & Effects** — Real-time health bar and active status effects
-- **Speed & Jump** — Precise movement speed (m/s) and jump strength (m)
-- **Loot Table** — Full drop table for any mob
-- **Spawn Info** — Spawn biomes and structures (modded content supported)
-- **Hitbox** — Exact bounding box dimensions
-- **Variants** — Villager outfits, horse markings, cow biome variants, panda genes, and more
-- **Food** — Items that tempt or breed the mob
-- **Breeding Status** — Cooldown timer and love status
-- **Villager Job Site** — Locate the workstation with one click
-- **Villager Schedule & Restock** — Daily schedule and restock count
-- **Beehive** — Honey level, bee count, hive location
-- **And more** — Dolphin moisture, screaming goat check, pet owner info, etc.
+|                Biology Dictionary                 |                    Discovery Progress                    |
+|:-------------------------------------------------:|:--------------------------------------------------------:|
+| ![Biology Dictionary listing every mob](docs/assets/screenshot_01.png) | ![Biology Dictionary showing discovered and undiscovered mobs](docs/assets/screenshot_02.png) |
+|       Vanilla mobs, modded mobs, all in one book.        |          Build your encyclopedia one discovery at a time.          |
 
-### Modification
+- **Full mob catalog** — Vanilla and modded mobs are collected automatically, no setup required.
+- **Discovery progress** — Track which mobs you have found and which ones are still waiting.
+- **Multiple discovery rules** — Use a simple "all unlocked" mode, vanilla kill statistics, or Biology Dictionary's own discovery system.
+- **Configurable discovery actions** — Detail screens, telescope observation, interaction, kills, and more can count as discovery.
+- **Discovery records** — Biology Dictionary mode can record how, when, and where you first met a mob.
+- **Configurable module behavior** — By default, undiscovered mobs hide their details; you can also make discovery a pure collection layer.
+- **Entity highlight** — Highlight nearby mobs of the same type, with different ranges and costs.
 
-All modifications cost in-game resources (XP, items, etc.) to keep things balanced.
+|                Telescope Discovery                 |                    Entity Highlight                    |
+|:--------------------------------------------------:|:------------------------------------------------------:|
+| ![Discovering a mob through a telescope](docs/assets/screenshot_05.jpg) | ![Highlighted mobs in the world](docs/assets/screenshot_06.jpg) |
+|        A telescope sighting can count as a real discovery.        |        Highlight nearby mobs when rare targets are hard to spot.        |
 
-- **Lock Growth** — Freeze baby mobs permanently
-- **Prevent Breeding** — Block mobs from entering love mode
-- **Portal Control** — Prevent or force nether portal teleportation
-- **Remove AI** — Disable AI for static NPCs or decoration
-- **Force Persistence** — Stop mobs from despawning
-- **Set Invulnerable** — Make a mob immune to all damage
-- **Mute** — Silence mob sounds; offspring inherit the trait
-- **Inventory** — View and take items from villager inventories
-- **Change Variants** — Swap villager outfits, horse markings, cow variants, panda genes, etc.
-- **Force Restock** — Instantly refresh villager trades
-- **Retain Trader** — Keep a wandering trader from despawning
-- **Gift Pet** — Transfer a tamed mob to another player
-- **Spawn Egg** — Obtain the corresponding spawn egg (Creative only)
-- **And more** — Force sheep to eat grass, and more
+### Open a Mob Page
 
-### Mod & Datapack Support
+|                    Entity Details                    |                     Entity Tags                     |
+|:----------------------------------------------------:|:---------------------------------------------------:|
+| ![Horse detail page in the Biology Dictionary](docs/assets/screenshot_03.png) | ![Biology Dictionary tag page](docs/assets/screenshot_04.png) |
+|        Inspect properties, use skills, and change behavior.        |        Classify mobs from several angles for faster lookup.        |
 
-- **Custom Entity Descriptions** — Add or override mob descriptions via resource pack ([docs](doc/custom-data.md))
-- **Custom Spawn Descriptions** — Manually adjust spawn biome and structure descriptions via datapack ([docs](doc/custom-data.md))
+- **Overview / detail pages** — Overview pages show default or reference data; detail pages show the live state of the entity you are looking at.
+- **Base stats** — Health, air, effects, speed, jump strength, hitbox, and whether the mob counts toward spawn caps.
+- **Ecology** — Habitat, loot table, edible items, tempting items, and leashability.
+- **Variants** — Standard variants, horse markings, panda genes, villager types, and more.
+- **Behavior state** — AI, invulnerability, silence, persistence, portal cooldown, growth, breeding cooldown, and love status.
+- **Special mob data** — Villager schedules, restocks, job sites, bee hives, dolphin moisture, screaming goats, pet owners, wandering trader despawn timers.
+- **Entity skills** — Lock growth, block breeding, control portals, disable AI, force persistence, mute, force restock, retain traders, gift pets, get spawn eggs, and more.
+- **Skill costs** — Skills require XP, items, permissions, or Creative mode by default; costs can be configured.
 
-### Controls
+The tag page supports several views: built-in groups, MC tags, mod namespaces, and Java class/interface categories.
 
-Open the Biology Dictionary by:
-1. Right-clicking the book item while holding it
-2. Pressing the hotkey (default `` ` ``) — requires the book in inventory (Survival), or is always available (Creative / configured)
+### Special Screens
 
-The screen you get depends on where you're looking:
+- **Inventory access** — View, take from, or fill supported mob inventories. In Survival, this is stealing, so stay out of the target's sight.
+- **Beehive info** — Open a dedicated beehive or bee nest screen to inspect honey level, bee count, and bees inside.
+
+|                    Inventory Access                    |                    Beehive Info                    |
+|:------------------------------------------------------:|:--------------------------------------------------:|
+| ![Inventory stealing screen](docs/assets/screenshot_07.png) | ![Beehive information screen](docs/assets/screenshot_08.png) |
+|        Steal or fill inventories so villagers stop picking up wheat.        |        Use the dictionary on a hive to check bees and honey.        |
+
+## Controls
+
+Biology Dictionary is built around screens. Open it by:
+1. Right-clicking while holding the Biology Dictionary book
+2. Pressing the hotkey (default `` ` ``); Survival needs the book unless configured otherwise, while Creative can always open it
+
+The screen depends on what you are looking at.
 
 | Looking at | Opens |
-|:----------:|:-----:|
+|------------|-------|
 | Block / Air | Home screen |
-| Entity | Entity detail screen |
+| Entity | That entity's detail screen |
 | Beehive | Beehive info screen |
-| Straight up | Home screen (always) |
+| Straight up | Home screen (forced) |
 | Straight down | Your own detail screen |
 
 ---
 
-### Obtaining
+## Obtaining
 
-The book is a plain `minecraft:writable_book` with embedded NBT — no custom items, fully vanilla-compatible. In Creative mode (or with hotkey configured for Survival), you don't even need it.
+How to get the Biology Dictionary book:
+> 1. In Creative mode, or when Survival hotkey access is enabled, the physical book is optional.
+> 2. The book is just `minecraft:writable_book` + NBT. No custom item is added.
 
-#### Creative
+|                    Wandering Trader                    |                    Creative Inventory                    |
+|:------------------------------------------------------:|:--------------------------------------------------------:|
+| ![Wandering trader selling the Biology Dictionary](docs/assets/screenshot_10.png) | ![Biology Dictionary book in the Creative inventory](docs/assets/screenshot_11.png) |
+|        In Survival, buy the Biology Dictionary from Wandering Traders.        |        In Creative, find it at the end of Tools & Utilities.        |
 
-Find it at the end of the **Tools & Utilities** tab.
-
-#### Survival
+### Survival
 
 Buy from **Wandering Traders**. Sell chance starts at 100% and gradually drops to 20% over time, without taking up any vanilla trade slots.
 
@@ -142,6 +136,15 @@ Buy from **Wandering Traders**. Sell chance starts at 100% and gradually drops t
 > Kidding — it takes about **2 real-time days** (144 in-game days) to hit 20%. You'll be fine.
 
 Pack authors can disable trader sales in the config and add their own recipes instead.
+
+### Creative
+
+Find the Biology Dictionary book at the end of the **Tools & Utilities** tab.
+
+## Mod & Datapack Support
+
+- **Custom Entity Descriptions** — Add or override mob descriptions via resource pack ([docs](docs/custom-data.md))
+- **Custom Spawn Descriptions** — Manually adjust spawn biome and structure descriptions via datapack ([docs](docs/custom-data.md))
 
 ---
 

@@ -207,11 +207,9 @@ public final class Lang {
     PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN        = "property_widget.biologydictionary.despawn_delay.retain",
     PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN_DESC   = "property_widget.biologydictionary.despawn_delay.retain.desc",
     PROPERTY_WIDGET_INVENTORY                   = "property_widget.biologydictionary.inventory",
-    PROPERTY_WIDGET_INVENTORY_DESC1             = "property_widget.biologydictionary.inventory.desc1",
-    PROPERTY_WIDGET_INVENTORY_DESC2             = "property_widget.biologydictionary.inventory.desc2",
+    PROPERTY_WIDGET_INVENTORY_DESC              = "property_widget.biologydictionary.inventory.desc",
     PROPERTY_WIDGET_INVENTORY_STEAL             = "property_widget.biologydictionary.inventory.steal",
-    PROPERTY_WIDGET_INVENTORY_STEAL_DESC1       = "property_widget.biologydictionary.inventory.steal.desc1",
-    PROPERTY_WIDGET_INVENTORY_STEAL_DESC2       = "property_widget.biologydictionary.inventory.steal.desc2",
+    PROPERTY_WIDGET_INVENTORY_STEAL_DESC        = "property_widget.biologydictionary.inventory.steal.desc",
     PROPERTY_WIDGET_INVENTORY_STEAL_CREATIVE    = "property_widget.biologydictionary.inventory.steal.creative",
     PROPERTY_WIDGET_INVENTORY_STEAL_SURVIVAL    = "property_widget.biologydictionary.inventory.steal.survival",
 
