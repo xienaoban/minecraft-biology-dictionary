@@ -76,12 +76,15 @@ public class BeehiveScreen extends ElementScreen {
         mills = System.currentTimeMillis();
         int diff = (int) (mills - lastMills);
         renderTransparentBackground(ctx);
-        ctx.getGuiGraphics().pose().pushMatrix();
+        ctx.getPose().pushMatrix();
         int w = (width - 128) >> 1;
         int h = (height - 128) >> 1;
 
         int beeCnt = blockBeeCnt;
         int honeyCnt = blockHoneyCnt;
+        List<Component> hoveredBeeTooltip = null;
+        float hoveredBeeTooltipX = 0F;
+        float hoveredBeeTooltipY = 0F;
 
         if (lastBeeCnt > beeCnt) {
             lastBeeCnt = beeCnt;
@@ -133,19 +136,23 @@ public class BeehiveScreen extends ElementScreen {
                 ctx.renderCenteredText(bee.entity.getCustomName(), color, 0.5F, ctx.getZ(), x, beeTop - 2);
             }
             if (ctx.getMouseX() > x - 10 && ctx.getMouseX() < x + 10 && ctx.getMouseY() > beeTop && ctx.getMouseY() < y) {
-                List<Component> texts = Arrays.asList(
+                hoveredBeeTooltip = Arrays.asList(
                         bee.entity.getName(),
                         TextUtils.translate(Lang.TEXT_BEE_STATE_IN_BEEHIVE, TextUtils.translate(bee.entity.hasNectar() ? Lang.TEXT_BEE_PRODUCING_NECTAR : Lang.TEXT_BEE_RESTING)).withStyle(ChatFormatting.GRAY),
                         TextUtils.translate(Lang.TEXT_TIME_IN_BEEHIVE, (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s").withStyle(ChatFormatting.GRAY)
                 );
-                ctx.renderComponentTooltipCenteredForNextFrameVanilla(texts, x, y + 18F);
+                hoveredBeeTooltipX = x;
+                hoveredBeeTooltipY = y + 2F;
             }
         }
         ctx.renderText(TextUtils.literal(honeyCnt + "/" + MAX_HONEY_CNT), color, ctx.getZ(), LATTICES[5][0] + lw + 16 - 8.5F, LATTICES[5][1] + lh + 8);
         ctx.renderText(TextUtils.literal(beeCnt + "/" + MAX_BEE_CNT), color, ctx.getZ(), LATTICES[6][0] + lw + 16 - 8.5F, LATTICES[6][1] + lh + 8);
         ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_HONEY), color, ctx.getZ(), LATTICES[5][0] + lw + 16.5F, LATTICES[5][1] + lh + 16);
         ctx.renderCenteredText(EntityType.BEE.getDescription(), color, ctx.getZ(), LATTICES[6][0] + lw + 16.5F, LATTICES[6][1] + lh + 16);
-        ctx.getGuiGraphics().pose().popMatrix();
+        if (hoveredBeeTooltip != null) {
+            ctx.renderComponentTooltipCentered(hoveredBeeTooltip, hoveredBeeTooltipX, hoveredBeeTooltipY);
+        }
+        ctx.getPose().popMatrix();
     }
 
     private void drawLattice(ScreenRenderingContext ctx, int w, int h, int type) {

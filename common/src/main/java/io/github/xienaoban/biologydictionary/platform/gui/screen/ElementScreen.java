@@ -67,7 +67,7 @@ public abstract class ElementScreen extends CommonScreen {
             super.render(ctx);
             rootScreenElement.render(ctx);
 
-            ctx.getGuiGraphics().nextStratum();
+            ctx.nextStratum();
             ScreenElement hovered = getHoveredElement();
             if (hovered != null) {
                 hovered.renderHovered(ctx);

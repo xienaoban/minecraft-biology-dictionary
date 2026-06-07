@@ -109,6 +109,11 @@ public final class ScreenRenderingContext {
     public Matrix3x2fStack getPose() {
         return getGuiGraphics().pose();
     }
+
+    public void nextStratum() {
+        getGuiGraphics().nextStratum();
+    }
+
     public GuiGraphics.ScissorStack getScissorStack() {
         return ((GuiGraphicsIMixin) getGuiGraphics()).biologydictionary$getScissorStack();
     }
@@ -358,16 +363,6 @@ public final class ScreenRenderingContext {
     //=======================================================================================
     // Rendering tooltips.
     //=======================================================================================
-
-    public void renderComponentTooltipForNextFrameVanilla(List<Component> texts, float leftX, float topY) {
-        getGuiGraphics().setComponentTooltipForNextFrame(getFont(), texts, (int) leftX, (int) topY);
-    }
-
-    public void renderComponentTooltipCenteredForNextFrameVanilla(List<Component> texts, float midX, float topY) {
-        int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
-        getGuiGraphics().setComponentTooltipForNextFrame(getFont(), texts,
-                (int) (midX - (maxLength + 20) / 2F), (int) topY);
-    }
 
     public void renderComponentTooltip(List<Component> texts, float leftX, float topY) {
         renderTooltipTexts(texts, 1F, leftX, topY);
