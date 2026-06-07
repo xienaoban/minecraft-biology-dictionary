@@ -45,8 +45,7 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
         renderTooltip(ctx,
                 tooltipTitle(Lang.PROPERTY_WIDGET_INVENTORY),
-                tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_DESC1),
-                tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_DESC2)
+                tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_DESC)
         );
         return true;
     }
@@ -92,8 +91,7 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
             SkillCost cost = new LivingEntityStealInventorySkill().getRealCost(e());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_INVENTORY_STEAL));
-            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC1));
-            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC2));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC));
             tooltip.add(TextUtils.empty());
             tooltip.addAll(cost.toTooltipText());
             renderTooltip(ctx, tooltip);

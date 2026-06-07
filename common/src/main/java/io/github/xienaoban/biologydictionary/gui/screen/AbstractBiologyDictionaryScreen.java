@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPagePlaceholder;
@@ -62,8 +63,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private final PageNum rightPageNum = new PageNum(true);
     private final PageTurnButton turnLeft = new PageTurnButton(-2);
     private final PageTurnButton turnRight = new PageTurnButton(2);
-
     private final CenteredMessage centeredMessage = new CenteredMessage();
+
+    private final boolean demoMode;
 
     public AbstractBiologyDictionaryScreen(MutableComponent title) {
         super(title.withColor(Colors.TITLE));
@@ -73,8 +75,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         rightPageNum.setParent(getRootScreenElement());
         turnLeft.setParent(getRootScreenElement());
         turnRight.setParent(getRootScreenElement());
-
         centeredMessage.setParent(getRootScreenElement());
+
+        demoMode = ConfigsManager.getClient().isDemoMode();
     }
 
     private void check() {
@@ -103,7 +106,11 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     protected void render(ScreenRenderingContext ctx) {
-        renderTransparentBackground(ctx);
+        if (demoMode) {
+            ctx.renderRectangle(0xFF000000, ctx.getZ(), 0, 0, width, height);
+        } else {
+            renderTransparentBackground(ctx);
+        }
         ctx.renderTexture(Textures.BOOK,
                 BOOK_TEXTURE_LEFT, BOOK_TEXTURE_TOP, BOOK_TEXTURE_RIGHT, BOOK_TEXTURE_BOTTOM,
                 getZ(),

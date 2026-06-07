@@ -2,7 +2,7 @@
 
 All notable changes to Biology Dictionary will be documented in this file.
 
-## Unreleased
+## 1.0.0
 
 ### Added
 
@@ -15,6 +15,9 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Added config entries for discovery sources
 - Added support for custom spawn datapacks
 - Added discovery progress bar UI
+- Added documentation for custom data and spawn datapacks
+- Added a server config option to control stealing from players
+- Added client-only annotation checks for common code
 
 ### Changed
 
@@ -28,6 +31,14 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Refactored discovery system
 - Improved telescope discovery logic
 - Distinguish reloading of local and server‑side configurations
+- Improved README layout and project header images
+- Improved home screen layout and discovery progress presentation
+- Updated book, icon, toast and GUI texture assets
+- Render discovery toast and custom tooltips through GUI sprites
+- Refactored spawn datapack format to namespaced entity IDs
+- Refactored text wrapping/measurement helpers into FontUtils
+- Replaced common-side @Environment usage with project client/server annotations
+- Removed the debug screen from the about page
 
 ### Fixed
 
@@ -41,6 +52,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Speed up template parsing
 - Fixed long config entry names overflowing in config screen
 - Fixed bounding box display for x/y/z ≥ 10
+- Fixed client-only annotations that caused server-side tests to fail
 
 ## Previous Versions
 

@@ -34,6 +34,7 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -52,6 +53,9 @@ public final class EntitySpawnManager {
     private static final FileToIdConverter STRUCTURE_LISTER = new FileToIdConverter("structure", ".nbt");
     private static final FileToIdConverter SPAWN_OVERRIDE_LISTER = FileToIdConverter.json(SPAWN_OVERRIDE_PATH);
     private static final CompoundTag MISSING_TEMPLATE = new CompoundTag();
+    private static final Identifier IGNORED_MISSING_TEMPLATE = Identifier.withDefaultNamespace(
+        "structure/ancient_city/walls/intact_horizontal_wall_stairs_5.nbt"
+    );
 
     private static final String KEY_BIOMES = "biomes";
     private static final String KEY_STRUCTURES = "structures";
@@ -227,12 +231,16 @@ public final class EntitySpawnManager {
             if (templateId == null) return;
 
             CompoundTag rootNbt = templateCache.computeIfAbsent(templateId, id -> {
+                Identifier resourceLoc = STRUCTURE_LISTER.idToFile(id);
                 try {
-                    Identifier resourceLoc = STRUCTURE_LISTER.idToFile(id);
                     try (InputStream is = resourceManager.open(resourceLoc)) {
                         return NbtIo.readCompressed(is, NbtAccounter.create(64 * 1024 * 1024));
                     }
                 } catch (Throwable e) {
+                    // Ignore intact_horizontal_wall_stairs_5.nbt
+                    if (resourceLoc.equals(IGNORED_MISSING_TEMPLATE) && e instanceof FileNotFoundException) {
+                        return MISSING_TEMPLATE;
+                    }
                     LOGGER.warn("Failed to read structure template {}", id, e);
                     return MISSING_TEMPLATE;
                 }
