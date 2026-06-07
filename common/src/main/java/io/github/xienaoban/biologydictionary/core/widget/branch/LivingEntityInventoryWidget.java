@@ -16,6 +16,7 @@ import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingSc
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +24,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+@ClientOnly
 public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<LivingEntity> {
     public static final Factory<LivingEntity> FACTORY = LivingEntityInventoryWidget::new;
 
@@ -43,8 +45,7 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
         renderTooltip(ctx,
                 tooltipTitle(Lang.PROPERTY_WIDGET_INVENTORY),
-                tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_DESC1),
-                tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_DESC2)
+                tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_DESC)
         );
         return true;
     }
@@ -90,8 +91,7 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
             SkillCost cost = new LivingEntityStealInventorySkill().getRealCost(e());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_INVENTORY_STEAL));
-            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC1));
-            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC2));
+            tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_INVENTORY_STEAL_DESC));
             tooltip.add(TextUtils.empty());
             tooltip.addAll(cost.toTooltipText());
             renderTooltip(ctx, tooltip);

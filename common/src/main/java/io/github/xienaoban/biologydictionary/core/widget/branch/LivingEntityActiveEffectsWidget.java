@@ -13,10 +13,9 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.mixin.MobEffectInstanceIMixin;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandardWidget<LivingEntity> {
     public static final Factory<LivingEntity> FACTORY = LivingEntityActiveEffectsWidget::new;
 

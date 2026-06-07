@@ -1,7 +1,10 @@
 package io.github.xienaoban.biologydictionary.core;
 
-import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import io.github.xienaoban.biologydictionary.mixin.*;
+import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -13,7 +16,10 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -26,6 +32,8 @@ import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -39,45 +47,60 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * </ul>
  * Requires {@link RegistryAccess} containing WORLDGEN-layer registries (i.e. server-side).
  */
-public class EntitySpawnManager {
+public final class EntitySpawnManager {
+    private static final String SPAWN_OVERRIDE_PATH = "biologydictionary/entity_spawn";
     private static final FileToIdConverter STRUCTURE_LISTER = new FileToIdConverter("structure", ".nbt");
+    private static final FileToIdConverter SPAWN_OVERRIDE_LISTER = FileToIdConverter.json(SPAWN_OVERRIDE_PATH);
     private static final CompoundTag MISSING_TEMPLATE = new CompoundTag();
+    private static final ResourceLocation IGNORED_MISSING_TEMPLATE = ResourceLocation.withDefaultNamespace(
+        "structure/ancient_city/walls/intact_horizontal_wall_stairs_5.nbt"
+    );
 
-    private final Map<EntityType<?>, List<Entry<Biome>>> spawnBiomes = new HashMap<>();
-    private final Map<ResourceLocation, List<EntityType<?>>> biomeEntities = new HashMap<>();
+    private static final String KEY_BIOMES = "biomes";
+    private static final String KEY_STRUCTURES = "structures";
+    private static final String KEY_OVERWRITE = "overwrite";
+    private static final String KEY_ADD = "add";
+    private static final String KEY_REMOVE = "remove";
 
-    private final Map<EntityType<?>, List<Entry<Structure>>> spawnStructures = new HashMap<>();
-    private final Map<ResourceLocation, List<EntityType<?>>> structureEntities = new HashMap<>();
+    private RegistryAccess registryAccess;
+    private ResourceManager resourceManager;
+    private final SpawnMap biomeSpawnMap = new SpawnMap(Registries.BIOME, "biome");
+    private final SpawnMap structureSpawnMap = new SpawnMap(Registries.STRUCTURE, "structure");
 
     public EntitySpawnManager(RegistryAccess registryAccess, ResourceManager resourceManager) {
-        buildSpawnBiomes(registryAccess);
-        buildSpawnStructures(registryAccess, resourceManager);
+        this.registryAccess = registryAccess;
+        this.resourceManager = resourceManager;
+        buildSpawnBiomes();
+        buildSpawnStructures();
+        applyDataPackOverrides();
+        this.registryAccess = null;
+        this.resourceManager = null;
     }
 
-    public List<Entry<Biome>> getSpawnBiomes(EntityType<?> entityType) {
-        return spawnBiomes.getOrDefault(entityType, ImmutableList.of());
+    public Set<ResourceLocation> getSpawnBiomes(EntityType<?> entityType) {
+        return biomeSpawnMap.getForward(entityType);
     }
 
-    public List<EntityType<?>> getBiomeEntities(ResourceLocation biomeId) {
-        return biomeEntities.getOrDefault(biomeId, ImmutableList.of());
+    public Set<EntityType<?>> getBiomeEntities(ResourceLocation biomeId) {
+        return biomeSpawnMap.getReverse(biomeId);
     }
 
-    public List<Entry<Structure>> getSpawnStructures(EntityType<?> entityType) {
-        return spawnStructures.getOrDefault(entityType, ImmutableList.of());
+    public Set<ResourceLocation> getSpawnStructures(EntityType<?> entityType) {
+        return structureSpawnMap.getForward(entityType);
     }
 
-    public List<EntityType<?>> getStructureEntities(ResourceLocation structureId) {
-        return structureEntities.getOrDefault(structureId, ImmutableList.of());
+    public Set<EntityType<?>> getStructureEntities(ResourceLocation structureId) {
+        return structureSpawnMap.getReverse(structureId);
     }
 
-    private void buildSpawnBiomes(RegistryAccess registryAccess) {
+
+    private void buildSpawnBiomes() {
         Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
 
         for (Map.Entry<ResourceKey<Biome>, Biome> biomeEntry : biomeRegistry.entrySet()) {
             try {
                 ResourceLocation biomeId = biomeEntry.getKey().location();
                 Biome biome = biomeEntry.getValue();
-                Entry<Biome> entry = new Entry<>(biomeId, biome);
                 MobSpawnSettings spawnSettings = biome.getMobSettings();
 
                 Set<EntityType<?>> seenBiomeEntities = new HashSet<>();
@@ -87,10 +110,7 @@ public class EntitySpawnManager {
                         EntityType<?> entityType = spawnerData.type;
 
                         if (seenBiomeEntities.add(entityType)) {
-                            spawnBiomes.computeIfAbsent(entityType, k -> new ArrayList<>())
-                                .add(entry);
-                            biomeEntities.computeIfAbsent(biomeId, k -> new ArrayList<>())
-                                .add(entityType);
+                            biomeSpawnMap.add(entityType, biomeId);
                         }
                     }
                 }
@@ -100,7 +120,7 @@ public class EntitySpawnManager {
         }
     }
 
-    private void buildSpawnStructures(RegistryAccess registryAccess, ResourceManager resourceManager) {
+    private void buildSpawnStructures() {
         Registry<Structure> structureRegistry = registryAccess.registryOrThrow(Registries.STRUCTURE);
         Registry<StructureTemplatePool> poolRegistry = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL);
 
@@ -110,7 +130,6 @@ public class EntitySpawnManager {
             try {
                 ResourceLocation structureId = structureEntry.getKey().location();
                 Structure structure = structureEntry.getValue();
-                Entry<Structure> entry = new Entry<>(structureId, structure);
 
                 Set<EntityType<?>> seenStructureEntities = new HashSet<>();
 
@@ -120,10 +139,7 @@ public class EntitySpawnManager {
                         EntityType<?> entityType = spawnerData.type;
 
                         if (seenStructureEntities.add(entityType)) {
-                            spawnStructures.computeIfAbsent(entityType, k -> new ArrayList<>())
-                                .add(entry);
-                            structureEntities.computeIfAbsent(structureId, k -> new ArrayList<>())
-                                .add(entityType);
+                            structureSpawnMap.add(entityType, structureId);
                         }
                     }
                 });
@@ -132,8 +148,8 @@ public class EntitySpawnManager {
                 if (structure instanceof JigsawStructure) {
                     Holder<StructureTemplatePool> startPool = ((JigsawStructureIMixin) (Object) structure).biologydictionary$getStartPool();
                     collectTemplateEntities(
-                        startPool, poolRegistry, resourceManager, templateCache,
-                        structureId, entry, seenStructureEntities
+                        startPool, poolRegistry, templateCache,
+                        structureId, seenStructureEntities
                     );
                 }
             } catch (Throwable e) {
@@ -145,10 +161,8 @@ public class EntitySpawnManager {
     private void collectTemplateEntities(
         Holder<StructureTemplatePool> startPool,
         Registry<StructureTemplatePool> poolRegistry,
-        ResourceManager resourceManager,
         Map<ResourceLocation, CompoundTag> templateCache,
         ResourceLocation structureId,
-        Entry<Structure> structureEntry,
         Set<EntityType<?>> seenStructureEntities
     ) {
         Set<ResourceLocation> visitedPools = new HashSet<>();
@@ -171,8 +185,8 @@ public class EntitySpawnManager {
             for (StructurePoolElement element : ((StructureTemplatePoolIMixin) pool).biologydictionary$getTemplates()) {
                 try {
                     collectElementEntities(
-                        element, resourceManager, templateCache,
-                        structureId, structureEntry, seenStructureEntities, referencedPools
+                        element, templateCache,
+                        structureId, seenStructureEntities, referencedPools
                     );
                 } catch (Exception e) {
                     LOGGER.warn("Failed to process element in template pool {}", currentPoolId, e);
@@ -205,10 +219,8 @@ public class EntitySpawnManager {
 
     private void collectElementEntities(
         StructurePoolElement element,
-        ResourceManager resourceManager,
         Map<ResourceLocation, CompoundTag> templateCache,
         ResourceLocation structureId,
-        Entry<Structure> structureEntry,
         Set<EntityType<?>> seenStructureEntities,
         Set<ResourceLocation> referencedPools
     ) {
@@ -217,12 +229,16 @@ public class EntitySpawnManager {
             if (templateId == null) return;
 
             CompoundTag rootNbt = templateCache.computeIfAbsent(templateId, id -> {
+                ResourceLocation resourceLoc = STRUCTURE_LISTER.idToFile(id);
                 try {
-                    ResourceLocation resourceLoc = STRUCTURE_LISTER.idToFile(id);
                     try (InputStream is = resourceManager.open(resourceLoc)) {
                         return NbtIo.readCompressed(is, NbtAccounter.create(64 * 1024 * 1024));
                     }
                 } catch (Throwable e) {
+                    // Ignore intact_horizontal_wall_stairs_5.nbt
+                    if (resourceLoc.equals(IGNORED_MISSING_TEMPLATE) && e instanceof FileNotFoundException) {
+                        return MISSING_TEMPLATE;
+                    }
                     LOGGER.warn("Failed to read structure template {}", id, e);
                     return MISSING_TEMPLATE;
                 }
@@ -239,10 +255,7 @@ public class EntitySpawnManager {
                 String id = nbt.getString("id");
                 EntityType.byString(id).ifPresent(entityType -> {
                     if (seenStructureEntities.add(entityType)) {
-                        spawnStructures.computeIfAbsent(entityType, k -> new ArrayList<>())
-                            .add(structureEntry);
-                        structureEntities.computeIfAbsent(structureId, k -> new ArrayList<>())
-                            .add(entityType);
+                        structureSpawnMap.add(entityType, structureId);
                     }
                 });
             }
@@ -263,8 +276,8 @@ public class EntitySpawnManager {
             }
         } else if (element instanceof ListPoolElement listPoolElement) {
             for (StructurePoolElement child : ((ListPoolElementIMixin) listPoolElement).biologydictionary$getElements()) {
-                collectElementEntities(child, resourceManager, templateCache,
-                    structureId, structureEntry, seenStructureEntities, referencedPools);
+                collectElementEntities(child, templateCache,
+                    structureId, seenStructureEntities, referencedPools);
             }
         }
     }
@@ -273,5 +286,157 @@ public class EntitySpawnManager {
         return ((SinglePoolElementIMixin) element).biologydictionary$getTemplate().left().orElse(null);
     }
 
-    public record Entry<T>(ResourceLocation id, T value) {}
+    // ---- Data Pack Override ----
+
+    private static final String SPAWN_OVERRIDE_PATH_PREFIX = SPAWN_OVERRIDE_PATH + "/";
+
+    private void applyDataPackOverrides() {
+        Map<ResourceLocation, List<Resource>> stacks = SPAWN_OVERRIDE_LISTER.listMatchingResourceStacks(resourceManager);
+        for (Map.Entry<ResourceLocation, List<Resource>> entry : stacks.entrySet()) {
+            String fullPath = entry.getKey().getPath();
+            String fileName = fullPath.substring(SPAWN_OVERRIDE_PATH_PREFIX.length());
+            String entityStr = fileName.substring(0, fileName.length() - ".json".length());
+            int dotIndex = entityStr.indexOf('.');
+            if (dotIndex < 0) {
+                LOGGER.warn("Invalid spawn override filename '{}', expected format '<namespace>.<entity_path>.json'", fileName);
+                continue;
+            }
+            ResourceLocation entityId = ResourceLocation.tryParse(entityStr.replace('.', ':'));
+            if (entityId == null) {
+                LOGGER.warn("Invalid entity type '{}' in spawn override data pack, skipping.", entityStr);
+                continue;
+            }
+            EntityType<?> entityType = EntityType.byString(entityId.toString()).orElse(null);
+            if (entityType == null) {
+                LOGGER.warn("Unknown entity type '{}' in spawn override data pack, skipping.", entityId);
+                continue;
+            }
+            // Why ".reversed()": Traverse from low to high priority
+            for (Resource resource : entry.getValue().reversed()) {
+                try (BufferedReader reader = resource.openAsReader()) {
+                    JsonObject json = GsonHelper.parse(reader);
+                    applyOverrides(entityType, json, KEY_BIOMES, biomeSpawnMap);
+                    applyOverrides(entityType, json, KEY_STRUCTURES, structureSpawnMap);
+                } catch (Exception e) {
+                    LOGGER.error("Failed to parse spawn override for entity '{}': {}", entityId, e);
+                }
+            }
+        }
+    }
+
+    private void applyOverrides(EntityType<?> entityType, JsonObject json, String key,
+                               SpawnMap spawnMap) {
+        if (!json.has(key)) return;
+        JsonObject obj = json.getAsJsonObject(key);
+
+        if (obj.has(KEY_OVERWRITE) && (obj.has(KEY_ADD) || obj.has(KEY_REMOVE))) {
+            LOGGER.warn("Spawn override for entity '{}' has both 'overwrite' and 'add'/'remove' in {}, using overwrite.", entityType, key);
+        }
+
+        if (obj.has(KEY_OVERWRITE)) {
+            spawnMap.replace(entityType, obj.getAsJsonArray(KEY_OVERWRITE));
+        } else {
+            if (obj.has(KEY_ADD)) {
+                spawnMap.add(entityType, obj.getAsJsonArray(KEY_ADD));
+            }
+            if (obj.has(KEY_REMOVE)) {
+                spawnMap.remove(entityType, obj.getAsJsonArray(KEY_REMOVE));
+            }
+        }
+    }
+
+    private class SpawnMap {
+        private final Map<EntityType<?>, Set<ResourceLocation>> forward = new HashMap<>();
+        private final Map<ResourceLocation, Set<EntityType<?>>> reverse = new HashMap<>();
+        private final ResourceKey<? extends Registry<?>> registryKey;
+        private final String kindName;
+
+        SpawnMap(ResourceKey<? extends Registry<?>> registryKey, String kindName) {
+            this.registryKey = registryKey;
+            this.kindName = kindName;
+        }
+
+        Set<ResourceLocation> getForward(EntityType<?> entityType) {
+            return forward.getOrDefault(entityType, Set.of());
+        }
+
+        Set<EntityType<?>> getReverse(ResourceLocation id) {
+            return reverse.getOrDefault(id, Set.of());
+        }
+
+        boolean add(EntityType<?> entityType, ResourceLocation id) {
+            boolean added = forward.computeIfAbsent(entityType, k -> new LinkedHashSet<>()).add(id);
+            boolean reverseAdded = reverse.computeIfAbsent(id, k -> new LinkedHashSet<>()).add(entityType);
+            if (added != reverseAdded) {
+                throw new IllegalStateException("Forward/reverse mismatch on add: " + entityType + " <-> " + id);
+            }
+            return added;
+        }
+
+        boolean remove(EntityType<?> entityType, ResourceLocation id) {
+            Set<ResourceLocation> entries = forward.get(entityType);
+            Set<EntityType<?>> entities = reverse.get(id);
+            boolean removed = entries != null && entries.remove(id);
+            boolean reverseRemoved = entities != null && entities.remove(entityType);
+            if (removed != reverseRemoved) {
+                throw new IllegalStateException("Forward/reverse mismatch on remove: " + entityType + " <-> " + id);
+            }
+            return removed;
+        }
+
+        void replace(EntityType<?> entityType, JsonArray array) {
+            Set<ResourceLocation> old = forward.get(entityType);
+            if (old != null) {
+                for (ResourceLocation id : new ArrayList<>(old)) {
+                    remove(entityType, id);
+                }
+            }
+            for (ResourceLocation id : parseIdentifierList(array, entityType)) {
+                add(entityType, id);
+            }
+        }
+
+        void add(EntityType<?> entityType, JsonArray array) {
+            for (ResourceLocation id : parseIdentifierList(array, entityType)) {
+                if (!add(entityType, id)) {
+                    LOGGER.warn("{} '{}' already exists for entity '{}', skipping.", kindName, id, entityType);
+                }
+            }
+        }
+
+        void remove(EntityType<?> entityType, JsonArray array) {
+            for (ResourceLocation id : parseIdentifierList(array, entityType)) {
+                if (!remove(entityType, id)) {
+                    LOGGER.warn("{} '{}' does not exist for entity '{}', skipping removal.", kindName, id, entityType);
+                }
+            }
+        }
+
+        private List<ResourceLocation> parseIdentifierList(JsonArray array, EntityType<?> entityType) {
+            List<ResourceLocation> result = new ArrayList<>();
+            var registry = registryAccess.registryOrThrow(registryKey);
+            for (JsonElement element : array) {
+                String str = element.getAsString();
+                if (str.startsWith("#")) {
+                    TagKey<Object> tagKey = TagKey.create(Misc.cast(registryKey), ResourceLocation.parse(str.substring(1)));
+                    var optional = registry.getTag(Misc.cast(tagKey));
+                    if (optional.isEmpty()) {
+                        LOGGER.warn("Tag '{}' not found in registry, ignoring.", str);
+                    } else {
+                        optional.get().forEach(holder -> holder.unwrapKey().ifPresent(key -> result.add(key.location())));
+                    }
+                } else {
+                    ResourceLocation id = ResourceLocation.tryParse(str);
+                    if (id == null) {
+                        LOGGER.warn("Invalid identifier '{}' in spawn override, ignoring.", str);
+                    } else if (registry.get(id) == null) {
+                        LOGGER.warn("Unknown {} '{}' in spawn override for entity '{}', ignoring.", kindName, id, entityType);
+                    } else {
+                        result.add(id);
+                    }
+                }
+            }
+            return result;
+        }
+    }
 }

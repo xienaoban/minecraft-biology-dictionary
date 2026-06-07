@@ -4,9 +4,8 @@ import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Maintains an internal map of discovery records, populated via network packets.
  * Used for the DICTIONARY strategy on the client side.
  */
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscoveryCache {
     private final Map<EntityType<?>, DiscoveryRecord> cache = new ConcurrentHashMap<>();
 

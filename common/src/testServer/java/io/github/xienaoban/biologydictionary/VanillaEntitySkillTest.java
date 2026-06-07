@@ -242,7 +242,8 @@ public class VanillaEntitySkillTest {
                 EntityType.ZOMBIE,
                 EntityType.CREEPER,
                 EntityType.WOLF,
-                EntityType.HORSE
+                EntityType.HORSE,
+                EntityType.PARROT
             };
 
             int successCount = 0;

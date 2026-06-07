@@ -8,10 +8,9 @@ import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
@@ -57,21 +56,20 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
         }
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeInt(restocksToday);
         buf.writeGlobalPos(jobSitePos);
     }
 
-    @Environment(EnvType.CLIENT)
+    @ClientOnly
     @Override
     public void clientAdditionalCheck(ClientContext<Villager> ctx) {
-        final class W { static void check(ClientContext<Villager> ctx, Integer restocksToday, GlobalPos jobSitePos) {
+        @ClientOnly final class CO { static void check(ClientContext<Villager> ctx, Integer restocksToday, GlobalPos jobSitePos) {
             checkVillagerHasJobSite(restocksToday, jobSitePos);
             checkVillagerCloseToJobSite(ctx.entity(), jobSitePos);
         }}
-        W.check(ctx, restocksToday, jobSitePos);
+        CO.check(ctx, restocksToday, jobSitePos);
     }
 
     @Override

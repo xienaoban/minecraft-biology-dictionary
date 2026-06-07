@@ -1,11 +1,10 @@
 package io.github.xienaoban.biologydictionary.client;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.FallingBlockEntityIMixin;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -24,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class HighlightManager {
     private volatile boolean hasHighlighted = false;
     private final Map<Entity, HighlightedEntity> highlightedEntities = new ConcurrentHashMap<>();

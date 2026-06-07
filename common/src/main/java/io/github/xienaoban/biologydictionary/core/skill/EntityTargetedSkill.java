@@ -1,8 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -10,10 +9,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 public interface EntityTargetedSkill<E extends Entity> {
-    @Environment(EnvType.CLIENT)
     void write(FriendlyByteBuf buf);
 
-    @Environment(EnvType.CLIENT)
+    @ClientOnly
     default void clientAdditionalCheck(ClientContext<E> ctx) throws NoPermissionException {}
 
     default void serverAdditionalCheck(ServerContext<E> ctx) throws NoPermissionException {}
@@ -41,7 +39,7 @@ public interface EntityTargetedSkill<E extends Entity> {
         String shortName(); // for yaml config
     }
 
-    @Environment(EnvType.CLIENT)
+    @ClientOnly
     record ClientContext<E extends Entity>(LocalPlayer player, E entity) {}
     record ServerContext<E extends Entity>(MinecraftServer server, ServerPlayer player, E entity) {}
 }

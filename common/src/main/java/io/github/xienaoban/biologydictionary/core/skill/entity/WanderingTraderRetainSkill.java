@@ -6,8 +6,6 @@ import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.npc.WanderingTrader;
@@ -34,7 +32,6 @@ public record WanderingTraderRetainSkill() implements EntityTargetedSkill<Wander
 
     public static final int STAY_TICKS = 2 * 60 * 20;
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {}
 

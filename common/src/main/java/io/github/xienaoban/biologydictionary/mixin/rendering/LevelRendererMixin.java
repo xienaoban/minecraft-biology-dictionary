@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Mixin(LevelRenderer.class)
+@ClientOnly
 public abstract class LevelRendererMixin {
     @Unique private boolean biologydictionary$shouldHighlightEntity;
 

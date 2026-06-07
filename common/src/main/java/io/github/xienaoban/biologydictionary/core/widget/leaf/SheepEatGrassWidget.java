@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.animal.Sheep;
 import java.util.ArrayList;
 import java.util.List;
 
+@ClientOnly
 public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
     public static final Factory<Sheep> FACTORY = SheepEatGrassWidget::new;
 

@@ -2,15 +2,13 @@ package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
-import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
@@ -37,10 +35,10 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
         buf.writeFloat(radius);
     }
 
-    @Environment(EnvType.CLIENT)
+    @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class W { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
             if (!packet.allowed()) { return; }
 
             ClientWorldSession cws = ClientWorldSession.get();
@@ -68,6 +66,6 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
                     cnt, packet.entityType().getDescription(), packet.radius()));
         }}
-        W.receive(this, ctx);
+        CO.receive(this, ctx);
     }
 }

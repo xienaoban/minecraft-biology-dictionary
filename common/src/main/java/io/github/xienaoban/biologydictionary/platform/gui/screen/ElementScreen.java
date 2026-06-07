@@ -1,13 +1,12 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public abstract class ElementScreen extends CommonScreen {
     private final RootScreenElement rootScreenElement;
     private ScreenElement hoveredElement;
