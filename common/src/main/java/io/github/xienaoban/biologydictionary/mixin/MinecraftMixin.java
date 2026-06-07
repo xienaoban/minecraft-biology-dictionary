@@ -3,9 +3,8 @@ package io.github.xienaoban.biologydictionary.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.xienaoban.biologydictionary.client.BiologyDictionaryEvent;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
@@ -15,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Environment(value= EnvType.CLIENT)
+@ClientOnly
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 

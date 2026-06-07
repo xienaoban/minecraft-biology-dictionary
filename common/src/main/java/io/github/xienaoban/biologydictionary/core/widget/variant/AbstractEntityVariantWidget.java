@@ -16,10 +16,9 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElem
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -29,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends EntityPropertyWidget<E> {
     protected static final int BG_BAR1_LEFT = 11, BG_BAR1_TOP = 24;
     protected static final int BG_BAR2_LEFT = 13, BG_BAR2_TOP = 24;

@@ -2,15 +2,14 @@ package io.github.xienaoban.biologydictionary.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.client.ClientEventRegistry;
 import io.github.xienaoban.biologydictionary.platform.client.KeyMappingRegistry;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class KeyMappingManager {
     public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(Lang.BIOLOGY_DICTIONARY, Lang.BIOLOGY_DICTIONARY));
 

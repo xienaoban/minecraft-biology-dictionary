@@ -1,5 +1,8 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+
+@ClientOnly
 public interface ScreenConsts {
     /**
      * Text Top Offset for texts scaled to 0.5.

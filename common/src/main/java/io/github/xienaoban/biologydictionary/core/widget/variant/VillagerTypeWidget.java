@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantS
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.npc.villager.VillagerType;
 import java.util.ArrayList;
 import java.util.List;
 
+@ClientOnly
 public final class VillagerTypeWidget extends AbstractEntityStandardVariantWidget<Villager, Holder<VillagerType>> {
     public static final Factory<Villager> FACTORY = VillagerTypeWidget::new;
 

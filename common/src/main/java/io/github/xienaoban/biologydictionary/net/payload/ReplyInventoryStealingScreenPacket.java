@@ -4,12 +4,11 @@ import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingMenu;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingScreen;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.SimpleContainer;
@@ -33,10 +32,10 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
     /**
      * @see net.minecraft.client.multiplayer.ClientPacketListener#handleMountScreenOpen(net.minecraft.network.protocol.game.ClientboundMountScreenOpenPacket)
      */
-    @Environment(EnvType.CLIENT)
+    @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        final class W { static void receive(ReplyInventoryStealingScreenPacket packet, ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(ReplyInventoryStealingScreenPacket packet, ClientNetApi.Context ctx) {
             if (!ctx.client().packetProcessor().isSameThread()) {
                 throw new RuntimeException("Not same thread");
             }
@@ -53,6 +52,6 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
             ctx.player().containerMenu = menu;
             ctx.client().setScreen(new InventoryStealingScreen(menu, ctx.player().getInventory(), livingEntity));
         }}
-        W.receive(this, ctx);
+        CO.receive(this, ctx);
     }
 }

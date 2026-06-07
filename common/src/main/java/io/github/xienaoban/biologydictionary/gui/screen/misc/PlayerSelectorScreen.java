@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionar
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -16,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
+@ClientOnly
 public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
     private final Consumer<AbstractClientPlayer> callback;
 
