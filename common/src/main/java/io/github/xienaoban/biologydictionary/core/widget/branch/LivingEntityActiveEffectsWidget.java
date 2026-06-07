@@ -75,11 +75,11 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
                 int duration = effect.getDuration();
                 Component time;
                 if (ctx.isDebug()) {
-                    time = TextUtils.literal(duration + "t").withColor(Colors.LIGHT_GRAY_GREEN);
+                    time = TextUtils.literal(duration + "t").withStyle(ChatFormatting.GRAY);
                 } else if (duration == MobEffectInstance.INFINITE_DURATION) {
-                    time = TextUtils.translate(Lang.TEXT_INFINITY_CHARACTER).withColor(Colors.LIGHT_GRAY_GREEN);
+                    time = TextUtils.translate(Lang.TEXT_INFINITY_CHARACTER).withStyle(ChatFormatting.GRAY);
                 } else {
-                    time = TextUtils.literal((effect.getDuration() / 20) + "s").withColor(Colors.LIGHT_GRAY_GREEN);
+                    time = TextUtils.literal((effect.getDuration() / 20) + "s").withStyle(ChatFormatting.GRAY);
                 }
                 int w = ctx.calcTextWidth(name) + ctx.calcTextWidth(time);
                 Component dot = TextUtils.literal(".".repeat(Math.max(0, (maxW + 40 - w) / 2))).withStyle(ChatFormatting.DARK_GRAY);

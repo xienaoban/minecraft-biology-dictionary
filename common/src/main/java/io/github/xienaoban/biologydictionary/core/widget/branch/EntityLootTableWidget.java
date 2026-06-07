@@ -104,7 +104,7 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
         } else {
             res = TextUtils.literal("x" + entry.minCount() + "-" + entry.maxCount());
         }
-        return res.withColor(Colors.LIGHT_GRAY_GREEN);
+        return res.withStyle(ChatFormatting.GRAY);
     }
 
     private static Component formatChance(LootTableUtils.LootEntry entry) {
@@ -130,7 +130,7 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
         }
         MutableComponent inner = TextUtils.concat(conditions, TextUtils.comma());
         res = TextUtils.concat(Arrays.asList(TextUtils.literal("("), inner, TextUtils.literal(")")));
-        return res.withColor(Colors.LIGHT_GRAY_GREEN);
+        return res.withStyle(ChatFormatting.GRAY);
     }
 
     private final class LootItemBar extends EntityPropertyBar {

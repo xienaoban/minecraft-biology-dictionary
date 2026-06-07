@@ -318,7 +318,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC, HighlightEntitiesSkill.FAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                 tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.FAR_RADIUS).getRealCost().toTooltipText());
                 tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withColor(Colors.LIGHT_GRAY_GREEN));
+                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withStyle(ChatFormatting.GRAY));
             } else {
                 tooltips = new ArrayList<>();
                 tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG));
@@ -326,7 +326,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 tooltips.add(TextUtils.empty());
                 tooltips.addAll(new GetSpawnEggSkill(EntityUtils.getEntityType(entity)).getRealCost().toTooltipText());
                 tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withColor(Colors.LIGHT_GRAY_GREEN));
+                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withStyle(ChatFormatting.GRAY));
             }
 
             ctx.renderComponentTooltipCentered(tooltips, 0.5F, midX, box.getBottom() + 2);
