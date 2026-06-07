@@ -6,8 +6,7 @@ import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.VanillaKillClientDiscoveryCache;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -16,7 +15,7 @@ import net.minecraft.world.entity.EntityType;
  * A {@link ClientDiscoveryCache} that delegates to another cache instance.
  * Allows the delegate to be swapped based on the current server config.
  */
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCache, ConfigsUpdateCallback {
     private volatile Configs.ServerConfigs.DiscoveryStrategyMode mode;
     private volatile ClientDiscoveryCache delegate;

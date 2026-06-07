@@ -7,12 +7,11 @@ import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -74,7 +73,6 @@ public final class ConfigsManager {
      * Reset to local server configuration.
      * Called when disconnecting from a server or in singleplayer.
      */
-    @Environment(EnvType.CLIENT)
     public static void setLocalServerConfigs() {
         serverConfigs = INSTANCE.getServer();
         LOGGER.info("Using local server configs.");
@@ -84,7 +82,6 @@ public final class ConfigsManager {
      * Set remote server configuration from server.
      * Called when receiving config packet from server.
      */
-    @Environment(EnvType.CLIENT)
     public static void setRemoteServerConfigs(Configs.ServerConfigs remoteConfigs) {
         Objects.requireNonNull(remoteConfigs);
         if (WorldSession.get() == null) {
@@ -183,6 +180,7 @@ public final class ConfigsManager {
      * Called after server configs have been updated (saved, reloaded, or received from remote).
      * Refreshes all local world session caches and broadcasts to remote players if on server side.
      */
+    @ClientAndServer
     public static void onUpdated() {
         WorldSession ws = WorldSession.get();
         if (ws != null) {
@@ -205,6 +203,7 @@ public final class ConfigsManager {
     /**
      * Broadcast current server configs to remote players.
      */
+    @ClientAndServer
     private static void broadcastServerConfigs(MinecraftServer server) {
         String serverConfigsYaml = serializeConfigCategory(INSTANCE.getServer());
 

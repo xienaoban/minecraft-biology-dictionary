@@ -1,12 +1,11 @@
 package io.github.xienaoban.biologydictionary.platform.net;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class ClientNetApi {
 
     @ExpectPlatform

@@ -1,9 +1,11 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin;
 import io.github.xienaoban.biologydictionary.mixin.rendering.ScreenIMixin;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
@@ -11,8 +13,6 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,7 +21,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
-import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -42,7 +41,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class ScreenRenderingContext {
     private final Screen screen;
 
@@ -380,7 +379,7 @@ public final class ScreenRenderingContext {
             int q = vector2ic.y();
             getPose().pushPose();
             int r = 400;
-            getGuiGraphics().drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(getGuiGraphics(), p, q, n, o, r));
+            getGuiGraphics().drawManaged(() -> renderTooltipBackground(p, q, n, o, r));
             getPose().translate(0.0F, 0.0F, 400.0F);
             int s = q;
 
@@ -400,6 +399,15 @@ public final class ScreenRenderingContext {
 
             getPose().popPose();
         }
+    }
+
+    private void renderTooltipBackground(int x, int y, int width, int height, int z) {
+        int left = x - 3;
+        int top = y - 3;
+        int fullWidth = width + 6;
+        int fullHeight = height + 6;
+        getGuiGraphics().blitSprite(Textures.BOOK_TOOLTIP_BACKGROUND, left, top, z, fullWidth, fullHeight);
+        getGuiGraphics().blitSprite(Textures.BOOK_TOOLTIP_FRAME, left, top, z, fullWidth, fullHeight);
     }
 
     //=======================================================================================

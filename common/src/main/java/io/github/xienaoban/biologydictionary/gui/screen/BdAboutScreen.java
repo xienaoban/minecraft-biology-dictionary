@@ -3,11 +3,10 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
-import io.github.xienaoban.biologydictionary.gui.screen.misc.DebugScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -16,6 +15,7 @@ import net.minecraft.ChatFormatting;
 import java.util.Arrays;
 import java.util.List;
 
+@ClientOnly
 public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
     public BdAboutScreen() {
         super(TextUtils.translate(Lang.BOOKMARK_ABOUT));
@@ -31,7 +31,6 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         List<Widget> widgets = Arrays.asList(
                 new ModNameAuthorNameWidget(),
                 new GetBookItemWidget(),
-                new OpenDebugScreenWidget(),
                 new ShowGuiSizeWidget()
         );
 
@@ -74,28 +73,6 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
             if (screenRenderingContext.isDebug() && PlayerUtils.isCreative(player)) {
                 onClose();
                 ClientNetManager.requestBookItem();
-                return true;
-            }
-            return false;
-        }
-    }
-
-    private class OpenDebugScreenWidget extends Widget {
-        protected OpenDebugScreenWidget() {
-            super(1, Page.COLUMNS);
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            if (ctx.isDebug()) {
-                ctx.renderCenteredText(TextUtils.literal("Open Debug Screen"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
-            }
-        }
-
-        @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (screenRenderingContext.isDebug()) {
-                ClientUtils.setScreen(client, new DebugScreen());
                 return true;
             }
             return false;

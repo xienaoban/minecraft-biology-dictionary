@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -26,6 +27,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+@ClientOnly
 public class BeehiveScreen extends ElementScreen {
     private static final int[][] LATTICES = {{0, 0}, {32, 0}, {0, 50}, {32, 50}, {16, 25}, {-16, 25}, {48, 25}};
     private static final int MAX_HONEY_CNT = BeehiveBlock.MAX_HONEY_LEVELS;
@@ -79,6 +81,9 @@ public class BeehiveScreen extends ElementScreen {
 
         int beeCnt = blockBeeCnt;
         int honeyCnt = blockHoneyCnt;
+        List<Component> hoveredBeeTooltip = null;
+        float hoveredBeeTooltipX = 0F;
+        float hoveredBeeTooltipY = 0F;
 
         if (lastBeeCnt > beeCnt) {
             lastBeeCnt = beeCnt;
@@ -129,18 +134,22 @@ public class BeehiveScreen extends ElementScreen {
                 ctx.renderCenteredText(bee.entity.getCustomName(), color, 0.5F, ctx.getZ(), x, beeTop - 2);
             }
             if (ctx.getMouseX() > x - 10 && ctx.getMouseX() < x + 10 && ctx.getMouseY() > beeTop && ctx.getMouseY() < y) {
-                List<Component> texts = Arrays.asList(
+                hoveredBeeTooltip = Arrays.asList(
                         bee.entity.getName(),
                         TextUtils.translate(Lang.TEXT_BEE_STATE_IN_BEEHIVE, TextUtils.translate(bee.entity.hasNectar() ? Lang.TEXT_BEE_PRODUCING_NECTAR : Lang.TEXT_BEE_RESTING)).withStyle(ChatFormatting.GRAY),
                         TextUtils.translate(Lang.TEXT_TIME_IN_BEEHIVE, (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s").withStyle(ChatFormatting.GRAY)
                 );
-                ctx.renderComponentTooltipCenteredVanilla(texts, x, y + 18F);
+                hoveredBeeTooltipX = x;
+                hoveredBeeTooltipY = y + 2F;
             }
         }
         ctx.renderText(TextUtils.literal(honeyCnt + "/" + MAX_HONEY_CNT), color, ctx.getZ(), LATTICES[5][0] + lw + 16 - 8.5F, LATTICES[5][1] + lh + 8);
         ctx.renderText(TextUtils.literal(beeCnt + "/" + MAX_BEE_CNT), color, ctx.getZ(), LATTICES[6][0] + lw + 16 - 8.5F, LATTICES[6][1] + lh + 8);
         ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_HONEY), color, ctx.getZ(), LATTICES[5][0] + lw + 16.5F, LATTICES[5][1] + lh + 16);
         ctx.renderCenteredText(EntityType.BEE.getDescription(), color, ctx.getZ(), LATTICES[6][0] + lw + 16.5F, LATTICES[6][1] + lh + 16);
+        if (hoveredBeeTooltip != null) {
+            ctx.renderComponentTooltipCentered(hoveredBeeTooltip, hoveredBeeTooltipX, hoveredBeeTooltipY);
+        }
         ctx.getGuiGraphics().pose().popPose();
     }
 

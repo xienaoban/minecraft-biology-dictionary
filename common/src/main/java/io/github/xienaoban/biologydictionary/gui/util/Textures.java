@@ -1,13 +1,12 @@
 package io.github.xienaoban.biologydictionary.gui.util;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceLocation;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.MOD_ID;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class Textures {
     private static ResourceLocation mc(String path) {
         return ResourceLocation.withDefaultNamespace(path);
@@ -25,4 +24,8 @@ public final class Textures {
     public static final TextureInfo GENE = new TextureInfo(my("textures/gui/telescope_discovery.png"), 32, 32);
     public static final TextureInfo BEEHIVE = new TextureInfo(my("textures/gui/beehive.png"), 256, 256);
     public static final TextureInfo STEALING_INVENTORY = new TextureInfo(my("textures/gui/stealing_inventory.png"), 256, 256);
+
+    public static final ResourceLocation BOOK_TOOLTIP = my("book_tooltip");
+    public static final ResourceLocation BOOK_TOOLTIP_BACKGROUND = my("tooltip/book_tooltip_background");
+    public static final ResourceLocation BOOK_TOOLTIP_FRAME = my("tooltip/book_tooltip_frame");
 }

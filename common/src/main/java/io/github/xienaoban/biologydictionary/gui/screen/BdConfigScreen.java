@@ -12,10 +12,10 @@ import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.Component;
@@ -24,7 +24,7 @@ import net.minecraft.sounds.SoundEvents;
 
 import java.util.*;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
     public BdConfigScreen() {
         super(TextUtils.translate(Lang.BOOKMARK_CONFIG));
@@ -188,7 +188,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
             this.entryInfo = entryInfo;
             this.configText = TextUtils.translate(Configs.getConfigNameTranslationKey(entryInfo.getName()));
             this.configTooltipText = TextUtils.translate(Configs.getConfigNameTranslationKey(entryInfo.getName()) + ".tooltip");
-            this.configTextDisplay = TextUtils.truncateByWidth(configText, TextUtils.getGlobalFont(), 60, 0.5F);
+            this.configTextDisplay = FontUtils.truncateByWidth(configText, FontUtils.getGlobalFont(), 60, 0.5F);
             setSelectable(false);
         }
 
@@ -220,7 +220,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
                     configText.withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
                     configTooltipText.withStyle(ChatFormatting.GRAY)
             );
-            ctx.renderComponentTooltip(list, 0.5F, getBox().getLeft(), getBox().getBottom() + 1);
+            ctx.renderComponentTooltip(list, 0.5F, getBox().getLeft(), getBox().getBottom() + 2);
             return true;
         }
 

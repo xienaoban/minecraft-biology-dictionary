@@ -1,14 +1,15 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import io.github.xienaoban.biologydictionary.mixin.entity.AbstractClientPlayerIMixin;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -16,12 +17,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
 import java.util.Objects;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class ClientUtils {
     public static Minecraft getClient() {
         return Minecraft.getInstance();
@@ -78,6 +80,14 @@ public final class ClientUtils {
      */
     public static Collection<PlayerInfo> getOnlinePlayerInfos() {
         return getClientPlayer().connection.getListedOnlinePlayers();
+    }
+
+    public static GameType getClientGameMode(Player player) {
+        if (player instanceof AbstractClientPlayer clientPlayer) {
+            PlayerInfo playerInfo = ((AbstractClientPlayerIMixin) clientPlayer).biologydictionary$invokeGetPlayerInfo();
+            return playerInfo.getGameMode();
+        }
+        throw new RuntimeException("Cannot get gamemode from player: " + player.getClass());
     }
 
     public static boolean isFirstPerson() {

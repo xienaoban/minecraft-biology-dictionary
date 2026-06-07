@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.variant;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.animal.Panda;
 import java.util.ArrayList;
 import java.util.List;
 
+@ClientOnly
 public sealed class PandaMainGeneWidget extends AbstractEntityStandardVariantWidget<Panda, Panda.Gene> permits PandaHiddenGeneWidget {
     public static final Factory<Panda> FACTORY = PandaMainGeneWidget::new;
 
