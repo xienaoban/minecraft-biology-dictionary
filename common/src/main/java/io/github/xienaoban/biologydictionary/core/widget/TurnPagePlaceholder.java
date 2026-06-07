@@ -2,11 +2,10 @@ package io.github.xienaoban.biologydictionary.core.widget;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.world.entity.Entity;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public interface TurnPagePlaceholder {
 
     final class TurnPage1Widget extends EntityPropertyWidget<Entity> implements TurnPagePlaceholder {

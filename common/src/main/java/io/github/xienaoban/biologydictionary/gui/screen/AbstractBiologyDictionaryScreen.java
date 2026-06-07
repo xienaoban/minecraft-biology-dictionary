@@ -2,23 +2,22 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
-import io.github.xienaoban.biologydictionary.core.widget.TurnPageCommonWidget;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPagePlaceholder;
 import io.github.xienaoban.biologydictionary.gui.component.CenteredMessage;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
@@ -33,13 +32,14 @@ import java.util.Objects;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     public static final int BOOK_TEXTURE_LEFT = 96, BOOK_TEXTURE_TOP = 0, BOOK_TEXTURE_RIGHT = 416, BOOK_TEXTURE_BOTTOM = 224;
     public static final int BOOK_TEXTURE_WIDTH = BOOK_TEXTURE_RIGHT - BOOK_TEXTURE_LEFT, BOOK_TEXTURE_HEIGHT = BOOK_TEXTURE_BOTTOM - BOOK_TEXTURE_TOP;
     public static final int BOOK_WIDTH = BOOK_TEXTURE_WIDTH, BOOK_HEIGHT = BOOK_TEXTURE_HEIGHT - 32;
+    public static final int BOOK_TOP_OFFSET = -10;
 
-    private static final int PAGE_MID_MARGIN = 12, PAGE_TOP_MARGIN = 28;
+    private static final int PAGE_MID_MARGIN = 14, PAGE_TOP_MARGIN = 28 + BOOK_TOP_OFFSET;
 
     public static AbstractBiologyDictionaryScreen current() {
         return ClientUtils.getCurrentScreen();
@@ -63,8 +63,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private final PageNum rightPageNum = new PageNum(true);
     private final PageTurnButton turnLeft = new PageTurnButton(-2);
     private final PageTurnButton turnRight = new PageTurnButton(2);
-
     private final CenteredMessage centeredMessage = new CenteredMessage();
+
+    private final boolean demoMode;
 
     public AbstractBiologyDictionaryScreen(MutableComponent title) {
         super(title.withColor(Colors.TITLE));
@@ -74,8 +75,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         rightPageNum.setParent(getRootScreenElement());
         turnLeft.setParent(getRootScreenElement());
         turnRight.setParent(getRootScreenElement());
-
         centeredMessage.setParent(getRootScreenElement());
+
+        demoMode = ConfigsManager.getClient().isDemoMode();
     }
 
     private void check() {
@@ -104,12 +106,16 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     protected void render(ScreenRenderingContext ctx) {
-        renderTransparentBackground(ctx);
+        if (demoMode) {
+            ctx.renderRectangle(0xFF000000, ctx.getZ(), 0, 0, width, height);
+        } else {
+            renderTransparentBackground(ctx);
+        }
         ctx.renderTexture(Textures.BOOK,
                 BOOK_TEXTURE_LEFT, BOOK_TEXTURE_TOP, BOOK_TEXTURE_RIGHT, BOOK_TEXTURE_BOTTOM,
                 getZ(),
-                (width - BOOK_TEXTURE_WIDTH) / 2F, (height - BOOK_TEXTURE_HEIGHT) / 2F,
-                (width + BOOK_TEXTURE_WIDTH) / 2F, (height + BOOK_TEXTURE_HEIGHT) / 2F);
+                (width - BOOK_TEXTURE_WIDTH) / 2F, (height - BOOK_TEXTURE_HEIGHT) / 2F + BOOK_TOP_OFFSET,
+                (width + BOOK_TEXTURE_WIDTH) / 2F, (height + BOOK_TEXTURE_HEIGHT) / 2F + BOOK_TOP_OFFSET);
         renderTitle(ctx, title);
 
         if (ctx.isDebug()) {
@@ -121,7 +127,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     private void renderTitle(ScreenRenderingContext ctx, Component title) {
-        float left = width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH + 2;
+        float left = width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH;
         float top = (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN - 12;
         ctx.renderText(title, 0x66000000, ctx.getZ(), left + 0.5F, top + 0.5F);
         ctx.renderText(title, 0xFF080808, ctx.getZ(), left, top);
@@ -137,7 +143,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
             Bookmark bookmark = bookmarks[i];
             if (bookmark == null) { continue; }
             ScreenElementBox box = bookmark.getBox();
-            box.setPosition(width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH - box.getWidth() - 18 + (i % 3),
+            box.setPosition(width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH - box.getWidth() - 19 + (i % 3),
                     (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + i * (box.getHeight() + 4));
         }
 
@@ -151,13 +157,13 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
 
         leftPageNum.getBox().setPosition((width - Page.PAGE_WIDTH - PageNum.WIDTH) / 2F - PAGE_MID_MARGIN,
-                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
+                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 6);
         rightPageNum.getBox().setPosition((width + Page.PAGE_WIDTH - PageNum.WIDTH) / 2F + PAGE_MID_MARGIN,
-                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
+                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 6);
 
-        turnLeft.getBox().setPosition((width - PageTurnButton.SIZE) / 2F - (Page.PAGE_WIDTH + 4),
+        turnLeft.getBox().setPosition((width - PageTurnButton.SIZE) / 2F - (Page.PAGE_WIDTH + 14),
                 (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
-        turnRight.getBox().setPosition((width - PageTurnButton.SIZE) / 2F + (Page.PAGE_WIDTH + 4),
+        turnRight.getBox().setPosition((width - PageTurnButton.SIZE) / 2F + (Page.PAGE_WIDTH + 14),
                 (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
 
         centeredMessage.getBox().set(width / 2F - Page.PAGE_WIDTH,
@@ -358,7 +364,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                     (L + offsetL) * Widget.WIDGET_WIDTH,
                     (T - offsetT) * Widget.WIDGET_HEIGHT,
                     ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
-            ctx.renderCenteredText(text, Colors.COMMON_LIGHT_TEXT, 0.5F, ctx.getZ(), (box.getLeft() + box.getRight()) / 2, box.getTop() + 3);
+            ctx.renderRightAlignedText(text, Colors.COMMON_LIGHT_TEXT, 0.5F, ctx.getZ(), box.getRight() - 2F, box.getTop() + 2.5F);
         }
     }
 
@@ -507,7 +513,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 }
             }
             ctx.renderCenteredText(cache, 0x88DECEC2, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
-            ctx.renderCenteredText(cache, Colors.TITLE, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
+            ctx.renderCenteredText(cache, 0xFFB68F71, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
         }
     }
 

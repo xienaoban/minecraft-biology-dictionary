@@ -5,17 +5,16 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -38,22 +37,20 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
         }
     };
 
-    @Environment(EnvType.CLIENT)
-    public EntityGiftPetSkill(AbstractClientPlayer player) {
+    public EntityGiftPetSkill(Player player) {
         this(player.getUUID());
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeLong(targetPlayerUuid.getMostSignificantBits());
         buf.writeLong(targetPlayerUuid.getLeastSignificantBits());
     }
 
-    @Environment(EnvType.CLIENT)
+    @ClientOnly
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
-        final class W { static void check(ClientContext<Entity> ctx, UUID targetPlayerUuid) {
+        @ClientOnly final class CO { static void check(ClientContext<Entity> ctx, UUID targetPlayerUuid) {
             OwnableEntity ownable = (OwnableEntity) ctx.entity();
             if (ownable.getOwnerReference() == null) {
                 throw new NoPermissionException(TextUtils.translate(Lang.TEXT_ENTITY_NOT_TAMED),
@@ -72,7 +69,7 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
                         "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
             }
         }}
-        W.check(ctx, targetPlayerUuid);
+        CO.check(ctx, targetPlayerUuid);
     }
 
     @Override

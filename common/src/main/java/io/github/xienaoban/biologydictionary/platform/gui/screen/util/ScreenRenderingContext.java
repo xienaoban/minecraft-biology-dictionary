@@ -4,14 +4,14 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.biologydictionary.compat.CompatibilityOptions;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiTextRenderStateIMixin;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.util.*;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class ScreenRenderingContext {
     private final Screen screen;
 
@@ -109,6 +109,11 @@ public final class ScreenRenderingContext {
     public Matrix3x2fStack getPose() {
         return getGuiGraphics().pose();
     }
+
+    public void nextStratum() {
+        getGuiGraphics().nextStratum();
+    }
+
     public GuiGraphics.ScissorStack getScissorStack() {
         return ((GuiGraphicsIMixin) getGuiGraphics()).biologydictionary$getScissorStack();
     }
@@ -359,16 +364,6 @@ public final class ScreenRenderingContext {
     // Rendering tooltips.
     //=======================================================================================
 
-    public void renderComponentTooltipForNextFrameVanilla(List<Component> texts, float leftX, float topY) {
-        getGuiGraphics().setComponentTooltipForNextFrame(getFont(), texts, (int) leftX, (int) topY);
-    }
-
-    public void renderComponentTooltipCenteredForNextFrameVanilla(List<Component> texts, float midX, float topY) {
-        int maxLength = texts.stream().mapToInt(this::calcTextWidth).max().orElse(20);
-        getGuiGraphics().setComponentTooltipForNextFrame(getFont(), texts,
-                (int) (midX - (maxLength + 20) / 2F), (int) topY);
-    }
-
     public void renderComponentTooltip(List<Component> texts, float leftX, float topY) {
         renderTooltipTexts(texts, 1F, leftX, topY);
     }
@@ -453,7 +448,7 @@ public final class ScreenRenderingContext {
         int p = vector2ic.x();
         int q = vector2ic.y();
         getPose().pushMatrix();
-        TooltipRenderUtil.renderTooltipBackground(getGuiGraphics(), p, q, width, height, null);
+        TooltipRenderUtil.renderTooltipBackground(getGuiGraphics(), p, q, width, height, Textures.BOOK_TOOLTIP);
         int r = q;
 
         for (int s = 0; s < list.size(); s++) {

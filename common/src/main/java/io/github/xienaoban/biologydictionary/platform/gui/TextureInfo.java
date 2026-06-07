@@ -1,8 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform.gui;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.resources.Identifier;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public record TextureInfo(Identifier location, float width, float height) {}

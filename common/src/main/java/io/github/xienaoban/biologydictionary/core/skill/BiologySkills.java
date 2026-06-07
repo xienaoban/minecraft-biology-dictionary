@@ -5,11 +5,10 @@ import io.github.xienaoban.biologydictionary.core.skill.entity.*;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 
@@ -106,9 +105,9 @@ public final class BiologySkills {
         return skillClass.getName();
     }
 
-    @Environment(EnvType.CLIENT)
+    @ClientOnly
     public static boolean activate(GeneralSkill skill) {
-        final class W { static boolean activate(GeneralSkill skill) {
+        @ClientOnly final class CO { static boolean activate(GeneralSkill skill) {
             try {
                 LocalPlayer player = ClientUtils.getClientPlayer();
                 skill.clientAdditionalCheck(new GeneralSkill.ClientContext(player));
@@ -124,12 +123,12 @@ public final class BiologySkills {
             }
             return false;
         }}
-        return W.activate(skill);
+        return CO.activate(skill);
     }
 
-    @Environment(EnvType.CLIENT)
+    @ClientOnly
     public static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
-        final class W { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
+        @ClientOnly final class CO { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
             try {
                 if (EntityUtils.isFakeEntity(entity)) {
                     // Entity displayed in overview screen, not a real entity in world.
@@ -149,7 +148,7 @@ public final class BiologySkills {
             }
             return false;
         }}
-        return W.activate(entity, skill);
+        return CO.activate(entity, skill);
     }
 
     public interface Registrar {

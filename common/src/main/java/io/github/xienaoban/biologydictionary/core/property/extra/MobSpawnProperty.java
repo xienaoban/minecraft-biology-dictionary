@@ -32,10 +32,8 @@ public class MobSpawnProperty extends AbstractProperty<Mob, MobSpawnProperty.Dat
             return;
         }
         EntitySpawnManager manager = sws.getEntitySpawnManager();
-        List<Identifier> biomes = manager.getSpawnBiomes(EntityUtils.getEntityType(entity))
-                .stream().map(EntitySpawnManager.Entry::id).toList();
-        List<Identifier> structures = manager.getSpawnStructures(EntityUtils.getEntityType(entity))
-                .stream().map(EntitySpawnManager.Entry::id).toList();
+        List<Identifier> biomes = List.copyOf(manager.getSpawnBiomes(EntityUtils.getEntityType(entity)));
+        List<Identifier> structures = List.copyOf(manager.getSpawnStructures(EntityUtils.getEntityType(entity)));
         setVal(new Data(biomes, structures));
     }
 

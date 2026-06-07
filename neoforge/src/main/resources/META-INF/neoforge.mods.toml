@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[2,)"
-#issueTrackerURL = ""
+issueTrackerURL = "https://github.com/xienaoban/minecraft-biology-dictionary/issues"
 license = "GNU LGPL 3.0"
 
 [[mods]]
@@ -26,7 +26,7 @@ side = "BOTH"
 [[dependencies.biologydictionary]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.11,)"
+versionRange = "[1.21.11]"
 ordering = "NONE"
 side = "BOTH"
 

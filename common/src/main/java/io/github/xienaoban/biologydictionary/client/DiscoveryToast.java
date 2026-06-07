@@ -1,10 +1,9 @@
 package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,9 +18,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import org.jspecify.annotations.Nullable;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public class DiscoveryToast implements Toast {
-    private static final Identifier BACKGROUND_TEXTURE = Identifier.fromNamespaceAndPath("biologydictionary", "textures/gui/discovery_toast.png");
+    private static final Identifier BACKGROUND_SPRITE = Identifier.fromNamespaceAndPath("biologydictionary", "toast/discovery_toast");
     private static final int DISPLAY_TIME = 7000;
     private final Component entityName;
     @Nullable
@@ -50,7 +49,7 @@ public class DiscoveryToast implements Toast {
 
     @Override
     public void render(GuiGraphics guiGraphics, Font font, long l) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, 0, 0, 0f, 0f, width(), height(), width(), height());
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_SPRITE, 0, 0, width(), height());
         if (eggStack != null) {
             guiGraphics.renderFakeItem(eggStack, 8, 8);
         }

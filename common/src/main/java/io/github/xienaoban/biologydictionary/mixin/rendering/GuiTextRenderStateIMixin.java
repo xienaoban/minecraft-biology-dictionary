@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.mixin.rendering;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.state.GuiTextRenderState;
@@ -8,6 +9,7 @@ import org.joml.Matrix3x2fc;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+@ClientOnly
 @Mixin(GuiTextRenderState.class)
 public interface GuiTextRenderStateIMixin {
     @Accessor("font")
