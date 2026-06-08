@@ -21,7 +21,7 @@ description: 跨版本移植助手，将功能 commit 从源分支移植到当�
 `git diff-tree --no-commit-id --name-only -r <commit>` 获取文件列表，分类为新增/修改/删除（含 `.java` 和 `.md` 等非代码文件）。对修改文件逐个看 diff，区分功能改动 vs MC 版本适配。只标记功能改动。**只看不做。**
 
 ### Phase 1：新增文件
-`git show <commit>:<path>` 提取内容写入目标分支。已知 API 差异参考 `doc/dev/port.md` 批量替换，未知差异在 `../mc-source/<版本>/` 搜索。无法适配留 `// TODO`。
+`git show <commit>:<path>` 提取内容写入目标分支。已知 API 差异参考 `docs/dev/port.md` 批量替换，未知差异在 `../mc-source/<版本>/` 搜索。无法适配留 `// TODO`。
 
 ### Phase 2：修改文件
 按依赖顺序从底层到上层（核心类 → session → 网络 → 技能/组件 → GUI → Mixin）。拿 diff，理解意图，在目标文件应用等价改动。
@@ -33,5 +33,5 @@ grep 全局扫描：被移动/删除的方法、被修改签名的公共方法�
 提醒用户编译，根据报错修复。
 
 ## 参考
-- 详细 API 差异表：`doc/dev/port.md`
+- 详细 API 差异表：`docs/dev/port.md`
 - 编码规范：`CLAUDE.md`

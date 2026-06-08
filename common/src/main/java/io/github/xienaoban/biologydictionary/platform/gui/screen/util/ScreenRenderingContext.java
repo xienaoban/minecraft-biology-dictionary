@@ -43,6 +43,9 @@ import java.util.stream.Stream;
 
 @ClientOnly
 public final class ScreenRenderingContext {
+    private static final int BOOK_TOOLTIP_PADDING = 13;
+    private static final int BOOK_TOOLTIP_BACKGROUND_COLOR = 0xF0100010;
+
     private final Screen screen;
 
     private final Minecraft client;
@@ -402,12 +405,15 @@ public final class ScreenRenderingContext {
     }
 
     private void renderTooltipBackground(int x, int y, int width, int height, int z) {
-        int left = x - 3;
-        int top = y - 3;
-        int fullWidth = width + 6;
-        int fullHeight = height + 6;
+        int left = x - BOOK_TOOLTIP_PADDING;
+        int top = y - BOOK_TOOLTIP_PADDING;
+        int fullWidth = width + BOOK_TOOLTIP_PADDING * 2;
+        int fullHeight = height + BOOK_TOOLTIP_PADDING * 2;
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         getGuiGraphics().blitSprite(Textures.BOOK_TOOLTIP_BACKGROUND, left, top, z, fullWidth, fullHeight);
         getGuiGraphics().blitSprite(Textures.BOOK_TOOLTIP_FRAME, left, top, z, fullWidth, fullHeight);
+        RenderSystem.defaultBlendFunc();
     }
 
     //=======================================================================================
