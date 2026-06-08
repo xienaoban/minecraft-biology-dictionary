@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.xienaoban.biologydictionary.compat.CompatibilityOptions;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -14,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@ClientOnly
 @Mixin(value = EntityRenderDispatcher.class, priority = 900)
 public class EntityRenderDispatcherMixin {
     @Unique private boolean biologydictionary$modifiedGlowing;
