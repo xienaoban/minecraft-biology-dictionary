@@ -1,9 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
-import io.github.xienaoban.biologydictionary.mixin.entity.AbstractClientPlayerIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.ServerPlayerIMixin;
-import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.client.player.AbstractClientPlayer;
+import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,20 +27,12 @@ public final class PlayerUtils {
         return ((ServerPlayerIMixin) serverPlayer).biologydictionary$getServer();
     }
 
+    @ClientAndServer
     public static GameType gameMode(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
             return ((ServerPlayerIMixin) serverPlayer).biologydictionary$getGameMode().getGameModeForPlayer();
         } else {
-            final class T {
-                private static GameType getTypeFromClient(Player player) {
-                    if (player instanceof AbstractClientPlayer clientPlayer) {
-                        PlayerInfo playerInfo = ((AbstractClientPlayerIMixin) clientPlayer).biologydictionary$invokeGetPlayerInfo();
-                        return playerInfo.getGameMode();
-                    }
-                    throw new RuntimeException("Cannot get gamemode from player: " + player.getClass());
-                }
-            }
-            return T.getTypeFromClient(player);
+            return ClientUtils.getClientGameMode(player);
         }
     }
 
@@ -54,6 +44,7 @@ public final class PlayerUtils {
         return player.isSpectator();
     }
 
+    @ClientAndServer
     public static boolean isOp(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
             return serverPlayer.server.getPlayerList().isOp(serverPlayer.getGameProfile());

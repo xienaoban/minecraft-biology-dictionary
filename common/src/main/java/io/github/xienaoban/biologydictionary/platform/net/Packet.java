@@ -1,13 +1,12 @@
 package io.github.xienaoban.biologydictionary.platform.net;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.network.FriendlyByteBuf;
 
 public interface Packet {
     void write(FriendlyByteBuf buf);
 
-    @Environment(EnvType.CLIENT)
+    @ClientOnly
     default void clientReceive(ClientNetApi.Context ctx) {
         throw new AssertionError();
     }

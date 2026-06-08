@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.mixin.rendering;
 
 import io.github.xienaoban.biologydictionary.client.TelescopeDiscoveryIndicatorRenderer;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@ClientOnly
 @Mixin(Gui.class)
 public abstract class GuiMixin {
     @Shadow @Final private Minecraft minecraft;

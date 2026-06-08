@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[2,)"
-#issueTrackerURL = ""
+issueTrackerURL = "https://github.com/xienaoban/minecraft-biology-dictionary/issues"
 license = "GNU LGPL 3.0"
 
 [[mods]]

@@ -47,6 +47,12 @@ public final class Configs {
         @ConfigEntry
         boolean hideEntityDescriptionWidgetIfNotFound = true;
 
+        /**
+         * Use a pure black background for Biology Dictionary screens.
+         */
+        @ConfigEntry
+        boolean demoMode = false;
+
         // =========================== Getters ============================
 
         public float getScreenScale() {
@@ -59,6 +65,10 @@ public final class Configs {
 
         public boolean isHideEntityDescriptionWidgetIfNotFound() {
             return hideEntityDescriptionWidgetIfNotFound;
+        }
+
+        public boolean isDemoMode() {
+            return demoMode;
         }
 
         // ============================= Misc =============================
@@ -98,6 +108,12 @@ public final class Configs {
          */
         @ConfigEntry
         boolean inheritSilentFromParents = true;
+
+        /**
+         * Whether players are allowed to steal items from other players' inventories.
+         */
+        @ConfigEntry
+        boolean allowStealingPlayerInventory = false;
 
         /**
          * Discovery strategy. Determines how entities are discovered by each player.
@@ -194,6 +210,10 @@ public final class Configs {
 
         public boolean isInheritSilentFromParents() {
             return inheritSilentFromParents;
+        }
+
+        public boolean isAllowStealingPlayerInventory() {
+            return allowStealingPlayerInventory;
         }
 
         public DiscoveryStrategyMode getDiscoveryStrategy() {

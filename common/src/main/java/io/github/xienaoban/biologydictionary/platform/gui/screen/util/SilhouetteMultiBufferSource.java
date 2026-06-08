@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
@@ -8,8 +9,6 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultedVertexConsumer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexSorting;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -164,7 +163,7 @@ import java.util.Optional;
  * {@code entityTarget}'s size (which equals the window size), matching what
  * the GUI rendering pipeline expects.</p>
  */
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class SilhouetteMultiBufferSource implements MultiBufferSource {
     /** Discards all vertex data. Used for render types without outline variants. */
     private static final VertexConsumer NOOP = new VertexConsumer() {

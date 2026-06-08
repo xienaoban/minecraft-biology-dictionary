@@ -5,8 +5,6 @@ import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -32,13 +30,11 @@ public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, 
         }
     };
 
-    @Environment(EnvType.CLIENT)
     public EntitySetVariantSkill(Entity entity, int variantHandlerIdx, Object variant) {
         this(EntityUtils.getEntityTypeIdName(entity), variantHandlerIdx,
                 EntityVariantPropertyBundle.getHandlers(entity).get(variantHandlerIdx).variantToNbt(variant));
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeUtf(entityTypeId);

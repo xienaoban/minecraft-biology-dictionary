@@ -1,11 +1,10 @@
 package io.github.xienaoban.biologydictionary.platform.client;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.KeyMapping;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class KeyMappingRegistry {
     @ExpectPlatform
     public static void registerKeyMapping(KeyMapping mapping) {

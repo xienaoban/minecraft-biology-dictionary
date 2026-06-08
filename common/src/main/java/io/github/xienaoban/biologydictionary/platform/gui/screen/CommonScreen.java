@@ -1,13 +1,12 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.mixin.rendering.ScreenIMixin;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScaleRAII;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenConsts;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -21,7 +20,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * 1. Because the APIs always change between different MC versions.
  * 2. Because the parameter names of the methods are missing when using the official mappings.
  */
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public abstract class CommonScreen extends Screen implements ScreenConsts {
     private static boolean commonScreenOpened = false;
 

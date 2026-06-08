@@ -2,12 +2,14 @@ package io.github.xienaoban.biologydictionary.mixin.rendering;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import io.github.xienaoban.biologydictionary.client.HighlightManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.renderer.entity.FallingBlockRenderer;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+@ClientOnly
 @Mixin(FallingBlockRenderer.class)
 public class FallingBlockRendererMixin {
 

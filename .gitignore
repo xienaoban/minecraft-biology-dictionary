@@ -120,4 +120,7 @@ runs/
 
 # AI
 /.claude/
+/.codex/
+/.agents/
+/AGENTS.md
 /tmp/

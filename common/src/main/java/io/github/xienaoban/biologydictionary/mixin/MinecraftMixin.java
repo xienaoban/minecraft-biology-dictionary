@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.xienaoban.biologydictionary.client.BiologyDictionaryEvent;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -14,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
+@ClientOnly
 public class MinecraftMixin {
 
     @Inject(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isItemEnabled(Lnet/minecraft/world/flag/FeatureFlagSet;)Z"), cancellable = true)

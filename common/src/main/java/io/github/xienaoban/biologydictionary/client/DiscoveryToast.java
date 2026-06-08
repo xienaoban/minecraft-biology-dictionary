@@ -1,10 +1,10 @@
 package io.github.xienaoban.biologydictionary.client;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -15,12 +15,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.SpawnEggItem;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public class DiscoveryToast implements Toast {
-    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.tryParse("biologydictionary:textures/gui/discovery_toast.png");
+    private static final ResourceLocation BACKGROUND_TEXTURE =
+            ResourceLocation.tryParse("biologydictionary:textures/gui/sprites/toast/discovery_toast.png");
     private static final int DISPLAY_TIME = 7000;
     private final Component entityName;
     private final ItemStack eggStack;
