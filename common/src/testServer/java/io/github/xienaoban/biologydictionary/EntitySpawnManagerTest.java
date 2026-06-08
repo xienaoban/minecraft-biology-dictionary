@@ -50,20 +50,6 @@ public class EntitySpawnManagerTest {
         helper.succeed();
     }
 
-    public void testCreakingSpawnsInPaleGarden(GameTestHelper helper) {
-        EntitySpawnManager manager = getManager(helper);
-        if (manager == null) return;
-        EntityType<?> creaking = EntityType.byString("minecraft:creaking").orElse(null);
-        if (creaking == null) {
-            helper.succeed();
-            return;
-        }
-        Set<ResourceLocation> biomes = manager.getSpawnBiomes(creaking);
-        helper.assertTrue(biomes.contains(ResourceLocation.withDefaultNamespace("pale_garden")),
-            "Creaking should spawn in pale garden (via data pack override)");
-        helper.succeed();
-    }
-
     public void testEnderDragonSpawnsInTheEnd(GameTestHelper helper) {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) return;

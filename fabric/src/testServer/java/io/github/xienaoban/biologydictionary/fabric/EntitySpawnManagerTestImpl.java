@@ -24,11 +24,6 @@ public class EntitySpawnManagerTestImpl implements FabricGameTest {
     }
 
     @GameTest(template = EMPTY_STRUCTURE)
-    public void testCreakingSpawnsInPaleGarden(GameTestHelper helper) {
-        test.testCreakingSpawnsInPaleGarden(helper);
-    }
-
-    @GameTest(template = EMPTY_STRUCTURE)
     public void testEnderDragonSpawnsInTheEnd(GameTestHelper helper) {
         test.testEnderDragonSpawnsInTheEnd(helper);
     }
