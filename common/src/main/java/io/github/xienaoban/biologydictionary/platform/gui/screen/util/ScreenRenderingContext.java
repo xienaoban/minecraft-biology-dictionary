@@ -44,6 +44,9 @@ import java.util.stream.Stream;
 
 @ClientOnly
 public final class ScreenRenderingContext {
+    private static final int BOOK_TOOLTIP_PADDING = 13;
+    private static final int BOOK_TOOLTIP_TEXTURE_SIZE = 100;
+
     private final Screen screen;
 
     private final Minecraft client;
@@ -408,14 +411,70 @@ public final class ScreenRenderingContext {
     }
 
     private void renderTooltipBackground(int x, int y, int width, int height, int z) {
-        int left = x - 3;
-        int top = y - 3;
-        int fullWidth = width + 6;
-        int fullHeight = height + 6;
-        getGuiGraphics().blitNineSliced(Textures.BOOK_TOOLTIP_BACKGROUND, left, top, fullWidth, fullHeight,
-                9, 100, 100, 0, 0);
-        getGuiGraphics().blitNineSliced(Textures.BOOK_TOOLTIP_FRAME, left, top, fullWidth, fullHeight,
-                10, 100, 100, 0, 0);
+        int left = x - BOOK_TOOLTIP_PADDING;
+        int top = y - BOOK_TOOLTIP_PADDING;
+        int fullWidth = width + BOOK_TOOLTIP_PADDING * 2;
+        int fullHeight = height + BOOK_TOOLTIP_PADDING * 2;
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        renderNineSlicedTooltipTexture(new TextureInfo(Textures.BOOK_TOOLTIP_BACKGROUND, BOOK_TOOLTIP_TEXTURE_SIZE, BOOK_TOOLTIP_TEXTURE_SIZE),
+                9, false, z, left, top, fullWidth, fullHeight);
+        renderNineSlicedTooltipTexture(new TextureInfo(Textures.BOOK_TOOLTIP_FRAME, BOOK_TOOLTIP_TEXTURE_SIZE, BOOK_TOOLTIP_TEXTURE_SIZE),
+                10, true, z, left, top, fullWidth, fullHeight);
+        RenderSystem.defaultBlendFunc();
+    }
+
+    private void renderNineSlicedTooltipTexture(TextureInfo texture, int border, boolean stretchInner,
+                                                float z, int left, int top, int width, int height) {
+        int right = left + width;
+        int bottom = top + height;
+        int textureRight = BOOK_TOOLTIP_TEXTURE_SIZE;
+        int textureBottom = BOOK_TOOLTIP_TEXTURE_SIZE;
+        int innerTextureSize = BOOK_TOOLTIP_TEXTURE_SIZE - border * 2;
+
+        renderTexture(texture, 0, 0, border, border, z, left, top, left + border, top + border);
+        renderTexture(texture, textureRight - border, 0, textureRight, border, z, right - border, top, right, top + border);
+        renderTexture(texture, 0, textureBottom - border, border, textureBottom, z, left, bottom - border, left + border, bottom);
+        renderTexture(texture, textureRight - border, textureBottom - border, textureRight, textureBottom, z, right - border, bottom - border, right, bottom);
+
+        renderTooltipTextureSlice(texture, border, 0, textureRight - border, border, z,
+                left + border, top, right - border, top + border, !stretchInner, false);
+        renderTooltipTextureSlice(texture, border, textureBottom - border, textureRight - border, textureBottom, z,
+                left + border, bottom - border, right - border, bottom, !stretchInner, false);
+        renderTooltipTextureSlice(texture, 0, border, border, textureBottom - border, z,
+                left, top + border, left + border, bottom - border, false, !stretchInner);
+        renderTooltipTextureSlice(texture, textureRight - border, border, textureRight, textureBottom - border, z,
+                right - border, top + border, right, bottom - border, false, !stretchInner);
+        renderTooltipTextureSlice(texture, border, border, border + innerTextureSize, border + innerTextureSize, z,
+                left + border, top + border, right - border, bottom - border, !stretchInner, !stretchInner);
+    }
+
+    private void renderTooltipTextureSlice(TextureInfo texture,
+                                           int textureLeft, int textureTop, int textureRight, int textureBottom,
+                                           float z, int left, int top, int right, int bottom,
+                                           boolean tileX, boolean tileY) {
+        int sourceWidth = textureRight - textureLeft;
+        int sourceHeight = textureBottom - textureTop;
+        if (sourceWidth <= 0 || sourceHeight <= 0 || right <= left || bottom <= top) {
+            return;
+        }
+        if (!tileX && !tileY) {
+            renderTexture(texture, textureLeft, textureTop, textureRight, textureBottom, z, left, top, right, bottom);
+            return;
+        }
+
+        int yStep = tileY ? sourceHeight : bottom - top;
+        int xStep = tileX ? sourceWidth : right - left;
+        for (int y = top; y < bottom; y += yStep) {
+            int targetBottom = tileY ? Math.min(y + sourceHeight, bottom) : bottom;
+            int sourceBottom = tileY ? textureTop + (targetBottom - y) : textureBottom;
+            for (int x = left; x < right; x += xStep) {
+                int targetRight = tileX ? Math.min(x + sourceWidth, right) : right;
+                int sourceRight = tileX ? textureLeft + (targetRight - x) : textureRight;
+                renderTexture(texture, textureLeft, textureTop, sourceRight, sourceBottom,
+                        z, x, y, targetRight, targetBottom);
+            }
+        }
     }
 
     //=======================================================================================
