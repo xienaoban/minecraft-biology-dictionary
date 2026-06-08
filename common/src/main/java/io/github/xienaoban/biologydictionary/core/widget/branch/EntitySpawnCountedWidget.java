@@ -8,14 +8,13 @@ import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobCategory;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class EntitySpawnCountedWidget extends EntityPropertyStandardWidget<Entity> {
     public static final Factory<Entity> FACTORY = EntitySpawnCountedWidget::new;
 

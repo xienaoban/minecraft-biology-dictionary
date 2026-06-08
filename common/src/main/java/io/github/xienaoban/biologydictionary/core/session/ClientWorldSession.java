@@ -7,8 +7,12 @@ import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.discovery.DelegatingClientDiscoveryCache;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import net.minecraft.world.entity.EntityType;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -16,7 +20,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Client-side data tied to the current world session.
  * Created when entering a world, destroyed when leaving.
  */
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class ClientWorldSession implements ConfigsUpdateCallback {
     private static volatile ClientWorldSession instance;
 
@@ -53,12 +57,14 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
     private final DelegatingClientDiscoveryCache discoveryClientCache;
     private final FirstPersonShoulderEntityRenderer shoulderEntityRenderer;
     private final TelescopeManager telescopeManager;
+    private final Set<EntityType<?>> failedRenderEntityTypes;
 
     private ClientWorldSession() {
         highlightManager = new HighlightManager();
         discoveryClientCache = new DelegatingClientDiscoveryCache();
         shoulderEntityRenderer = new FirstPersonShoulderEntityRenderer();
         telescopeManager = new TelescopeManager();
+        failedRenderEntityTypes = Collections.newSetFromMap(new ConcurrentHashMap<>());
     }
 
     @Override
@@ -80,6 +86,14 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
 
     public TelescopeManager getTelescopeManager() {
         return telescopeManager;
+    }
+
+    public void markRenderFailed(EntityType<?> entityType) {
+        failedRenderEntityTypes.add(entityType);
+    }
+
+    public boolean hasRenderFailed(EntityType<?> entityType) {
+        return failedRenderEntityTypes.contains(entityType);
     }
 
     public void tick() {

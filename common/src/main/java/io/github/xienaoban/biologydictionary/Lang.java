@@ -103,6 +103,7 @@ public final class Lang {
     WIDGET_ENTITY_OVERVIEW_LEFT_DESC    = "widget.biologydictionary.overview.left.desc",
     WIDGET_ENTITY_OFFER_SPAWN_EGG       = "widget.biologydictionary.offer_spawn_egg",
     WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC  = "widget.biologydictionary.offer_spawn_egg.desc",
+    WIDGET_DISCOVERY_PROGRESS           = "widget.biologydictionary.discovery_progress",
 
     PROPERTY_WIDGET_HEALTH                      = "property_widget.biologydictionary.health",
     PROPERTY_WIDGET_HEALTH_DESC                 = "property_widget.biologydictionary.health.desc",
@@ -207,11 +208,9 @@ public final class Lang {
     PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN        = "property_widget.biologydictionary.despawn_delay.retain",
     PROPERTY_WIDGET_DESPAWN_DELAY_RETAIN_DESC   = "property_widget.biologydictionary.despawn_delay.retain.desc",
     PROPERTY_WIDGET_INVENTORY                   = "property_widget.biologydictionary.inventory",
-    PROPERTY_WIDGET_INVENTORY_DESC1             = "property_widget.biologydictionary.inventory.desc1",
-    PROPERTY_WIDGET_INVENTORY_DESC2             = "property_widget.biologydictionary.inventory.desc2",
+    PROPERTY_WIDGET_INVENTORY_DESC              = "property_widget.biologydictionary.inventory.desc",
     PROPERTY_WIDGET_INVENTORY_STEAL             = "property_widget.biologydictionary.inventory.steal",
-    PROPERTY_WIDGET_INVENTORY_STEAL_DESC1       = "property_widget.biologydictionary.inventory.steal.desc1",
-    PROPERTY_WIDGET_INVENTORY_STEAL_DESC2       = "property_widget.biologydictionary.inventory.steal.desc2",
+    PROPERTY_WIDGET_INVENTORY_STEAL_DESC        = "property_widget.biologydictionary.inventory.steal.desc",
     PROPERTY_WIDGET_INVENTORY_STEAL_CREATIVE    = "property_widget.biologydictionary.inventory.steal.creative",
     PROPERTY_WIDGET_INVENTORY_STEAL_SURVIVAL    = "property_widget.biologydictionary.inventory.steal.survival",
 

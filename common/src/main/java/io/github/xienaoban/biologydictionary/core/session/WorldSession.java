@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
 import io.github.xienaoban.biologydictionary.core.property.StaticEntityPropertyCache;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCostsCache;
+import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
@@ -25,6 +26,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 public final class WorldSession implements ConfigsUpdateCallback {
     private static volatile WorldSession instance;
 
+    @ClientAndServer
     public static void init(Level level) {
         synchronized (WorldSession.class) {
             if (instance == null) {
@@ -57,6 +59,7 @@ public final class WorldSession implements ConfigsUpdateCallback {
     /**
      * Get a level instance. Any level is OK. Usually be used in {@code EntityType.create}.
      */
+    @ClientAndServer
     public static Level justGiveMeALevel() {
         if (DevUtils.isClient()) {
             Level level = ClientUtils.getClientLevelCommon();

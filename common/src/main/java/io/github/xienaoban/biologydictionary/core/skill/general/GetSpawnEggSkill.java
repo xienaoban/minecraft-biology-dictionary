@@ -8,8 +8,6 @@ import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.ItemUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
@@ -34,7 +32,6 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
         }
     };
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdName(entityType));

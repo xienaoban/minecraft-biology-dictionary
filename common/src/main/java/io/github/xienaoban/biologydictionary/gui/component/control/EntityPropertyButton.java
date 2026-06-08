@@ -3,12 +3,14 @@ package io.github.xienaoban.biologydictionary.gui.component.control;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.world.item.ItemStack;
 
+@ClientOnly
 public class EntityPropertyButton extends ScreenElement {
     protected static final int L_YES_NO  = 23, T_YES_NO  = 1;
     protected static final int L_ON_OFF  = 21, T_ON_OFF  = 1;

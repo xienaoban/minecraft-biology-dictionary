@@ -1,12 +1,11 @@
 package io.github.xienaoban.biologydictionary.client;
 
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -21,7 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
  * @see net.minecraft.client.renderer.ItemInHandRenderer#renderPlayerArm(PoseStack, MultiBufferSource, int, float, float, net.minecraft.world.entity.HumanoidArm)
  * @see net.minecraft.client.renderer.entity.EntityRenderDispatcher#render(net.minecraft.world.entity.Entity, double, double, double, float, float, com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.MultiBufferSource, int)
  */
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class FirstPersonShoulderEntityRenderer {
     private static final float HEAD_ROT_SPEED = 0.02F;
 

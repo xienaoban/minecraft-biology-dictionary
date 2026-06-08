@@ -72,7 +72,7 @@ description: 跨版本移植助手，将功能 commit 从源分支移植到当�
 
 #### 1.4 API 适配
 
-已知 API 差异参考 `doc/dev/port.md`。未在已知差异表中出现的 API：在 `../mc-source/1.20.1/` 中搜索替代方案。
+已知 API 差异参考 `docs/dev/port.md`。未在已知差异表中出现的 API：在 `../mc-source/1.20.1/` 中搜索替代方案。
 
 > **教训：不要对 mod 自定义类留 TODO**。只有 MC 自身的 API 差异才需要 TODO。
 > 例如 `DiscoveryRecord` 是 mod 自己的类，两个版本都有；`ServerboundClientCommandPacket` 在 1.20.1 中也存在。

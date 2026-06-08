@@ -10,9 +10,8 @@ import io.github.xienaoban.biologydictionary.gui.screen.BdEntityDetailScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.BdHomeScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.*;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -28,7 +27,7 @@ import net.minecraft.world.phys.HitResult;
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 
-@Environment(EnvType.CLIENT)
+@ClientOnly
 public final class BiologyDictionaryEvent {
     public static void openBookScreen(Minecraft client) {
         LocalPlayer player = ClientUtils.getClientPlayer(client);

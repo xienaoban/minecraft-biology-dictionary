@@ -3,12 +3,14 @@ package io.github.xienaoban.biologydictionary.gui.component;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyBar;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@ClientOnly
 public class EntityPropertyStandardWidget<E extends Entity> extends EntityPropertyIconWidget<E> {
     private EntityPropertyBar bar;
     private final List<EntityPropertyButton> buttons;
