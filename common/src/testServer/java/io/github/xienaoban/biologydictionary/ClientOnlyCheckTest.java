@@ -82,9 +82,9 @@ final class ClientOnlyCheck {
 
             // Method-level check
             for (MethodInfo method : info.methods) {
-                if (method.isClientOnly) continue;
-                // @ClientAndServer: only check MC @Environment(CLIENT), skip project @ClientOnly
-                boolean checkProjectClientOnly = !method.isClientAndServer;
+                // Method-level @ClientOnly/@ClientAndServer may bridge to this mod's client-only code,
+                // but only class-level @ClientOnly may reference Minecraft client-only classes directly.
+                boolean checkProjectClientOnly = !method.isClientOnly && !method.isClientAndServer;
 
                 for (String ref : method.typeRefs) {
                     checkTypeRef(ref, className, method.name, checkProjectClientOnly, clientOnlyClassNames, mcCache, cl, violations);
