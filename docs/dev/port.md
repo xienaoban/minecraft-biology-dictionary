@@ -162,6 +162,14 @@
 | 无参构造 `BiologyDictionaryNeoForge()` | 有参构造 `BiologyDictionaryNeoForge(IEventBus modBus)` |
 | `neoforge/` 平台目录 | `forge/` 平台目录 |
 
+### 刷怪蛋获取
+
+| 1.21.x (NeoForge/Fabric) | 1.20.1 (Forge/Fabric) |
+|---------|--------|
+| `SpawnEggItem.byId(entityType)` | `ItemUtils.getSpawnEggItem(entityType)` |
+
+> 涉及 `SpawnEggItem.byId` 的地方统一走 `ItemUtils.getSpawnEggItem`，否则 1.20.1 Forge 上模组生物刷怪蛋可能无法显示或发放。
+
 ---
 
 ## 踩坑记录
@@ -179,3 +187,4 @@
 6. **`Mob.finalizeSpawn` 参数数量**：1.21.1 有 4 参数，1.20.1 有 5 参数（多了 `@Nullable CompoundTag`）
 7. **并行 agent 修改同一文件**：不同 agent 可能对同一文件的不同行做 Edit，后运行的可能覆盖先运行的改动。Phase 3 可以捕获
 8. **`ownable.getOwner().getUUID()`**：1.21.1 中 `getOwner()` 返回 `LivingEntity`（可能为 null），1.20.1 中改为 `getOwnerUUID()` 直接返回 `UUID`（可能为 null）
+9. **模组刷怪蛋显示/发放**：涉及 `SpawnEggItem.byId(entityType)` 的地方统一走 `ItemUtils.getSpawnEggItem(entityType)`。
