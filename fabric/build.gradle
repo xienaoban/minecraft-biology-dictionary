@@ -1,10 +1,11 @@
 plugins {
-	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'net.fabricmc.fabric-loom'
 	id 'maven-publish'
 }
 
-version = project.mod_version
-group = project.maven_group
+base {
+	archivesName = "${mod_id}-fabric"
+}
 
 repositories {
 	// Add repositories to retrieve artifacts from in here.
@@ -15,45 +16,36 @@ repositories {
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	
-	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	
+
+	implementation project(":common")
 }
 
 processResources {
-	def version = project.version
-	inputs.property "version", version
+	def replaceProperties = [
+			version              : project.version,
+			mod_id               : project.mod_id,
+			mod_name             : project.mod_name,
+			mod_license          : project.mod_license,
+			minecraft_version    : project.minecraft_version,
+			loader_version       : project.loader_version
+	]
+	inputs.properties replaceProperties
 
 	filesMatching("fabric.mod.json") {
-		expand "version": version
+		expand replaceProperties
 	}
 }
 
-tasks.withType(JavaCompile).configureEach {
-	it.options.release = 25
-}
-
-java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_25
-	targetCompatibility = JavaVersion.VERSION_25
-}
-
 jar {
-	def projectName = project.name
-	inputs.property "projectName", projectName
+	dependsOn project(":common").tasks.named("classes")
+	from(project(":common").sourceSets.main.output)
 
 	from("LICENSE") {
-		rename { "${it}_$projectName"}
+		rename { "${it}_${project.name}" }
 	}
 }
 
