@@ -11,3 +11,19 @@ dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
 	compileOnly "net.fabricmc:fabric-loader:${loader_version}"
 }
+
+configurations {
+	commonJava {
+		canBeResolved = false
+		canBeConsumed = true
+	}
+	commonResources {
+		canBeResolved = false
+		canBeConsumed = true
+	}
+}
+
+artifacts {
+	commonJava sourceSets.main.java.sourceDirectories.singleFile
+	commonResources sourceSets.main.resources.sourceDirectories.singleFile
+}

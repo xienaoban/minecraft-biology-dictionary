@@ -15,16 +15,37 @@ repositories {
 	// for more information about repositories.
 }
 
+configurations {
+	commonJava {
+		canBeResolved = true
+		canBeConsumed = false
+	}
+	commonResources {
+		canBeResolved = true
+		canBeConsumed = false
+	}
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	implementation project(":common")
+	compileOnly project(":common")
+	commonJava project(path: ":common", configuration: "commonJava")
+	commonResources project(path: ":common", configuration: "commonResources")
+}
+
+tasks.named("compileJava", JavaCompile) {
+	dependsOn(configurations.commonJava)
+	source(configurations.commonJava)
 }
 
 processResources {
+	dependsOn(configurations.commonResources)
+	from(configurations.commonResources)
+
 	def replaceProperties = [
 			version              : project.version,
 			mod_id               : project.mod_id,
@@ -41,12 +62,16 @@ processResources {
 }
 
 jar {
-	dependsOn project(":common").tasks.named("classes")
-	from(project(":common").sourceSets.main.output)
-
 	from("LICENSE") {
 		rename { "${it}_${project.name}" }
 	}
+}
+
+tasks.named("sourcesJar", Jar) {
+	dependsOn(configurations.commonJava)
+	from(configurations.commonJava)
+	dependsOn(configurations.commonResources)
+	from(configurations.commonResources)
 }
 
 // configure the maven publication

@@ -91,7 +91,6 @@ neoForge {
         // multi mod projects should define one per mod
         "${mod_id}" {
             sourceSet(sourceSets.main)
-            sourceSet(project(":common").sourceSets.main)
         }
     }
 }
@@ -102,6 +101,14 @@ neoForge {
 // "optional", meaning it will not be pulled by dependents of this mod.
 configurations {
     runtimeClasspath.extendsFrom localRuntime
+    commonJava {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    commonResources {
+        canBeResolved = true
+        canBeConsumed = false
+    }
 }
 
 dependencies {
@@ -123,12 +130,26 @@ dependencies {
     // Example project dependency using a sister or child project:
     // implementation project(":myproject")
 
-    implementation project(":common")
+    compileOnly project(":common")
+    commonJava project(path: ":common", configuration: "commonJava")
+    commonResources project(path: ":common", configuration: "commonResources")
 }
 
-jar {
-    dependsOn project(":common").tasks.named("classes")
-    from(project(":common").sourceSets.main.output)
+tasks.named("compileJava", JavaCompile) {
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
+}
+
+processResources {
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
+}
+
+tasks.named("sourcesJar", Jar) {
+    dependsOn(configurations.commonJava)
+    from(configurations.commonJava)
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
