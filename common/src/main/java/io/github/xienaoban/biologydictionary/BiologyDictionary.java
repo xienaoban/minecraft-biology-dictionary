@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary;
 
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -19,6 +20,7 @@ public final class BiologyDictionary {
 	public static final BiologyDictionary BD = new BiologyDictionary();
 
 	private BiologyDictionary() {
+		ConfigsManager.load();
 		LOGGER.info("BiologyDictionary initialized.");
 	}
 

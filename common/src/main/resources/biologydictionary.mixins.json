@@ -4,8 +4,23 @@
 	"package": "io.github.xienaoban.biologydictionary.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
-		"ExampleMixin"
+		"ExampleMixin",
+		"entity.EntityIMixin",
+		"entity.HorseIMixin",
+		"entity.LivingEntityIMixin",
+		"entity.MobIMixin",
+		"entity.ServerPlayerIMixin",
+		"loot.CompositeEntryBaseIMixin",
+		"loot.LootItemIMixin",
+		"loot.LootPoolEntryContainerIMixin",
+		"loot.LootPoolIMixin",
+		"loot.LootPoolSingletonContainerIMixin",
+		"loot.LootTableIMixin",
+		"loot.NestedLootTableIMixin",
+		"loot.SetItemCountFunctionIMixin",
+		"loot.TagEntryIMixin"
 	],
+	"client": [],
 	"injectors": {
 		"defaultRequire": 1
 	},

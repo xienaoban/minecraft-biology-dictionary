@@ -10,6 +10,18 @@ allprojects {
 }
 
 subprojects {
+	repositories {
+		mavenCentral()
+		maven {
+			name = "shedaniel"
+			url = "https://maven.shedaniel.me/"
+		}
+		maven {
+			name = "TerraformersMC"
+			url = "https://maven.terraformersmc.com/releases/"
+		}
+	}
+
 	pluginManager.withPlugin("java") {
 		java {
 			toolchain {

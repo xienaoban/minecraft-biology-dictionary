@@ -16,6 +16,9 @@
 		],
 		"client": [
 			"io.github.xienaoban.biologydictionary.FabricBiologyDictionaryClient"
+		],
+		"modmenu": [
+			"io.github.xienaoban.biologydictionary.config.fabric.ModMenuConfigScreenProvider"
 		]
 	},
 	"mixins": [
@@ -26,6 +29,10 @@
 		"fabricloader": ">=${loader_version}",
 		"minecraft": "~${minecraft_version}",
 		"java": ">=25",
-		"fabric-api": "*"
+		"fabric-api": ">=${fabric_api_version}",
+		"cloth-config": ">=${cloth_config_version}"
+	},
+	"suggests": {
+		"modmenu": ">=${modmenu_version}"
 	}
 }
