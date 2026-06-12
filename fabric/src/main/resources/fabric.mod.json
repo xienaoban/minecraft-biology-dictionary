@@ -12,7 +12,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"io.github.xienaoban.biologydictionary.fabric.FabricBiologyDictionary"
+			"io.github.xienaoban.biologydictionary.FabricBiologyDictionary"
+		],
+		"client": [
+			"io.github.xienaoban.biologydictionary.FabricBiologyDictionaryClient"
 		]
 	},
 	"mixins": [

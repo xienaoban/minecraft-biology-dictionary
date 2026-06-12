@@ -1,6 +1,5 @@
-package io.github.xienaoban.biologydictionary.fabric;
+package io.github.xienaoban.biologydictionary;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import net.fabricmc.api.ModInitializer;
 
 public final class FabricBiologyDictionary implements ModInitializer {
