@@ -5,6 +5,7 @@
 - 禁止并行运行多个 Gradle 命令。
 - 每次只能启动一个 `./gradlew ...` 进程，必须等它结束后再运行下一个。
 - 如果 Gradle daemon、依赖下载、缓存或文件 I/O 出错，先停止当前排查并说明现象，不要继续叠加新的 Gradle 任务。
+- 如果 Gradle 遇到文件锁、文件占用或疑似 Windows 侧 IDEA/Gradle 同时访问导致的问题，停止排查并说明现象，让用户在 Windows/IDEA 侧运行命令。
 
 ## Mixin 与反射访问约定
 

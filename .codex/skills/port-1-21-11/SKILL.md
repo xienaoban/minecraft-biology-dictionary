@@ -40,6 +40,10 @@ common 定义、平台必须注册的内容，使用 `@PlatformEntry` 静态定�
 - client/server event listener 清单
 - 后续 renderer/model/screen/reload registrations
 
+静态注册清单里放真实 entry，例如 key mapping、payload entry、creative tab entry、command builder、listener entry。不要为了注册清单额外包一层函数式接口或动态 lambda；平台层遍历 entry 后在各自生命周期里注册。
+
+命名上，某个定义类只有一组待注册清单时字段叫 `ENTRIES`；同类中有多组待注册清单时叫 `XX_ENTRIES`。事件清单按事件时机命名，例如 `STARTED`、`STOPPING`，不强行套 `ENTRIES`。
+
 `Platform.load(...)` 只用于窄的运行时服务：
 
 - 平台信息和 config 目录

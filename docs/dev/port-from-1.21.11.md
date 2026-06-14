@@ -129,6 +129,8 @@ platform 负责：
 - common 不规定平台实际注册时机。
 - 平台入口在正确生命周期中逐项消费 common 定义。
 - 需要平台消费的 common 字段或方法标 `@PlatformEntry`。
+- 静态注册清单应保存真实 entry，例如 key mapping、payload entry、creative tab entry、command builder、listener entry；不要为了注册清单额外包一层函数式接口或动态 lambda。平台层负责遍历这些 entry 并执行实际注册。
+- 命名上，某个定义类只有一组待注册清单时字段叫 `ENTRIES`；同类中有多组待注册清单时叫 `XX_ENTRIES`。事件清单按事件时机命名，例如 `STARTED`、`STOPPING`，不强行套 `ENTRIES`。
 
 ### Platform.load 窄服务
 
