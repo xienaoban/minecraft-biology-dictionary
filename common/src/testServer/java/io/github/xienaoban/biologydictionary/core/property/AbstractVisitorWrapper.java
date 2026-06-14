@@ -3,8 +3,8 @@ package io.github.xienaoban.biologydictionary.core.property;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.BlockComment;
-import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.comments.LineComment;
+import com.github.javaparser.ast.comments.TraditionalJavadocComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.modules.*;
 import com.github.javaparser.ast.stmt.*;
@@ -339,7 +339,7 @@ public abstract class AbstractVisitorWrapper<A> extends VoidVisitorAdapter<A> {
     }
 
     @Override
-    public void visit(final JavadocComment n, final A arg) {
+    public void visit(final TraditionalJavadocComment n, final A arg) {
         if (runBefore(n, arg)) {
             super.visit(n, arg);
             runAfter(n, arg);

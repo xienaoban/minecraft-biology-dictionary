@@ -20,7 +20,7 @@ public final class AstParser {
         Objects.requireNonNull(source);
 
         ParserConfiguration config = new ParserConfiguration()
-                .setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_21);
+                .setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_25);
 
         JavaParser parser = new JavaParser(config);
         ParseResult<CompilationUnit> parseResult = parser.parse(source);

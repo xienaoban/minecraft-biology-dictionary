@@ -15,20 +15,29 @@ import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.jar.Manifest;
+import java.util.jar.JarFile;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+// TODO: Rename/refactor this class to a source provider. It now prefers generated Minecraft sources and only falls
+//       back to bytecode decompilers.
 public final class BytecodeDecompiler {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private enum Tool {
-        Procyon, Fernflower, Cfr
+        FabricSources, Procyon, Fernflower, Cfr
     }
 
-    private static final Tool TOOL = Tool.Procyon;
+    private static final Tool TOOL = Tool.FabricSources;
+    private static final String MINECRAFT_SOURCES_JAR_PROPERTY = "biologydictionary.minecraftSourcesJar";
+    private static Path fabricSourcesJar;
 
     /**
      * Decompile the class bytecode to java source code.
@@ -37,6 +46,7 @@ public final class BytecodeDecompiler {
     public static String decompile(Class<?> clazz) {
         // Procyon is better than Fernflower here according to my test.
         String source = switch (TOOL) {
+            case FabricSources -> getFabricSource(clazz);
             case Procyon -> decompileByProcyon(clazz);
             case Fernflower -> decompileByFernflower(clazz);
             default -> throw new AssertionError();
@@ -62,6 +72,61 @@ public final class BytecodeDecompiler {
         settings.setForceExplicitImports(true);
         com.strobel.decompiler.Decompiler.decompile(clazz.getName().replace('.', '/'), output, settings);
         return output.toString();
+    }
+
+    private static String getFabricSource(Class<?> clazz) {
+        String sourcePath = clazz.getName().replace('.', '/') + ".java";
+        return readSource(findFabricSourcesJar(sourcePath), sourcePath);
+    }
+
+    private static Path findFabricSourcesJar(String sourcePath) {
+        if (fabricSourcesJar != null && containsSource(fabricSourcesJar, sourcePath)) {
+            return fabricSourcesJar;
+        }
+
+        String explicitSourcesJar = System.getProperty(MINECRAFT_SOURCES_JAR_PROPERTY);
+        if (explicitSourcesJar != null && !explicitSourcesJar.isBlank()) {
+            Path sourcesJar = Path.of(explicitSourcesJar);
+            if (containsSource(sourcesJar, sourcePath)) {
+                fabricSourcesJar = sourcesJar;
+                return sourcesJar;
+            }
+            throw new AssertionError("Configured Minecraft sources jar does not contain " + sourcePath + ": " + sourcesJar);
+        }
+
+        Path loomCache = Path.of(".gradle", "loom-cache", "minecraftMaven", "net", "minecraft");
+        if (!Files.exists(loomCache)) {
+            throw new AssertionError("Fabric Loom Minecraft sources cache not found: " + loomCache);
+        }
+        try (Stream<Path> stream = Files.find(loomCache, 6, (path, attributes) -> attributes.isRegularFile()
+                && path.getFileName().toString().endsWith("-sources.jar"))) {
+            Path found = stream
+                    .filter(path -> containsSource(path, sourcePath))
+                    .findFirst()
+                    .orElseThrow(() -> new AssertionError("Minecraft source not found: " + sourcePath));
+            fabricSourcesJar = found;
+            return found;
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    private static boolean containsSource(Path sourcesJar, String sourcePath) {
+        try (JarFile jar = new JarFile(sourcesJar.toFile())) {
+            return jar.getJarEntry(sourcePath) != null;
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    private static String readSource(Path sourcesJar, String sourcePath) {
+        try (JarFile jar = new JarFile(sourcesJar.toFile())) {
+            try (InputStream input = jar.getInputStream(Objects.requireNonNull(jar.getJarEntry(sourcePath)))) {
+                return new String(input.readAllBytes(), StandardCharsets.UTF_8);
+            }
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
     }
 
     private static String decompileByFernflower(Class<?> clazz) {
@@ -174,6 +239,7 @@ public final class BytecodeDecompiler {
                 " permits [^{]+",
                 " "
         );
+
         return source;
     }
 }

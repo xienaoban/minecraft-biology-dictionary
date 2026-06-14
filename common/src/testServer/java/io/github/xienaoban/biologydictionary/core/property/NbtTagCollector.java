@@ -4,6 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -181,6 +182,8 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
 
     private MethodDeclaration currentMethod;
     private String currentPropertyName;
+    private String currentValueInputName;
+    private String currentValueOutputName;
 
     private NbtTagCollector(Class<? extends Entity> entityClazz, ClassTypeCollector knownTypes) {
         this.entityClazz = entityClazz;
@@ -198,6 +201,16 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
     @Override
     public void visit(MethodDeclaration n, Void arg) {
         currentMethod = n;
+        currentValueInputName = VALUE_INPUT_NAME;
+        currentValueOutputName = VALUE_OUTPUT_NAME;
+        for (Parameter parameter : n.getParameters()) {
+            String type = parameter.getTypeAsString();
+            if (isValueInputType(type)) {
+                currentValueInputName = parameter.getNameAsString();
+            } else if (isValueOutputType(type)) {
+                currentValueOutputName = parameter.getNameAsString();
+            }
+        }
 
         // Print the method nodes.
         if (PRINT_TAG_METHODS) {
@@ -221,18 +234,18 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         try {
             if (n.getScope().orElse(null) instanceof Expression scopeExpression) {
                 String methodScope = scopeExpression.toString();
-                if (VALUE_INPUT_NAME.equals(methodScope)) {
+                if (isCurrentValueInputName(methodScope)) {
                     String nbtTagName = arguments.get(0).asStringLiteralExpr().getValue();
-                    LOGGER.trace(VALUE_INPUT_NAME + ".func() for {} found in {}.{}:\t{}",
+                    LOGGER.trace(currentValueInputName + ".func() for {} found in {}.{}:\t{}",
                             nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
                     if (methodName.startsWith("get")) {
                         parseGetter(nbtTagName, methodName);
                     } else if (methodName.startsWith("read")) {
                         parseReader(nbtTagName, n);
                     }
-                } else if (VALUE_OUTPUT_NAME.equals(methodScope)) {
+                } else if (isCurrentValueOutputName(methodScope)) {
                     String nbtTagName = arguments.get(0).asStringLiteralExpr().getValue();
-                    LOGGER.trace(VALUE_OUTPUT_NAME + ".func() for {} found in {}.{}:\t{}",
+                    LOGGER.trace(currentValueOutputName + ".func() for {} found in {}.{}:\t{}",
                             nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
                     if (methodName.startsWith("put")) {
                         parsePutter(nbtTagName, methodName);
@@ -248,7 +261,7 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                         Expression e = arguments.get(i);
                         if (e instanceof NameExpr nameExpr) {
                             String s = nameExpr.getName().getIdentifier();
-                            if (VALUE_INPUT_NAME.equals(s) || VALUE_OUTPUT_NAME.equals(s)) {
+                            if (isCurrentValueInputName(s) || isCurrentValueOutputName(s)) {
                                 if (valueInputOutputIdx != -1) {
                                     throw new AssertionError();
                                 }
@@ -264,12 +277,12 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                         }
                     }
                     if (valueInputOutput != null) {
-                        if (VALUE_INPUT_NAME.equals(valueInputOutput)) {
-                            LOGGER.trace("func(" + VALUE_INPUT_NAME + ", ...) for {} found in {}.{}:\t{}",
+                        if (isCurrentValueInputName(valueInputOutput)) {
+                            LOGGER.trace("func(" + currentValueInputName + ", ...) for {} found in {}.{}:\t{}",
                                     nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
                             parseCalleeReader(nbtTagName, methodScope, methodName, n);
-                        } else if (VALUE_OUTPUT_NAME.equals(valueInputOutput)) {
-                            LOGGER.trace("func(" + VALUE_OUTPUT_NAME + ", ...) for {} found in {}.{}:\t{}",
+                        } else if (isCurrentValueOutputName(valueInputOutput)) {
+                            LOGGER.trace("func(" + currentValueOutputName + ", ...) for {} found in {}.{}:\t{}",
                                     nbtTagName, entityClazz, currentMethod.getNameAsString(), n);
                             parseCalleeStorer(nbtTagName, methodScope, methodName, n);
                         }
@@ -281,6 +294,22 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             throw new AssertionError("Failed to parse method: `" + n + "` in `" + currentMethod.getDeclarationAsString() + "`", e);
         }
         super.visit(n, arg);
+    }
+
+    private static boolean isValueInputType(String type) {
+        return VALUE_INPUT_NAME.equals(type) || type.endsWith(".ValueInput") || "ValueInput".equals(type);
+    }
+
+    private static boolean isValueOutputType(String type) {
+        return VALUE_OUTPUT_NAME.equals(type) || type.endsWith(".ValueOutput") || "ValueOutput".equals(type);
+    }
+
+    private boolean isCurrentValueInputName(String name) {
+        return Objects.equals(currentValueInputName, name);
+    }
+
+    private boolean isCurrentValueOutputName(String name) {
+        return Objects.equals(currentValueOutputName, name);
     }
 
     private void parseGetter(String nbtTagName, String methodName) {
@@ -326,6 +355,9 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             }
             curr = next;
         }
+        if (type == null) {
+            type = inferResourceKeyCodecType(codec);
+        }
         mergeNbtTagInfo(nbtTagName, new CodecTagInfo(knownTypes.getFullyQualifiedType(codec), removeOptional(type), true, false));
     }
 
@@ -361,7 +393,32 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         } else if (toStore instanceof MethodCallExpr methodCallExpr && methodCallExpr.getScope().orElse(null) instanceof ThisExpr) {
             type = knownTypes.getMethodRetType(methodCallExpr.getNameAsString());
         }
+        if (type == null) {
+            type = inferResourceKeyCodecType(codec);
+        }
         mergeNbtTagInfo(nbtTagName, new CodecTagInfo(knownTypes.getFullyQualifiedType(codec), removeOptional(type), false, true));
+    }
+
+    private static String inferResourceKeyCodecType(String codec) {
+        Matcher matcher = Pattern.compile("ResourceKey\\.codec\\(.*Registries\\.([A-Z0-9_]+)").matcher(codec);
+        if (!matcher.find()) {
+            return null;
+        }
+        return "ResourceKey<" + toUpperCamelCase(matcher.group(1).toLowerCase()) + ">";
+    }
+
+    private static String toUpperCamelCase(String s) {
+        StringBuilder sb = new StringBuilder();
+        for (String part : s.split("_")) {
+            if (part.isEmpty()) {
+                continue;
+            }
+            sb.append(Character.toUpperCase(part.charAt(0)));
+            if (part.length() > 1) {
+                sb.append(part.substring(1));
+            }
+        }
+        return sb.toString();
     }
 
     private void parseCalleeStorer(String nbtTagName, String methodScope, String methodName, MethodCallExpr currNode) {
