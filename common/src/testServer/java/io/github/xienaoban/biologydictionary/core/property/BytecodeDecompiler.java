@@ -26,8 +26,6 @@ import java.util.jar.JarFile;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-// TODO: Rename/refactor this class to a source provider. It now prefers generated Minecraft sources and only falls
-//       back to bytecode decompilers.
 public final class BytecodeDecompiler {
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -35,7 +33,7 @@ public final class BytecodeDecompiler {
         FabricSources, Procyon, Fernflower, Cfr
     }
 
-    private static final Tool TOOL = Tool.FabricSources;
+    private static final Tool TOOL = Tool.Procyon;
     private static final String MINECRAFT_SOURCES_JAR_PROPERTY = "biologydictionary.minecraftSourcesJar";
     private static Path fabricSourcesJar;
 
@@ -203,43 +201,10 @@ public final class BytecodeDecompiler {
     }
 
     /**
-     * Do some tricky processing on the source code to avoid Java Parser parsing failures.
+     * JavaParser now runs with JAVA_25 enabled, so no syntax workaround should be
+     * needed here. Keep this hook only for narrowly-scoped, source-provider quirks.
      */
     private static String preprocess(Class<?> clazz, String source) {
-        /*
-        ```java
-        final Predicate<Entity> no_CREATIVE_OR_SPECTATOR = EntitySelector.NO_CREATIVE_OR_SPECTATOR;
-        Objects.requireNonNull(no_CREATIVE_OR_SPECTATOR);
-        super(cat, class_, f, d, e, (Predicate<LivingEntity>)no_CREATIVE_OR_SPECTATOR::test);
-        ```
-        to
-        ```java
-        super(cat, class_, f, d, e, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
-        ```
-         */
-        source = source.replaceAll(
-                "final Predicate<Entity>.+\n +Objects.requireNonNull.+\n +super",
-                "super"
-        );
-        source = source.replaceAll(
-                ", class_, f, d, e, \\(Predicate<LivingEntity>\\).+::test\\);",
-                ", class_, f, d, e, EntitySelector.PLACEHOLDER::test);"
-        );
-
-        /*
-        ```java
-        public enum ArmadilloState implements StringRepresentable permits Armadillo$ArmadilloState$1, Armadillo$ArmadilloState$2, Armadillo$ArmadilloState$3, Armadillo$ArmadilloState$4
-        ```
-        to
-        ```java
-        public enum ArmadilloState implements StringRepresentable
-        ```
-         */
-        source = source.replaceAll(
-                " permits [^{]+",
-                " "
-        );
-
         return source;
     }
 }

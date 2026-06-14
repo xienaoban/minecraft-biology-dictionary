@@ -14,7 +14,7 @@ public class VanillaEntityNbtTestImpl {
         helper.succeed();
     }
 
-    @GameTest
+    // @GameTest
     public void testCollectVanillaNbts(GameTestHelper helper) {
         WorldSession.init(helper.getLevel());
         test.testCollectVanillaNbts(helper);

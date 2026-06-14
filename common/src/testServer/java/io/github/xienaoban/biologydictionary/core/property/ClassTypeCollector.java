@@ -55,6 +55,8 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
         }
     }
 
+    private final Class<? extends Entity> entityClazz;
+
     private String currPackageName = null;
     private String currClazzName = null;
     /**
@@ -75,6 +77,7 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
     public record MethodTypes(String returnType, List<String> argumentTypes) {}
 
     public ClassTypeCollector(Class<? extends Entity> entityClazz) {
+        this.entityClazz = entityClazz;
         addImport(entityClazz.getSimpleName(), entityClazz.getName());
 
         fullyQualifiedTypes.put("this", "this");
@@ -115,9 +118,41 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
 
     private String getFullyQualifiedType0(String type) {
         return fullyQualifiedTypes.computeIfAbsent(type, t -> {
+            String inheritedInnerType = findInheritedInnerType(t);
+            if (inheritedInnerType != null) {
+                return inheritedInnerType;
+            }
             addImport(t, currPackageName + '.' + t);
             return t;
         });
+    }
+
+    private String findInheritedInnerType(String type) {
+        Set<Class<?>> visited = new HashSet<>();
+        Queue<Class<?>> queue = new ArrayDeque<>();
+        enqueueParents(entityClazz, queue);
+        while (!queue.isEmpty()) {
+            Class<?> clazz = queue.remove();
+            if (!visited.add(clazz)) {
+                continue;
+            }
+            for (Class<?> declaredClazz : clazz.getDeclaredClasses()) {
+                if (type.equals(declaredClazz.getSimpleName())) {
+                    addImport(clazz.getSimpleName(), clazz.getName());
+                    return clazz.getSimpleName() + '.' + type;
+                }
+            }
+            enqueueParents(clazz, queue);
+        }
+        return null;
+    }
+
+    private static void enqueueParents(Class<?> clazz, Queue<Class<?>> queue) {
+        Class<?> superclass = clazz.getSuperclass();
+        if (superclass != null && superclass != Object.class) {
+            queue.add(superclass);
+        }
+        Collections.addAll(queue, clazz.getInterfaces());
     }
 
     public String getFieldType(String name) {

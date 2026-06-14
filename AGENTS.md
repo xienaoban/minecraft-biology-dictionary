@@ -7,6 +7,11 @@
 - 如果 Gradle daemon、依赖下载、缓存或文件 I/O 出错，先停止当前排查并说明现象，不要继续叠加新的 Gradle 任务。
 - 如果 Gradle 遇到文件锁、文件占用或疑似 Windows 侧 IDEA/Gradle 同时访问导致的问题，停止排查并说明现象，让用户在 Windows/IDEA 侧运行命令。
 
+## Minecraft 源码查阅约定
+
+- 需要查看 Minecraft 源码、字段、方法、内部类或游戏逻辑时，优先读取本仓库相邻目录 `../mc-source`。
+- 只有 `../mc-source` 缺失、内容不足或需要核对构建产物时，才去查 Loom/Gradle cache、反编译输出或 jar。
+
 ## Mixin 与反射访问约定
 
 - 26.1 开始生产环境不再把 Minecraft 类名、方法名、字段名混淆成 `class_1234`、`method_1234` 这类名字，因此反射、`MethodHandle`、`VarHandle` 可以作为可用手段。
