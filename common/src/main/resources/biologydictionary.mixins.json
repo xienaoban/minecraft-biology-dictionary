@@ -20,7 +20,11 @@
 		"loot.SetItemCountFunctionIMixin",
 		"loot.TagEntryIMixin"
 	],
-	"client": [],
+	"client": [
+		"rendering.FeatureRenderDispatcherIMixin",
+		"rendering.GuiGraphicsExtractorIMixin",
+		"rendering.PictureInPictureRendererMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	},

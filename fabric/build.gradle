@@ -7,6 +7,10 @@ base {
 	archivesName = "${mod_id}-fabric"
 }
 
+loom {
+	accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
 repositories {
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because

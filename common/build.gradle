@@ -7,6 +7,10 @@ base {
 	archivesName = "${mod_id}-common"
 }
 
+loom {
+	accessWidenerPath = file("src/main/resources/biologydictionary.accesswidener")
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
 	compileOnly "net.fabricmc:fabric-loader:${loader_version}"

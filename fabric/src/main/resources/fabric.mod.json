@@ -18,9 +18,10 @@
 			"io.github.xienaoban.biologydictionary.FabricBiologyDictionaryClient"
 		],
 		"modmenu": [
-			"io.github.xienaoban.biologydictionary.config.fabric.ModMenuConfigScreenProvider"
+			"io.github.xienaoban.biologydictionary.config.ModMenuConfigScreenProvider"
 		]
 	},
+	"accessWidener": "biologydictionary.accesswidener",
 	"mixins": [
 		"biologydictionary.mixins.json",
 		"biologydictionary-fabric.mixins.json"

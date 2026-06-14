@@ -1,8 +1,7 @@
-package io.github.xienaoban.biologydictionary.config.fabric;
+package io.github.xienaoban.biologydictionary.config;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import io.github.xienaoban.biologydictionary.config.ClothConfigScreenProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

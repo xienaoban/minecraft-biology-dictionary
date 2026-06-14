@@ -155,6 +155,13 @@ platform 负责：
 
 common 不主动判断当前平台；由平台入口决定何时调用 common 的哪一部分。
 
+NeoForge 侧优先使用显式 listener 注册：
+
+- 对 mod event bus 使用 `modEventBus.addListener(...)`。
+- 对 game event bus 使用 `NeoForge.EVENT_BUS.addListener(...)`。
+- 不要默认新增 `@SubscribeEvent` / `@EventBusSubscriber` 式注册。注解式订阅容易把注册入口、bus 类型和 dist 条件分散到多个类上，不利于对照 Fabric 注册和排查平台生命周期。
+- 只有某个 NeoForge API 明确要求注解式订阅，或显式 listener 不能表达需求时，才使用 `@SubscribeEvent` / `@EventBusSubscriber`，并在代码附近说明原因。
+
 ## 网络迁移
 
 当前网络方向是：
@@ -220,6 +227,20 @@ ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace
 - Fabric 需要时维护 access widener。
 - NeoForge 需要时维护 access transformer。
 - common 业务不要依赖“某个平台把字段改 public”的隐式条件。
+
+## ScreenRenderingContext 迁移策略
+
+`ScreenRenderingContext` 是 GUI 迁移中的兼容层。1.21.11 代码只能作为语义参考，具体实现必须先核对 26.1.2 当前 API。
+
+迁移规则：
+
+- `ScreenRenderingContext` 的公开 API 必须与 1.21.11 保持一致，包括方法名、参数顺序、参数含义和 overload 集合。迁移时只能改实现，不能私自把调用契约改成更顺手的新形态；如果认为某个旧 API 不适合 26.1.2，必须先和维护者讨论后再改。
+- 现有 `renderXxx` API 的语义和参数必须保留，迁移时优先改实现而不是改调用方契约。
+- `renderXxx(..., float z, ...)` 中的 `z` 参数当前仅为兼容旧 API 保留，不要为了实现 `z` 引入额外渲染层、反射或 accessor；以后可单独评估删除。
+- float 文本渲染只能作用于本模组显式调用 `ScreenRenderingContext.renderText(... float x, float y)` 的路径。
+- 不要通过 mixin、access widener、access transformer 或全局替换改变原版、其他模组或普通 `GuiGraphicsExtractor.text(...)` 的渲染行为。
+- 如果 26.1.2 API 可用临时 `pose` 变换实现本模组局部 float 坐标，应优先使用局部实现并在调用结束后恢复状态。
+- 只有确实需要访问 26.1.2 私有状态时，才新增 accessor、access widener 或 access transformer；不要照搬 1.21.11 的访问项。
 
 ## ClientOnly 边界
 
