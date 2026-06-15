@@ -2,6 +2,8 @@ package io.github.xienaoban.biologydictionary.core.property;
 
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
+import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
+import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
@@ -10,11 +12,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("rawtypes")
 public final class EntityProperties<E extends Entity> {
     public static void init() {
         VanillaEntityProperties.init();
-        // TODO: restore ExtraEntityProperties and property bundles after they are ported.
+        EntityVariantPropertyBundle.init();
+        EntityInventoryPropertyBundle.init();
+        // TODO: restore ExtraEntityProperties after it is ported.
     }
 
     private final E entity;
