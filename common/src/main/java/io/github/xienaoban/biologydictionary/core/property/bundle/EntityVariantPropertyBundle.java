@@ -13,9 +13,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -23,8 +25,17 @@ import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.entity.animal.panda.Panda;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerType;
+import net.minecraft.world.entity.variant.VariantUtils;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +52,6 @@ public final class EntityVariantPropertyBundle {
         register(EntityType.VILLAGER, new VillagerTypeHandler());
         register(EntityType.HORSE, new HorseVariantHandler(), new HorseMarkingsHandler());
         register(EntityType.PANDA, new PandaMainGeneHandler(), new PandaHiddenGeneHandler());
-        register(EntityType.TRADER_LLAMA, new CodecVariantHandler(VanillaEntityProperties.OfLlama.createVariantProperty()));
     }
 
     public static void register(Function<Entity, VariantHandler<?, ?>> pattern) {
@@ -62,12 +72,12 @@ public final class EntityVariantPropertyBundle {
          */
         default boolean isStandard() { return true; }
 
-        List<V> getVariants();
+        List<V> getVariants(E entity);
         V getVariant(E entity);
         void setVariant(E entity, V variant);
-        Tag variantToNbt(V variant);
-        V nbtToVariant(Tag nbt);
-        String getVariantName(V variant);
+        Tag variantToNbt(E entity, V variant);
+        V nbtToVariant(E entity, Tag nbt);
+        String getVariantName(E entity, V variant);
     }
 
     public interface PropertyVariantHandler<E extends Entity, V> extends VariantHandler<E, V> {
@@ -84,68 +94,167 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        default Tag variantToNbt(V variant) {
+        default Tag variantToNbt(E entity, V variant) {
             return createProperty().withVal(variant).toTag();
         }
 
         @Override
-        default V nbtToVariant(Tag nbt) {
+        default V nbtToVariant(E entity, Tag nbt) {
             return createProperty().withTag((CompoundTag) nbt).getVal();
         }
     }
 
-    static final Function<Entity, VariantHandler<?, ?>> STANDARD_PATTERN = entity -> {
-        Class<? extends Entity> entityClass = entity.getClass();
-        if (!EntityUtils.isVanillaEntity(entityClass)) { return null; }
-        String fullName = EntityUtils.getDeobfuscatedName(entity.getClass());
-        String simpleName = fullName.substring(fullName.lastIndexOf('.') + 1);
+    static final Function<Entity, VariantHandler<?, ?>> STANDARD_PATTERN = new Function<>() {
+        @Override
+        public VariantHandler<?, ?> apply(Entity entity) {
+            Class<? extends Entity> entityClass = entity.getClass();
 
-        for (String variantType : new String[] {"Variant", "Type"}) {
             try {
-                Class<?> ofEntity = Class.forName(VanillaEntityProperties.class.getName() + "$Of" + simpleName);
-                Method creator = ofEntity.getDeclaredMethod("create" + variantType + "Property");
+                Method getter = findVariantGetter(entityClass);
+                if (getter == null) { return null; }
 
-                if (VariantProperty.class.isAssignableFrom(creator.getReturnType())) {
-                    @SuppressWarnings("all")
-                    VariantProperty<Entity, Object> property = (VariantProperty<Entity, Object>) creator.invoke(null);
+                Method setter = findVariantSetter(entityClass, getter.getReturnType());
+                if (setter == null) { return null; }
 
-                    ResourceKey<Registry<Object>> key = property.getResourceKey();
-                    Optional<Registry<Object>> optional = entity.registryAccess().lookup(key);
-                    if (optional.isPresent()) {
-                        Registry<Object> registry = optional.get();
-                        List<Holder<Object>> variants = registry.registryKeySet().stream()
-                                .map(registry::getOrThrow)
-                                .map(k -> (Holder<Object>) k)
-                                .toList();
-                        return new StandardVariantHandler(key, variants);
-                    }
-                } else if (CodecProperty.class.isAssignableFrom(creator.getReturnType())) {
-                    @SuppressWarnings("all")
-                    CodecProperty<Entity, Enum<?>> property = (CodecProperty<Entity, Enum<?>>) creator.invoke(null);
-                    if (property.getClazz().isEnum()) {
-                        return new CodecVariantHandler(property);
-                    }
+                MethodHandle getterHandle = MethodHandles.privateLookupIn(getter.getDeclaringClass(), MethodHandles.lookup())
+                        .unreflect(getter);
+                MethodHandle setterHandle = MethodHandles.privateLookupIn(setter.getDeclaringClass(), MethodHandles.lookup())
+                        .unreflect(setter);
+
+                if (getter.getReturnType() == Holder.class) {
+                    Class<?> variantClass = getHolderVariantClass(getter);
+                    if (variantClass == null) { return null; }
+
+                    ResourceKey<Registry<Object>> key = findRegistryKey(variantClass);
+                    if (key == null) { return null; }
+
+                    if (entity.registryAccess().lookup(key).isEmpty()) { return null; }
+
+                    return new HolderVariantHandler(getterHandle, setterHandle, key);
+                } else if (getter.getReturnType().isEnum()) {
+                    @SuppressWarnings("unchecked")
+                    Class<Enum<?>> variantClazz = (Class<Enum<?>>) getter.getReturnType();
+                    return new EnumVariantHandler(getterHandle, setterHandle, variantClazz);
                 }
             } catch (Exception e) {
-                LOGGER.debug("Entity `{}` has no variant: {}", entity.getType().toString(), e.toString());
+                LOGGER.debug("Entity `{}` has no reflective variant: {}", entity.getType().toString(), e.toString());
             }
+            return null;
         }
-        return null;
+
+        private Method findVariantGetter(Class<?> entityClass) {
+            for (Class<?> clazz = entityClass; clazz != null && Entity.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
+                try {
+                    Method method = clazz.getDeclaredMethod("getVariant");
+                    if (method.getParameterCount() == 0) {
+                        return method;
+                    }
+                } catch (NoSuchMethodException ignored) {
+                }
+            }
+            return null;
+        }
+
+        private Method findVariantSetter(Class<?> entityClass, Class<?> variantClass) {
+            for (Class<?> clazz = entityClass; clazz != null && Entity.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
+                for (Method method : clazz.getDeclaredMethods()) {
+                    if (!method.getName().equals("setVariant") || method.getParameterCount() != 1) { continue; }
+                    if (method.getParameterTypes()[0].isAssignableFrom(variantClass)) {
+                        return method;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private Class<?> getHolderVariantClass(Method getter) {
+            Type returnType = getter.getGenericReturnType();
+            if (!(returnType instanceof ParameterizedType parameterizedType)) { return null; }
+            if (parameterizedType.getRawType() != Holder.class) { return null; }
+
+            Type[] typeArguments = parameterizedType.getActualTypeArguments();
+            if (typeArguments.length != 1 || !(typeArguments[0] instanceof Class<?> variantClass)) { return null; }
+            return variantClass;
+        }
+
+        @SuppressWarnings("unchecked")
+        private ResourceKey<Registry<Object>> findRegistryKey(Class<?> variantClass) throws IllegalAccessException {
+            for (Field field : Registries.class.getDeclaredFields()) {
+                if (!Modifier.isStatic(field.getModifiers()) || field.getType() != ResourceKey.class) { continue; }
+                if (!isRegistryKeyFor(field.getGenericType(), variantClass)) { continue; }
+                return (ResourceKey<Registry<Object>>) field.get(null);
+            }
+            return null;
+        }
+
+        private boolean isRegistryKeyFor(Type type, Class<?> variantClass) {
+            if (!(type instanceof ParameterizedType resourceKeyType) || resourceKeyType.getRawType() != ResourceKey.class) {
+                return false;
+            }
+
+            Type registryType = resourceKeyType.getActualTypeArguments()[0];
+            if (!(registryType instanceof ParameterizedType parameterizedRegistry)
+                    || parameterizedRegistry.getRawType() != Registry.class) {
+                return false;
+            }
+
+            Type elementType = parameterizedRegistry.getActualTypeArguments()[0];
+            return elementType == variantClass;
+        }
     };
 
-    public record StandardVariantHandler(ResourceKey<Registry<Object>> key, List<Holder<Object>> variants)
-            implements PropertyVariantHandler<Entity, Holder<Object>> {
+    public record HolderVariantHandler(MethodHandle getter, MethodHandle setter, ResourceKey<Registry<Object>> key)
+            implements VariantHandler<Entity, Holder<Object>> {
 
         @Override
-        public AbstractProperty<Entity, Holder<Object>> createProperty() {
-            return new VariantProperty<>(key);
+        public List<Holder<Object>> getVariants(Entity entity) {
+            Optional<Registry<Object>> optional = entity.registryAccess().lookup(key);
+            if (optional.isEmpty()) { return List.of(); }
+
+            Registry<Object> registry = optional.get();
+            return registry.registryKeySet().stream()
+                    .map(registry::getOrThrow)
+                    .map(k -> (Holder<Object>) k)
+                    .toList();
         }
 
         @Override
-        public List<Holder<Object>> getVariants() { return variants; }
+        public Holder<Object> getVariant(Entity entity) {
+            try {
+                return Misc.cast(getter.invoke(entity));
+            } catch (Throwable e) {
+                throw new IllegalStateException("Failed to get variant from " + entity.getType(), e);
+            }
+        }
 
         @Override
-        public String getVariantName(Holder<Object> variant) {
+        public void setVariant(Entity entity, Holder<Object> variant) {
+            try {
+                setter.invoke(entity, variant);
+            } catch (Throwable e) {
+                throw new IllegalStateException("Failed to set variant for " + entity.getType(), e);
+            }
+        }
+
+        @Override
+        public Tag variantToNbt(Entity entity, Holder<Object> variant) {
+            TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
+            VariantUtils.writeVariant(output, variant);
+            return output.buildResult().get(VariantUtils.TAG_VARIANT);
+        }
+
+        @Override
+        public Holder<Object> nbtToVariant(Entity entity, Tag nbt) {
+            CompoundTag inputTag = new CompoundTag();
+            inputTag.put(VariantUtils.TAG_VARIANT, nbt);
+            TagValueInput input = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, entity.registryAccess(), inputTag);
+            return VariantUtils.readVariant(input, key)
+                    .map(Misc::<Holder<Object>>cast)
+                    .orElse(null); // TODO: throw NPE? Who catch it
+        }
+
+        @Override
+        public String getVariantName(Entity entity, Holder<Object> variant) {
             return variant.unwrapKey().map(resourceKey -> {
                 Identifier id = resourceKey.identifier();
                 String res;
@@ -156,6 +265,60 @@ public final class EntityVariantPropertyBundle {
                 }
                 return res;
             }).orElse("unknown");
+        }
+    }
+
+    public record EnumVariantHandler(MethodHandle getter, MethodHandle setter, Class<Enum<?>> variantClazz)
+            implements VariantHandler<Entity, Enum<?>> {
+
+        @Override
+        public List<Enum<?>> getVariants(Entity entity) {
+            return Arrays.asList(variantClazz.getEnumConstants());
+        }
+
+        @Override
+        public Enum<?> getVariant(Entity entity) {
+            try {
+                return Misc.cast(getter.invoke(entity));
+            } catch (Throwable e) {
+                throw new IllegalStateException("Failed to get variant from " + entity.getType(), e);
+            }
+        }
+
+        @Override
+        public void setVariant(Entity entity, Enum<?> variant) {
+            try {
+                setter.invoke(entity, variant);
+            } catch (Throwable e) {
+                throw new IllegalStateException("Failed to set variant for " + entity.getType(), e);
+            }
+        }
+
+        @Override
+        public Tag variantToNbt(Entity entity, Enum<?> variant) {
+            return StringTag.valueOf(variant.name());
+        }
+
+        @Override
+        public Enum<?> nbtToVariant(Entity entity, Tag nbt) {
+            String name = nbt.asString().orElse(null);
+            if (name == null) { return null; }
+
+            for (Enum<?> variant : variantClazz.getEnumConstants()) {
+                if (variant.name().equals(name)) {
+                    return variant;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public String getVariantName(Entity entity, Enum<?> variant) {
+            if (variant instanceof StringRepresentable sr) {
+                return sr.getSerializedName();
+            } else {
+                return variant.name().toLowerCase();
+            }
         }
     }
 
@@ -172,16 +335,16 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public List<Enum<?>> getVariants() {
+        public List<Enum<?>> getVariants(Entity entity) {
             return Arrays.asList(variantClazz.getEnumConstants());
         }
 
         @Override
-        public String getVariantName(Enum<?> variant) {
+        public String getVariantName(Entity entity, Enum<?> variant) {
             if (variant instanceof StringRepresentable sr) {
                 return sr.getSerializedName();
             } else {
-            return variant.name().toLowerCase();
+                return variant.name().toLowerCase();
             }
         }
     }
@@ -192,7 +355,7 @@ public final class EntityVariantPropertyBundle {
         public boolean isStandard() { return false; }
 
         @Override
-        public List<Holder<VillagerType>> getVariants() {
+        public List<Holder<VillagerType>> getVariants(Villager entity) {
             return BuiltInRegistries.VILLAGER_TYPE.listElements().map(ref -> (Holder<VillagerType>) ref).toList();
         }
 
@@ -207,17 +370,17 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToNbt(Holder<VillagerType> variant) {
+        public Tag variantToNbt(Villager entity, Holder<VillagerType> variant) {
             return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).withVal(variant).toTag();
         }
 
         @Override
-        public Holder<VillagerType> nbtToVariant(Tag nbt) {
+        public Holder<VillagerType> nbtToVariant(Villager entity, Tag nbt) {
             return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).withTag((CompoundTag) nbt).getVal();
         }
 
         @Override
-        public String getVariantName(Holder<VillagerType> variant) {
+        public String getVariantName(Villager entity, Holder<VillagerType> variant) {
             return variant.unwrapKey().map(resourceKey -> {
                 Identifier id = resourceKey.identifier();
                 return id.getPath().toLowerCase();
@@ -228,7 +391,7 @@ public final class EntityVariantPropertyBundle {
     public static final class HorseVariantHandler implements VariantHandler<Horse, net.minecraft.world.entity.animal.equine.Variant> {
 
         @Override
-        public List<net.minecraft.world.entity.animal.equine.Variant> getVariants() {
+        public List<net.minecraft.world.entity.animal.equine.Variant> getVariants(Horse entity) {
             return Arrays.asList(net.minecraft.world.entity.animal.equine.Variant.values());
         }
 
@@ -243,17 +406,17 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToNbt(net.minecraft.world.entity.animal.equine.Variant variant) {
+        public Tag variantToNbt(Horse entity, net.minecraft.world.entity.animal.equine.Variant variant) {
             return IntTag.valueOf(variant.getId());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.equine.Variant nbtToVariant(Tag nbt) {
+        public net.minecraft.world.entity.animal.equine.Variant nbtToVariant(Horse entity, Tag nbt) {
             return net.minecraft.world.entity.animal.equine.Variant.byId(nbt.asInt().orElse(0));
         }
 
         @Override
-        public String getVariantName(net.minecraft.world.entity.animal.equine.Variant variant) {
+        public String getVariantName(Horse entity, net.minecraft.world.entity.animal.equine.Variant variant) {
             return variant.getSerializedName();
         }
     }
@@ -261,7 +424,7 @@ public final class EntityVariantPropertyBundle {
     public static final class HorseMarkingsHandler implements VariantHandler<Horse, net.minecraft.world.entity.animal.equine.Markings> {
 
         @Override
-        public List<net.minecraft.world.entity.animal.equine.Markings> getVariants() {
+        public List<net.minecraft.world.entity.animal.equine.Markings> getVariants(Horse entity) {
             return Arrays.asList(net.minecraft.world.entity.animal.equine.Markings.values());
         }
 
@@ -276,17 +439,17 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToNbt(net.minecraft.world.entity.animal.equine.Markings variant) {
+        public Tag variantToNbt(Horse entity, net.minecraft.world.entity.animal.equine.Markings variant) {
             return IntTag.valueOf(variant.getId());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.equine.Markings nbtToVariant(Tag nbt) {
+        public net.minecraft.world.entity.animal.equine.Markings nbtToVariant(Horse entity, Tag nbt) {
             return net.minecraft.world.entity.animal.equine.Markings.byId(nbt.asInt().orElse(0));
         }
 
         @Override
-        public String getVariantName(net.minecraft.world.entity.animal.equine.Markings variant) {
+        public String getVariantName(Horse entity, net.minecraft.world.entity.animal.equine.Markings variant) {
             return "markings." + variant.name().toLowerCase();
         }
     }
@@ -297,7 +460,7 @@ public final class EntityVariantPropertyBundle {
         public boolean isStandard() { return false; }
 
         @Override
-        public List<Panda.Gene> getVariants() {
+        public List<Panda.Gene> getVariants(Panda entity) {
             return Arrays.asList(Panda.Gene.values());
         }
 
@@ -312,17 +475,17 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToNbt(Panda.Gene variant) {
+        public Tag variantToNbt(Panda entity, Panda.Gene variant) {
             return VanillaEntityProperties.OfPanda.createMainGeneProperty().withVal(variant).toTag();
         }
 
         @Override
-        public Panda.Gene nbtToVariant(Tag nbt) {
+        public Panda.Gene nbtToVariant(Panda entity, Tag nbt) {
             return VanillaEntityProperties.OfPanda.createMainGeneProperty().withTag((CompoundTag) nbt).getVal();
         }
 
         @Override
-        public String getVariantName(Panda.Gene variant) {
+        public String getVariantName(Panda entity, Panda.Gene variant) {
             return variant.getSerializedName();
         }
     }
@@ -340,12 +503,12 @@ public final class EntityVariantPropertyBundle {
         }
 
         @Override
-        public Tag variantToNbt(Panda.Gene variant) {
+        public Tag variantToNbt(Panda entity, Panda.Gene variant) {
             return VanillaEntityProperties.OfPanda.createHiddenGeneProperty().withVal(variant).toTag();
         }
 
         @Override
-        public Panda.Gene nbtToVariant(Tag nbt) {
+        public Panda.Gene nbtToVariant(Panda entity, Tag nbt) {
             return VanillaEntityProperties.OfPanda.createHiddenGeneProperty().withTag((CompoundTag) nbt).getVal();
         }
     }
