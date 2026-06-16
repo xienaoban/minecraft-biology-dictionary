@@ -1,12 +1,17 @@
 package io.github.xienaoban.biologydictionary.core.property.vanilla;
 
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.variant.VariantUtils;
+import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -27,13 +32,23 @@ public final class VariantProperty<E extends Entity, T> extends AbstractProperty
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        // TODO: restore after WorldSession is ported.
-        setVal(null);
+        Optional<Holder<T>> holder = nbt.read(name(), Identifier.CODEC)
+                .map(identifier -> ResourceKey.create(resourceKey, identifier))
+                .flatMap(key -> {
+                    Level level = WorldSession.justGiveMeALevel();
+                    if (level == null) { return Optional.empty(); }
+                    return level.registryAccess().get(key);
+                });
+        setVal(holder.orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
-        // TODO: restore after WorldSession is ported.
-        LOGGER.warn("VariantProperty is not available before WorldSession is ported: {}", getVal());
+        if (getVal() != null && getVal().unwrapKey().isPresent()) {
+            ResourceKey<?> key = getVal().unwrapKey().get();
+            nbt.store(name(), Identifier.CODEC, key.identifier());
+        } else {
+            LOGGER.warn("Unknown variant key: {}", getVal());
+        }
     }
 }

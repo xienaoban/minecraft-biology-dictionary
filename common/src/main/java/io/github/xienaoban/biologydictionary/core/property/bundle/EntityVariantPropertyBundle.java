@@ -250,7 +250,7 @@ public final class EntityVariantPropertyBundle {
             TagValueInput input = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, entity.registryAccess(), inputTag);
             return VariantUtils.readVariant(input, key)
                     .map(Misc::<Holder<Object>>cast)
-                    .orElse(null); // TODO: throw NPE? Who catch it
+                    .orElseThrow(() -> new IllegalArgumentException("Unknown variant tag for " + entity.getType() + ": " + nbt));
         }
 
         @Override

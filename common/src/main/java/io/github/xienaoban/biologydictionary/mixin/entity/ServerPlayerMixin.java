@@ -12,10 +12,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayer.class)
 public class ServerPlayerMixin {
 
-    @Inject(method = "die", at = @At("HEAD"))
+    @Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;awardStat(Lnet/minecraft/stats/Stat;)V", ordinal = 0))
     private void biologydictionary$onKilledByEntity(DamageSource damageSource, CallbackInfo ci) {
         ServerPlayer self = (ServerPlayer) (Object) this;
-        // TODO: verify this 26.1.2 injection timing against the old awardStat injection during runtime testing.
         LivingEntity killer = self.getKillCredit();
         if (killer != null) {
             ServerWorldSession sws = ServerWorldSession.get();
