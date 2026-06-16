@@ -3,6 +3,9 @@ package io.github.xienaoban.biologydictionary.config;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigCategory;
 import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
@@ -122,6 +125,21 @@ public final class ConfigsManager {
 	}
 
 	public static void onUpdated() {
+		WorldSession ws = WorldSession.get();
+		if (ws != null) {
+			ws.onConfigsUpdate(getClient(), getServer());
+		}
+		if (DevUtils.isClient()) {
+			ClientWorldSession cws = ClientWorldSession.get();
+			if (cws != null) {
+				cws.onConfigsUpdate(getClient(), getServer());
+			}
+		}
+		ServerWorldSession sws = ServerWorldSession.get();
+		if (sws != null) {
+			sws.getDiscoveryManager().onConfigsUpdate(getClient(), getServer());
+		}
+		// TODO: broadcast updated server configs to remote players after the full server session/config behavior is ported.
 		LOGGER.info("Configs updated.");
 	}
 

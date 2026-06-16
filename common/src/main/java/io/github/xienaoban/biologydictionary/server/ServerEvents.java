@@ -1,5 +1,7 @@
 package io.github.xienaoban.biologydictionary.server;
 
+import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -8,10 +10,16 @@ import java.util.List;
 
 public final class ServerEvents {
 	@PlatformEntry
-	public static final List<ServerListener> STARTED = List.of();
+	public static final List<ServerListener> STARTED = List.of(server -> {
+		WorldSession.init(server.getAllLevels().iterator().next());
+		ServerWorldSession.init(server);
+	});
 
 	@PlatformEntry
-	public static final List<ServerListener> STOPPING = List.of();
+	public static final List<ServerListener> STOPPING = List.of(server -> {
+		ServerWorldSession.deinit();
+		WorldSession.deinit();
+	});
 
 	@PlatformEntry
 	public static final List<PlayerListener> PLAYER_LOGGED_IN = List.of();

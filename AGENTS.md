@@ -24,6 +24,11 @@
 
 - `ScreenRenderingContext` 的 `renderXxx(..., float z, ...)` 中，`z` 参数当前仅为兼容旧 API 保留，不要处理它。
 
+## Platform 分层约定
+
+- `platform` 包是底层兼容与抽象支撑层，不应该依赖 `platform` 外的业务、GUI、技能、网络 payload 等上层代码。
+- 需要根据 Biology Dictionary 业务状态做分发或判断时，例如区分词典 screen 内消息和原版游戏 overlay，应放在 `BiologyDictionaryClient`、screen、manager 等上层入口里，不要下沉到 `platform` 工具类。
+
 ## 用户改动保护
 
 - 如果发现文件内容与自己之前的改动不一致，禁止擅自改回去；这通常表示用户或其他流程已经修改过。应保留现状，必要时先询问这是否是用户有意改动。

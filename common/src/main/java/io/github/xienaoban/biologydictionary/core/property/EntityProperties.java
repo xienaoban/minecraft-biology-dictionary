@@ -10,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class EntityProperties<E extends Entity> {
@@ -17,12 +18,13 @@ public final class EntityProperties<E extends Entity> {
         VanillaEntityProperties.init();
         EntityVariantPropertyBundle.init();
         EntityInventoryPropertyBundle.init();
-        // TODO: restore ExtraEntityProperties after it is ported.
+        ExtraEntityProperties.init();
     }
 
     private final E entity;
 
     private final Map<String, EntityProperty<?>> vanillaProperties;
+    private final Map<String, EntityProperty<?>> extraProperties;
     // Skip updating some client data for some time because of the client-server sync problem.
     private int noUpdateCooldown = 0;
     private E model;
@@ -40,6 +42,18 @@ public final class EntityProperties<E extends Entity> {
             }
         }
         this.vanillaProperties = Collections.unmodifiableMap(vMap);
+
+        final var eReg = ExtraEntityProperties.registry;
+
+        Map<String, EntityProperty<?>> eMap = new HashMap<>();
+        for (var clazz : EntityUtils.topDown(entity)) {
+            List<EntityProperty.Factory<?>> factories = eReg.getOrDefault(clazz, Collections.emptyList());
+            for (EntityProperty.Factory<?> factory : factories) {
+                EntityProperty<?> property = factory.create();
+                eMap.put(property.name(), property);
+            }
+        }
+        this.extraProperties = Collections.unmodifiableMap(eMap);
 
         this.model = null;
     }
@@ -66,14 +80,19 @@ public final class EntityProperties<E extends Entity> {
     }
 
     public Collection<EntityProperty<?>> getExtras() {
-        // TODO: restore extra properties after ExtraEntityProperties is ported.
-        return Collections.emptyList();
+        return extraProperties.values();
+    }
+
+    public <EP extends EntityProperty<?>> EP getExtra(Class<EP> propertyClass) {
+        return Misc.cast(extraProperties.getOrDefault(propertyClass.getSimpleName(), null));
     }
 
     public void update(CompoundTag vanillaNbt, CompoundTag extraNbt) {
         for (EntityProperty<?> property : vanillaProperties.values()) {
             property.readFrom(vanillaNbt);
         }
-        // TODO: restore reading extraNbt after ExtraEntityProperties is ported.
+        for (EntityProperty<?> property : extraProperties.values()) {
+            property.readFrom(extraNbt);
+        }
     }
 }

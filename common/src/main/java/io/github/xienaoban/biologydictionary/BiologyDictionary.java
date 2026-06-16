@@ -1,6 +1,11 @@
 package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.compat.CompatibilityManager;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
+import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,9 +25,29 @@ public final class BiologyDictionary {
 	public static final BiologyDictionary BD = new BiologyDictionary();
 
 	private BiologyDictionary() {
+		CompatibilityManager.init();
+		EntityUtils.init();
+		EntityProperties.init();
+		BiologySkills.init();
 		ConfigsManager.load();
 		LOGGER.info("BiologyDictionary initialized.");
 	}
 
 	public void forceInitialize() { /* do nothing but to trigger cinit */ }
+
+	public static void sendCenteredMessage(ServerPlayer player, Component text) {
+		ServerNetManager.sendCenteredMessage(player, text);
+	}
+
+	public static void sendCenteredInfo(ServerPlayer player, MutableComponent text) {
+		sendCenteredMessage(player, text.withStyle(ChatFormatting.WHITE));
+	}
+
+	public static void sendCenteredWarning(ServerPlayer player, MutableComponent text) {
+		sendCenteredMessage(player, text.withStyle(ChatFormatting.YELLOW));
+	}
+
+	public static void sendCenteredError(ServerPlayer player, MutableComponent text) {
+		sendCenteredMessage(player, text.withStyle(ChatFormatting.RED));
+	}
 }

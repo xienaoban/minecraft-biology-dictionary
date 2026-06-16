@@ -469,6 +469,10 @@ public final class ScreenRenderingContext {
 		private EntityRenderState renderState;
 		private float scale;
 
+		public EntityRenderingCache() {
+			this.renderState = null;
+		}
+
 		public EntityRenderingCache(EntityRenderDispatcher renderDispatcher, Entity entity) {
 			this.renderState = RenderUtils.createRenderState(renderDispatcher, entity);
 		}

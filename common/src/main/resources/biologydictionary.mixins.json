@@ -5,13 +5,22 @@
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
 		"ExampleMixin",
+		"MobEffectInstanceIMixin",
+		"TemptGoalIMixin",
 		"entity.AbstractHorseIMixin",
 		"entity.ArmadilloStateIMixin",
+		"entity.AgeableMobMixin",
+		"entity.AnimalIMixin",
+		"entity.AnimalMixin",
 		"entity.EntityIMixin",
+		"entity.EntityMixin",
 		"entity.HorseIMixin",
 		"entity.LivingEntityIMixin",
 		"entity.MobIMixin",
+		"entity.PlayerMixin",
+		"entity.ServerPlayerMixin",
 		"entity.ServerPlayerIMixin",
+		"entity.WanderingTraderMixin",
 		"loot.CompositeEntryBaseIMixin",
 		"loot.LootItemIMixin",
 		"loot.LootPoolEntryContainerIMixin",
@@ -23,8 +32,13 @@
 		"loot.TagEntryIMixin"
 	],
 	"client": [
+		"MinecraftMixin",
 		"rendering.FeatureRenderDispatcherIMixin",
+		"rendering.GuiMixin",
 		"rendering.GuiGraphicsExtractorIMixin",
+		"rendering.ItemInHandRendererMixin",
+		"rendering.LevelRendererIMixin",
+		"rendering.LevelRendererMixin",
 		"rendering.PictureInPictureRendererMixin"
 	],
 	"injectors": {
