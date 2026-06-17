@@ -2,26 +2,18 @@ package io.github.xienaoban.biologydictionary.mixin.entity;
 
 import net.minecraft.world.entity.AgeableMob;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(AgeableMob.class)
 public abstract class AgeableMobMixin {
-    @Shadow
-    protected int forcedAge;
-
-    @Shadow
-    public abstract void setAge(int ageToSet);
-
-    @Inject(method = "setAge(I)V", at = @At(value = "HEAD"), cancellable = true)
-    private void biologydictionary$setAgeToForcedAge(int ageToSet, CallbackInfo ci) {
-        // Do not grow up / breed if forcedAge is set.
-        // Make forcedAge acts just like that in 1.21.6.
-        if (ageToSet == 0 && forcedAge != 0) {
-            setAge(forcedAge);
-            ci.cancel();
+    @ModifyArg(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/AgeableMob;setAge(I)V", ordinal = 1), index = 0)
+    private int biologydictionary$keepBreedCooldownLocked(int age) {
+        AgeableMob self = (AgeableMob) (Object) this;
+        int lockedAge = AnimalIMixin.biologydictionary$getParentAgeAfterBreeding() + 1;
+        if (self.getAge() == lockedAge) {
+            return lockedAge;
         }
+        return age;
     }
 }

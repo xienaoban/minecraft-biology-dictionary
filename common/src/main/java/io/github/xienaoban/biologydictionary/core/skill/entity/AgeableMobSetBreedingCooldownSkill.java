@@ -9,11 +9,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.item.Items;
 
-public record AgeableMobSetForcedAgeSkill(int forcedAge, int age) implements EntityTargetedSkill<AgeableMob> {
-    public static final Meta<AgeableMobSetForcedAgeSkill> META = new Meta<>() {
+public record AgeableMobSetBreedingCooldownSkill(int age) implements EntityTargetedSkill<AgeableMob> {
+    public static final Meta<AgeableMobSetBreedingCooldownSkill> META = new Meta<>() {
         @Override
-        public AgeableMobSetForcedAgeSkill create(FriendlyByteBuf buf) {
-            return new AgeableMobSetForcedAgeSkill(buf.readInt(), buf.readInt());
+        public AgeableMobSetBreedingCooldownSkill create(FriendlyByteBuf buf) {
+            return new AgeableMobSetBreedingCooldownSkill(buf.readInt());
         }
 
         @Override
@@ -23,20 +23,18 @@ public record AgeableMobSetForcedAgeSkill(int forcedAge, int age) implements Ent
 
         @Override
         public String shortName() {
-            return "set_forced_age";
+            return "set_breeding_cooldown";
         }
     };
 
     @Override
     public void write(FriendlyByteBuf buf) {
-        buf.writeInt(forcedAge);
         buf.writeInt(age);
     }
 
     @Override
     public void serverDo(ServerContext<AgeableMob> ctx) {
         CompoundTag nbt = new CompoundTag();
-        VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty().withVal(forcedAge).writeTo(nbt);
         VanillaEntityProperties.OfAgeableMob.createAgeProperty().withVal(age).writeTo(nbt);
         EntityUtils.mergeNbt(ctx.entity(), nbt);
     }

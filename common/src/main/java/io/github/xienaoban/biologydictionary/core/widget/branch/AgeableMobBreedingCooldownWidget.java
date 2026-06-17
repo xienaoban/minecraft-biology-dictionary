@@ -6,7 +6,7 @@ import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperti
 import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
-import io.github.xienaoban.biologydictionary.core.skill.entity.AgeableMobSetForcedAgeSkill;
+import io.github.xienaoban.biologydictionary.core.skill.entity.AgeableMobSetBreedingCooldownSkill;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
@@ -35,9 +35,9 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
      */
     private static final int BREED_COOLDOWN_MAX = AnimalIMixin.biologydictionary$getParentAgeAfterBreeding();
     private static final int BREED_COOLDOWN_OFF = 0;
+    private static final int BREED_COOLDOWN_LOCKED = BREED_COOLDOWN_MAX + 1;
 
     private final IntProperty<AgeableMob> ageProperty = VanillaEntityProperties.OfAgeableMob.getAgeProperty(p());
-    private final IntProperty<AgeableMob> forcedAgeProperty = VanillaEntityProperties.OfAgeableMob.getForcedAgeProperty(p());
 
     public AgeableMobBreedingCooldownWidget(EntityProperties<AgeableMob> properties) {
         super(properties);
@@ -58,9 +58,14 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
             return;
         }
         int age = ageOpt;
-        if (age > BREED_COOLDOWN_OFF) {
+        if (age > BREED_COOLDOWN_OFF && !isBreedLocked()) {
             ageProperty.setVal(age - 1);
         }
+    }
+
+    private boolean isBreedLocked() {
+        Integer age = ageProperty.getVal();
+        return age != null && age == BREED_COOLDOWN_LOCKED;
     }
 
     @Override
@@ -80,8 +85,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             Integer ageOpt = ageProperty.getVal();
-            Integer forcedAgeOpt = forcedAgeProperty.getVal();
-            if (ageOpt == null || forcedAgeOpt == null) {
+            if (ageOpt == null) {
                 updatePercent(0);
                 super.onRender(ctx);
                 if (ctx.isDebug()) {
@@ -96,13 +100,12 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                 return;
             }
             int age = ageOpt;
-            int forcedAge = forcedAgeOpt;
-            updatePercent(forcedAge > BREED_COOLDOWN_OFF ? 1 : ((float) age / BREED_COOLDOWN_MAX));
+            updatePercent(isBreedLocked() ? 1 : ((float) age / BREED_COOLDOWN_MAX));
             super.onRender(ctx);
             if (ctx.isDebug()) {
                 renderInnerText(ctx, TextUtils.literal(age + "t/" + BREED_COOLDOWN_MAX + "t"));
             } else if (isAdultClient()) {
-                if (forcedAge > BREED_COOLDOWN_OFF) {
+                if (isBreedLocked()) {
                     renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NEVER_BREED));
                 } else {
                     renderInnerText(ctx, TextUtils.literal((age / 20) + "s/" + (BREED_COOLDOWN_MAX / 20 / 60) + "m"));
@@ -120,8 +123,8 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            Integer forcedAgeOpt = forcedAgeProperty.getVal();
-            if (forcedAgeOpt == null) {
+            Integer ageOpt = ageProperty.getVal();
+            if (ageOpt == null) {
                 return true;
             }
             if (!isAdultClient()) {
@@ -129,18 +132,16 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                 return true;
             }
 
-            int forcedAge = forcedAgeOpt;
             if (isMouseLeft(code)) {
-                final int newForcedAge;
-                if (forcedAge == BREED_COOLDOWN_OFF) {
-                    newForcedAge = BREED_COOLDOWN_MAX;
+                final int newAge;
+                if (ageOpt == BREED_COOLDOWN_LOCKED) {
+                    newAge = BREED_COOLDOWN_MAX;
                 } else {
-                    newForcedAge = BREED_COOLDOWN_OFF;
+                    newAge = BREED_COOLDOWN_LOCKED;
                 }
 
-                if (BiologySkills.activate(e(), new AgeableMobSetForcedAgeSkill(newForcedAge, BREED_COOLDOWN_MAX))) {
-                    forcedAgeProperty.setVal(newForcedAge);
-                    ageProperty.setVal(BREED_COOLDOWN_MAX);
+                if (BiologySkills.activate(e(), new AgeableMobSetBreedingCooldownSkill(newAge))) {
+                    ageProperty.setVal(newAge);
                 }
             }
             return super.onMouseDown(x, y, code);
@@ -152,8 +153,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                 // Treat adult as locked as it will never change state.
                 setTextureLeftOffset(10);
             } else {
-                Integer forcedAge = forcedAgeProperty.getVal();
-                if (forcedAge != null && forcedAge > BREED_COOLDOWN_OFF) {
+                if (isBreedLocked()) {
                     setTextureLeftOffset(10);
                 } else {
                     setTextureLeftOffset(0);
@@ -164,9 +164,8 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            Integer forcedAge = forcedAgeProperty.getVal();
-            int targetForcedAge = (forcedAge != null && forcedAge == BREED_COOLDOWN_OFF) ? BREED_COOLDOWN_MAX : BREED_COOLDOWN_OFF;
-            SkillCost cost = new AgeableMobSetForcedAgeSkill(targetForcedAge, BREED_COOLDOWN_MAX).getRealCost(e());
+            int targetAge = isBreedLocked() ? BREED_COOLDOWN_MAX : BREED_COOLDOWN_LOCKED;
+            SkillCost cost = new AgeableMobSetBreedingCooldownSkill(targetAge).getRealCost(e());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK));
             tooltip.add(tooltipDescription(Lang.PROPERTY_WIDGET_BREEDING_COOLDOWN_LOCK_DESC));

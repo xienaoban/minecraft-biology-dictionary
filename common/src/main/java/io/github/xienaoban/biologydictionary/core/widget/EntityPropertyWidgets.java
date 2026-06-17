@@ -45,6 +45,7 @@ public final class EntityPropertyWidgets {
         registrar.register(MobPersistenceWidget.class, MobPersistenceWidget.FACTORY);
         registrar.register(SheepEatGrassWidget.class, SheepEatGrassWidget.FACTORY);
         registrar.register(AgeableMobGrowthWidget.class, AgeableMobGrowthWidget.FACTORY);
+        registrar.register(TadpoleGrowthWidget.class, TadpoleGrowthWidget.FACTORY);
         registrar.register(AgeableMobBreedingCooldownWidget.class, AgeableMobBreedingCooldownWidget.FACTORY);
         registrar.register(AnimalInLoveWidget.class, AnimalInLoveWidget.FACTORY);
         registrar.register(EntityPortalCooldownWidget.class, EntityPortalCooldownWidget.FACTORY);

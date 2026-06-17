@@ -5,13 +5,15 @@ import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetInvulner
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetPortalCooldownSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetSoundSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.AgeableMobSetForcedAgeSkill;
+import io.github.xienaoban.biologydictionary.core.skill.entity.AgeableMobSetBreedingCooldownSkill;
+import io.github.xienaoban.biologydictionary.core.skill.entity.AgeableMobSetAgeLockedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.BeeClearHiveSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntityGiftPetSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.LivingEntityStealInventorySkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.MobForcePersistentSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.MobSetNoAiSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.SheepForceEatGrassSkill;
+import io.github.xienaoban.biologydictionary.core.skill.entity.TadpoleSetAgeLockedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.VillagerForceRestockSkill;
 import io.github.xienaoban.biologydictionary.core.skill.entity.WanderingTraderRetainSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
@@ -41,7 +43,9 @@ public final class BiologySkills {
         registrar.register(EntitySetPortalCooldownSkill.class, EntitySetPortalCooldownSkill.META);
         registrar.register(MobSetNoAiSkill.class, MobSetNoAiSkill.META);
         registrar.register(MobForcePersistentSkill.class, MobForcePersistentSkill.META);
-        registrar.register(AgeableMobSetForcedAgeSkill.class, AgeableMobSetForcedAgeSkill.META);
+        registrar.register(AgeableMobSetBreedingCooldownSkill.class, AgeableMobSetBreedingCooldownSkill.META);
+        registrar.register(AgeableMobSetAgeLockedSkill.class, AgeableMobSetAgeLockedSkill.META);
+        registrar.register(TadpoleSetAgeLockedSkill.class, TadpoleSetAgeLockedSkill.META);
         registrar.register(BeeClearHiveSkill.class, BeeClearHiveSkill.META);
         registrar.register(EntityGiftPetSkill.class, EntityGiftPetSkill.META);
         registrar.register(SheepForceEatGrassSkill.class, SheepForceEatGrassSkill.META);
