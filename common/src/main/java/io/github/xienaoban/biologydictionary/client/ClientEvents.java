@@ -35,7 +35,6 @@ public final class ClientEvents {
 		ClientWorldSession.deinit();
 		WorldSession.deinit();
 		ConfigsManager.setLocalServerConfigs();
-		ConfigsManager.onUpdated();
 	});
 
 	@PlatformEntry

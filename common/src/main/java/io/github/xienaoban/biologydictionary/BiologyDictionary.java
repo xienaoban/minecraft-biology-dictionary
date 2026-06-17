@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.compat.CompatibilityManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
@@ -25,7 +24,6 @@ public final class BiologyDictionary {
 	public static final BiologyDictionary BD = new BiologyDictionary();
 
 	private BiologyDictionary() {
-		CompatibilityManager.init();
 		EntityUtils.init();
 		EntityProperties.init();
 		BiologySkills.init();

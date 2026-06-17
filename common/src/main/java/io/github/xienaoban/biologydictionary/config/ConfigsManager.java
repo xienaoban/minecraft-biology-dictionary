@@ -7,9 +7,13 @@ import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -31,6 +35,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -63,6 +68,14 @@ public final class ConfigsManager {
 	}
 
 	public static void setRemoteServerConfigs(Configs.ServerConfigs remoteConfigs) {
+		Objects.requireNonNull(remoteConfigs);
+		if (WorldSession.get() == null) {
+			LOGGER.warn("Cannot set remote configs: WorldSession is null.", new RuntimeException());
+			return;
+		}
+		if (ServerWorldSession.get() != null) {
+			throw new IllegalStateException("Server configs should not be synchronized from remote on server.");
+		}
 		serverConfigs = remoteConfigs;
 		LOGGER.info("Using remote server configs.");
 	}
@@ -139,12 +152,33 @@ public final class ConfigsManager {
 		ServerWorldSession sws = ServerWorldSession.get();
 		if (sws != null) {
 			sws.getDiscoveryManager().onConfigsUpdate(getClient(), getServer());
-			String serverConfigsYaml = serializeConfigCategory(getServer());
-			for (var player : sws.getServer().getPlayerList().getPlayers()) {
+			broadcastServerConfigs(sws.getServer());
+		}
+		LOGGER.info("Configs updated.");
+	}
+
+	private static void broadcastServerConfigs(MinecraftServer server) {
+		String serverConfigsYaml = serializeConfigCategory(INSTANCE.getServer());
+		if (server.isDedicatedServer()) {
+			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+				ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
+			}
+			LOGGER.info("New server configs broadcasted to all players.");
+			return;
+		}
+
+		if (ClientUtils.isSingleplayer()) {
+			LOGGER.info("We are on a single-player server. No need to broadcast new configs.");
+			return;
+		}
+
+		Player owner = ClientUtils.getClientPlayerCommon();
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			if (owner == null || !Objects.equals(owner.getUUID(), player.getUUID())) {
 				ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
 			}
 		}
-		LOGGER.info("Configs updated.");
+		LOGGER.info("New server configs broadcasted to remote players.");
 	}
 
 	private static Path getConfigPath() {

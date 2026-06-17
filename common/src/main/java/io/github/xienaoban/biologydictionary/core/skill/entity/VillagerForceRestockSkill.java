@@ -95,6 +95,9 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
     public SkillCost getRealCost(Villager entity) {
         SkillCost base = EntityTargetedSkill.super.getRealCost(entity);
         int factor = Math.max(0, restocksToday - 3 + 1) * 2;
+        if (factor == 0) {
+            return SkillCost.empty();
+        }
         return new SkillCost(
                 factor * base.getExperiencePoints(),
                 factor * base.getExperienceLevels(),

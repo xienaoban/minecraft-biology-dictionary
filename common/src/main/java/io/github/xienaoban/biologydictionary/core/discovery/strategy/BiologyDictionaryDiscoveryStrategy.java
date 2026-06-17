@@ -21,7 +21,7 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
 	private final SavedDataDiscoveryStorage storage;
 
 	public BiologyDictionaryDiscoveryStrategy(MinecraftServer server) {
-		this.storage = server.overworld().getDataStorage().computeIfAbsent(SavedDataDiscoveryStorage.TYPE);
+		this.storage = server.getDataStorage().computeIfAbsent(SavedDataDiscoveryStorage.TYPE);
 	}
 
 	@Override

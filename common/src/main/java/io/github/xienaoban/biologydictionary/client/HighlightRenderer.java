@@ -51,6 +51,9 @@ public final class HighlightRenderer {
 		Vec3 camera = levelRenderState.cameraRenderState.pos;
 		for (HighlightManager.HighlightedEntity highlighted : highlightManager.getHighlightedEntities()) {
 			Entity entity = highlighted.getEntity();
+			if (shouldSkipEntity(client, entity)) {
+				continue;
+			}
 			submitEntity(entity, entityRenderDispatcher, deltaTracker, tickRateManager,
 					camera, poseStack, levelRenderState, submitNodeCollector);
 		}
@@ -59,6 +62,10 @@ public final class HighlightRenderer {
 			BlockState blockState = highlighted.getBlockState();
 			submitBlock(client, blockPos, blockState, camera, poseStack, submitNodeCollector);
 		}
+	}
+
+	private static boolean shouldSkipEntity(Minecraft client, Entity entity) {
+		return entity == client.player && ClientUtils.isFirstPerson();
 	}
 
 	private static void submitEntity(Entity entity, EntityRenderDispatcher entityRenderDispatcher,
