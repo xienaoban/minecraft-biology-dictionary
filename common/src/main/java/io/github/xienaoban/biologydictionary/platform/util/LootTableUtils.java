@@ -85,7 +85,7 @@ public final class LootTableUtils {
     }
 
     public static Identifier getConditionType(LootItemCondition condition) {
-        return Identifier.fromNamespaceAndPath("unknown", condition.getClass().getSimpleName());
+        return BuiltInRegistries.LOOT_CONDITION_TYPE.getKey(condition.codec());
     }
 
     public static NumberProvider getCountValue(SetItemCountFunction function) {

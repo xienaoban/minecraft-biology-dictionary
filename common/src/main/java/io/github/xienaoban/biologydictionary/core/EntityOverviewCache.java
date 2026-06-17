@@ -19,7 +19,14 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Cache for entity overview data.
  */
 public final class EntityOverviewCache extends ConcurrentHashMap<EntityType<?>, EntityOverviewCache.CacheEntry> {
+    // This field is not guaranteed to be a singleton.
+    // `new CacheEntry(null, null)` elsewhere is permitted.
+    private static final CacheEntry INVALID = new CacheEntry(null, null);
+
     public CacheEntry getOrCreate(EntityType<?> entityType, ServerLevel serverLevel) {
+        CacheEntry cached = get(entityType);
+        if (cached != null) { return cached; }
+
         try {
             Entity entity = EntityUtils.create(entityType, serverLevel);
 
@@ -35,10 +42,13 @@ public final class EntityOverviewCache extends ConcurrentHashMap<EntityType<?>, 
                 property.writeTo(extraNbt);
             }
 
-            return new CacheEntry(vanillaNbt, extraNbt);
+            CacheEntry created = new CacheEntry(vanillaNbt, extraNbt);
+            put(entityType, created);
+            return created;
         } catch (Exception e) {
             LOGGER.error("Failed to create entity overview for type: {}", EntityUtils.getEntityTypeIdName(entityType), e);
-            return new CacheEntry(null, null);
+            put(entityType, INVALID);
+            return INVALID;
         }
     }
 

@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsExtractorIMixin;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
@@ -15,6 +16,9 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -284,44 +288,44 @@ public final class ScreenRenderingContext {
 	}
 
 	public void renderComponentTooltip(List<Component> texts, float leftX, float topY) {
-		renderLinedTooltip(splitTooltipTexts(texts), leftX, topY);
+		renderTooltipTexts(texts, 1.0F, leftX, topY);
 	}
 
 	public void renderComponentTooltip(List<Component> texts, float size, float leftX, float topY) {
 		try (ScaleRAII ignored = scaleOnce(size)) {
-			renderComponentTooltip(texts, leftX / size, topY / size);
+			renderTooltipTexts(texts, size, leftX, topY);
 		}
 	}
 
 	public void renderComponentTooltipCentered(List<Component> texts, float midX, float topY) {
 		List<FormattedCharSequence> lines = splitTooltipTexts(texts);
-		renderLinedTooltip(lines, midX - (calcMaxTextWidth(lines) + 6) / 2.0F, topY);
+		renderTooltipLines(lines, 1.0F, midX - (calcMaxTextWidth(lines) + 6) / 2.0F, topY);
 	}
 
 	public void renderComponentTooltipCentered(List<Component> texts, float size, float midX, float topY) {
 		try (ScaleRAII ignored = scaleOnce(size)) {
 			List<FormattedCharSequence> lines = splitTooltipTexts(texts);
-			renderLinedTooltip(lines, midX / size - (calcMaxTextWidth(lines) + 6) / 2.0F, topY / size);
+			renderTooltipLines(lines, size, midX - (calcMaxTextWidth(lines) + 6) * size / 2.0F, topY);
 		}
 	}
 
 	public void renderLinedTooltip(List<FormattedCharSequence> lines, float leftX, float topY) {
-		getGuiGraphics().setTooltipForNextFrame(getFont(), lines, (int) leftX, (int) topY);
+		renderTooltipLines(lines, 1.0F, leftX, topY);
 	}
 
 	public void renderLinedTooltip(List<FormattedCharSequence> lines, float size, float leftX, float topY) {
 		try (ScaleRAII ignored = scaleOnce(size)) {
-			renderLinedTooltip(lines, leftX / size, topY / size);
+			renderTooltipLines(lines, size, leftX, topY);
 		}
 	}
 
 	public void renderLinedTooltipCentered(List<FormattedCharSequence> lines, float midX, float topY) {
-		renderLinedTooltip(lines, midX - (calcMaxTextWidth(lines) + 6) / 2.0F, topY);
+		renderTooltipLines(lines, 1.0F, midX - (calcMaxTextWidth(lines) + 6) / 2.0F, topY);
 	}
 
 	public void renderLinedTooltipCentered(List<FormattedCharSequence> lines, float size, float midX, float topY) {
 		try (ScaleRAII ignored = scaleOnce(size)) {
-			renderLinedTooltip(lines, midX / size - (calcMaxTextWidth(lines) + 6) / 2.0F, topY / size);
+			renderTooltipLines(lines, size, midX - (calcMaxTextWidth(lines) + 6) * size / 2.0F, topY);
 		}
 	}
 
@@ -336,6 +340,27 @@ public final class ScreenRenderingContext {
 
 	private int calcMaxTextWidth(List<FormattedCharSequence> lines) {
 		return lines.stream().mapToInt(this::calcTextWidth).max().orElse(20);
+	}
+
+	private void renderTooltipTexts(List<Component> texts, float size, float x, float y) {
+		renderTooltipLines(splitTooltipTexts(texts), size, x, y);
+	}
+
+	private void renderTooltipLines(List<FormattedCharSequence> lines, float size, float x, float y) {
+		if (lines.isEmpty()) {
+			return;
+		}
+
+		Font font = getFont();
+		List<ClientTooltipComponent> components = lines.stream()
+				.map(ClientTooltipComponent::create)
+				.toList();
+
+		ClientTooltipPositioner positioner = (screenWidth, screenHeight, mouseX, mouseY, tooltipWidth, tooltipHeight) ->
+				DefaultTooltipPositioner.INSTANCE.positionTooltip((int) (screenWidth / size), (int) (screenHeight / size),
+						mouseX, mouseY, tooltipWidth, tooltipHeight);
+		getGuiGraphics().tooltip(font, components, (int) (x / size - 8.0F), (int) (y / size + 16.0F),
+				positioner, Textures.BOOK_TOOLTIP);
 	}
 
 	public void renderEntityBottomed(Entity entity, EntityRenderingCache cache,

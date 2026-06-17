@@ -55,8 +55,12 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
     }
 
     public void updateProperties(CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        EntityUtils.setNbt(entity, vanillaNbt);
-        properties.update(vanillaNbt, extraNbt);
+        if (vanillaNbt != null) {
+            EntityUtils.setNbt(entity, vanillaNbt);
+        }
+        if (extraNbt != null) {
+            properties.update(vanillaNbt, extraNbt);
+        }
     }
 
     public boolean matchesType(EntityType<?> entityType) {

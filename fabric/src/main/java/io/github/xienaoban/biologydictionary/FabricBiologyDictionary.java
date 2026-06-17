@@ -9,10 +9,10 @@ import net.fabricmc.api.ModInitializer;
 public final class FabricBiologyDictionary implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		BiologyDictionary.BD.forceInitialize();
 		ServerNetRegistrar.registerCommonPayloads();
 		CreativeTabRegistrar.register();
 		ServerEventRegistrar.register();
 		CommandRegistrar.register();
+		BiologyDictionary.BD.forceInitialize();
 	}
 }

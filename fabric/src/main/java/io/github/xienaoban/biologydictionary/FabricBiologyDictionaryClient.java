@@ -16,5 +16,6 @@ public final class FabricBiologyDictionaryClient implements ClientModInitializer
 		ClientEventRegistrar.register();
 		KeyMappingHelper.registerKeyMapping(KeyMappings.OPEN_HANDBOOK);
 		KeyMappingHelper.registerKeyMapping(KeyMappings.DEBUG);
+		BiologyDictionaryClient.BDC.forceInitialize();
 	}
 }

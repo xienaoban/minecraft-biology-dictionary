@@ -20,6 +20,7 @@ public final class NeoForgeBiologyDictionaryClient {
 		container.registerExtensionPoint(IConfigScreenFactory.class,
 				(modContainer, parent) -> ClothConfigScreenProvider.provideScreen(parent));
 		ClientEventRegistrar.register();
+		BiologyDictionaryClient.BDC.forceInitialize();
 	}
 
 	private static void registerClientReceivers(RegisterClientPayloadHandlersEvent event) {
