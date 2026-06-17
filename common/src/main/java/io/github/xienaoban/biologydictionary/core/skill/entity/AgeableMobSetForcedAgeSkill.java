@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public record AgeableMobSetForcedAgeSkill(int forcedAge, int age) implements EntityTargetedSkill<AgeableMob> {
@@ -19,7 +18,7 @@ public record AgeableMobSetForcedAgeSkill(int forcedAge, int age) implements Ent
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofItems(new ItemStack(Items.DANDELION), new ItemStack(Items.GOLD_NUGGET, 8));
+            return SkillCost.ofItems(SkillCost.item(Items.DANDELION), SkillCost.item(Items.GOLD_NUGGET, 8));
         }
 
         @Override

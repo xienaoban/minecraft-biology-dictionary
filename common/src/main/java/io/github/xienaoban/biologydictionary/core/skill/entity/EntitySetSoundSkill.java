@@ -9,7 +9,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill<Entity> {
@@ -21,7 +20,7 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofItems(new ItemStack(Items.WHITE_WOOL));
+            return SkillCost.ofItems(Items.WHITE_WOOL);
         }
 
         @Override

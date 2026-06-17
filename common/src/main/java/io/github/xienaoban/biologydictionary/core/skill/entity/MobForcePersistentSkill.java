@@ -9,7 +9,6 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public record MobForcePersistentSkill(boolean persistent) implements EntityTargetedSkill<Mob> {
@@ -21,7 +20,7 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofItems(new ItemStack(Items.PAPER), new ItemStack(Items.COPPER_NUGGET));
+            return SkillCost.ofItems(Items.PAPER, Items.COPPER_NUGGET);
         }
 
         @Override

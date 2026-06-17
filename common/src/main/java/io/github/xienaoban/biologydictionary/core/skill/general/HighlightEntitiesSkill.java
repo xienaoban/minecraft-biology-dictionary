@@ -12,7 +12,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) implements GeneralSkill {
@@ -24,7 +23,7 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
 
 		@Override
 		public SkillCost getDefaultCost() {
-			return new SkillCost(16, 0, 0, 0, 0, 0, new ItemStack(Items.ENDER_EYE));
+			return new SkillCost(16, 0, 0, 0, 0, 0, SkillCost.item(Items.ENDER_EYE));
 		}
 
 		@Override

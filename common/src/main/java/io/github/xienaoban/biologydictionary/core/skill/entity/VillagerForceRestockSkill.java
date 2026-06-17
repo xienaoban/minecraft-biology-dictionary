@@ -14,7 +14,6 @@ import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.npc.villager.Villager;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos) implements EntityTargetedSkill<Villager> {
@@ -26,7 +25,7 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofItems(new ItemStack(Items.EMERALD));
+            return SkillCost.ofItems(Items.EMERALD);
         }
 
         @Override
@@ -103,10 +102,8 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
                 factor * base.getExperienceLevelRequired(),
                 factor * base.getHealth(),
                 factor * base.getSatiety(),
-                base.getItems().stream().map(i -> {
-                    ItemStack res = i.copy();
-                    res.setCount(factor * i.getCount());
-                    return res;
-                }).toList());
+                base.getItems().stream()
+                        .map(i -> new SkillCost.ItemCost(i.item(), factor * i.count()))
+                        .toList());
     }
 }
