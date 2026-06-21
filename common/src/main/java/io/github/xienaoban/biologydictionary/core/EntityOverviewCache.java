@@ -16,7 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 /**
- * Cache for entity overview data.
+ * Cache for entity overview data (reference properties).
+ * Stores NBT data for each entity type to avoid repeated lookups.
  */
 public final class EntityOverviewCache extends ConcurrentHashMap<EntityType<?>, EntityOverviewCache.CacheEntry> {
     // This field is not guaranteed to be a singleton.
@@ -30,6 +31,8 @@ public final class EntityOverviewCache extends ConcurrentHashMap<EntityType<?>, 
         try {
             Entity entity = EntityUtils.create(entityType, serverLevel);
 
+            // Initialize goal/ai for mob entities
+            // @see net.minecraft.world.entity.EntityType.create(net.minecraft.server.level.ServerLevel, java.util.function.Consumer<T>, net.minecraft.core.BlockPos, net.minecraft.world.entity.EntitySpawnReason, boolean, boolean)
             if (entity instanceof Mob mob) {
                 mob.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()),
                         EntitySpawnReason.NATURAL, null);
@@ -37,9 +40,9 @@ public final class EntityOverviewCache extends ConcurrentHashMap<EntityType<?>, 
 
             CompoundTag vanillaNbt = EntityUtils.getNbt(entity);
             CompoundTag extraNbt = new CompoundTag();
-            for (EntityProperty<?> property : new EntityProperties<>(entity).getExtras()) {
-                property.getFrom(Misc.cast(entity));
-                property.writeTo(extraNbt);
+            for (EntityProperty<?> p : new EntityProperties<>(entity).getExtras()) {
+                p.getFrom(Misc.cast(entity));
+                p.writeTo(extraNbt);
             }
 
             CacheEntry created = new CacheEntry(vanillaNbt, extraNbt);

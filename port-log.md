@@ -73,13 +73,15 @@
 - `common/src/testServer/java/**`
 - `fabric/src/testServer/java/**`
 - `fabric/src/testClient/resources/fabric.mod.json`
+- `fabric/src/testServer/resources/fabric.mod.json`
   - 从 1.21.11 恢复 GameTest / 静态检查测试源码和 Fabric 测试资源。
   - 适配点：
     - `AbstractVisitorWrapper`：JavaParser 版本中 Javadoc comment visitor 类型改为 `TraditionalJavadocComment`。
     - `RegistrarsTest`：`PacketPayloads` 已从旧 `registerBuiltIn(Registrar)` facade 迁到 `@PlatformEntry` 的 `ENTRIES` 列表，测试改为遍历 `ENTRIES` 并验证 `FACTORY` 来源。
     - `VanillaEntitySkillTest`：`VariantHandler#variantToNbt` 现在需要 entity 参数。
     - `VanillaEntitySkillTest`：旧 `AgeableMobSetForcedAgeSkill` 在 26.1.2 拆为 `AgeableMobSetBreedingCooldownSkill`、`AgeableMobSetAgeLockedSkill`、`TadpoleSetAgeLockedSkill`，测试工厂同步拆分。
-  - 原因：Gradle 中仍配置了 `testServer` sourceSet 和 Fabric GameTest 运行项，但源码缺失；这是漏移植，适配仅限当前主代码 API 变化。
+    - `fabric.mod.json`：恢复所有 `fabric-gametest` entrypoint，不只注册 `VanillaEntityNbtTestImpl`。
+  - 原因：Gradle 中仍配置了 `testServer` sourceSet 和 Fabric GameTest 运行项，但源码/entrypoint 资源缺失或不完整；这是漏移植，适配仅限当前主代码 API 变化。
 
 - `fabric/.gitattributes`
 - `fabric/.github/workflows/build.yml`
@@ -131,7 +133,7 @@
 - `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/Permissions.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/gui/util/Colors.java`
   - 删除无理由新增的 private 构造器，并恢复网络 manager 的源端方法顺序；`ClientNetManager` 恢复 `@ClientOnly`。
-  - 原因：这些构造器和方法重排不是 26 API 迁移需要；`Permissions` 中 `Item#getName()` 到 `ItemStack#getHoverName()` 的行为/API 差异保留。
+  - 原因：这些构造器和方法重排不是 26 API 迁移需要；`Permissions` 中物品显示名恢复为源端的 `Item#getName(...)` 路径，26.1.2 API 需要传入 `ItemStack` 参数。
 
 - `common/src/main/java/io/github/xienaoban/biologydictionary/core/BiologyDictionaryItem.java`
   - 恢复 wandering trader 交易前的 `bookItemObtainableFromWanderingTrader` 配置检查，并补回源端书本兼容性、交易概率和翻译说明注释；删除无理由 private 构造器。
@@ -180,6 +182,13 @@
   - 给 `CacheEntry` 增加 `isValid()`，服务端 overview 生成失败时以 `notNull=false` 回复，客户端 overview screen 也不再把 `(null, null)` cache entry 当有效数据。
   - 原因：这是 26 目标端新增的服务端 overview cache / 失败 sentinel 特性；当前 26 侧调用方需要配套按无效数据处理。`TODO.md` 中“同步回 1.21.11”的待办保留，不应作为当前分支已完成项删除。
 
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/EntityOverviewCache.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/property/VanillaEntityProperties.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/property/extra/EntitySpawnCountedProperty.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/BiologySkills.java`
+  - 恢复无必要删除/新增的注释、空行、局部变量名、import 展开和长字符串换行。
+  - 原因：这些差异不属于 26 API、NBT 自动生成结果或去 Architectury 架构迁移；保留差异只会降低可比较性。
+
 - `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/ReplyBeehiveInfoPacket.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/ReplyEntityDataPacket.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/ReplyEntityOverviewPacket.java`
@@ -205,8 +214,8 @@
 - `gradle.properties`
 - `fabric/src/main/resources/fabric.mod.json`
 - `neoforge/src/main/templates/META-INF/neoforge.mods.toml`
-  - `mod_license` 从模板残留的 `All Rights Reserved` 改为 `LGPL-3.0`；Fabric metadata 恢复源端描述和 contact 信息；NeoForge metadata 恢复 issue tracker、display URL 和源端描述，保留 NeoForge 模板字段说明注释，同时不恢复 Architectury dependency。
-  - 原因：项目根 `LICENSE` 已恢复为 LGPL-3.0，构建产物 metadata 不能继续声明 All Rights Reserved；NeoForge 说明性模板注释可以保留，但示例/todo 内容和 Architectury 依赖是旧模板/旧架构内容，不应移植。
+  - `mod_license` 从模板残留的 `All Rights Reserved` 改为 `LGPL-3.0`；Fabric metadata 恢复源端描述和 contact 信息；NeoForge metadata 恢复 issue tracker、display URL 和源端描述，保留 26.1.2 NeoForge 模板原有注释，同时不恢复 Architectury dependency。
+  - 原因：项目根 `LICENSE` 已恢复为 LGPL-3.0，构建产物 metadata 不能继续声明 All Rights Reserved；26.1.2 NeoForge 模板原有注释可保留，但实际 `todo` 描述和 Architectury 依赖是旧模板/旧架构内容，不应移植。
 
 - `README.md`
 - `README.zh-CN.md`
@@ -333,6 +342,10 @@
   - 保留 `BiologyDictionaryClient.getHitEntity()` / `getHitEntityProperties()` 的 static 调用形式，不恢复源端 `BDC.get...`。
   - 原因：目标端 `BiologyDictionaryClient` 当前状态访问器已经迁为 static；这是现有 26 代码形态的必要适配。
 
+- `common/src/main/java/io/github/xienaoban/biologydictionary/client/BiologyDictionaryEvent.java`
+  - 保留 `BiologyDictionaryClient.setHitXxx(...)` 的 static 调用形式，不恢复源端 `BDC.set...`。
+  - 原因：目标端 `BiologyDictionaryClient` 当前状态访问器已经迁为 static；这是现有 26 代码形态的必要适配。
+
 - `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/ReplyHighlightEntitiesPacket.java`
   - 保留 `BiologyDictionaryClient.sendCenteredMessage(...)`，不恢复源端 `ClientUtils.sendCenteredMessage(...)`。
   - 原因：目标端需要在上层入口根据当前是否处于 Biology Dictionary screen 选择 screen message 或原版 overlay；这类业务状态分发不应下沉到 `platform` 工具类。
@@ -347,13 +360,23 @@
 - `common/src/main/java/io/github/xienaoban/biologydictionary/platform/net/ClientNetApi.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/platform/net/ServerNetApi.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/platform/net/PacketUtil.java`
+- `fabric/src/main/java/io/github/xienaoban/biologydictionary/platform/net/ServerNetRegistrar.java`
   - 保留 `registerBuiltIn(Registrar)` 到 `@PlatformEntry ENTRIES`、网络发送 `Platform.load` 窄服务、`RegistryFriendlyByteBuf` play codec、`PacketUtil.registerType` 幂等化。
-  - 原因：当前平台入口在 Fabric/NeoForge 生命周期中消费 packet 清单；Fabric/NeoForge client receiver 注册会再次经过同一 packet 类型，`registerType` 需要幂等以支持分阶段注册。
+  - 原因：当前平台入口在 Fabric/NeoForge 生命周期中消费 packet 清单；Fabric/NeoForge client receiver 注册会再次经过同一 packet 类型，`registerType` 需要幂等以支持分阶段注册。Fabric server 侧仍沿用源端“统一注册 clientbound，再按需注册 serverbound receiver”的行为，避免 server 注册阶段依赖 client receiver 判定。
 
 - `common/src/main/java/io/github/xienaoban/biologydictionary/client/HighlightRenderer.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/client/TelescopeDiscoveryIndicatorRenderer.java`
   - 保留 26.1.2 render submit API、`GuiGraphicsExtractor`、block model layer 分层提交和第一人称跳过玩家实体高亮。
   - 原因：旧 `submitBlock`/`GuiGraphics` 路径不再对应当前渲染 API；第一人称跳过玩家实体避免高亮自身模型，属于当前渲染路径下的行为修正。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/gui/screen/AbstractBiologyDictionaryScreen.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/gui/screen/misc/BeehiveScreen.java`
+  - 保留 `KeyMappingManager` 到 `KeyMappings`、`OPEN_BIOLOGY_DICTIONARY_SCREEN` 到 `OPEN_HANDBOOK`、`TOGGLE_DEBUG` 到 `DEBUG` 的命名差异。
+  - 原因：旧 manager 已迁为当前 `@PlatformEntry` 静态 key mapping 定义类；debug 仍只在 screen 内使用，不进入平台全局注册。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/gui/screen/util/ScreenElement.java`
+  - 保留删除 `org.jetbrains.annotations.Nullable` 的差异。
+  - 原因：当前移植约束禁止使用 JetBrains `Nullable`/`NotNull` 注解；字段和 getter 的可空语义通过现有调用约定保留。
 
 - `common/src/main/java/io/github/xienaoban/biologydictionary/core/property/.nbt-tag-import.log`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/core/property/.nbt-tag-list.log`
@@ -376,15 +399,35 @@
   - 保留 `displayClientMessage` 到 `sendSystemMessage` / `sendOverlayMessage`、loot condition `getType()` 到 `codec()`、item display name 取法的 26 API 迁移。
   - 原因：这是 Minecraft 26.1.2 official API 变化，不是业务逻辑改写。
 
+- `build.gradle`
+- `settings.gradle`
+- `common/build.gradle`
+- `fabric/build.gradle`
+- `neoforge/build.gradle`
+- `gradle/wrapper/gradle-wrapper.properties`
+- `gradle/wrapper/gradle-wrapper.jar`
+  - 保留当前 Gradle 9.4.1、Java 25、Fabric Loom、NeoForge ModDevGradle、多项目 source artifact 和 repository 配置。
+  - 原因：源端是 Architectury/Loom 多加载器骨架；目标端不是 Architectury 项目，构建骨架不能按源端同步。
+
+- `neoforge/src/main/resources/META-INF/accesstransformer.cfg`
+  - 保留访问项从 `GuiGraphics$ScissorStack` / `GuiTextRenderState` 迁到 `GuiGraphicsExtractor$ScissorStack`。
+  - 原因：26.1.2 GUI 渲染访问点已经迁到 `GuiGraphicsExtractor`，旧高级文本 render state 路径不再使用。
+
+- `common/src/testServer/java/io/github/xienaoban/biologydictionary/RegistrarsTest.java`
+- `common/src/testServer/java/io/github/xienaoban/biologydictionary/VanillaEntitySkillTest.java`
+- `common/src/testServer/java/io/github/xienaoban/biologydictionary/core/property/AbstractVisitorWrapper.java`
+- `common/src/testServer/java/io/github/xienaoban/biologydictionary/core/property/AstParser.java`
+- `common/src/testServer/java/io/github/xienaoban/biologydictionary/core/property/BytecodeDecompiler.java`
+- `common/src/testServer/java/io/github/xienaoban/biologydictionary/core/property/ClassTypeCollector.java`
+- `common/src/testServer/java/io/github/xienaoban/biologydictionary/core/property/NbtTagCollector.java`
+  - 保留测试/属性生成工具中的 Java 25 language level、`TraditionalJavadocComment`、Fabric sources jar 读取、继承内部类解析、`ValueInput`/`ValueOutput` 参数名识别、`ResourceKey.codec(...)` 类型推断，以及 packet/variant/age skill API 适配。
+  - 原因：这些差异分别对应当前 JavaParser 版本、Minecraft 26 源码形态、当前 testServer source provider 和主代码 API；不是生产逻辑额外功能。
+
 ## 不确定 / 需要复核
 
 - `.github/workflows/*` 和 `.github/scripts/*`
   - 1.21.11 有完整 CI/发布脚本，目标仓库目前没有。
   - 暂未复制原因：源端脚本与 Architectury/旧发布结构强相关，26.1.2 已改为当前 Fabric/NeoForge 多项目结构，需要单独适配而不是原样迁入。
-
-- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/Permissions.java`
-  - 当前保留 `itemStack.getHoverName()`，没有改回源端 `itemStack.getItem().getName()`。
-  - 原因：目标端已能编译运行，但 `../mc-source` 当前没有 26.1.2 源码目录可核对 `Item#getName()`；这可能只是显示名取法语义优化，也可能是不必要行为变化，后续建议用当前 26.1.2 源码确认后再决定。
 
 ## 其他建议
 
@@ -394,6 +437,10 @@
 ## 已验证
 
 - `./gradlew common:compileJava fabric:compileJava neoforge:compileJava checkCommonPlatformImports fabric:processResources neoforge:generateModMetadata`
+  - 结果：通过。
+- `./gradlew common:compileJava fabric:compileJava neoforge:compileJava checkCommonPlatformImports`
+  - 结果：通过。
+- `./gradlew common:compileJava fabric:compileJava neoforge:compileJava checkCommonPlatformImports fabric:processTestServerResources`
   - 结果：通过。
 
 ## 确认不移植

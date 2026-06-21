@@ -1,21 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
-import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetInvulnerableSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetPortalCooldownSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetSoundSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.AgeableMobSetBreedingCooldownSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.AgeableMobSetAgeLockedSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.BeeClearHiveSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.EntityGiftPetSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.LivingEntityStealInventorySkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.MobForcePersistentSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.MobSetNoAiSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.SheepForceEatGrassSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.TadpoleSetAgeLockedSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.VillagerForceRestockSkill;
-import io.github.xienaoban.biologydictionary.core.skill.entity.WanderingTraderRetainSkill;
+import io.github.xienaoban.biologydictionary.core.skill.entity.*;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
@@ -30,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class BiologySkills {
+
     public static void registerBuiltIn(Registrar registrar) {
         registrar.register(HighlightEntitiesSkill.class, HighlightEntitiesSkill.META);
         registrar.register(GetSpawnEggSkill.class, GetSpawnEggSkill.META);
@@ -159,8 +146,7 @@ public final class BiologySkills {
                 BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
             } catch (Exception e) {
                 BiologyDictionaryClient.printThrowableToLoggerAndGame(
-                        "Failed to activate skill \"" + skill.getClass() + "\" of entity \""
-                                + EntityUtils.getEntityTypeIdName(entity) + "\"", e);
+                        "Failed to activate skill \"" + skill.getClass() + "\" of entity \"" + EntityUtils.getEntityTypeIdName(entity) + "\"", e);
             }
             return false;
         }}
