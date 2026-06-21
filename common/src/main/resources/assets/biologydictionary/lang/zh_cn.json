@@ -53,6 +53,8 @@
   "config.biologydictionary.entry.discoveryByKill.tooltip": "击杀生物时触发发现。\n仅在当前策略支持该方式时生效。",
   "config.biologydictionary.entry.discoveryByKilledBy": "将「被杀」视为「发现」",
   "config.biologydictionary.entry.discoveryByKilledBy.tooltip": "被生物击杀时触发发现。\n仅在当前策略支持该方式时生效。",
+  "config.biologydictionary.entry.entitySpawnAnalysisTimeoutSeconds": "群系/结构生成信息分析超时",
+  "config.biologydictionary.entry.entitySpawnAnalysisTimeoutSeconds.tooltip": "进入世界时分析生成信息（群系和结构）最多花费的秒数。设为 0 则关闭该信息并保持为空。",
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "不显示",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "顶部",
@@ -238,6 +240,8 @@
   "property_widget.biologydictionary.discovery.location"        : "相遇地点：",
   "property_widget.biologydictionary.discovery.coordinates"     : "详细坐标：",
   "property_widget.biologydictionary.discovery.weather"         : "当地天气：",
+
+  "warn.biologydictionary.spawn_analysis_timed_out": "「生物生成群系/结构」自动分析超时（%s），信息可能不完整。\n已解析：%s/%s 个群系、%s/%s 个结构、%s 个模板。\n如需完整信息请提高配置项「%s」（会拖慢进入世界）；\n不需要则设为 0 关闭，仅使用数据包手工数据。",
 
   "text.biologydictionary.comma": "，",
 

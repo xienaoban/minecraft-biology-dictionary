@@ -3,8 +3,16 @@ package io.github.xienaoban.biologydictionary.core;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.mixin.*;
+import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -15,6 +23,8 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.StreamTagVisitor;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.TagType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -69,10 +79,20 @@ public final class EntitySpawnManager {
     private final SpawnMap structureSpawnMap = new SpawnMap(Registries.STRUCTURE, "structure");
 
     public EntitySpawnManager(RegistryAccess registryAccess, ResourceManager resourceManager) {
-        this.buildContext = new BuildContext(registryAccess, resourceManager);
+        int timeoutSeconds = ConfigsManager.getServer().getEntitySpawnAnalysisTimeoutSeconds();
+        if (timeoutSeconds == 0) {
+            LOGGER.info("Entity spawn analysis is disabled by config. Spawn biome and structure information will be empty.");
+            return;
+        }
+
+        this.buildContext = new BuildContext(registryAccess, resourceManager, timeoutSeconds);
         try {
-            buildSpawnBiomes();
-            buildSpawnStructures();
+            if (!buildContext.timedOut) {
+                buildSpawnBiomes();
+            }
+            if (!buildContext.timedOut) {
+                buildSpawnStructures();
+            }
             applyDataPackOverrides();
         } finally {
             this.buildContext = null;
@@ -99,10 +119,15 @@ public final class EntitySpawnManager {
         Registry<Biome> biomeRegistry = buildContext.registryAccess.registryOrThrow(Registries.BIOME);
         Set<Map.Entry<ResourceKey<Biome>, Biome>> biomeEntries = biomeRegistry.entrySet();
         int totalBiomes = biomeEntries.size();
+        buildContext.totalBiomes = totalBiomes;
 
-        long startNanos = System.nanoTime();
+        long startMillis = System.currentTimeMillis();
         LOGGER.info("Building entity spawn biome map: {} biomes to process.", totalBiomes);
         for (Map.Entry<ResourceKey<Biome>, Biome> biomeEntry : biomeEntries) {
+            if (buildContext.isAnalysisTimedOut()) {
+                buildContext.markTimedOut();
+                break;
+            }
             try {
                 ResourceLocation biomeId = biomeEntry.getKey().location();
                 Biome biome = biomeEntry.getValue();
@@ -121,10 +146,12 @@ public final class EntitySpawnManager {
                 }
             } catch (Throwable e) {
                 LOGGER.warn("Failed to process spawn settings for biome {}", biomeEntry.getKey(), e);
+            } finally {
+                buildContext.processedBiomes++;
             }
         }
-        LOGGER.info("Built entity spawn biome map: processed {} biomes in {} ms.",
-            totalBiomes, (System.nanoTime() - startNanos) / 1_000_000L);
+        LOGGER.info("Built entity spawn biome map: processed {}/{} biomes in {} ms.",
+            buildContext.processedBiomes, totalBiomes, System.currentTimeMillis() - startMillis);
     }
 
     private void buildSpawnStructures() {
@@ -132,12 +159,17 @@ public final class EntitySpawnManager {
         Registry<StructureTemplatePool> poolRegistry = buildContext.registryAccess.registryOrThrow(Registries.TEMPLATE_POOL);
         Set<Map.Entry<ResourceKey<Structure>, Structure>> structureEntries = structureRegistry.entrySet();
         int totalStructures = structureEntries.size();
+        buildContext.totalStructures = totalStructures;
 
-        long startNanos = System.nanoTime();
+        long startMillis = System.currentTimeMillis();
         LOGGER.info("Building entity spawn structure map: {} structures to process.", totalStructures);
         Map<ResourceLocation, Set<EntityType<?>>> structureEntities = new HashMap<>();
         Map<ResourceLocation, ResourceLocation> structureStartPools = new HashMap<>();
         for (Map.Entry<ResourceKey<Structure>, Structure> structureEntry : structureEntries) {
+            if (buildContext.isAnalysisTimedOut()) {
+                buildContext.markTimedOut();
+                break;
+            }
             ResourceLocation structureId = structureEntry.getKey().location();
             try {
                 Structure structure = structureEntry.getValue();
@@ -162,6 +194,8 @@ public final class EntitySpawnManager {
                 }
             } catch (Throwable e) {
                 LOGGER.warn("Failed to process spawn settings for structure {}", structureEntry.getKey(), e);
+            } finally {
+                buildContext.processedStructures++;
             }
         }
         buildPoolComponents();
@@ -172,8 +206,8 @@ public final class EntitySpawnManager {
                 structureSpawnMap.add(entityType, structureId);
             }
         }
-        LOGGER.info("Built entity spawn structure map: processed {} structures in {} ms, cached {} component closures, {} pools, {} templates.",
-            totalStructures, (System.nanoTime() - startNanos) / 1_000_000L,
+        LOGGER.info("Built entity spawn structure map: processed {}/{} structures in {} ms, cached {} component closures, {} pools, {} templates.",
+            buildContext.processedStructures, totalStructures, System.currentTimeMillis() - startMillis,
             buildContext.poolClosureCache.size(), buildContext.poolDirectCache.size(), buildContext.templateCache.size());
         if (!buildContext.missingTemplates.isEmpty()) {
             LOGGER.warn("Skipped {} missing structure templates: {}", buildContext.missingTemplates.size(), buildContext.missingTemplates);
@@ -382,6 +416,7 @@ public final class EntitySpawnManager {
         TemplateVisitor visitor = new TemplateVisitor();
         try (InputStream is = buildContext.resourceManager.open(resourceLoc)) {
             NbtIo.parseCompressed(is, visitor);
+            buildContext.parsedTemplates++;
         } catch (Throwable e) {
             if (e instanceof FileNotFoundException) {
                 if (!resourceLoc.equals(IGNORED_MISSING_TEMPLATE)) {
@@ -569,33 +604,6 @@ public final class EntitySpawnManager {
         }
     }
 
-    private static final class BuildContext {
-        private final RegistryAccess registryAccess;
-        private final ResourceManager resourceManager;
-        // Component id -> all reachable entities and component ids from its component graph.
-        private final Map<ResourceLocation, StructureAnalysis> poolClosureCache = new HashMap<>();
-        // Pool -> directly contained entities and directly referenced pools.
-        private final Map<ResourceLocation, StructureAnalysis> poolDirectCache = new HashMap<>();
-        // Structure template NBT id -> contained entities and jigsaw-referenced pools.
-        private final Map<ResourceLocation, StructureAnalysis> templateCache = new HashMap<>();
-        // Pool -> directly referenced pools. This graph is collapsed into SCC components before closure analysis.
-        private final Map<ResourceLocation, Set<ResourceLocation>> poolGraph = new HashMap<>();
-        private final Set<ResourceLocation> discoveredPools = new HashSet<>();
-        private final Map<ResourceLocation, ResourceLocation> poolToComponent = new HashMap<>();
-        private final Map<ResourceLocation, ComponentAnalysis> components = new HashMap<>();
-        private final Set<ResourceLocation> missingTemplates = new LinkedHashSet<>();
-        private final Map<ResourceLocation, Integer> tarjanIndices = new HashMap<>();
-        private final Map<ResourceLocation, Integer> tarjanLowLinks = new HashMap<>();
-        private final Deque<ResourceLocation> tarjanStack = new ArrayDeque<>();
-        private final Set<ResourceLocation> tarjanStackSet = new HashSet<>();
-        private int nextTarjanIndex;
-
-        private BuildContext(RegistryAccess registryAccess, ResourceManager resourceManager) {
-            this.registryAccess = registryAccess;
-            this.resourceManager = resourceManager;
-        }
-    }
-
     // ---- Data Pack Override ----
 
     private static final String SPAWN_OVERRIDE_PATH_PREFIX = SPAWN_OVERRIDE_PATH + "/";
@@ -749,6 +757,85 @@ public final class EntitySpawnManager {
                 }
             }
             return result;
+        }
+    }
+
+    private static final class BuildContext {
+        private final RegistryAccess registryAccess;
+        private final ResourceManager resourceManager;
+        private final long analysisStartMillis = System.currentTimeMillis();
+        private final long timeoutMillis;
+        // Component id -> all reachable entities and component ids from its component graph.
+        private final Map<ResourceLocation, StructureAnalysis> poolClosureCache = new HashMap<>();
+        // Pool -> directly contained entities and directly referenced pools.
+        private final Map<ResourceLocation, StructureAnalysis> poolDirectCache = new HashMap<>();
+        // Structure template NBT id -> contained entities and jigsaw-referenced pools.
+        private final Map<ResourceLocation, StructureAnalysis> templateCache = new HashMap<>();
+        // Pool -> directly referenced pools. This graph is collapsed into SCC components before closure analysis.
+        private final Map<ResourceLocation, Set<ResourceLocation>> poolGraph = new HashMap<>();
+        private final Set<ResourceLocation> discoveredPools = new HashSet<>();
+        private final Map<ResourceLocation, ResourceLocation> poolToComponent = new HashMap<>();
+        private final Map<ResourceLocation, ComponentAnalysis> components = new HashMap<>();
+        private final Set<ResourceLocation> missingTemplates = new LinkedHashSet<>();
+        private final Map<ResourceLocation, Integer> tarjanIndices = new HashMap<>();
+        private final Map<ResourceLocation, Integer> tarjanLowLinks = new HashMap<>();
+        private final Deque<ResourceLocation> tarjanStack = new ArrayDeque<>();
+        private final Set<ResourceLocation> tarjanStackSet = new HashSet<>();
+        private boolean timedOut;
+        private int totalBiomes;
+        private int totalStructures;
+        private int processedBiomes;
+        private int processedStructures;
+        private int parsedTemplates;
+        private int nextTarjanIndex;
+
+        private BuildContext(RegistryAccess registryAccess, ResourceManager resourceManager, int timeoutSeconds) {
+            this.registryAccess = registryAccess;
+            this.resourceManager = resourceManager;
+            this.timeoutMillis = timeoutSeconds * 1_000L;
+        }
+
+        private boolean isAnalysisTimedOut() {
+            return System.currentTimeMillis() - analysisStartMillis >= timeoutMillis;
+        }
+
+        private void markTimedOut() {
+            if (timedOut) return;
+            timedOut = true;
+            MutableComponent message = createTimeoutWarningMessage();
+            LOGGER.warn("{}", message.getString());
+            if (DevUtils.isClient()) {
+                sendClientAnalysisWarning(message.withStyle(ChatFormatting.YELLOW));
+            }
+        }
+
+        private MutableComponent createTimeoutWarningMessage() {
+            long elapsedMillis = System.currentTimeMillis() - analysisStartMillis;
+            return TextUtils.translate(
+                Lang.WARN_SPAWN_ANALYSIS_TIMED_OUT,
+                formatDuration(elapsedMillis),
+                processedBiomes,
+                totalBiomes,
+                processedStructures,
+                totalStructures,
+                parsedTemplates,
+                TextUtils.translate(Lang.CONFIG_ENTRY_PREFIX + "entitySpawnAnalysisTimeoutSeconds")
+            );
+        }
+
+        private static String formatDuration(long millis) {
+            if (millis < 1_000L) {
+                return millis + " ms";
+            }
+            return String.format(Locale.ROOT, "%.1f s", millis / 1_000.0);
+        }
+
+        @ClientAndServer
+        private static void sendClientAnalysisWarning(Component message) {
+            @ClientOnly final class CO { static void send(Component message) {
+                BiologyDictionaryClient.printLogToTextBoxWhenReady(message);
+            }}
+            CO.send(message);
         }
     }
 }
