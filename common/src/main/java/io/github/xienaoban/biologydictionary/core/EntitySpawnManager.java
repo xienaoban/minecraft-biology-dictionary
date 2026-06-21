@@ -12,6 +12,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.StreamTagVisitor;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.TagType;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -50,10 +53,10 @@ public final class EntitySpawnManager {
     private static final String SPAWN_OVERRIDE_PATH = "biologydictionary/entity_spawn";
     private static final FileToIdConverter STRUCTURE_LISTER = new FileToIdConverter("structures", ".nbt");
     private static final FileToIdConverter SPAWN_OVERRIDE_LISTER = FileToIdConverter.json(SPAWN_OVERRIDE_PATH);
-    private static final CompoundTag MISSING_TEMPLATE = new CompoundTag();
     private static final ResourceLocation IGNORED_MISSING_TEMPLATE = new ResourceLocation(
             "minecraft", "structures/ancient_city/walls/intact_horizontal_wall_stairs_5.nbt"
     );
+    private static final ResourceLocation EMPTY_POOL = new ResourceLocation("minecraft", "empty");
 
     private static final String KEY_BIOMES = "biomes";
     private static final String KEY_STRUCTURES = "structures";
@@ -61,19 +64,19 @@ public final class EntitySpawnManager {
     private static final String KEY_ADD = "add";
     private static final String KEY_REMOVE = "remove";
 
-    private RegistryAccess registryAccess;
-    private ResourceManager resourceManager;
+    private BuildContext buildContext;
     private final SpawnMap biomeSpawnMap = new SpawnMap(Registries.BIOME, "biome");
     private final SpawnMap structureSpawnMap = new SpawnMap(Registries.STRUCTURE, "structure");
 
     public EntitySpawnManager(RegistryAccess registryAccess, ResourceManager resourceManager) {
-        this.registryAccess = registryAccess;
-        this.resourceManager = resourceManager;
-        buildSpawnBiomes();
-        buildSpawnStructures();
-        applyDataPackOverrides();
-        this.registryAccess = null;
-        this.resourceManager = null;
+        this.buildContext = new BuildContext(registryAccess, resourceManager);
+        try {
+            buildSpawnBiomes();
+            buildSpawnStructures();
+            applyDataPackOverrides();
+        } finally {
+            this.buildContext = null;
+        }
     }
 
     public Set<ResourceLocation> getSpawnBiomes(EntityType<?> entityType) {
@@ -92,11 +95,14 @@ public final class EntitySpawnManager {
         return structureSpawnMap.getReverse(structureId);
     }
 
-
     private void buildSpawnBiomes() {
-        Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
+        Registry<Biome> biomeRegistry = buildContext.registryAccess.registryOrThrow(Registries.BIOME);
+        Set<Map.Entry<ResourceKey<Biome>, Biome>> biomeEntries = biomeRegistry.entrySet();
+        int totalBiomes = biomeEntries.size();
 
-        for (Map.Entry<ResourceKey<Biome>, Biome> biomeEntry : biomeRegistry.entrySet()) {
+        long startNanos = System.nanoTime();
+        LOGGER.info("Building entity spawn biome map: {} biomes to process.", totalBiomes);
+        for (Map.Entry<ResourceKey<Biome>, Biome> biomeEntry : biomeEntries) {
             try {
                 ResourceLocation biomeId = biomeEntry.getKey().location();
                 Biome biome = biomeEntry.getValue();
@@ -117,172 +123,477 @@ public final class EntitySpawnManager {
                 LOGGER.warn("Failed to process spawn settings for biome {}", biomeEntry.getKey(), e);
             }
         }
+        LOGGER.info("Built entity spawn biome map: processed {} biomes in {} ms.",
+            totalBiomes, (System.nanoTime() - startNanos) / 1_000_000L);
     }
 
     private void buildSpawnStructures() {
-        Registry<Structure> structureRegistry = registryAccess.registryOrThrow(Registries.STRUCTURE);
-        Registry<StructureTemplatePool> poolRegistry = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL);
+        Registry<Structure> structureRegistry = buildContext.registryAccess.registryOrThrow(Registries.STRUCTURE);
+        Registry<StructureTemplatePool> poolRegistry = buildContext.registryAccess.registryOrThrow(Registries.TEMPLATE_POOL);
+        Set<Map.Entry<ResourceKey<Structure>, Structure>> structureEntries = structureRegistry.entrySet();
+        int totalStructures = structureEntries.size();
 
-        Map<ResourceLocation, CompoundTag> templateCache = new HashMap<>();
-
-        for (Map.Entry<ResourceKey<Structure>, Structure> structureEntry : structureRegistry.entrySet()) {
+        long startNanos = System.nanoTime();
+        LOGGER.info("Building entity spawn structure map: {} structures to process.", totalStructures);
+        Map<ResourceLocation, Set<EntityType<?>>> structureEntities = new HashMap<>();
+        Map<ResourceLocation, ResourceLocation> structureStartPools = new HashMap<>();
+        for (Map.Entry<ResourceKey<Structure>, Structure> structureEntry : structureEntries) {
+            ResourceLocation structureId = structureEntry.getKey().location();
             try {
-                ResourceLocation structureId = structureEntry.getKey().location();
                 Structure structure = structureEntry.getValue();
 
-                Set<EntityType<?>> seenStructureEntities = new HashSet<>();
+                Set<EntityType<?>> seenStructureEntities = structureEntities.computeIfAbsent(structureId, id -> new HashSet<>());
 
                 // 1. spawnOverrides (e.g. guardians in ocean monuments)
                 structure.spawnOverrides().forEach((category, override) -> {
                     for (MobSpawnSettings.SpawnerData spawnerData : override.spawns().unwrap()) {
-                        EntityType<?> entityType = spawnerData.type;
-
-                        if (seenStructureEntities.add(entityType)) {
-                            structureSpawnMap.add(entityType, structureId);
-                        }
+                        seenStructureEntities.add(spawnerData.type);
                     }
                 });
 
                 // 2. Template entities for Jigsaw structures (e.g. villagers in villages)
                 if (structure instanceof JigsawStructure) {
                     Holder<StructureTemplatePool> startPool = ((JigsawStructureIMixin) (Object) structure).biologydictionary$getStartPool();
-                    collectTemplateEntities(
-                        startPool, poolRegistry, templateCache,
-                        structureId, seenStructureEntities
-                    );
+                    ResourceLocation startPoolId = getPoolLocation(startPool);
+                    if (startPoolId != null) {
+                        structureStartPools.put(structureId, startPoolId);
+                        collectPoolGraph(startPoolId, poolRegistry);
+                    }
                 }
             } catch (Throwable e) {
                 LOGGER.warn("Failed to process spawn settings for structure {}", structureEntry.getKey(), e);
             }
         }
+        buildPoolComponents();
+        applyStructureTemplateEntities(structureStartPools, structureEntities);
+        for (Map.Entry<ResourceLocation, Set<EntityType<?>>> entry : structureEntities.entrySet()) {
+            ResourceLocation structureId = entry.getKey();
+            for (EntityType<?> entityType : entry.getValue()) {
+                structureSpawnMap.add(entityType, structureId);
+            }
+        }
+        LOGGER.info("Built entity spawn structure map: processed {} structures in {} ms, cached {} component closures, {} pools, {} templates.",
+            totalStructures, (System.nanoTime() - startNanos) / 1_000_000L,
+            buildContext.poolClosureCache.size(), buildContext.poolDirectCache.size(), buildContext.templateCache.size());
+        if (!buildContext.missingTemplates.isEmpty()) {
+            LOGGER.warn("Skipped {} missing structure templates: {}", buildContext.missingTemplates.size(), buildContext.missingTemplates);
+        }
     }
 
-    private void collectTemplateEntities(
-        Holder<StructureTemplatePool> startPool,
-        Registry<StructureTemplatePool> poolRegistry,
-        Map<ResourceLocation, CompoundTag> templateCache,
-        ResourceLocation structureId,
-        Set<EntityType<?>> seenStructureEntities
+    private void collectPoolGraph(
+        ResourceLocation startPoolId,
+        Registry<StructureTemplatePool> poolRegistry
     ) {
-        Set<ResourceLocation> visitedPools = new HashSet<>();
         Queue<ResourceLocation> poolQueue = new ArrayDeque<>();
-
-        ResourceLocation startPoolId = startPool.unwrapKey()
-            .map(ResourceKey::location).orElse(null);
-        if (startPoolId == null) return;
-        visitedPools.add(startPoolId);
-        poolQueue.add(startPoolId);
+        if (buildContext.discoveredPools.add(startPoolId)) {
+            poolQueue.add(startPoolId);
+        }
 
         while (!poolQueue.isEmpty()) {
             ResourceLocation currentPoolId = poolQueue.poll();
-            Optional<StructureTemplatePool> poolHolder = poolRegistry.getOptional(currentPoolId);
-            if (poolHolder.isEmpty()) continue;
-            StructureTemplatePool pool = poolHolder.get();
-            Set<ResourceLocation> referencedPools = new HashSet<>();
-
-            // Collect entities from all templates in this pool
-            for (StructurePoolElement element : ((StructureTemplatePoolIMixin) pool).biologydictionary$getTemplates()) {
-                try {
-                    collectElementEntities(
-                        element, templateCache,
-                        structureId, seenStructureEntities, referencedPools
-                    );
-                } catch (Exception e) {
-                    LOGGER.warn("Failed to process element in template pool {}", currentPoolId, e);
-                }
-            }
-
-            // Also follow fallback pool
-            try {
-                Holder<StructureTemplatePool> fallback = pool.getFallback();
-                if (fallback.value() != pool) {
-                    fallback.unwrapKey().ifPresent(poolKey -> {
-                        ResourceLocation fallbackId = poolKey.location();
-                        if (visitedPools.add(fallbackId)) {
-                            poolQueue.add(fallbackId);
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                LOGGER.warn("Failed to process fallback pool for {}", currentPoolId, e);
-            }
+            StructureAnalysis directAnalysis = analyzePoolDirect(currentPoolId, poolRegistry);
 
             // Follow jigsaw-referenced pools from templates
-            for (ResourceLocation poolId : referencedPools) {
-                if (visitedPools.add(poolId)) {
+            for (ResourceLocation poolId : directAnalysis.referencedPools()) {
+                buildContext.poolGraph.computeIfAbsent(currentPoolId, id -> new HashSet<>()).add(poolId);
+                if (buildContext.discoveredPools.add(poolId)) {
                     poolQueue.add(poolId);
                 }
             }
         }
     }
 
-    private void collectElementEntities(
-        StructurePoolElement element,
-        Map<ResourceLocation, CompoundTag> templateCache,
-        ResourceLocation structureId,
-        Set<EntityType<?>> seenStructureEntities,
-        Set<ResourceLocation> referencedPools
+    private void applyStructureTemplateEntities(
+        Map<ResourceLocation, ResourceLocation> structureStartPools,
+        Map<ResourceLocation, Set<EntityType<?>>> structureEntities
     ) {
-        if (element instanceof SinglePoolElement singlePoolElement) {
-            ResourceLocation templateId = getTemplateLocation(singlePoolElement);
-            if (templateId == null) return;
+        for (Map.Entry<ResourceLocation, ResourceLocation> entry : structureStartPools.entrySet()) {
+            ResourceLocation structureId = entry.getKey();
+            ResourceLocation startPoolId = entry.getValue();
+            ResourceLocation componentId = buildContext.poolToComponent.get(startPoolId);
+            if (componentId == null) continue;
+            StructureAnalysis closure = analyzeComponentClosure(componentId);
+            structureEntities.computeIfAbsent(structureId, id -> new HashSet<>()).addAll(closure.entities());
+        }
+    }
 
-            CompoundTag rootNbt = templateCache.computeIfAbsent(templateId, id -> {
-                ResourceLocation resourceLoc = STRUCTURE_LISTER.idToFile(id);
-                try {
-                    try (InputStream is = resourceManager.open(resourceLoc)) {
-                        return NbtIo.readCompressed(is);
-                    }
-                } catch (Throwable e) {
-                    // Ignore intact_horizontal_wall_stairs_5.nbt
-                    if (resourceLoc.equals(IGNORED_MISSING_TEMPLATE) && e instanceof FileNotFoundException) {
-                        return MISSING_TEMPLATE;
-                    }
-                    LOGGER.warn("Failed to read structure template {}", id, e);
-                    return MISSING_TEMPLATE;
-                }
-            });
-            if (rootNbt == MISSING_TEMPLATE) { return; }
-
-            // Extract entities
-            ListTag entities = rootNbt.getList("entities", 10);
-            for (int i = 0; i < entities.size(); i++) {
-                CompoundTag entityTag = entities.getCompound(i);
-                if (!entityTag.contains("nbt")) continue;
-                CompoundTag nbt = entityTag.getCompound("nbt");
-                if (!nbt.contains("id")) continue;
-                String id = nbt.getString("id");
-                EntityType.byString(id).ifPresent(entityType -> {
-                    if (seenStructureEntities.add(entityType)) {
-                        structureSpawnMap.add(entityType, structureId);
-                    }
-                });
+    private void buildPoolComponents() {
+        for (ResourceLocation poolId : buildContext.discoveredPools) {
+            if (!buildContext.tarjanIndices.containsKey(poolId)) {
+                strongConnect(poolId);
             }
-
-            // Find jigsaw-referenced pools from blocks (only jigsaw blocks have "pool" in their nbt)
-            ListTag blocks = rootNbt.getList("blocks", 10);
-            for (int i = 0; i < blocks.size(); i++) {
-                CompoundTag blockTag = blocks.getCompound(i);
-                if (!blockTag.contains("nbt")) continue;
-                CompoundTag blockNbt = blockTag.getCompound("nbt");
-                String poolStr = blockNbt.getString("pool");
-                if (!poolStr.isEmpty()) {
-                    ResourceLocation poolLoc = ResourceLocation.tryParse(poolStr);
-                    if (poolLoc != null && !poolLoc.equals(new ResourceLocation("minecraft", "empty"))) {
-                        referencedPools.add(poolLoc);
-                    }
+        }
+        for (Map.Entry<ResourceLocation, Set<ResourceLocation>> entry : buildContext.poolGraph.entrySet()) {
+            ResourceLocation componentId = buildContext.poolToComponent.get(entry.getKey());
+            if (componentId == null) continue;
+            ComponentAnalysis component = buildContext.components.get(componentId);
+            if (component == null) continue;
+            for (ResourceLocation referencedPoolId : entry.getValue()) {
+                ResourceLocation referencedComponentId = buildContext.poolToComponent.get(referencedPoolId);
+                if (referencedComponentId != null && !referencedComponentId.equals(componentId)) {
+                    component.referencedComponents().add(referencedComponentId);
                 }
-            }
-        } else if (element instanceof ListPoolElement listPoolElement) {
-            for (StructurePoolElement child : ((ListPoolElementIMixin) listPoolElement).biologydictionary$getElements()) {
-                collectElementEntities(child, templateCache,
-                    structureId, seenStructureEntities, referencedPools);
             }
         }
     }
 
+    private void strongConnect(ResourceLocation poolId) {
+        buildContext.tarjanIndices.put(poolId, buildContext.nextTarjanIndex);
+        buildContext.tarjanLowLinks.put(poolId, buildContext.nextTarjanIndex);
+        buildContext.nextTarjanIndex++;
+        buildContext.tarjanStack.push(poolId);
+        buildContext.tarjanStackSet.add(poolId);
+
+        for (ResourceLocation referencedPoolId : buildContext.poolGraph.getOrDefault(poolId, Set.of())) {
+            if (!buildContext.tarjanIndices.containsKey(referencedPoolId)) {
+                strongConnect(referencedPoolId);
+                buildContext.tarjanLowLinks.put(poolId, Math.min(
+                    buildContext.tarjanLowLinks.get(poolId),
+                    buildContext.tarjanLowLinks.get(referencedPoolId)
+                ));
+            } else if (buildContext.tarjanStackSet.contains(referencedPoolId)) {
+                buildContext.tarjanLowLinks.put(poolId, Math.min(
+                    buildContext.tarjanLowLinks.get(poolId),
+                    buildContext.tarjanIndices.get(referencedPoolId)
+                ));
+            }
+        }
+
+        if (!buildContext.tarjanLowLinks.get(poolId).equals(buildContext.tarjanIndices.get(poolId))) {
+            return;
+        }
+
+        Set<ResourceLocation> componentPools = new HashSet<>();
+        ResourceLocation componentId = poolId;
+        ResourceLocation memberPoolId;
+        do {
+            memberPoolId = buildContext.tarjanStack.pop();
+            buildContext.tarjanStackSet.remove(memberPoolId);
+            componentPools.add(memberPoolId);
+            if (memberPoolId.toString().compareTo(componentId.toString()) < 0) {
+                componentId = memberPoolId;
+            }
+        } while (!memberPoolId.equals(poolId));
+
+        Set<EntityType<?>> entities = new HashSet<>();
+        for (ResourceLocation memberId : componentPools) {
+            buildContext.poolToComponent.put(memberId, componentId);
+            entities.addAll(buildContext.poolDirectCache.getOrDefault(memberId, StructureAnalysis.EMPTY).entities());
+        }
+
+        buildContext.components.put(componentId, new ComponentAnalysis(Set.copyOf(entities), new HashSet<>()));
+    }
+
+    private StructureAnalysis analyzeComponentClosure(ResourceLocation componentId) {
+        StructureAnalysis cached = buildContext.poolClosureCache.get(componentId);
+        if (cached != null) return cached;
+
+        ComponentAnalysis component = buildContext.components.get(componentId);
+        if (component == null) return StructureAnalysis.EMPTY;
+
+        Set<EntityType<?>> entities = new HashSet<>(component.entities());
+        Set<ResourceLocation> referencedComponents = new HashSet<>(component.referencedComponents());
+        for (ResourceLocation referencedComponentId : component.referencedComponents()) {
+            StructureAnalysis childAnalysis = analyzeComponentClosure(referencedComponentId);
+            entities.addAll(childAnalysis.entities());
+            referencedComponents.addAll(childAnalysis.referencedPools());
+        }
+
+        StructureAnalysis analysis = new StructureAnalysis(Set.copyOf(entities), Set.copyOf(referencedComponents));
+        buildContext.poolClosureCache.put(componentId, analysis);
+        return analysis;
+    }
+
+    private StructureAnalysis analyzePoolDirect(
+        ResourceLocation poolId,
+        Registry<StructureTemplatePool> poolRegistry
+    ) {
+        StructureAnalysis cached = buildContext.poolDirectCache.get(poolId);
+        if (cached != null) return cached;
+
+        Optional<StructureTemplatePool> poolHolder = poolRegistry.getOptional(poolId);
+        if (poolHolder.isEmpty()) {
+            buildContext.poolDirectCache.put(poolId, StructureAnalysis.EMPTY);
+            return StructureAnalysis.EMPTY;
+        }
+
+        StructureTemplatePool pool = poolHolder.get();
+        Set<EntityType<?>> entities = new HashSet<>();
+        Set<ResourceLocation> referencedPools = new HashSet<>();
+
+        // Collect entities from all templates in this pool
+        for (StructurePoolElement element : ((StructureTemplatePoolIMixin) pool).biologydictionary$getTemplates()) {
+            try {
+                StructureAnalysis elementAnalysis = analyzeElement(element);
+                entities.addAll(elementAnalysis.entities());
+                referencedPools.addAll(elementAnalysis.referencedPools());
+            } catch (Exception e) {
+                LOGGER.warn("Failed to process element in template pool {}", poolId, e);
+            }
+        }
+
+        // Also follow fallback pool
+        try {
+            Holder<StructureTemplatePool> fallback = pool.getFallback();
+            if (fallback.value() != pool) {
+                ResourceLocation fallbackId = getPoolLocation(fallback);
+                if (fallbackId != null) {
+                    referencedPools.add(fallbackId);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to process fallback pool for {}", poolId, e);
+        }
+
+        StructureAnalysis analysis = new StructureAnalysis(Set.copyOf(entities), Set.copyOf(referencedPools));
+        buildContext.poolDirectCache.put(poolId, analysis);
+        return analysis;
+    }
+
+    private StructureAnalysis analyzeElement(
+        StructurePoolElement element
+    ) {
+        if (element instanceof SinglePoolElement singlePoolElement) {
+            ResourceLocation templateId = getTemplateLocation(singlePoolElement);
+            if (templateId == null) return StructureAnalysis.EMPTY;
+            return analyzeTemplate(templateId);
+        } else if (element instanceof ListPoolElement listPoolElement) {
+            Set<EntityType<?>> entities = new HashSet<>();
+            Set<ResourceLocation> referencedPools = new HashSet<>();
+            for (StructurePoolElement child : ((ListPoolElementIMixin) listPoolElement).biologydictionary$getElements()) {
+                StructureAnalysis childAnalysis = analyzeElement(child);
+                entities.addAll(childAnalysis.entities());
+                referencedPools.addAll(childAnalysis.referencedPools());
+            }
+            return new StructureAnalysis(Set.copyOf(entities), Set.copyOf(referencedPools));
+        }
+        return StructureAnalysis.EMPTY;
+    }
+
+    private StructureAnalysis analyzeTemplate(ResourceLocation templateId) {
+        StructureAnalysis cached = buildContext.templateCache.get(templateId);
+        if (cached != null) return cached;
+        if (templateId.equals(EMPTY_POOL)) {
+            buildContext.templateCache.put(templateId, StructureAnalysis.EMPTY);
+            return StructureAnalysis.EMPTY;
+        }
+
+        ResourceLocation resourceLoc = STRUCTURE_LISTER.idToFile(templateId);
+        TemplateVisitor visitor = new TemplateVisitor();
+        try (InputStream is = buildContext.resourceManager.open(resourceLoc)) {
+            NbtIo.parseCompressed(is, visitor);
+        } catch (Throwable e) {
+            if (e instanceof FileNotFoundException) {
+                if (!resourceLoc.equals(IGNORED_MISSING_TEMPLATE)) {
+                    buildContext.missingTemplates.add(templateId);
+                }
+            } else {
+                LOGGER.warn("Failed to read structure template {}", templateId, e);
+            }
+            buildContext.templateCache.put(templateId, StructureAnalysis.EMPTY);
+            return StructureAnalysis.EMPTY;
+        }
+
+        StructureAnalysis analysis = new StructureAnalysis(
+            Set.copyOf(visitor.entities),
+            Set.copyOf(visitor.referencedPools)
+        );
+        buildContext.templateCache.put(templateId, analysis);
+        return analysis;
+    }
+
     private static ResourceLocation getTemplateLocation(SinglePoolElement element) {
         return ((SinglePoolElementIMixin) element).biologydictionary$getTemplate().left().orElse(null);
+    }
+
+    private static ResourceLocation getPoolLocation(Holder<StructureTemplatePool> pool) {
+        return pool.unwrapKey().map(ResourceKey::location).orElse(null);
+    }
+
+    private record StructureAnalysis(Set<EntityType<?>> entities, Set<ResourceLocation> referencedPools) {
+        private static final StructureAnalysis EMPTY = new StructureAnalysis(Set.of(), Set.of());
+    }
+
+    private record ComponentAnalysis(Set<EntityType<?>> entities, Set<ResourceLocation> referencedComponents) {}
+
+    private static final class TemplateVisitor implements StreamTagVisitor {
+        private enum Context {
+            ROOT,
+            ENTITIES_LIST,
+            ENTITY,
+            ENTITY_NBT,
+            BLOCKS_LIST,
+            BLOCK,
+            BLOCK_NBT
+        }
+
+        private final Set<EntityType<?>> entities = new HashSet<>();
+        private final Set<ResourceLocation> referencedPools = new HashSet<>();
+        private final Deque<Context> contextStack = new ArrayDeque<>();
+        private boolean readingEntityId;
+        private boolean readingPool;
+
+        @Override
+        public ValueResult visitEnd() {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(String string) {
+            if (readingEntityId) {
+                EntityType.byString(string).ifPresent(entities::add);
+                readingEntityId = false;
+            } else if (readingPool) {
+                ResourceLocation poolLoc = ResourceLocation.tryParse(string);
+                if (poolLoc != null && !poolLoc.equals(EMPTY_POOL)) {
+                    referencedPools.add(poolLoc);
+                }
+                readingPool = false;
+            }
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(byte b) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(short s) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(int i) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(long l) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(float f) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(double d) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(byte[] bs) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(int[] is) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(long[] ls) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visitList(TagType<?> tagType, int i) {
+            Context context = contextStack.peek();
+            if ((context == Context.ENTITIES_LIST || context == Context.BLOCKS_LIST) && tagType == CompoundTag.TYPE) {
+                return ValueResult.CONTINUE;
+            }
+            return ValueResult.BREAK;
+        }
+
+        @Override
+        public EntryResult visitEntry(TagType<?> tagType) {
+            return EntryResult.ENTER;
+        }
+
+        @Override
+        public EntryResult visitEntry(TagType<?> tagType, String string) {
+            Context context = contextStack.peek();
+            if (context == Context.ROOT && tagType == ListTag.TYPE) {
+                if ("entities".equals(string)) {
+                    contextStack.push(Context.ENTITIES_LIST);
+                    return EntryResult.ENTER;
+                }
+                if ("blocks".equals(string)) {
+                    contextStack.push(Context.BLOCKS_LIST);
+                    return EntryResult.ENTER;
+                }
+            } else if ((context == Context.ENTITY || context == Context.BLOCK) && tagType == CompoundTag.TYPE && "nbt".equals(string)) {
+                contextStack.push(context == Context.ENTITY ? Context.ENTITY_NBT : Context.BLOCK_NBT);
+                return EntryResult.ENTER;
+            } else if (context == Context.ENTITY_NBT && tagType == StringTag.TYPE && "id".equals(string)) {
+                readingEntityId = true;
+                return EntryResult.ENTER;
+            } else if (context == Context.BLOCK_NBT && tagType == StringTag.TYPE && "pool".equals(string)) {
+                readingPool = true;
+                return EntryResult.ENTER;
+            }
+            return EntryResult.SKIP;
+        }
+
+        @Override
+        public EntryResult visitElement(TagType<?> tagType, int i) {
+            Context context = contextStack.peek();
+            if (context == Context.ENTITIES_LIST && tagType == CompoundTag.TYPE) {
+                contextStack.push(Context.ENTITY);
+                return EntryResult.ENTER;
+            }
+            if (context == Context.BLOCKS_LIST && tagType == CompoundTag.TYPE) {
+                contextStack.push(Context.BLOCK);
+                return EntryResult.ENTER;
+            }
+            return EntryResult.SKIP;
+        }
+
+        @Override
+        public ValueResult visitContainerEnd() {
+            if (!contextStack.isEmpty()) {
+                contextStack.pop();
+            }
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visitRootEntry(TagType<?> tagType) {
+            if (tagType == CompoundTag.TYPE) {
+                contextStack.push(Context.ROOT);
+                return ValueResult.CONTINUE;
+            }
+            return ValueResult.HALT;
+        }
+    }
+
+    private static final class BuildContext {
+        private final RegistryAccess registryAccess;
+        private final ResourceManager resourceManager;
+        // Component id -> all reachable entities and component ids from its component graph.
+        private final Map<ResourceLocation, StructureAnalysis> poolClosureCache = new HashMap<>();
+        // Pool -> directly contained entities and directly referenced pools.
+        private final Map<ResourceLocation, StructureAnalysis> poolDirectCache = new HashMap<>();
+        // Structure template NBT id -> contained entities and jigsaw-referenced pools.
+        private final Map<ResourceLocation, StructureAnalysis> templateCache = new HashMap<>();
+        // Pool -> directly referenced pools. This graph is collapsed into SCC components before closure analysis.
+        private final Map<ResourceLocation, Set<ResourceLocation>> poolGraph = new HashMap<>();
+        private final Set<ResourceLocation> discoveredPools = new HashSet<>();
+        private final Map<ResourceLocation, ResourceLocation> poolToComponent = new HashMap<>();
+        private final Map<ResourceLocation, ComponentAnalysis> components = new HashMap<>();
+        private final Set<ResourceLocation> missingTemplates = new LinkedHashSet<>();
+        private final Map<ResourceLocation, Integer> tarjanIndices = new HashMap<>();
+        private final Map<ResourceLocation, Integer> tarjanLowLinks = new HashMap<>();
+        private final Deque<ResourceLocation> tarjanStack = new ArrayDeque<>();
+        private final Set<ResourceLocation> tarjanStackSet = new HashSet<>();
+        private int nextTarjanIndex;
+
+        private BuildContext(RegistryAccess registryAccess, ResourceManager resourceManager) {
+            this.registryAccess = registryAccess;
+            this.resourceManager = resourceManager;
+        }
     }
 
     // ---- Data Pack Override ----
@@ -290,7 +601,7 @@ public final class EntitySpawnManager {
     private static final String SPAWN_OVERRIDE_PATH_PREFIX = SPAWN_OVERRIDE_PATH + "/";
 
     private void applyDataPackOverrides() {
-        Map<ResourceLocation, List<Resource>> stacks = SPAWN_OVERRIDE_LISTER.listMatchingResourceStacks(resourceManager);
+        Map<ResourceLocation, List<Resource>> stacks = SPAWN_OVERRIDE_LISTER.listMatchingResourceStacks(buildContext.resourceManager);
         for (Map.Entry<ResourceLocation, List<Resource>> entry : stacks.entrySet()) {
             String fullPath = entry.getKey().getPath();
             String fileName = fullPath.substring(SPAWN_OVERRIDE_PATH_PREFIX.length());
@@ -415,7 +726,7 @@ public final class EntitySpawnManager {
 
         private List<ResourceLocation> parseIdentifierList(JsonArray array, EntityType<?> entityType) {
             List<ResourceLocation> result = new ArrayList<>();
-            var registry = registryAccess.registryOrThrow(registryKey);
+            var registry = buildContext.registryAccess.registryOrThrow(registryKey);
             for (JsonElement element : array) {
                 String str = element.getAsString();
                 if (str.startsWith("#")) {
