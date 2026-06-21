@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
+import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
@@ -22,51 +23,65 @@ import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
+/**
+ * Manages configuration lifecycle for Biology Dictionary.
+ * Handles loading, saving, and remote config synchronization.
+ */
 public final class ConfigsManager {
-    private static final int MAX_YAML_SIZE = 64 * 1024;
+    private static final int MAX_YAML_SIZE = 64 * 1024; // 64KB
 
     private static final Configs INSTANCE = new Configs();
     private static final Configs.ClientConfigs clientConfigs = INSTANCE.getClient();
     private static volatile Configs.ServerConfigs serverConfigs = INSTANCE.getServer();
 
-    private ConfigsManager() {}
+    private ConfigsManager() {} // Utility class
 
+    /**
+     * Get the local configuration instance.
+     */
     public static Configs getInstance() {
         return INSTANCE;
     }
 
+    /**
+     * Get the active client configuration.
+     * Not like the server configs, it never changes.
+     */
     public static Configs.ClientConfigs getClient() {
         return clientConfigs;
     }
 
+    /**
+     * Get the active server configuration.
+     * Returns remote config if connected to a server, or local config otherwise.
+     */
     public static Configs.ServerConfigs getServer() {
         return serverConfigs;
     }
 
+    /**
+     * Reset to local server configuration.
+     * Called when disconnecting from a server or in singleplayer.
+     */
     public static void setLocalServerConfigs() {
         serverConfigs = INSTANCE.getServer();
         LOGGER.info("Using local server configs.");
     }
 
+    /**
+     * Set remote server configuration from server.
+     * Called when receiving config packet from server.
+     */
     public static void setRemoteServerConfigs(Configs.ServerConfigs remoteConfigs) {
         Objects.requireNonNull(remoteConfigs);
         if (WorldSession.get() == null) {
@@ -80,64 +95,92 @@ public final class ConfigsManager {
         LOGGER.info("Using remote server configs.");
     }
 
+    private static Path getConfigPath() {
+        return DevUtils.getConfigDir().resolve(Lang.CONFIG_FILE);
+    }
+
+    /**
+     * Save configuration to YAML file.
+     */
     public static void save() {
         Path configPath = getConfigPath();
         try {
             Files.createDirectories(configPath.getParent());
 
             Map<String, Object> data = new LinkedHashMap<>();
+
+            // Iterate through fields annotated with @ConfigCategory
             for (Field categoryField : INSTANCE.getClass().getDeclaredFields()) {
                 if (categoryField.isAnnotationPresent(ConfigCategory.class)) {
                     categoryField.setAccessible(true);
                     Object categoryObject = categoryField.get(INSTANCE);
-                    if (categoryObject instanceof Configs.PostLoader postLoader) {
-                        postLoader.postLoad();
+                    if (categoryObject instanceof Configs.PostLoader processor) {
+                        processor.postLoad();
                     }
-                    data.put(categoryField.getName(), saveConfigCategoryToMap(categoryObject));
+                    String fieldName = categoryField.getName();
+                    Map<String, Object> categoryMap = saveConfigCategoryToMap(categoryObject);
+                    data.put(fieldName, categoryMap);
                 }
             }
 
+            Yaml yaml = createYamlForDump();
             try (FileWriter writer = new FileWriter(configPath.toFile())) {
-                createYamlForDump().dump(data, writer);
+                yaml.dump(data, writer);
             }
+
             LOGGER.info("Configuration saved to {}", configPath.toAbsolutePath());
         } catch (IOException | IllegalAccessException e) {
             LOGGER.error("Failed to save configuration", e);
         }
     }
 
+    /**
+     * Load configuration from YAML file.
+     */
     public static void load() {
         Path configPath = getConfigPath();
         if (!Files.exists(configPath)) {
-            save();
+            save(); // Create default config
             return;
         }
 
         try (FileInputStream input = new FileInputStream(configPath.toFile())) {
-            Map<String, Object> data = createYamlForLoad().load(input);
+            Yaml yaml = createYamlForLoad();
+            Map<String, Object> data = yaml.load(input);
+
             boolean allGood = true;
             if (data != null) {
+                // Iterate through fields annotated with @ConfigCategory
                 for (Field categoryField : INSTANCE.getClass().getDeclaredFields()) {
                     if (categoryField.isAnnotationPresent(ConfigCategory.class)) {
-                        Map<?, ?> categoryData = (Map<?, ?>) data.get(categoryField.getName());
+                        String fieldName = categoryField.getName();
+                        Map<?, ?> categoryData = (Map<?, ?>) data.get(fieldName);
                         if (categoryData != null) {
                             categoryField.setAccessible(true);
-                            allGood &= loadConfigCategoryFromMap(categoryData, categoryField.get(INSTANCE));
+                            Object categoryObject = categoryField.get(INSTANCE);
+                            allGood = loadConfigCategoryFromMap(categoryData, categoryObject);
                         }
                     }
                 }
             }
+
             LOGGER.info("Configuration loaded from {}", configPath);
+
             if (!allGood) {
-                LOGGER.warn("Not all configuration entries are legal. Refreshing the configuration file.");
+                LOGGER.warn("Not all the configuration entries are legal. Refresh the configuration file.");
                 save();
             }
-        } catch (IOException | IllegalAccessException | RuntimeException e) {
+        } catch (IOException | IllegalAccessException e) {
             LOGGER.error("Failed to load configuration", e);
-            save();
+            save(); // Create default config on error
         }
     }
 
+    /**
+     * Called after server configs have been updated (saved, reloaded, or received from remote).
+     * Refreshes all local world session caches and broadcasts to remote players if on server side.
+     */
+    @ClientAndServer
     public static void onUpdated() {
         WorldSession ws = WorldSession.get();
         if (ws != null) {
@@ -151,48 +194,61 @@ public final class ConfigsManager {
         }
         ServerWorldSession sws = ServerWorldSession.get();
         if (sws != null) {
-            sws.getDiscoveryManager().onConfigsUpdate(getClient(), getServer());
+            sws.onConfigsUpdate(getClient(), getServer());
             broadcastServerConfigs(sws.getServer());
         }
         LOGGER.info("Configs updated.");
     }
 
+    /**
+     * Broadcast current server configs to remote players.
+     */
+    @ClientAndServer
     private static void broadcastServerConfigs(MinecraftServer server) {
         String serverConfigsYaml = serializeConfigCategory(INSTANCE.getServer());
+
         if (server.isDedicatedServer()) {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
             }
             LOGGER.info("New server configs broadcasted to all players.");
-            return;
-        }
-
-        if (ClientUtils.isSingleplayer()) {
-            LOGGER.info("We are on a single-player server. No need to broadcast new configs.");
-            return;
-        }
-
-        Player owner = ClientUtils.getClientPlayerCommon();
-        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-            if (owner == null || !Objects.equals(owner.getUUID(), player.getUUID())) {
-                ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
+        } else {
+            if (ClientUtils.isSingleplayer()) {
+                LOGGER.info("We are on a single-player server. No need to broadcast new configs.");
+            } else {
+                Player owner = ClientUtils.getClientPlayerCommon();
+                for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                    if (!Objects.equals(owner.getUUID(), player.getUUID())) {
+                        ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
+                    }
+                }
+                LOGGER.info("New server configs broadcasted to remote players.");
             }
         }
-        LOGGER.info("New server configs broadcasted to remote players.");
     }
 
-    private static Path getConfigPath() {
-        return DevUtils.getConfigDir().resolve(Lang.CONFIG_FILE);
-    }
+    // ==================== Config Entry Traversal ====================
 
+    /**
+     * Iterate through all config entries in a specific category object.
+     * This is useful for iterating through config objects that might be remote copies.
+     *
+     * @param categoryObject The config category object (e.g., ServerConfigs)
+     * @param consumer Consumer that receives entry info for each config entry
+     */
     public static void forEachConfigEntryInCategory(Object categoryObject, Consumer<ConfigEntryInfo> consumer) {
         for (Field entryField : categoryObject.getClass().getDeclaredFields()) {
             if (entryField.isAnnotationPresent(ConfigEntry.class)) {
-                consumer.accept(new ConfigEntryInfo(entryField, entryField.getAnnotation(ConfigEntry.class), categoryObject));
+                ConfigEntry annotation = entryField.getAnnotation(ConfigEntry.class);
+                ConfigEntryInfo info = new ConfigEntryInfo(entryField, annotation, categoryObject);
+                consumer.accept(info);
             }
         }
     }
 
+    /**
+     * Represents a single configuration entry with its metadata.
+     */
     public record ConfigEntryInfo(Field field, ConfigEntry annotation, Object categoryObject) {
         public String getName() {
             return field.getName();
@@ -216,24 +272,46 @@ public final class ConfigsManager {
         }
     }
 
+    // ==================== Serialization/Deserialization Utilities ====================
+
+    /**
+     * Serialize a config category object to a YAML string.
+     * This is used for sending configs over the network.
+     *
+     * @param configObject The config category object (e.g., ServerConfigs)
+     * @return YAML string representation of the config
+     */
     public static String serializeConfigCategory(Object configObject) {
         Map<String, Object> map = saveConfigCategoryToMap(configObject);
+        Yaml yaml = createYamlForDump();
         try (StringWriter writer = new StringWriter()) {
-            createYamlForDump().dump(map, writer);
+            yaml.dump(map, writer);
             return writer.toString();
         } catch (IOException e) {
             throw new RuntimeException("Failed to serialize config", e);
         }
     }
 
+    /**
+     * Deserialize a YAML string to a config category object.
+     * This is used for receiving configs over the network.
+     *
+     * @param yamlString The YAML string representation
+     * @param targetObject The target config object to populate (e.g., ServerConfigs)
+     * @return true if deserialization succeeded, false otherwise
+     */
     public static boolean deserializeConfigCategory(String yamlString, Object targetObject) {
         if (yamlString.length() > MAX_YAML_SIZE) {
             LOGGER.error("Config YAML string too large ({} bytes), max is {}", yamlString.length(), MAX_YAML_SIZE);
             return false;
         }
         try (StringReader reader = new StringReader(yamlString)) {
-            Map<?, ?> dataMap = createYamlForLoad().load(reader);
-            return dataMap != null && loadConfigCategoryFromMap(dataMap, targetObject);
+            Yaml yaml = createYamlForLoad();
+            Map<?, ?> dataMap = yaml.load(reader);
+            if (dataMap == null) {
+                return false;
+            }
+            return loadConfigCategoryFromMap(dataMap, targetObject);
         } catch (Exception e) {
             LOGGER.error("Failed to deserialize config", e);
             return false;
@@ -250,9 +328,11 @@ public final class ConfigsManager {
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         options.setPrettyFlow(true);
+        // Use custom representer to output empty arrays, maps as [], {}
         return new Yaml(new Representer(options) {
             @Override
             protected Node representScalar(Tag tag, String value, DumperOptions.ScalarStyle style) {
+                // Force strings to double-quoted; leave numbers, booleans, etc. unquoted
                 if (Tag.STR.equals(tag)) {
                     style = DumperOptions.ScalarStyle.DOUBLE_QUOTED;
                 }
@@ -260,8 +340,10 @@ public final class ConfigsManager {
             }
 
             @Override
-            protected Node representSequence(Tag tag, Iterable<?> sequence, DumperOptions.FlowStyle flowStyle) {
+            protected Node representSequence(Tag tag, Iterable<?> sequence,
+                                             DumperOptions.FlowStyle flowStyle) {
                 if (!sequence.iterator().hasNext()) {
+                    // Output empty maps as flow style []
                     return super.representSequence(tag, sequence, DumperOptions.FlowStyle.FLOW);
                 }
                 return super.representSequence(tag, sequence, flowStyle);
@@ -270,6 +352,7 @@ public final class ConfigsManager {
             @Override
             protected Node representMapping(Tag tag, Map<?, ?> mapping, DumperOptions.FlowStyle flowStyle) {
                 if (mapping.isEmpty()) {
+                    // Output empty maps as flow style {}
                     return super.representMapping(tag, mapping, DumperOptions.FlowStyle.FLOW);
                 }
                 return super.representMapping(tag, mapping, flowStyle);
@@ -277,28 +360,41 @@ public final class ConfigsManager {
         });
     }
 
+    /**
+     * Convert config object to Map using reflection to avoid type tags in YAML.
+     */
     private static Map<String, Object> saveConfigCategoryToMap(Object configObject) {
         Map<String, Object> map = new LinkedHashMap<>();
         for (Field field : configObject.getClass().getDeclaredFields()) {
-            if (Modifier.isTransient(field.getModifiers()) || !field.isAnnotationPresent(ConfigEntry.class)) {
+            // Skip transient fields like skillCosts (they're handled separately)
+            if (java.lang.reflect.Modifier.isTransient(field.getModifiers())) {
                 continue;
             }
-            try {
-                field.setAccessible(true);
-                Object value = field.get(configObject);
-                if (value instanceof Enum<?> enumValue) {
-                    value = enumValue.name().toLowerCase();
-                } else if (value instanceof Set<?> set) {
-                    value = set.stream().sorted().toList();
+            if (field.isAnnotationPresent(ConfigEntry.class)) {
+                try {
+                    field.setAccessible(true);
+                    Object value = field.get(configObject);
+
+                    // special cases
+                    if (value instanceof Enum<?> e) {
+                        value = e.name().toLowerCase();
+                    } else if (value instanceof Set<?> s) {
+                        value = s.stream().sorted().toList();
+                    }
+
+                    String yamlKey = StringUtils.camelToSnake(field.getName());
+                    map.put(yamlKey, value);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
-                map.put(StringUtils.camelToSnake(field.getName()), value);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
             }
         }
         return map;
     }
 
+    /**
+     * Convert maps (deserialized from YAML) to configs.
+     */
     private static boolean loadConfigCategoryFromMap(Map<?, ?> dataMap, Object configObject) {
         boolean allGood = true;
         for (Map.Entry<?, ?> entry : dataMap.entrySet()) {
@@ -308,6 +404,8 @@ public final class ConfigsManager {
                 field.setAccessible(true);
                 Class<?> fieldType = field.getType();
                 Object convertedValue = Misc.convertNumber(entry.getValue(), fieldType);
+
+                // special cases
                 if (Enum.class.isAssignableFrom(fieldType)) {
                     convertedValue = Enum.valueOf(fieldType.asSubclass(Enum.class), ((String) convertedValue).toUpperCase());
                 } else if (Set.class.isAssignableFrom(fieldType)) {
@@ -323,9 +421,12 @@ public final class ConfigsManager {
                 LOGGER.warn("Bad configuration entry {}: {}", entry.getKey(), entry.getValue(), e);
             }
         }
-        if (configObject instanceof Configs.PostLoader postLoader) {
-            postLoader.postLoad();
+
+        // Post-process after loading
+        if (configObject instanceof Configs.PostLoader processor) {
+            processor.postLoad();
         }
+
         return allGood;
     }
 }

@@ -18,6 +18,17 @@ public interface EntityTargetedSkill<E extends Entity> {
 
     void serverDo(ServerContext<E> ctx);
 
+    /**
+     * Get the real cost for this skill.
+     * Returns the cost from server config, which includes all skills with their
+     * configured or default costs.
+     * <p>
+     * Skills can override this method to perform additional cost calculations based on
+     * the target entity.
+     *
+     * @param entity The target entity for this skill
+     * @return The real cost for this skill
+     */
     default SkillCost getRealCost(E entity) {
         return WorldSession.get().getSkillCostsCache().getSkillCost(this.getClass());
     }
@@ -25,7 +36,7 @@ public interface EntityTargetedSkill<E extends Entity> {
     interface Meta<T extends EntityTargetedSkill<?>> {
         T create(FriendlyByteBuf buf);
         SkillCost getDefaultCost();
-        String shortName();
+        String shortName(); // for yaml config
     }
 
     @ClientOnly

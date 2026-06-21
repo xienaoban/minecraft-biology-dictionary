@@ -119,7 +119,7 @@ processResources {
 }
 
 jar {
-    from("LICENSE") {
+    from(rootProject.file("LICENSE")) {
         rename { "${it}_${project.name}" }
     }
 }

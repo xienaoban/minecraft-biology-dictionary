@@ -10,6 +10,10 @@ import net.minecraft.world.entity.Entity;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
+/**
+ * Client requests to register a discovery: C -> S.
+ * The caller should optimistically insert into the local cache before sending.
+ */
 public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource source) implements Packet {
     public static final Packet.Factory<RequestDiscoveryIncrementalPacket> FACTORY = RequestDiscoveryIncrementalPacket::new;
 

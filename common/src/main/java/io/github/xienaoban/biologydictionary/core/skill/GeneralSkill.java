@@ -17,6 +17,15 @@ public interface GeneralSkill {
 
     void serverDo(ServerContext ctx);
 
+    /**
+     * Get the real cost for this skill.
+     * Returns the cost from server config, which includes all skills with their
+     * configured or default costs.
+     * <p>
+     * Skills can override this method to perform additional cost calculations.
+     *
+     * @return The real cost for this skill
+     */
     default SkillCost getRealCost() {
         return WorldSession.get().getSkillCostsCache().getSkillCost(this.getClass());
     }
@@ -24,7 +33,7 @@ public interface GeneralSkill {
     interface Meta<T extends GeneralSkill> {
         T create(FriendlyByteBuf buf);
         SkillCost getDefaultCost();
-        String shortName();
+        String shortName(); // for yaml config
     }
 
     @ClientOnly

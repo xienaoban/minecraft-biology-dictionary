@@ -17,6 +17,10 @@ import java.util.UUID;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.MOD_ID;
 
+/**
+ * Persisted per-world discovery data using MC's SavedData framework.
+ * File: {@code data/biologydictionary_discovery.dat}
+ */
 public final class SavedDataDiscoveryStorage extends SavedData {
     public static final SavedDataType<SavedDataDiscoveryStorage> TYPE = new SavedDataType<>(
             Identifier.fromNamespaceAndPath(MOD_ID, "discovery"),

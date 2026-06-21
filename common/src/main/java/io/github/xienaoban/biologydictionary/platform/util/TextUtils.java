@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
+import io.github.xienaoban.biologydictionary.Lang;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
@@ -10,8 +11,6 @@ import java.util.Collection;
 import java.util.function.Function;
 
 public final class TextUtils {
-    private static final String TEXT_COMMA = "text.biologydictionary.comma";
-
     public static MutableComponent empty() {
         return Component.empty();
     }
@@ -21,7 +20,7 @@ public final class TextUtils {
     }
 
     public static MutableComponent comma() {
-        return translate(TEXT_COMMA);
+        return translate(Lang.TEXT_COMMA);
     }
 
     public static MutableComponent newline() {

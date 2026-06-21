@@ -3,6 +3,10 @@ package io.github.xienaoban.biologydictionary.platform.util;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+/**
+ * @see net.fabricmc.fabric.impl.base.event.EventPhaseData
+ * @param <T>
+ */
 public class ListenerList<T> {
     private volatile T[] listeners;
 

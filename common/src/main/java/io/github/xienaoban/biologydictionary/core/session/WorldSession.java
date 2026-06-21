@@ -57,7 +57,7 @@ public final class WorldSession implements ConfigsUpdateCallback {
     }
 
     /**
-     * Get a level instance. Any level is OK. Usually used in {@code EntityType.create}.
+     * Get a level instance. Any level is OK. Usually be used in {@code EntityType.create}.
      */
     @ClientAndServer
     public static Level justGiveMeALevel() {
@@ -95,15 +95,15 @@ public final class WorldSession implements ConfigsUpdateCallback {
         return entityManager;
     }
 
-    public StaticEntityPropertyCache getStaticEntityPropertyCache() {
-        return staticEntityPropertyCache;
+    public SkillCostsCache getSkillCostsCache() {
+        return skillCostsCache;
     }
 
     public EntityOverviewCache getEntityOverviewCache() {
         return entityOverviewCache;
     }
 
-    public SkillCostsCache getSkillCostsCache() {
-        return skillCostsCache;
+    public StaticEntityPropertyCache getStaticEntityPropertyCache() {
+        return staticEntityPropertyCache;
     }
 }

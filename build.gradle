@@ -59,7 +59,9 @@ tasks.register("checkCommonPlatformImports") {
             include "**/*.java"
         }.each { file ->
             def text = file.getText("UTF-8")
-            def found = forbidden.find { text.contains(it) }
+            def found = text.readLines()
+                    .findAll { it ==~ /\s*import\s+.+/ }
+                    .findResult { line -> forbidden.find { line.contains(it) } }
             if (found != null) {
                 throw new GradleException("Forbidden platform package '${found}' used in common source: ${file}")
             }

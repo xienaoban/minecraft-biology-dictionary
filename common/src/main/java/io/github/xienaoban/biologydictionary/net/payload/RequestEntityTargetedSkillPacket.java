@@ -39,15 +39,19 @@ public record RequestEntityTargetedSkillPacket(int entityId, EntityTargetedSkill
         }
 
         try {
-            EntityTargetedSkill.ServerContext<Entity> skillCtx =
-                    new EntityTargetedSkill.ServerContext<>(ctx.server(), ctx.player(), entity);
+            EntityTargetedSkill.ServerContext<Entity> skillCtx
+                    = new EntityTargetedSkill.ServerContext<>(ctx.server(), ctx.player(), entity);
+
+            // Phase 1: Additional server-side validation
             skill.serverAdditionalCheck(Misc.cast(skillCtx));
 
+            // Phase 2: Check and consume cost
             SkillCost cost = skill.getRealCost(Misc.cast(entity));
             SkillCost.ServerContext costCtx = new SkillCost.ServerContext(ctx.player());
             cost.serverCheck(costCtx);
             cost.serverConsume(costCtx);
 
+            // Phase 3: Execute the skill
             skill.serverDo(Misc.cast(skillCtx));
         } catch (NoPermissionException e) {
             LOGGER.warn("No permission to use skill \"{}\"", skill.getClass(), e);

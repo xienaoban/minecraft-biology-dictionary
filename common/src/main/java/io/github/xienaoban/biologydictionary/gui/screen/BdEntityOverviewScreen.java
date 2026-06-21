@@ -46,7 +46,7 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
 
     public void initOrRequestProperties() {
         EntityOverviewCache.CacheEntry cache = WorldSession.get().getEntityOverviewCache().get(entityType);
-        if (cache != null) {
+        if (cache != null && cache.isValid()) {
             updateProperties(cache.vanillaNbt(), cache.extraNbt());
         } else {
             // RequestEntityOverviewPacket -> ReplyEntityOverviewPacket -> put cache & updateProperties
@@ -55,12 +55,8 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
     }
 
     public void updateProperties(CompoundTag vanillaNbt, CompoundTag extraNbt) {
-        if (vanillaNbt != null) {
-            EntityUtils.setNbt(entity, vanillaNbt);
-        }
-        if (extraNbt != null) {
-            properties.update(vanillaNbt, extraNbt);
-        }
+        EntityUtils.setNbt(entity, vanillaNbt);
+        properties.update(vanillaNbt, extraNbt);
     }
 
     public boolean matchesType(EntityType<?> entityType) {

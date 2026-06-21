@@ -30,31 +30,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class BiologySkills {
-    private static final Map<String, GeneralSkill.Meta<?>> commonSkills = new HashMap<>();
-    private static final Map<String, EntityTargetedSkill.Meta<?>> entityTargetedSkills = new HashMap<>();
-    private static final Map<String, Class<?>> skillClasses = new HashMap<>();
-
-    private BiologySkills() {}
-
     public static void registerBuiltIn(Registrar registrar) {
+        registrar.register(HighlightEntitiesSkill.class, HighlightEntitiesSkill.META);
+        registrar.register(GetSpawnEggSkill.class, GetSpawnEggSkill.META);
+
         registrar.register(EntitySetVariantSkill.class, EntitySetVariantSkill.META);
         registrar.register(EntitySetInvulnerableSkill.class, EntitySetInvulnerableSkill.META);
         registrar.register(EntitySetSoundSkill.class, EntitySetSoundSkill.META);
         registrar.register(EntitySetPortalCooldownSkill.class, EntitySetPortalCooldownSkill.META);
         registrar.register(MobSetNoAiSkill.class, MobSetNoAiSkill.META);
         registrar.register(MobForcePersistentSkill.class, MobForcePersistentSkill.META);
+        registrar.register(LivingEntityStealInventorySkill.class, LivingEntityStealInventorySkill.META);
+        registrar.register(SheepForceEatGrassSkill.class, SheepForceEatGrassSkill.META);
         registrar.register(AgeableMobSetBreedingCooldownSkill.class, AgeableMobSetBreedingCooldownSkill.META);
         registrar.register(AgeableMobSetAgeLockedSkill.class, AgeableMobSetAgeLockedSkill.META);
         registrar.register(TadpoleSetAgeLockedSkill.class, TadpoleSetAgeLockedSkill.META);
         registrar.register(BeeClearHiveSkill.class, BeeClearHiveSkill.META);
         registrar.register(EntityGiftPetSkill.class, EntityGiftPetSkill.META);
-        registrar.register(SheepForceEatGrassSkill.class, SheepForceEatGrassSkill.META);
         registrar.register(VillagerForceRestockSkill.class, VillagerForceRestockSkill.META);
         registrar.register(WanderingTraderRetainSkill.class, WanderingTraderRetainSkill.META);
-        registrar.register(GetSpawnEggSkill.class, GetSpawnEggSkill.META);
-        registrar.register(HighlightEntitiesSkill.class, HighlightEntitiesSkill.META);
-        registrar.register(LivingEntityStealInventorySkill.class, LivingEntityStealInventorySkill.META);
     }
+
+    private static final Map<String, GeneralSkill.Meta<?>> commonSkills = new HashMap<>();
+    private static final Map<String, EntityTargetedSkill.Meta<?>> entityTargetedSkills = new HashMap<>();
+    private static final Map<String, Class<?>> skillClasses = new HashMap<>();
 
     public static void init() {
         Registrar registrar = new Registrar() {
@@ -147,6 +146,7 @@ public final class BiologySkills {
         @ClientOnly final class CO { static boolean activate(Entity entity, EntityTargetedSkill<?> skill) {
             try {
                 if (EntityUtils.isFakeEntity(entity)) {
+                    // Entity displayed in overview screen, not a real entity in world.
                     return true;
                 }
                 LocalPlayer player = ClientUtils.getClientPlayer();

@@ -33,6 +33,9 @@ public record SheepForceEatGrassSkill() implements EntityTargetedSkill<Sheep> {
         }
     };
 
+    /**
+     * @see net.minecraft.world.entity.ai.goal.EatBlockGoal#tick()
+     */
     public static boolean isGrassOrGrassBlock(Sheep entity) {
         Level level = EntityUtils.getLevel(entity);
         BlockPos blockPos = entity.blockPosition();
@@ -48,6 +51,11 @@ public record SheepForceEatGrassSkill() implements EntityTargetedSkill<Sheep> {
         Permissions.checkMobHasGoalAndStart(ctx.entity(), EatBlockGoal.class);
     }
 
+    /**
+     * In Minecraft 1.21.11, call the ate() method to trigger the effects after eating grass (such as dropping wool).
+     *
+     * @see net.minecraft.world.entity.ai.goal.EatBlockGoal#tick()
+     */
     @Override
     public void serverDo(ServerContext<Sheep> ctx) {
         ServerLevel level = (ServerLevel) EntityUtils.getLevel(ctx.entity());

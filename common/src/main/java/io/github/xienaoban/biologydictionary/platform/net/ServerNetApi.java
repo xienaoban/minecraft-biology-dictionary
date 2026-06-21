@@ -7,8 +7,6 @@ import net.minecraft.server.level.ServerPlayer;
 public final class ServerNetApi {
     private static final PlatformBridge PB = Platform.load(PlatformBridge.class);
 
-    private ServerNetApi() {}
-
     public static void send(ServerPlayer player, Packet payload) {
         PB.send(player, payload);
     }

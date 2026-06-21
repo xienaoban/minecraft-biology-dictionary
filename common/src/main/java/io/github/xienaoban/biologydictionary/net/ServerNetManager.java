@@ -18,10 +18,12 @@ import net.minecraft.world.Container;
 import java.util.Map;
 
 public final class ServerNetManager {
-    private ServerNetManager() {}
-
     public static void sendCenteredMessage(ServerPlayer player, Component message) {
         ServerNetApi.send(player, new SendCenteredMessagePacket(message));
+    }
+
+    public static void sendDiscoveryIncremental(ServerPlayer player, Entity entity, EntityType<?> entityType, DiscoveryRecord record) {
+        ServerNetApi.send(player, new SendDiscoveryIncrementalPacket(EntityUtils.getId(entity), entityType, record));
     }
 
     public static void replyServerConfigs(ServerPlayer player, String serverConfigsYaml) {
@@ -30,10 +32,6 @@ public final class ServerNetManager {
 
     public static void replyDictionaryDiscoveryRecords(ServerPlayer player, Map<EntityType<?>, DiscoveryRecord> discoveries) {
         ServerNetApi.send(player, new ReplyBiologyDictionaryDiscoveryFullPacket(discoveries));
-    }
-
-    public static void sendDiscoveryIncremental(ServerPlayer player, Entity entity, EntityType<?> entityType, DiscoveryRecord record) {
-        ServerNetApi.send(player, new SendDiscoveryIncrementalPacket(EntityUtils.getId(entity), entityType, record));
     }
 
     public static void replyHighlightEntitiesSkill(ServerPlayer player, boolean allowed, EntityType<?> entityType, float radius) {

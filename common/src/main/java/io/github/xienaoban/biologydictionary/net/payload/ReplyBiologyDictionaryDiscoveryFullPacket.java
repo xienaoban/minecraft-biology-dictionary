@@ -16,9 +16,12 @@ import java.util.Map;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
+/**
+ * Discovery records sync packet: S -> C.
+ * Sent in response to {@link RequestBiologyDictionaryDiscoveryFullPacket}.
+ */
 public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, DiscoveryRecord> discoveries) implements Packet {
-    public static final Packet.Factory<ReplyBiologyDictionaryDiscoveryFullPacket> FACTORY =
-            ReplyBiologyDictionaryDiscoveryFullPacket::new;
+    public static final Packet.Factory<ReplyBiologyDictionaryDiscoveryFullPacket> FACTORY = ReplyBiologyDictionaryDiscoveryFullPacket::new;
 
     private ReplyBiologyDictionaryDiscoveryFullPacket(FriendlyByteBuf buf) {
         this(readDiscoveries(buf));

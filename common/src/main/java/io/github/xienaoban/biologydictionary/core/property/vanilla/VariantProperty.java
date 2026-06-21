@@ -32,21 +32,21 @@ public final class VariantProperty<E extends Entity, T> extends AbstractProperty
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        Optional<Holder<T>> holder = nbt.read(name(), Identifier.CODEC)
+        Optional<Holder<T>> o1 = nbt.read(name(), Identifier.CODEC)
                 .map(identifier -> ResourceKey.create(resourceKey, identifier))
                 .flatMap(key -> {
                     Level level = WorldSession.justGiveMeALevel();
                     if (level == null) { return Optional.empty(); }
                     return level.registryAccess().get(key);
                 });
-        setVal(holder.orElse(null));
+        setVal(o1.orElse(null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
         if (getVal() != null && getVal().unwrapKey().isPresent()) {
-            ResourceKey<?> key = getVal().unwrapKey().get();
-            nbt.store(name(), Identifier.CODEC, key.identifier());
+            ResourceKey<?> resourceKey = getVal().unwrapKey().get();
+            nbt.store(name(), Identifier.CODEC, resourceKey.identifier());
         } else {
             LOGGER.warn("Unknown variant key: {}", getVal());
         }

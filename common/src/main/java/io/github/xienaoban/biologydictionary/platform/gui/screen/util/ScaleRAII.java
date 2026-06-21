@@ -13,8 +13,10 @@ public final class ScaleRAII implements AutoCloseable {
         guiGraphics.pose().scale(size, size);
     }
 
+    // TODO: remove it
     ScaleRAII(ScreenRenderingContext ctx, float size, float z) {
         this(ctx, size);
+        guiGraphics.pose().translate(0, 0);
     }
 
     @Override

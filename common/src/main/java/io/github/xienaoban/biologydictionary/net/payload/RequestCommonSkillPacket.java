@@ -27,14 +27,17 @@ public record RequestCommonSkillPacket(GeneralSkill skill) implements Packet {
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
         try {
+            // Phase 1: Additional server-side validation
             GeneralSkill.ServerContext skillCtx = new GeneralSkill.ServerContext(ctx.server(), ctx.player());
             skill.serverAdditionalCheck(skillCtx);
 
+            // Phase 2: Check and consume cost
             SkillCost cost = skill.getRealCost();
             SkillCost.ServerContext costCtx = new SkillCost.ServerContext(ctx.player());
             cost.serverCheck(costCtx);
             cost.serverConsume(costCtx);
 
+            // Phase 3: Execute the skill
             skill.serverDo(skillCtx);
         } catch (NoPermissionException e) {
             LOGGER.warn("No permission to use skill \"{}\"", skill.getClass(), e);

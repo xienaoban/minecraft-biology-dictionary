@@ -20,15 +20,18 @@ public class AnimalMixin {
      */
     @Inject(method = "spawnChildFromBreeding", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/Animal;finalizeSpawnChildFromBreeding(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/animal/Animal;Lnet/minecraft/world/entity/AgeableMob;)V"))
     private void biologydictionary$inheritSilentFromParents(ServerLevel serverLevel, Animal otherParent, CallbackInfo ci, @Local AgeableMob ageableMob) {
+        // Check if the config is enabled
         if (!ConfigsManager.getServer().isInheritSilentFromParents()) {
             return;
         }
 
+        // Check if both parents are silent
         Animal self = (Animal) (Object) this;
         if (!self.isSilent() || !otherParent.isSilent()) {
             return;
         }
 
+        // Check if baby exists and set it to silent
         if (ageableMob != null) {
             ageableMob.setSilent(true);
         }

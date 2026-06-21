@@ -11,6 +11,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
+/**
+ * Server-side entry point for the discovery system.
+ * Attached to {@link io.github.xienaoban.biologydictionary.core.session.ServerWorldSession}.
+ */
 public final class DiscoveryManager implements DiscoveryStrategy, ConfigsUpdateCallback {
     private final MinecraftServer server;
 

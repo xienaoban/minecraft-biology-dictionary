@@ -35,6 +35,9 @@ public final class ClientEvents {
         ClientWorldSession.deinit();
         WorldSession.deinit();
         ConfigsManager.setLocalServerConfigs();
+        BiologyDictionaryClient.setHitEntity(null);
+        BiologyDictionaryClient.setHitBlock(null);
+        BiologyDictionaryClient.setHitEntityProperties(null);
     });
 
     @PlatformEntry

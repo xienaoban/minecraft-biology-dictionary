@@ -1,12 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property;
 
-import io.github.xienaoban.biologydictionary.core.property.extra.EntityInventorySizeProperty;
-import io.github.xienaoban.biologydictionary.core.property.extra.EntityLootTableProperty;
-import io.github.xienaoban.biologydictionary.core.property.extra.EntitySpawnCountedProperty;
-import io.github.xienaoban.biologydictionary.core.property.extra.MobNaturalPersistenceProperty;
-import io.github.xienaoban.biologydictionary.core.property.extra.MobSpawnProperty;
-import io.github.xienaoban.biologydictionary.core.property.extra.MobTemptProperty;
-import io.github.xienaoban.biologydictionary.core.property.extra.VillagerJobSiteProperty;
+import io.github.xienaoban.biologydictionary.core.property.extra.*;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.world.entity.Entity;
 
@@ -16,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public final class ExtraEntityProperties {
-    static final Map<Class<? extends Entity>, List<EntityProperty.Factory<?>>> registry = new HashMap<>();
-
-    private ExtraEntityProperties() {}
 
     public static void registerBuiltIn(Registrar registrar) {
         registrar.register(EntityLootTableProperty.class, EntityLootTableProperty.FACTORY);
@@ -29,6 +20,8 @@ public final class ExtraEntityProperties {
         registrar.register(MobSpawnProperty.class, MobSpawnProperty.FACTORY);
         registrar.register(VillagerJobSiteProperty.class, VillagerJobSiteProperty.FACTORY);
     }
+
+    static final Map<Class<? extends Entity>, List<EntityProperty.Factory<?>>> registry = new HashMap<>();
 
     static void init() {
         Registrar registrar = ExtraEntityProperties::register0;
@@ -45,6 +38,6 @@ public final class ExtraEntityProperties {
     @FunctionalInterface
     public interface Registrar {
         <E extends Entity> void register(Class<? extends EntityProperty<E>> propertyClazz,
-                                         EntityProperty.Factory<E> factory);
+                      EntityProperty.Factory<E> factory);
     }
 }

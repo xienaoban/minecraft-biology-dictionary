@@ -17,6 +17,10 @@ public final class SkillCostsCache implements ConfigsUpdateCallback {
         onConfigsUpdate(ConfigsManager.getClient(), ConfigsManager.getServer());
     }
 
+    /**
+     * Rebuild the cache from the given server configs.
+     * Iterates skillCosts and builds the map class->SkillCost.
+     */
     @Override
     public void onConfigsUpdate(Configs.ClientConfigs clientConfigs, Configs.ServerConfigs serverConfigs) {
         Map<Class<?>, SkillCost> newCache = new HashMap<>();
@@ -32,6 +36,6 @@ public final class SkillCostsCache implements ConfigsUpdateCallback {
     }
 
     public SkillCost getSkillCost(Class<?> skillClass) {
-        return cache.getOrDefault(skillClass, SkillCost.empty());
+        return cache.get(skillClass);
     }
 }

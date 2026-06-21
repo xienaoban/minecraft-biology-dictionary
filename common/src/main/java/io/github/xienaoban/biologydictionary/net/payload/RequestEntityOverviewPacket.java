@@ -50,7 +50,8 @@ public record RequestEntityOverviewPacket(String entityTypeId) implements Packet
             } else {
                 EntityOverviewCache.CacheEntry cached = ws.getEntityOverviewCache()
                         .getOrCreate(entityType, ctx.player().level());
-                toSend = new ReplyEntityOverviewPacket(true, entityTypeId, cached.vanillaNbt(), cached.extraNbt());
+                toSend = new ReplyEntityOverviewPacket(
+                        cached.isValid(), entityTypeId, cached.vanillaNbt(), cached.extraNbt());
             }
         } else {
             LOGGER.error("Unknown entity type: {}", entityTypeId);

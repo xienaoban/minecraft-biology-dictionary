@@ -18,6 +18,4 @@ public final class Colors {
 
     public static final int HIGHLIGHT_DEFAULT_COLOR = WHITE;
     public static final int UNDISCOVERED_ENTITY_COLOR = 0xCCCAB58C;
-
-    private Colors() {}
 }

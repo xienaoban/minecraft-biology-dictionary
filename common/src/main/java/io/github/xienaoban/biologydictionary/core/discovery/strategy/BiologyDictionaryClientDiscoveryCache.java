@@ -13,6 +13,10 @@ import net.minecraft.world.entity.EntityType;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Maintains an internal map of discovery records, populated via network packets.
+ * Used for the DICTIONARY strategy on the client side.
+ */
 @ClientOnly
 public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscoveryCache {
     private final Map<EntityType<?>, DiscoveryRecord> cache = new ConcurrentHashMap<>();
@@ -32,8 +36,8 @@ public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscov
     }
 
     public void onFullSync(Map<EntityType<?>, DiscoveryRecord> data) {
-        cache.clear();
-        cache.putAll(data);
+        this.cache.clear();
+        this.cache.putAll(data);
     }
 
     @Override

@@ -17,8 +17,8 @@ final class EntityOrder {
 
     public static void registerBuiltIn(Registrar registrar) {
         // peaceful
-        registrar.register(EntityType.CHICKEN);
         registrar.register(EntityType.RABBIT);
+        registrar.register(EntityType.CHICKEN);
         registrar.register(EntityType.PIG);
         registrar.register(EntityType.SHEEP);
         registrar.register(EntityType.GOAT);

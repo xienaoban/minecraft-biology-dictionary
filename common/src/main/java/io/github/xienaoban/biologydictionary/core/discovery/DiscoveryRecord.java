@@ -16,6 +16,10 @@ import net.minecraft.world.level.storage.TagValueOutput;
 
 import java.util.UUID;
 
+/**
+ * Discovery record for a single entity type, belonging to a single player.
+ * Presence in the map implies discovered; absence implies undiscovered.
+ */
 public record DiscoveryRecord(
         long firstDiscoveryTime,
         long firstDiscoveryTick,

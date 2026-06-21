@@ -2,10 +2,10 @@ package io.github.xienaoban.biologydictionary.core.session;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.client.FirstPersonShoulderEntityRenderer;
+import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.TelescopeManager;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
-import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DelegatingClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.world.entity.EntityType;
@@ -16,6 +16,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
+/**
+ * Client-side data tied to the current world session.
+ * Created when entering a world, destroyed when leaving.
+ */
 @ClientOnly
 public final class ClientWorldSession implements ConfigsUpdateCallback {
     private static volatile ClientWorldSession instance;
@@ -39,6 +43,8 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
             if (instance != null) {
                 instance = null;
                 LOGGER.info("ClientWorldSession deinitialized.");
+            } else {
+                LOGGER.info("ClientWorldSession has been deinitialized.");
             }
         }
     }
@@ -66,12 +72,12 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
         discoveryClientCache.onConfigsUpdate(clientConfigs, serverConfigs);
     }
 
-    public DelegatingClientDiscoveryCache getDiscoveryClientCache() {
-        return discoveryClientCache;
-    }
-
     public HighlightManager getHighlightManager() {
         return highlightManager;
+    }
+
+    public DelegatingClientDiscoveryCache getDiscoveryClientCache() {
+        return discoveryClientCache;
     }
 
     public FirstPersonShoulderEntityRenderer getShoulderEntityRenderer() {

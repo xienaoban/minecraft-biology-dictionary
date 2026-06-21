@@ -15,8 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Objects;
 
 public final class Permissions {
-    private Permissions() {}
-
     public static <T> void checkClientServerSameState(T client, T server) {
         if (!Objects.equals(client, server)) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_CLIENT_SERVER_ARG_NOT_SAME,

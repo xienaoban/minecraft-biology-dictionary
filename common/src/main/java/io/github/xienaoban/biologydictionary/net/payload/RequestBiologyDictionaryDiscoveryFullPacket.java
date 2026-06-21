@@ -11,9 +11,12 @@ import net.minecraft.server.level.ServerPlayer;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
+/**
+ * Request discovery records from server: C -> S.
+ * Only sent when the server's discovery strategy is DICTIONARY.
+ */
 public record RequestBiologyDictionaryDiscoveryFullPacket() implements Packet {
-    public static final Packet.Factory<RequestBiologyDictionaryDiscoveryFullPacket> FACTORY =
-            RequestBiologyDictionaryDiscoveryFullPacket::new;
+    public static final Packet.Factory<RequestBiologyDictionaryDiscoveryFullPacket> FACTORY = RequestBiologyDictionaryDiscoveryFullPacket::new;
 
     private RequestBiologyDictionaryDiscoveryFullPacket(FriendlyByteBuf buf) {
         this();

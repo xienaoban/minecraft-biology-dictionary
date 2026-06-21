@@ -60,6 +60,7 @@ public final class MobTemptProperty extends ItemStackListProperty<Mob> {
     }
 
     private static List<Predicate<ItemStack>> getPredicates(Mob entity) {
+        // Pigs have two TemptGoal!
         List<Predicate<ItemStack>> predicates = new ArrayList<>();
         for (TemptGoal temptGoal : EntityUtils.getGoals(entity, TemptGoal.class)) {
             Predicate<ItemStack> items = ((TemptGoalIMixin) temptGoal).biologydictionary$getItems();

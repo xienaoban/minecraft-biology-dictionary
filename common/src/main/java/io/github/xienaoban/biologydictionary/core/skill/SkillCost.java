@@ -65,6 +65,8 @@ public final class SkillCost {
                 health, satiety, Arrays.asList(items));
     }
 
+    // ==================== Factory Methods ====================
+
     public static SkillCost banned() {
         return new SkillCost(true, false, 0, 0, 0, 0, 0, 0, List.of());
     }
@@ -109,6 +111,8 @@ public final class SkillCost {
         return new ItemCost(item.asItem(), count);
     }
 
+    // ==================== Getters ====================
+
     public boolean isEmpty() {
         return !banned && !creativeOnly && experiencePoints == 0 && experienceLevels == 0
                 && experiencePointRequired == 0 && experienceLevelRequired == 0
@@ -151,6 +155,8 @@ public final class SkillCost {
         return items;
     }
 
+    // ==================== equals & hashCode ====================
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) { return true; }
@@ -172,6 +178,8 @@ public final class SkillCost {
                 experiencePointRequired, experienceLevelRequired, health, satiety, items);
     }
 
+    // ==================== CCheck & Consume ====================
+
     @ClientOnly
     public void clientCheck(ClientContext ctx) throws NoPermissionException {
         @ClientOnly final class CO { static Player player(ClientContext ctx) { return ctx.player(); } }
@@ -190,6 +198,7 @@ public final class SkillCost {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE),
                     "Skill only available in creative mode");
         }
+        // Always free in creative mode.
         if (PlayerUtils.isCreative(player)) { return; }
 
         if (PlayerUtils.getExperiencePoint(player) < experiencePointRequired) {
@@ -230,6 +239,7 @@ public final class SkillCost {
 
     public void serverConsume(ServerContext ctx) {
         ServerPlayer player = ctx.player();
+        // Always free in creative mode.
         if (PlayerUtils.isCreative(player)) { return; }
 
         if (experiencePoints != 0) {
@@ -255,6 +265,8 @@ public final class SkillCost {
             PlayerUtils.playLocalSound(player, SoundEvents.ITEM_PICKUP, 0.5F, 0.01F);
         }
     }
+
+    // ==================== Serialization ====================
 
     public void serverRefund(ServerPlayer player) {
         if (experiencePoints != 0) {
@@ -321,6 +333,12 @@ public final class SkillCost {
                 expLevelReq, health, satiety, itemsList);
     }
 
+    // ==================== Formatting for UI ====================
+
+    /**
+     * Format this skill cost as a single Component for compact display.
+     * Useful for simple tooltips.
+     */
     public List<Component> toTooltipText() {
         List<MutableComponent> res = new ArrayList<>();
 

@@ -36,8 +36,6 @@ public final class HighlightRenderer {
     private static final int FULL_BRIGHT = 15728880;
     private static final int[] NO_TINT = new int[0];
 
-    private HighlightRenderer() {}
-
     public static void submit(Minecraft client, EntityRenderDispatcher entityRenderDispatcher,
                               PoseStack poseStack, LevelRenderState levelRenderState,
                               SubmitNodeCollector submitNodeCollector) {

@@ -12,14 +12,10 @@ import java.util.Objects;
 public record RequestBeehiveInfoPacket(BlockPos pos) implements Packet {
     public static final Packet.Factory<RequestBeehiveInfoPacket> FACTORY = RequestBeehiveInfoPacket::new;
 
-    private RequestBeehiveInfoPacket(FriendlyByteBuf buf) {
-        this(buf.readBlockPos());
-    }
+    private RequestBeehiveInfoPacket(FriendlyByteBuf buf) { this(buf.readBlockPos()); }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeBlockPos(pos);
-    }
+    public void write(FriendlyByteBuf buf) { buf.writeBlockPos(pos); }
 
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {

@@ -17,6 +17,11 @@ import net.minecraft.world.entity.monster.Enemy;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Entity is discovered when the player interacts with it via the mod
+ * (highlight skill or entity overview screen).
+ * Uses MC's SavedData framework for persistence.
+ */
 public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrategy {
     private final SavedDataDiscoveryStorage storage;
 

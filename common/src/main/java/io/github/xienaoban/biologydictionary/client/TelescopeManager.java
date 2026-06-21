@@ -20,7 +20,7 @@ import net.minecraft.world.phys.HitResult;
 public final class TelescopeManager {
 
     static final int MAX_PROGRESS = 100;
-    private static final int COMPLETED_DISPLAY_TICKS = 20;
+    private static final int COMPLETED_DISPLAY_TICKS = 20; // 1s
 
     private Entity lastScopingEntity = null;
     private float discoveryProgress = 0;
@@ -65,6 +65,7 @@ public final class TelescopeManager {
             target = entityHit.getEntity();
         }
 
+        // New target interrupts the completed display
         if (completedDisplayTicks > 0) {
             if (target == null) {
                 completedDisplayTicks--;
@@ -81,6 +82,7 @@ public final class TelescopeManager {
             discoveryProgress = 0;
             lastScopingEntity = target;
         } else {
+            // Same target
             EntityType<?> entityType = EntityUtils.getEntityType(target);
             if (cache.isDiscovered(entityType)) {
                 discoveryProgress = 0;

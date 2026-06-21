@@ -13,15 +13,15 @@ import io.github.xienaoban.biologydictionary.net.payload.RequestEntityOverviewPa
 import io.github.xienaoban.biologydictionary.net.payload.RequestEntityTargetedSkillPacket;
 import io.github.xienaoban.biologydictionary.net.payload.RequestServerConfigsPacket;
 import io.github.xienaoban.biologydictionary.net.payload.SendStealingDetectedPacket;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
+@ClientOnly
 public final class ClientNetManager {
-    private ClientNetManager() {}
-
     public static void requestServerConfigs() {
         ClientNetApi.send(new RequestServerConfigsPacket());
     }
@@ -30,8 +30,12 @@ public final class ClientNetManager {
         ClientNetApi.send(new RequestBiologyDictionaryItemPacket());
     }
 
-    public static void requestBeehiveInfo(BlockPos pos) {
-        ClientNetApi.send(new RequestBeehiveInfoPacket(pos));
+    public static void requestBiologyDictionaryDiscoveryFull() {
+        ClientNetApi.send(new RequestBiologyDictionaryDiscoveryFullPacket());
+    }
+
+    public static void requestDiscoveryIncremental(int entityId, DiscoverySource source) {
+        ClientNetApi.send(new RequestDiscoveryIncrementalPacket(entityId, source));
     }
 
     public static void requestEntityOverview(EntityType<?> entityType) {
@@ -42,12 +46,8 @@ public final class ClientNetManager {
         ClientNetApi.send(new RequestEntityDataPacket(EntityUtils.getId(entity), firstAndFullSync));
     }
 
-    public static void requestBiologyDictionaryDiscoveryFull() {
-        ClientNetApi.send(new RequestBiologyDictionaryDiscoveryFullPacket());
-    }
-
-    public static void requestDiscoveryIncremental(int entityId, DiscoverySource source) {
-        ClientNetApi.send(new RequestDiscoveryIncrementalPacket(entityId, source));
+    public static void requestBeehiveInfo(BlockPos pos) {
+        ClientNetApi.send(new RequestBeehiveInfoPacket(pos));
     }
 
     public static void sendCommonSkill(GeneralSkill skill) {

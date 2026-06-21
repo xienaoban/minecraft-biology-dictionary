@@ -4,7 +4,6 @@
     "package": "io.github.xienaoban.biologydictionary.mixin",
     "compatibilityLevel": "JAVA_25",
     "mixins": [
-        "ExampleMixin",
         "MobEffectInstanceIMixin",
         "TemptGoalIMixin",
         "entity.AbstractHorseIMixin",
