@@ -15,70 +15,70 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 
 public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) implements GeneralSkill {
-	public static final Meta<HighlightEntitiesSkill> META = new Meta<>() {
-		@Override
-		public HighlightEntitiesSkill create(FriendlyByteBuf buf) {
-			return new HighlightEntitiesSkill(EntityUtils.getEntityType(buf.readUtf()), buf.readFloat());
-		}
+    public static final Meta<HighlightEntitiesSkill> META = new Meta<>() {
+        @Override
+        public HighlightEntitiesSkill create(FriendlyByteBuf buf) {
+            return new HighlightEntitiesSkill(EntityUtils.getEntityType(buf.readUtf()), buf.readFloat());
+        }
 
-		@Override
-		public SkillCost getDefaultCost() {
-			return new SkillCost(16, 0, 0, 0, 0, 0, SkillCost.item(Items.ENDER_EYE));
-		}
+        @Override
+        public SkillCost getDefaultCost() {
+            return new SkillCost(16, 0, 0, 0, 0, 0, SkillCost.item(Items.ENDER_EYE));
+        }
 
-		@Override
-		public String shortName() {
-			return "highlight_entities";
-		}
-	};
+        @Override
+        public String shortName() {
+            return "highlight_entities";
+        }
+    };
 
-	public static final int TICKS = 12 * 20;
-	public static final int NEAR_RADIUS = 20;
-	public static final int NEAR_EXPERIENCE_POINTS_COST = 1;
-	public static final int FAR_RADIUS = 100;
-	public static final int FAR_EXPERIENCE_POINTS_COST = 16;
-	public static final int BLINDNESS_TICKS = 40;
-	public static final int BLOCK_TICKS = 6 * 20;
+    public static final int TICKS = 12 * 20;
+    public static final int NEAR_RADIUS = 20;
+    public static final int NEAR_EXPERIENCE_POINTS_COST = 1;
+    public static final int FAR_RADIUS = 100;
+    public static final int FAR_EXPERIENCE_POINTS_COST = 16;
+    public static final int BLINDNESS_TICKS = 40;
+    public static final int BLOCK_TICKS = 6 * 20;
 
-	@Override
-	public void write(FriendlyByteBuf buf) {
-		buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdName(entityType));
-		buf.writeFloat(radius);
-	}
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdName(entityType));
+        buf.writeFloat(radius);
+    }
 
-	@ClientOnly
-	@Override
-	public void clientAdditionalCheck(ClientContext ctx) throws NoPermissionException {
-		commonCheck();
-	}
+    @ClientOnly
+    @Override
+    public void clientAdditionalCheck(ClientContext ctx) throws NoPermissionException {
+        commonCheck();
+    }
 
-	@Override
-	public void serverAdditionalCheck(ServerContext ctx) {
-		commonCheck();
-	}
+    @Override
+    public void serverAdditionalCheck(ServerContext ctx) {
+        commonCheck();
+    }
 
-	private void commonCheck() {
-		if (entityType == null) {
-			throw new NoPermissionException(TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
-					TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE)), "entityType == null");
-		} else if (entityType == EntityType.PLAYER) {
-			throw new NoPermissionException(TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
-					TextUtils.translate(Lang.TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS)), "entityType == EntityType.PLAYER");
-		}
-	}
+    private void commonCheck() {
+        if (entityType == null) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
+                    TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE)), "entityType == null");
+        } else if (entityType == EntityType.PLAYER) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
+                    TextUtils.translate(Lang.TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS)), "entityType == EntityType.PLAYER");
+        }
+    }
 
-	@Override
-	public void serverDo(ServerContext ctx) {
-		ctx.player().addEffect(new MobEffectInstance(MobEffects.BLINDNESS, BLINDNESS_TICKS));
-		ServerNetManager.replyHighlightEntitiesSkill(ctx.player(), true, entityType, radius);
-	}
+    @Override
+    public void serverDo(ServerContext ctx) {
+        ctx.player().addEffect(new MobEffectInstance(MobEffects.BLINDNESS, BLINDNESS_TICKS));
+        ServerNetManager.replyHighlightEntitiesSkill(ctx.player(), true, entityType, radius);
+    }
 
-	@Override
-	public SkillCost getRealCost() {
-		SkillCost base = GeneralSkill.super.getRealCost();
-		if (radius <= NEAR_RADIUS) {
-			return SkillCost.ofExpPoints(NEAR_EXPERIENCE_POINTS_COST);
-		}
-		return base;
-	}
+    @Override
+    public SkillCost getRealCost() {
+        SkillCost base = GeneralSkill.super.getRealCost();
+        if (radius <= NEAR_RADIUS) {
+            return SkillCost.ofExpPoints(NEAR_EXPERIENCE_POINTS_COST);
+        }
+        return base;
+    }
 }

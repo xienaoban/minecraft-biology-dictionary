@@ -7,8 +7,8 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public final class ModMenuConfigScreenProvider implements ModMenuApi {
-	@Override
-	public ConfigScreenFactory<?> getModConfigScreenFactory() {
-		return ClothConfigScreenProvider::provideScreen;
-	}
+    @Override
+    public ConfigScreenFactory<?> getModConfigScreenFactory() {
+        return ClothConfigScreenProvider::provideScreen;
+    }
 }

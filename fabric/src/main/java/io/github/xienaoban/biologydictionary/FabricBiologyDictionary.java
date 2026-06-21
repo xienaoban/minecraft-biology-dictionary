@@ -7,12 +7,12 @@ import io.github.xienaoban.biologydictionary.platform.server.ServerEventRegistra
 import net.fabricmc.api.ModInitializer;
 
 public final class FabricBiologyDictionary implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		ServerNetRegistrar.registerCommonPayloads();
-		CreativeTabRegistrar.register();
-		ServerEventRegistrar.register();
-		CommandRegistrar.register();
-		BiologyDictionary.BD.forceInitialize();
-	}
+    @Override
+    public void onInitialize() {
+        ServerNetRegistrar.registerCommonPayloads();
+        CreativeTabRegistrar.register();
+        ServerEventRegistrar.register();
+        CommandRegistrar.register();
+        BiologyDictionary.BD.forceInitialize();
+    }
 }

@@ -21,51 +21,51 @@ import net.minecraft.world.entity.EntityType;
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityType, DiscoveryRecord record) implements Packet {
-	public static final Packet.Factory<SendDiscoveryIncrementalPacket> FACTORY = SendDiscoveryIncrementalPacket::new;
+    public static final Packet.Factory<SendDiscoveryIncrementalPacket> FACTORY = SendDiscoveryIncrementalPacket::new;
 
-	private SendDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
-		this(buf.readVarInt(), readEntityType(buf), DiscoveryRecord.readFromBuf(buf));
-	}
+    private SendDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
+        this(buf.readVarInt(), readEntityType(buf), DiscoveryRecord.readFromBuf(buf));
+    }
 
-	private static EntityType<?> readEntityType(FriendlyByteBuf buf) {
-		Identifier id = Identifier.tryParse(buf.readUtf());
-		return EntityUtils.getEntityType(id);
-	}
+    private static EntityType<?> readEntityType(FriendlyByteBuf buf) {
+        Identifier id = Identifier.tryParse(buf.readUtf());
+        return EntityUtils.getEntityType(id);
+    }
 
-	@Override
-	public void write(FriendlyByteBuf buf) {
-		buf.writeVarInt(entityId);
-		buf.writeUtf(EntityUtils.getEntityTypeIdName(entityType));
-		record.writeToBuf(buf);
-	}
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeVarInt(entityId);
+        buf.writeUtf(EntityUtils.getEntityTypeIdName(entityType));
+        record.writeToBuf(buf);
+    }
 
-	@ClientOnly
-	@Override
-	public void clientReceive(ClientNetApi.Context ctx) {
-		@ClientOnly final class CO { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
-			ClientWorldSession cws = ClientWorldSession.get();
-			if (cws == null) {
-				LOGGER.warn("Null ClientWorldSession. Ignored.", new RuntimeException());
-				return;
-			}
+    @ClientOnly
+    @Override
+    public void clientReceive(ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
+            ClientWorldSession cws = ClientWorldSession.get();
+            if (cws == null) {
+                LOGGER.warn("Null ClientWorldSession. Ignored.", new RuntimeException());
+                return;
+            }
 
-			cws.getDiscoveryClientCache().incrementalSync(packet.entityType(), packet.record());
-			Minecraft client = ctx.client();
-			client.getToastManager().addToast(new DiscoveryToast(packet.entityType()));
+            cws.getDiscoveryClientCache().incrementalSync(packet.entityType(), packet.record());
+            Minecraft client = ctx.client();
+            client.getToastManager().addToast(new DiscoveryToast(packet.entityType()));
 
-			if (packet.record().source() == DiscoverySource.INTERACT) {
-				LocalPlayer player = ctx.player();
-				if (player != null) {
-					player.swing(InteractionHand.MAIN_HAND);
-				}
-			}
+            if (packet.record().source() == DiscoverySource.INTERACT) {
+                LocalPlayer player = ctx.player();
+                if (player != null) {
+                    player.swing(InteractionHand.MAIN_HAND);
+                }
+            }
 
-			ClientLevel level = ClientUtils.getClientLevel(client);
-			Entity target = level != null ? level.getEntity(packet.entityId()) : null;
-			if (target != null) {
-				cws.getHighlightManager().highlightEntity(target, 4 * 20);
-			}
-		}}
-		CO.receive(this, ctx);
-	}
+            ClientLevel level = ClientUtils.getClientLevel(client);
+            Entity target = level != null ? level.getEntity(packet.entityId()) : null;
+            if (target != null) {
+                cws.getHighlightManager().highlightEntity(target, 4 * 20);
+            }
+        }}
+        CO.receive(this, ctx);
+    }
 }

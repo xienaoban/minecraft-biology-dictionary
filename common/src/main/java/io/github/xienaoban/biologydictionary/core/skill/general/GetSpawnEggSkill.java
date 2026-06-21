@@ -17,47 +17,47 @@ import net.minecraft.world.item.SpawnEggItem;
 import java.util.Optional;
 
 public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill {
-	public static final Meta<GetSpawnEggSkill> META = new Meta<>() {
-		@Override
-		public GetSpawnEggSkill create(FriendlyByteBuf buf) {
-			return new GetSpawnEggSkill(EntityUtils.getEntityType(buf.readUtf()));
-		}
+    public static final Meta<GetSpawnEggSkill> META = new Meta<>() {
+        @Override
+        public GetSpawnEggSkill create(FriendlyByteBuf buf) {
+            return new GetSpawnEggSkill(EntityUtils.getEntityType(buf.readUtf()));
+        }
 
-		@Override
-		public SkillCost getDefaultCost() {
-			return SkillCost.creativeOnly();
-		}
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.creativeOnly();
+        }
 
-		@Override
-		public String shortName() {
-			return "get_spawn_egg";
-		}
-	};
+        @Override
+        public String shortName() {
+            return "get_spawn_egg";
+        }
+    };
 
-	@Override
-	public void write(FriendlyByteBuf buf) {
-		buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdName(entityType));
-	}
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdName(entityType));
+    }
 
-	@Override
-	public void serverDo(ServerContext ctx) {
-		if (entityType == null) {
-			BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
-			return;
-		}
+    @Override
+    public void serverDo(ServerContext ctx) {
+        if (entityType == null) {
+            BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
+            return;
+        }
 
-		Optional<Item> item = SpawnEggItem.byId(entityType).map(holder -> holder.value());
-		if (item.isEmpty()) {
-			BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
-			return;
-		}
+        Optional<Item> item = SpawnEggItem.byId(entityType).map(holder -> holder.value());
+        if (item.isEmpty()) {
+            BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+            return;
+        }
 
-		ItemStack stack = new ItemStack(item.get());
-		PlayerUtils.getInventory(ctx.player()).add(stack);
-		// @see net.minecraft.server.commands.GiveCommand.giveItem
-		PlayerUtils.playLocalSound(ctx.player(), SoundEvents.ITEM_PICKUP, 1F,
-				((ctx.player().getRandom().nextFloat() - ctx.player().getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
-		BiologyDictionary.sendCenteredWarning(ctx.player(),
-				TextUtils.translate(Lang.TEXT_OFFER_OR_DROP, stack.getHoverName()));
-	}
+        ItemStack stack = new ItemStack(item.get());
+        PlayerUtils.getInventory(ctx.player()).add(stack);
+        // @see net.minecraft.server.commands.GiveCommand.giveItem
+        PlayerUtils.playLocalSound(ctx.player(), SoundEvents.ITEM_PICKUP, 1F,
+                ((ctx.player().getRandom().nextFloat() - ctx.player().getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+        BiologyDictionary.sendCenteredWarning(ctx.player(),
+                TextUtils.translate(Lang.TEXT_OFFER_OR_DROP, stack.getHoverName()));
+    }
 }

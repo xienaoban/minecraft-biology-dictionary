@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigEntry {
-	double min() default Double.MIN_VALUE;
+    double min() default Double.MIN_VALUE;
 
-	double max() default Double.MAX_VALUE;
+    double max() default Double.MAX_VALUE;
 }

@@ -9,6 +9,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @ClientOnly
 @Mixin(FeatureRenderDispatcher.class)
 public interface FeatureRenderDispatcherIMixin {
-	@Accessor("outlineBufferSource")
-	OutlineBufferSource biologydictionary$getOutlineBufferSource();
+    @Accessor("outlineBufferSource")
+    OutlineBufferSource biologydictionary$getOutlineBufferSource();
 }

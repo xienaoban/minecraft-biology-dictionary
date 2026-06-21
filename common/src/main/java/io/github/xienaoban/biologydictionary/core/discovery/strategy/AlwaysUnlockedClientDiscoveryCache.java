@@ -7,13 +7,13 @@ import net.minecraft.world.entity.EntityType;
 
 @ClientOnly
 public final class AlwaysUnlockedClientDiscoveryCache implements ClientDiscoveryCache {
-	@Override
-	public boolean isDiscovered(EntityType<?> entityType) {
-		return true;
-	}
+    @Override
+    public boolean isDiscovered(EntityType<?> entityType) {
+        return true;
+    }
 
-	@Override
-	public DiscoveryRecord getRecord(EntityType<?> entityType) {
-		return new DiscoveryRecord();
-	}
+    @Override
+    public DiscoveryRecord getRecord(EntityType<?> entityType) {
+        return new DiscoveryRecord();
+    }
 }

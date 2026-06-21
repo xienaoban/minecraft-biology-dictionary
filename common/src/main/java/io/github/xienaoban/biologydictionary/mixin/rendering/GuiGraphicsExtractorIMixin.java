@@ -7,9 +7,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(GuiGraphicsExtractor.class)
 public interface GuiGraphicsExtractorIMixin {
-	@Accessor("guiRenderState")
-	GuiRenderState biologydictionary$getGuiRenderState();
+    @Accessor("guiRenderState")
+    GuiRenderState biologydictionary$getGuiRenderState();
 
-	@Accessor("scissorStack")
-	GuiGraphicsExtractor.ScissorStack biologydictionary$getScissorStack();
+    @Accessor("scissorStack")
+    GuiGraphicsExtractor.ScissorStack biologydictionary$getScissorStack();
 }

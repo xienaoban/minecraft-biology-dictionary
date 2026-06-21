@@ -4,5 +4,5 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 
 public interface DiscoveryStrategy extends DiscoveryEventListener<ServerPlayer> {
-	boolean isDiscovered(ServerPlayer player, EntityType<?> entityType);
+    boolean isDiscovered(ServerPlayer player, EntityType<?> entityType);
 }

@@ -17,54 +17,54 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 public record LivingEntityStealInventorySkill() implements EntityTargetedSkill<LivingEntity> {
-	public static final Meta<LivingEntityStealInventorySkill> META = new Meta<>() {
-		@Override
-		public LivingEntityStealInventorySkill create(FriendlyByteBuf buf) {
-			return new LivingEntityStealInventorySkill();
-		}
+    public static final Meta<LivingEntityStealInventorySkill> META = new Meta<>() {
+        @Override
+        public LivingEntityStealInventorySkill create(FriendlyByteBuf buf) {
+            return new LivingEntityStealInventorySkill();
+        }
 
-		@Override
-		public SkillCost getDefaultCost() {
-			return SkillCost.empty();
-		}
+        @Override
+        public SkillCost getDefaultCost() {
+            return SkillCost.empty();
+        }
 
-		@Override
-		public String shortName() {
-			return "steal_inventory";
-		}
-	};
+        @Override
+        public String shortName() {
+            return "steal_inventory";
+        }
+    };
 
-	private static void checkAllowStealingPlayerInventory(LivingEntity target, Player player) {
-		if (target instanceof Player targetPlayer && targetPlayer != player
-				&& !ConfigsManager.getServer().isAllowStealingPlayerInventory()) {
-			throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NO_PERMISSION_TO_MODIFY_THIS_PLAYER),
-					"allowStealingPlayerInventory is disabled");
-		}
-	}
+    private static void checkAllowStealingPlayerInventory(LivingEntity target, Player player) {
+        if (target instanceof Player targetPlayer && targetPlayer != player
+                && !ConfigsManager.getServer().isAllowStealingPlayerInventory()) {
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NO_PERMISSION_TO_MODIFY_THIS_PLAYER),
+                    "allowStealingPlayerInventory is disabled");
+        }
+    }
 
-	@Override
-	public void write(FriendlyByteBuf buf) {}
+    @Override
+    public void write(FriendlyByteBuf buf) {}
 
-	@ClientOnly
-	@Override
-	public void clientAdditionalCheck(ClientContext<LivingEntity> ctx) throws NoPermissionException {
-		@ClientOnly final class CO { static void check(ClientContext<LivingEntity> ctx) {
-			checkAllowStealingPlayerInventory(ctx.entity(), ctx.player());
-		}}
-		CO.check(ctx);
-	}
+    @ClientOnly
+    @Override
+    public void clientAdditionalCheck(ClientContext<LivingEntity> ctx) throws NoPermissionException {
+        @ClientOnly final class CO { static void check(ClientContext<LivingEntity> ctx) {
+            checkAllowStealingPlayerInventory(ctx.entity(), ctx.player());
+        }}
+        CO.check(ctx);
+    }
 
-	@Override
-	public void serverAdditionalCheck(ServerContext<LivingEntity> ctx) throws NoPermissionException {
-		checkAllowStealingPlayerInventory(ctx.entity(), ctx.player());
-	}
+    @Override
+    public void serverAdditionalCheck(ServerContext<LivingEntity> ctx) throws NoPermissionException {
+        checkAllowStealingPlayerInventory(ctx.entity(), ctx.player());
+    }
 
-	@Override
-	public void serverDo(ServerContext<LivingEntity> ctx) {
-		Container container = EntityInventoryPropertyBundle.getContainerOrEmpty(ctx.entity());
-		PlayerUtils.openContainerInventoryMenu(ctx.player(), (counter, inventory, player) -> {
-			ServerNetManager.replyInventoryStealingScreen(ctx.player(), counter, ctx.entity(), container);
-			return new InventoryStealingMenu(counter, inventory, ctx.entity(), container);
-		});
-	}
+    @Override
+    public void serverDo(ServerContext<LivingEntity> ctx) {
+        Container container = EntityInventoryPropertyBundle.getContainerOrEmpty(ctx.entity());
+        PlayerUtils.openContainerInventoryMenu(ctx.player(), (counter, inventory, player) -> {
+            ServerNetManager.replyInventoryStealingScreen(ctx.player(), counter, ctx.entity(), container);
+            return new InventoryStealingMenu(counter, inventory, ctx.entity(), container);
+        });
+    }
 }

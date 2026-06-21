@@ -7,11 +7,11 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 public final class CommandRegistrar {
-	private CommandRegistrar() {}
+    private CommandRegistrar() {}
 
-	public static void register() {
-		for (LiteralArgumentBuilder<CommandSourceStack> command : Commands.ENTRIES) {
-			NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> event.getDispatcher().register(command));
-		}
-	}
+    public static void register() {
+        for (LiteralArgumentBuilder<CommandSourceStack> command : Commands.ENTRIES) {
+            NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> event.getDispatcher().register(command));
+        }
+    }
 }

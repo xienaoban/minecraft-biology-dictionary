@@ -11,31 +11,31 @@ import net.minecraft.world.entity.Entity;
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource source) implements Packet {
-	public static final Packet.Factory<RequestDiscoveryIncrementalPacket> FACTORY = RequestDiscoveryIncrementalPacket::new;
+    public static final Packet.Factory<RequestDiscoveryIncrementalPacket> FACTORY = RequestDiscoveryIncrementalPacket::new;
 
-	private RequestDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
-		this(buf.readVarInt(), DiscoverySource.valueOf(buf.readUtf()));
-	}
+    private RequestDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
+        this(buf.readVarInt(), DiscoverySource.valueOf(buf.readUtf()));
+    }
 
-	@Override
-	public void write(FriendlyByteBuf buf) {
-		buf.writeVarInt(entityId);
-		buf.writeUtf(source.name());
-	}
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeVarInt(entityId);
+        buf.writeUtf(source.name());
+    }
 
-	@Override
-	public void serverReceive(ServerNetApi.Context ctx) {
-		ServerWorldSession sws = ServerWorldSession.get();
-		if (sws == null) {
-			LOGGER.warn("Null ServerWorldSession. Ignored.", new RuntimeException());
-			return;
-		}
+    @Override
+    public void serverReceive(ServerNetApi.Context ctx) {
+        ServerWorldSession sws = ServerWorldSession.get();
+        if (sws == null) {
+            LOGGER.warn("Null ServerWorldSession. Ignored.", new RuntimeException());
+            return;
+        }
 
-		ServerPlayer player = ctx.player();
-		Entity entity = player.level().getEntity(entityId);
-		if (entity == null) {
-			return;
-		}
-		source.dispatch(sws.getDiscoveryManager(), player, entity);
-	}
+        ServerPlayer player = ctx.player();
+        Entity entity = player.level().getEntity(entityId);
+        if (entity == null) {
+            return;
+        }
+        source.dispatch(sws.getDiscoveryManager(), player, entity);
+    }
 }

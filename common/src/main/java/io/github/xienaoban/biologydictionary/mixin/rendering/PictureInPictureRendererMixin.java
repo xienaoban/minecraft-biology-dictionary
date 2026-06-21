@@ -13,17 +13,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @ClientOnly
 @Mixin(net.minecraft.client.gui.render.pip.PictureInPictureRenderer.class)
 public class PictureInPictureRendererMixin {
-	@Inject(method = "prepare",
-			at = @At(value = "INVOKE",
-					target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V",
-					shift = At.Shift.AFTER))
-	private void biologydictionary$flushOutlineBuffer(PictureInPictureRenderState renderState, GuiRenderState guiRenderState,
-													 int scale, CallbackInfo ci) {
-		if (!CommonScreen.isOpened()) {
-			return;
-		}
-		((FeatureRenderDispatcherIMixin) Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher())
-				.biologydictionary$getOutlineBufferSource()
-				.endOutlineBatch();
-	}
+    @Inject(method = "prepare",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V",
+                    shift = At.Shift.AFTER))
+    private void biologydictionary$flushOutlineBuffer(PictureInPictureRenderState renderState, GuiRenderState guiRenderState,
+                                                     int scale, CallbackInfo ci) {
+        if (!CommonScreen.isOpened()) {
+            return;
+        }
+        ((FeatureRenderDispatcherIMixin) Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher())
+                .biologydictionary$getOutlineBufferSource()
+                .endOutlineBatch();
+    }
 }

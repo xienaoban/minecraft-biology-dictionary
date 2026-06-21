@@ -18,80 +18,80 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @ClientOnly
 public final class ClientWorldSession implements ConfigsUpdateCallback {
-	private static volatile ClientWorldSession instance;
+    private static volatile ClientWorldSession instance;
 
-	public static void init() {
-		synchronized (ClientWorldSession.class) {
-			if (instance == null) {
-				try {
-					instance = new ClientWorldSession();
-					LOGGER.info("ClientWorldSession initialized.");
-				} catch (Throwable e) {
-					LOGGER.error("Failed to initialize ClientWorldSession!", e);
-					BiologyDictionaryClient.printThrowableToLoggerAndGame("ClientWorldSession failed to initialize!", e);
-				}
-			}
-		}
-	}
+    public static void init() {
+        synchronized (ClientWorldSession.class) {
+            if (instance == null) {
+                try {
+                    instance = new ClientWorldSession();
+                    LOGGER.info("ClientWorldSession initialized.");
+                } catch (Throwable e) {
+                    LOGGER.error("Failed to initialize ClientWorldSession!", e);
+                    BiologyDictionaryClient.printThrowableToLoggerAndGame("ClientWorldSession failed to initialize!", e);
+                }
+            }
+        }
+    }
 
-	public static void deinit() {
-		synchronized (ClientWorldSession.class) {
-			if (instance != null) {
-				instance = null;
-				LOGGER.info("ClientWorldSession deinitialized.");
-			}
-		}
-	}
+    public static void deinit() {
+        synchronized (ClientWorldSession.class) {
+            if (instance != null) {
+                instance = null;
+                LOGGER.info("ClientWorldSession deinitialized.");
+            }
+        }
+    }
 
-	public static ClientWorldSession get() {
-		return instance;
-	}
+    public static ClientWorldSession get() {
+        return instance;
+    }
 
-	private final HighlightManager highlightManager;
-	private final DelegatingClientDiscoveryCache discoveryClientCache;
-	private final FirstPersonShoulderEntityRenderer shoulderEntityRenderer;
-	private final TelescopeManager telescopeManager;
-	private final Set<EntityType<?>> failedRenderEntityTypes;
+    private final HighlightManager highlightManager;
+    private final DelegatingClientDiscoveryCache discoveryClientCache;
+    private final FirstPersonShoulderEntityRenderer shoulderEntityRenderer;
+    private final TelescopeManager telescopeManager;
+    private final Set<EntityType<?>> failedRenderEntityTypes;
 
-	private ClientWorldSession() {
-		highlightManager = new HighlightManager();
-		discoveryClientCache = new DelegatingClientDiscoveryCache();
-		shoulderEntityRenderer = new FirstPersonShoulderEntityRenderer();
-		telescopeManager = new TelescopeManager();
-		failedRenderEntityTypes = Collections.newSetFromMap(new ConcurrentHashMap<>());
-	}
+    private ClientWorldSession() {
+        highlightManager = new HighlightManager();
+        discoveryClientCache = new DelegatingClientDiscoveryCache();
+        shoulderEntityRenderer = new FirstPersonShoulderEntityRenderer();
+        telescopeManager = new TelescopeManager();
+        failedRenderEntityTypes = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    }
 
-	@Override
-	public void onConfigsUpdate(Configs.ClientConfigs clientConfigs, Configs.ServerConfigs serverConfigs) {
-		discoveryClientCache.onConfigsUpdate(clientConfigs, serverConfigs);
-	}
+    @Override
+    public void onConfigsUpdate(Configs.ClientConfigs clientConfigs, Configs.ServerConfigs serverConfigs) {
+        discoveryClientCache.onConfigsUpdate(clientConfigs, serverConfigs);
+    }
 
-	public DelegatingClientDiscoveryCache getDiscoveryClientCache() {
-		return discoveryClientCache;
-	}
+    public DelegatingClientDiscoveryCache getDiscoveryClientCache() {
+        return discoveryClientCache;
+    }
 
-	public HighlightManager getHighlightManager() {
-		return highlightManager;
-	}
+    public HighlightManager getHighlightManager() {
+        return highlightManager;
+    }
 
-	public FirstPersonShoulderEntityRenderer getShoulderEntityRenderer() {
-		return shoulderEntityRenderer;
-	}
+    public FirstPersonShoulderEntityRenderer getShoulderEntityRenderer() {
+        return shoulderEntityRenderer;
+    }
 
-	public TelescopeManager getTelescopeManager() {
-		return telescopeManager;
-	}
+    public TelescopeManager getTelescopeManager() {
+        return telescopeManager;
+    }
 
-	public void markRenderFailed(EntityType<?> entityType) {
-		failedRenderEntityTypes.add(entityType);
-	}
+    public void markRenderFailed(EntityType<?> entityType) {
+        failedRenderEntityTypes.add(entityType);
+    }
 
-	public boolean hasRenderFailed(EntityType<?> entityType) {
-		return failedRenderEntityTypes.contains(entityType);
-	}
+    public boolean hasRenderFailed(EntityType<?> entityType) {
+        return failedRenderEntityTypes.contains(entityType);
+    }
 
-	public void tick() {
-		highlightManager.tick();
-		telescopeManager.tick();
-	}
+    public void tick() {
+        highlightManager.tick();
+        telescopeManager.tick();
+    }
 }

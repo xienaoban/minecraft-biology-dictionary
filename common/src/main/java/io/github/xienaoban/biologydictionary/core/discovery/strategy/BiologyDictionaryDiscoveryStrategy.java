@@ -18,75 +18,75 @@ import java.util.Map;
 import java.util.UUID;
 
 public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrategy {
-	private final SavedDataDiscoveryStorage storage;
+    private final SavedDataDiscoveryStorage storage;
 
-	public BiologyDictionaryDiscoveryStrategy(MinecraftServer server) {
-		this.storage = server.getDataStorage().computeIfAbsent(SavedDataDiscoveryStorage.TYPE);
-	}
+    public BiologyDictionaryDiscoveryStrategy(MinecraftServer server) {
+        this.storage = server.getDataStorage().computeIfAbsent(SavedDataDiscoveryStorage.TYPE);
+    }
 
-	@Override
-	public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
-		return storage.isDiscovered(player.getUUID(), entityType);
-	}
+    @Override
+    public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
+        return storage.isDiscovered(player.getUUID(), entityType);
+    }
 
-	public Map<EntityType<?>, DiscoveryRecord> getAllRecords(ServerPlayer player) {
-		return storage.getAll(player.getUUID());
-	}
+    public Map<EntityType<?>, DiscoveryRecord> getAllRecords(ServerPlayer player) {
+        return storage.getAll(player.getUUID());
+    }
 
-	public DiscoveryRecord getRecord(UUID playerUUID, EntityType<?> entityType) {
-		return storage.get(playerUUID, entityType);
-	}
+    public DiscoveryRecord getRecord(UUID playerUUID, EntityType<?> entityType) {
+        return storage.get(playerUUID, entityType);
+    }
 
-	@Override
-	public boolean onEntityDetailScreenOpened(ServerPlayer player, Entity entity) {
-		if (!PlayerUtils.isWithinInteractionRange(player, entity, 10)) {
-			return false;
-		}
-		return tryDiscover(player, entity, DiscoverySource.ENTITY_DETAIL_SCREEN);
-	}
+    @Override
+    public boolean onEntityDetailScreenOpened(ServerPlayer player, Entity entity) {
+        if (!PlayerUtils.isWithinInteractionRange(player, entity, 10)) {
+            return false;
+        }
+        return tryDiscover(player, entity, DiscoverySource.ENTITY_DETAIL_SCREEN);
+    }
 
-	@Override
-	public boolean onEntityHighlighted(ServerPlayer player, Entity entity) {
-		return tryDiscover(player, entity, DiscoverySource.HIGHLIGHT);
-	}
+    @Override
+    public boolean onEntityHighlighted(ServerPlayer player, Entity entity) {
+        return tryDiscover(player, entity, DiscoverySource.HIGHLIGHT);
+    }
 
-	@Override
-	public boolean onEntityInteracted(ServerPlayer player, Entity entity) {
-		if (entity instanceof Enemy) {
-			return false;
-		}
-		return tryDiscover(player, entity, DiscoverySource.INTERACT);
-	}
+    @Override
+    public boolean onEntityInteracted(ServerPlayer player, Entity entity) {
+        if (entity instanceof Enemy) {
+            return false;
+        }
+        return tryDiscover(player, entity, DiscoverySource.INTERACT);
+    }
 
-	@Override
-	public boolean onEntityKilled(ServerPlayer player, Entity entity) {
-		return tryDiscover(player, entity, DiscoverySource.KILL);
-	}
+    @Override
+    public boolean onEntityKilled(ServerPlayer player, Entity entity) {
+        return tryDiscover(player, entity, DiscoverySource.KILL);
+    }
 
-	@Override
-	public boolean onPlayerKilledBy(ServerPlayer player, Entity entity) {
-		return tryDiscover(player, entity, DiscoverySource.KILLED_BY);
-	}
+    @Override
+    public boolean onPlayerKilledBy(ServerPlayer player, Entity entity) {
+        return tryDiscover(player, entity, DiscoverySource.KILLED_BY);
+    }
 
-	@Override
-	public boolean onEntityObservedWithTelescope(ServerPlayer player, Entity entity) {
-		if (!player.isScoping()
-				|| !PlayerUtils.isWithinRangeAndUnobstructed(player, entity, ConfigsManager.getServer().getTelescopeDiscoveryRange())) {
-			return false;
-		}
-		return tryDiscover(player, entity, DiscoverySource.TELESCOPE_OBSERVE);
-	}
+    @Override
+    public boolean onEntityObservedWithTelescope(ServerPlayer player, Entity entity) {
+        if (!player.isScoping()
+                || !PlayerUtils.isWithinRangeAndUnobstructed(player, entity, ConfigsManager.getServer().getTelescopeDiscoveryRange())) {
+            return false;
+        }
+        return tryDiscover(player, entity, DiscoverySource.TELESCOPE_OBSERVE);
+    }
 
-	private boolean tryDiscover(ServerPlayer player, Entity entity, DiscoverySource source) {
-		EntityType<?> entityType = EntityUtils.getEntityType(entity);
-		if (storage.isDiscovered(player.getUUID(), entityType)) {
-			return false;
-		}
-		DiscoveryRecord record = DiscoveryRecord.discoveredNow(player.level().getGameTime(), entity, source);
-		if (storage.put(player.getUUID(), entityType, record)) {
-			ServerNetManager.sendDiscoveryIncremental(player, entity, entityType, record);
-			return true;
-		}
-		return false;
-	}
+    private boolean tryDiscover(ServerPlayer player, Entity entity, DiscoverySource source) {
+        EntityType<?> entityType = EntityUtils.getEntityType(entity);
+        if (storage.isDiscovered(player.getUUID(), entityType)) {
+            return false;
+        }
+        DiscoveryRecord record = DiscoveryRecord.discoveredNow(player.level().getGameTime(), entity, source);
+        if (storage.put(player.getUUID(), entityType, record)) {
+            ServerNetManager.sendDiscoveryIncremental(player, entity, entityType, record);
+            return true;
+        }
+        return false;
+    }
 }

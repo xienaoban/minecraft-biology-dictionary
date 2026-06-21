@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftServer.class)
 public class ExampleMixin {
-	@Inject(method = "loadLevel", at = @At("HEAD"))
-	private void biologydictionary$loadLevel(CallbackInfo callbackInfo) {
-	}
+    @Inject(method = "loadLevel", at = @At("HEAD"))
+    private void biologydictionary$loadLevel(CallbackInfo callbackInfo) {
+    }
 }

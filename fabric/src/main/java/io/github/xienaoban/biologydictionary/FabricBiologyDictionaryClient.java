@@ -10,12 +10,12 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 
 @Environment(EnvType.CLIENT)
 public final class FabricBiologyDictionaryClient implements ClientModInitializer {
-	@Override
-	public void onInitializeClient() {
-		ClientNetRegistrar.registerClientReceivers();
-		ClientEventRegistrar.register();
-		KeyMappingHelper.registerKeyMapping(KeyMappings.OPEN_HANDBOOK);
-		KeyMappingHelper.registerKeyMapping(KeyMappings.DEBUG);
-		BiologyDictionaryClient.BDC.forceInitialize();
-	}
+    @Override
+    public void onInitializeClient() {
+        ClientNetRegistrar.registerClientReceivers();
+        ClientEventRegistrar.register();
+        KeyMappingHelper.registerKeyMapping(KeyMappings.OPEN_HANDBOOK);
+        KeyMappingHelper.registerKeyMapping(KeyMappings.DEBUG);
+        BiologyDictionaryClient.BDC.forceInitialize();
+    }
 }

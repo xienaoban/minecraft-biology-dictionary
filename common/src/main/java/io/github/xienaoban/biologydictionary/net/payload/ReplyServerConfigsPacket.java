@@ -12,29 +12,29 @@ import net.minecraft.network.FriendlyByteBuf;
  * Sent in response to {@link RequestServerConfigsPacket}.
  */
 public record ReplyServerConfigsPacket(String serverConfigsYaml) implements Packet {
-	public static final Packet.Factory<ReplyServerConfigsPacket> FACTORY = ReplyServerConfigsPacket::new;
+    public static final Packet.Factory<ReplyServerConfigsPacket> FACTORY = ReplyServerConfigsPacket::new;
 
-	private ReplyServerConfigsPacket(FriendlyByteBuf buf) {
-		this(buf.readUtf());
-	}
+    private ReplyServerConfigsPacket(FriendlyByteBuf buf) {
+        this(buf.readUtf());
+    }
 
-	@Override
-	public void write(FriendlyByteBuf buf) {
-		buf.writeUtf(serverConfigsYaml);
-	}
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeUtf(serverConfigsYaml);
+    }
 
-	@ClientOnly
-	@Override
-	public void clientReceive(ClientNetApi.Context ctx) {
-		@ClientOnly final class CO { static void receive(ReplyServerConfigsPacket packet) {
-			Configs.ServerConfigs remoteConfigs = new Configs.ServerConfigs();
-			boolean success = ConfigsManager.deserializeConfigCategory(packet.serverConfigsYaml(), remoteConfigs);
-			if (!success) {
-				return;
-			}
-			ConfigsManager.setRemoteServerConfigs(remoteConfigs);
-			ConfigsManager.onUpdated();
-		}}
-		CO.receive(this);
-	}
+    @ClientOnly
+    @Override
+    public void clientReceive(ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(ReplyServerConfigsPacket packet) {
+            Configs.ServerConfigs remoteConfigs = new Configs.ServerConfigs();
+            boolean success = ConfigsManager.deserializeConfigCategory(packet.serverConfigsYaml(), remoteConfigs);
+            if (!success) {
+                return;
+            }
+            ConfigsManager.setRemoteServerConfigs(remoteConfigs);
+            ConfigsManager.onUpdated();
+        }}
+        CO.receive(this);
+    }
 }

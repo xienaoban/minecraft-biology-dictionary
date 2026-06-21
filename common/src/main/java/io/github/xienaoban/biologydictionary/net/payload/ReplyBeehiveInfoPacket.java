@@ -8,20 +8,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 public record ReplyBeehiveInfoPacket(CompoundTag bees) implements Packet {
-	public static final Packet.Factory<ReplyBeehiveInfoPacket> FACTORY = ReplyBeehiveInfoPacket::new;
+    public static final Packet.Factory<ReplyBeehiveInfoPacket> FACTORY = ReplyBeehiveInfoPacket::new;
 
-	private ReplyBeehiveInfoPacket(FriendlyByteBuf buf) {
-		this(buf.readNbt());
-	}
+    private ReplyBeehiveInfoPacket(FriendlyByteBuf buf) {
+        this(buf.readNbt());
+    }
 
-	@Override
-	public void write(FriendlyByteBuf buf) {
-		buf.writeNbt(bees);
-	}
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeNbt(bees);
+    }
 
-	@ClientOnly
-	@Override
-	public void clientReceive(ClientNetApi.Context ctx) {
-		BiologyDictionaryClient.handleBeehiveInfo(bees);
-	}
+    @ClientOnly
+    @Override
+    public void clientReceive(ClientNetApi.Context ctx) {
+        BiologyDictionaryClient.handleBeehiveInfo(bees);
+    }
 }

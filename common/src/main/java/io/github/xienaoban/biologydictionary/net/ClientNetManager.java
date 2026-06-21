@@ -20,45 +20,45 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 public final class ClientNetManager {
-	private ClientNetManager() {}
+    private ClientNetManager() {}
 
-	public static void requestServerConfigs() {
-		ClientNetApi.send(new RequestServerConfigsPacket());
-	}
+    public static void requestServerConfigs() {
+        ClientNetApi.send(new RequestServerConfigsPacket());
+    }
 
-	public static void requestBookItem() {
-		ClientNetApi.send(new RequestBiologyDictionaryItemPacket());
-	}
+    public static void requestBookItem() {
+        ClientNetApi.send(new RequestBiologyDictionaryItemPacket());
+    }
 
-	public static void requestBeehiveInfo(BlockPos pos) {
-		ClientNetApi.send(new RequestBeehiveInfoPacket(pos));
-	}
+    public static void requestBeehiveInfo(BlockPos pos) {
+        ClientNetApi.send(new RequestBeehiveInfoPacket(pos));
+    }
 
-	public static void requestEntityOverview(EntityType<?> entityType) {
-		ClientNetApi.send(new RequestEntityOverviewPacket(EntityUtils.getEntityTypeIdName(entityType)));
-	}
+    public static void requestEntityOverview(EntityType<?> entityType) {
+        ClientNetApi.send(new RequestEntityOverviewPacket(EntityUtils.getEntityTypeIdName(entityType)));
+    }
 
-	public static void requestEntityData(Entity entity, boolean firstAndFullSync) {
-		ClientNetApi.send(new RequestEntityDataPacket(EntityUtils.getId(entity), firstAndFullSync));
-	}
+    public static void requestEntityData(Entity entity, boolean firstAndFullSync) {
+        ClientNetApi.send(new RequestEntityDataPacket(EntityUtils.getId(entity), firstAndFullSync));
+    }
 
-	public static void requestBiologyDictionaryDiscoveryFull() {
-		ClientNetApi.send(new RequestBiologyDictionaryDiscoveryFullPacket());
-	}
+    public static void requestBiologyDictionaryDiscoveryFull() {
+        ClientNetApi.send(new RequestBiologyDictionaryDiscoveryFullPacket());
+    }
 
-	public static void requestDiscoveryIncremental(int entityId, DiscoverySource source) {
-		ClientNetApi.send(new RequestDiscoveryIncrementalPacket(entityId, source));
-	}
+    public static void requestDiscoveryIncremental(int entityId, DiscoverySource source) {
+        ClientNetApi.send(new RequestDiscoveryIncrementalPacket(entityId, source));
+    }
 
-	public static void sendCommonSkill(GeneralSkill skill) {
-		ClientNetApi.send(new RequestCommonSkillPacket(skill));
-	}
+    public static void sendCommonSkill(GeneralSkill skill) {
+        ClientNetApi.send(new RequestCommonSkillPacket(skill));
+    }
 
-	public static void sendEntityTargetedSkill(Entity entity, EntityTargetedSkill<?> skill) {
-		ClientNetApi.send(new RequestEntityTargetedSkillPacket(EntityUtils.getId(entity), skill));
-	}
+    public static void sendEntityTargetedSkill(Entity entity, EntityTargetedSkill<?> skill) {
+        ClientNetApi.send(new RequestEntityTargetedSkillPacket(EntityUtils.getId(entity), skill));
+    }
 
-	public static void sendStealingDetected(Entity entity) {
-		ClientNetApi.send(new SendStealingDetectedPacket(EntityUtils.getId(entity)));
-	}
+    public static void sendStealingDetected(Entity entity) {
+        ClientNetApi.send(new SendStealingDetectedPacket(EntityUtils.getId(entity)));
+    }
 }

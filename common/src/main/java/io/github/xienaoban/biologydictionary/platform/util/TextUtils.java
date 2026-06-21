@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.function.Function;
 
 public final class TextUtils {
-	private static final String TEXT_COMMA = "text.biologydictionary.comma";
+    private static final String TEXT_COMMA = "text.biologydictionary.comma";
 
     public static MutableComponent empty() {
         return Component.empty();

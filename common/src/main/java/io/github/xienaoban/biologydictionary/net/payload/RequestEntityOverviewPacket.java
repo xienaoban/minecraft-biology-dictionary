@@ -17,46 +17,46 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Client sends this to server to request default/overview data for an entity type.
  */
 public record RequestEntityOverviewPacket(String entityTypeId) implements Packet {
-	public static final Packet.Factory<RequestEntityOverviewPacket> FACTORY = RequestEntityOverviewPacket::new;
+    public static final Packet.Factory<RequestEntityOverviewPacket> FACTORY = RequestEntityOverviewPacket::new;
 
-	private RequestEntityOverviewPacket(FriendlyByteBuf buf) {
-		this(buf.readUtf());
-	}
+    private RequestEntityOverviewPacket(FriendlyByteBuf buf) {
+        this(buf.readUtf());
+    }
 
-	@Override
-	public void write(FriendlyByteBuf buf) {
-		buf.writeUtf(entityTypeId);
-	}
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeUtf(entityTypeId);
+    }
 
-	@Override
-	public void serverReceive(ServerNetApi.Context ctx) {
-		WorldSession ws = WorldSession.get();
-		if (ws == null) {
-			LOGGER.warn("Null WorldSession. Ignored.", new RuntimeException());
-			return;
-		}
-		ServerWorldSession sws = ServerWorldSession.get();
-		if (sws == null) {
-			LOGGER.warn("Null ServerWorldSession. Ignored.", new RuntimeException());
-			return;
-		}
+    @Override
+    public void serverReceive(ServerNetApi.Context ctx) {
+        WorldSession ws = WorldSession.get();
+        if (ws == null) {
+            LOGGER.warn("Null WorldSession. Ignored.", new RuntimeException());
+            return;
+        }
+        ServerWorldSession sws = ServerWorldSession.get();
+        if (sws == null) {
+            LOGGER.warn("Null ServerWorldSession. Ignored.", new RuntimeException());
+            return;
+        }
 
-		ReplyEntityOverviewPacket toSend;
-		EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
-		if (entityType != null) {
-			if (!ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities()
-					&& !sws.getDiscoveryManager().isDiscovered(ctx.player(), entityType)) {
-				toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);
-			} else {
-				EntityOverviewCache.CacheEntry cached = ws.getEntityOverviewCache()
-						.getOrCreate(entityType, ctx.player().level());
-				toSend = new ReplyEntityOverviewPacket(true, entityTypeId, cached.vanillaNbt(), cached.extraNbt());
-			}
-		} else {
-			LOGGER.error("Unknown entity type: {}", entityTypeId);
-			toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);
-		}
+        ReplyEntityOverviewPacket toSend;
+        EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
+        if (entityType != null) {
+            if (!ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities()
+                    && !sws.getDiscoveryManager().isDiscovered(ctx.player(), entityType)) {
+                toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);
+            } else {
+                EntityOverviewCache.CacheEntry cached = ws.getEntityOverviewCache()
+                        .getOrCreate(entityType, ctx.player().level());
+                toSend = new ReplyEntityOverviewPacket(true, entityTypeId, cached.vanillaNbt(), cached.extraNbt());
+            }
+        } else {
+            LOGGER.error("Unknown entity type: {}", entityTypeId);
+            toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);
+        }
 
-		ServerNetApi.send(ctx.player(), toSend);
-	}
+        ServerNetApi.send(ctx.player(), toSend);
+    }
 }

@@ -10,15 +10,15 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 @Mod(BiologyDictionary.MOD_ID)
 public final class NeoForgeBiologyDictionary {
-	public NeoForgeBiologyDictionary(IEventBus modEventBus) {
-		modEventBus.addListener(NeoForgeBiologyDictionary::registerPayloads);
-		CreativeTabRegistrar.register(modEventBus);
-		ServerEventRegistrar.register();
-		CommandRegistrar.register();
-		BiologyDictionary.BD.forceInitialize();
-	}
+    public NeoForgeBiologyDictionary(IEventBus modEventBus) {
+        modEventBus.addListener(NeoForgeBiologyDictionary::registerPayloads);
+        CreativeTabRegistrar.register(modEventBus);
+        ServerEventRegistrar.register();
+        CommandRegistrar.register();
+        BiologyDictionary.BD.forceInitialize();
+    }
 
-	private static void registerPayloads(RegisterPayloadHandlersEvent event) {
-		ServerNetRegistrar.registerPayloads(event);
-	}
+    private static void registerPayloads(RegisterPayloadHandlersEvent event) {
+        ServerNetRegistrar.registerPayloads(event);
+    }
 }

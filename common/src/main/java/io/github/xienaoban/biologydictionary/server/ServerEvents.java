@@ -9,30 +9,30 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.List;
 
 public final class ServerEvents {
-	@PlatformEntry
-	public static final List<ServerListener> STARTED = List.of(server -> {
-		WorldSession.init(server.getAllLevels().iterator().next());
-		ServerWorldSession.init(server);
-	});
+    @PlatformEntry
+    public static final List<ServerListener> STARTED = List.of(server -> {
+        WorldSession.init(server.getAllLevels().iterator().next());
+        ServerWorldSession.init(server);
+    });
 
-	@PlatformEntry
-	public static final List<ServerListener> STOPPING = List.of(server -> {
-		ServerWorldSession.deinit();
-		WorldSession.deinit();
-	});
+    @PlatformEntry
+    public static final List<ServerListener> STOPPING = List.of(server -> {
+        ServerWorldSession.deinit();
+        WorldSession.deinit();
+    });
 
-	@PlatformEntry
-	public static final List<PlayerListener> PLAYER_LOGGED_IN = List.of();
+    @PlatformEntry
+    public static final List<PlayerListener> PLAYER_LOGGED_IN = List.of();
 
-	private ServerEvents() {}
+    private ServerEvents() {}
 
-	@FunctionalInterface
-	public interface ServerListener {
-		void run(MinecraftServer server);
-	}
+    @FunctionalInterface
+    public interface ServerListener {
+        void run(MinecraftServer server);
+    }
 
-	@FunctionalInterface
-	public interface PlayerListener {
-		void run(ServerPlayer player);
-	}
+    @FunctionalInterface
+    public interface PlayerListener {
+        void run(ServerPlayer player);
+    }
 }

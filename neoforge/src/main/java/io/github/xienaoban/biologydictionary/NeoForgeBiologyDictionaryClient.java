@@ -14,22 +14,22 @@ import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlers
 
 @Mod(value = BiologyDictionary.MOD_ID, dist = Dist.CLIENT)
 public final class NeoForgeBiologyDictionaryClient {
-	public NeoForgeBiologyDictionaryClient(IEventBus modEventBus, ModContainer container) {
-		modEventBus.addListener(NeoForgeBiologyDictionaryClient::registerClientReceivers);
-		modEventBus.addListener(NeoForgeBiologyDictionaryClient::registerKeyMappings);
-		container.registerExtensionPoint(IConfigScreenFactory.class,
-				(modContainer, parent) -> ClothConfigScreenProvider.provideScreen(parent));
-		ClientEventRegistrar.register();
-		BiologyDictionaryClient.BDC.forceInitialize();
-	}
+    public NeoForgeBiologyDictionaryClient(IEventBus modEventBus, ModContainer container) {
+        modEventBus.addListener(NeoForgeBiologyDictionaryClient::registerClientReceivers);
+        modEventBus.addListener(NeoForgeBiologyDictionaryClient::registerKeyMappings);
+        container.registerExtensionPoint(IConfigScreenFactory.class,
+                (modContainer, parent) -> ClothConfigScreenProvider.provideScreen(parent));
+        ClientEventRegistrar.register();
+        BiologyDictionaryClient.BDC.forceInitialize();
+    }
 
-	private static void registerClientReceivers(RegisterClientPayloadHandlersEvent event) {
-		ClientNetRegistrar.registerClientReceivers(event);
-	}
+    private static void registerClientReceivers(RegisterClientPayloadHandlersEvent event) {
+        ClientNetRegistrar.registerClientReceivers(event);
+    }
 
-	private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
-		event.registerCategory(KeyMappings.CATEGORY);
-		event.register(KeyMappings.OPEN_HANDBOOK);
-		event.register(KeyMappings.DEBUG);
-	}
+    private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.registerCategory(KeyMappings.CATEGORY);
+        event.register(KeyMappings.OPEN_HANDBOOK);
+        event.register(KeyMappings.DEBUG);
+    }
 }
