@@ -13,6 +13,7 @@ import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.Items;
 
@@ -34,6 +35,9 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
         }
     };
 
+    /**
+     * @see net.minecraft.world.entity.ai.behavior.WorkAtPoi#canStillUse(ServerLevel, Villager, long)
+     */
     private static boolean isCloseEnoughToJobSite(Villager entity, GlobalPos jobSite) {
         return jobSite.dimension() == EntityUtils.getLevel(entity).dimension()
                 && jobSite.pos().closerToCenterThan(entity.position(), 1.73);
@@ -47,8 +51,7 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
 
     private static void checkVillagerCloseToJobSite(Villager entity, GlobalPos jobSite) {
         if (!isCloseEnoughToJobSite(entity, jobSite)) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE),
-                    "Too far away from the job site");
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE), "Too far away from the job site");
         }
     }
 
@@ -95,9 +98,6 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
     public SkillCost getRealCost(Villager entity) {
         SkillCost base = EntityTargetedSkill.super.getRealCost(entity);
         int factor = Math.max(0, restocksToday - 3 + 1) * 2;
-        if (factor == 0) {
-            return SkillCost.empty();
-        }
         return new SkillCost(
                 factor * base.getExperiencePoints(),
                 factor * base.getExperienceLevels(),

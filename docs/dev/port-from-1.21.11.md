@@ -100,8 +100,7 @@ platform 负责：
 
 适用于旧 Architectury register facade 的迁移。
 
-- 旧类 `common/.../platform/client/ClientEventRegistry.java` 保留为空壳。
-- 空壳只写迁移提示和 `TODO: delete after port`，方便后续从旧代码搜索定位。
+- 旧类 `common/.../platform/client/ClientEventRegistry.java` 不恢复。
 - 真实定义放到 `common/src/main/java/io/github/xienaoban/biologydictionary/client/ClientEvents.java`。
 - `ClientEvents` 中使用静态 `List.of(...)` 保存 listener 清单。
 - 每个需要平台消费的 list 标 `@PlatformEntry`。
@@ -173,7 +172,7 @@ NeoForge 侧优先使用显式 listener 注册：
 当前网络方向是：
 
 - common 定义 packet 类型、codec、方向、handler。
-- `PacketPayloads.registerBuiltIn(Registrar)` 提供 payload 清单。
+- `PacketPayloads.ENTRIES` 提供 `@PlatformEntry` payload 清单。
 - Fabric 平台入口注册 payload type 和 receiver。
 - NeoForge 平台入口在 `RegisterPayloadHandlersEvent` 中注册 payload。
 - 发送 API 使用 `ClientNetApi` / `ServerNetApi` 窄服务。
@@ -190,7 +189,7 @@ packet 注册本身不强行抽成统一 `Platform.load` API，因为 Fabric 和
 2. listener list 使用 `List.of(...)` 静态声明。
 3. 字段标 `@PlatformEntry`。
 4. Fabric/NeoForge 平台入口分别在正确 event bus / lifecycle 中逐项注册。
-5. 旧 `platform/...Registry` 类暂时保留为空壳，写 `TODO: delete after port`，只用于迁移索引。
+5. 旧 `platform/...Registry` 类不恢复；当前注册链路已经由真实定义类和平台 registrar 表达，空壳会误导后续审计。
 
 已采用该模式：
 
@@ -256,8 +255,6 @@ ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace
 
 ## 当前已知临时项
 
-- `ClientEventRegistry`、`ServerEventRegistry`、`CommandRegistry` 是迁移占位，后续移植完成后删除。
-- `PacketPayloads.registerBuiltIn(...)` 当前可为空，等待真实 packet 迁移。
 - GUI/渲染相关代码需要持续对照 26.1.2 API，尤其是 `ScreenRenderingContext`。
 
 ## 验证命令

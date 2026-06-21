@@ -2,14 +2,12 @@ package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
-import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
@@ -98,11 +96,5 @@ public final class BiologyDictionaryClient {
                         TextUtils.translate(Lang.TEXT_PLEASE_REPORT_ISSUE).withStyle(ChatFormatting.GOLD)
                 )
         ));
-    }
-
-    public static void handleBeehiveInfo(CompoundTag bees) {
-        if (ClientUtils.getCurrentScreen() instanceof BeehiveScreen screen) {
-            screen.updateBeeInfo(bees);
-        }
     }
 }

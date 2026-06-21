@@ -14,6 +14,11 @@ import net.minecraft.util.Mth;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
+/**
+ * Why wrap the rendering APIs here?
+ * 1. Because the APIs always change between different MC versions.
+ * 2. Because the parameter names of the methods are missing when using the official mappings.
+ */
 @ClientOnly
 public abstract class CommonScreen extends Screen implements ScreenConsts {
     private static boolean commonScreenOpened = false;
@@ -21,13 +26,23 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
     protected final ScreenRenderingContext screenRenderingContext;
 
     private Screen lastScreen;
-    private float screenScale;
-    private float reciprocalScreenScale;
+
+    /**
+     * Screen scale factor for rendering the screen.
+     * <p>
+     * Relationship between GUI Scale and Screen Scale:
+     * Actual Screen Size = Default Screen Size * GUI Scale * Screen Scale
+     * <p>
+     * For example: scale=2.0 makes UI elements appear twice as large,
+     * while scale=0.5 makes them appear half as large.
+     * </p>
+     */
+    private float screenScale, reciprocalScreenScale;
 
     protected CommonScreen(Component component) {
         super(component);
-        screenRenderingContext = new ScreenRenderingContext(this);
-        lastScreen = null;
+        this.screenRenderingContext = new ScreenRenderingContext(this);
+        this.lastScreen = null;
     }
 
     public static boolean isOpened() {
@@ -37,9 +52,9 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
     @Override
     protected final void init() {
         screenScale = ConfigsManager.getClient().getScreenScale();
-        reciprocalScreenScale = 1.0F / screenScale;
-        width = Mth.ceil(width * reciprocalScreenScale);
-        height = Mth.ceil(height * reciprocalScreenScale);
+        reciprocalScreenScale = 1F / screenScale;
+        super.width = Mth.ceil(super.width * reciprocalScreenScale);
+        super.height = Mth.ceil(super.height * reciprocalScreenScale);
         super.init();
         resize();
     }
@@ -75,13 +90,9 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
         super.extractRenderState(ctx.getGuiGraphics(), (int) ctx.getMouseX(), (int) ctx.getMouseY(), ctx.getTickDelta());
     }
 
-    public Font getFont() {
-        return super.getFont();
-    }
+    public Font getFont() { return super.getFont(); }
 
-    public float getZ() {
-        return 0;
-    }
+    public float getZ() { return 0; }
 
     @Override
     public void added() {

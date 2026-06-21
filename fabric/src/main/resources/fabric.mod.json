@@ -3,10 +3,16 @@
     "id": "${mod_id}",
     "version": "${version}",
     "name": "${mod_name}",
-    "description": "A biology dictionary for Minecraft.",
+    "description": "To display or modify the properties and states of mobs.",
     "authors": [
         "XieNaoban"
     ],
+    "contact": {
+        "homepage": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "sources": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "repo": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "issues": "https://github.com/xienaoban/minecraft-biology-dictionary/issues"
+    },
     "license": "${mod_license}",
     "icon": "assets/biologydictionary/icon.png",
     "environment": "*",

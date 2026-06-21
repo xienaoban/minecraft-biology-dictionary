@@ -51,39 +51,52 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
     @Override
     public void clientAdditionalCheck(ClientContext<Entity> ctx) {
         @ClientOnly final class CO { static void check(ClientContext<Entity> ctx, UUID targetPlayerUuid) {
-            checkCommon(ctx.entity(), ctx.player(), targetPlayerUuid);
+            OwnableEntity ownable = (OwnableEntity) ctx.entity();
+            if (ownable.getOwnerReference() == null) {
+                throw new NoPermissionException(TextUtils.translate(Lang.TEXT_ENTITY_NOT_TAMED),
+                        "Entity is not tamed: entity=\"" + EntityUtils.getNameString(ctx.entity()) + "\"");
+            }
+
+            LivingEntity owner = ownable.getOwner();
+            if (owner != ctx.player() && !(PlayerUtils.isCreative(ctx.player()) && PlayerUtils.isOp(ctx.player()))) {
+                throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT),
+                        "Not owner of pet: player=\"" + EntityUtils.getNameString(ctx.player()) + "\", owner=\""
+                                + (owner == null ? "null or not online" : EntityUtils.getNameString(owner)) + "\"");
+            }
+
+            if (Objects.equals(targetPlayerUuid, ownable.getOwnerReference().getUUID())) {
+                throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
+                        "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
+            }
         }}
         CO.check(ctx, targetPlayerUuid);
     }
 
     @Override
     public void serverAdditionalCheck(ServerContext<Entity> ctx) {
-        checkCommon(ctx.entity(), ctx.player(), targetPlayerUuid);
-    }
-
-    private static void checkCommon(Entity entity, Player player, UUID targetPlayerUuid) {
-        OwnableEntity ownable = (OwnableEntity) entity;
+        OwnableEntity ownable = (OwnableEntity) ctx.entity();
         if (ownable.getOwnerReference() == null) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_ENTITY_NOT_TAMED),
-                    "Entity is not tamed: entity=\"" + EntityUtils.getNameString(entity) + "\"");
+                    "Entity is not tamed: entity=\"" + EntityUtils.getNameString(ctx.entity()) + "\"");
         }
 
         LivingEntity owner = ownable.getOwner();
-        if (owner != player && !(PlayerUtils.isCreative(player) && PlayerUtils.isOp(player))) {
+        if (owner != ctx.player() && !(PlayerUtils.isCreative(ctx.player()) && PlayerUtils.isOp(ctx.player()))) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT),
-                    "Not owner of pet: player=\"" + EntityUtils.getNameString(player) + "\", owner=\""
+                    "Not owner of pet: player=\"" + EntityUtils.getNameString(ctx.player()) + "\", owner=\""
                             + (owner == null ? "null or not online" : EntityUtils.getNameString(owner)) + "\"");
         }
 
         if (Objects.equals(targetPlayerUuid, ownable.getOwnerReference().getUUID())) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
-                    "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(player) + "\"");
+                    "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
         }
     }
 
     @Override
     public void serverDo(ServerContext<Entity> ctx) {
-        EntityUtils.mergeNbt(ctx.entity(), VanillaEntityProperties.OfTamableAnimal.createOwnerProperty()
-                .withVal(EntityReference.of(targetPlayerUuid)).toTag());
+        // Cannot use Property.setTo() here as it's arg should be TamableAnimal.
+        // But we only need the entity to be OwnableEntity.
+        EntityUtils.mergeNbt(ctx.entity(), VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().withVal(EntityReference.of(targetPlayerUuid)).toTag());
     }
 }

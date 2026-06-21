@@ -13,15 +13,10 @@ import net.minecraft.world.entity.Entity;
 public record RequestEntityDataPacket(int entityId, boolean firstAndFullSync) implements Packet {
     public static final Packet.Factory<RequestEntityDataPacket> FACTORY = RequestEntityDataPacket::new;
 
-    private RequestEntityDataPacket(FriendlyByteBuf buf) {
-        this(buf.readInt(), buf.readBoolean());
-    }
+    private RequestEntityDataPacket(FriendlyByteBuf buf) { this(buf.readInt(), buf.readBoolean()); }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeInt(entityId);
-        buf.writeBoolean(firstAndFullSync);
-    }
+    public void write(FriendlyByteBuf buf) { buf.writeInt(entityId); buf.writeBoolean(firstAndFullSync); }
 
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
@@ -29,12 +24,14 @@ public record RequestEntityDataPacket(int entityId, boolean firstAndFullSync) im
 
         ReplyEntityDataPacket toSend;
         if (entity != null) {
+            // Write vanilla NBT data.
             CompoundTag vanillaNbt = EntityUtils.getNbt(entity);
 
+            // Write data that not in vanilla NBT.
             CompoundTag extraNbt = new CompoundTag();
-            for (EntityProperty<?> property : new EntityProperties<>(entity).getExtras()) {
-                property.getFrom(Misc.cast(entity));
-                property.writeTo(extraNbt);
+            for (EntityProperty<?> p : new EntityProperties<>(entity).getExtras()) {
+                p.getFrom(Misc.cast(entity));
+                p.writeTo(extraNbt);
             }
 
             toSend = new ReplyEntityDataPacket(true, EntityUtils.getId(entity), vanillaNbt, extraNbt);

@@ -2,8 +2,8 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
-import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.resources.Identifier;
@@ -23,21 +23,23 @@ import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.ticks.ContainerSingleItem;
 
+/**
+ * @see net.minecraft.world.inventory.HorseInventoryMenu
+ */
 public class InventoryStealingMenu extends AbstractContainerMenu {
     public static final int EQUIPMENT_SLOTS = EquipmentSlot.values().length;
     public static final int MAX_SLOTS = 4 * 9;
 
-    private static final Identifier EMPTY_ARMOR_SLOT_SWORD = Identifier.withDefaultNamespace("container/slot/sword");
-    private static final Identifier EMPTY_ARMOR_SLOT_SHIELD = InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
-    private static final Identifier EMPTY_ARMOR_SLOT_HELMET = InventoryMenu.EMPTY_ARMOR_SLOT_HELMET;
-    private static final Identifier EMPTY_ARMOR_SLOT_CHESTPLATE = InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE;
-    private static final Identifier EMPTY_ARMOR_SLOT_LEGGINGS = InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS;
-    private static final Identifier EMPTY_ARMOR_SLOT_BOOTS = InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS;
-    private static final Identifier EMPTY_ARMOR_SLOT_SADDLE = Identifier.withDefaultNamespace("container/slot/saddle");
-    private static final Identifier EMPTY_ARMOR_SLOT_HORSE_ARMOR = Identifier.withDefaultNamespace("container/slot/horse_armor");
-    private static final Identifier EMPTY_ARMOR_SLOT_LLAMA_ARMOR = Identifier.withDefaultNamespace("container/slot/llama_armor");
-    private static final Identifier EMPTY_ARMOR_SLOT_NAUTILUS_ARMOR =
-            Identifier.withDefaultNamespace("container/slot/nautilus_armor_inventory");
+    private static final Identifier EMPTY_ARMOR_SLOT_SWORD          = Identifier.withDefaultNamespace("container/slot/sword");
+    private static final Identifier EMPTY_ARMOR_SLOT_SHIELD         = InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
+    private static final Identifier EMPTY_ARMOR_SLOT_HELMET         = InventoryMenu.EMPTY_ARMOR_SLOT_HELMET;
+    private static final Identifier EMPTY_ARMOR_SLOT_CHESTPLATE     = InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE;
+    private static final Identifier EMPTY_ARMOR_SLOT_LEGGINGS       = InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS;
+    private static final Identifier EMPTY_ARMOR_SLOT_BOOTS          = InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS;
+    private static final Identifier EMPTY_ARMOR_SLOT_SADDLE         = Identifier.withDefaultNamespace("container/slot/saddle");
+    private static final Identifier EMPTY_ARMOR_SLOT_HORSE_ARMOR    = Identifier.withDefaultNamespace("container/slot/horse_armor");
+    private static final Identifier EMPTY_ARMOR_SLOT_LLAMA_ARMOR    = Identifier.withDefaultNamespace("container/slot/llama_armor");
+    private static final Identifier EMPTY_ARMOR_SLOT_NAUTILUS_ARMOR = Identifier.withDefaultNamespace("container/slot/nautilus_armor_inventory");
 
     static int calculateMod(int size) {
         if (size > MAX_SLOTS) {
@@ -77,47 +79,53 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
             case Llama ignored -> EMPTY_ARMOR_SLOT_LLAMA_ARMOR;
             default -> EMPTY_ARMOR_SLOT_HORSE_ARMOR;
         };
-        int left = 8;
-        int top = 94;
+        int left = 8, top = 94;
         final int wh = 18;
-        addSlot(new EntityEquipmentSlot(EquipmentSlot.HEAD, left, top, EMPTY_ARMOR_SLOT_HELMET));
-        addSlot(new EntityEquipmentSlot(EquipmentSlot.CHEST, left + wh, top, EMPTY_ARMOR_SLOT_CHESTPLATE));
-        addSlot(new EntityEquipmentSlot(EquipmentSlot.LEGS, left, top += wh, EMPTY_ARMOR_SLOT_LEGGINGS));
-        addSlot(new EntityEquipmentSlot(EquipmentSlot.FEET, left + wh, top, EMPTY_ARMOR_SLOT_BOOTS));
-        addSlot(new EntityEquipmentSlot(EquipmentSlot.SADDLE, left, top += wh, EMPTY_ARMOR_SLOT_SADDLE));
-        addSlot(new EntityEquipmentSlot(EquipmentSlot.BODY, left + wh, top, emptyBodySlot));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.HEAD,     left, top, EMPTY_ARMOR_SLOT_HELMET));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.CHEST,    left + wh, top, EMPTY_ARMOR_SLOT_CHESTPLATE));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.LEGS,     left, top += wh, EMPTY_ARMOR_SLOT_LEGGINGS));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.FEET,     left + wh, top, EMPTY_ARMOR_SLOT_BOOTS));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.SADDLE,   left, top += wh, EMPTY_ARMOR_SLOT_SADDLE));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.BODY,     left + wh, top, emptyBodySlot));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.MAINHAND, left, top += wh + 4, EMPTY_ARMOR_SLOT_SWORD));
-        addSlot(new EntityEquipmentSlot(EquipmentSlot.OFFHAND, left + wh, top, EMPTY_ARMOR_SLOT_SHIELD));
+        addSlot(new EntityEquipmentSlot(EquipmentSlot.OFFHAND,  left + wh, top, EMPTY_ARMOR_SLOT_SHIELD));
 
         final int size = Math.min(container.getContainerSize(), MAX_SLOTS);
         final int mod = calculateMod(size);
         for (int i = 0; i < size; ++i) {
-            addSlot(new Slot(container, i, 66 + (i % mod) * wh, 18 + (i / mod) * wh));
+            this.addSlot(new Slot(container, i, 66 + (i % mod) * wh, 18 + (i / mod) * wh));
         }
 
-        addStandardInventorySlots(inventory, 66, 112);
+        this.addStandardInventorySlots(inventory, 66, 112);
     }
 
+    /**
+     * @see net.minecraft.world.inventory.HorseInventoryMenu#quickMoveStack(net.minecraft.world.entity.player.Player, int)
+     */
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        Slot slot = slots.get(index);
+        ItemStack itemStack = ItemStack.EMPTY;
+        Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
-            ItemStack itemStack = slot.getItem();
+            ItemStack itemStack2 = slot.getItem();
             int containerEnd = EQUIPMENT_SLOTS + Math.min(container.getContainerSize(), MAX_SLOTS);
             if (index < containerEnd) {
                 return ItemStack.EMPTY;
-            }
-            int inventoryEnd = containerEnd + 27;
-            int hotbarEnd = inventoryEnd + 9;
-            if (index >= inventoryEnd && index < hotbarEnd) {
-                if (!moveItemStackTo(itemStack, containerEnd, inventoryEnd, false)) {
+            } else {
+                int k = containerEnd + 27;
+                int m = k + 9;
+                if (index >= k && index < m) {
+                    if (!this.moveItemStackTo(itemStack2, containerEnd, k, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else if (index < k) {
+                    if (!this.moveItemStackTo(itemStack2, k, m, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else if (!this.moveItemStackTo(itemStack2, k, k, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (index < inventoryEnd) {
-                if (!moveItemStackTo(itemStack, inventoryEnd, hotbarEnd, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!moveItemStackTo(itemStack, inventoryEnd, inventoryEnd, false)) {
+
                 return ItemStack.EMPTY;
             }
         }
@@ -138,8 +146,7 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         super.removed(player);
         container.stopOpen(player);
         if (closedByDistance) {
-            PlayerUtils.showClientCenteredMessage(player,
-                    TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
+            PlayerUtils.showClientCenteredMessage(player, TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
         }
     }
 
@@ -155,6 +162,9 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         return good;
     }
 
+    /**
+     * Container wrapper for entity equipment slots
+     */
     class EntityEquipmentContainer implements ContainerSingleItem {
         private final EquipmentSlot equipmentSlot;
 
@@ -190,6 +200,10 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         }
     }
 
+    /**
+     * Slot wrapper for entity equipment
+     * @see net.minecraft.world.inventory.ArmorSlot
+     */
     class EntityEquipmentSlot extends Slot {
         private final EquipmentSlot equipmentSlot;
         private final Identifier emptyIcon;
@@ -213,7 +227,10 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPlace(ItemStack itemStack) {
-            return PlayerUtils.isCreative(getPlayer()) && entity.isEquippableInSlot(itemStack, equipmentSlot);
+            if (!PlayerUtils.isCreative(getPlayer())) {
+                return false;
+            }
+            return entity.isEquippableInSlot(itemStack, equipmentSlot);
         }
 
         @Override
@@ -230,6 +247,7 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
         @Override
         public boolean isActive() {
+            // return entity.canUseSlot(equipmentSlot);
             return true;
         }
 

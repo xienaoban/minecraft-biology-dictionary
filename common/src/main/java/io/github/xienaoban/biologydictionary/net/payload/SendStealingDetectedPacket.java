@@ -29,11 +29,13 @@ public record SendStealingDetectedPacket(int entityId) implements Packet {
 
         Entity entity = level.getEntity(entityId);
         if (entity instanceof LivingEntity livingEntity) {
+            // Deal 0 damage to the entity to trigger its attack response
             DamageSource damageSource = level.damageSources().playerAttack(player);
-            EntityUtils.hurt(livingEntity, damageSource, 0.0F);
+            EntityUtils.hurt(livingEntity, damageSource, 0.0f);
 
+            // Also deal 0 damage to the player
             DamageSource entityDamageSource = level.damageSources().mobAttack(livingEntity);
-            EntityUtils.hurt(player, entityDamageSource, 0.01F);
+            EntityUtils.hurt(player, entityDamageSource, 0.01f);
         }
     }
 }

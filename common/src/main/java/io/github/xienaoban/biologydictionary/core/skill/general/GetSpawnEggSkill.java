@@ -14,8 +14,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 
-import java.util.Optional;
-
 public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill {
     public static final Meta<GetSpawnEggSkill> META = new Meta<>() {
         @Override
@@ -43,21 +41,18 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
     public void serverDo(ServerContext ctx) {
         if (entityType == null) {
             BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
-            return;
+        } else {
+            Item item = SpawnEggItem.byId(entityType).map(holder -> holder.value()).orElse(null);
+            if (item == null) {
+                BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+            } else {
+                ItemStack stack = new ItemStack(item);
+                PlayerUtils.getInventory(ctx.player()).add(stack);
+                // @see net.minecraft.server.commands.GiveCommand.giveItem
+                PlayerUtils.playLocalSound(ctx.player(), SoundEvents.ITEM_PICKUP, 1F, ((ctx.player().getRandom().nextFloat() - ctx.player().getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                BiologyDictionary.sendCenteredWarning(ctx.player(),
+                        TextUtils.translate(Lang.TEXT_OFFER_OR_DROP, TextUtils.translate(item.getDescriptionId())));
+            }
         }
-
-        Optional<Item> item = SpawnEggItem.byId(entityType).map(holder -> holder.value());
-        if (item.isEmpty()) {
-            BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
-            return;
-        }
-
-        ItemStack stack = new ItemStack(item.get());
-        PlayerUtils.getInventory(ctx.player()).add(stack);
-        // @see net.minecraft.server.commands.GiveCommand.giveItem
-        PlayerUtils.playLocalSound(ctx.player(), SoundEvents.ITEM_PICKUP, 1F,
-                ((ctx.player().getRandom().nextFloat() - ctx.player().getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
-        BiologyDictionary.sendCenteredWarning(ctx.player(),
-                TextUtils.translate(Lang.TEXT_OFFER_OR_DROP, stack.getHoverName()));
     }
 }

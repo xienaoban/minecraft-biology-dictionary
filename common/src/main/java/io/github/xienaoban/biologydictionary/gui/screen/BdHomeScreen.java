@@ -28,6 +28,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 
@@ -195,9 +196,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             EntityType<?> type = EntityUtils.getEntityType(entity);
             this.entityType = type;
             this.name = type.getDescription();
-            this.spawnEgg = SpawnEggItem.byId(type)
-                    .map(itemHolder -> new ItemStack(itemHolder.value()))
-                    .orElse(null);
+            Item item = SpawnEggItem.byId(type).map(itemHolder -> itemHolder.value()).orElse(null);
+            this.spawnEgg = item == null ? null : new ItemStack(item);
             this.entityRenderer = new PlaceholderFallbackEntityRenderer(entity);
         }
 

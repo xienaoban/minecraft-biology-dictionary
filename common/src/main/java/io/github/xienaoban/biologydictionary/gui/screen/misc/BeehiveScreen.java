@@ -15,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.bee.Bee;
@@ -28,8 +27,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.stream.IntStream;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @ClientOnly
 public class BeehiveScreen extends ElementScreen {
@@ -210,13 +207,6 @@ public class BeehiveScreen extends ElementScreen {
         }
         blockBeeCnt = occupants.size();
         blockHoneyCnt = BeehiveBlockEntity.getHoneyLevel(entity.getBlockState());
-    }
-
-    public void updateBeeInfo(CompoundTag bees) {
-        BeehiveBlockEntity.Occupant.LIST_CODEC
-                .parse(NbtOps.INSTANCE, bees.get("bees"))
-                .resultOrPartial(string -> LOGGER.error("Failed to parse bees: '{}'", string))
-                .ifPresent(this::updateBeeInfo);
     }
 
     private static class BeeInfo {

@@ -26,8 +26,8 @@ public final class HighlightManager {
         int ticks = BiologyDictionaryClient.getTicks();
         ClientLevel level = ClientUtils.getClientLevel();
         Context ctx = new Context(level);
-        highlightedEntities.removeIf(highlighted -> highlighted.checkEnd(ticks, ctx));
-        highlightedBlocks.removeIf(highlighted -> highlighted.checkEnd(ticks, ctx));
+        highlightedEntities.removeIf(h -> h.checkEnd(ticks, ctx));
+        highlightedBlocks.removeIf(h -> h.checkEnd(ticks, ctx));
         if (highlightedEntities.isEmpty() && highlightedBlocks.isEmpty()) {
             hasHighlighted = false;
         }
@@ -57,8 +57,7 @@ public final class HighlightManager {
     public void highlightBlock(ClientLevel level, BlockPos blockPos, int durationTicks) {
         if (!hasHighlighted) { hasHighlighted = true; }
         BlockState blockState = level.getBlockState(blockPos);
-        highlightedBlocks.add(new HighlightedBlock(BiologyDictionaryClient.getTicks() + durationTicks, blockState,
-                blockPos, level.dimension()));
+        highlightedBlocks.add(new HighlightedBlock(BiologyDictionaryClient.getTicks() + durationTicks, blockState, blockPos, level.dimension()));
     }
 
     public record Context(ClientLevel level) {}
@@ -100,7 +99,8 @@ public final class HighlightManager {
 
         @Override
         protected boolean onCheckEnd(Context ctx) {
-            return EntityUtils.getLevel(entity) != ctx.level || !entity.isAlive();
+            return (EntityUtils.getLevel(entity) != ctx.level)
+                    || (!entity.isAlive());
         }
     }
 
@@ -126,7 +126,8 @@ public final class HighlightManager {
 
         @Override
         protected boolean onCheckEnd(Context ctx) {
-            return dimension != ctx.level.dimension() || blockState.getBlock() != ctx.level.getBlockState(blockPos).getBlock();
+            return (dimension != ctx.level.dimension())
+                    || (blockState.getBlock() != ctx.level.getBlockState(blockPos).getBlock());
         }
     }
 }

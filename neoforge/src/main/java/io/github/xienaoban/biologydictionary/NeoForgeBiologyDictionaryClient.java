@@ -30,6 +30,5 @@ public final class NeoForgeBiologyDictionaryClient {
     private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.registerCategory(KeyMappings.CATEGORY);
         event.register(KeyMappings.OPEN_HANDBOOK);
-        event.register(KeyMappings.DEBUG);
     }
 }

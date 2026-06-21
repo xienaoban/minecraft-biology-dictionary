@@ -3,6 +3,10 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
+/**
+ * How a player discovered an entity.
+ * Each value maps to the corresponding {@link DiscoveryEventListener} method.
+ */
 public enum DiscoverySource {
     ENTITY_DETAIL_SCREEN(DiscoveryEventListener::onEntityDetailScreenOpened),
     HIGHLIGHT(DiscoveryEventListener::onEntityHighlighted),
@@ -10,7 +14,7 @@ public enum DiscoverySource {
     INTERACT(DiscoveryEventListener::onEntityInteracted),
     KILL(DiscoveryEventListener::onEntityKilled),
     KILLED_BY(DiscoveryEventListener::onPlayerKilledBy),
-    UNKNOWN((listener, player, entity) -> false);
+    UNKNOWN((l, p, e) -> false);
 
     private final Invoker<?> invoker;
 
@@ -20,8 +24,8 @@ public enum DiscoverySource {
 
     public <P extends Player> boolean dispatch(DiscoveryEventListener<P> listener, P player, Entity entity) {
         @SuppressWarnings("unchecked")
-        boolean result = ((Invoker<P>) invoker).invoke(listener, player, entity);
-        return result;
+        boolean res = ((Invoker<P>) invoker).invoke(listener, player, entity);
+        return res;
     }
 
     @FunctionalInterface

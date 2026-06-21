@@ -19,7 +19,7 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Server sends this to client with the overview data.
  */
 public record ReplyEntityOverviewPacket(boolean notNull, String entityTypeId,
-                                        CompoundTag vanillaNbt, CompoundTag extraNbt) implements Packet {
+                                         CompoundTag vanillaNbt, CompoundTag extraNbt) implements Packet {
     public static final Packet.Factory<ReplyEntityOverviewPacket> FACTORY = ReplyEntityOverviewPacket::new;
 
     private ReplyEntityOverviewPacket(FriendlyByteBuf buf) {
@@ -38,7 +38,7 @@ public record ReplyEntityOverviewPacket(boolean notNull, String entityTypeId,
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO {
-            static void receive(ReplyEntityOverviewPacket packet) {
+            static void receive(ReplyEntityOverviewPacket packet, ClientNetApi.Context ctx) {
                 if (!packet.notNull()) { return; }
 
                 WorldSession ws = WorldSession.get();
@@ -50,7 +50,9 @@ public record ReplyEntityOverviewPacket(boolean notNull, String entityTypeId,
                 EntityType<?> entityType = EntityUtils.getEntityType(packet.entityTypeId());
                 if (entityType != null) {
                     ws.getEntityOverviewCache().put(entityType,
-                            new EntityOverviewCache.CacheEntry(packet.vanillaNbt(), packet.extraNbt()));
+                        new EntityOverviewCache.CacheEntry(packet.vanillaNbt(), packet.extraNbt()));
+
+                    // Update current screen if it's an overview screen for this entity type
                     if (ClientUtils.getCurrentScreen() instanceof BdEntityOverviewScreen screen
                             && screen.matchesType(entityType)) {
                         screen.updateProperties(packet.vanillaNbt(), packet.extraNbt());
@@ -60,6 +62,6 @@ public record ReplyEntityOverviewPacket(boolean notNull, String entityTypeId,
                 }
             }
         }
-        CO.receive(this);
+        CO.receive(this, ctx);
     }
 }

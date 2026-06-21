@@ -45,9 +45,12 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
         if (noAi) {
             VanillaEntityProperties.OfMob.createPersistenceRequiredProperty().withVal(true).writeTo(nbt);
         } else {
+            // Clear the motion caused by collisions accumulated during the AI-disabled period
+            // to prevent the entity from flying around randomly.
             VanillaEntityProperties.OfEntity.createMotionProperty().withVal(Vec3.ZERO).writeTo(nbt);
         }
 
+        // Set the entity without AI to be invulnerable to avoid disrupting the balance of Survival Mode.
         if (!PlayerUtils.isCreative(ctx.player())) {
             VanillaEntityProperties.OfEntity.createInvulnerableProperty().withVal(noAi).writeTo(nbt);
         }
@@ -58,12 +61,7 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
     @Override
     public SkillCost getRealCost(Mob entity) {
         SkillCost base = EntityTargetedSkill.super.getRealCost(entity);
-        int expPoints;
-        int expLevels;
-        int expPointRequired;
-        int expLevelRequired;
-        int health;
-        int satiety;
+        int expPoints, expLevels, expPointRequired, expLevelRequired, health, satiety;
         List<SkillCost.ItemCost> items;
 
         if (entity instanceof Enemy) {

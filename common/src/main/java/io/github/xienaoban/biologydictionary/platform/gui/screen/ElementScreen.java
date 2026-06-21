@@ -1,12 +1,11 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @ClientOnly
 public abstract class ElementScreen extends CommonScreen {
@@ -33,7 +32,7 @@ public abstract class ElementScreen extends CommonScreen {
     public void tick() {
         try {
             super.tick();
-            ++ticks;
+            ++ticks; // yes the first `ticks` will be 1 instead of 0
             rootScreenElement.tick(ticks);
         } catch (Throwable e) {
             showExceptionMessageAndCloseScreen("Error in tick on screen", e);
@@ -46,8 +45,9 @@ public abstract class ElementScreen extends CommonScreen {
             updateSelectedElement();
             if (getSelectedElement() != null) {
                 return getSelectedElement().mouseDown((float) mouseButtonEvent.x(), (float) mouseButtonEvent.y(), mouseButtonEvent.button());
+            } else {
+                return super.mouseClicked(mouseButtonEvent, doubleClick);
             }
-            return super.mouseClicked(mouseButtonEvent, doubleClick);
         } catch (Throwable e) {
             showExceptionMessageAndCloseScreen("Error in mouse clicking on screen", e);
         }
@@ -100,6 +100,11 @@ public abstract class ElementScreen extends CommonScreen {
         return ticks;
     }
 
+    /**
+     * Relocate the sub elements of root element.
+     * @param width the new width of the screen, same with this.width
+     * @param height the new height of the screen, same with this.height
+     */
     protected abstract void resizeBox(int width, int height);
 
     private void updateHoveredElement(float x, float y) {
@@ -120,7 +125,7 @@ public abstract class ElementScreen extends CommonScreen {
 
     private void showExceptionMessageAndCloseScreen(String message, Throwable throwable) {
         onClose();
-        LOGGER.error(message, throwable);
+        BiologyDictionaryClient.printThrowableToLoggerAndGame(message, throwable);
     }
 
     private final class RootScreenElement extends ScreenElement {

@@ -68,6 +68,13 @@ public final class ScreenRenderingContext {
         debug = false;
     }
 
+    /**
+     * We don't use the mouseX and mouseY parameters because they are int.
+     * @see net.minecraft.client.renderer.GameRenderer#render(net.minecraft.client.DeltaTracker, boolean)
+     *
+     * @param mouseX not used
+     * @param mouseY not used
+     */
     public void update(GuiGraphicsExtractor guiGraphics, float screenScale, float reciprocalScreenScale, int mouseX, int mouseY, float tickDelta) {
         this.guiGraphics = guiGraphics;
         this.screenScale = screenScale;
@@ -75,6 +82,8 @@ public final class ScreenRenderingContext {
         this.tickDelta = tickDelta;
         this.mouseX = (float) client.mouseHandler.xpos() * (float) client.getWindow().getGuiScaledWidth() / (float) client.getWindow().getScreenWidth();
         this.mouseY = (float) client.mouseHandler.ypos() * (float) client.getWindow().getGuiScaledHeight() / (float) client.getWindow().getScreenHeight();
+        assert mouseX == (int) this.mouseX && mouseY == (int) this.mouseY;
+
         this.mouseX *= reciprocalScreenScale;
         this.mouseY *= reciprocalScreenScale;
     }
@@ -107,6 +116,10 @@ public final class ScreenRenderingContext {
     public ScaleRAII scaleOnce(float size, float z) {
         return new ScaleRAII(this, size, z);
     }
+
+    //=======================================================================================
+    // Rendering texts.
+    //=======================================================================================
 
     public int calcTextWidth(Component component) {
         return getFont().width(component);
@@ -143,9 +156,7 @@ public final class ScreenRenderingContext {
     }
 
     public void renderText(Component component, int color, float size, float z, float x, float y) {
-        try (ScaleRAII ignored = scaleOnce(size)) {
-            renderText(component, color, z, x / size, y / size);
-        }
+        renderText(component.getVisualOrderText(), color, size, z, x, y);
     }
 
     public void renderCenteredText(Component component, int color, float z, float x, float y) {
@@ -168,6 +179,10 @@ public final class ScreenRenderingContext {
         }
     }
 
+    //=======================================================================================
+    // Rendering geometries.
+    //=======================================================================================
+
     public void renderHorizontalLine(int color, float width, float z, float y, float left, float right) {
         renderRectangle(color, z, left, y - width / 2.0F, right, y + width / 2.0F);
     }
@@ -176,6 +191,15 @@ public final class ScreenRenderingContext {
         renderRectangle(color, z, x - width / 2.0F, top, x + width / 2.0F, bottom);
     }
 
+    /**
+     * Another choice is:
+     * {@snippet :
+     *     renderHorizontalLine(color, width, z, top, left, right);
+     *     renderHorizontalLine(color, width, z, bottom - width, left, right);
+     *     renderVerticalLine(color, width, z, left, top, bottom);
+     *     renderVerticalLine(color, width, z, right - width, top, bottom);
+     * }
+     */
     public void renderRectangle(int color, float width, float z, float left, float top, float right, float bottom) {
         renderRectangle(color, z, left, top, right, top + width);
         renderRectangle(color, z, left, bottom - width, right, bottom);
@@ -183,6 +207,13 @@ public final class ScreenRenderingContext {
         renderRectangle(color, z, right - width, top, right, bottom);
     }
 
+    /**
+     * Another choice is:
+     * {@snippet :
+     *     getGuiGraphics().fill((int) left, (int) top, (int) right, (int) bottom, (int) z, color);
+     * }
+     * But it only supports `int`.
+     */
     public void renderRectangle(int color, float z, float left, float top, float right, float bottom) {
         record RectangleState(RenderPipeline pipeline, TextureSetup textureSetup,
                               Matrix3x2f pose, ScreenRectangle scissorArea, ScreenRectangle bounds,

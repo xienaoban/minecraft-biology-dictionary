@@ -63,10 +63,10 @@ public record DiscoveryRecord(
         long time = buf.readLong();
         long tick = buf.readLong();
         DiscoverySource source = DiscoverySource.valueOf(buf.readUtf());
-        String dimensionString = buf.readUtf();
-        Identifier dimension = dimensionString.isEmpty() ? null : Identifier.tryParse(dimensionString);
-        String biomeString = buf.readUtf();
-        Identifier biome = biomeString.isEmpty() ? null : Identifier.tryParse(biomeString);
+        String dimStr = buf.readUtf();
+        Identifier dimension = dimStr.isEmpty() ? null : Identifier.tryParse(dimStr);
+        String bioStr = buf.readUtf();
+        Identifier biome = bioStr.isEmpty() ? null : Identifier.tryParse(bioStr);
         BlockPos position = buf.readBlockPos();
         Biome.Precipitation weather = Biome.Precipitation.valueOf(buf.readUtf());
         UUID entityUUID = buf.readUUID();

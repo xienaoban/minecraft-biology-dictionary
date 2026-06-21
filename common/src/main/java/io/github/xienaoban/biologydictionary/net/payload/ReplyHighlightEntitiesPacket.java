@@ -28,7 +28,11 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeBoolean(allowed);
-        buf.writeUtf(entityType == null ? "" : EntityUtils.getEntityTypeIdName(entityType));
+        if (entityType == null) {
+            buf.writeUtf("");
+        } else {
+            buf.writeUtf(EntityUtils.getEntityTypeIdName(entityType));
+        }
         buf.writeFloat(radius);
     }
 
@@ -46,22 +50,22 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
 
             ClientUtils.playScreenSound(SoundEvents.ENDER_DRAGON_FLAP, 0.6F, -10.0F);
             LocalPlayer player = ctx.player();
-            int count = 0;
+            int cnt = 0;
             Entity first = null;
-            for (Entity entity : ClientUtils.getClientLevel().entitiesForRendering()) {
-                if (entity.getType() != packet.entityType()) { continue; }
-                if (player.distanceToSqr(entity) > packet.radius() * packet.radius()) {
+            for (Entity e : ClientUtils.getClientLevel().entitiesForRendering()) {
+                if (e.getType() != packet.entityType()) { continue; }
+                if (player.distanceToSqr(e) > packet.radius() * packet.radius()) {
                     continue;
                 }
-                if (first == null) { first = entity; }
-                ++count;
-                cws.getHighlightManager().highlightEntity(entity, HighlightEntitiesSkill.TICKS);
+                if (first == null) { first = e; }
+                ++cnt;
+                cws.getHighlightManager().highlightEntity(e, HighlightEntitiesSkill.TICKS);
             }
             if (first != null) {
                 cws.getDiscoveryClientCache().onEntityHighlighted(player, first);
             }
             BiologyDictionaryClient.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
-                    count, packet.entityType().getDescription(), packet.radius()));
+                    cnt, packet.entityType().getDescription(), packet.radius()));
         }}
         CO.receive(this, ctx);
     }

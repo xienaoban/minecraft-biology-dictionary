@@ -2,7 +2,7 @@
 
 源项目：`../minecraft-biology-dictionary-architectury-1.21.11`（`main-architectury-1.21.11`）
 
-目标基线：`a1faecd`
+目标基线：`30c34dc`
 
 范围：所有可维护项目文件。源/目标文件集合对比时排除生成产物、Gradle 缓存、IDE 元数据、run 目录和本地运行时文件。
 
@@ -16,14 +16,6 @@
 - `common/src/main/resources/data/biologydictionary/biologydictionary/entity_spawn/*.json`
   - 从 1.21.11 恢复 9 个实体生成覆盖数据：bee、breeze、cave_spider、creaking、elder_guardian、ender_dragon、shulker、vex、warden。
   - 原因：26.1.2 的 `EntitySpawnManager` 仍读取 `biologydictionary/entity_spawn`，目标仓库没有替代数据资源，因此这些是漏移植的行为数据。
-
-- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/client/ClientEventRegistry.java`
-- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/client/KeyMappingRegistry.java`
-- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/server/CommandRegistry.java`
-- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/server/ItemRegistry.java`
-- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/server/ServerEventRegistry.java`
-  - 新增旧 Architectury facade 的空壳占位，带 `TODO: delete after port`。
-  - 原因：真实注册已经迁到 `ClientEvents`、`KeyMappings`、`Commands`、`BiologyDictionaryItem` creative tab entry、`ServerEvents` 并由平台入口消费；空壳用于保留迁移索引，避免后续搜索旧代码时漏项。
 
 - `common/src/main/java/io/github/xienaoban/biologydictionary/platform/util/TextUtils.java`
   - 恢复使用 `Lang.TEXT_COMMA`，删除本地重复常量。
@@ -42,6 +34,21 @@
   - 涉及文件：`RequestBeehiveInfoPacket`、配置注解、discovery 接口与简单策略、skill 接口、部分 packet 注释。
   - 原因：这些差异不涉及 26 API，也不改变逻辑；属于无必要的可比较性漂移。
 
+- `common/src/main/java/io/github/xienaoban/biologydictionary/config/ClothConfigScreenProvider.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/gui/screen/misc/InventoryStealingMenu.java`
+  - 恢复到 1.21.11 同路径文件形态。
+  - 原因：目标端差异只是不必要的注释删除、变量重命名、局部布局调整和等价控制流改写；没有 26 API 或非 Architectury 架构理由。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/EntitySpawnManager.java`
+  - 恢复 1.21.11 的注释和 data pack override 局部结构，删除额外新增的 `Identifier.tryParse(...) == null` 防御分支。
+  - 原因：注释/布局删除是无必要漂移；额外 invalid id 分支属于源端没有的新行为，不是 26 API 适配。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/discovery/DiscoveryRecord.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/discovery/DiscoverySource.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/discovery/strategy/BiologyDictionaryDiscoveryStrategy.java`
+  - 恢复源端注释、局部变量名、codec/record 缩进和两处换行形态。
+  - 原因：除 `server.getDataStorage()` 之外，这些差异没有 26 API 或架构理由。
+
 - `common/src/main/java/io/github/xienaoban/biologydictionary/client/TelescopeManager.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/core/discovery/DelegatingClientDiscoveryCache.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/core/discovery/DiscoveryManager.java`
@@ -59,9 +66,9 @@
 - `docs/assets/*`
 - `docs/custom-data.md`
 - `docs/custom-data.zh-CN.md`
-- `docs/dev/neoforge-dep-architectury-removal.md`
-  - 从 1.21.11 恢复项目说明、许可证、更新日志、文档素材、自定义数据文档和 NeoForge 去 Architectury 参考文档。
-  - 原因：目标仓库根 `README.md` 只是模板占位，`docs` 下缺少实际用户/开发文档和素材；这些不是 Minecraft 26 或加载器架构差异。
+- `raw/*`
+  - 从 1.21.11 恢复项目说明、许可证、更新日志、文档素材、自定义数据文档和原始素材。
+  - 原因：目标仓库根 `README.md` 只是模板占位，`docs` 和 `raw` 下缺少实际用户/开发文档、素材和原始素材；这些不是 Minecraft 26 或加载器架构差异。
 
 - `common/src/testServer/java/**`
 - `fabric/src/testServer/java/**`
@@ -173,6 +180,68 @@
   - 给 `CacheEntry` 增加 `isValid()`，服务端 overview 生成失败时以 `notNull=false` 回复，客户端 overview screen 也不再把 `(null, null)` cache entry 当有效数据。
   - 原因：这是 26 目标端新增的服务端 overview cache / 失败 sentinel 特性；当前 26 侧调用方需要配套按无效数据处理。`TODO.md` 中“同步回 1.21.11”的待办保留，不应作为当前分支已完成项删除。
 
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/ReplyBeehiveInfoPacket.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/ReplyEntityDataPacket.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/ReplyEntityOverviewPacket.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/ReplyHighlightEntitiesPacket.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/RequestEntityDataPacket.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/RequestEntityOverviewPacket.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/SendCenteredMessagePacket.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/SendDiscoveryIncrementalPacket.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/SendStealingDetectedPacket.java`
+  - 恢复 payload 组中被删除的源端注释、本地 `CO.receive(..., ctx)` 结构、局部变量名、记录字段直接访问、构造/写入方法行形态和 float 字面量后缀。
+  - 原因：这些差异不来自 26 网络 API 或当前平台架构；`PacketPayloads`/`ClientNetApi`/`ServerNetApi` 已经承担必要迁移，payload 业务实现应尽量与 1.21.11 可逐行对照。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/client/KeyMappings.java`
+- `fabric/src/main/java/io/github/xienaoban/biologydictionary/FabricBiologyDictionaryClient.java`
+- `neoforge/src/main/java/io/github/xienaoban/biologydictionary/NeoForgeBiologyDictionaryClient.java`
+  - `KeyMappings` 恢复使用 `Lang.KEY_OPEN_HANDBOOK` / `Lang.KEY_DEBUG`，并移除 `DEBUG` 的 `@PlatformEntry` 与 Fabric/NeoForge 平台注册，只保留 `OPEN_HANDBOOK` 注册。
+  - 原因：1.21.11 只把打开手册键注册到全局 key mapping；debug 键仅用于 screen 内 `matches(...)` 判断。目标端把 debug 也注册进控制设置属于无来源的额外行为。
+
+- `fabric/src/main/java/io/github/xienaoban/biologydictionary/config/ModMenuConfigScreenProvider.java`
+  - 恢复源端 ModMenu/Cloth Config 集成说明注释。
+  - 原因：包路径从 `config.fabric` 迁到 `config` 是 Fabric 当前资源入口配置所需；删除注释不是必要迁移。
+
+- `gradle.properties`
+- `fabric/src/main/resources/fabric.mod.json`
+- `neoforge/src/main/templates/META-INF/neoforge.mods.toml`
+  - `mod_license` 从模板残留的 `All Rights Reserved` 改为 `LGPL-3.0`；Fabric metadata 恢复源端描述和 contact 信息；NeoForge metadata 恢复 issue tracker、display URL 和源端描述，保留 NeoForge 模板字段说明注释，同时不恢复 Architectury dependency。
+  - 原因：项目根 `LICENSE` 已恢复为 LGPL-3.0，构建产物 metadata 不能继续声明 All Rights Reserved；NeoForge 说明性模板注释可以保留，但示例/todo 内容和 Architectury 依赖是旧模板/旧架构内容，不应移植。
+
+- `README.md`
+- `README.zh-CN.md`
+  - 将加载器/版本徽章从源端 `Fabric + NeoForge + Forge`、`MC 1.21.11 | 1.21.1 | 1.20.1` 改为当前目标的 `Fabric + NeoForge`、`MC 26.1.2`；依赖表移除 Forge 和 Architectury API。
+  - 原因：README 内容来自 1.21.11，但目标分支不再使用 Architectury，也不是 Forge/旧 MC 版本产物；用户可见文档必须反映当前 26.1.2 构建。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/entity/EntityGiftPetSkill.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/entity/LivingEntityStealInventorySkill.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/entity/MobForcePersistentSkill.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/entity/MobSetNoAiSkill.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/entity/VillagerForceRestockSkill.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/general/GetSpawnEggSkill.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/general/HighlightEntitiesSkill.java`
+  - 恢复 skill 组中无理由删除的说明注释、局部变量布局、源端嵌套控制流和 `HighlightEntitiesSkill` 的源端 literal 写法；删除 `VillagerForceRestockSkill#getRealCost` 中无来源的 `factor == 0 -> SkillCost.empty()` fallback。
+  - 原因：`SkillCost` 从 `ItemStack` 迁到 `ItemCost`、spawn egg lookup 改为 26 Optional/holder API、variant handler 增加 entity 参数是必要差异；注释删除、公共方法抽取、早退重写和额外 fallback 不是必要迁移。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/client/DiscoveryToast.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/client/FirstPersonShoulderEntityRenderer.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/client/HighlightManager.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/gui/screen/BdHomeScreen.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/gui/screen/misc/InventoryStealingScreen.java`
+  - 恢复客户端/GUI 代码中无理由删除的注释、局部变量名、源端行形态和 spawn egg null 判断结构。
+  - 原因：`GuiGraphicsExtractor`、toast `extractRenderState`、26 spawn egg Optional API、shoulder camera render state accessor 是必要迁移；注释删除和纯格式压缩不是必要迁移。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/gui/screen/ElementScreen.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/gui/screen/CommonScreen.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/gui/screen/util/ScreenRenderingContext.java`
+  - 恢复 `ElementScreen` 捕获异常后调用 `BiologyDictionaryClient.printThrowableToLoggerAndGame(...)` 的源端行为，并补回 screen scale、mouse 坐标和几何渲染说明注释；`renderText(Component, int, float, float, float, float)` 恢复源端调用 `component.getVisualOrderText()` 的写法。
+  - 原因：26 GUI API 方法名/类型变化必须保留；但异常只写 logger 会让玩家看不到原本会显示的错误信息，属于行为回归。注释和 overload 改写也不是必要迁移。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/MinecraftMixin.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/net/Packet.java`
+  - `MinecraftMixin` 恢复源端传入 `(Minecraft) (Object) this`；`Packet#clientReceive` 恢复 `@ClientOnly` 标注。
+  - 原因：前者只是无必要的等价写法变化；后者会削弱 client-only 边界说明，不属于 26 网络迁移需要。
+
 ## 已确认的合理差异
 
 - `common/src/main/resources/architectury.common.json`
@@ -191,7 +260,15 @@
 - `common/src/main/java/io/github/xienaoban/biologydictionary/server/CommandManager.java` -> `common/src/main/java/io/github/xienaoban/biologydictionary/server/Commands.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/client/ClientEvents.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/server/ServerEvents.java`
-  - 原因：旧 Architectury event/registry facade 被目标项目的 `@PlatformEntry` 静态入口替代。上面已新增旧 facade 空壳作为迁移索引。
+  - 原因：旧 Architectury event/registry facade 被目标项目的 `@PlatformEntry` 静态入口和平台 registrar 替代；旧 facade 不恢复。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/BiologyDictionary.java`
+  - 保留删除 `CompatibilityManager.init()`、`ServerNetManager.init()`、`BiologyDictionaryItem.init()`、`CommandManager.init()`、旧 `ServerEventRegistry` 注册的差异。
+  - 原因：Modern UI 高级文本兼容层已不再使用；网络、创造栏、命令和 server lifecycle 已分别迁到 Fabric/NeoForge registrar 与 `ServerEvents` 静态清单。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/BiologyDictionaryItem.java`
+  - 保留 `@PlatformEntry` creative tab entry、`CustomData.copyTag()`、`getGameTime()`、`ItemCost` 交易构造和书页 `\u00a7` 转义。
+  - 原因：这些对应当前无 Architectury 注册结构和 Minecraft 26.1.2 item/trade/data component API；已将局部变量名/控制流恢复到源端形态。
 
 - `fabric/src/main/java/io/github/xienaoban/biologydictionary/fabric/*`、`neoforge/src/main/java/io/github/xienaoban/biologydictionary/neoforge/*` 旧包路径
 - `fabric/src/main/java/io/github/xienaoban/biologydictionary/*`、`neoforge/src/main/java/io/github/xienaoban/biologydictionary/*` 新包路径
@@ -201,11 +278,19 @@
 
 - `common/src/main/java/io/github/xienaoban/biologydictionary/compat/CompatibilityManager.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/compat/CompatibilityOptions.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/CreativeModeTabsIMixin.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/CustomDataIMixin.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/ListPoolElementIMixin.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/rendering/GuiGraphicsIMixin.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/rendering/GuiTextRenderStateIMixin.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/rendering/GuiGraphicsExtractorIMixin.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/platform/gui/screen/util/ScreenRenderingContext.java`
-  - 原因：1.21.11 的 Modern UI 兼容开关和 `GuiTextRenderState` 高级文本路径在 26.1.2 的 GUI 渲染 API 下已不可原样移植；当前代码改用 `GuiGraphicsExtractor` 路径。`z` 参数仍按项目约定只作为兼容旧 API 保留。
+  - 原因：1.21.11 的 Modern UI 兼容开关和 `GuiTextRenderState` 高级文本路径在 26.1.2 的 GUI 渲染 API 下已不可原样移植；当前代码改用 `GuiGraphicsExtractor` 路径。`CreativeModeTabsIMixin` 被 registry key 构造替代，`CustomDataIMixin` 被 `CustomData.copyTag()` 替代，`ListPoolElementIMixin` 被 26 公开的 `ListPoolElement#getElements()` 替代。`z` 参数仍按项目约定只作为兼容旧 API 保留。
+
+- `fabric/src/main/resources/biologydictionary.accesswidener`
+- `common/src/main/resources/biologydictionary.accesswidener`
+  - 旧 Fabric access widener 不恢复到 Fabric 子项目；当前访问项集中放在 common access widener，并从 named/classTweaker 迁为 official/accessWidener v2。
+  - 原因：当前项目使用 official mappings 和 common mixin/访问配置；旧 `GuiGraphics$ScissorStack`、`GuiTextRenderState` 访问项已被 26 的 `GuiGraphicsExtractor$ScissorStack` 访问项替代。
 
 - `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/entity/AgeableMobSetForcedAgeSkill.java`
 - `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/entity/AgeableMobSetBreedingCooldownSkill.java`
@@ -220,21 +305,115 @@
   - 保留目标端以 `MethodHandle`/官方名反射发现 `getVariant`/`setVariant`、处理 Holder/Enum 变体、并给 variant NBT 转换增加 entity 参数的改动。
   - 原因：26.1.2 变体 API 范围扩大，旧版只从 `VanillaEntityProperties` 静态 property 推断会漏掉新的标准变体；该反射集中在一个兼容层内，符合本仓库 26.1 对低频兼容探测可集中使用 handle 的约定。
 
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/SkillCost.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/entity/EntitySetSoundSkill.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/entity/WanderingTraderRetainSkill.java`
+  - 保留目标端 `ItemCost` / `ItemLike` 成本模型，以及调用处 `SkillCost.ofItems(Items.X)` 的写法。
+  - 原因：26.1.2 当前成本序列化和比较已从 `ItemStack` 切到 `SkillCost.ItemCost`，源端 `new ItemStack(...)` 调用不再匹配现有 API。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/entity/EntitySetVariantSkill.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/widget/variant/AbstractEntityStandardVariantWidget.java`
+  - 保留 variant NBT/列表/名称转换需要传入 entity 的差异，以及 `readNbt(NbtAccounter)`。
+  - 原因：目标端 `EntityVariantPropertyBundle` 需要根据具体 entity 处理 Holder/Enum/reflection variant；`FriendlyByteBuf#readNbt` 在 26.1.2 需要显式 accounter。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/EntitySpawnManager.java`
+  - 保留 `ListPoolElement#getElements()`、`Registry#getTagOrEmpty(...)` 和 `SPAWN_OVERRIDE_PATH_PREFIX` 常量位置差异。
+  - 原因：前两项是 26.1.2 API 替代旧 mixin/tag optional 访问；常量提前是为了用于 `FileToIdConverter.json(SPAWN_OVERRIDE_PATH)` 附近，不改变行为。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/discovery/storage/SavedDataDiscoveryStorage.java`
+  - 保留 `SavedDataType` 从字符串 id 迁为 `Identifier`。
+  - 原因：这是 26.1.2 `SavedDataType` API 变化。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/widget/EntityPropertyWidgets.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/widget/leaf/VillagerScheduleWidget.java`
+  - 保留注册 `TadpoleGrowthWidget` 和 schedule 当前时间取 `getLevelData().getGameTime() % 24000L`。
+  - 原因：前者对应 26 的 tadpole age locked/age UI 拆分；后者对应当前 client level 时间 API。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/ReplyEntityDataPacket.java`
+  - 保留 `BiologyDictionaryClient.getHitEntity()` / `getHitEntityProperties()` 的 static 调用形式，不恢复源端 `BDC.get...`。
+  - 原因：目标端 `BiologyDictionaryClient` 当前状态访问器已经迁为 static；这是现有 26 代码形态的必要适配。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/ReplyHighlightEntitiesPacket.java`
+  - 保留 `BiologyDictionaryClient.sendCenteredMessage(...)`，不恢复源端 `ClientUtils.sendCenteredMessage(...)`。
+  - 原因：目标端需要在上层入口根据当前是否处于 Biology Dictionary screen 选择 screen message 或原版 overlay；这类业务状态分发不应下沉到 `platform` 工具类。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/payload/RequestEntityOverviewPacket.java`
+  - 保留 `cached.isValid()` 对 `ReplyEntityOverviewPacket.notNull` 的控制。
+  - 原因：这是目标端服务端 overview cache / 失败 sentinel 特性的一部分，防止生成失败的 `(null, null)` 被当作有效 overview 数据发送。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/PacketPayloads.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/ClientNetManager.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/net/ServerNetManager.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/net/ClientNetApi.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/net/ServerNetApi.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/net/PacketUtil.java`
+  - 保留 `registerBuiltIn(Registrar)` 到 `@PlatformEntry ENTRIES`、网络发送 `Platform.load` 窄服务、`RegistryFriendlyByteBuf` play codec、`PacketUtil.registerType` 幂等化。
+  - 原因：当前平台入口在 Fabric/NeoForge 生命周期中消费 packet 清单；Fabric/NeoForge client receiver 注册会再次经过同一 packet 类型，`registerType` 需要幂等以支持分阶段注册。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/client/HighlightRenderer.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/client/TelescopeDiscoveryIndicatorRenderer.java`
+  - 保留 26.1.2 render submit API、`GuiGraphicsExtractor`、block model layer 分层提交和第一人称跳过玩家实体高亮。
+  - 原因：旧 `submitBlock`/`GuiGraphics` 路径不再对应当前渲染 API；第一人称跳过玩家实体避免高亮自身模型，属于当前渲染路径下的行为修正。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/property/.nbt-tag-import.log`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/property/.nbt-tag-list.log`
+  - 保留目标端 26.1.2 重新扫描结果，不同步回 1.21.11 内容。
+  - 原因：这些日志反映当前 Minecraft 版本实体/NBT API，例如 `AgeLocked`、各类 `sound_variant`、`VillagerDataFinalized`、`VibrationSystem.Data` 等新增/改名项。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/entity/AgeableMobMixin.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/entity/PlayerMixin.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/entity/WanderingTraderMixin.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/loot/SetItemCountFunctionIMixin.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/rendering/GuiMixin.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/rendering/LevelRendererMixin.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/mixin/rendering/PictureInPictureRendererMixin.java`
+  - 保留目标端 mixin 方法签名、字段名和渲染 API 变更。
+  - 原因：这些差异来自 Minecraft 26.1.2 内部 API：`Player#interactOn` 增加 hit position、`WanderingTrader#updateTrades` 增加 `ServerLevel` 参数、`SetItemCountFunction` 字段名变为 `count`、GUI/level render state 包名和提交流程变化；`AgeableMobMixin` 则对应 26 目标端 age locked / breeding cooldown 拆分。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/util/ClientUtils.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/util/PlayerUtils.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/util/LootTableUtils.java`
+  - 保留 `displayClientMessage` 到 `sendSystemMessage` / `sendOverlayMessage`、loot condition `getType()` 到 `codec()`、item display name 取法的 26 API 迁移。
+  - 原因：这是 Minecraft 26.1.2 official API 变化，不是业务逻辑改写。
+
 ## 不确定 / 需要复核
 
 - `.github/workflows/*` 和 `.github/scripts/*`
   - 1.21.11 有完整 CI/发布脚本，目标仓库目前没有。
   - 暂未复制原因：源端脚本与 Architectury/旧发布结构强相关，26.1.2 已改为当前 Fabric/NeoForge 多项目结构，需要单独适配而不是原样迁入。
 
+- `common/src/main/java/io/github/xienaoban/biologydictionary/core/skill/Permissions.java`
+  - 当前保留 `itemStack.getHoverName()`，没有改回源端 `itemStack.getItem().getName()`。
+  - 原因：目标端已能编译运行，但 `../mc-source` 当前没有 26.1.2 源码目录可核对 `Item#getName()`；这可能只是显示名取法语义优化，也可能是不必要行为变化，后续建议用当前 26.1.2 源码确认后再决定。
+
 ## 其他建议
 
 - 为 `.github/workflows/*` 和 `.github/scripts/*` 单独做一次 26.1.2 发布链路迁移，不要直接复制 1.21.11 的 Architectury 发布流程。
 - `TODO.md` 当前保留 3 条“同步回 1.21.11”的目标侧待办，不属于源端漏迁文件；建议后续按独立任务处理。
 
+## 已验证
+
+- `./gradlew common:compileJava fabric:compileJava neoforge:compileJava checkCommonPlatformImports fabric:processResources neoforge:generateModMetadata`
+  - 结果：通过。
+
 ## 确认不移植
 
 - `CLAUDE.md`
   - 原因：当前目标仓库使用 `AGENTS.md` 和 `.codex/skills/port-1-21-11` 作为维护/移植约定；不再保留 Claude 专用约定文件。
+
+- `.claude/settings.json`
+- `.claude/settings.local.json`
+  - 原因：这是 Claude 本地/工具配置，不属于目标仓库当前 Codex/AGENTS 工作流；不从 1.21.11 迁入。
+
+- `docs/dev/neoforge-dep-architectury-removal.md`
+  - 原因：该 NeoForge 去 Architectury 分析文档对应的迁移已经在当前 26.1.2 结构中实现，用户已删除；不再作为待恢复文档保留。
+
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/client/ClientEventRegistry.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/client/KeyMappingRegistry.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/server/CommandRegistry.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/server/ItemRegistry.java`
+- `common/src/main/java/io/github/xienaoban/biologydictionary/platform/server/ServerEventRegistry.java`
+  - 原因：旧 Architectury facade 已由 `ClientEvents`、`KeyMappings`、`Commands`、`BiologyDictionaryItem` creative tab entry、`ServerEvents` 和平台 registrar 替代；保留空壳会误导后续移植审计。
 
 - `neoforge/gradle.properties`
   - 原因：源端文件只有 `loom.platform=neoforge`，用于旧 Architectury/Loom 子项目结构；当前 26.1.2 NeoForge 子项目使用 ModDevGradle，版本和 NeoForge 配置来自根 `gradle.properties` 与 `neoforge/build.gradle`，没有使用该文件。

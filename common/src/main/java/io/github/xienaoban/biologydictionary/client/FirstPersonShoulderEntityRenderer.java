@@ -75,6 +75,7 @@ public final class FirstPersonShoulderEntityRenderer {
         lastTime = curTime;
 
         PoseStack ps = new PoseStack();
+        // @see net.minecraft.client.renderer.ItemInHandRenderer.renderHandsWithItems
         float xp = Mth.lerp(tickDelta, player.xBobO, player.xBob);
         float yp = Mth.lerp(tickDelta, player.yBobO, player.yBob);
         ps.mulPose(Axis.XP.rotationDegrees((player.getViewXRot(tickDelta) - xp) * 0.1F));
@@ -83,7 +84,8 @@ public final class FirstPersonShoulderEntityRenderer {
         CameraRenderState camera = ((LevelRendererIMixin) client.levelRenderer).biologydictionary$getLevelRenderState().cameraRenderState;
 
         for (int i = 0; i < 2; ++i) {
-            Optional<Parrot.Variant> optionalVariant = i == 0 ? player.getShoulderParrotLeft() : player.getShoulderParrotRight();
+            Optional<Parrot.Variant> optionalVariant
+                    = i == 0 ? player.getShoulderParrotLeft() : player.getShoulderParrotRight();
             update(entityRenderDispatcher, player, optionalVariant.orElse(null), i);
             LivingEntity entity = entities[i];
             if (entity == null) continue;
@@ -95,9 +97,9 @@ public final class FirstPersonShoulderEntityRenderer {
             }
             if (curTime - lastHeadYawTime[i] < 1000) {
                 float yHeadRotDiff = HEAD_ROT_SPEED * diffTime * (nextYHeadRot[i] - entity.getYHeadRot());
-                float xRotDiff = HEAD_ROT_SPEED * diffTime * (nextXHeadRot[i] - entity.getXRot());
+                float xRotDiff     = HEAD_ROT_SPEED * diffTime * (nextXHeadRot[i] - entity.getXRot());
                 entity.setYHeadRot(entity.getYHeadRot() + yHeadRotDiff);
-                entity.setXRot(entity.getXRot() + xRotDiff);
+                entity.setXRot(    entity.getXRot()     + xRotDiff);
             }
             extract(i);
             EntityRenderState entityRenderState = entityRenderStates[i];

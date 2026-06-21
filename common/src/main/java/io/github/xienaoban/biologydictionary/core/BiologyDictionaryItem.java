@@ -87,11 +87,9 @@ public final class BiologyDictionaryItem {
         }
 
         final int maxTicks = 2 * 24 * 60 * 60 * 20;
-        int randomTicks = entity.getRandom().nextInt(maxTicks + (maxTicks >> 2));
-        int currentTicks = (int) Math.min(EntityUtils.getLevel(entity).getGameTime(), maxTicks);
-        if (randomTicks < currentTicks) {
-            return;
-        }
+        int r = entity.getRandom().nextInt(maxTicks + (maxTicks >> 2));
+        int t = (int) Math.min(EntityUtils.getLevel(entity).getGameTime(), maxTicks);
+        if (r < t) { return; }
 
         final int cost = 64;
         final int maxUses = 3;

@@ -20,6 +20,9 @@ import net.minecraft.world.entity.EntityType;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
+/**
+ * Server notifies client of a new discovery: S -> C.
+ */
 public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityType, DiscoveryRecord record) implements Packet {
     public static final Packet.Factory<SendDiscoveryIncrementalPacket> FACTORY = SendDiscoveryIncrementalPacket::new;
 
@@ -49,21 +52,25 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
                 return;
             }
 
-            cws.getDiscoveryClientCache().incrementalSync(packet.entityType(), packet.record());
             Minecraft client = ctx.client();
-            client.getToastManager().addToast(new DiscoveryToast(packet.entityType()));
+            LocalPlayer player = ctx.player();
+            ClientLevel level = ClientUtils.getClientLevel(client);
 
-            if (packet.record().source() == DiscoverySource.INTERACT) {
-                LocalPlayer player = ctx.player();
-                if (player != null) {
-                    player.swing(InteractionHand.MAIN_HAND);
-                }
+            // Update discovery cache
+            cws.getDiscoveryClientCache().incrementalSync(packet.entityType, packet.record);
+
+            // Show toast
+            client.getToastManager().addToast(new DiscoveryToast(packet.entityType));
+
+            // Swing if INTERACT
+            if (packet.record.source() == DiscoverySource.INTERACT) {
+                player.swing(InteractionHand.MAIN_HAND);
             }
 
-            ClientLevel level = ClientUtils.getClientLevel(client);
-            Entity target = level != null ? level.getEntity(packet.entityId()) : null;
+            // Highlight the discovered entity for 4 seconds
+            Entity target = level != null ? level.getEntity(packet.entityId) : null;
             if (target != null) {
-                cws.getHighlightManager().highlightEntity(target, 4 * 20);
+                ClientWorldSession.get().getHighlightManager().highlightEntity(target, 4 * 20);
             }
         }}
         CO.receive(this, ctx);

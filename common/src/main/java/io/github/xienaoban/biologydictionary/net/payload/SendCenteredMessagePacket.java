@@ -23,6 +23,9 @@ public record SendCenteredMessagePacket(Component message) implements Packet {
     @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        BiologyDictionaryClient.sendCenteredMessage(message);
+        @ClientOnly final class CO { static void receive(SendCenteredMessagePacket packet, ClientNetApi.Context ctx) {
+            BiologyDictionaryClient.sendCenteredMessage(packet.message());
+        }}
+        CO.receive(this, ctx);
     }
 }

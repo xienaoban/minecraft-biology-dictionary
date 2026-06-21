@@ -45,7 +45,7 @@ public class DiscoveryToast implements Toast {
     public void update(ToastManager toastManager, long gameTime) {
         long elapsed = System.currentTimeMillis() - createdAt;
         wantedVisibility = elapsed >= DISPLAY_TIME * toastManager.getNotificationDisplayTimeMultiplier()
-                ? Visibility.HIDE : Visibility.SHOW;
+            ? Visibility.HIDE : Visibility.SHOW;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class DiscoveryToast implements Toast {
             guiGraphics.fakeItem(eggStack, 8, 8);
         }
         MutableComponent title = TextUtils.translate(Lang.TEXT_NEW_ENTITY_DISCOVERED)
-                .withStyle(ChatFormatting.YELLOW);
+            .withStyle(ChatFormatting.YELLOW);
         guiGraphics.text(font, title, 30, 7, -256, false);
         guiGraphics.text(font, entityName, 30, 18, -1, false);
     }

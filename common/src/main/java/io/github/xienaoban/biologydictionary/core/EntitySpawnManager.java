@@ -50,6 +50,11 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 /**
  * Retrieves bidirectional spawn information between entity types and biomes/structures.
+ * <ul>
+ *   <li>Entity ↔ Biomes: natural spawn mapping</li>
+ *   <li>Entity ↔ Structures: structure spawn overrides + template entity mapping</li>
+ * </ul>
+ * Requires {@link RegistryAccess} containing WORLDGEN-layer registries (i.e. server-side).
  */
 public final class EntitySpawnManager {
     private static final String SPAWN_OVERRIDE_PATH = "biologydictionary/entity_spawn";
@@ -138,6 +143,7 @@ public final class EntitySpawnManager {
 
                 Set<EntityType<?>> seenStructureEntities = new HashSet<>();
 
+                // 1. spawnOverrides (e.g. guardians in ocean monuments)
                 structure.spawnOverrides().forEach((category, override) -> {
                     for (Weighted<MobSpawnSettings.SpawnerData> weighted : override.spawns().unwrap()) {
                         MobSpawnSettings.SpawnerData spawnerData = weighted.value();
@@ -149,6 +155,7 @@ public final class EntitySpawnManager {
                     }
                 });
 
+                // 2. Template entities for Jigsaw structures (e.g. villagers in villages)
                 if (structure instanceof JigsawStructure jigsawStructure) {
                     collectTemplateEntities(
                             jigsawStructure.getStartPool(), poolRegistry, templateCache,
@@ -184,6 +191,7 @@ public final class EntitySpawnManager {
             StructureTemplatePool pool = poolHolder.get().value();
             Set<Identifier> referencedPools = new HashSet<>();
 
+            // Collect entities from all templates in this pool
             for (var elementPair : pool.getTemplates()) {
                 try {
                     collectElementEntities(
@@ -195,6 +203,7 @@ public final class EntitySpawnManager {
                 }
             }
 
+            // Also follow fallback pool
             try {
                 Holder<StructureTemplatePool> fallback = pool.getFallback();
                 if (fallback.value() != pool) {
@@ -209,6 +218,7 @@ public final class EntitySpawnManager {
                 LOGGER.warn("Failed to process fallback pool for {}", currentPoolId, e);
             }
 
+            // Follow jigsaw-referenced pools from templates
             for (Identifier poolId : referencedPools) {
                 if (visitedPools.add(poolId)) {
                     poolQueue.add(poolId);
@@ -235,6 +245,7 @@ public final class EntitySpawnManager {
                         return NbtIo.readCompressed(is, NbtAccounter.create(64 * 1024 * 1024));
                     }
                 } catch (Throwable e) {
+                    // Ignore intact_horizontal_wall_stairs_5.nbt
                     if (resourceLoc.equals(IGNORED_MISSING_TEMPLATE) && e instanceof FileNotFoundException) {
                         return MISSING_TEMPLATE;
                     }
@@ -244,6 +255,7 @@ public final class EntitySpawnManager {
             });
             if (rootNbt == MISSING_TEMPLATE) { return; }
 
+            // Extract entities
             ListTag entities = rootNbt.getListOrEmpty("entities");
             for (int i = 0; i < entities.size(); i++) {
                 CompoundTag entityTag = entities.getCompoundOrEmpty(i);
@@ -255,6 +267,7 @@ public final class EntitySpawnManager {
                 });
             }
 
+            // Find jigsaw-referenced pools from blocks (only jigsaw blocks have "pool" in their nbt)
             ListTag blocks = rootNbt.getListOrEmpty("blocks");
             for (int i = 0; i < blocks.size(); i++) {
                 CompoundTag blockTag = blocks.getCompoundOrEmpty(i);
@@ -275,6 +288,8 @@ public final class EntitySpawnManager {
         }
     }
 
+    // ---- Data Pack Override ----
+
     private void applyDataPackOverrides() {
         Map<Identifier, List<Resource>> stacks = SPAWN_OVERRIDE_LISTER.listMatchingResourceStacks(resourceManager);
         for (Map.Entry<Identifier, List<Resource>> entry : stacks.entrySet()) {
@@ -287,15 +302,12 @@ public final class EntitySpawnManager {
                 continue;
             }
             Identifier entityId = Identifier.tryParse(entityStr.replace('.', ':'));
-            if (entityId == null) {
-                LOGGER.warn("Invalid entity type '{}' in spawn override data pack, skipping.", entityStr);
-                continue;
-            }
             EntityType<?> entityType = EntityType.byString(entityId.toString()).orElse(null);
             if (entityType == null) {
                 LOGGER.warn("Unknown entity type '{}' in spawn override data pack, skipping.", entityId);
                 continue;
             }
+            // Why ".reversed()": Traverse from low to high priority
             for (Resource resource : entry.getValue().reversed()) {
                 try (BufferedReader reader = resource.openAsReader()) {
                     JsonObject json = StrictJsonParser.parse(reader).getAsJsonObject();
