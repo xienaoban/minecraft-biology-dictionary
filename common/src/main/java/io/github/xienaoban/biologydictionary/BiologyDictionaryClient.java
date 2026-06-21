@@ -20,12 +20,16 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 
 import java.util.Arrays;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @ClientOnly
 public final class BiologyDictionaryClient {
     public static final BiologyDictionaryClient BDC = new BiologyDictionaryClient();
+
+    private static final Queue<Component> pendingTextBoxLogs = new ConcurrentLinkedQueue<>();
 
     private int ticks;
 
@@ -42,6 +46,7 @@ public final class BiologyDictionaryClient {
         ClientEventRegistry.registerWorldConnected(client -> {
             WorldSession.init(ClientUtils.getClientLevel(client));
             ClientWorldSession.init();
+            printPendingTextBoxLogs();
             // Only request server configs from remote servers, not local servers.
             if (!client.isLocalServer()) { ClientNetManager.requestServerConfigs(); }
         });
@@ -104,16 +109,36 @@ public final class BiologyDictionaryClient {
         sendCenteredMessage(text.withStyle(ChatFormatting.RED));
     }
 
+    public static void printLogToTextBoxWhenReady(Component text) {
+        pendingTextBoxLogs.add(text);
+        printPendingTextBoxLogs();
+    }
+
+    private static void printPendingTextBoxLogs() {
+        if (ClientWorldSession.get() == null) return;
+
+        Component text;
+        while ((text = pendingTextBoxLogs.poll()) != null) {
+            printLogToTextBox(text, null);
+        }
+    }
+
     public static void printThrowableToLoggerAndGame(String message, Throwable throwable) {
         LOGGER.error("{}", message, throwable);
+        printLogToTextBox(TextUtils.literal(message).withStyle(ChatFormatting.RED), throwable);
+    }
+
+    public static void printLogToTextBox(Component message, Throwable throwable) {
         ClientUtils.sendTextBoxMessage(TextUtils.concat(
                 Arrays.asList(
                         TextUtils.translate(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN),
-                        TextUtils.literal(message).withStyle(ChatFormatting.RED),
-                        TextUtils.newline(),
-                        TextUtils.literal(throwable.toString()).withStyle(ChatFormatting.RED),
-                        TextUtils.newline(),
-                        TextUtils.translate(Lang.TEXT_PLEASE_REPORT_ISSUE).withStyle(ChatFormatting.GOLD)
+                        message,
+                        throwable == null ? TextUtils.empty() : TextUtils.concat(
+                                TextUtils.newline(),
+                                TextUtils.literal(throwable.toString()).withStyle(ChatFormatting.RED),
+                                TextUtils.newline(),
+                                TextUtils.translate(Lang.TEXT_PLEASE_REPORT_ISSUE).withStyle(ChatFormatting.GOLD)
+                        )
                 )
         ));
     }

@@ -53,6 +53,8 @@
   "config.biologydictionary.entry.discoveryByKill.tooltip": "Enable discovery when killing an entity.\nOnly effective if the active strategy supports this method.",
   "config.biologydictionary.entry.discoveryByKilledBy": "Discovery by Killed By",
   "config.biologydictionary.entry.discoveryByKilledBy.tooltip": "Enable discovery when being killed by an entity.\nOnly effective if the active strategy supports this method.",
+  "config.biologydictionary.entry.entitySpawnAnalysisTimeoutSeconds": "Biome/Structure Spawn Analysis Timeout",
+  "config.biologydictionary.entry.entitySpawnAnalysisTimeoutSeconds.tooltip": "Maximum seconds spent analyzing spawn information (biomes and structures) during world startup. Set to 0 to disable it and keep it empty.",
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "None",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "Top",
@@ -238,6 +240,8 @@
   "property_widget.biologydictionary.discovery.location"        : "Location: ",
   "property_widget.biologydictionary.discovery.coordinates"     : "Coordinates: ",
   "property_widget.biologydictionary.discovery.weather"         : "Weather: ",
+
+  "warn.biologydictionary.spawn_analysis_timed_out": "Auto analysis of spawn biomes/structures timed out after %s. Spawn biome/structure info may be incomplete.\nParsed %s/%s biomes, %s/%s structures, and %s templates.\nRaise \"%s\" for full analysis; it may slow world loading.\nSet it to 0 to disable this and use data-pack overrides only.",
 
   "text.biologydictionary.comma": ", ",
 
