@@ -21,9 +21,7 @@ public final class BiologyDictionary {
 
     public static final Logger LOGGER = LogManager.getLogger(BiologyDictionary.class);
 
-    public static final BiologyDictionary BD = new BiologyDictionary();
-
-    private BiologyDictionary() {
+    static {
         EntityUtils.init();
         EntityProperties.init();
         BiologySkills.init();
@@ -31,7 +29,9 @@ public final class BiologyDictionary {
         LOGGER.info("BiologyDictionary initialized.");
     }
 
-    public void forceInitialize() { /* do nothing but to trigger cinit */ }
+    private BiologyDictionary() {}
+
+    public static void forceInitialize() { /* do nothing but to trigger cinit */ }
 
     public static void sendCenteredMessage(ServerPlayer player, Component text) {
         ServerNetManager.sendCenteredMessage(player, text);

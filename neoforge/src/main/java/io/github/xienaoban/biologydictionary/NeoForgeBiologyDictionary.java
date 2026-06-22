@@ -15,7 +15,7 @@ public final class NeoForgeBiologyDictionary {
         CreativeTabRegistrar.register(modEventBus);
         ServerEventRegistrar.register();
         CommandRegistrar.register();
-        BiologyDictionary.BD.forceInitialize();
+        BiologyDictionary.forceInitialize();
     }
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {

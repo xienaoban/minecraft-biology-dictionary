@@ -1,24 +1,6 @@
 package io.github.xienaoban.biologydictionary.net;
 
-import io.github.xienaoban.biologydictionary.net.payload.SendCenteredMessagePacket;
-import io.github.xienaoban.biologydictionary.net.payload.RequestCommonSkillPacket;
-import io.github.xienaoban.biologydictionary.net.payload.RequestEntityTargetedSkillPacket;
-import io.github.xienaoban.biologydictionary.net.payload.RequestServerConfigsPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyServerConfigsPacket;
-import io.github.xienaoban.biologydictionary.net.payload.RequestEntityOverviewPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyEntityOverviewPacket;
-import io.github.xienaoban.biologydictionary.net.payload.RequestEntityDataPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyEntityDataPacket;
-import io.github.xienaoban.biologydictionary.net.payload.RequestBiologyDictionaryDiscoveryFullPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyBiologyDictionaryDiscoveryFullPacket;
-import io.github.xienaoban.biologydictionary.net.payload.RequestDiscoveryIncrementalPacket;
-import io.github.xienaoban.biologydictionary.net.payload.SendDiscoveryIncrementalPacket;
-import io.github.xienaoban.biologydictionary.net.payload.RequestBiologyDictionaryItemPacket;
-import io.github.xienaoban.biologydictionary.net.payload.RequestBeehiveInfoPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyBeehiveInfoPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyHighlightEntitiesPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyInventoryStealingScreenPacket;
-import io.github.xienaoban.biologydictionary.net.payload.SendStealingDetectedPacket;
+import io.github.xienaoban.biologydictionary.net.payload.*;
 import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 

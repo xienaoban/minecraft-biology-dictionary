@@ -1,19 +1,14 @@
 package io.github.xienaoban.biologydictionary.net;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.net.payload.SendCenteredMessagePacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyServerConfigsPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyBiologyDictionaryDiscoveryFullPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyHighlightEntitiesPacket;
-import io.github.xienaoban.biologydictionary.net.payload.ReplyInventoryStealingScreenPacket;
-import io.github.xienaoban.biologydictionary.net.payload.SendDiscoveryIncrementalPacket;
+import io.github.xienaoban.biologydictionary.net.payload.*;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.Container;
 
 import java.util.Map;
 

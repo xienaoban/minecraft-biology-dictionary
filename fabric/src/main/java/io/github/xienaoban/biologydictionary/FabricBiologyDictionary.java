@@ -13,6 +13,6 @@ public final class FabricBiologyDictionary implements ModInitializer {
         CreativeTabRegistrar.register();
         ServerEventRegistrar.register();
         CommandRegistrar.register();
-        BiologyDictionary.BD.forceInitialize();
+        BiologyDictionary.forceInitialize();
     }
 }

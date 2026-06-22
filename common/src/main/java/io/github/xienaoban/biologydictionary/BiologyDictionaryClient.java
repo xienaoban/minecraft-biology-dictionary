@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
+import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -18,19 +18,19 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @ClientOnly
 public final class BiologyDictionaryClient {
-    public static final BiologyDictionaryClient BDC = new BiologyDictionaryClient();
-
     private static int ticks;
     private static Entity hitEntity;
     private static BlockPos hitBlock;
     private static EntityProperties<? extends Entity> hitEntityProperties;
 
-    private BiologyDictionaryClient() {
+    static {
         EntityPropertyWidgets.init();
         LOGGER.info("BiologyDictionary (client) initialized.");
     }
 
-    public void forceInitialize() { /* do nothing but to trigger cinit */ }
+    private BiologyDictionaryClient() {}
+
+    public static void forceInitialize() { /* do nothing but to trigger cinit */ }
 
     public static void tick() {
         ++ticks;
