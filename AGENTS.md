@@ -1,117 +1,57 @@
 # AGENTS.md
 
-给 AI 开发代理看的本项目协作向导与当前需求说明。
+## AI 开发注意事项（**务必遵守！！！**）
 
-## 项目定位
+- 对话用中文（类名等专业词汇可以除外），但是注释用英文！
+- 好的代码是自注释的，啰嗦的注释不要加，只加必要的！
+- 除非出现重名等情况，避免使用类的全限定名，而是使用 `import` + simple name 的方式（字符串中除外）！
+- 如非必要，勿改现有无关代码，不是不允许重构，但重构前先告知并经过我同意！
+- 编码时注意当前的 MC 版本（见 `gradle.properties` 的 `minecraft_version=?`），不同版本差异大！
+- MC 第一方代码我通常解压并放在了 `<本项目根目录>/../mc-source/<MC 版本>` 下，可以参考！
+- `../mc-source` 缺失、内容不足或需要核对构建产物时，停下来询问我，我确认确实没有后才去查 Loom/Gradle cache、反编译输出或 jar。
+- 优先查阅本地的 MC 官方第一方代码，而非在网络上搜索！
+- 若必须网络检索 MC 相关内容，务必校验所参考内容与目标 MC 版本的兼容性。MC 不同版本间源码差异极大！
+- 在 1.21.11 及以上，老版本的 `ResourceLocation` 改名为了 `Identifier`，要注意！
+- 禁止使用 `org.jetbrains.annotations.Nullable` 和 `org.jetbrains.annotations.NotNull` 注解。
+- 如果发现文件内容与自己之前的改动不一致，禁止擅自改回去；这通常表示我基于你的代码新修改过，应保留现状，必要时先询问这是否是用户有意改动。
+- 与我对话时，请严肃地以“喵呜~”作为回复的末尾。
 
-本仓库是 `minecraft-biology-dictionary-26.1.2`，目标 MC 版本见 `gradle.properties`，当前为 `minecraft_version=26.1.2`、`java_version=25`。
+## 代码风格约定
 
-本项目不是 Architectury 项目，也不要把它改造成 Architectury 项目。当前仓库采用自己搭建的 multi-platform 结构：
+- `if`、`for` 等控制语句即使只有单行语句也必须带花括号；写 `if (condition) { doSomething(); }`，不要写 `if (condition) doSomething();`。
+- 对超过 120 行宽的代码，应在语义清晰、阅读自然的位置优雅换行。
+- 函数、构造函数或 lambda 的参数列表因为行宽过长需要换行时，有两种推荐写法：如果方法头和前几个参数能自然放在首行，续行参数与左括号后的第一个参数对齐，例如 `void f(X x1, X x2,` 下一行对齐到 `X x1` 继续写 `Y y1, Y y2) {`；如果方法名、泛型或返回类型本身已经很长，也可以在 `(` 后直接换行，后续参数统一缩进 8 个空格，例如 `void veryLongMethodName(` 下一行写 `        X x1, Y y1) {`。
+- 对很短的代码块优先保持紧凑；例如 `if (condition) { return; }` 这类一行能清楚表达的代码，不要拆成多行。
+- 对大段后续逻辑，优先使用 guard clause：写 `if (condition) { return; }` 后接后续逻辑，不要写成 `if (condition) { return; } else { ... }`。如果后续逻辑只有一两句，或存在多段 `else if` 分支，则可按可读性保留 `else` / `else if`。
+- 业务代码中极力避免使用全限定类名，优先使用 `import` 类名；不推荐 `import static`，`BiologyDictionary.LOGGER` 除外。
+- 注释中的引用，例如 `@see`，对于 Minecraft、Mojang、Fabric 等官方类应尽量使用全限定类名，方便未来移植到新版本时定位函数名；本模组类避免全限定。
+- 构造函数里尽量用 `this.` 访问成员，除此之外尽可能避免使用 `this.`。
+- 纯工具类加上 `private` 构造函数。
+- 类里的第一个函数/成员的定义的行，不要与类定义的那行中间空一行。
+- 有时我会在行中间多加几个空格以保持上下行的对齐；但是行末的空白空格是不允许的。
+- 对于短小的代码，有时候为了视觉精简，将注解写在类/函数/变量定义的同一行是合理的。
 
-- `common/`：跨平台通用代码与资源。
-- `fabric/`：Fabric 平台代码、资源与构建配置。该目录来自 Fabric 官网模板/生成器。
-- `neoforge/`：NeoForge 平台代码、资源与构建配置。该目录来自 NeoForge 官网模板/生成器。
+## 构建与验证约定
 
-根项目负责把 `common`、`fabric`、`neoforge` 组织到同一个 Gradle 多项目中，但平台侧仍以各自官方工具链为准。
+- 禁止并行运行多个 Gradle 命令。
+- 每次只能启动一个 `./gradlew ...` 进程，必须等它结束后再运行下一个。
+- 如果 Gradle daemon、依赖下载、缓存或文件 I/O 出错，先停止当前排查并说明现象，不要继续叠加新的 Gradle 任务。
+- 如果 Gradle 遇到文件锁、文件占用或疑似 Windows 侧 IDEA/Gradle 同时访问导致的问题，停止排查并说明现象，让用户在 Windows/IDEA 侧运行命令。
 
-## 重要架构约束
+## Mixin 与反射访问约定
 
-- 禁止引入 Architectury 框架、`architectury-plugin`、`dev.architectury.loom`、`@ExpectPlatform` 或 Architectury API 作为生产依赖。
-- Fabric 侧使用 Fabric Loader、Fabric API 与 Fabric Loom。注意：从 MC 26.1 开始没有 Yarn mappings，本项目只能使用 Minecraft official mappings，不要引入或按 Yarn 命名编写代码。
-- NeoForge 侧使用 NeoForge ModDevGradle。
-- `common` 代码不得直接依赖 Fabric、Forge、NeoForge 平台包。根项目已有 `checkCommonPlatformImports` 用于检查 `common/src/main/java` 中的违规导入。
-- `common` 项目的构建可以参考 Fabric 项目并使用 Fabric Loom 等基础工具链，但应最小化依赖；当前只要求 `common` 能编译通过，不要求 `common` 可作为独立平台运行。
-- 平台差异应通过本项目自己的接口、桥接类、注册入口或服务封装解决，而不是照搬 Architectury 的 expect/actual 机制。
-- `fabric/`、`neoforge/` 是从各自官网模板下载/生成后改造的目录；后续修改应尽量保留官方模板的构建习惯，只做必要整合。
+- 1.21.11 及之前禁止使用反射调用 MC 原版内容（测试代码除外），因为 MC 生产运行环境会对字段和方法名进行混淆处理。优先使用 Mixin 替代。26.1 之后允许使用反射，但仍然 Mixin 优先。
+- 26.1 开始生产环境不再把 Minecraft 类名、方法名、字段名混淆成 `class_1234`、`method_1234` 这类名字，因此反射、`MethodHandle`、`VarHandle` 可以作为可用手段。
+- 访问 Minecraft 私有、包私有或受限成员时，仍应尽可能优先使用 Mixin accessor / invoker。
+- 核心路径、热路径、长期稳定依赖的内部成员访问，默认使用 Mixin accessor / invoker。
+- 低频探测、可选兼容、调试工具、允许优雅降级的访问，可以考虑集中封装 `MethodHandle` / `VarHandle`。
+- 不要在业务代码里分散编写反射或 handle lookup；确实需要时应封装到明确的工具或兼容层中。
 
-## 参考项目
+## Platform 分层约定
 
-参考项目路径：
+- `platform` 包是底层兼容与抽象支撑层，不应该依赖 `platform` 外的业务、GUI、技能、网络 payload 等上层代码。
+- 需要根据 Biology Dictionary 业务状态做分发或判断时，例如区分词典 screen 内消息和原版游戏 overlay，应放在 `BiologyDictionaryClient`、screen、manager 等上层入口里，不要下沉到 `platform` 工具类。
 
-```text
-/mnt/e/project/minecraft/minecraft-biology-dictionary-architectury-1.21.11
-```
+## GUI 兼容约定
 
-该参考项目是 MC `1.21.11` 版本的 Biology Dictionary，并且使用 Architectury 架构。它是本次移植的功能来源，不是本仓库的架构模板。
-
-从参考项目中可以复用或迁移：
-
-- 业务功能设计。
-- 通用领域代码。
-- UI、网络、配置、属性、技能、兼容、资源等实现思路。
-- README、docs、raw 资源中仍适用于 26.1.2 的内容。
-
-不能直接复用的部分：
-
-- Architectury 构建脚本与插件配置。
-- `@ExpectPlatform` 调用与实现方式。
-- Architectury 平台 API。
-- 与 MC 1.21.11、Java 21、旧命名或旧平台 API 强绑定的代码。
-
-## 当前需求
-
-在本 26.1.2 仓库中，不使用 Architectury，把参考项目 `minecraft-biology-dictionary-architectury-1.21.11` 的功能移植过来，并最终跑通 Fabric 与 NeoForge。
-
-这里的“跑通”至少包含：
-
-- 根项目 Gradle 配置可正常同步。
-- `common` 可以编译，且不包含 Fabric/NeoForge/Forge 直接导入。
-- `fabric` 可以编译并能启动客户端。
-- `neoforge` 可以编译并能启动客户端。
-- 平台入口、mod metadata、mixin 配置、资源路径、依赖声明与打包产物都与 26.1.2 当前架构一致。
-- 从 1.21.11 迁移来的核心功能在 26.1.2 的 MC API 下完成必要适配。
-
-## 移植原则
-
-- 先读当前 26.1.2 仓库，再读参考 1.21.11 仓库，不要凭记忆改 MC/API 代码。
-- 优先保留当前仓库的自建 multi-platform 形态。
-- 优先把可跨平台的业务逻辑放入 `common`。
-- 涉及注册、网络、客户端事件、配置界面、资源加载、按键绑定、屏幕打开、数据同步等平台相关行为时，分别在 `fabric` 与 `neoforge` 实现，再用本项目自己的封装给 `common` 调用。
-- 不要把平台侧的实现细节泄漏到 `common`。
-- 每次迁移时都要检查 MC 26.1.2 API 与 1.21.11 API 的差异，尤其是渲染、资源标识、网络包、注册器、实体/NBT、组件文本、客户端屏幕相关代码。
-- 禁止用反射调用 MC 原版内容来规避混淆问题；需要访问私有或受限逻辑时优先考虑 Mixin。
-- 修改尽量小步提交、可编译验证，避免一次性大搬运后再排错。
-
-## 建议执行顺序
-
-1. 固化构建骨架：确保根项目、`common`、`fabric`、`neoforge` 的 Gradle 配置能独立完成基础编译。
-2. 迁移公共入口与常量：如 mod id、logger、通用初始化流程。
-3. 设计并实现自建平台桥接层，用于替代参考项目中的 Architectury expect/platform 调用。
-4. 迁移资源与 metadata：icon、lang、mixin json、assets、docs 中适用内容。
-5. 迁移核心业务模块：属性系统、技能系统、组件系统、GUI、网络、配置、兼容模块等。
-6. 分别接通 Fabric 和 NeoForge 的平台入口、事件、网络、注册、客户端初始化。
-7. 分平台运行 `compileJava`、`build`、`runClient`，根据错误逐项适配 26.1.2 API。
-8. 最后补充必要测试、文档和已知限制。
-
-## 构建与验证命令
-
-常用命令：
-
-```bash
-./gradlew check
-./gradlew common:compileJava
-./gradlew fabric:compileJava
-./gradlew neoforge:compileJava
-./gradlew fabric:build
-./gradlew neoforge:build
-./gradlew fabric:runClient
-./gradlew neoforge:runClient
-```
-
-如果某个平台官方模板要求从子目录执行 wrapper，先确认根项目任务是否已经覆盖需求；不要盲目新增第二套互相冲突的构建流程。
-
-## 代码风格与协作约定
-
-- 与用户对话使用中文；类名、API 名、错误信息等专业内容可以保留英文。
-- 代码注释使用英文，且只在确实能降低理解成本时添加。
-- 除构造函数或确有歧义的场景外，尽量避免 `this.`。
-- 避免使用类的全限定名；除字符串或特殊情况外，优先使用 `import` 和 simple name。
-- 不要做与当前任务无关的重构。
-- 不要回滚用户已有改动。
-- 注意当前目标是 MC 26.1.2，不是 1.21.11。
-- 本地 MC 源码如果存在，优先参考 `<本项目根目录>/../mc-source/<MC 版本>`。
-- 禁止使用 `org.jetbrains.annotations.Nullable` 和 `org.jetbrains.annotations.NotNull`。
-
-## 当前工作边界
-
-本次只需要把上述需求写成文档。文档写完后停止，不开始移植、不跑构建、不修改业务代码，等待用户继续说明“今天要跑通什么”。
+- `ScreenRenderingContext` 的 `renderXxx(..., float z, ...)` 中，`z` 参数当前仅为兼容旧 API 保留，不要处理它。

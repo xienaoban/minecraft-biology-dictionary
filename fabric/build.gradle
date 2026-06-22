@@ -1,92 +1,149 @@
 plugins {
-	id 'net.fabricmc.fabric-loom'
-	id 'maven-publish'
+    id 'net.fabricmc.fabric-loom'
+    id 'maven-publish'
 }
 
 base {
-	archivesName = "${mod_id}-fabric"
+    archivesName = "${mod_id}-fabric"
+}
+
+sourceSets {
+    testServer {
+        compileClasspath += main.compileClasspath + main.output
+        runtimeClasspath += main.runtimeClasspath + main.output
+        compileClasspath += project(":common").sourceSets.testServer.output
+        runtimeClasspath += project(":common").sourceSets.testServer.output
+    }
+}
+
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    runs {
+        testServer {
+            server()
+            source sourceSets.testServer
+            vmArg "--enable-native-access=ALL-UNNAMED"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
+            runDir "build/testServer"
+        }
+    }
 }
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+    // Add repositories to retrieve artifacts from in here.
+    // You should only use this when depending on other mods because
+    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+    // for more information about repositories.
 }
 
 configurations {
-	commonJava {
-		canBeResolved = true
-		canBeConsumed = false
-	}
-	commonResources {
-		canBeResolved = true
-		canBeConsumed = false
-	}
+    commonJava {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    commonResources {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    commonTestServerJava {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    commonTestServerResources {
+        canBeResolved = true
+        canBeConsumed = false
+    }
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
-	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabricapi_version}"
+    implementation "org.yaml:snakeyaml:${project.snakeyaml_version}"
+    include "org.yaml:snakeyaml:${project.snakeyaml_version}"
+    compileOnly "me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}"
+    localRuntime "me.shedaniel.cloth:cloth-config-fabric:${project.clothconfig_version}"
+    compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+    localRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	compileOnly project(":common")
-	commonJava project(path: ":common", configuration: "commonJava")
-	commonResources project(path: ":common", configuration: "commonResources")
+    compileOnly project(":common")
+    commonJava project(path: ":common", configuration: "commonJava")
+    commonResources project(path: ":common", configuration: "commonResources")
+    commonTestServerJava project(path: ":common", configuration: "commonTestServerJava")
+    commonTestServerResources project(path: ":common", configuration: "commonTestServerResources")
+
+    testServerImplementation "com.github.javaparser:javaparser-symbol-solver-core:${project.javaparser_version}"
+    testServerImplementation "org.bitbucket.mstrobel:procyon-compilertools:${project.procyon_version}"
+    testServerImplementation "org.vineflower:vineflower:${project.vineflower_version}"
+}
+
+tasks.named("compileTestServerJava", JavaCompile) {
+    dependsOn(configurations.commonTestServerJava)
+    source(configurations.commonTestServerJava)
+}
+
+tasks.named("processTestServerResources") {
+    dependsOn(configurations.commonTestServerResources)
+    from(configurations.commonTestServerResources)
 }
 
 tasks.named("compileJava", JavaCompile) {
-	dependsOn(configurations.commonJava)
-	source(configurations.commonJava)
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
 }
 
 processResources {
-	dependsOn(configurations.commonResources)
-	from(configurations.commonResources)
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
 
-	def replaceProperties = [
-			version              : project.version,
-			mod_id               : project.mod_id,
-			mod_name             : project.mod_name,
-			mod_license          : project.mod_license,
-			minecraft_version    : project.minecraft_version,
-			loader_version       : project.loader_version
-	]
-	inputs.properties replaceProperties
+    def replaceProperties = [
+            version              : project.version,
+            mod_id               : project.mod_id,
+            mod_name             : project.mod_name,
+            mod_license          : project.mod_license,
+            minecraft_version    : project.minecraft_version,
+            loader_version       : project.loader_version,
+            fabricapi_version    : project.fabricapi_version,
+            clothconfig_version  : project.clothconfig_version,
+            modmenu_version      : project.modmenu_version
+    ]
+    inputs.properties replaceProperties
 
-	filesMatching("fabric.mod.json") {
-		expand replaceProperties
-	}
+    filesMatching("fabric.mod.json") {
+        expand replaceProperties
+    }
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.name}" }
-	}
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${project.name}" }
+    }
 }
 
 tasks.named("sourcesJar", Jar) {
-	dependsOn(configurations.commonJava)
-	from(configurations.commonJava)
-	dependsOn(configurations.commonResources)
-	from(configurations.commonResources)
+    dependsOn(configurations.commonJava)
+    from(configurations.commonJava)
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
 }
 
 // configure the maven publication
 publishing {
-	publications {
-		create("mavenJava", MavenPublication) {
-			from components.java
-		}
-	}
+    publications {
+        create("mavenJava", MavenPublication) {
+            from components.java
+        }
+    }
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
+    }
 }

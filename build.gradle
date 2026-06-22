@@ -1,60 +1,47 @@
 plugins {
-	id "base"
-	id "net.fabricmc.fabric-loom" version "${loom_version}" apply false
-	id "net.neoforged.moddev" version "${moddev_version}" apply false
+    id "base"
+    id "net.fabricmc.fabric-loom" version "${loom_version}" apply false
+    id "net.neoforged.moddev" version "${moddev_version}" apply false
 }
 
 allprojects {
-	group = maven_group
-	version = mod_version
+    group = maven_group
+    version = mod_version
 }
 
 subprojects {
-	pluginManager.withPlugin("java") {
-		java {
-			toolchain {
-				languageVersion = JavaLanguageVersion.of(java_version as int)
-			}
-			withSourcesJar()
-		}
+    repositories {
+        mavenCentral()
+        maven {
+            name = "shedaniel"
+            url = "https://maven.shedaniel.me/"
+        }
+        maven {
+            name = "TerraformersMC"
+            url = "https://maven.terraformersmc.com/releases/"
+        }
+    }
 
-		tasks.withType(JavaCompile).configureEach {
-			options.encoding = "UTF-8"
-			options.release = java_version as int
-		}
-	}
+    pluginManager.withPlugin("java") {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(java_version as int)
+            }
+            withSourcesJar()
+        }
+
+        tasks.withType(JavaCompile).configureEach {
+            options.encoding = "UTF-8"
+            options.release = java_version as int
+        }
+    }
 }
 
 tasks.named("wrapper", Wrapper).configure {
-	distributionType = Wrapper.DistributionType.BIN
-}
-
-tasks.register("checkCommonPlatformImports") {
-	group = "verification"
-	description = "Fails if common imports Fabric, Forge, or NeoForge platform packages."
-
-	def sourceDir = layout.projectDirectory.dir("common/src/main/java")
-	inputs.dir(sourceDir).optional()
-
-	doLast {
-		def forbidden = [
-				"net.fabricmc.",
-				"net.minecraftforge.",
-				"net.neoforged."
-		]
-
-		fileTree(sourceDir).matching {
-			include "**/*.java"
-		}.each { file ->
-			def text = file.getText("UTF-8")
-			def found = forbidden.find { text.contains(it) }
-			if (found != null) {
-				throw new GradleException("Forbidden platform package '${found}' used in common source: ${file}")
-			}
-		}
-	}
+    distributionType = Wrapper.DistributionType.BIN
 }
 
 tasks.named("check") {
-	dependsOn("checkCommonPlatformImports")
+    dependsOn(":common:checkPlatformImports")
+    dependsOn(":common:checkClientOnlyBoundaries")
 }
