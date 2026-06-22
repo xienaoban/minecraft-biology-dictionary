@@ -29,25 +29,21 @@ public class VanillaEntityBehaviorTest {
         helper.succeed();
     }
 
-    public void testAgeableMobForcedAge(GameTestHelper helper) {
+    public void testAgeableMobAgeLocked(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Chicken chicken = EntityUtils.create(EntityType.CHICKEN, level, EntitySpawnReason.NATURAL);
         chicken.setBaby(true);
         helper.assertTrue(chicken.isBaby(), TextUtils.literal("setBaby() not work?"));
 
-        VanillaEntityProperties.OfAgeableMob.createForcedAgeProperty().withVal(AgeableMob.BABY_START_AGE).setTo(chicken);
-        helper.assertTrue(chicken.getForcedAge() == AgeableMob.BABY_START_AGE, TextUtils.literal("Fail to set NBT of forcedAge?"));
+        VanillaEntityProperties.OfAgeableMob.createAgeLockedProperty().withVal(true).setTo(chicken);
+        Boolean ageLocked = VanillaEntityProperties.OfAgeableMob.createAgeLockedProperty().withEntity(chicken).getVal();
+        helper.assertTrue(Boolean.TRUE.equals(ageLocked), TextUtils.literal("Fail to set NBT of ageLocked?"));
 
         helper.getLevel().addFreshEntity(chicken);
         for (int i = AgeableMob.BABY_START_AGE; i < 0; ++i) {
             chicken.aiStep();
         }
-        helper.assertTrue(chicken.isBaby(), TextUtils.literal("aiStep() should not grown up1!"));
-
-        for (int i = AgeableMob.BABY_START_AGE; i < 0; ++i) {
-            chicken.ageUp(100, true);
-        }
-        helper.assertTrue(chicken.isBaby(), TextUtils.literal("ageUp() should not grown up2!"));
+        helper.assertTrue(chicken.isBaby(), TextUtils.literal("AgeLocked should block natural growth!"));
         helper.succeed();
     }
 }

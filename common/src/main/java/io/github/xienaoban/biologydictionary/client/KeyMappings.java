@@ -3,11 +3,13 @@ package io.github.xienaoban.biologydictionary.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
+@ClientOnly
 public final class KeyMappings {
     public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
             Identifier.fromNamespaceAndPath(BiologyDictionary.MOD_ID, BiologyDictionary.MOD_ID));

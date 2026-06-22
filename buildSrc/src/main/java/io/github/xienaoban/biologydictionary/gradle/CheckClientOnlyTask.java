@@ -1,46 +1,96 @@
-package io.github.xienaoban.biologydictionary;
+package io.github.xienaoban.biologydictionary.gradle;
 
-import net.minecraft.gametest.framework.GameTestHelper;
-import org.objectweb.asm.*;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
+import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.tasks.Classpath;
+import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
+import org.gradle.api.tasks.TaskAction;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
-import java.io.*;
-import java.net.URISyntaxException;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.URL;
-import java.nio.file.*;
-import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
-public class ClientOnlyCheckTest {
-    public void testClientOnlyCheck(GameTestHelper helper) {
-        try {
-            List<String> violations = ClientOnlyCheck.check();
-            if (violations.isEmpty()) {
-                helper.succeed();
-            } else {
-                StringBuilder sb = new StringBuilder("@ClientOnly check FAILED (" + violations.size() + " violations):\n");
-                for (String v : violations) {
-                    sb.append("  ").append(v).append("\n");
-                }
-                helper.fail(sb.toString());
-            }
-        } catch (Throwable e) {
-            helper.fail("@ClientOnly check error: " + e.getMessage());
-        }
-    }
-}
-
-final class ClientOnlyCheck {
+public class CheckClientOnlyTask extends DefaultTask {
     private static final String CLIENT_ONLY_DESC = "Lio/github/xienaoban/biologydictionary/platform/ClientOnly;";
     private static final String CLIENT_AND_SERVER_DESC = "Lio/github/xienaoban/biologydictionary/platform/ClientAndServer;";
 
-    public static List<String> check() throws Exception {
-        List<byte[]> projectClasses = loadProjectClasses();
-        ClassLoader cl = ClientOnlyCheck.class.getClassLoader();
+    private final DirectoryProperty classesDir;
+    private final ConfigurableFileCollection classpath;
 
+    @Inject
+    public CheckClientOnlyTask(ObjectFactory objects) {
+        this.classesDir = objects.directoryProperty();
+        this.classpath = objects.fileCollection();
+    }
+
+    @InputDirectory
+    @PathSensitive(PathSensitivity.RELATIVE)
+    public DirectoryProperty getClassesDir() {
+        return classesDir;
+    }
+
+    @Classpath
+    public ConfigurableFileCollection getClasspath() {
+        return classpath;
+    }
+
+    @TaskAction
+    public void run() throws IOException {
+        Path root = classesDir.get().getAsFile().toPath();
+        List<byte[]> projectClasses = loadProjectClasses(root);
+        URL[] urls = classpath.getFiles().stream()
+                .map(file -> {
+                    try {
+                        return file.toURI().toURL();
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                })
+                .toArray(URL[]::new);
+
+        try (URLClassLoader loader = new URLClassLoader(urls, CheckClientOnlyTask.class.getClassLoader())) {
+            List<String> violations = check(projectClasses, loader);
+            if (!violations.isEmpty()) {
+                StringBuilder sb = new StringBuilder("@ClientOnly check FAILED (" + violations.size() + " violations):\n");
+                for (String violation : violations) {
+                    sb.append("  ").append(violation).append('\n');
+                }
+                throw new GradleException(sb.toString());
+            }
+        }
+    }
+
+    private static List<String> check(List<byte[]> projectClasses, ClassLoader cl) {
         List<ClassInfo> allInfos = projectClasses.stream()
-                .map(ClientOnlyCheck::analyzeProjectClass)
+                .map(CheckClientOnlyTask::analyzeProjectClass)
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -54,7 +104,7 @@ final class ClientOnlyCheck {
                 }
             }
         }
-        // Expand to include inner classes of @ClientOnly classes
+
         for (ClassInfo info : allInfos) {
             if (clientOnlyClassNames.contains(info.internalName)) continue;
             String enclosing = info.internalName;
@@ -74,16 +124,11 @@ final class ClientOnlyCheck {
             if (clientOnlyClassNames.contains(info.internalName)) continue;
 
             String className = info.internalName.replace('/', '.');
-
-            // Class-level check (superclass, interfaces, field types)
             for (String ref : info.classRefs) {
                 checkTypeRef(ref, className, null, true, clientOnlyClassNames, mcCache, cl, violations);
             }
 
-            // Method-level check
             for (MethodInfo method : info.methods) {
-                // Method-level @ClientOnly/@ClientAndServer may bridge to this mod's client-only code,
-                // but only class-level @ClientOnly may reference Minecraft client-only classes directly.
                 boolean checkProjectClientOnly = !method.isClientOnly && !method.isClientAndServer;
 
                 for (String ref : method.typeRefs) {
@@ -102,10 +147,15 @@ final class ClientOnlyCheck {
                             continue;
                         }
                     }
-                    // Both regular and @ClientAndServer methods are checked against @Environment(CLIENT)
+
                     McClassInfo mcInfo = mcCache.computeIfAbsent(call.owner, k -> loadMcClassInfo(k, cl));
-                    if (mcInfo.isClientClass) { violations.add(entry); continue; }
-                    if (mcInfo.clientMethods.contains(call)) violations.add(entry);
+                    if (mcInfo.isClientClass) {
+                        violations.add(entry);
+                        continue;
+                    }
+                    if (mcInfo.clientMethods.contains(call)) {
+                        violations.add(entry);
+                    }
                 }
             }
         }
@@ -114,10 +164,10 @@ final class ClientOnlyCheck {
     }
 
     private static void checkTypeRef(String ref, String className, String methodName,
-                                      boolean checkProjectClientOnly,
-                                      Set<String> clientOnlyClassNames,
-                                      Map<String, McClassInfo> mcCache, ClassLoader cl,
-                                      Set<String> violations) {
+                                     boolean checkProjectClientOnly,
+                                     Set<String> clientOnlyClassNames,
+                                     Map<String, McClassInfo> mcCache, ClassLoader cl,
+                                     Set<String> violations) {
         String label = methodName != null ? className + "." + methodName : className;
         String target = ref.replace('/', '.');
         if (checkProjectClientOnly && clientOnlyClassNames.contains(ref)) {
@@ -128,32 +178,21 @@ final class ClientOnlyCheck {
         if (mcInfo.isClientClass) violations.add(label + " -> " + target);
     }
 
-    private static List<byte[]> loadProjectClasses() throws IOException, URISyntaxException {
-        URL location = io.github.xienaoban.biologydictionary.platform.ClientOnly.class
-                .getProtectionDomain().getCodeSource().getLocation();
-        Path path = Paths.get(location.toURI());
+    private static List<byte[]> loadProjectClasses(Path root) throws IOException {
         List<byte[]> result = new ArrayList<>();
+        if (!Files.isDirectory(root)) return result;
 
-        if (Files.isDirectory(path)) {
-            try (Stream<Path> walk = Files.walk(path)) {
-                walk.filter(p -> p.toString().endsWith(".class"))
-                        .forEach(p -> {
-                            try { result.add(Files.readAllBytes(p)); }
-                            catch (IOException e) { throw new UncheckedIOException(e); }
-                        });
-            }
-        } else {
-            try (JarFile jar = new JarFile(path.toFile())) {
-                Enumeration<JarEntry> entries = jar.entries();
-                while (entries.hasMoreElements()) {
-                    JarEntry entry = entries.nextElement();
-                    if (entry.getName().endsWith(".class")) {
-                        try (InputStream is = jar.getInputStream(entry)) {
-                            result.add(is.readAllBytes());
+        try (Stream<Path> walk = Files.walk(root)) {
+            walk.filter(path -> path.toString().endsWith(".class"))
+                    .forEach(path -> {
+                        try {
+                            result.add(Files.readAllBytes(path));
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
                         }
-                    }
-                }
-            }
+                    });
+        } catch (UncheckedIOException e) {
+            throw e.getCause();
         }
         return result;
     }
@@ -258,8 +297,7 @@ final class ClientOnlyCheck {
             }
         };
 
-        ClassReader cr = new ClassReader(bytes);
-        cr.accept(cv, 0);
+        new ClassReader(bytes).accept(cv, 0);
         return new ClassInfo(internalName[0], isClientOnly[0], classRefs, methods);
     }
 

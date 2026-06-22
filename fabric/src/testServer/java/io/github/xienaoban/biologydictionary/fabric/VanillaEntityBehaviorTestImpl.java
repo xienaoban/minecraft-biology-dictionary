@@ -13,7 +13,7 @@ public class VanillaEntityBehaviorTestImpl {
     }
 
     @GameTest
-    public void testAgeableMobForcedAge(GameTestHelper helper) {
-        test.testAgeableMobForcedAge(helper);
+    public void testAgeableMobAgeLocked(GameTestHelper helper) {
+        test.testAgeableMobAgeLocked(helper);
     }
 }

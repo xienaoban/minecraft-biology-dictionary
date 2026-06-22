@@ -54,3 +54,40 @@ artifacts {
     commonTestServerJava sourceSets.testServer.java.sourceDirectories.singleFile
     commonTestServerResources sourceSets.testServer.resources.sourceDirectories.singleFile
 }
+
+tasks.register("checkPlatformImports") {
+    group = "verification"
+    description = "Fails if common imports Fabric, Forge, or NeoForge platform packages."
+
+    def sourceDir = layout.projectDirectory.dir("src/main/java")
+    inputs.dir(sourceDir).optional()
+
+    doLast {
+        def forbidden = [
+                "net.fabricmc.",
+                "net.minecraftforge.",
+                "net.neoforged."
+        ]
+
+        fileTree(sourceDir).matching {
+            include "**/*.java"
+        }.each { file ->
+            def text = file.getText("UTF-8")
+            def found = text.readLines()
+                    .findAll { it ==~ /\s*import\s+.+/ }
+                    .findResult { line -> forbidden.find { line.contains(it) } }
+            if (found != null) {
+                throw new GradleException("Forbidden platform package '${found}' used in common source: ${file}")
+            }
+        }
+    }
+}
+
+tasks.register("checkClientOnlyBoundaries", io.github.xienaoban.biologydictionary.gradle.CheckClientOnlyTask) {
+    group = "verification"
+    description = "Fails if common non-client code references @ClientOnly or Minecraft client-only APIs."
+    dependsOn(tasks.named("classes"))
+
+    classesDir = layout.buildDirectory.dir("classes/java/main")
+    classpath.from(sourceSets.main.runtimeClasspath)
+}
