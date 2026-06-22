@@ -23,6 +23,7 @@ public class EntityPropertyIcon extends ScreenElement {
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(), getBox().getLeft(), getBox().getTop(), getBox().getWidth(), getBox().getHeight());
+        ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(),
+                getBox().getLeft(), getBox().getTop(), getBox().getWidth(), getBox().getHeight());
     }
 }

@@ -31,7 +31,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     private static RC calculateRowsAndColumns(Entity entity) {
         AABB box = entity.getBoundingBox();
         double x = box.getXsize(), y = box.getYsize();
-        if (x > y) return new RC(3, 6);
+        if (x > y) { return new RC(3, 6); }
         return new RC(5, 4);
     }
 
@@ -96,7 +96,8 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        entityRenderer.renderEntityCentered(ctx, getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
+        entityRenderer.renderEntityCentered(ctx,
+                getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
                 (float) Math.atan(ctx.getMouseX() / 40F) / 10,
                 (float) Math.atan(ctx.getMouseY() / 40F) / 20);
     }

@@ -230,9 +230,12 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     screen.initOrRequestProperties();
                 } else {
                     // Highlight button
-                    int distance = isMouseRight(code) ? HighlightEntitiesSkill.NEAR_RADIUS : HighlightEntitiesSkill.FAR_RADIUS;
+                    int distance = isMouseRight(code)
+                            ? HighlightEntitiesSkill.NEAR_RADIUS
+                            : HighlightEntitiesSkill.FAR_RADIUS;
                     ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
-                    if (BiologySkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance))) {
+                    if (BiologySkills.activate(
+                            new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance))) {
                         onClose();
                     }
                 }
@@ -255,8 +258,11 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     entityRotateX, entityRotateY,
                     silhouetteColor);
 
-            Component text = shouldRenderDetail() ? FontUtils.truncateByWidth(name, getBox().getWidth() + 2, 0.5F) : TextUtils.literal("??");
-            ctx.renderCenteredText(text, Colors.BROWN, 0.5F, getZ(), (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
+            Component text = shouldRenderDetail()
+                    ? FontUtils.truncateByWidth(name, getBox().getWidth() + 2, 0.5F)
+                    : TextUtils.literal("??");
+            ctx.renderCenteredText(text, Colors.BROWN, 0.5F, getZ(),
+                    (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
         }
 
         @Override
@@ -276,8 +282,10 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 colorHighlight = 0xaaffffff;
                 colorEgg = 0xd4ffffff;
             }
-            ctx.renderRectangle(colorHighlight, ctx.getZ(), box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getTop() + BUTTONS_CUT);
-            ctx.renderRectangle(colorEgg, ctx.getZ(), box.getLeft() + 1, box.getTop() + BUTTONS_CUT, box.getRight() - 1, box.getBottom() - 1);
+            ctx.renderRectangle(colorHighlight, ctx.getZ(),
+                    box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getTop() + BUTTONS_CUT);
+            ctx.renderRectangle(colorEgg, ctx.getZ(),
+                    box.getLeft() + 1, box.getTop() + BUTTONS_CUT, box.getRight() - 1, box.getBottom() - 1);
 
             // Render icons for each section
             final int wh = 10;
@@ -290,7 +298,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             else if (time < cycle / 2) { u = 0; }
             else if (time < cycle / 2 + wink) { u = 1; }
             else { u = 0; }
-            ctx.renderTexture(Textures.ICONS, (23 + u) * wh, 24 * wh, ctx.getZ(), midX - wh / 2F, box.getTop() + (BUTTONS_CUT - wh) / 2F, Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+            ctx.renderTexture(Textures.ICONS, (23 + u) * wh, 24 * wh, ctx.getZ(),
+                    midX - wh / 2F, box.getTop() + (BUTTONS_CUT - wh) / 2F,
+                    Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
 
             if (shouldRenderDetail()) {
                 // Spawn egg icon (bottom)
@@ -306,13 +316,22 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OVERVIEW));
                 tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OVERVIEW_DESC));
                 tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_OVERVIEW_LEFT_DESC).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_OVERVIEW_LEFT_DESC)
+                        .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                 tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.NEAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
-                tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.NEAR_RADIUS).getRealCost().toTooltipText());
+                tooltips.add(TextUtils.translate(
+                                Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.NEAR_RADIUS)
+                        .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                tooltips.addAll(new HighlightEntitiesSkill(
+                        EntityUtils.getEntityType(entity), HighlightEntitiesSkill.NEAR_RADIUS)
+                        .getRealCost().toTooltipText());
                 tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC, HighlightEntitiesSkill.FAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
-                tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.FAR_RADIUS).getRealCost().toTooltipText());
+                tooltips.add(TextUtils.translate(
+                                Lang.WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC, HighlightEntitiesSkill.FAR_RADIUS)
+                        .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                tooltips.addAll(new HighlightEntitiesSkill(
+                        EntityUtils.getEntityType(entity), HighlightEntitiesSkill.FAR_RADIUS)
+                        .getRealCost().toTooltipText());
                 tooltips.add(TextUtils.empty());
                 tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withStyle(ChatFormatting.GRAY));
             } else {
@@ -351,7 +370,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             this.total = entityInfos.size();
             int count = 0;
             for (var info : entityInfos) {
-                if (cache.isDiscovered(info.getType())) count++;
+                if (cache.isDiscovered(info.getType())) { count++; }
             }
             this.discovered = count;
         }

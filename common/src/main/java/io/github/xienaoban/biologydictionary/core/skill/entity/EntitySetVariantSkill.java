@@ -10,7 +10,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 
-public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, Tag variantTag) implements EntityTargetedSkill<Entity> {
+public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, Tag variantTag)
+        implements EntityTargetedSkill<Entity> {
     public static final Meta<EntitySetVariantSkill> META = new Meta<>() {
         @Override
         public EntitySetVariantSkill create(FriendlyByteBuf buf) {
@@ -33,7 +34,8 @@ public record EntitySetVariantSkill(String entityTypeId, int variantHandlerIdx, 
 
     public EntitySetVariantSkill(Entity entity, int variantHandlerIdx, Object variant) {
         this(EntityUtils.getEntityTypeIdName(entity), variantHandlerIdx,
-                EntityVariantPropertyBundle.getHandlers(entity).get(variantHandlerIdx).variantToNbt(Misc.cast(entity), Misc.cast(variant)));
+                EntityVariantPropertyBundle.getHandlers(entity).get(variantHandlerIdx)
+                        .variantToNbt(Misc.cast(entity), Misc.cast(variant)));
     }
 
     @Override

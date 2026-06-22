@@ -82,7 +82,8 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
                     time = TextUtils.literal((effect.getDuration() / 20) + "s").withStyle(ChatFormatting.GRAY);
                 }
                 int w = ctx.calcTextWidth(name) + ctx.calcTextWidth(time);
-                Component dot = TextUtils.literal(".".repeat(Math.max(0, (maxW + 40 - w) / 2))).withStyle(ChatFormatting.DARK_GRAY);
+                Component dot = TextUtils.literal(".".repeat(Math.max(0, (maxW + 40 - w) / 2)))
+                        .withStyle(ChatFormatting.DARK_GRAY);
                 list.add(TextUtils.concat(Arrays.asList(name, dot, time), TextUtils.space()));
             }
         }
@@ -117,12 +118,14 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
             }
 
             for (int i = effects.size() - 1; i >= 0; --i) {
-                ctx.renderTexture(Textures.ICONS, 21 * Widget.WIDGET_WIDTH, 3 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
+                ctx.renderTexture(Textures.ICONS, 21 * Widget.WIDGET_WIDTH, 3 * Widget.WIDGET_HEIGHT, ctx.getZ(),
+                        getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
             int i = -1;
             for (MobEffectInstance effect : effects) {
                 ++i;
-                ctx.renderEffect(effect.getEffect(), 0.444444F, getBox().getLeft() + 0.05F + i * gap, getBox().getTop());
+                ctx.renderEffect(effect.getEffect(), 0.444444F,
+                        getBox().getLeft() + 0.05F + i * gap, getBox().getTop());
             }
         }
 

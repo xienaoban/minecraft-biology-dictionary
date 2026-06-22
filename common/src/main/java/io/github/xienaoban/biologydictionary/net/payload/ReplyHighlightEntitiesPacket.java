@@ -39,7 +39,8 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
     @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        @ClientOnly final class CO { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(
+                ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
             if (!packet.allowed()) { return; }
 
             ClientWorldSession cws = ClientWorldSession.get();

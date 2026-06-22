@@ -16,6 +16,7 @@ import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.Entity;
@@ -165,7 +166,7 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
     }
 
     private static Component getCoordinateText(DiscoveryRecord record) {
-        net.minecraft.core.BlockPos pos = record.position();
+        BlockPos pos = record.position();
         return Component.literal(pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
     }
 }

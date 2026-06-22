@@ -12,6 +12,7 @@ import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
@@ -75,13 +76,16 @@ public final class ScreenRenderingContext {
      * @param mouseX not used
      * @param mouseY not used
      */
-    public void update(GuiGraphicsExtractor guiGraphics, float screenScale, float reciprocalScreenScale, int mouseX, int mouseY, float tickDelta) {
+    public void update(GuiGraphicsExtractor guiGraphics, float screenScale, float reciprocalScreenScale, int mouseX,
+            int mouseY, float tickDelta) {
         this.guiGraphics = guiGraphics;
         this.screenScale = screenScale;
         this.reciprocalScreenScale = reciprocalScreenScale;
         this.tickDelta = tickDelta;
-        this.mouseX = (float) client.mouseHandler.xpos() * (float) client.getWindow().getGuiScaledWidth() / (float) client.getWindow().getScreenWidth();
-        this.mouseY = (float) client.mouseHandler.ypos() * (float) client.getWindow().getGuiScaledHeight() / (float) client.getWindow().getScreenHeight();
+        this.mouseX = (float) client.mouseHandler.xpos() * (float) client.getWindow().getGuiScaledWidth()
+                / (float) client.getWindow().getScreenWidth();
+        this.mouseY = (float) client.mouseHandler.ypos() * (float) client.getWindow().getGuiScaledHeight()
+                / (float) client.getWindow().getScreenHeight();
         assert mouseX == (int) this.mouseX && mouseY == (int) this.mouseY;
 
         this.mouseX *= reciprocalScreenScale;
@@ -231,7 +235,8 @@ public final class ScreenRenderingContext {
         GuiGraphicsExtractorIMixin guiGraphicsAccessor = (GuiGraphicsExtractorIMixin) guiGraphics;
         ScreenRectangle scissorArea = guiGraphicsAccessor.biologydictionary$getScissorStack().peek();
         ScreenRectangle bounds = getBounds(left, top, right, bottom, pose, scissorArea);
-        guiGraphicsAccessor.biologydictionary$getGuiRenderState().addGuiElement(new RectangleState(RenderPipelines.GUI, TextureSetup.noTexture(),
+        guiGraphicsAccessor.biologydictionary$getGuiRenderState().addGuiElement(new RectangleState(
+                RenderPipelines.GUI, TextureSetup.noTexture(),
                 pose, scissorArea, bounds, color, left, top, right, bottom));
     }
 
@@ -243,7 +248,8 @@ public final class ScreenRenderingContext {
         renderTexture(texture, RenderPipelines.GUI_TEXTURED, left, top, width, height);
     }
 
-    public void renderTexture(TextureInfo texture, RenderPipeline pipeline, float left, float top, float width, float height) {
+    public void renderTexture(TextureInfo texture, RenderPipeline pipeline,
+                              float left, float top, float width, float height) {
         renderTexture(texture, pipeline, 0.0F, 0.0F, texture.width(), texture.height(),
                 left, top, left + width, top + height);
     }
@@ -284,7 +290,8 @@ public final class ScreenRenderingContext {
         }
 
         AbstractTexture abstractTexture = client.getTextureManager().getTexture(texture.location());
-        TextureSetup textureSetup = TextureSetup.singleTexture(abstractTexture.getTextureView(), abstractTexture.getSampler());
+        TextureSetup textureSetup = TextureSetup.singleTexture(
+                abstractTexture.getTextureView(), abstractTexture.getSampler());
         float u0 = textureLeft / texture.width();
         float v0 = textureTop / texture.height();
         float u1 = textureRight / texture.width();
@@ -293,7 +300,8 @@ public final class ScreenRenderingContext {
         GuiGraphicsExtractorIMixin guiGraphicsAccessor = (GuiGraphicsExtractorIMixin) guiGraphics;
         ScreenRectangle scissorArea = guiGraphicsAccessor.biologydictionary$getScissorStack().peek();
         ScreenRectangle bounds = getBounds(left, top, right, bottom, pose, scissorArea);
-        guiGraphicsAccessor.biologydictionary$getGuiRenderState().addGuiElement(new TextureState(pipeline, textureSetup, pose, scissorArea, bounds,
+        guiGraphicsAccessor.biologydictionary$getGuiRenderState().addGuiElement(new TextureState(
+                pipeline, textureSetup, pose, scissorArea, bounds,
                 u0, v0, u1, v1, left, top, right, bottom));
     }
 
@@ -308,7 +316,7 @@ public final class ScreenRenderingContext {
     }
 
     public void renderEffect(Holder<MobEffect> effect, float left, float top) {
-        Identifier id = net.minecraft.client.gui.Gui.getMobEffectSprite(effect);
+        Identifier id = Gui.getMobEffectSprite(effect);
         getGuiGraphics().blitSprite(RenderPipelines.GUI_TEXTURED, id, (int) left, (int) top, 18, 18);
     }
 
@@ -388,7 +396,8 @@ public final class ScreenRenderingContext {
                 .toList();
 
         ClientTooltipPositioner positioner = (screenWidth, screenHeight, mouseX, mouseY, tooltipWidth, tooltipHeight) ->
-                DefaultTooltipPositioner.INSTANCE.positionTooltip((int) (screenWidth / size), (int) (screenHeight / size),
+                DefaultTooltipPositioner.INSTANCE.positionTooltip(
+                        (int) (screenWidth / size), (int) (screenHeight / size),
                         mouseX, mouseY, tooltipWidth, tooltipHeight);
         getGuiGraphics().tooltip(font, components, (int) (x / size - 8.0F), (int) (y / size + 16.0F),
                 positioner, Textures.BOOK_TOOLTIP);
@@ -424,8 +433,8 @@ public final class ScreenRenderingContext {
         renderEntity(entity, cache, left, top, right, bottom, rotateX, rotateY, forceScale, 1.9F, silhouetteColor);
     }
 
-    private void renderEntity(Entity entity, EntityRenderingCache cache, float left, float top, float right, float bottom,
-                              float rotateX, float rotateY, float forceScale, float internalOffset) {
+    private void renderEntity(Entity entity, EntityRenderingCache cache, float left, float top, float right,
+                              float bottom, float rotateX, float rotateY, float forceScale, float internalOffset) {
         renderEntity(entity, cache, left, top, right, bottom, rotateX, rotateY, forceScale, internalOffset, 0);
     }
 
@@ -434,8 +443,9 @@ public final class ScreenRenderingContext {
      *
      * @see net.minecraft.client.gui.screens.inventory.InventoryScreen#extractEntityInInventoryFollowsMouse
      */
-    private void renderEntity(Entity entity, EntityRenderingCache cache, float left, float top, float right, float bottom,
-                              float rotateX, float rotateY, float forceScale, float internalOffset, int silhouetteColor) {
+    private void renderEntity(Entity entity, EntityRenderingCache cache, float left, float top, float right,
+                              float bottom, float rotateX, float rotateY, float forceScale, float internalOffset,
+                              int silhouetteColor) {
         if (screenScale != 1F) {
             left *= screenScale;
             top *= screenScale;
@@ -493,7 +503,8 @@ public final class ScreenRenderingContext {
                 Mth.ceil(left), Mth.ceil(top), Mth.floor(right), Mth.floor(bottom));
 
         if (isDebug() && width > 0.0F && height > 0.0F) {
-            renderRectangle(0xFFAAAAAA, 0.6F, getZ(), left / screenScale, top / screenScale, right / screenScale, bottom / screenScale);
+            renderRectangle(0xFFAAAAAA, 0.6F, getZ(),
+                    left / screenScale, top / screenScale, right / screenScale, bottom / screenScale);
         }
 
         if (cache != null && !cached) {
@@ -534,7 +545,8 @@ public final class ScreenRenderingContext {
         }
     }
 
-    private static ScreenRectangle getBounds(float x0, float y0, float x1, float y1, Matrix3x2f pose, ScreenRectangle scissorArea) {
+    private static ScreenRectangle getBounds(float x0, float y0, float x1, float y1,
+                                             Matrix3x2f pose, ScreenRectangle scissorArea) {
         int x0i = Mth.floor(x0);
         int y0i = Mth.floor(y0);
         int x1i = Mth.ceil(x1);

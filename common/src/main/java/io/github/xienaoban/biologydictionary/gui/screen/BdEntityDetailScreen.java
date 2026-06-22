@@ -17,7 +17,8 @@ import java.util.List;
 
 @ClientOnly
 public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
-    private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT = (int) (ClientUtils.getClientTickCountPerSecond() * 1.5);
+    private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT =
+            (int) (ClientUtils.getClientTickCountPerSecond() * 1.5);
     private static final int CLOSE_SCREEN_DISTANCE = 10;
 
     private final Entity entity;
@@ -48,7 +49,8 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
 
         if (!PlayerUtils.isWithinInteractionRange(player, entity, CLOSE_SCREEN_DISTANCE)) {
             ClientWorldSession.get().getHighlightManager().highlightEntity(entity, 4 * 20);
-            ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
+            ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR)
+                    .withStyle(ChatFormatting.YELLOW));
             onClose();
         }
 

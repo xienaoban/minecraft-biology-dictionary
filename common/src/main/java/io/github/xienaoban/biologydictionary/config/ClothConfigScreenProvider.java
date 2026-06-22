@@ -81,8 +81,9 @@ public class ClothConfigScreenProvider {
     }
 
     @SuppressWarnings("unchecked")
-    private static void addConfigEntry(me.shedaniel.clothconfig2.api.ConfigCategory category, ConfigEntryBuilder entryBuilder,
-                                       Field field, ConfigEntry annotation, Object categoryObject) {
+    private static void addConfigEntry(me.shedaniel.clothconfig2.api.ConfigCategory category,
+                                       ConfigEntryBuilder entryBuilder, Field field, ConfigEntry annotation,
+                                       Object categoryObject) {
         String fieldName = field.getName();
         Class<?> fieldType = field.getType();
 
@@ -143,7 +144,8 @@ public class ClothConfigScreenProvider {
                 return;
             } else {
                 // No modification methods are provided for complex types.
-                category.addEntry(entryBuilder.startTextDescription(TextUtils.concat(fieldText.copy().withStyle(ChatFormatting.GRAY)))
+                category.addEntry(entryBuilder.startTextDescription(
+                        TextUtils.concat(fieldText.copy().withStyle(ChatFormatting.GRAY)))
                         .setTooltip(tooltipText).build());
                 return;
             }
@@ -165,7 +167,9 @@ public class ClothConfigScreenProvider {
             // Get the category field from default configs
             Field categoryField = Arrays.stream(DEFAULT_CONFIGS.getClass().getDeclaredFields())
                     .filter(field1 -> field1.getType() == field.getDeclaringClass())
-                    .findFirst().orElseThrow(() -> new RuntimeException("No config category class found: " +  field.getDeclaringClass()));
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException(
+                            "No config category class found: " + field.getDeclaringClass()));
             categoryField.setAccessible(true);
             Object defaultCategoryObject = categoryField.get(DEFAULT_CONFIGS);
 
@@ -180,7 +184,7 @@ public class ClothConfigScreenProvider {
     /**
      * Create a save consumer for regular fields.
      */
-    private static <T> java.util.function.Consumer<T> createSaveConsumer(Field field, Object categoryObject) {
+    private static <T> Consumer<T> createSaveConsumer(Field field, Object categoryObject) {
         return newValue -> save(field, categoryObject, newValue);
     }
 
@@ -197,7 +201,8 @@ public class ClothConfigScreenProvider {
      * Use generic to avoid errors from javac.
      */
     private static <T, B extends AbstractFieldBuilder<T, ?, B>> B setEntryGeneric(
-            AbstractFieldBuilder<?, ?, ?> builder, Object defaultValue, Consumer<?> saveConsumer, Component tooltip) {
+        AbstractFieldBuilder<?, ?, ?> builder, Object defaultValue,
+        Consumer<?> saveConsumer, Component tooltip) {
         B b = Misc.cast(builder);
         T d = Misc.cast(defaultValue);
         Consumer<T> s = Misc.cast(saveConsumer);

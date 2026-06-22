@@ -150,7 +150,8 @@ public final class LootTableUtils {
     /**
      * Parse a single loot entry container and return LootEntry objects.
      */
-    private static List<LootEntry> parseLootPoolEntryContainer(LootPoolEntryContainer entry, float baseChance, List<Identifier> inheritedConditions, int depth) {
+    private static List<LootEntry> parseLootPoolEntryContainer(LootPoolEntryContainer entry, float baseChance,
+            List<Identifier> inheritedConditions, int depth) {
         if (depth > MAX_RECURSION_DEPTH) {
             return List.of();
         }
@@ -176,7 +177,8 @@ public final class LootTableUtils {
             }
 
             return switch (singleton) {
-                case LootItem lootItem -> List.of(parseLootItem(lootItem, minCount, maxCount, dropChance, allConditions));
+                case LootItem lootItem -> List.of(
+                        parseLootItem(lootItem, minCount, maxCount, dropChance, allConditions));
                 case TagEntry tagEntry -> parseTagEntry(tagEntry, minCount, maxCount, dropChance, allConditions);
                 case NestedLootTable nestedLoot -> parseNestedLootTable(nestedLoot, dropChance, allConditions, depth);
                 default -> List.of();

@@ -19,10 +19,12 @@ public final class ClientEventRegistrar {
             NeoForge.EVENT_BUS.addListener((ClientStoppingEvent event) -> listener.run(event.getClient()));
         }
         for (ClientEvents.ClientListener listener : ClientEvents.WORLD_CONNECTED) {
-            NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingIn event) -> listener.run(Minecraft.getInstance()));
+            NeoForge.EVENT_BUS.addListener(
+                    (ClientPlayerNetworkEvent.LoggingIn event) -> listener.run(Minecraft.getInstance()));
         }
         for (ClientEvents.ClientListener listener : ClientEvents.WORLD_DISCONNECTING) {
-            NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut event) -> listener.run(Minecraft.getInstance()));
+            NeoForge.EVENT_BUS.addListener(
+                    (ClientPlayerNetworkEvent.LoggingOut event) -> listener.run(Minecraft.getInstance()));
         }
         for (ClientEvents.ClientListener listener : ClientEvents.END_TICK) {
             NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> listener.run(Minecraft.getInstance()));

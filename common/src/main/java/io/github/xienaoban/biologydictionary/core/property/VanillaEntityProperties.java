@@ -445,7 +445,28 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createAirProperty(), createCustomNameProperty(), createCustomNameVisibleProperty(), createFireProperty(), createGlowingProperty(), createHasVisualFireProperty(), createInvulnerableProperty(), createMotionProperty(), createNoGravityProperty(), createOnGroundProperty(), createPortalCooldownProperty(), createPosProperty(), createRotationProperty(), createSilentProperty(), createTagsProperty(), createTicksFrozenProperty(), createUuidProperty(), createDataProperty(), createFallDistanceProperty(), createIdProperty());
+            p(map,
+                    createAirProperty(),
+                    createCustomNameProperty(),
+                    createCustomNameVisibleProperty(),
+                    createFireProperty(),
+                    createGlowingProperty(),
+                    createHasVisualFireProperty(),
+                    createInvulnerableProperty(),
+                    createMotionProperty(),
+                    createNoGravityProperty(),
+                    createOnGroundProperty(),
+                    createPortalCooldownProperty(),
+                    createPosProperty(),
+                    createRotationProperty(),
+                    createSilentProperty(),
+                    createTagsProperty(),
+                    createTicksFrozenProperty(),
+                    createUuidProperty(),
+                    createDataProperty(),
+                    createFallDistanceProperty(),
+                    createIdProperty()
+            );
         }
     }
 
@@ -545,7 +566,8 @@ public final class VanillaEntityProperties {
             return new CodecProperty<>("active_effects", List.class, MobEffectInstance.CODEC.listOf());
         }
 
-        public static CodecProperty<LivingEntity, List<MobEffectInstance>> getActiveEffectsProperty(EntityProperties<?> ep) {
+        public static CodecProperty<LivingEntity, List<MobEffectInstance>>
+                getActiveEffectsProperty(EntityProperties<?> ep) {
             return g(ep, "active_effects");
         }
 
@@ -553,7 +575,8 @@ public final class VanillaEntityProperties {
             return new CodecProperty<>("attributes", List.class, AttributeInstance.Packed.LIST_CODEC);
         }
 
-        public static CodecProperty<LivingEntity, List<AttributeInstance.Packed>> getAttributesProperty(EntityProperties<?> ep) {
+        public static CodecProperty<LivingEntity, List<AttributeInstance.Packed>>
+                getAttributesProperty(EntityProperties<?> ep) {
             return g(ep, "attributes");
         }
 
@@ -631,7 +654,27 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createAbsorptionAmountProperty(), createBrainProperty(), createDeathTimeProperty(), createFallFlyingProperty(), createHealthProperty(), createHurtByTimestampProperty(), createHurtTimeProperty(), createTeamProperty(), createActiveEffectsProperty(), createAttributesProperty(), createCurrentExplosionImpactPosProperty(), createCurrentImpulseContextResetGraceTimeProperty(), createEquipmentProperty(), createLastHurtByMobProperty(), createLastHurtByPlayerProperty(), createLastHurtByPlayerMemoryTimeProperty(), createLocatorBarIconProperty(), createSleepingPosProperty(), createTicksSinceLastHurtByMobProperty());
+            p(map,
+                    createAbsorptionAmountProperty(),
+                    createBrainProperty(),
+                    createDeathTimeProperty(),
+                    createFallFlyingProperty(),
+                    createHealthProperty(),
+                    createHurtByTimestampProperty(),
+                    createHurtTimeProperty(),
+                    createTeamProperty(),
+                    createActiveEffectsProperty(),
+                    createAttributesProperty(),
+                    createCurrentExplosionImpactPosProperty(),
+                    createCurrentImpulseContextResetGraceTimeProperty(),
+                    createEquipmentProperty(),
+                    createLastHurtByMobProperty(),
+                    createLastHurtByPlayerProperty(),
+                    createLastHurtByPlayerMemoryTimeProperty(),
+                    createLocatorBarIconProperty(),
+                    createSleepingPosProperty(),
+                    createTicksSinceLastHurtByMobProperty()
+            );
         }
     }
 
@@ -723,7 +766,15 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createDescriptionProperty(), createHiddenLayersProperty(), createHideDescriptionProperty(), createImmovableProperty(), createMainHandProperty(), createPoseProperty(), createProfileProperty());
+            p(map,
+                    createDescriptionProperty(),
+                    createHiddenLayersProperty(),
+                    createHideDescriptionProperty(),
+                    createImmovableProperty(),
+                    createMainHandProperty(),
+                    createPoseProperty(),
+                    createProfileProperty()
+            );
         }
     }
 
@@ -818,7 +869,17 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createCanPickUpLootProperty(), createDeathLootTableProperty(), createDeathLootTableSeedProperty(), createLeftHandedProperty(), createNoAiProperty(), createPersistenceRequiredProperty(), createDropChancesProperty(), createHomePosProperty(), createHomeRadiusProperty());
+            p(map,
+                    createCanPickUpLootProperty(),
+                    createDeathLootTableProperty(),
+                    createDeathLootTableSeedProperty(),
+                    createLeftHandedProperty(),
+                    createNoAiProperty(),
+                    createPersistenceRequiredProperty(),
+                    createDropChancesProperty(),
+                    createHomePosProperty(),
+                    createHomeRadiusProperty()
+            );
         }
     }
 
@@ -1044,7 +1105,8 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Cat, ResourceKey<CatSoundVariant>> createSoundVariantProperty() {
-            return new CodecProperty<>("sound_variant", ResourceKey.class, ResourceKey.codec(Registries.CAT_SOUND_VARIANT));
+            return new CodecProperty<>("sound_variant", ResourceKey.class,
+                    ResourceKey.codec(Registries.CAT_SOUND_VARIANT));
         }
 
         public static CodecProperty<Cat, ResourceKey<CatSoundVariant>> getSoundVariantProperty(EntityProperties<?> ep) {
@@ -1106,7 +1168,8 @@ public final class VanillaEntityProperties {
             return new VariantProperty<>(Registries.ZOMBIE_NAUTILUS_VARIANT);
         }
 
-        public static VariantProperty<ZombieNautilus, ZombieNautilusVariant> getVariantProperty(EntityProperties<?> ep) {
+        public static VariantProperty<ZombieNautilus, ZombieNautilusVariant>
+                getVariantProperty(EntityProperties<?> ep) {
             return g(ep, "variant");
         }
 
@@ -1173,10 +1236,12 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Wolf, ResourceKey<WolfSoundVariant>> createSoundVariantProperty() {
-            return new CodecProperty<>("sound_variant", ResourceKey.class, ResourceKey.codec(Registries.WOLF_SOUND_VARIANT));
+            return new CodecProperty<>("sound_variant", ResourceKey.class,
+                    ResourceKey.codec(Registries.WOLF_SOUND_VARIANT));
         }
 
-        public static CodecProperty<Wolf, ResourceKey<WolfSoundVariant>> getSoundVariantProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Wolf, ResourceKey<WolfSoundVariant>>
+                getSoundVariantProperty(EntityProperties<?> ep) {
             return g(ep, "sound_variant");
         }
 
@@ -1213,7 +1278,8 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Armadillo, Armadillo.ArmadilloState> createStateProperty() {
-            return new CodecProperty<>("state", Armadillo.ArmadilloState.class, ArmadilloStateIMixin.biologydictionary$getCodec());
+            return new CodecProperty<>("state", Armadillo.ArmadilloState.class,
+                    ArmadilloStateIMixin.biologydictionary$getCodec());
         }
 
         public static CodecProperty<Armadillo, Armadillo.ArmadilloState> getStateProperty(EntityProperties<?> ep) {
@@ -1331,7 +1397,15 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createCannotEnterHiveTicksProperty(), createCropsGrownSincePollinationProperty(), createHasNectarProperty(), createHasStungProperty(), createTicksSincePollinationProperty(), createFlowerPosProperty(), createHivePosProperty());
+            p(map,
+                    createCannotEnterHiveTicksProperty(),
+                    createCropsGrownSincePollinationProperty(),
+                    createHasNectarProperty(),
+                    createHasStungProperty(),
+                    createTicksSincePollinationProperty(),
+                    createFlowerPosProperty(),
+                    createHivePosProperty()
+            );
         }
     }
 
@@ -1364,10 +1438,12 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Chicken, ResourceKey<ChickenSoundVariant>> createSoundVariantProperty() {
-            return new CodecProperty<>("sound_variant", ResourceKey.class, ResourceKey.codec(Registries.CHICKEN_SOUND_VARIANT));
+            return new CodecProperty<>("sound_variant", ResourceKey.class,
+                    ResourceKey.codec(Registries.CHICKEN_SOUND_VARIANT));
         }
 
-        public static CodecProperty<Chicken, ResourceKey<ChickenSoundVariant>> getSoundVariantProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Chicken, ResourceKey<ChickenSoundVariant>>
+                getSoundVariantProperty(EntityProperties<?> ep) {
             return g(ep, "sound_variant");
         }
 
@@ -1381,7 +1457,12 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createEggLayTimeProperty(), createIsChickenJockeyProperty(), createSoundVariantProperty(), createVariantProperty());
+            p(map,
+                    createEggLayTimeProperty(),
+                    createIsChickenJockeyProperty(),
+                    createSoundVariantProperty(),
+                    createVariantProperty()
+            );
         }
     }
 
@@ -1410,7 +1491,8 @@ public final class VanillaEntityProperties {
     public static final class OfCow implements Creator {
 
         public static CodecProperty<Cow, ResourceKey<CowSoundVariant>> createSoundVariantProperty() {
-            return new CodecProperty<>("sound_variant", ResourceKey.class, ResourceKey.codec(Registries.COW_SOUND_VARIANT));
+            return new CodecProperty<>("sound_variant", ResourceKey.class,
+                    ResourceKey.codec(Registries.COW_SOUND_VARIANT));
         }
 
         public static CodecProperty<Cow, ResourceKey<CowSoundVariant>> getSoundVariantProperty(EntityProperties<?> ep) {
@@ -1518,7 +1600,13 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createBredProperty(), createEatingHaystackProperty(), createOwnerProperty(), createTameProperty(), createTemperProperty());
+            p(map,
+                    createBredProperty(),
+                    createEatingHaystackProperty(),
+                    createOwnerProperty(),
+                    createTameProperty(),
+                    createTemperProperty()
+            );
         }
     }
 
@@ -1813,7 +1901,13 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createCrouchingProperty(), createSittingProperty(), createSleepingProperty(), createTrustedProperty(), createTypeProperty());
+            p(map,
+                    createCrouchingProperty(),
+                    createSittingProperty(),
+                    createSleepingProperty(),
+                    createTrustedProperty(),
+                    createTypeProperty()
+            );
         }
     }
 
@@ -1947,7 +2041,8 @@ public final class VanillaEntityProperties {
     public static final class OfPig implements Creator {
 
         public static CodecProperty<Pig, ResourceKey<PigSoundVariant>> createSoundVariantProperty() {
-            return new CodecProperty<>("sound_variant", ResourceKey.class, ResourceKey.codec(Registries.PIG_SOUND_VARIANT));
+            return new CodecProperty<>("sound_variant", ResourceKey.class,
+                    ResourceKey.codec(Registries.PIG_SOUND_VARIANT));
         }
 
         public static CodecProperty<Pig, ResourceKey<PigSoundVariant>> getSoundVariantProperty(EntityProperties<?> ep) {
@@ -2143,7 +2238,11 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createCannotBeHuntedProperty(), createIsImmuneToZombificationProperty(), createTimeInOverworldProperty());
+            p(map,
+                    createCannotBeHuntedProperty(),
+                    createIsImmuneToZombificationProperty(),
+                    createTimeInOverworldProperty()
+            );
         }
     }
 
@@ -2261,7 +2360,17 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createAssignProfessionWhenSpawnedProperty(), createFoodLevelProperty(), createGossipsProperty(), createLastGossipDecayProperty(), createLastRestockProperty(), createRestocksTodayProperty(), createVillagerDataProperty(), createVillagerDataFinalizedProperty(), createXpProperty());
+            p(map,
+                    createAssignProfessionWhenSpawnedProperty(),
+                    createFoodLevelProperty(),
+                    createGossipsProperty(),
+                    createLastGossipDecayProperty(),
+                    createLastRestockProperty(),
+                    createRestocksTodayProperty(),
+                    createVillagerDataProperty(),
+                    createVillagerDataFinalizedProperty(),
+                    createXpProperty()
+            );
         }
     }
 
@@ -2528,10 +2637,12 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<CopperGolem, WeatheringCopper.WeatherState> createWeatherStateProperty() {
-            return new CodecProperty<>("weather_state", WeatheringCopper.WeatherState.class, WeatheringCopper.WeatherState.CODEC);
+            return new CodecProperty<>("weather_state", WeatheringCopper.WeatherState.class,
+                    WeatheringCopper.WeatherState.CODEC);
         }
 
-        public static CodecProperty<CopperGolem, WeatheringCopper.WeatherState> getWeatherStateProperty(EntityProperties<?> ep) {
+        public static CodecProperty<CopperGolem, WeatheringCopper.WeatherState>
+                getWeatherStateProperty(EntityProperties<?> ep) {
             return g(ep, "weather_state");
         }
 
@@ -2725,7 +2836,12 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createExplosionRadiusProperty(), createFuseProperty(), createIgnitedProperty(), createPoweredProperty());
+            p(map,
+                    createExplosionRadiusProperty(),
+                    createFuseProperty(),
+                    createIgnitedProperty(),
+                    createPoweredProperty()
+            );
         }
     }
 
@@ -3208,7 +3324,11 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createCanPickUpLootProperty(), createIsImmuneToZombificationProperty(), createTimeInOverworldProperty());
+            p(map,
+                    createCanPickUpLootProperty(),
+                    createIsImmuneToZombificationProperty(),
+                    createTimeInOverworldProperty()
+            );
         }
     }
 
@@ -3466,7 +3586,12 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createCanBreakDoorsProperty(), createDrownedConversionTimeProperty(), createInWaterTimeProperty(), createIsBabyProperty());
+            p(map,
+                    createCanBreakDoorsProperty(),
+                    createDrownedConversionTimeProperty(),
+                    createInWaterTimeProperty(),
+                    createIsBabyProperty()
+            );
         }
     }
 
@@ -3571,7 +3696,15 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createConversionPlayerProperty(), createConversionTimeProperty(), createGossipsProperty(), createOffersProperty(), createVillagerDataProperty(), createVillagerDataFinalizedProperty(), createXpProperty());
+            p(map,
+                    createConversionPlayerProperty(),
+                    createConversionTimeProperty(),
+                    createGossipsProperty(),
+                    createOffersProperty(),
+                    createVillagerDataProperty(),
+                    createVillagerDataFinalizedProperty(),
+                    createXpProperty()
+            );
         }
     }
 
@@ -3832,7 +3965,15 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createDisabledSlotsProperty(), createInvisibleProperty(), createMarkerProperty(), createNoBasePlateProperty(), createPoseProperty(), createShowArmsProperty(), createSmallProperty());
+            p(map,
+                    createDisabledSlotsProperty(),
+                    createInvisibleProperty(),
+                    createMarkerProperty(),
+                    createNoBasePlateProperty(),
+                    createPoseProperty(),
+                    createShowArmsProperty(),
+                    createSmallProperty()
+            );
         }
     }
 }

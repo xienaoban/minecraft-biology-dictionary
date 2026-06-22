@@ -15,12 +15,13 @@ public final class ClientNetRegistrar {
         }
     }
 
-    private static <T extends Packet> void registerClientReceiver(
-            RegisterClientPayloadHandlersEvent event, PacketPayloads.Entry<T> payload) {
+    private static <T extends Packet> void registerClientReceiver(RegisterClientPayloadHandlersEvent event,
+                                                                  PacketPayloads.Entry<T> payload) {
         registerClientReceiver(event, payload.packetClass());
     }
 
-    private static <T extends Packet> void registerClientReceiver(RegisterClientPayloadHandlersEvent event, Class<T> clazz) {
+    private static <T extends Packet> void registerClientReceiver(RegisterClientPayloadHandlersEvent event,
+                                                                  Class<T> clazz) {
         PacketUtil.registerType(clazz);
 
         if (PacketUtil.hasClientReceiver(clazz)) {

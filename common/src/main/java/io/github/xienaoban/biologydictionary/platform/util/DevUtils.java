@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.platform.Platform;
 import net.minecraft.resources.Identifier;
@@ -26,8 +27,8 @@ public final class DevUtils {
     }
 
     public static String getModVersion() {
-        if (modVersion != null) return modVersion;
-        return modVersion = getModVersion(Lang.BIOLOGY_DICTIONARY);
+        if (modVersion != null) { return modVersion; }
+        return modVersion = getModVersion(BiologyDictionary.MOD_ID);
     }
 
     public static String getModVersion(String modId) {

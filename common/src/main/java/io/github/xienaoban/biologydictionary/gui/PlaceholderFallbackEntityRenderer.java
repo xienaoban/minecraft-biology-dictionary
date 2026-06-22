@@ -71,7 +71,8 @@ public class PlaceholderFallbackEntityRenderer {
 
     public void renderEntityBottomed(ScreenRenderingContext ctx, float left, float top, float right, float bottom,
                                      float rotateX, float rotateY, float forceScale) {
-        renderEntityOrArmorStand(e -> ctx.renderEntityBottomed(e, cache, left, top, right, bottom, rotateX, rotateY, forceScale));
+        renderEntityOrArmorStand(e -> ctx.renderEntityBottomed(
+                e, cache, left, top, right, bottom, rotateX, rotateY, forceScale));
     }
 
     public void renderEntityCentered(ScreenRenderingContext ctx, float left, float top, float right, float bottom,
@@ -81,16 +82,19 @@ public class PlaceholderFallbackEntityRenderer {
 
     public void renderEntityCentered(ScreenRenderingContext ctx, float left, float top, float right, float bottom,
                                      float rotateX, float rotateY, float forceScale) {
-        renderEntityOrArmorStand(e -> ctx.renderEntityCentered(e, cache, left, top, right, bottom, rotateX, rotateY, forceScale));
+        renderEntityOrArmorStand(e -> ctx.renderEntityCentered(
+                e, cache, left, top, right, bottom, rotateX, rotateY, forceScale));
     }
 
     public void renderEntityCentered(ScreenRenderingContext ctx, float left, float top, float right, float bottom,
                                      float rotateX, float rotateY, int silhouetteColor) {
-        renderEntityOrArmorStand(e -> ctx.renderEntityCentered(e, cache, left, top, right, bottom, rotateX, rotateY, silhouetteColor));
+        renderEntityOrArmorStand(e -> ctx.renderEntityCentered(
+                e, cache, left, top, right, bottom, rotateX, rotateY, silhouetteColor));
     }
 
     public void renderEntityCentered(ScreenRenderingContext ctx, float left, float top, float right, float bottom,
                                      float rotateX, float rotateY, float forceScale, int silhouetteColor) {
-        renderEntityOrArmorStand(e -> ctx.renderEntityCentered(e, cache, left, top, right, bottom, rotateX, rotateY, forceScale, silhouetteColor));
+        renderEntityOrArmorStand(e -> ctx.renderEntityCentered(
+                e, cache, left, top, right, bottom, rotateX, rotateY, forceScale, silhouetteColor));
     }
 }

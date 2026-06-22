@@ -36,7 +36,8 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
 
     private static final int L = 1, T = 3;
 
-    private final IntProperty<Entity> portalCooldownProperty = VanillaEntityProperties.OfEntity.getPortalCooldownProperty(p());
+    private final IntProperty<Entity> portalCooldownProperty =
+            VanillaEntityProperties.OfEntity.getPortalCooldownProperty(p());
 
     private int inPortalRecheck = 0;
 
@@ -125,7 +126,10 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             } else if (ctx.isDebug()) {
                 renderInnerText(ctx, TextUtils.literal(cooldown + "t/" + maxCooldown + "t"));
             } else {
-                renderInnerText(ctx, TextUtils.literal((cooldown / ClientUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / ClientUtils.getClientTickCountPerSecond()) + "s"));
+                renderInnerText(ctx, TextUtils.literal(
+                        (cooldown / ClientUtils.getClientTickCountPerSecond())
+                                + "s/"
+                                + (maxCooldown / ClientUtils.getClientTickCountPerSecond()) + "s"));
             }
         }
     }
@@ -170,7 +174,10 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             Integer cooldown = portalCooldownProperty.getVal();
-            int targetCooldown = (cooldown != null && cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) ? 0 : EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY;
+            int targetCooldown = (cooldown != null
+                    && cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY)
+                    ? 0
+                    : EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY;
             SkillCost cost = new EntitySetPortalCooldownSkill(targetCooldown).getRealCost(e());
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(tooltipTitle(Lang.PROPERTY_WIDGET_PORTAL_COOLDOWN_LOCK));

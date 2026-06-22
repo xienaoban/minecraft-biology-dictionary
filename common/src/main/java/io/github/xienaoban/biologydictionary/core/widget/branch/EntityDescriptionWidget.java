@@ -26,7 +26,7 @@ public final class EntityDescriptionWidget extends EntityPropertyWidget<Entity> 
         Component desc = resolveDescription(properties.entity());
         if (desc == null) {
             if (ConfigsManager.getClient().isHideEntityDescriptionWidgetIfNotFound()) { return null; }
-            else desc = TextUtils.translate(Lang.TEXT_NO_ENTITY_DESCRIPTION);
+            else { desc = TextUtils.translate(Lang.TEXT_NO_ENTITY_DESCRIPTION); }
         }
         return new EntityDescriptionWidget(properties, desc);
     };

@@ -20,7 +20,8 @@ import org.jspecify.annotations.Nullable;
 
 @ClientOnly
 public class DiscoveryToast implements Toast {
-    private static final Identifier BACKGROUND_SPRITE = Identifier.fromNamespaceAndPath("biologydictionary", "toast/discovery_toast");
+    private static final Identifier BACKGROUND_SPRITE =
+            Identifier.fromNamespaceAndPath("biologydictionary", "toast/discovery_toast");
     private static final int DISPLAY_TIME = 7000;
     private final Component entityName;
     @Nullable

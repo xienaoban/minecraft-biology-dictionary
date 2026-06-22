@@ -10,7 +10,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 
-public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt) implements Packet {
+public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt)
+        implements Packet {
     public static final Packet.Factory<ReplyEntityDataPacket> FACTORY = ReplyEntityDataPacket::new;
 
     private ReplyEntityDataPacket(FriendlyByteBuf buf) {

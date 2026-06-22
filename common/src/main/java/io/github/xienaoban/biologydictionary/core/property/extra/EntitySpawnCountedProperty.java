@@ -8,7 +8,9 @@ import net.minecraft.world.entity.MobCategory;
 /**
  * Whether this entity counts toward the mob spawning cap.
  *
- * @see net.minecraft.world.level.NaturalSpawner.SpawnState#createState(int, Iterable, net.minecraft.world.level.NaturalSpawner.ChunkGetter, net.minecraft.world.level.LocalMobCapCalculator)
+ * @see net.minecraft.world.level.NaturalSpawner.SpawnState#createState(
+ *          int, Iterable, net.minecraft.world.level.NaturalSpawner.ChunkGetter,
+ *          net.minecraft.world.level.LocalMobCapCalculator)
  */
 public class EntitySpawnCountedProperty extends BooleanProperty<Entity> {
     public static final Factory<Entity> FACTORY = EntitySpawnCountedProperty::new;

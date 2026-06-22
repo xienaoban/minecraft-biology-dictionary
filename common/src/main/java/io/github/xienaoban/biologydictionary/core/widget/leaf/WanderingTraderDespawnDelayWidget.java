@@ -37,7 +37,8 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
      */
     private static final int MAX_DESPAWN_DELAY = 48000;
 
-    private final IntProperty<WanderingTrader> despawnDelayProperty = VanillaEntityProperties.OfWanderingTrader.getDespawnDelayProperty(p());
+    private final IntProperty<WanderingTrader> despawnDelayProperty =
+            VanillaEntityProperties.OfWanderingTrader.getDespawnDelayProperty(p());
 
     public WanderingTraderDespawnDelayWidget(EntityProperties<WanderingTrader> properties) {
         super(properties);
@@ -94,7 +95,8 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
             } else if (delay < 3 * 60 * 20) {
                 renderInnerText(ctx, TextUtils.literal((delay / 20) + "s/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
             } else {
-                renderInnerText(ctx, TextUtils.literal((delay / 20 / 60) + "min/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
+                renderInnerText(ctx, TextUtils.literal(
+                        (delay / 20 / 60) + "min/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
             }
         }
     }

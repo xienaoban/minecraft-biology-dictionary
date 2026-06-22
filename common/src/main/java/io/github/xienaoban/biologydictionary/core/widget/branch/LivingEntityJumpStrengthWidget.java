@@ -38,7 +38,10 @@ public final class LivingEntityJumpStrengthWidget extends AbstractLivingEntityAt
     @Override
     protected double calcValue(double attr) {
         // The conversion algorithm is from hwyla-addon-horseinfo.
-        return -0.1817584952D * Math.pow(attr, 3) + 3.689713992D * Math.pow(attr, 2) + 2.128599134D * attr - 0.343930367D;
+        return -0.1817584952D * Math.pow(attr, 3)
+                + 3.689713992D * Math.pow(attr, 2)
+                + 2.128599134D * attr
+                - 0.343930367D;
     }
 
     @Override

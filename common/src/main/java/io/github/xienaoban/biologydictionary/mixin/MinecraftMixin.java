@@ -18,12 +18,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 
-    @Inject(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isItemEnabled(Lnet/minecraft/world/flag/FeatureFlagSet;)Z"), cancellable = true)
-    private void biologydictionary$useBiologyDictionaryScreen(CallbackInfo ci, @Local InteractionHand interactionHand, @Local ItemStack itemStack) {
+    @Inject(
+            method = "startUseItem()V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/ItemStack;isItemEnabled("
+                            + "Lnet/minecraft/world/flag/FeatureFlagSet;)Z"),
+            cancellable = true)
+    private void biologydictionary$useBiologyDictionaryScreen(CallbackInfo ci, @Local InteractionHand interactionHand,
+                                                              @Local ItemStack itemStack) {
         if (BiologyDictionaryItem.isBook(itemStack)) {
             Minecraft client = (Minecraft) (Object) this;
             LocalPlayer player = ClientUtils.getClientPlayer(client);
-            if (player == null) return;
+            if (player == null) { return; }
             player.swing(interactionHand);
             BiologyDictionaryEvent.openBookScreen(client);
             ci.cancel();

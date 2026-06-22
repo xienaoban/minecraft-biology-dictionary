@@ -60,7 +60,9 @@ public record LivingEntityStealInventorySkill() implements EntityTargetedSkill<L
     }
 
     /**
-     * @see net.minecraft.server.level.ServerPlayer#openHorseInventory(net.minecraft.world.entity.animal.equine.AbstractHorse, net.minecraft.world.Container)
+     * @see net.minecraft.server.level.ServerPlayer#openHorseInventory(
+     *          net.minecraft.world.entity.animal.equine.AbstractHorse,
+     *          net.minecraft.world.Container)
      */
     @Override
     public void serverDo(ServerContext<LivingEntity> ctx) {

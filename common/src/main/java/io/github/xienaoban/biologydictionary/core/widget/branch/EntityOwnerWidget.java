@@ -125,13 +125,15 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
         protected boolean onMouseDown(float x, float y, int code) {
             if (isMouseLeft(code)) {
                 if (((OwnableEntity) e()).getOwnerReference() == null) {
-                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_ENTITY_NOT_TAMED));
+                    AbstractBiologyDictionaryScreen.current()
+                            .sendScreenMessage(TextUtils.translate(Lang.TEXT_ENTITY_NOT_TAMED));
                     return true;
                 }
 
                 LocalPlayer player = ClientUtils.getClientPlayer();
                 if (lastEntity != player && !(PlayerUtils.isCreative(player) && PlayerUtils.isOp(player))) {
-                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT));
+                    AbstractBiologyDictionaryScreen.current()
+                            .sendScreenMessage(TextUtils.translate(Lang.TEXT_NOT_OWNER_NO_PERMISSION_TO_GIFT));
                     return true;
                 }
 

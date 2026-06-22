@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,7 +26,10 @@ public class RegistrarsTest {
     //
     //         EntityPropertyWidgets.registerBuiltIn(new EntityPropertyWidgets.Registrar() {
     //             @Override
-    //             public <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz, EntityPropertyWidget.Factory<E> widgetFactory) {
+    //             public <E extends Entity> void register(
+    //                 Class<? extends EntityPropertyWidget<E>> widgetClazz,
+    //                 EntityPropertyWidget.Factory<E> widgetFactory
+    //             ) {
     //                 uniqueness.validate(widgetClazz);
     //                 naming.validate(widgetClazz);
     //                 sameSource.validate(widgetClazz, widgetFactory);
@@ -47,7 +51,8 @@ public class RegistrarsTest {
 
             ExtraEntityProperties.registerBuiltIn(new ExtraEntityProperties.Registrar() {
                 @Override
-                public <E extends Entity> void register(Class<? extends EntityProperty<E>> propertyClazz, EntityProperty.Factory<E> factory) {
+                public <E extends Entity> void register(Class<? extends EntityProperty<E>> propertyClazz,
+                        EntityProperty.Factory<E> factory) {
                     uniqueness.validate(propertyClazz);
                     naming.validate(propertyClazz);
                     sameSource.validate(propertyClazz, factory);
@@ -138,7 +143,7 @@ public class RegistrarsTest {
         public void validate(Class<?> clazz, Object factory) {
             try {
                 Field factoryField = clazz.getDeclaredField(fieldName);
-                if (!java.lang.reflect.Modifier.isStatic(factoryField.getModifiers())) {
+                if (!Modifier.isStatic(factoryField.getModifiers())) {
                     throw new AssertionError(fieldName + " field in " + clazz.getName() + " must be static");
                 }
 
@@ -146,7 +151,9 @@ public class RegistrarsTest {
                 Object fieldValue = factoryField.get(null);
 
                 if (factory != fieldValue) {
-                    throw new AssertionError("Factory parameter is not the same as " + clazz.getName() + "." + fieldName);
+                    throw new AssertionError(
+                        "Factory parameter is not the same as " + clazz.getName() + "." + fieldName
+                    );
                 }
             } catch (NoSuchFieldException e) {
                 throw new AssertionError("Class " + clazz.getName() + " does not have a " + fieldName + " field", e);

@@ -48,7 +48,7 @@ public class VanillaEntityCollectionTest {
             return true;
         });
 
-        if (success.get()) helper.succeed();
+        if (success.get()) { helper.succeed(); }
         else {
             String path = "deobfuscation.txt";
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(path)))) {
@@ -56,7 +56,10 @@ public class VanillaEntityCollectionTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            LOGGER.info("Deobfuscation batch has been written to {}.", Paths.get(path).toAbsolutePath().normalize().toString());
+            LOGGER.info(
+                "Deobfuscation batch has been written to {}.",
+                Paths.get(path).toAbsolutePath().normalize().toString()
+            );
             helper.fail(TextUtils.literal("Some entities are not covered by the deobfuscation map."));
         }
     }
@@ -65,7 +68,9 @@ public class VanillaEntityCollectionTest {
         boolean success = true;
 
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
-            EntityManager.EntityClassInfo classInfo = WorldSession.get().getEntityManager().getEntityClassInfo(entityType);
+            EntityManager.EntityClassInfo classInfo = WorldSession.get()
+                .getEntityManager()
+                .getEntityClassInfo(entityType);
 
             // skip entities that are not LivingEntity (like arrow or boat)
             if (classInfo == null) {
@@ -85,8 +90,8 @@ public class VanillaEntityCollectionTest {
                 LOGGER.error("Entity \"{}\" is not assigned an order.", classInfo.getStringId());
             }
         }
-        if (success) helper.succeed();
-        else helper.fail(TextUtils.literal("Some entities have not been assigned an order."));
+        if (success) { helper.succeed(); }
+        else { helper.fail(TextUtils.literal("Some entities have not been assigned an order.")); }
     }
 
     private void exportDeobfuscationOfVanillaEntities(PrintWriter out) {
@@ -98,7 +103,7 @@ public class VanillaEntityCollectionTest {
             Class<?> clazz = cur.getClazz();
 
             // skip non-vanilla classes
-            if (!DevUtils.isVanillaClass(clazz)) return true;
+            if (!DevUtils.isVanillaClass(clazz)) { return true; }
 
             out.println(space + "/*" + "-".repeat(depth * 2) + "*/ "
                     + "r(" + clazz.getName().replace('$', '.') + ".class, \""

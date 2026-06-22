@@ -26,6 +26,7 @@ import org.yaml.snakeyaml.representer.Representer;
 import java.io.*;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -367,7 +368,7 @@ public final class ConfigsManager {
         Map<String, Object> map = new LinkedHashMap<>();
         for (Field field : configObject.getClass().getDeclaredFields()) {
             // Skip transient fields like skillCosts (they're handled separately)
-            if (java.lang.reflect.Modifier.isTransient(field.getModifiers())) {
+            if (Modifier.isTransient(field.getModifiers())) {
                 continue;
             }
             if (field.isAnnotationPresent(ConfigEntry.class)) {
@@ -407,7 +408,8 @@ public final class ConfigsManager {
 
                 // special cases
                 if (Enum.class.isAssignableFrom(fieldType)) {
-                    convertedValue = Enum.valueOf(fieldType.asSubclass(Enum.class), ((String) convertedValue).toUpperCase());
+                    convertedValue = Enum.valueOf(
+                            fieldType.asSubclass(Enum.class), ((String) convertedValue).toUpperCase());
                 } else if (Set.class.isAssignableFrom(fieldType)) {
                     convertedValue = Set.copyOf((Collection<?>) convertedValue);
                 }

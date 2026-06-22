@@ -34,7 +34,8 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
     private static final int ADULT_MIN_AGE = 0;
 
     private final IntProperty<AgeableMob> ageProperty = VanillaEntityProperties.OfAgeableMob.getAgeProperty(p());
-    private final BooleanProperty<AgeableMob> ageLockedProperty = VanillaEntityProperties.OfAgeableMob.getAgeLockedProperty(p());
+    private final BooleanProperty<AgeableMob> ageLockedProperty =
+            VanillaEntityProperties.OfAgeableMob.getAgeLockedProperty(p());
 
     public AgeableMobGrowthWidget(EntityProperties<AgeableMob> properties) {
         super(properties);
@@ -114,7 +115,8 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                 if (ageLocked) {
                     renderInnerText(ctx, TextUtils.translate(Lang.TEXT_ALWAYS_BABY));
                 } else {
-                    renderInnerText(ctx, TextUtils.literal(((age - BABY_MIN_AGE) / 20) + "s/" + (-BABY_MIN_AGE / 20 / 60) + "m"));
+                    renderInnerText(ctx, TextUtils.literal(
+                            ((age - BABY_MIN_AGE) / 20) + "s/" + (-BABY_MIN_AGE / 20 / 60) + "m"));
                 }
             } else {
                 renderInnerText(ctx, TextUtils.translate(Lang.TEXT_ADULT));

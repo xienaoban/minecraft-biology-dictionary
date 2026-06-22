@@ -44,12 +44,15 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
         } else {
             Item item = SpawnEggItem.byId(entityType).map(holder -> holder.value()).orElse(null);
             if (item == null) {
-                BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                BiologyDictionary.sendCenteredWarning(
+                        ctx.player(), TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
             } else {
                 ItemStack stack = new ItemStack(item);
                 PlayerUtils.getInventory(ctx.player()).add(stack);
                 // @see net.minecraft.server.commands.GiveCommand.giveItem
-                PlayerUtils.playLocalSound(ctx.player(), SoundEvents.ITEM_PICKUP, 1F, ((ctx.player().getRandom().nextFloat() - ctx.player().getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                PlayerUtils.playLocalSound(ctx.player(), SoundEvents.ITEM_PICKUP, 1F,
+                        ((ctx.player().getRandom().nextFloat() - ctx.player().getRandom().nextFloat()) * 0.7F
+                                + 1.0F) * 2.0F);
                 BiologyDictionary.sendCenteredWarning(ctx.player(),
                         TextUtils.translate(Lang.TEXT_OFFER_OR_DROP, TextUtils.translate(item.getDescriptionId())));
             }

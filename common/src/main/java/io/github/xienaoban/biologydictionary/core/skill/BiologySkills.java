@@ -50,7 +50,8 @@ public final class BiologySkills {
             }
 
             @Override
-            public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
+            public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass,
+                    EntityTargetedSkill.Meta<T> meta) {
                 register0(skillClass, meta);
             }
         };
@@ -66,7 +67,8 @@ public final class BiologySkills {
         }
     }
 
-    private static <T extends EntityTargetedSkill<?>> void register0(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
+    private static <T extends EntityTargetedSkill<?>> void register0(Class<T> skillClass,
+            EntityTargetedSkill.Meta<T> meta) {
         if (entityTargetedSkills.putIfAbsent(key(skillClass), meta) != null) {
             throw new RuntimeException("Duplicate skill registered: " + key(skillClass));
         }
@@ -146,7 +148,8 @@ public final class BiologySkills {
                 BiologyDictionaryClient.sendCenteredWarning(e.getGameMessage());
             } catch (Exception e) {
                 BiologyDictionaryClient.printThrowableToLoggerAndGame(
-                        "Failed to activate skill \"" + skill.getClass() + "\" of entity \"" + EntityUtils.getEntityTypeIdName(entity) + "\"", e);
+                        "Failed to activate skill \"" + skill.getClass()
+                                + "\" of entity \"" + EntityUtils.getEntityTypeIdName(entity) + "\"", e);
             }
             return false;
         }}

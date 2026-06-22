@@ -57,7 +57,8 @@ public final class HighlightManager {
     public void highlightBlock(ClientLevel level, BlockPos blockPos, int durationTicks) {
         if (!hasHighlighted) { hasHighlighted = true; }
         BlockState blockState = level.getBlockState(blockPos);
-        highlightedBlocks.add(new HighlightedBlock(BiologyDictionaryClient.getTicks() + durationTicks, blockState, blockPos, level.dimension()));
+        highlightedBlocks.add(new HighlightedBlock(
+                BiologyDictionaryClient.getTicks() + durationTicks, blockState, blockPos, level.dimension()));
     }
 
     public record Context(ClientLevel level) {}

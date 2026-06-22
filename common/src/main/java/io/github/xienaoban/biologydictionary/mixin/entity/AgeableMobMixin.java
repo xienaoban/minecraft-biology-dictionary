@@ -7,7 +7,13 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(AgeableMob.class)
 public abstract class AgeableMobMixin {
-    @ModifyArg(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/AgeableMob;setAge(I)V", ordinal = 1), index = 0)
+    @ModifyArg(
+            method = "aiStep",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/entity/AgeableMob;setAge(I)V",
+                    ordinal = 1),
+            index = 0)
     private int biologydictionary$keepBreedCooldownLocked(int age) {
         AgeableMob self = (AgeableMob) (Object) this;
         int lockedAge = AnimalIMixin.biologydictionary$getParentAgeAfterBreeding() + 1;

@@ -39,50 +39,58 @@ public class EntityPropertyBar extends ScreenElement {
         float widthLeft = 5;
         final float top = getBox().getTop() - 1;
         final float height = getBox().getHeight() + 2;
-        ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(), getBox().getLeft() - 1, top, widthLeft + 1, height);
+        ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(),
+                getBox().getLeft() - 1, top, widthLeft + 1, height);
         currPos += widthLeft;
 
         float widthMid = getBox().getWidth() - 10;
         while (widthMid > 8) {
-            ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, 8, height);
+            ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(),
+                    getBox().getLeft() + currPos, top, 8, height);
             currPos += 8;
             widthMid -= 8;
         }
-        ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, widthMid, height);
+        ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(),
+                getBox().getLeft() + currPos, top, widthMid, height);
         currPos += widthMid;
 
         float widthRight = 5;
-        ctx.renderTexture(texture, textureLeft + 14, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, widthRight + 1, height);
+        ctx.renderTexture(texture, textureLeft + 14, textureTop, ctx.getZ(),
+                getBox().getLeft() + currPos, top, widthRight + 1, height);
     }
 
     /**
      * leftPattern: 1px + 5px, midPattern: 8px * n, rightPattern: 5px + 1px
      */
     protected void renderProgressBar(ScreenRenderingContext ctx, float percent) {
-        if (percent <= 0) return;
-        if (percent > 1) percent = 1;
+        if (percent <= 0) { return; }
+        if (percent > 1) { percent = 1; }
         final float top = getBox().getTop() - 1;
         final float width = percent * getBox().getWidth();
         final float height = getBox().getHeight() + 2;
         float currPos = 0;
         float widthLeft = Math.min(width, 5);
         float textureLeft = this.textureLeft + 2 * Widget.WIDGET_WIDTH;
-        ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(), getBox().getLeft() - 1, top, widthLeft + 1, height);
+        ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(),
+                getBox().getLeft() - 1, top, widthLeft + 1, height);
         currPos += widthLeft;
-        if (currPos == width) return;
+        if (currPos == width) { return; }
 
         float widthMid = Math.min(width - 5, getBox().getWidth() - 10);
         while (widthMid > 8) {
-            ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, 8, height);
+            ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(),
+                    getBox().getLeft() + currPos, top, 8, height);
             currPos += 8;
             widthMid -= 8;
         }
-        ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, widthMid, height);
+        ctx.renderTexture(texture, textureLeft + 6, textureTop, ctx.getZ(),
+                getBox().getLeft() + currPos, top, widthMid, height);
         currPos += widthMid;
-        if (currPos == width) return;
+        if (currPos == width) { return; }
 
         float widthRight = width - (getBox().getWidth() - 5);
-        ctx.renderTexture(texture, textureLeft + 14, textureTop, ctx.getZ(), getBox().getLeft() + currPos, top, widthRight + ((int) percent), height);
+        ctx.renderTexture(texture, textureLeft + 14, textureTop, ctx.getZ(),
+                getBox().getLeft() + currPos, top, widthRight + ((int) percent), height);
     }
 
     protected void renderInnerText(ScreenRenderingContext ctx, Component text) {

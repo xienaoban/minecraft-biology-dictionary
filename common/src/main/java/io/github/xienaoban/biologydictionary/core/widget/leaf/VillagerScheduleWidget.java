@@ -142,7 +142,8 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
 
             int t = 0;
             Activity activity = timeline[timeline.length - 1].activity();
-            ctx.renderTexture(getTexture(), getTextureLeft() + getTextureOffset(activity), getTextureTop() + 1, ctx.getZ(), getBox().getLeft(), getBox().getTop() + 1, 1, getBox().getHeight() - 2);
+            ctx.renderTexture(getTexture(), getTextureLeft() + getTextureOffset(activity), getTextureTop() + 1,
+                    ctx.getZ(), getBox().getLeft(), getBox().getTop() + 1, 1, getBox().getHeight() - 2);
             float hoveredTextLeft = -1;
             int hoveredIdxNext = -1;
             int currTimeIdxCurr = timeline.length - 1;
@@ -166,10 +167,12 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
                 hoveredTextLeft = tl;
                 hoveredIdxNext = 0;
             }
-            ctx.renderTexture(getTexture(), getTextureLeft() + getTextureOffset(activity) + AW - 1, getTextureTop() + 1, ctx.getZ(), getBox().getRight() - 1, getBox().getTop() + 1, 1, getBox().getHeight() - 2);
+            ctx.renderTexture(getTexture(), getTextureLeft() + getTextureOffset(activity) + AW - 1,
+                    getTextureTop() + 1, ctx.getZ(),
+                    getBox().getRight() - 1, getBox().getTop() + 1, 1, getBox().getHeight() - 2);
 
             ctx.renderTexture(getTexture(), 22 * Widget.WIDGET_WIDTH, 3 * Widget.WIDGET_HEIGHT, ctx.getZ(),
-                    getBox().getLeft() + 1 + ((currTime + MAX_TIME - ZERO_TIME) % MAX_TIME) * scale - (Widget.WIDGET_WIDTH / 2F) + 1,
+                    getBox().getLeft() + 1 + currTimeZero * scale - (Widget.WIDGET_WIDTH / 2F) + 1,
                     getBox().getTop() - 1,
                     Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
 
@@ -197,17 +200,20 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
             final float leftMod = left % AW;
             if (leftMod > 0) {
                 float w = Math.min(width, AW - leftMod);
-                ctx.renderTexture(getTexture(), textureLeft + leftMod, getTextureTop(), ctx.getZ(), currLeft, top, w, height);
+                ctx.renderTexture(getTexture(), textureLeft + leftMod, getTextureTop(),
+                        ctx.getZ(), currLeft, top, w, height);
                 currLeft += w;
             }
             final float rightMod = right % AW;
             final float rightNoMod = offset + right - rightMod;
             while (currLeft < rightNoMod) {
-                ctx.renderTexture(getTexture(), textureLeft, getTextureTop(), ctx.getZ(), currLeft, top, AW, height);
+                ctx.renderTexture(getTexture(), textureLeft, getTextureTop(),
+                        ctx.getZ(), currLeft, top, AW, height);
                 currLeft += AW;
             }
             if (rightMod > 0) {
-                ctx.renderTexture(getTexture(), textureLeft, getTextureTop(), ctx.getZ(), currLeft, top, rightMod, height);
+                ctx.renderTexture(getTexture(), textureLeft, getTextureTop(),
+                        ctx.getZ(), currLeft, top, rightMod, height);
             }
 
             if (ctx.getMouseX() >= (offset + left) && ctx.getMouseX() < (offset + right)
@@ -225,7 +231,8 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
 
             String str2;
             if (ctx.isDebug()) {
-                str2 = (timeline[last].time() + ZERO_TIME) % MAX_TIME + "-" + (timeline[idx].time() + ZERO_TIME) % MAX_TIME;
+                str2 = (timeline[last].time() + ZERO_TIME) % MAX_TIME
+                        + "-" + (timeline[idx].time() + ZERO_TIME) % MAX_TIME;
             } else {
                 str2 = tickZeroToTime(timeline[last].time()) + "-" + tickZeroToTime(timeline[idx].time());
             }
@@ -237,10 +244,12 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
             float l1 = left + 1.0F, l2 = getBox().getRight() - 2.0F - w;
             if (l1 < l2) {
                 ctx.renderText(txt1, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l1, getBox().getTop() + 2 + TXT_TO);
-                ctx.renderText(txt2, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l1 + w1 + 1, getBox().getTop() + 2 + TXT_TO);
+                ctx.renderText(txt2, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
+                        l1 + w1 + 1, getBox().getTop() + 2 + TXT_TO);
             } else {
                 ctx.renderText(txt1, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l2, getBox().getTop() + 2 + TXT_TO);
-                ctx.renderText(txt2, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), l2 + w1 + 1, getBox().getTop() + 2 + TXT_TO);
+                ctx.renderText(txt2, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
+                        l2 + w1 + 1, getBox().getTop() + 2 + TXT_TO);
             }
         }
     }

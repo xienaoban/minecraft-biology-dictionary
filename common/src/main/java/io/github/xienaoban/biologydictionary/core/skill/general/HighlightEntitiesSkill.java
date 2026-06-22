@@ -63,7 +63,8 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
                     TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE)), "entityType == null");
         } else if (entityType == EntityType.PLAYER) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
-                    TextUtils.translate(Lang.TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS)), "entityType == EntityType.PLAYER");
+                    TextUtils.translate(Lang.TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS)),
+                    "entityType == EntityType.PLAYER");
         }
     }
 

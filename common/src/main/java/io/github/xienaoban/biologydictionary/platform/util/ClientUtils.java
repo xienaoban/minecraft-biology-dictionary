@@ -123,7 +123,8 @@ public final class ClientUtils {
     }
 
     /**
-     * @see net.minecraft.client.gui.screens.inventory.PageButton#playDownSound(net.minecraft.client.sounds.SoundManager)
+     * @see net.minecraft.client.gui.screens.inventory.PageButton#playDownSound(
+     *          net.minecraft.client.sounds.SoundManager)
      */
     public static void playScreenSound(Minecraft client, SoundEvent sound, float volume, float pitch) {
         client.getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));

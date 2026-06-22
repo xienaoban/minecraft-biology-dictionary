@@ -32,7 +32,9 @@ public final class EntityOverviewCache extends ConcurrentHashMap<EntityType<?>, 
             Entity entity = EntityUtils.create(entityType, serverLevel);
 
             // Initialize goal/ai for mob entities
-            // @see net.minecraft.world.entity.EntityType.create(net.minecraft.server.level.ServerLevel, java.util.function.Consumer<T>, net.minecraft.core.BlockPos, net.minecraft.world.entity.EntitySpawnReason, boolean, boolean)
+            // @see net.minecraft.world.entity.EntityType.create(
+            //          net.minecraft.server.level.ServerLevel, java.util.function.Consumer<T>,
+            //          net.minecraft.core.BlockPos, net.minecraft.world.entity.EntitySpawnReason, boolean, boolean)
             if (entity instanceof Mob mob) {
                 mob.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()),
                         EntitySpawnReason.NATURAL, null);
@@ -49,7 +51,8 @@ public final class EntityOverviewCache extends ConcurrentHashMap<EntityType<?>, 
             put(entityType, created);
             return created;
         } catch (Exception e) {
-            LOGGER.error("Failed to create entity overview for type: {}", EntityUtils.getEntityTypeIdName(entityType), e);
+            LOGGER.error("Failed to create entity overview for type: {}",
+                    EntityUtils.getEntityTypeIdName(entityType), e);
             put(entityType, INVALID);
             return INVALID;
         }

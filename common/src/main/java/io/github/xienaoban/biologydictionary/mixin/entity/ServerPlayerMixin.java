@@ -12,7 +12,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayer.class)
 public class ServerPlayerMixin {
 
-    @Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;awardStat(Lnet/minecraft/stats/Stat;)V", ordinal = 0))
+    @Inject(
+            method = "die",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/server/level/ServerPlayer;awardStat(Lnet/minecraft/stats/Stat;)V",
+                    ordinal = 0))
     private void biologydictionary$onKilledByEntity(DamageSource damageSource, CallbackInfo ci) {
         ServerPlayer self = (ServerPlayer) (Object) this;
         LivingEntity killer = self.getKillCredit();

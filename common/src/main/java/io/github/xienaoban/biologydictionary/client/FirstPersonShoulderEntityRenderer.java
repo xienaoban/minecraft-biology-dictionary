@@ -43,7 +43,8 @@ public final class FirstPersonShoulderEntityRenderer {
 
     private boolean banned = false;
 
-    public void run(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
+    public void run(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta,
+                    PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
         if (banned) { return; }
         try {
             run0(client, entityRenderDispatcher, tickDelta, poseStack, submitNodeCollector, player, light);
@@ -54,17 +55,24 @@ public final class FirstPersonShoulderEntityRenderer {
     }
 
     /**
-     * @see net.minecraft.client.renderer.ItemInHandRenderer#renderHandsWithItems(float, com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.SubmitNodeCollector, net.minecraft.client.player.LocalPlayer, int)
-     * @see net.minecraft.client.renderer.ItemInHandRenderer#renderPlayerArm(com.mojang.blaze3d.vertex.PoseStack, net.minecraft.client.renderer.SubmitNodeCollector, int, float, float, net.minecraft.world.entity.HumanoidArm)
+     * @see net.minecraft.client.renderer.ItemInHandRenderer#renderHandsWithItems(
+     *          float, com.mojang.blaze3d.vertex.PoseStack,
+     *          net.minecraft.client.renderer.SubmitNodeCollector,
+     *          net.minecraft.client.player.LocalPlayer, int)
+     * @see net.minecraft.client.renderer.ItemInHandRenderer#renderPlayerArm(
+     *          com.mojang.blaze3d.vertex.PoseStack,
+     *          net.minecraft.client.renderer.SubmitNodeCollector,
+     *          int, float, float, net.minecraft.world.entity.HumanoidArm)
      */
-    private void run0(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
+    private void run0(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta,
+                      PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
         HudPosition hudPos = switch (ConfigsManager.getClient().getFirstPersonShoulderEntityPosition()) {
             case NONE -> null;
             case TOP -> HudPosition.TOP;
             case BOTTOM -> HudPosition.BOTTOM;
             case SIDES -> HudPosition.SIDES;
         };
-        if (hudPos == null) return;
+        if (hudPos == null) { return; }
 
         if (player.getShoulderParrotLeft().isEmpty() && player.getShoulderParrotRight().isEmpty()) {
             return;
@@ -81,14 +89,15 @@ public final class FirstPersonShoulderEntityRenderer {
         ps.mulPose(Axis.XP.rotationDegrees((player.getViewXRot(tickDelta) - xp) * 0.1F));
         ps.mulPose(Axis.YP.rotationDegrees((player.getViewYRot(tickDelta) - yp) * 0.1F));
 
-        CameraRenderState camera = ((LevelRendererIMixin) client.levelRenderer).biologydictionary$getLevelRenderState().cameraRenderState;
+        CameraRenderState camera = ((LevelRendererIMixin) client.levelRenderer)
+                .biologydictionary$getLevelRenderState().cameraRenderState;
 
         for (int i = 0; i < 2; ++i) {
             Optional<Parrot.Variant> optionalVariant
                     = i == 0 ? player.getShoulderParrotLeft() : player.getShoulderParrotRight();
             update(entityRenderDispatcher, player, optionalVariant.orElse(null), i);
             LivingEntity entity = entities[i];
-            if (entity == null) continue;
+            if (entity == null) { continue; }
             if (curTime > nextHeadYawTime[i]) {
                 lastHeadYawTime[i] = nextHeadYawTime[i];
                 nextHeadYawTime[i] = curTime + 2000 + (long)(Math.random() * 6000);
@@ -116,9 +125,10 @@ public final class FirstPersonShoulderEntityRenderer {
         }
     }
 
-    private void update(EntityRenderDispatcher entityRenderDispatcher, LocalPlayer player, Parrot.Variant variant, int index) {
+    private void update(EntityRenderDispatcher entityRenderDispatcher, LocalPlayer player,
+                        Parrot.Variant variant, int index) {
         int variantId = variant == null ? NULL_VARIANT : variant.getId();
-        if (lrData[index] == variantId) return;
+        if (lrData[index] == variantId) { return; }
         lrData[index] = variantId;
         LivingEntity entity;
         EntityRenderer<Entity, EntityRenderState> entityRenderer;
@@ -155,7 +165,8 @@ public final class FirstPersonShoulderEntityRenderer {
         RenderUtils.renderBodyOnly(entityRenderState);
     }
 
-    private record HudPosition(float xRot, float yRot, float zRot, double xPos, double yPos, double zPos, float yOffset) {
+    private record HudPosition(float xRot, float yRot, float zRot,
+                               double xPos, double yPos, double zPos, float yOffset) {
         private static final float PI_DIV_180 = (float)(Math.PI / 180);
 
         public static final HudPosition TOP = new HudPosition(60, 0, 180, 0.5, 0.2, -1.8, -0.003F);

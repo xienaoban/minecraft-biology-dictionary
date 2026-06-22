@@ -23,7 +23,8 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 /**
  * Server notifies client of a new discovery: S -> C.
  */
-public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityType, DiscoveryRecord record) implements Packet {
+public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityType, DiscoveryRecord record)
+        implements Packet {
     public static final Packet.Factory<SendDiscoveryIncrementalPacket> FACTORY = SendDiscoveryIncrementalPacket::new;
 
     private SendDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
@@ -45,7 +46,8 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
     @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        @ClientOnly final class CO { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(
+                SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
             ClientWorldSession cws = ClientWorldSession.get();
             if (cws == null) {
                 LOGGER.warn("Null ClientWorldSession. Ignored.", new RuntimeException());

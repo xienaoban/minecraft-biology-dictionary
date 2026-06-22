@@ -13,7 +13,8 @@ public final class InventoryUtils {
         return hasEnoughItems(inventory, itemStack, defaultCmp());
     }
 
-    public static boolean hasEnoughItems(Inventory inventory, ItemStack itemStack, BiPredicate<ItemStack, ItemStack> cmp) {
+    public static boolean hasEnoughItems(Inventory inventory, ItemStack itemStack,
+            BiPredicate<ItemStack, ItemStack> cmp) {
         int left = itemStack.getCount();
         for (ItemStack is : inventory.getNonEquipmentItems()) {
             if (!cmp.test(itemStack, is)) { continue; }
@@ -28,7 +29,8 @@ public final class InventoryUtils {
         return consumeItems(inventory, itemStack, defaultCmp());
     }
 
-    public static boolean consumeItems(Inventory inventory, ItemStack itemStack, BiPredicate<ItemStack, ItemStack> cmp) {
+    public static boolean consumeItems(Inventory inventory, ItemStack itemStack,
+            BiPredicate<ItemStack, ItemStack> cmp) {
         int left = itemStack.getCount();
         List<ItemStack> list = inventory.getNonEquipmentItems();
         List<ItemStack> fallback = new ArrayList<>();

@@ -44,7 +44,8 @@ public abstract class ElementScreen extends CommonScreen {
         try {
             updateSelectedElement();
             if (getSelectedElement() != null) {
-                return getSelectedElement().mouseDown((float) mouseButtonEvent.x(), (float) mouseButtonEvent.y(), mouseButtonEvent.button());
+                return getSelectedElement().mouseDown(
+                        (float) mouseButtonEvent.x(), (float) mouseButtonEvent.y(), mouseButtonEvent.button());
             } else {
                 return super.mouseClicked(mouseButtonEvent, doubleClick);
             }

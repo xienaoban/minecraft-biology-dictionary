@@ -99,7 +99,8 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
     }
 
     /**
-     * @see net.minecraft.world.inventory.HorseInventoryMenu#quickMoveStack(net.minecraft.world.entity.player.Player, int)
+     * @see net.minecraft.world.inventory.HorseInventoryMenu#quickMoveStack(
+     *          net.minecraft.world.entity.player.Player, int)
      */
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
@@ -145,7 +146,8 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         super.removed(player);
         container.stopOpen(player);
         if (closedByDistance) {
-            PlayerUtils.showClientCenteredMessage(player, TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
+            PlayerUtils.showClientCenteredMessage(player,
+                    TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR).withStyle(ChatFormatting.YELLOW));
         }
     }
 
@@ -238,7 +240,8 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
                 return false;
             }
             ItemStack itemStack = getItem();
-            if (!itemStack.isEmpty() && EnchantmentHelper.has(itemStack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
+            if (!itemStack.isEmpty()
+                    && EnchantmentHelper.has(itemStack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) {
                 return false;
             }
             return super.mayPickup(player);

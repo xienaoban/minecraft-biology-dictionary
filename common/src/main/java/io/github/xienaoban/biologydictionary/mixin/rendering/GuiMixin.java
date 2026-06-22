@@ -18,9 +18,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class GuiMixin {
     @Shadow @Final private Minecraft minecraft;
 
-    @Inject(method = "extractCrosshair(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V",
+    @Inject(method = "extractCrosshair(Lnet/minecraft/client/gui/GuiGraphicsExtractor;"
+            + "Lnet/minecraft/client/DeltaTracker;)V",
             at = @At("TAIL"))
-    private void biologydictionary$renderTelescopeDiscoveryIndicator(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    private void biologydictionary$renderTelescopeDiscoveryIndicator(GuiGraphicsExtractor guiGraphics,
+                                                                     DeltaTracker deltaTracker, CallbackInfo ci) {
         TelescopeDiscoveryIndicatorRenderer.render(minecraft, guiGraphics);
     }
 }

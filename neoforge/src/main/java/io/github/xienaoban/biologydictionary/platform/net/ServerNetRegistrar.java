@@ -18,11 +18,13 @@ public final class ServerNetRegistrar {
         }
     }
 
-    private static <T extends Packet> void registerPayload(PayloadRegistrar registrar, PacketPayloads.Entry<T> payload) {
+    private static <T extends Packet> void registerPayload(PayloadRegistrar registrar,
+                                                           PacketPayloads.Entry<T> payload) {
         registerPayload(registrar, payload.packetClass(), payload.factory());
     }
 
-    private static <T extends Packet> void registerPayload(PayloadRegistrar registrar, Class<T> clazz, Packet.Factory<T> factory) {
+    private static <T extends Packet> void registerPayload(PayloadRegistrar registrar, Class<T> clazz,
+                                                           Packet.Factory<T> factory) {
         PacketUtil.registerType(clazz);
 
         CustomPacketPayload.Type<T> type = PacketUtil.getType(clazz);

@@ -18,7 +18,10 @@ public final class Permissions {
 
     public static <T> void checkClientServerSameState(T client, T server) {
         if (!Objects.equals(client, server)) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_CLIENT_SERVER_ARG_NOT_SAME, TextUtils.literal(client.getClass().getSimpleName())),
+            throw new NoPermissionException(
+                    TextUtils.translate(
+                            Lang.TEXT_CLIENT_SERVER_ARG_NOT_SAME,
+                            TextUtils.literal(client.getClass().getSimpleName())),
                     "Arg state differs between client and server: client={" + client + "}, server={" + server + "}");
         }
     }
@@ -45,13 +48,20 @@ public final class Permissions {
         boolean targetMode = PlayerUtils.isCreative(target);
         if (targetMode || !sourceMode) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NO_PERMISSION_TO_MODIFY_THIS_PLAYER),
-                    "No permission to modify this player's data: source_mode=\"" + PlayerUtils.gameMode(player).getName() + "\", target_mode=\"" + PlayerUtils.gameMode(target).getName() + "\"");
+                    "No permission to modify this player's data: source_mode=\""
+                            + PlayerUtils.gameMode(player).getName()
+                            + "\", target_mode=\"" + PlayerUtils.gameMode(target).getName() + "\"");
         }
     }
 
     public static void checkPlayerInventoryItems(Player player, ItemStack itemStack) {
         if (!InventoryUtils.hasEnoughItems(PlayerUtils.getInventory(player), itemStack)) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_ITEMS, itemStack.getCount(), itemStack.getItem().getName(itemStack)), "Not enough items in inventory: item=\"" + itemStack.getItem() + "\"");
+            throw new NoPermissionException(
+                    TextUtils.translate(
+                            Lang.TEXT_NOT_ENOUGH_ITEMS,
+                            itemStack.getCount(),
+                            itemStack.getItem().getName(itemStack)),
+                    "Not enough items in inventory: item=\"" + itemStack.getItem() + "\"");
         }
     }
 
@@ -62,7 +72,12 @@ public final class Permissions {
 
     public static void checkConsumePlayerInventoryItems(Player player, ItemStack itemStack) {
         if (!InventoryUtils.consumeItems(PlayerUtils.getInventory(player), itemStack)) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_ITEMS, itemStack.getCount(), itemStack.getItem().getName(itemStack)), "Not enough items in inventory: item=\"" + itemStack.getItem() + "\"");
+            throw new NoPermissionException(
+                    TextUtils.translate(
+                            Lang.TEXT_NOT_ENOUGH_ITEMS,
+                            itemStack.getCount(),
+                            itemStack.getItem().getName(itemStack)),
+                    "Not enough items in inventory: item=\"" + itemStack.getItem() + "\"");
         }
     }
 
@@ -80,7 +95,9 @@ public final class Permissions {
     public static void checkMobHasGoalAndStart(Mob entity, Class<? extends Goal> goalClass) {
         WrappedGoal goal = EntityUtils.getWrappedGoal(entity, goalClass);
         if (goal == null) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_TARGET_ENTITY_NO_ABILITY, goalClass.getSimpleName()), "There's no goal \"" + goalClass + "\" in entity \"" + entity + "\"");
+            throw new NoPermissionException(
+                    TextUtils.translate(Lang.TEXT_TARGET_ENTITY_NO_ABILITY, goalClass.getSimpleName()),
+                    "There's no goal \"" + goalClass + "\" in entity \"" + entity + "\"");
         }
         goal.start();
     }

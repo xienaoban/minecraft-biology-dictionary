@@ -67,7 +67,8 @@ public final class EntityPropertyWidgets {
             private final Set<Class<?>> visited = new HashSet<>();
 
             @Override
-            public <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz, EntityPropertyWidget.Factory<E> widgetFactory) {
+            public <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz,
+                    EntityPropertyWidget.Factory<E> widgetFactory) {
                 register0(widgetClazz, widgetFactory, ++orderIndex, visited);
             }
         };

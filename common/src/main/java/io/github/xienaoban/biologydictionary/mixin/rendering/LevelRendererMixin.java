@@ -26,7 +26,10 @@ public abstract class LevelRendererMixin {
 
     @Shadow @Final private EntityRenderDispatcher entityRenderDispatcher;
 
-    @Inject(method = "extractVisibleEntities(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/culling/Frustum;Lnet/minecraft/client/DeltaTracker;Lnet/minecraft/client/renderer/state/level/LevelRenderState;)V",
+    @Inject(method = "extractVisibleEntities(Lnet/minecraft/client/Camera;"
+            + "Lnet/minecraft/client/renderer/culling/Frustum;"
+            + "Lnet/minecraft/client/DeltaTracker;"
+            + "Lnet/minecraft/client/renderer/state/level/LevelRenderState;)V",
             at = @At(value = "TAIL"))
     private void biologydictionary$setGlowing(Camera camera, Frustum frustum, DeltaTracker deltaTracker,
                                               LevelRenderState levelRenderState, CallbackInfo ci) {
@@ -36,7 +39,9 @@ public abstract class LevelRendererMixin {
         }
     }
 
-    @Inject(method = "submitEntities(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/state/level/LevelRenderState;Lnet/minecraft/client/renderer/SubmitNodeCollector;)V",
+    @Inject(method = "submitEntities(Lcom/mojang/blaze3d/vertex/PoseStack;"
+            + "Lnet/minecraft/client/renderer/state/level/LevelRenderState;"
+            + "Lnet/minecraft/client/renderer/SubmitNodeCollector;)V",
             at = @At(value = "TAIL"))
     private void biologydictionary$submitHighlight(PoseStack poseStack, LevelRenderState levelRenderState,
                                                    SubmitNodeCollector submitNodeCollector, CallbackInfo ci) {

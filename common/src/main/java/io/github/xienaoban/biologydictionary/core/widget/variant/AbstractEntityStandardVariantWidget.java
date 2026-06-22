@@ -14,9 +14,11 @@ import net.minecraft.world.entity.Entity;
 import java.util.List;
 
 @ClientOnly
-public abstract class AbstractEntityStandardVariantWidget<E extends Entity, V> extends AbstractEntityVariantWidget<E, V> {
+public abstract class AbstractEntityStandardVariantWidget<E extends Entity, V>
+        extends AbstractEntityVariantWidget<E, V> {
 
-    protected static <E extends Entity, V> EntityVariantPropertyBundle.VariantHandler<E, V> getVariantHandler(E entity, int variantHandlerIdx) {
+    protected static <E extends Entity, V> EntityVariantPropertyBundle.VariantHandler<E, V> getVariantHandler(
+        E entity, int variantHandlerIdx) {
         List<EntityVariantPropertyBundle.VariantHandler<E, V>> list = EntityVariantPropertyBundle.getHandlers(entity);
         return list.get(variantHandlerIdx);
     }
@@ -31,7 +33,8 @@ public abstract class AbstractEntityStandardVariantWidget<E extends Entity, V> e
         super(properties, variantCnt);
     }
 
-    protected AbstractEntityStandardVariantWidget(EntityProperties<E> properties, int variantCnt, int maxDisplayCntPerLine, int rowsPerVariant) {
+    protected AbstractEntityStandardVariantWidget(EntityProperties<E> properties, int variantCnt,
+            int maxDisplayCntPerLine, int rowsPerVariant) {
         super(properties, variantCnt, maxDisplayCntPerLine, rowsPerVariant);
     }
 

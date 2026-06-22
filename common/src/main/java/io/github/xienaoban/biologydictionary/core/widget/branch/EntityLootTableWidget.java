@@ -78,8 +78,12 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
             for (int i = 0; i < entries.size(); i++) {
                 List<Component> column = columns.get(i);
                 List<Integer> width = widths.get(i);
-                MutableComponent dot1 = TextUtils.literal(".".repeat(Math.max(0, (maxItemNameWidth + maxCountWidth - width.get(0) - width.get(1) + 4) / 2))).withStyle(ChatFormatting.DARK_GRAY);
-                MutableComponent dot2 = TextUtils.literal(".".repeat(Math.max(0, (maxChanceWidth - width.get(2) + 4) / 2))).withStyle(ChatFormatting.DARK_GRAY);
+                MutableComponent dot1 = TextUtils.literal(".".repeat(Math.max(
+                        0, (maxItemNameWidth + maxCountWidth - width.get(0) - width.get(1) + 4) / 2)))
+                        .withStyle(ChatFormatting.DARK_GRAY);
+                MutableComponent dot2 = TextUtils.literal(".".repeat(Math.max(
+                        0, (maxChanceWidth - width.get(2) + 4) / 2)))
+                        .withStyle(ChatFormatting.DARK_GRAY);
                 list.add(TextUtils.concat(
                         Arrays.asList(column.get(0), dot1, column.get(1), dot2, column.get(2), column.get(3)),
                         TextUtils.space()
@@ -165,10 +169,12 @@ public final class EntityLootTableWidget extends EntityPropertyStandardWidget<En
 
             // Render item icons
             for (int i = lootEntries.size() - 1; i >= 0; --i) {
-                ctx.renderTexture(Textures.ICONS, 21 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
+                ctx.renderTexture(Textures.ICONS, 21 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(),
+                        getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
             for (int i = lootEntries.size() - 1; i >= 0; --i) {
-                ctx.renderItem(new ItemStack(lootEntries.get(i).item()), 0.5F, getBox().getLeft() + i * gap, getBox().getTop());
+                ctx.renderItem(new ItemStack(lootEntries.get(i).item()), 0.5F,
+                        getBox().getLeft() + i * gap, getBox().getTop());
             }
         }
 

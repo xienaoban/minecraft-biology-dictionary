@@ -33,7 +33,8 @@ public final class TadpoleGrowthWidget extends EntityPropertyStandardWidget<Tadp
     private static final int FROG_MIN_AGE = Tadpole.ticksToBeFrog;
 
     private final IntProperty<Tadpole> ageProperty = VanillaEntityProperties.OfTadpole.getAgeProperty(p());
-    private final BooleanProperty<Tadpole> ageLockedProperty = VanillaEntityProperties.OfTadpole.getAgeLockedProperty(p());
+    private final BooleanProperty<Tadpole> ageLockedProperty =
+            VanillaEntityProperties.OfTadpole.getAgeLockedProperty(p());
 
     public TadpoleGrowthWidget(EntityProperties<Tadpole> properties) {
         super(properties);

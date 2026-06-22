@@ -34,7 +34,8 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
 
     private static final int MAX_RESTOCK_TODAY = 2;
 
-    private final IntProperty<Villager> restocksTodayProperty = VanillaEntityProperties.OfVillager.getRestocksTodayProperty(p());
+    private final IntProperty<Villager> restocksTodayProperty =
+            VanillaEntityProperties.OfVillager.getRestocksTodayProperty(p());
     private final VillagerJobSiteProperty jboSiteProperty = p().getExtra(VillagerJobSiteProperty.class);
 
     public VillagerRestocksTodayWidget(EntityProperties<Villager> properties) {

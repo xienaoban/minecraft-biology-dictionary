@@ -1,6 +1,8 @@
 package io.github.xienaoban.biologydictionary.core.property;
 
 import com.strobel.assembler.metadata.CompilerTarget;
+import com.strobel.assembler.metadata.signatures.Reifier;
+import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
 import org.apache.logging.log4j.Level;
@@ -64,11 +66,12 @@ public final class BytecodeDecompiler {
 
     private static String decompileByProcyon(Class<?> clazz) {
         PlainTextOutput output = new PlainTextOutput();
-        java.util.logging.Logger.getLogger(com.strobel.assembler.metadata.signatures.Reifier.class.getSimpleName()).setLevel(java.util.logging.Level.OFF);
+        java.util.logging.Logger.getLogger(Reifier.class.getSimpleName())
+            .setLevel(java.util.logging.Level.OFF);
         DecompilerSettings settings = new DecompilerSettings();
         settings.setForcedCompilerTarget(CompilerTarget.JDK17);
         settings.setForceExplicitImports(true);
-        com.strobel.decompiler.Decompiler.decompile(clazz.getName().replace('.', '/'), output, settings);
+        Decompiler.decompile(clazz.getName().replace('.', '/'), output, settings);
         return output.toString();
     }
 
@@ -89,7 +92,9 @@ public final class BytecodeDecompiler {
                 fabricSourcesJar = sourcesJar;
                 return sourcesJar;
             }
-            throw new AssertionError("Configured Minecraft sources jar does not contain " + sourcePath + ": " + sourcesJar);
+            throw new AssertionError(
+                "Configured Minecraft sources jar does not contain " + sourcePath + ": " + sourcesJar
+            );
         }
 
         Path loomCache = Path.of(".gradle", "loom-cache", "minecraftMaven", "net", "minecraft");
@@ -141,14 +146,15 @@ public final class BytecodeDecompiler {
             @Override public void closeArchive(String path, String archiveName) {}
 
             @Override
-            public void saveClassFile(String path, String qualifiedName, String entryName, String content, int[] mapping) {
-                if (source != null) throw new AssertionError("The source has been set once?");
+            public void saveClassFile(String path, String qualifiedName,
+                                      String entryName, String content, int[] mapping) {
+                if (source != null) { throw new AssertionError("The source has been set once?"); }
                 source = content;
             }
 
             @Override
             public String toString() {
-                if (source == null) throw new AssertionError("The source has not been set!");
+                if (source == null) { throw new AssertionError("The source has not been set!"); }
                 return source;
             }
         };

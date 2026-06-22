@@ -16,7 +16,8 @@ import net.minecraft.world.entity.Entity;
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 public record RequestEntityTargetedSkillPacket(int entityId, EntityTargetedSkill<?> skill) implements Packet {
-    public static final Packet.Factory<RequestEntityTargetedSkillPacket> FACTORY = RequestEntityTargetedSkillPacket::new;
+    public static final Packet.Factory<RequestEntityTargetedSkillPacket> FACTORY =
+            RequestEntityTargetedSkillPacket::new;
 
     private RequestEntityTargetedSkillPacket(FriendlyByteBuf buf) {
         this(buf.readInt(), BiologySkills.getEntityTargetedSkillMeta(buf.readUtf()).create(buf));

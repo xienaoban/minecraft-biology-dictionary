@@ -32,7 +32,8 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
                     LOGGER.info("ClientWorldSession initialized.");
                 } catch (Throwable e) {
                     LOGGER.error("Failed to initialize ClientWorldSession!", e);
-                    BiologyDictionaryClient.printThrowableToLoggerAndGame("ClientWorldSession failed to initialize!", e);
+                    BiologyDictionaryClient.printThrowableToLoggerAndGame(
+                            "ClientWorldSession failed to initialize!", e);
                 }
             }
         }

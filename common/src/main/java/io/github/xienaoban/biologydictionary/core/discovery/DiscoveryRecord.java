@@ -36,8 +36,10 @@ public record DiscoveryRecord(
     private static final CompoundTag NO_NBT = new CompoundTag();
     private static final Identifier NO_ID = Identifier.withDefaultNamespace("unknown");
 
-    private static final Codec<DiscoverySource> SOURCE_CODEC = Codec.STRING.xmap(DiscoverySource::valueOf, DiscoverySource::name);
-    private static final Codec<Biome.Precipitation> WEATHER_CODEC = Codec.STRING.xmap(Biome.Precipitation::valueOf, Biome.Precipitation::name);
+    private static final Codec<DiscoverySource> SOURCE_CODEC =
+            Codec.STRING.xmap(DiscoverySource::valueOf, DiscoverySource::name);
+    private static final Codec<Biome.Precipitation> WEATHER_CODEC =
+            Codec.STRING.xmap(Biome.Precipitation::valueOf, Biome.Precipitation::name);
 
     public static final Codec<DiscoveryRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.LONG.optionalFieldOf("time", NO_TIME).forGetter(DiscoveryRecord::firstDiscoveryTime),

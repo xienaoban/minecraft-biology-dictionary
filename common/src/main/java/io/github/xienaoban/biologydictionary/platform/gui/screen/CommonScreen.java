@@ -87,7 +87,8 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
     protected void render(ScreenRenderingContext ctx) {}
 
     protected void afterRender(ScreenRenderingContext ctx) {
-        super.extractRenderState(ctx.getGuiGraphics(), (int) ctx.getMouseX(), (int) ctx.getMouseY(), ctx.getTickDelta());
+        super.extractRenderState(
+                ctx.getGuiGraphics(), (int) ctx.getMouseX(), (int) ctx.getMouseY(), ctx.getTickDelta());
     }
 
     public Font getFont() { return super.getFont(); }

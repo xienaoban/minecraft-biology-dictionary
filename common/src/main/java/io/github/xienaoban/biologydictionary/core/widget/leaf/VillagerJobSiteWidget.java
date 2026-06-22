@@ -112,10 +112,12 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
             if (isMouseLeft(code)) {
                 GlobalPos currJobSitePos = jobSiteProperty.getVal();
                 if (currJobSitePos == null) {
-                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_LOCATE));
+                    AbstractBiologyDictionaryScreen.current()
+                            .sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_LOCATE));
                     return true;
                 }
-                ClientWorldSession.get().getHighlightManager().highlightBlock(currJobSitePos.pos(), HighlightEntitiesSkill.BLOCK_TICKS);
+                ClientWorldSession.get().getHighlightManager()
+                        .highlightBlock(currJobSitePos.pos(), HighlightEntitiesSkill.BLOCK_TICKS);
                 ClientUtils.setScreen(null);
             }
             return true;

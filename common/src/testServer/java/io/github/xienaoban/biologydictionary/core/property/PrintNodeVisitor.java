@@ -10,14 +10,14 @@ public class PrintNodeVisitor<A> extends AbstractVisitorWrapper<A> {
 
     @Override
     public boolean runBefore(Node n, A arg) {
-        if (!super.runBefore(n, arg)) return false;
+        if (!super.runBefore(n, arg)) { return false; }
         LOGGER.info("{}{}:  {}", "|   ".repeat(depth), n.getClass().getSimpleName(), n);
         return true;
     }
 
     @Override
     public boolean runBefore(NodeList<?> n, A arg) {
-        if (!super.runBefore(n, arg)) return false;
+        if (!super.runBefore(n, arg)) { return false; }
         LOGGER.info("{}{}:  {}", "|   ".repeat(depth), n.getClass().getSimpleName(), n);
         return true;
     }

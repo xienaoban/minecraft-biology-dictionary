@@ -30,7 +30,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
-    private static final Path LOGGER_PATH = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_DIR_PATH.toString(), ".nbt-tag-list.log");
+    private static final Path LOGGER_PATH = Path.of(
+            PropertyClazzGenerator.OUTPUT_CLAZZ_DIR_PATH.toString(), ".nbt-tag-list.log");
     private static final Logger LOGGER = LogManager.getLogger();
     private static final boolean PRINT_TAG_METHODS = false;
 
@@ -215,7 +216,8 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         // Print the method nodes.
         if (PRINT_TAG_METHODS) {
             String methodName = n.getNameAsString();
-            if (TestUtils.ENTITY_READ_ADDITIONAL_NBT.equals(methodName) || TestUtils.ENTITY_WRITE_ADDITIONAL_NBT.equals(methodName)
+            if (TestUtils.ENTITY_READ_ADDITIONAL_NBT.equals(methodName)
+                    || TestUtils.ENTITY_WRITE_ADDITIONAL_NBT.equals(methodName)
                     || TestUtils.ENTITY_READ_NBT.equals(methodName) || TestUtils.ENTITY_WRITE_NBT.equals(methodName)) {
                 PrintNodeVisitor<Void> printer = new PrintNodeVisitor<>();
                 LOGGER.info("Now print method {}", methodName);
@@ -291,7 +293,8 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                 }
             }
         } catch (Throwable e) {
-            throw new AssertionError("Failed to parse method: `" + n + "` in `" + currentMethod.getDeclarationAsString() + "`", e);
+            throw new AssertionError(
+                    "Failed to parse method: `" + n + "` in `" + currentMethod.getDeclarationAsString() + "`", e);
         }
         super.visit(n, arg);
     }
@@ -342,7 +345,8 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
                     break;
                 case AssignExpr assignExpr:
                     if (assignExpr.getOperator().equals(AssignExpr.Operator.ASSIGN)
-                            && assignExpr.getTarget() instanceof FieldAccessExpr fieldAccessExpr && fieldAccessExpr.getScope() instanceof ThisExpr) {
+                            && assignExpr.getTarget() instanceof FieldAccessExpr fieldAccessExpr
+                            && fieldAccessExpr.getScope() instanceof ThisExpr) {
                         type = knownTypes.getFieldType(fieldAccessExpr.getNameAsString());
                         break label;
                     }
@@ -358,7 +362,8 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         if (type == null) {
             type = inferResourceKeyCodecType(codec);
         }
-        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(knownTypes.getFullyQualifiedType(codec), removeOptional(type), true, false));
+        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(
+                knownTypes.getFullyQualifiedType(codec), removeOptional(type), true, false));
     }
 
     private void parseCalleeReader(String nbtTagName, String methodScope, String methodName, MethodCallExpr currNode) {
@@ -367,14 +372,17 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, methodName, null, null, type, true, false));
         } else if (VariantUtils.class.getSimpleName().equals(methodScope)) {
             if (nbtTagName != null) {
-                throw new AssertionError("Should be something like `VariantUtils.readVariant(valueInput, Registries.CAT_VARIANT)`");
+                throw new AssertionError(
+                        "Should be something like `VariantUtils.readVariant(valueInput, Registries.CAT_VARIANT)`");
             }
             String registry = currNode.getArgument(1).toString();
-            mergeNbtTagInfo(VariantUtils.TAG_VARIANT, new FuncTagInfo(methodScope, methodName, null, registry,null , true, false));
+            mergeNbtTagInfo(VariantUtils.TAG_VARIANT,
+                    new FuncTagInfo(methodScope, methodName, null, registry, null, true, false));
         } else if (nbtTagName != null) {
             mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, methodName, null, null, null, true, false));
         } else if (!(currNode.getScope().orElse(null) instanceof ThisExpr)) {
-            throw new RuntimeException("Unknown tag: `" + currNode + "` in `" + currentMethod.getDeclarationAsString() + "`");
+            throw new RuntimeException(
+                    "Unknown tag: `" + currNode + "` in `" + currentMethod.getDeclarationAsString() + "`");
         }
     }
 
@@ -390,13 +398,15 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
         Expression toStore = currNode.getArguments().get(2);
         if (toStore instanceof FieldAccessExpr fieldAccessExpr && fieldAccessExpr.getScope() instanceof ThisExpr) {
             type = knownTypes.getFieldType(fieldAccessExpr.getNameAsString());
-        } else if (toStore instanceof MethodCallExpr methodCallExpr && methodCallExpr.getScope().orElse(null) instanceof ThisExpr) {
+        } else if (toStore instanceof MethodCallExpr methodCallExpr
+                && methodCallExpr.getScope().orElse(null) instanceof ThisExpr) {
             type = knownTypes.getMethodRetType(methodCallExpr.getNameAsString());
         }
         if (type == null) {
             type = inferResourceKeyCodecType(codec);
         }
-        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(knownTypes.getFullyQualifiedType(codec), removeOptional(type), false, true));
+        mergeNbtTagInfo(nbtTagName, new CodecTagInfo(
+                knownTypes.getFullyQualifiedType(codec), removeOptional(type), false, true));
     }
 
     private static String inferResourceKeyCodecType(String codec) {
@@ -427,10 +437,12 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, null, methodName, null, type, false, true));
         } else if (VariantUtils.class.getSimpleName().equals(methodScope)) {
             if (nbtTagName != null) {
-                throw new AssertionError("Should be something like `VariantUtils.writeVariant(valueOutput, this.getVariant())`");
+                throw new AssertionError(
+                        "Should be something like `VariantUtils.writeVariant(valueOutput, this.getVariant())`");
             }
             String type;
-            if (currNode.getArgument(1) instanceof MethodCallExpr methodCallExpr && methodCallExpr.getScope().orElse(null) instanceof ThisExpr) {
+            if (currNode.getArgument(1) instanceof MethodCallExpr methodCallExpr
+                    && methodCallExpr.getScope().orElse(null) instanceof ThisExpr) {
                 String s = knownTypes.getMethodRetType(methodCallExpr.getNameAsString());
                 if (!s.startsWith(Holder.class.getSimpleName() + "<")) {
                     throw new RuntimeException("Not `Holder<XxxVariant>`: " + s);
@@ -439,11 +451,13 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             } else {
                 type = null;
             }
-            mergeNbtTagInfo(VariantUtils.TAG_VARIANT, new FuncTagInfo(methodScope, null, methodName, null, type, false, true));
+            mergeNbtTagInfo(VariantUtils.TAG_VARIANT,
+                    new FuncTagInfo(methodScope, null, methodName, null, type, false, true));
         } else if (nbtTagName != null) {
             mergeNbtTagInfo(nbtTagName, new FuncTagInfo(methodScope, null, methodName, null, null, false, true));
         } else if (!(currNode.getScope().orElse(null) instanceof ThisExpr)) {
-            throw new RuntimeException("Unknown tag: `" + currNode + "` in `" + currentMethod.getDeclarationAsString() + "`");
+            throw new RuntimeException(
+                    "Unknown tag: `" + currNode + "` in `" + currentMethod.getDeclarationAsString() + "`");
         }
     }
 

@@ -34,8 +34,10 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @ClientOnly
 public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
-    public static final int BOOK_TEXTURE_LEFT = 96, BOOK_TEXTURE_TOP = 0, BOOK_TEXTURE_RIGHT = 416, BOOK_TEXTURE_BOTTOM = 224;
-    public static final int BOOK_TEXTURE_WIDTH = BOOK_TEXTURE_RIGHT - BOOK_TEXTURE_LEFT, BOOK_TEXTURE_HEIGHT = BOOK_TEXTURE_BOTTOM - BOOK_TEXTURE_TOP;
+    public static final int BOOK_TEXTURE_LEFT = 96, BOOK_TEXTURE_TOP = 0;
+    public static final int BOOK_TEXTURE_RIGHT = 416, BOOK_TEXTURE_BOTTOM = 224;
+    public static final int BOOK_TEXTURE_WIDTH = BOOK_TEXTURE_RIGHT - BOOK_TEXTURE_LEFT;
+    public static final int BOOK_TEXTURE_HEIGHT = BOOK_TEXTURE_BOTTOM - BOOK_TEXTURE_TOP;
     public static final int BOOK_WIDTH = BOOK_TEXTURE_WIDTH, BOOK_HEIGHT = BOOK_TEXTURE_HEIGHT - 32;
     public static final int BOOK_TOP_OFFSET = -10;
 
@@ -364,7 +366,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                     (L + offsetL) * Widget.WIDGET_WIDTH,
                     (T - offsetT) * Widget.WIDGET_HEIGHT,
                     ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
-            ctx.renderRightAlignedText(text, Colors.COMMON_LIGHT_TEXT, 0.5F, ctx.getZ(), box.getRight() - 2F, box.getTop() + 2.5F);
+            ctx.renderRightAlignedText(text, Colors.COMMON_LIGHT_TEXT, 0.5F, ctx.getZ(),
+                    box.getRight() - 2F, box.getTop() + 2.5F);
         }
     }
 
@@ -478,7 +481,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
-            ctx.renderText(text, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), box.getLeft() + 2, box.getTop() + 3 + TXT_TO);
+            ctx.renderText(text, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
+                    box.getLeft() + 2, box.getTop() + 3 + TXT_TO);
         }
     }
 
@@ -512,8 +516,10 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                     cache = TextUtils.empty();
                 }
             }
-            ctx.renderCenteredText(cache, 0x88DECEC2, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
-            ctx.renderCenteredText(cache, 0xFFB68F71, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
+            ctx.renderCenteredText(cache, 0x88DECEC2, ctx.getZ(),
+                    (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
+            ctx.renderCenteredText(cache, 0xFFB68F71, ctx.getZ(),
+                    (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop());
         }
     }
 
@@ -552,7 +558,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 lr = 16 + 6 + h;
             }
             ScreenElementBox box = getBox();
-            ctx.renderTexture(Textures.BOOK, lr * 16, 224, ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
+            ctx.renderTexture(Textures.BOOK, lr * 16, 224, ctx.getZ(),
+                    box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
         }
     }
 }

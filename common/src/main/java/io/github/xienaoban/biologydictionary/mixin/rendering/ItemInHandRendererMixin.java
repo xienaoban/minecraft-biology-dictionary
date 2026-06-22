@@ -22,11 +22,20 @@ public class ItemInHandRendererMixin {
 
     @Shadow @Final private EntityRenderDispatcher entityRenderDispatcher;
 
-    @Inject(method = "renderHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderAllFeatures()V", shift = At.Shift.AFTER))
-    private void biologydictionary$renderFirstPerson(float tickDelta, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer localPlayer, int light, CallbackInfo ci) {
+    @Inject(
+            method = "renderHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;"
+                    + "Lnet/minecraft/client/renderer/SubmitNodeCollector;"
+                    + "Lnet/minecraft/client/player/LocalPlayer;I)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderAllFeatures()V",
+                    shift = At.Shift.AFTER))
+    private void biologydictionary$renderFirstPerson(float tickDelta, PoseStack poseStack,
+                                                    SubmitNodeCollector submitNodeCollector, LocalPlayer localPlayer,
+                                                    int light, CallbackInfo ci) {
         ClientWorldSession cws = ClientWorldSession.get();
         if (cws == null) { return; }
-        cws.getShoulderEntityRenderer().run(minecraft, entityRenderDispatcher, tickDelta, poseStack, submitNodeCollector, localPlayer, light);
+        cws.getShoulderEntityRenderer().run(
+                minecraft, entityRenderDispatcher, tickDelta, poseStack, submitNodeCollector, localPlayer, light);
     }
 }

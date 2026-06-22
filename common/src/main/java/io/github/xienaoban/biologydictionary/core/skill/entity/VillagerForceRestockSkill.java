@@ -17,7 +17,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.Items;
 
-public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos) implements EntityTargetedSkill<Villager> {
+public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
+        implements EntityTargetedSkill<Villager> {
     public static final Meta<VillagerForceRestockSkill> META = new Meta<>() {
         @Override
         public VillagerForceRestockSkill create(FriendlyByteBuf buf) {
@@ -51,7 +52,9 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
 
     private static void checkVillagerCloseToJobSite(Villager entity, GlobalPos jobSite) {
         if (!isCloseEnoughToJobSite(entity, jobSite)) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE), "Too far away from the job site");
+            throw new NoPermissionException(
+                    TextUtils.translate(Lang.TEXT_VILLAGER_TOO_FAR_FROM_JOB_SITE),
+                    "Too far away from the job site");
         }
     }
 
@@ -64,7 +67,8 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
     @ClientOnly
     @Override
     public void clientAdditionalCheck(ClientContext<Villager> ctx) {
-        @ClientOnly final class CO { static void check(ClientContext<Villager> ctx, Integer restocksToday, GlobalPos jobSitePos) {
+        @ClientOnly final class CO { static void check(
+                ClientContext<Villager> ctx, Integer restocksToday, GlobalPos jobSitePos) {
             checkVillagerHasJobSite(restocksToday, jobSitePos);
             checkVillagerCloseToJobSite(ctx.entity(), jobSitePos);
         }}

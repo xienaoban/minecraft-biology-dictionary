@@ -52,11 +52,13 @@ public final class TextUtils {
         return concat(collection, empty());
     }
 
-    public static <T extends Component> MutableComponent concat(Collection<? extends T> collection, Component separator) {
+    public static <T extends Component> MutableComponent concat(
+            Collection<? extends T> collection, Component separator) {
         return concat(collection, separator, Function.identity());
     }
 
-    public static <T extends Component> MutableComponent concat(Collection<? extends T> collection, Component separator, Function<T, Component> function) {
+    public static <T extends Component> MutableComponent concat(
+            Collection<? extends T> collection, Component separator, Function<T, Component> function) {
         return ComponentUtils.formatList(collection, separator, function);
     }
 }

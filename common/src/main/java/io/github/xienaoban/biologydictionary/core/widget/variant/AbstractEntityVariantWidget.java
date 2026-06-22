@@ -58,7 +58,8 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         this(properties, variantCnt, 7, 2);
     }
 
-    public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt, int maxDisplayCntPerLine, int rowsPerVariant) {
+    public AbstractEntityVariantWidget(EntityProperties<E> properties, int variantCnt, int maxDisplayCntPerLine,
+            int rowsPerVariant) {
         super(properties, calcRowsAndColumns(variantCnt, maxDisplayCntPerLine, rowsPerVariant));
 
         size = variantCnt;
@@ -403,20 +404,24 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             super.onRender(ctx);
             float currPos = 0;
             float widthLeft = 5;
-            ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(), getBox().getLeft(), getBox().getTop(), widthLeft, getBox().getHeight());
+            ctx.renderTexture(texture, textureLeft, textureTop, ctx.getZ(),
+                    getBox().getLeft(), getBox().getTop(), widthLeft, getBox().getHeight());
             currPos += widthLeft;
 
             float widthMid = getBox().getWidth() - 10;
             while (widthMid > 10) {
-                ctx.renderTexture(texture, textureLeft + 5, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop(), 10, getBox().getHeight());
+                ctx.renderTexture(texture, textureLeft + 5, textureTop, ctx.getZ(),
+                        getBox().getLeft() + currPos, getBox().getTop(), 10, getBox().getHeight());
                 currPos += 10;
                 widthMid -= 10;
             }
-            ctx.renderTexture(texture, textureLeft + 5, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop(), widthMid, getBox().getHeight());
+            ctx.renderTexture(texture, textureLeft + 5, textureTop, ctx.getZ(),
+                    getBox().getLeft() + currPos, getBox().getTop(), widthMid, getBox().getHeight());
             currPos += widthMid;
 
             float widthRight = 5;
-            ctx.renderTexture(texture, textureLeft + 15, textureTop, ctx.getZ(), getBox().getLeft() + currPos, getBox().getTop(), widthRight, getBox().getHeight());
+            ctx.renderTexture(texture, textureLeft + 15, textureTop, ctx.getZ(),
+                    getBox().getLeft() + currPos, getBox().getTop(), widthRight, getBox().getHeight());
         }
     }
 }

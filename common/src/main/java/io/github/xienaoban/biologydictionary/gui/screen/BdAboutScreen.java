@@ -45,14 +45,23 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             ctx.renderCenteredText(
-                    TextUtils.concat(Arrays.asList(TextUtils.translate(Lang.TEXT_MOD_NAME_IS).withStyle(ChatFormatting.BOLD), TextUtils.translate(Lang.MOD_NAME_TWO_LANG))),
-                    Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
+                    TextUtils.concat(Arrays.asList(
+                            TextUtils.translate(Lang.TEXT_MOD_NAME_IS).withStyle(ChatFormatting.BOLD),
+                            TextUtils.translate(Lang.MOD_NAME_TWO_LANG))),
+                    Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
+                    (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
             ctx.renderCenteredText(
-                    TextUtils.concat(Arrays.asList(TextUtils.translate(Lang.TEXT_MOD_AUTHOR_IS).withStyle(ChatFormatting.BOLD), TextUtils.translate(Lang.AUTHOR_NAME_TWO_LANG))),
-                    Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 10);
+                    TextUtils.concat(Arrays.asList(
+                            TextUtils.translate(Lang.TEXT_MOD_AUTHOR_IS).withStyle(ChatFormatting.BOLD),
+                            TextUtils.translate(Lang.AUTHOR_NAME_TWO_LANG))),
+                    Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
+                    (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 10);
             ctx.renderCenteredText(
-                    TextUtils.concat(Arrays.asList(TextUtils.translate(Lang.TEXT_MOD_VERSION_IS).withStyle(ChatFormatting.BOLD), TextUtils.literal(DevUtils.getModVersion()))),
-                    Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 18);
+                    TextUtils.concat(Arrays.asList(
+                            TextUtils.translate(Lang.TEXT_MOD_VERSION_IS).withStyle(ChatFormatting.BOLD),
+                            TextUtils.literal(DevUtils.getModVersion()))),
+                    Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
+                    (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 18);
         }
     }
 
@@ -64,7 +73,8 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             if (ctx.isDebug() && PlayerUtils.isCreative(player)) {
-                ctx.renderCenteredText(TextUtils.literal("Get Book Item"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
+                ctx.renderCenteredText(TextUtils.literal("Get Book Item"), 0xFF000000, ctx.getZ(),
+                        (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
             }
         }
 
@@ -87,8 +97,12 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             if (ctx.isDebug()) {
-                ctx.renderCenteredText(TextUtils.literal(ctx.getScreen().width + " , " + ctx.getScreen().height), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
-                ctx.renderCenteredText(TextUtils.literal(ctx.getMouseX() + " , " + ctx.getMouseY()), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 5.5F);
+                ctx.renderCenteredText(TextUtils.literal(ctx.getScreen().width + " , " + ctx.getScreen().height),
+                        0xFF000000, 0.5F, ctx.getZ(),
+                        (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
+                ctx.renderCenteredText(TextUtils.literal(ctx.getMouseX() + " , " + ctx.getMouseY()),
+                        0xFF000000, 0.5F, ctx.getZ(),
+                        (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 5.5F);
             }
         }
     }

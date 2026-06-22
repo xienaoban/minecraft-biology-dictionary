@@ -24,10 +24,10 @@ public final class AstParser {
 
         JavaParser parser = new JavaParser(config);
         ParseResult<CompilationUnit> parseResult = parser.parse(source);
-        if (!parseResult.isSuccessful()) throw new AssertionError(parseResult.getProblems().toString());
+        if (!parseResult.isSuccessful()) { throw new AssertionError(parseResult.getProblems().toString()); }
 
         Optional<CompilationUnit> result = parseResult.getResult();
-        if (result.isEmpty()) throw new AssertionError("Empty CompilationUnit?!");
+        if (result.isEmpty()) { throw new AssertionError("Empty CompilationUnit?!"); }
         return result.get();
     }
 

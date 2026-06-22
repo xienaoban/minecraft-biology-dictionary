@@ -174,9 +174,11 @@ record CodecTagInfo(String codec, String type, boolean hasGetter, boolean hasPut
     }
 }
 
-record FuncTagInfo(String caller, String reader, String storer, String optional, String type, boolean hasGetter, boolean hasPutter) implements NbtTagInfo {
+record FuncTagInfo(String caller, String reader, String storer, String optional, String type,
+                   boolean hasGetter, boolean hasPutter) implements NbtTagInfo {
     private static final String DE_REGEX = """
-                FuncTag\\{caller="([^"]+)", reader="([^"]+)", storer="([^"]+)", optional="([^"]+)", type="([^"]+)", hasGetter=(true|false), hasPutter=(true|false)\\}
+                FuncTag\\{caller="([^"]+)", reader="([^"]+)", storer="([^"]+)", optional="([^"]+)", \
+                type="([^"]+)", hasGetter=(true|false), hasPutter=(true|false)\\}
                 """.replaceAll("[\r\n]", "");
     private static final Pattern DE_PATTERN = Pattern.compile(DE_REGEX);
 

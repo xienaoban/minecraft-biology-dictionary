@@ -36,7 +36,8 @@ public class VanillaEntitySkillTest {
     }
 
     // Two maps as requested
-    private static final Map<Class<? extends Entity>, List<Class<? extends EntityTargetedSkill<?>>>> ENTITY_TO_SKILLS = new HashMap<>();
+    private static final Map<Class<? extends Entity>, List<Class<? extends EntityTargetedSkill<?>>>> ENTITY_TO_SKILLS =
+        new HashMap<>();
     private static final Map<Class<?>, List<EntitySkillFactory<?, ?>>> SKILL_TO_FACTORY = new HashMap<>();
 
     static {
@@ -61,7 +62,8 @@ public class VanillaEntitySkillTest {
             }
 
             @Override
-            public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
+            public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass,
+                    EntityTargetedSkill.Meta<T> meta) {
                 try {
                     // Get the entity class from the skill's generic type parameter
                     Class<? extends Entity> entityClass = Misc.getClazzGeneric(
@@ -90,7 +92,8 @@ public class VanillaEntitySkillTest {
             @Override
             public EntitySetVariantSkill create(Entity entity, ServerPlayer player) {
                 String entityTypeId = EntityUtils.getEntityTypeIdName(entity);
-                EntityVariantPropertyBundle.VariantHandler<Entity, Object> handler = EntityVariantPropertyBundle.getHandlers(entity).get(0);
+                EntityVariantPropertyBundle.VariantHandler<Entity, Object> handler =
+                        EntityVariantPropertyBundle.getHandlers(entity).get(0);
                 Tag variantTag = handler.variantToNbt(entity, handler.getVariant(entity));
                 return new EntitySetVariantSkill(entityTypeId, 0, variantTag);
             }
@@ -143,7 +146,9 @@ public class VanillaEntitySkillTest {
 
         // VillagerForceRestockSkill - default shouldSkip
         registerFactory(VillagerForceRestockSkill.class,
-                (entity, player) -> new VillagerForceRestockSkill(88, GlobalPos.of(player.level().dimension(), player.getOnPos())));
+                (entity, player) -> new VillagerForceRestockSkill(
+                    88, GlobalPos.of(player.level().dimension(), player.getOnPos())
+                ));
 
         // WanderingTraderRetainSkill - default shouldSkip
         registerFactory(WanderingTraderRetainSkill.class,
@@ -163,8 +168,7 @@ public class VanillaEntitySkillTest {
     }
 
     private static <E extends Entity, S extends EntityTargetedSkill<?>> void registerFactory(
-            Class<S> skillClass,
-            EntitySkillFactory<E, S> factory) {
+        Class<S> skillClass, EntitySkillFactory<E, S> factory) {
         // Add factory directly with default shouldSkip (false)
         SKILL_TO_FACTORY.computeIfAbsent(skillClass, k -> new ArrayList<>()).add(factory);
     }
@@ -178,7 +182,8 @@ public class VanillaEntitySkillTest {
                 }
 
                 @Override
-                public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
+                public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass,
+                        EntityTargetedSkill.Meta<T> meta) {
                     try {
                         // Get the entity class from the skill's generic type parameter
                         Class<? extends Entity> entityClass = Misc.getClazzGeneric(
@@ -191,13 +196,17 @@ public class VanillaEntitySkillTest {
                         // (e.g., "Entity" should be prefix of "EntitySetInvulnerableSkill")
                         if (!skillSimpleName.startsWith(entitySimpleName)) {
                             throw new IllegalStateException(
-                                    String.format("Naming convention violation: Skill class '%s' should start with entity class name '%s'",
-                                            skillSimpleName, entitySimpleName));
+                                    String.format(
+                                        "Naming convention violation: Skill class '%s' should start with "
+                                            + "entity class name '%s'",
+                                        skillSimpleName, entitySimpleName
+                                    ));
                         }
 
                         LOGGER.trace("Naming validation passed: {} -> {}", entitySimpleName, skillSimpleName);
                     } catch (Exception e) {
-                        helper.fail("Naming validation failed for " + skillClass.getSimpleName() + ": " + Misc.getStackToString(e));
+                        helper.fail("Naming validation failed for " + skillClass.getSimpleName()
+                                + ": " + Misc.getStackToString(e));
                     }
                 }
             });
@@ -362,10 +371,8 @@ public class VanillaEntitySkillTest {
     }
 
     @SuppressWarnings("unchecked")
-    private <E extends Entity> void executeEntityTargetedSkill(
-            EntityTargetedSkill<?> skill,
-            E entity,
-            ServerPlayer player) {
+    private <E extends Entity> void executeEntityTargetedSkill(EntityTargetedSkill<?> skill, E entity,
+                                                               ServerPlayer player) {
         try {
             EntityTargetedSkill.ServerContext<E> skillCtx
                 = new EntityTargetedSkill.ServerContext<>(player.level().getServer(), player, entity);

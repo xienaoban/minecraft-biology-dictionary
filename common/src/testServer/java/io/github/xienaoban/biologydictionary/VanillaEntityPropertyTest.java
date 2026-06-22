@@ -29,7 +29,9 @@ public class VanillaEntityPropertyTest {
             for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
                 try {
                     // Skip entities that are not in our entity tree
-                    EntityManager.EntityClassInfo classInfo = WorldSession.get().getEntityManager().getEntityClassInfo(entityType);
+                    EntityManager.EntityClassInfo classInfo = WorldSession.get()
+                        .getEntityManager()
+                        .getEntityClassInfo(entityType);
                     if (classInfo == null) {
                         LOGGER.debug("Skipped entity type (no class info): {}", EntityType.getKey(entityType));
                         skipCount++;
@@ -55,7 +57,10 @@ public class VanillaEntityPropertyTest {
                 }
             }
 
-            LOGGER.info("Entity properties test completed: {} passed, {} skipped, {} failed", successCount, skipCount, failCount);
+            LOGGER.info(
+                "Entity properties test completed: {} passed, {} skipped, {} failed",
+                successCount, skipCount, failCount
+            );
             helper.succeed();
         } catch (Throwable throwable) {
             helper.fail("testAllEntityProperties failed: " + Misc.getStackToString(throwable));

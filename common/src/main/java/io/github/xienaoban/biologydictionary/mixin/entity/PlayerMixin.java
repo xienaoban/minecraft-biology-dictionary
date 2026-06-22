@@ -19,7 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PlayerMixin {
 
     @Inject(method = "killedEntity", at = @At("HEAD"))
-    private void biologydictionary$onEntityKilled(ServerLevel serverLevel, LivingEntity livingEntity, DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
+    private void biologydictionary$onEntityKilled(ServerLevel serverLevel, LivingEntity livingEntity,
+                                                  DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
         Player self = (Player) (Object) this;
         if (self instanceof ServerPlayer serverPlayer) {
             ServerWorldSession sws = ServerWorldSession.get();
@@ -30,7 +31,8 @@ public class PlayerMixin {
     }
 
     @Inject(method = "interactOn", at = @At("HEAD"))
-    private void biologydictionary$onEntityInteracted(Entity entity, InteractionHand interactionHand, Vec3 hitPosition, CallbackInfoReturnable<InteractionResult> cir) {
+    private void biologydictionary$onEntityInteracted(Entity entity, InteractionHand interactionHand, Vec3 hitPosition,
+                                                     CallbackInfoReturnable<InteractionResult> cir) {
         Player self = (Player) (Object) this;
         if (self instanceof ServerPlayer serverPlayer) {
             ServerWorldSession sws = ServerWorldSession.get();

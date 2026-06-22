@@ -17,7 +17,10 @@ import java.util.*;
 
 public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final Path IMPORT_PATH = Path.of(PropertyClazzGenerator.OUTPUT_CLAZZ_DIR_PATH.toString(), ".nbt-tag-import.log");
+    private static final Path IMPORT_PATH = Path.of(
+        PropertyClazzGenerator.OUTPUT_CLAZZ_DIR_PATH.toString(),
+        ".nbt-tag-import.log"
+    );
 
     private static final Map<String, String> toImports = new HashMap<>();
 
@@ -48,7 +51,10 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
         if (toImports.containsKey(simpleName)) {
             String oldFullName = toImports.get(simpleName);
             if (!Objects.equals(fullName, oldFullName)) {
-                LOGGER.warn("Duplicated imported class: key=`{}`, old-value=`{}`, new-value=`{}`", simpleName, oldFullName, fullName);
+                LOGGER.warn(
+                    "Duplicated imported class: key=`{}`, old-value=`{}`, new-value=`{}`",
+                    simpleName, oldFullName, fullName
+                );
             }
         } else {
             toImports.put(simpleName, fullName);
@@ -96,7 +102,8 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
         boolean skipChars = false;
         for (int i = 0; i < type.length(); ++i) {
             char c = type.charAt(i);
-            if (c == '.' || c == ':' || c == '<' || c == '>' || c == ',' || c == ' ' || c == '(' || c == ')' || c == '?') {
+            if (c == '.' || c == ':' || c == '<' || c == '>' || c == ','
+                    || c == ' ' || c == '(' || c == ')' || c == '?') {
                 skipChars = (c == '.' || c == ':');
                 if (!currType.isEmpty()) {
                     res.append(getFullyQualifiedType0(currType.toString()));

@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.net;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -8,8 +9,6 @@ import net.minecraft.resources.Identifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.MOD_ID;
 
 public final class PacketUtil {
     private static final Map<Class<? extends Packet>, CustomPacketPayload.Type<?>> TYPE_CACHE = new HashMap<>();
@@ -29,7 +28,8 @@ public final class PacketUtil {
         return (CustomPacketPayload.Type<T>) type;
     }
 
-    public static <T extends Packet> StreamCodec<RegistryFriendlyByteBuf, T> generatePlayCodec(Packet.Factory<T> factory) {
+    public static <T extends Packet> StreamCodec<RegistryFriendlyByteBuf, T> generatePlayCodec(
+        Packet.Factory<T> factory) {
         return StreamCodec.of((RegistryFriendlyByteBuf buf, T packet) -> packet.write(buf), factory::create);
     }
 
@@ -57,6 +57,6 @@ public final class PacketUtil {
                 .replaceAll("([A-Z]+)", "_$1")
                 .substring(1)
                 .toLowerCase();
-        return Identifier.fromNamespaceAndPath(MOD_ID, path);
+        return Identifier.fromNamespaceAndPath(BiologyDictionary.MOD_ID, path);
     }
 }

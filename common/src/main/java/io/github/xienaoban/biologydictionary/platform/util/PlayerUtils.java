@@ -142,7 +142,8 @@ public final class PlayerUtils {
         }
     }
 
-    public static void playLocalSoundAt(Player player, SoundEvent soundEvent, double x, double y, double z, float volume, float pitch) {
+    public static void playLocalSoundAt(Player player, SoundEvent soundEvent, double x, double y, double z,
+                                        float volume, float pitch) {
         if (player instanceof ServerPlayer serverPlayer) {
             // On server side, send sound packet at fixed position
             Holder<SoundEvent> soundHolder = BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent);
@@ -193,7 +194,9 @@ public final class PlayerUtils {
     /**
      * This method only opens the menu. Send the relative packet yourself!
      *
-     * @see net.minecraft.server.level.ServerPlayer#openHorseInventory(net.minecraft.world.entity.animal.equine.AbstractHorse, net.minecraft.world.Container)
+     * @see net.minecraft.server.level.ServerPlayer#openHorseInventory(
+     *          net.minecraft.world.entity.animal.equine.AbstractHorse,
+     *          net.minecraft.world.Container)
      */
     public static int openContainerInventoryMenu(ServerPlayer player, MenuConstructor menuConstructor) {
         ServerPlayerIMixin mixinPlayer = (ServerPlayerIMixin) player;

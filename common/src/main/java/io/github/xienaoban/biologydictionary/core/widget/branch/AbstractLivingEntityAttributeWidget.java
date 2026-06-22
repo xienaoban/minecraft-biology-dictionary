@@ -14,7 +14,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 
 @ClientOnly
-public abstract class AbstractLivingEntityAttributeWidget<E extends LivingEntity> extends EntityPropertyStandardWidget<E> {
+public abstract class AbstractLivingEntityAttributeWidget<E extends LivingEntity>
+        extends EntityPropertyStandardWidget<E> {
 
     public static abstract class Factory<E extends LivingEntity> implements EntityPropertyStandardWidget.Factory<E> {
         @Override
@@ -46,7 +47,9 @@ public abstract class AbstractLivingEntityAttributeWidget<E extends LivingEntity
         final double currValue = calcValue(currAttr);
         String showCurr = StringUtils.format3Digits(ctx.isDebug() ? currAttr : currValue);
         String showUnit = ctx.isDebug() ? "value" : calcUnit(currAttr, currValue);
-        ctx.renderText(TextUtils.literal(showCurr), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), getElementIcon().getBox().getRight() + 1.0F, getBox().getTop() + 1 + TXT_ASCII_TO);
-        ctx.renderText(TextUtils.literal(showUnit), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), getElementIcon().getBox().getRight() + 1.0F, getBox().getTop() + 5 + TXT_ASCII_TO);
+        ctx.renderText(TextUtils.literal(showCurr), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
+                getElementIcon().getBox().getRight() + 1.0F, getBox().getTop() + 1 + TXT_ASCII_TO);
+        ctx.renderText(TextUtils.literal(showUnit), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
+                getElementIcon().getBox().getRight() + 1.0F, getBox().getTop() + 5 + TXT_ASCII_TO);
     }
 }

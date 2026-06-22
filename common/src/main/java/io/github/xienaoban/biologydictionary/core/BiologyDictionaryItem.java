@@ -96,7 +96,8 @@ public final class BiologyDictionaryItem {
         final int villagerXp = 0;
         final float priceMultiplier = 0.05F;
         MerchantOffers offers = entity.getOffers();
-        MerchantOffer offer = new MerchantOffer(new ItemCost(Items.EMERALD, cost), createBook(), maxUses, villagerXp, priceMultiplier);
+        MerchantOffer offer = new MerchantOffer(
+                new ItemCost(Items.EMERALD, cost), createBook(), maxUses, villagerXp, priceMultiplier);
         offers.add(offer);
     }
 
@@ -104,7 +105,8 @@ public final class BiologyDictionaryItem {
         ItemStack stack = new ItemStack(Items.WRITABLE_BOOK);
 
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(ID_NBT));
-        stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(), List.of("biologydictionary:handbook"), List.of()));
+        stack.set(DataComponents.CUSTOM_MODEL_DATA,
+                new CustomModelData(List.of(), List.of(), List.of("biologydictionary:handbook"), List.of()));
         stack.set(DataComponents.ITEM_NAME, TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE).withStyle(
                 Style.EMPTY.withColor(TextColor.parseColor("aqua").getOrThrow())
                         .withBold(true).withItalic(false)

@@ -16,7 +16,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int containerSize) implements Packet {
-    public static final Packet.Factory<ReplyInventoryStealingScreenPacket> FACTORY = ReplyInventoryStealingScreenPacket::new;
+    public static final Packet.Factory<ReplyInventoryStealingScreenPacket> FACTORY =
+            ReplyInventoryStealingScreenPacket::new;
 
     private ReplyInventoryStealingScreenPacket(FriendlyByteBuf buf) {
         this(buf.readInt(), buf.readInt(), buf.readInt());
@@ -30,12 +31,14 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
     }
 
     /**
-     * @see net.minecraft.client.multiplayer.ClientPacketListener#handleMountScreenOpen(net.minecraft.network.protocol.game.ClientboundMountScreenOpenPacket)
+     * @see net.minecraft.client.multiplayer.ClientPacketListener#handleMountScreenOpen(
+     *          net.minecraft.network.protocol.game.ClientboundMountScreenOpenPacket)
      */
     @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        @ClientOnly final class CO { static void receive(ReplyInventoryStealingScreenPacket packet, ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(
+                ReplyInventoryStealingScreenPacket packet, ClientNetApi.Context ctx) {
             if (!ctx.client().packetProcessor().isSameThread()) {
                 throw new RuntimeException("Not same thread");
             }
@@ -48,7 +51,8 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
             }
 
             SimpleContainer container = new SimpleContainer(packet.containerSize());
-            InventoryStealingMenu menu = new InventoryStealingMenu(packet.counter(), ctx.player().getInventory(), livingEntity, container);
+            InventoryStealingMenu menu = new InventoryStealingMenu(
+                    packet.counter(), ctx.player().getInventory(), livingEntity, container);
             ctx.player().containerMenu = menu;
             ctx.client().setScreen(new InventoryStealingScreen(menu, ctx.player().getInventory(), livingEntity));
         }}

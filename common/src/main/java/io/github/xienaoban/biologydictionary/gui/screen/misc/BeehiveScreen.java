@@ -135,20 +135,29 @@ public class BeehiveScreen extends ElementScreen {
                 ctx.renderHorizontalLine(0x55777777, 6, ctx.getZ(), beeTop, x - wHalf, x + wHalf);
                 ctx.renderCenteredText(bee.entity.getCustomName(), color, 0.5F, ctx.getZ(), x, beeTop - 2);
             }
-            if (ctx.getMouseX() > x - 10 && ctx.getMouseX() < x + 10 && ctx.getMouseY() > beeTop && ctx.getMouseY() < y) {
+            if (ctx.getMouseX() > x - 10 && ctx.getMouseX() < x + 10
+                    && ctx.getMouseY() > beeTop && ctx.getMouseY() < y) {
                 hoveredBeeTooltip = Arrays.asList(
                         bee.entity.getName(),
-                        TextUtils.translate(Lang.TEXT_BEE_STATE_IN_BEEHIVE, TextUtils.translate(bee.entity.hasNectar() ? Lang.TEXT_BEE_PRODUCING_NECTAR : Lang.TEXT_BEE_RESTING)).withStyle(ChatFormatting.GRAY),
-                        TextUtils.translate(Lang.TEXT_TIME_IN_BEEHIVE, (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s").withStyle(ChatFormatting.GRAY)
+                        TextUtils.translate(Lang.TEXT_BEE_STATE_IN_BEEHIVE, TextUtils.translate(
+                                bee.entity.hasNectar() ? Lang.TEXT_BEE_PRODUCING_NECTAR : Lang.TEXT_BEE_RESTING))
+                                .withStyle(ChatFormatting.GRAY),
+                        TextUtils.translate(Lang.TEXT_TIME_IN_BEEHIVE,
+                                (bee.ticksInHive / 20) + "s/" + (bee.minTicksInHive / 20) + "s")
+                                .withStyle(ChatFormatting.GRAY)
                 );
                 hoveredBeeTooltipX = x;
                 hoveredBeeTooltipY = y + 2F;
             }
         }
-        ctx.renderText(TextUtils.literal(honeyCnt + "/" + MAX_HONEY_CNT), color, ctx.getZ(), LATTICES[5][0] + lw + 16 - 8.5F, LATTICES[5][1] + lh + 8);
-        ctx.renderText(TextUtils.literal(beeCnt + "/" + MAX_BEE_CNT), color, ctx.getZ(), LATTICES[6][0] + lw + 16 - 8.5F, LATTICES[6][1] + lh + 8);
-        ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_HONEY), color, ctx.getZ(), LATTICES[5][0] + lw + 16.5F, LATTICES[5][1] + lh + 16);
-        ctx.renderCenteredText(EntityType.BEE.getDescription(), color, ctx.getZ(), LATTICES[6][0] + lw + 16.5F, LATTICES[6][1] + lh + 16);
+        ctx.renderText(TextUtils.literal(honeyCnt + "/" + MAX_HONEY_CNT), color, ctx.getZ(),
+                LATTICES[5][0] + lw + 16 - 8.5F, LATTICES[5][1] + lh + 8);
+        ctx.renderText(TextUtils.literal(beeCnt + "/" + MAX_BEE_CNT), color, ctx.getZ(),
+                LATTICES[6][0] + lw + 16 - 8.5F, LATTICES[6][1] + lh + 8);
+        ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_HONEY), color, ctx.getZ(),
+                LATTICES[5][0] + lw + 16.5F, LATTICES[5][1] + lh + 16);
+        ctx.renderCenteredText(EntityType.BEE.getDescription(), color, ctx.getZ(),
+                LATTICES[6][0] + lw + 16.5F, LATTICES[6][1] + lh + 16);
         if (hoveredBeeTooltip != null) {
             ctx.renderComponentTooltipCentered(hoveredBeeTooltip, hoveredBeeTooltipX, hoveredBeeTooltipY);
         }
@@ -243,8 +252,8 @@ public class BeehiveScreen extends ElementScreen {
                 mouseMoveTime -= mills;
                 mouseX += speedMouseX * mills;
                 mouseY += speedMouseY * mills;
-                if (Math.abs(mouseX) > 50) speedMouseX = -0.2F * speedMouseX;
-                if (mouseY > 20 || mouseY < 2) speedMouseY = -0.2F * speedMouseY;
+                if (Math.abs(mouseX) > 50) { speedMouseX = -0.2F * speedMouseX; }
+                if (mouseY > 20 || mouseY < 2) { speedMouseY = -0.2F * speedMouseY; }
             }
             else {
                 mouseCooldownTime -= mills;

@@ -20,7 +20,7 @@ public final class StaticEntityPropertyCache {
 
     public <T> T get(EntityType<?> entityType, Class<?> key) {
         var inner = map.get(entityType);
-        if (inner == null) return null;
+        if (inner == null) { return null; }
         return Misc.cast(inner.get(key));
     }
 
@@ -30,7 +30,7 @@ public final class StaticEntityPropertyCache {
     }
 
     public void put(EntityType<?> entityType, Class<?> key, Object value) {
-        if (value == null) return;
+        if (value == null) { return; }
         map.computeIfAbsent(entityType, k -> new ConcurrentHashMap<>()).put(key, value);
     }
 }

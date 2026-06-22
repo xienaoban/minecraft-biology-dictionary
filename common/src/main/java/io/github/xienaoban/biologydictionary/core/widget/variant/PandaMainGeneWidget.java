@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ClientOnly
-public sealed class PandaMainGeneWidget extends AbstractEntityStandardVariantWidget<Panda, Panda.Gene> permits PandaHiddenGeneWidget {
+public sealed class PandaMainGeneWidget extends AbstractEntityStandardVariantWidget<Panda, Panda.Gene>
+        permits PandaHiddenGeneWidget {
     public static final Factory<Panda> FACTORY = PandaMainGeneWidget::new;
 
     private static final int VH_IDX = 0;

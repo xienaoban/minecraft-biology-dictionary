@@ -15,7 +15,8 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * The caller should optimistically insert into the local cache before sending.
  */
 public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource source) implements Packet {
-    public static final Packet.Factory<RequestDiscoveryIncrementalPacket> FACTORY = RequestDiscoveryIncrementalPacket::new;
+    public static final Packet.Factory<RequestDiscoveryIncrementalPacket> FACTORY =
+            RequestDiscoveryIncrementalPacket::new;
 
     private RequestDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
         this(buf.readVarInt(), DiscoverySource.valueOf(buf.readUtf()));

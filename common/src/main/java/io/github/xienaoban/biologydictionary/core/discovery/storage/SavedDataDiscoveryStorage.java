@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.discovery.storage;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.core.UUIDUtil;
@@ -15,17 +16,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.MOD_ID;
-
 /**
  * Persisted per-world discovery data using MC's SavedData framework.
  * File: {@code data/biologydictionary_discovery.dat}
  */
 public final class SavedDataDiscoveryStorage extends SavedData {
     public static final SavedDataType<SavedDataDiscoveryStorage> TYPE = new SavedDataType<>(
-            Identifier.fromNamespaceAndPath(MOD_ID, "discovery"),
+            Identifier.fromNamespaceAndPath(BiologyDictionary.MOD_ID, "discovery"),
             SavedDataDiscoveryStorage::new,
-            SavedDataDiscoveryStorage.Packed.CODEC.xmap(SavedDataDiscoveryStorage::new, SavedDataDiscoveryStorage::getPacked),
+            SavedDataDiscoveryStorage.Packed.CODEC.xmap(
+                    SavedDataDiscoveryStorage::new, SavedDataDiscoveryStorage::getPacked),
             DataFixTypes.SAVED_DATA_STOPWATCHES
     );
 

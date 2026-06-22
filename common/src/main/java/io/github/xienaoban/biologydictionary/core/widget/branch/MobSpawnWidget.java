@@ -60,7 +60,8 @@ public final class  MobSpawnWidget extends EntityPropertyStandardWidget<Mob> {
                     list.add(TextUtils.empty());
                 }
                 list.add(tooltipBody(TextUtils.translate(
-                        Lang.PROPERTY_WIDGET_SPAWN_STRUCTURES, data.structures().size())).withStyle(ChatFormatting.YELLOW));
+                        Lang.PROPERTY_WIDGET_SPAWN_STRUCTURES, data.structures().size()))
+                        .withStyle(ChatFormatting.YELLOW));
                 List<Component> structureNames = new ArrayList<>();
                 for (Identifier id : data.structures()) {
                     String key = Lang.STRUCTURE_PREFIX + id.getNamespace() + "." + id.getPath();

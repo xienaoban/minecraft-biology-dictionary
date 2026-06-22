@@ -49,14 +49,17 @@ public final class EntityBoundingBoxWidget extends EntityPropertyStandardWidget<
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             updateTexts();
-            ctx.renderText(textX, 0xFFEE3D3D, 0.5F, ctx.getZ(), getBox().getLeft() + 3 + 0, getBox().getTop() + 2 + TXT_ASCII_TO);
-            ctx.renderText(textY, 0xFF04B904, 0.5F, ctx.getZ(), getBox().getLeft() + 3 + 12, getBox().getTop() + 2 + TXT_ASCII_TO);
-            ctx.renderText(textZ, 0xFF175FE4, 0.5F, ctx.getZ(), getBox().getLeft() + 3 + 24, getBox().getTop() + 2 + TXT_ASCII_TO);
+            ctx.renderText(textX, 0xFFEE3D3D, 0.5F, ctx.getZ(),
+                    getBox().getLeft() + 3, getBox().getTop() + 2 + TXT_ASCII_TO);
+            ctx.renderText(textY, 0xFF04B904, 0.5F, ctx.getZ(),
+                    getBox().getLeft() + 15, getBox().getTop() + 2 + TXT_ASCII_TO);
+            ctx.renderText(textZ, 0xFF175FE4, 0.5F, ctx.getZ(),
+                    getBox().getLeft() + 27, getBox().getTop() + 2 + TXT_ASCII_TO);
         }
 
         private void updateTexts() {
             AABB currBox = e().getBoundingBox();
-            if (lastBox == currBox) return;
+            if (lastBox == currBox) { return; }
             lastBox = currBox;
             textX = TextUtils.literal(StringUtils.format3Digits(lastBox.getXsize()));
             textY = TextUtils.literal(StringUtils.format3Digits(lastBox.getYsize()));

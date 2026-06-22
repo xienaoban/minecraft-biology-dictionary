@@ -22,6 +22,8 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.equine.Horse;
+import net.minecraft.world.entity.animal.equine.Markings;
+import net.minecraft.world.entity.animal.equine.Variant;
 import net.minecraft.world.entity.animal.panda.Panda;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerType;
@@ -112,10 +114,10 @@ public final class EntityVariantPropertyBundle {
                 Method setter = findVariantSetter(entityClass, getter.getReturnType());
                 if (setter == null) { return null; }
 
-                MethodHandle getterHandle = MethodHandles.privateLookupIn(getter.getDeclaringClass(), MethodHandles.lookup())
-                        .unreflect(getter);
-                MethodHandle setterHandle = MethodHandles.privateLookupIn(setter.getDeclaringClass(), MethodHandles.lookup())
-                        .unreflect(setter);
+                MethodHandle getterHandle = MethodHandles.privateLookupIn(
+                        getter.getDeclaringClass(), MethodHandles.lookup()).unreflect(getter);
+                MethodHandle setterHandle = MethodHandles.privateLookupIn(
+                        setter.getDeclaringClass(), MethodHandles.lookup()).unreflect(setter);
 
                 if (getter.getReturnType() == Holder.class) {
                     Class<?> variantClass = getHolderVariantClass(getter);
@@ -139,7 +141,9 @@ public final class EntityVariantPropertyBundle {
         }
 
         private Method findVariantGetter(Class<?> entityClass) {
-            for (Class<?> clazz = entityClass; clazz != null && Entity.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
+            for (Class<?> clazz = entityClass;
+                 clazz != null && Entity.class.isAssignableFrom(clazz);
+                 clazz = clazz.getSuperclass()) {
                 try {
                     Method method = clazz.getDeclaredMethod("getVariant");
                     if (method.getParameterCount() == 0) {
@@ -152,7 +156,9 @@ public final class EntityVariantPropertyBundle {
         }
 
         private Method findVariantSetter(Class<?> entityClass, Class<?> variantClass) {
-            for (Class<?> clazz = entityClass; clazz != null && Entity.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
+            for (Class<?> clazz = entityClass;
+                 clazz != null && Entity.class.isAssignableFrom(clazz);
+                 clazz = clazz.getSuperclass()) {
                 for (Method method : clazz.getDeclaredMethods()) {
                     if (!method.getName().equals("setVariant") || method.getParameterCount() != 1) { continue; }
                     if (method.getParameterTypes()[0].isAssignableFrom(variantClass)) {
@@ -184,7 +190,8 @@ public final class EntityVariantPropertyBundle {
         }
 
         private boolean isRegistryKeyFor(Type type, Class<?> variantClass) {
-            if (!(type instanceof ParameterizedType resourceKeyType) || resourceKeyType.getRawType() != ResourceKey.class) {
+            if (!(type instanceof ParameterizedType resourceKeyType)
+                    || resourceKeyType.getRawType() != ResourceKey.class) {
                 return false;
             }
 
@@ -234,7 +241,8 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public Tag variantToNbt(Entity entity, Holder<Object> variant) {
-            TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
+            TagValueOutput output = TagValueOutput.createWithContext(
+                    ProblemReporter.DISCARDING, entity.registryAccess());
             VariantUtils.writeVariant(output, variant);
             return output.buildResult().get(VariantUtils.TAG_VARIANT);
         }
@@ -243,10 +251,12 @@ public final class EntityVariantPropertyBundle {
         public Holder<Object> nbtToVariant(Entity entity, Tag nbt) {
             CompoundTag inputTag = new CompoundTag();
             inputTag.put(VariantUtils.TAG_VARIANT, nbt);
-            TagValueInput input = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, entity.registryAccess(), inputTag);
+            TagValueInput input = (TagValueInput) TagValueInput.create(
+                    ProblemReporter.DISCARDING, entity.registryAccess(), inputTag);
             return VariantUtils.readVariant(input, key)
                     .map(Misc::<Holder<Object>>cast)
-                    .orElseThrow(() -> new IllegalArgumentException("Unknown variant tag for " + entity.getType() + ": " + nbt));
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Unknown variant tag for " + entity.getType() + ": " + nbt));
         }
 
         @Override
@@ -372,7 +382,8 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public Holder<VillagerType> nbtToVariant(Villager entity, Tag nbt) {
-            return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE).withTag((CompoundTag) nbt).getVal();
+            return new VariantProperty<Horse, VillagerType>(Registries.VILLAGER_TYPE)
+                    .withTag((CompoundTag) nbt).getVal();
         }
 
         @Override
@@ -384,68 +395,68 @@ public final class EntityVariantPropertyBundle {
         }
     }
 
-    public static final class HorseVariantHandler implements VariantHandler<Horse, net.minecraft.world.entity.animal.equine.Variant> {
+    public static final class HorseVariantHandler implements VariantHandler<Horse, Variant> {
 
         @Override
-        public List<net.minecraft.world.entity.animal.equine.Variant> getVariants(Horse entity) {
-            return Arrays.asList(net.minecraft.world.entity.animal.equine.Variant.values());
+        public List<Variant> getVariants(Horse entity) {
+            return Arrays.asList(Variant.values());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.equine.Variant getVariant(Horse entity) {
+        public Variant getVariant(Horse entity) {
             return entity.getVariant();
         }
 
         @Override
-        public void setVariant(Horse entity, net.minecraft.world.entity.animal.equine.Variant variant) {
+        public void setVariant(Horse entity, Variant variant) {
             EntityUtils.setVariantAndMarkings(entity, variant, entity.getMarkings());
         }
 
         @Override
-        public Tag variantToNbt(Horse entity, net.minecraft.world.entity.animal.equine.Variant variant) {
+        public Tag variantToNbt(Horse entity, Variant variant) {
             return IntTag.valueOf(variant.getId());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.equine.Variant nbtToVariant(Horse entity, Tag nbt) {
-            return net.minecraft.world.entity.animal.equine.Variant.byId(nbt.asInt().orElse(0));
+        public Variant nbtToVariant(Horse entity, Tag nbt) {
+            return Variant.byId(nbt.asInt().orElse(0));
         }
 
         @Override
-        public String getVariantName(Horse entity, net.minecraft.world.entity.animal.equine.Variant variant) {
+        public String getVariantName(Horse entity, Variant variant) {
             return variant.getSerializedName();
         }
     }
 
-    public static final class HorseMarkingsHandler implements VariantHandler<Horse, net.minecraft.world.entity.animal.equine.Markings> {
+    public static final class HorseMarkingsHandler implements VariantHandler<Horse, Markings> {
 
         @Override
-        public List<net.minecraft.world.entity.animal.equine.Markings> getVariants(Horse entity) {
-            return Arrays.asList(net.minecraft.world.entity.animal.equine.Markings.values());
+        public List<Markings> getVariants(Horse entity) {
+            return Arrays.asList(Markings.values());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.equine.Markings getVariant(Horse entity) {
+        public Markings getVariant(Horse entity) {
             return entity.getMarkings();
         }
 
         @Override
-        public void setVariant(Horse entity, net.minecraft.world.entity.animal.equine.Markings variant) {
+        public void setVariant(Horse entity, Markings variant) {
             EntityUtils.setVariantAndMarkings(entity, entity.getVariant(), variant);
         }
 
         @Override
-        public Tag variantToNbt(Horse entity, net.minecraft.world.entity.animal.equine.Markings variant) {
+        public Tag variantToNbt(Horse entity, Markings variant) {
             return IntTag.valueOf(variant.getId());
         }
 
         @Override
-        public net.minecraft.world.entity.animal.equine.Markings nbtToVariant(Horse entity, Tag nbt) {
-            return net.minecraft.world.entity.animal.equine.Markings.byId(nbt.asInt().orElse(0));
+        public Markings nbtToVariant(Horse entity, Tag nbt) {
+            return Markings.byId(nbt.asInt().orElse(0));
         }
 
         @Override
-        public String getVariantName(Horse entity, net.minecraft.world.entity.animal.equine.Markings variant) {
+        public String getVariantName(Horse entity, Markings variant) {
             return "markings." + variant.name().toLowerCase();
         }
     }

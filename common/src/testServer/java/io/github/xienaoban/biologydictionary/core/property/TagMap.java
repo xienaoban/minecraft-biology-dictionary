@@ -31,27 +31,27 @@ public enum TagMap {
 
     public static TagMap getByValue(int v) {
         TagMap res = byValue.get(v);
-        if (res == null) throw new AssertionError(v);
+        if (res == null) { throw new AssertionError(v); }
         return res;
     }
 
     public static TagMap getByClazz(String clazzName) {
         TagMap res = byClazz.get(clazzName);
-        if (res == null) throw new AssertionError(clazzName);
+        if (res == null) { throw new AssertionError(clazzName); }
         return res;
     }
 
     public static TagMap getByGetter(String methodName) {
-        if (methodName == null) return null;
+        if (methodName == null) { return null; }
         TagMap res = byGetter.get(methodName);
-        if (res == null) throw new AssertionError(methodName);
+        if (res == null) { throw new AssertionError(methodName); }
         return res;
     }
 
     public static TagMap getByPutter(String methodName) {
-        if (methodName == null) return null;
+        if (methodName == null) { return null; }
         TagMap res = byPutter.get(methodName);
-        if (res == null) throw new AssertionError(methodName);
+        if (res == null) { throw new AssertionError(methodName); }
         return res;
     }
 
@@ -74,7 +74,7 @@ public enum TagMap {
     private static Map<String, TagMap> createMapByGetter() {
         HashMap<String, TagMap> res = new HashMap<>();
         for (TagMap e : values()) {
-            if (e.getter != null) res.put(e.getter, e);
+            if (e.getter != null) { res.put(e.getter, e); }
         }
         return res;
     }
@@ -82,7 +82,7 @@ public enum TagMap {
     private static Map<String, TagMap> createMapByPutter() {
         HashMap<String, TagMap> res = new HashMap<>();
         for (TagMap e : values()) {
-            if (e.putter != null) res.put(e.putter, e);
+            if (e.putter != null) { res.put(e.putter, e); }
         }
         return res;
     }
@@ -146,7 +146,7 @@ public enum TagMap {
     }
 
     public boolean isMorePreciseThan(TagMap that) {
-        if (this == that) return false;
+        if (this == that) { return false; }
         return switch (that) {
             case TagMap.ANY -> true;
             case TagMap.BYTE -> this == TagMap.BOOLEAN;

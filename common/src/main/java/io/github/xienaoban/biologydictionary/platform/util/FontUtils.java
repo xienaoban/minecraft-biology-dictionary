@@ -44,7 +44,7 @@ public final class FontUtils {
         while (end > 0 && font.width(str.substring(0, end)) * scale > maxTextWidth) {
             end--;
         }
-        if (end == str.length()) return text.copy();
+        if (end == str.length()) { return text.copy(); }
         return Component.literal(str.substring(0, end) + "...");
     }
 }

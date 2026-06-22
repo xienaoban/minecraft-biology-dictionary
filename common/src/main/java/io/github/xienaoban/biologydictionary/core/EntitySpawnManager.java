@@ -148,10 +148,8 @@ public final class EntitySpawnManager {
 
                 // 2. Template entities for Jigsaw structures (e.g. villagers in villages)
                 if (structure instanceof JigsawStructure jigsawStructure) {
-                    collectTemplateEntities(
-                            jigsawStructure.getStartPool(), poolRegistry, templateCache,
-                            structureId, seenStructureEntities
-                    );
+                    collectTemplateEntities(jigsawStructure.getStartPool(), poolRegistry, templateCache,
+                            structureId, seenStructureEntities);
                 }
             } catch (Throwable e) {
                 LOGGER.warn("Failed to process spawn settings for structure {}", structureEntry.getKey(), e);
@@ -185,10 +183,8 @@ public final class EntitySpawnManager {
             // Collect entities from all templates in this pool
             for (var elementPair : pool.getTemplates()) {
                 try {
-                    collectElementEntities(
-                            elementPair.getFirst(), templateCache,
-                            structureId, seenStructureEntities, referencedPools
-                    );
+                    collectElementEntities(elementPair.getFirst(), templateCache, structureId, seenStructureEntities,
+                            referencedPools);
                 } catch (Exception e) {
                     LOGGER.warn("Failed to process element in template pool {}", currentPoolId, e);
                 }
@@ -289,7 +285,8 @@ public final class EntitySpawnManager {
             String entityStr = fileName.substring(0, fileName.length() - ".json".length());
             int dotIndex = entityStr.indexOf('.');
             if (dotIndex < 0) {
-                LOGGER.warn("Invalid spawn override filename '{}', expected format '<namespace>.<entity_path>.json'", fileName);
+                LOGGER.warn("Invalid spawn override filename '{}', expected format '<namespace>.<entity_path>.json'",
+                        fileName);
                 continue;
             }
             Identifier entityId = Identifier.tryParse(entityStr.replace('.', ':'));
@@ -317,7 +314,8 @@ public final class EntitySpawnManager {
         JsonObject obj = json.getAsJsonObject(key);
 
         if (obj.has(KEY_OVERWRITE) && (obj.has(KEY_ADD) || obj.has(KEY_REMOVE))) {
-            LOGGER.warn("Spawn override for entity '{}' has both 'overwrite' and 'add'/'remove' in {}, using overwrite.", entityType, key);
+            LOGGER.warn("Spawn override for entity '{}' has both 'overwrite' and 'add'/'remove' in {}, "
+                            + "using overwrite.", entityType, key);
         }
 
         if (obj.has(KEY_OVERWRITE)) {
@@ -414,7 +412,8 @@ public final class EntitySpawnManager {
                     if (id == null) {
                         LOGGER.warn("Invalid identifier '{}' in spawn override, ignoring.", str);
                     } else if (registry.getValue(id) == null) {
-                        LOGGER.warn("Unknown {} '{}' in spawn override for entity '{}', ignoring.", kindName, id, entityType);
+                        LOGGER.warn("Unknown {} '{}' in spawn override for entity '{}', ignoring.",
+                                kindName, id, entityType);
                     } else {
                         result.add(id);
                     }

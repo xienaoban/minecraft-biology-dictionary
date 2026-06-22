@@ -50,7 +50,8 @@ public final class EntityManager {
     private final TagGroup classTags     = new TagGroup(Lang.TAG_GROUP_CLASS,     TextUtils.translate(Lang.TAG_GROUP_CLASS_DESC));
     private final TagGroup interfaceTags = new TagGroup(Lang.TAG_GROUP_INTERFACE, TextUtils.translate(Lang.TAG_GROUP_INTERFACE_DESC));
 
-    private final List<TagGroup> tagGroups = new ArrayList<>(Arrays.asList(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
+    private final List<TagGroup> tagGroups = new ArrayList<>(
+            Arrays.asList(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
 
     public EntityManager(Level level) {
         EntityOrder.init();
@@ -69,9 +70,11 @@ public final class EntityManager {
             EntityClassInfo entityClassInfo;
             try {
                 entityClassInfo = EntityClassInfo.create(entityType, level);
-                if (entityClassInfo == null) continue;
+                if (entityClassInfo == null) { continue; }
             } catch (Throwable e) {
-                LOGGER.error("Failed to create an EntityClassInfo of entity type \"{}\"! Skipped supporting this entity type.", EntityUtils.getEntityTypeName(entityType), e);
+                LOGGER.error("Failed to create an EntityClassInfo of entity type \"{}\"! "
+                                + "Skipped supporting this entity type.",
+                        EntityUtils.getEntityTypeName(entityType), e);
                 continue;
             }
             infos.put(entityClassInfo.getType(), entityClassInfo);
@@ -293,7 +296,7 @@ public final class EntityManager {
      */
     public static String getClassRealName(Class<?> clazz) {
         String res = EntityUtils.getDeobfuscatedName(clazz);
-        if (res == null) res = clazz.getName();
+        if (res == null) { res = clazz.getName(); }
         return res;
     }
 
@@ -301,7 +304,8 @@ public final class EntityManager {
         dfsEntityTree(includeRoot, executor, TreeNodeExecutor.empty());
     }
 
-    public void dfsEntityTree(boolean includeRoot, TreeNodeExecutor<EntityTreeNode> frontExecutor, TreeNodeExecutor<EntityTreeNode> rearExecutor) {
+    public void dfsEntityTree(boolean includeRoot, TreeNodeExecutor<EntityTreeNode> frontExecutor,
+                              TreeNodeExecutor<EntityTreeNode> rearExecutor) {
         EntityTreeNode root = tree.get(Entity.class);
         if (includeRoot) {
             dfsEntityTreePrivate(root, 0, frontExecutor, rearExecutor);
@@ -313,7 +317,8 @@ public final class EntityManager {
         }
     }
 
-    private void dfsEntityTreePrivate(EntityTreeNode root, int depth, TreeNodeExecutor<EntityTreeNode> frontExecutor, TreeNodeExecutor<EntityTreeNode> rearExecutor) {
+    private void dfsEntityTreePrivate(EntityTreeNode root, int depth, TreeNodeExecutor<EntityTreeNode> frontExecutor,
+                                      TreeNodeExecutor<EntityTreeNode> rearExecutor) {
         if (frontExecutor.execute(root, depth)) {
             int d2 = depth + 1;
             for (var son : root.getSons()) {
@@ -327,11 +332,11 @@ public final class EntityManager {
         public static EntityClassInfo create(EntityType<?> entityType, Level level) {
             Entity entity = EntityUtils.create(entityType, level);
             if (entity == null) {
-                if (entityType == EntityType.PLAYER) return null;
-                if (!entityType.isEnabled(level.enabledFeatures())) return null;
+                if (entityType == EntityType.PLAYER) { return null; }
+                if (!entityType.isEnabled(level.enabledFeatures())) { return null; }
                 throw new RuntimeException("Failed to create \"" + EntityType.getKey(entityType) + "\".");
             }
-            if (!(entity instanceof LivingEntity)) return null;
+            if (!(entity instanceof LivingEntity)) { return null; }
             return new EntityClassInfo(entityType, entity);
         }
 

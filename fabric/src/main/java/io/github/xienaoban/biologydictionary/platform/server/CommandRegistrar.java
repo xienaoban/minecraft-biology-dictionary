@@ -8,7 +8,8 @@ public final class CommandRegistrar {
 
     public static void register() {
         for (var command : Commands.ENTRIES) {
-            CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(command));
+            CommandRegistrationCallback.EVENT.register(
+                    (dispatcher, registryAccess, environment) -> dispatcher.register(command));
         }
     }
 }

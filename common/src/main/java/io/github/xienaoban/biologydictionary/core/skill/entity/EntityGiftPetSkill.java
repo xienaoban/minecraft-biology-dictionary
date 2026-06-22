@@ -66,7 +66,8 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
 
             if (Objects.equals(targetPlayerUuid, ownable.getOwnerReference().getUUID())) {
                 throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
-                        "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
+                        "The player and target player cannot be the same person: player=\""
+                                + EntityUtils.getNameString(ctx.player()) + "\"");
             }
         }}
         CO.check(ctx, targetPlayerUuid);
@@ -89,7 +90,8 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
 
         if (Objects.equals(targetPlayerUuid, ownable.getOwnerReference().getUUID())) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_PLAYER_AND_TARGET_CANNOT_BE_SAME),
-                    "The player and target player cannot be the same person: player=\"" + EntityUtils.getNameString(ctx.player()) + "\"");
+                    "The player and target player cannot be the same person: player=\""
+                            + EntityUtils.getNameString(ctx.player()) + "\"");
         }
     }
 
@@ -97,6 +99,8 @@ public record EntityGiftPetSkill(UUID targetPlayerUuid) implements EntityTargete
     public void serverDo(ServerContext<Entity> ctx) {
         // Cannot use Property.setTo() here as it's arg should be TamableAnimal.
         // But we only need the entity to be OwnableEntity.
-        EntityUtils.mergeNbt(ctx.entity(), VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().withVal(EntityReference.of(targetPlayerUuid)).toTag());
+        EntityUtils.mergeNbt(ctx.entity(), VanillaEntityProperties.OfTamableAnimal.createOwnerProperty()
+                .withVal(EntityReference.of(targetPlayerUuid))
+                .toTag());
     }
 }

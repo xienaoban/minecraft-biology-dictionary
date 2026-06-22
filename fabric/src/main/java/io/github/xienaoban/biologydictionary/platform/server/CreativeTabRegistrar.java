@@ -10,6 +10,7 @@ public final class CreativeTabRegistrar {
     public static void register() {
         BiologyDictionaryItem.CreativeTabEntry entry = BiologyDictionaryItem.BIOLOGY_DICTIONARY_BOOK_CREATIVE_TAB_ENTRY;
         CreativeModeTabEvents.modifyOutputEvent(entry.tabKey())
-                .register(output -> output.accept(entry.stack().get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS));
+                .register(output -> output.accept(
+                        entry.stack().get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS));
     }
 }

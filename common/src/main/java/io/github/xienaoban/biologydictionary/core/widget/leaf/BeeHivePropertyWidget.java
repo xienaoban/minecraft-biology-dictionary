@@ -120,10 +120,12 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
             if (isMouseLeft(code)) {
                 BlockPos currHivePos = hivePosProperty.getVal();
                 if (currHivePos == null) {
-                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_LOCATE));
+                    AbstractBiologyDictionaryScreen.current()
+                            .sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_LOCATE));
                     return true;
                 }
-                ClientWorldSession.get().getHighlightManager().highlightBlock(currHivePos, HighlightEntitiesSkill.BLOCK_TICKS);
+                ClientWorldSession.get().getHighlightManager()
+                        .highlightBlock(currHivePos, HighlightEntitiesSkill.BLOCK_TICKS);
                 ClientUtils.setScreen(null);
             }
             return true;
@@ -149,7 +151,8 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
             if (isMouseLeft(code)) {
                 BlockPos currHivePos = hivePosProperty.getVal();
                 if (currHivePos == null) {
-                    AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_CLEAR));
+                    AbstractBiologyDictionaryScreen.current()
+                            .sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_CLEAR));
                     return true;
                 }
                 if (BiologySkills.activate(e(), new BeeClearHiveSkill())) {

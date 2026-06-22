@@ -30,11 +30,17 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
     };
 
     /**
-     * @see net.minecraft.world.item.NameTagItem#interactLivingEntity(net.minecraft.world.item.ItemStack, net.minecraft.world.entity.player.Player, net.minecraft.world.entity.LivingEntity, net.minecraft.world.InteractionHand)
+     * @see net.minecraft.world.item.NameTagItem#interactLivingEntity(
+     *          net.minecraft.world.item.ItemStack,
+     *          net.minecraft.world.entity.player.Player,
+     *          net.minecraft.world.entity.LivingEntity,
+     *          net.minecraft.world.InteractionHand)
      */
     private static void check(Mob entity, boolean newPersistenceValue) {
         if (entity.hasCustomName() && !newPersistenceValue) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_CUSTOM_NAME_FORCE_PERSISTENT), "Entities with custom name should be forced persistent");
+            throw new NoPermissionException(
+                    TextUtils.translate(Lang.TEXT_CUSTOM_NAME_FORCE_PERSISTENT),
+                    "Entities with custom name should be forced persistent");
         }
     }
 
@@ -48,7 +54,9 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
     public void clientAdditionalCheck(ClientContext<Mob> ctx) {
         @ClientOnly final class CO { static void check(Mob entity, boolean persistent) {
             if (entity.hasCustomName() && !persistent) {
-                throw new NoPermissionException(TextUtils.translate(Lang.TEXT_CUSTOM_NAME_FORCE_PERSISTENT), "Entities with custom name should be forced persistent");
+                throw new NoPermissionException(
+                        TextUtils.translate(Lang.TEXT_CUSTOM_NAME_FORCE_PERSISTENT),
+                        "Entities with custom name should be forced persistent");
             }
         }}
         CO.check(ctx.entity(), persistent);

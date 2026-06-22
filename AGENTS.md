@@ -20,9 +20,10 @@
 
 - `if`、`for` 等控制语句即使只有单行语句也必须带花括号；写 `if (condition) { doSomething(); }`，不要写 `if (condition) doSomething();`。
 - 对超过 120 行宽的代码，应在语义清晰、阅读自然的位置优雅换行。
+- 函数、构造函数或 lambda 的参数列表因为行宽过长需要换行时，有两种推荐写法：如果方法头和前几个参数能自然放在首行，续行参数与左括号后的第一个参数对齐，例如 `void f(X x1, X x2,` 下一行对齐到 `X x1` 继续写 `Y y1, Y y2) {`；如果方法名、泛型或返回类型本身已经很长，也可以在 `(` 后直接换行，后续参数统一缩进 8 个空格，例如 `void veryLongMethodName(` 下一行写 `        X x1, Y y1) {`。
 - 对很短的代码块优先保持紧凑；例如 `if (condition) { return; }` 这类一行能清楚表达的代码，不要拆成多行。
 - 对大段后续逻辑，优先使用 guard clause：写 `if (condition) { return; }` 后接后续逻辑，不要写成 `if (condition) { return; } else { ... }`。如果后续逻辑只有一两句，或存在多段 `else if` 分支，则可按可读性保留 `else` / `else if`。
-- 业务代码中极力避免使用全限定类名，优先使用 `import`。
+- 业务代码中极力避免使用全限定类名，优先使用 `import` 类名；不推荐 `import static`，`BiologyDictionary.LOGGER` 除外。
 - 注释中的引用，例如 `@see`，对于 Minecraft、Mojang、Fabric 等官方类应尽量使用全限定类名，方便未来移植到新版本时定位函数名；本模组类避免全限定。
 - 构造函数里尽量用 `this.` 访问成员，除此之外尽可能避免使用 `this.`。
 - 纯工具类加上 `private` 构造函数。

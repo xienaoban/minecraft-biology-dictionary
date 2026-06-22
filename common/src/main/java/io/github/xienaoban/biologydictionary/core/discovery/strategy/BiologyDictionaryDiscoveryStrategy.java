@@ -75,7 +75,8 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
 
     @Override
     public boolean onEntityObservedWithTelescope(ServerPlayer player, Entity entity) {
-        if (!player.isScoping() || !PlayerUtils.isWithinRangeAndUnobstructed(player, entity, ConfigsManager.getServer().getTelescopeDiscoveryRange())) {
+        if (!player.isScoping() || !PlayerUtils.isWithinRangeAndUnobstructed(
+                player, entity, ConfigsManager.getServer().getTelescopeDiscoveryRange())) {
             return false;
         }
         return tryDiscover(player, entity, DiscoverySource.TELESCOPE_OBSERVE);

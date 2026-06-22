@@ -282,7 +282,8 @@ public final class Configs {
                 }
 
                 @Override
-                public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
+                public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass,
+                        EntityTargetedSkill.Meta<T> meta) {
                     String shortName = meta.shortName();
                     Map<String, Object> v = skillCosts.get(shortName);
                     newCosts.put(shortName, Objects.requireNonNullElseGet(v, () -> meta.getDefaultCost().toMap()));

@@ -27,7 +27,7 @@ public final class Page extends ScreenElement {
         super.onResize(width, height);
         for (int r = 0; r < ROWS; ++r) for (int c = 0; c < COLUMNS; ++c) {
             Widget widget = widgetLayout[r][c];
-            if (widget == null || widget instanceof WidgetPlaceholder) continue;
+            if (widget == null || widget instanceof WidgetPlaceholder) { continue; }
             float left = getBox().getLeft() + (Widget.WIDGET_WIDTH + Widget.WIDGET_WIDTH_MARGIN) * c;
             float top = getBox().getTop() + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * r;
             widget.getBox().setPosition(left, top);
@@ -39,7 +39,7 @@ public final class Page extends ScreenElement {
     }
 
     public Widget getWidget(int row, int col) {
-        if (!hasWidget(row, col)) return null;
+        if (!hasWidget(row, col)) { return null; }
         Widget widget = widgetLayout[row][col];
         if (widget instanceof WidgetPlaceholder placeholder) {
             widget = widgetLayout[placeholder.getHolderRow()][placeholder.getHolderCol()];
@@ -49,8 +49,8 @@ public final class Page extends ScreenElement {
 
     public boolean addWidget(Widget widget) {
         for (int r = 0; r < ROWS; ++r) for (int c = 0; c < COLUMNS; c += widget.getColumns()) {
-            if (hasWidget(r, c)) continue;
-            if (setWidget(widget, r, c)) return true;
+            if (hasWidget(r, c)) { continue; }
+            if (setWidget(widget, r, c)) { return true; }
         }
         return false;
     }
@@ -58,9 +58,9 @@ public final class Page extends ScreenElement {
     public boolean setWidget(Widget widget, int row, int col) {
         int rowEnd = row + widget.getRows();
         int colEnd = col + widget.getColumns();
-        if (rowEnd > ROWS || colEnd > COLUMNS) return false;
+        if (rowEnd > ROWS || colEnd > COLUMNS) { return false; }
         for (int r = row; r < rowEnd; ++r) for (int c = col; c < colEnd; ++c) {
-            if (hasWidget(r, c)) return false;
+            if (hasWidget(r, c)) { return false; }
         }
         if (widget.getRows() * widget.getColumns() > 1) {
             WidgetPlaceholder placeholder = new WidgetPlaceholder(row, col);
