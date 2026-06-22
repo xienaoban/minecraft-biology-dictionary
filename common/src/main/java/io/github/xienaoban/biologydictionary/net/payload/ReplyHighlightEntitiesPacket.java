@@ -65,7 +65,7 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
             if (first != null) {
                 cws.getDiscoveryClientCache().onEntityHighlighted(player, first);
             }
-            BiologyDictionaryClient.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
+            ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
                     cnt, packet.entityType().getDescription(), packet.radius()));
         }}
         CO.receive(this, ctx);

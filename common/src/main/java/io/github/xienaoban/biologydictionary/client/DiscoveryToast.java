@@ -16,7 +16,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
-import org.jspecify.annotations.Nullable;
 
 @ClientOnly
 public class DiscoveryToast implements Toast {
@@ -24,7 +23,6 @@ public class DiscoveryToast implements Toast {
             Identifier.fromNamespaceAndPath("biologydictionary", "toast/discovery_toast");
     private static final int DISPLAY_TIME = 7000;
     private final Component entityName;
-    @Nullable
     private final ItemStack eggStack;
     private final long createdAt;
     private Visibility wantedVisibility = Visibility.HIDE;

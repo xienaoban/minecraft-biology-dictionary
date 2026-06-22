@@ -147,6 +147,7 @@ final class EntityVanillaDeobfuscation {
         /*----*/ r(net.minecraft.world.entity.decoration.ArmorStand.class, "net.minecraft.world.entity.decoration.ArmorStand");
 
         // interfaces
+        r(net.minecraft.core.TypedInstance.class, "net.minecraft.core.TypedInstance");
         r(net.minecraft.core.component.DataComponentGetter.class, "net.minecraft.core.component.DataComponentGetter");
         r(net.minecraft.network.syncher.SyncedDataHolder.class, "net.minecraft.network.syncher.SyncedDataHolder");
         r(net.minecraft.util.debug.DebugValueSource.class, "net.minecraft.util.debug.DebugValueSource");
