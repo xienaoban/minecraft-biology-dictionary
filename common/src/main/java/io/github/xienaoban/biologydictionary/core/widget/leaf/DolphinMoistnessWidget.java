@@ -1,0 +1,85 @@
+package io.github.xienaoban.biologydictionary.core.widget.leaf;
+
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
+import io.github.xienaoban.biologydictionary.core.property.builtin.IntProperty;
+import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
+import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
+import net.minecraft.world.entity.animal.dolphin.Dolphin;
+
+@ClientOnly
+public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin> {
+    public static final Factory<Dolphin> FACTORY = DolphinMoistnessWidget::new;
+
+    private static final int L = 6, T = 2;
+
+    /**
+     * @see Dolphin#TOTAL_MOISTNESS_LEVEL
+     */
+    private static final int TOTAL_MOISTNESS_LEVEL = 2400;
+
+    private final IntProperty<Dolphin> moistnessProperty = VanillaEntityProperties.OfDolphin.getMoistnessProperty(p());
+
+    public DolphinMoistnessWidget(EntityProperties<Dolphin> properties) {
+        super(properties);
+
+        setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
+        setElementBar(new MoistnessBar());
+    }
+
+    @Override
+    protected void onTick(int ticks) {
+        super.onTick(ticks);
+        Integer mL = moistnessProperty.getVal();
+        if (mL == null) {
+            return;
+        }
+        int m = mL;
+        if (m > 0 && !e().isInWaterOrRain() && !e().isNoAi()) {
+            moistnessProperty.setVal(m - 1);
+        }
+    }
+
+    @Override
+    protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+        renderTooltip(ctx,
+                tooltipTitle(Lang.PROPERTY_WIDGET_MOISTNESS),
+                tooltipDescription(Lang.PROPERTY_WIDGET_MOISTNESS_DESC)
+        );
+        return true;
+    }
+
+    private final class MoistnessBar extends EntityPropertyProgressBar {
+
+        public MoistnessBar() {
+            super(Textures.ICONS, (L + 1) * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            Integer mL = moistnessProperty.getVal();
+            if (mL == null) {
+                updatePercent(0);
+                super.onRender(ctx);
+                renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
+                return;
+            }
+            int m = mL;
+            int mMax = TOTAL_MOISTNESS_LEVEL;
+            updatePercent((float) m / mMax);
+            super.onRender(ctx);
+            if (ctx.isDebug()) {
+                renderInnerText(ctx, TextUtils.literal(m + "t/" + mMax + "t"));
+            } else {
+                renderInnerText(ctx, TextUtils.literal((m / 20) + "s/" + (mMax / 20) + "s"));
+            }
+        }
+    }
+}

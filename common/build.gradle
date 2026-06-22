@@ -1,29 +1,93 @@
 plugins {
-	id "java-library"
-	id "net.fabricmc.fabric-loom"
+    id "java-library"
+    id "net.fabricmc.fabric-loom"
 }
 
 base {
-	archivesName = "${mod_id}-common"
+    archivesName = "${mod_id}-common"
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/biologydictionary.accesswidener")
+}
+
+sourceSets {
+    testServer {
+        compileClasspath += main.compileClasspath + main.output
+        runtimeClasspath += main.runtimeClasspath + main.output
+    }
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${minecraft_version}"
-	compileOnly "net.fabricmc:fabric-loader:${loader_version}"
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    compileOnly "net.fabricmc:fabric-loader:${loader_version}"
+    implementation "org.yaml:snakeyaml:${snakeyaml_version}"
+    compileOnly "me.shedaniel.cloth:cloth-config-fabric:${clothconfig_version}"
+
+    testServerImplementation "com.github.javaparser:javaparser-symbol-solver-core:${javaparser_version}"
+    testServerImplementation "org.bitbucket.mstrobel:procyon-compilertools:${procyon_version}"
+    testServerImplementation "org.vineflower:vineflower:${vineflower_version}"
 }
 
 configurations {
-	commonJava {
-		canBeResolved = false
-		canBeConsumed = true
-	}
-	commonResources {
-		canBeResolved = false
-		canBeConsumed = true
-	}
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonTestServerJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonTestServerResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
 }
 
 artifacts {
-	commonJava sourceSets.main.java.sourceDirectories.singleFile
-	commonResources sourceSets.main.resources.sourceDirectories.singleFile
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+    commonTestServerJava sourceSets.testServer.java.sourceDirectories.singleFile
+    commonTestServerResources sourceSets.testServer.resources.sourceDirectories.singleFile
+}
+
+tasks.register("checkPlatformImports") {
+    group = "verification"
+    description = "Fails if common imports Fabric, Forge, or NeoForge platform packages."
+
+    def sourceDir = layout.projectDirectory.dir("src/main/java")
+    inputs.dir(sourceDir).optional()
+
+    doLast {
+        def forbidden = [
+                "net.fabricmc.",
+                "net.minecraftforge.",
+                "net.neoforged."
+        ]
+
+        fileTree(sourceDir).matching {
+            include "**/*.java"
+        }.each { file ->
+            def text = file.getText("UTF-8")
+            def found = text.readLines()
+                    .findAll { it ==~ /\s*import\s+.+/ }
+                    .findResult { line -> forbidden.find { line.contains(it) } }
+            if (found != null) {
+                throw new GradleException("Forbidden platform package '${found}' used in common source: ${file}")
+            }
+        }
+    }
+}
+
+tasks.register("checkClientOnlyBoundaries", io.github.xienaoban.biologydictionary.gradle.CheckClientOnlyTask) {
+    group = "verification"
+    description = "Fails if common non-client code references @ClientOnly or Minecraft client-only APIs."
+    dependsOn(tasks.named("classes"))
+
+    classesDir = layout.buildDirectory.dir("classes/java/main")
+    classpath.from(sourceSets.main.runtimeClasspath)
 }

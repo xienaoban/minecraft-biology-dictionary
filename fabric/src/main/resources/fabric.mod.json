@@ -1,28 +1,45 @@
 {
-	"schemaVersion": 1,
-	"id": "${mod_id}",
-	"version": "${version}",
-	"name": "${mod_name}",
-	"description": "A biology dictionary for Minecraft.",
-	"authors": [
-		"XieNaoban"
-	],
-	"license": "${mod_license}",
-	"icon": "assets/biologydictionary/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"io.github.xienaoban.biologydictionary.fabric.FabricBiologyDictionary"
-		]
-	},
-	"mixins": [
-		"biologydictionary.mixins.json",
-		"biologydictionary-fabric.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=${loader_version}",
-		"minecraft": "~${minecraft_version}",
-		"java": ">=25",
-		"fabric-api": "*"
-	}
+    "schemaVersion": 1,
+    "id": "${mod_id}",
+    "version": "${version}",
+    "name": "${mod_name}",
+    "description": "To display or modify the properties and states of mobs.",
+    "authors": [
+        "XieNaoban"
+    ],
+    "contact": {
+        "homepage": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "sources": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "repo": "https://github.com/xienaoban/minecraft-biology-dictionary",
+        "issues": "https://github.com/xienaoban/minecraft-biology-dictionary/issues"
+    },
+    "license": "${mod_license}",
+    "icon": "assets/biologydictionary/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "io.github.xienaoban.biologydictionary.FabricBiologyDictionary"
+        ],
+        "client": [
+            "io.github.xienaoban.biologydictionary.FabricBiologyDictionaryClient"
+        ],
+        "modmenu": [
+            "io.github.xienaoban.biologydictionary.config.ModMenuConfigScreenProvider"
+        ]
+    },
+    "accessWidener": "biologydictionary.accesswidener",
+    "mixins": [
+        "biologydictionary.mixins.json",
+        "biologydictionary-fabric.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=${loader_version}",
+        "minecraft": "~${minecraft_version}",
+        "java": ">=25",
+        "fabric-api": ">=${fabricapi_version}",
+        "cloth-config": ">=${clothconfig_version}"
+    },
+    "suggests": {
+        "modmenu": ">=${modmenu_version}"
+    }
 }
