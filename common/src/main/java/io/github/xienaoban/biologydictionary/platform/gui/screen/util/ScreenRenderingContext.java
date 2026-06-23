@@ -13,6 +13,7 @@ import io.github.xienaoban.biologydictionary.platform.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.components.PlayerFaceExtractor;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
@@ -24,6 +25,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
@@ -35,6 +37,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
@@ -523,8 +526,9 @@ public final class ScreenRenderingContext {
     }
 
     public void renderPlayerFace(AbstractClientPlayer player, float left, float top, float size) {
-        getGuiGraphics().skin(null, player.getSkin().body().texturePath(), 8, 8, 8, 8,
-                (int) left, (int) top, (int) size, (int) size);
+        PlayerFaceExtractor.extractRenderState(getGuiGraphics(), player.getSkin().body().texturePath(),
+                (int) left, (int) top, (int) size,
+                player.isModelPartShown(PlayerModelPart.HAT), AvatarRenderer.isPlayerUpsideDown(player), -1);
     }
 
     public static final class EntityRenderingCache {
