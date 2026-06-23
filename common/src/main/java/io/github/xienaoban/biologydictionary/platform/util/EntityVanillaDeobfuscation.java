@@ -79,6 +79,10 @@ final class EntityVanillaDeobfuscation {
         /*------------*/ r(net.minecraft.world.entity.animal.turtle.Turtle.class, "net.minecraft.world.entity.animal.turtle.Turtle");
         /*------------*/ r(net.minecraft.world.entity.monster.Strider.class, "net.minecraft.world.entity.monster.Strider");
         /*------------*/ r(net.minecraft.world.entity.monster.hoglin.Hoglin.class, "net.minecraft.world.entity.monster.hoglin.Hoglin");
+        /*----------*/ r(net.minecraft.world.entity.monster.cubemob.AbstractCubeMob.class, "net.minecraft.world.entity.monster.cubemob.AbstractCubeMob");
+        /*------------*/ r(net.minecraft.world.entity.monster.cubemob.MagmaCube.class, "net.minecraft.world.entity.monster.cubemob.MagmaCube");
+        /*------------*/ r(net.minecraft.world.entity.monster.cubemob.Slime.class, "net.minecraft.world.entity.monster.cubemob.Slime");
+        /*------------*/ r(net.minecraft.world.entity.monster.cubemob.SulfurCube.class, "net.minecraft.world.entity.monster.cubemob.SulfurCube");
         /*----------*/ r(net.minecraft.world.entity.npc.villager.AbstractVillager.class, "net.minecraft.world.entity.npc.villager.AbstractVillager");
         /*------------*/ r(net.minecraft.world.entity.npc.villager.Villager.class, "net.minecraft.world.entity.npc.villager.Villager");
         /*------------*/ r(net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader.class, "net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader");
@@ -142,8 +146,6 @@ final class EntityVanillaDeobfuscation {
         /*------*/ r(net.minecraft.world.entity.boss.enderdragon.EnderDragon.class, "net.minecraft.world.entity.boss.enderdragon.EnderDragon");
         /*------*/ r(net.minecraft.world.entity.monster.Ghast.class, "net.minecraft.world.entity.monster.Ghast");
         /*------*/ r(net.minecraft.world.entity.monster.Phantom.class, "net.minecraft.world.entity.monster.Phantom");
-        /*------*/ r(net.minecraft.world.entity.monster.cubemob.Slime.class, "net.minecraft.world.entity.monster.cubemob.Slime");
-        /*--------*/ r(net.minecraft.world.entity.monster.cubemob.MagmaCube.class, "net.minecraft.world.entity.monster.cubemob.MagmaCube");
         /*----*/ r(net.minecraft.world.entity.decoration.ArmorStand.class, "net.minecraft.world.entity.decoration.ArmorStand");
 
         // interfaces

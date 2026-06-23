@@ -18,8 +18,8 @@ final class EntityOrder {
 
     public static void registerBuiltIn(Registrar registrar) {
         // peaceful
-        registrar.register(EntityTypes.RABBIT);
         registrar.register(EntityTypes.CHICKEN);
+        registrar.register(EntityTypes.RABBIT);
         registrar.register(EntityTypes.PIG);
         registrar.register(EntityTypes.SHEEP);
         registrar.register(EntityTypes.GOAT);
@@ -82,6 +82,7 @@ final class EntityOrder {
         registrar.register(EntityTypes.WITHER_SKELETON);
         registrar.register(EntityTypes.ENDERMAN);
         registrar.register(EntityTypes.SLIME);
+        registrar.register(EntityTypes.SULFUR_CUBE);
         registrar.register(EntityTypes.SILVERFISH);
         registrar.register(EntityTypes.SPIDER);
         registrar.register(EntityTypes.CAVE_SPIDER);
@@ -195,6 +196,7 @@ final class EntityOrder {
         registrar.register(EntityTypes.HOGLIN);
         registrar.register(EntityTypes.MAGMA_CUBE);
         registrar.register(EntityTypes.PIGLIN);
+        registrar.register(EntityTypes.SULFUR_CUBE);
         registrar.register(EntityTypes.PIGLIN_BRUTE);
         registrar.register(EntityTypes.STRIDER);
         registrar.register(EntityTypes.WITHER_SKELETON);

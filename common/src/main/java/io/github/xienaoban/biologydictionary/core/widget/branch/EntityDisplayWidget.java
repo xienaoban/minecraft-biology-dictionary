@@ -47,6 +47,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
             if (entity instanceof LocalPlayer me) {
                 GameProfile profile = me.getGameProfile();
                 model = new RemotePlayer((ClientLevel) me.level(), new GameProfile(profile.id(), profile.name()));
+                EntityUtils.assignRenderOnlyEntityId(model);
                 // to make name label invisible
                 // @see net.minecraft.client.renderer.entity.LivingEntityRenderer.shouldShowName
                 Vec3 pos = model.position();

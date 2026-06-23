@@ -100,11 +100,24 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity> E create(EntityType<E> entityType, Level level, EntitySpawnReason reason) {
-        return entityType.create(level, reason);
+        E entity = entityType.create(level, reason);
+        // All entities created in this mod are for rendering only.
+        assignRenderOnlyEntityId(entity);
+        return entity;
     }
 
     public static Optional<Entity> create(ValueInput valueInput, Level level, EntitySpawnReason reason) {
-        return EntityType.create(valueInput, level, new EntitySpawnRequest(reason, true));
+        Optional<Entity> entity = EntityType.create(valueInput, level, new EntitySpawnRequest(reason, true));
+        // All entities created in this mod are for rendering only.
+        entity.ifPresent(EntityUtils::assignRenderOnlyEntityId);
+        return entity;
+    }
+
+    /**
+     * @see net.minecraft.world.level.BaseSpawner#SET_DISPLAY_ENTITY_ID
+     */
+    public static void assignRenderOnlyEntityId(Entity entity) {
+        if (entity != null) { entity.setId(-1); }
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(E entity) {

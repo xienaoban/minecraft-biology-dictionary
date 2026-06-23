@@ -4,8 +4,8 @@ import io.github.xienaoban.biologydictionary.client.TelescopeDiscoveryIndicatorR
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @ClientOnly
-@Mixin(Gui.class)
-public abstract class GuiMixin {
+@Mixin(Hud.class)
+public abstract class HudMixin {
     @Shadow @Final private Minecraft minecraft;
 
     @Inject(method = "extractCrosshair(Lnet/minecraft/client/gui/GuiGraphicsExtractor;"
