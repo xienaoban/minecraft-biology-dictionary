@@ -44,7 +44,7 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
             }
             Entity entity = ClientUtils.getClientLevel(ctx.client()).getEntity(packet.entityId());
             if (!(entity instanceof LivingEntity livingEntity)) {
-                Screen screen = ctx.client().screen;
+                Screen screen = ClientUtils.getCurrentScreen(ctx.client());
                 if (screen != null) { screen.onClose(); }
                 BiologyDictionaryClient.sendCenteredWarning(TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_ID));
                 return;
@@ -54,7 +54,7 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
             InventoryStealingMenu menu = new InventoryStealingMenu(
                     packet.counter(), ctx.player().getInventory(), livingEntity, container);
             ctx.player().containerMenu = menu;
-            ctx.client().setScreen(new InventoryStealingScreen(menu, ctx.player().getInventory(), livingEntity));
+            ClientUtils.setScreen(ctx.client(), new InventoryStealingScreen(menu, ctx.player().getInventory(), livingEntity));
         }}
         CO.receive(this, ctx);
     }

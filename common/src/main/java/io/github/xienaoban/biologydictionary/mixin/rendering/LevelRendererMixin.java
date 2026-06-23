@@ -35,7 +35,7 @@ public abstract class LevelRendererMixin {
                                               LevelRenderState levelRenderState, CallbackInfo ci) {
         ClientWorldSession cws = ClientWorldSession.get();
         if (cws != null && cws.getHighlightManager().hasAnyHighlighted()) {
-            levelRenderState.haveGlowingEntities = true;
+            levelRenderState.shouldShowEntityOutlines = true;
         }
     }
 

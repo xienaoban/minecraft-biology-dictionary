@@ -8,6 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class EntitySpawnManagerTest {
     public void testGuardianSpawnsInOceanMonument(GameTestHelper helper) {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
-        Set<Identifier> structures = manager.getSpawnStructures(EntityType.GUARDIAN);
+        Set<Identifier> structures = manager.getSpawnStructures(EntityTypes.GUARDIAN);
         helper.assertTrue(structures.contains(Identifier.withDefaultNamespace("monument")),
             "Guardian should spawn in ocean monuments");
         helper.succeed();
@@ -37,7 +38,7 @@ public class EntitySpawnManagerTest {
     public void testElderGuardianSpawnsInOceanMonument(GameTestHelper helper) {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
-        Set<Identifier> structures = manager.getSpawnStructures(EntityType.ELDER_GUARDIAN);
+        Set<Identifier> structures = manager.getSpawnStructures(EntityTypes.ELDER_GUARDIAN);
         helper.assertTrue(structures.contains(Identifier.withDefaultNamespace("monument")),
             "Elder guardian should spawn in ocean monuments (via data pack override)");
         helper.succeed();
@@ -46,7 +47,7 @@ public class EntitySpawnManagerTest {
     public void testWardenSpawnsInAncientCity(GameTestHelper helper) {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
-        Set<Identifier> structures = manager.getSpawnStructures(EntityType.WARDEN);
+        Set<Identifier> structures = manager.getSpawnStructures(EntityTypes.WARDEN);
         helper.assertTrue(structures.contains(Identifier.withDefaultNamespace("ancient_city")),
             "Warden should spawn in ancient city (via data pack override)");
         helper.succeed();
@@ -55,7 +56,7 @@ public class EntitySpawnManagerTest {
     public void testCreakingSpawnsInPaleGarden(GameTestHelper helper) {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
-        Set<Identifier> biomes = manager.getSpawnBiomes(EntityType.CREAKING);
+        Set<Identifier> biomes = manager.getSpawnBiomes(EntityTypes.CREAKING);
         helper.assertTrue(biomes.contains(Identifier.withDefaultNamespace("pale_garden")),
             "Creaking should spawn in pale garden (via data pack override)");
         helper.succeed();
@@ -64,7 +65,7 @@ public class EntitySpawnManagerTest {
     public void testEnderDragonSpawnsInTheEnd(GameTestHelper helper) {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
-        Set<Identifier> biomes = manager.getSpawnBiomes(EntityType.ENDER_DRAGON);
+        Set<Identifier> biomes = manager.getSpawnBiomes(EntityTypes.ENDER_DRAGON);
         helper.assertTrue(biomes.contains(Identifier.withDefaultNamespace("the_end")),
             "Ender dragon should spawn in the end (via data pack override)");
         helper.succeed();
@@ -73,7 +74,7 @@ public class EntitySpawnManagerTest {
     public void testVexSpawnsInMansion(GameTestHelper helper) {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
-        Set<Identifier> structures = manager.getSpawnStructures(EntityType.VEX);
+        Set<Identifier> structures = manager.getSpawnStructures(EntityTypes.VEX);
         helper.assertTrue(structures.contains(Identifier.withDefaultNamespace("mansion")),
             "Vex should spawn in mansion (via data pack override)");
         helper.succeed();
@@ -82,7 +83,7 @@ public class EntitySpawnManagerTest {
     public void testBreezeSpawnsInTrialChambers(GameTestHelper helper) {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
-        Set<Identifier> structures = manager.getSpawnStructures(EntityType.BREEZE);
+        Set<Identifier> structures = manager.getSpawnStructures(EntityTypes.BREEZE);
         helper.assertTrue(structures.contains(Identifier.withDefaultNamespace("trial_chambers")),
             "Breeze should spawn in trial chambers (via data pack override)");
         helper.succeed();
@@ -91,7 +92,7 @@ public class EntitySpawnManagerTest {
     public void testCaveSpiderSpawnsInMineshaft(GameTestHelper helper) {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
-        Set<Identifier> structures = manager.getSpawnStructures(EntityType.CAVE_SPIDER);
+        Set<Identifier> structures = manager.getSpawnStructures(EntityTypes.CAVE_SPIDER);
         helper.assertTrue(structures.contains(Identifier.withDefaultNamespace("mineshaft")),
             "Cave spider should spawn in mineshaft (via data pack override)");
         helper.succeed();
@@ -100,7 +101,7 @@ public class EntitySpawnManagerTest {
     public void testBeeSpawnsInFlowerForest(GameTestHelper helper) {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
-        Set<Identifier> biomes = manager.getSpawnBiomes(EntityType.BEE);
+        Set<Identifier> biomes = manager.getSpawnBiomes(EntityTypes.BEE);
         helper.assertTrue(biomes.contains(Identifier.withDefaultNamespace("flower_forest")),
             "Bee should spawn in flower forest (via data pack override)");
         helper.succeed();
@@ -112,9 +113,9 @@ public class EntitySpawnManagerTest {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
         Set<EntityType<?>> entities = manager.getStructureEntities(Identifier.withDefaultNamespace("monument"));
-        helper.assertTrue(entities.contains(EntityType.GUARDIAN),
+        helper.assertTrue(entities.contains(EntityTypes.GUARDIAN),
             "Ocean monument should have guardians");
-        helper.assertTrue(entities.contains(EntityType.ELDER_GUARDIAN),
+        helper.assertTrue(entities.contains(EntityTypes.ELDER_GUARDIAN),
             "Ocean monument should have elder guardians (via data pack override)");
         helper.succeed();
     }
@@ -123,7 +124,7 @@ public class EntitySpawnManagerTest {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
         Set<EntityType<?>> entities = manager.getBiomeEntities(Identifier.withDefaultNamespace("plains"));
-        helper.assertTrue(entities.contains(EntityType.CHICKEN),
+        helper.assertTrue(entities.contains(EntityTypes.CHICKEN),
             "Plains should have chickens");
         helper.succeed();
     }
@@ -132,7 +133,7 @@ public class EntitySpawnManagerTest {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
         Set<EntityType<?>> entities = manager.getStructureEntities(Identifier.withDefaultNamespace("ancient_city"));
-        helper.assertTrue(entities.contains(EntityType.WARDEN),
+        helper.assertTrue(entities.contains(EntityTypes.WARDEN),
             "Ancient city should have warden (via data pack override)");
         helper.succeed();
     }
@@ -141,7 +142,7 @@ public class EntitySpawnManagerTest {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
         Set<EntityType<?>> entities = manager.getBiomeEntities(Identifier.withDefaultNamespace("flower_forest"));
-        helper.assertTrue(entities.contains(EntityType.BEE),
+        helper.assertTrue(entities.contains(EntityTypes.BEE),
             "Flower forest should have bee (via data pack override)");
         helper.succeed();
     }
@@ -150,10 +151,10 @@ public class EntitySpawnManagerTest {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
         // Cat should have NO biomes
-        Set<Identifier> biomes = manager.getSpawnBiomes(EntityType.CAT);
+        Set<Identifier> biomes = manager.getSpawnBiomes(EntityTypes.CAT);
         helper.assertTrue(biomes.isEmpty(), "Cat should not spawn in any biome");
         // Cat should only have village structures + witch hut
-        Set<Identifier> structures = manager.getSpawnStructures(EntityType.CAT);
+        Set<Identifier> structures = manager.getSpawnStructures(EntityTypes.CAT);
         boolean hasVillage = false;
         for (Identifier id : structures) {
             String name = id.toString();
@@ -176,10 +177,10 @@ public class EntitySpawnManagerTest {
         EntitySpawnManager manager = getManager(helper);
         if (manager == null) { return; }
         // Parrot should have NO structures
-        Set<Identifier> structures = manager.getSpawnStructures(EntityType.PARROT);
+        Set<Identifier> structures = manager.getSpawnStructures(EntityTypes.PARROT);
         helper.assertTrue(structures.isEmpty(), "Parrot should not spawn in any structure");
         // Parrot should only have jungle + bamboo_jungle biomes
-        Set<Identifier> biomes = manager.getSpawnBiomes(EntityType.PARROT);
+        Set<Identifier> biomes = manager.getSpawnBiomes(EntityTypes.PARROT);
         for (Identifier id : biomes) {
             String name = id.toString();
             if (!name.equals("minecraft:jungle") && !name.equals("minecraft:bamboo_jungle")) {

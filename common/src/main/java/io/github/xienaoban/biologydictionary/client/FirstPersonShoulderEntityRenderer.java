@@ -20,7 +20,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.parrot.Parrot;
 
@@ -55,7 +55,7 @@ public final class FirstPersonShoulderEntityRenderer {
     }
 
     /**
-     * @see net.minecraft.client.renderer.ItemInHandRenderer#renderHandsWithItems(
+     * @see net.minecraft.client.renderer.ItemInHandRenderer#submitHandsWithItems(
      *          float, com.mojang.blaze3d.vertex.PoseStack,
      *          net.minecraft.client.renderer.SubmitNodeCollector,
      *          net.minecraft.client.player.LocalPlayer, int)
@@ -83,7 +83,7 @@ public final class FirstPersonShoulderEntityRenderer {
         lastTime = curTime;
 
         PoseStack ps = new PoseStack();
-        // @see net.minecraft.client.renderer.ItemInHandRenderer.renderHandsWithItems
+        // @see net.minecraft.client.renderer.ItemInHandRenderer.submitHandsWithItems
         float xp = Mth.lerp(tickDelta, player.xBobO, player.xBob);
         float yp = Mth.lerp(tickDelta, player.yBobO, player.yBob);
         ps.mulPose(Axis.XP.rotationDegrees((player.getViewXRot(tickDelta) - xp) * 0.1F));
@@ -139,7 +139,7 @@ public final class FirstPersonShoulderEntityRenderer {
             entityRenderState = null;
         }
         else {
-            Parrot parrot = EntityUtils.create(EntityType.PARROT, EntityUtils.getLevel(player));
+            Parrot parrot = EntityUtils.create(EntityTypes.PARROT, EntityUtils.getLevel(player));
             VanillaEntityProperties.OfParrot.createVariantProperty().withVal(variant).setTo(parrot);
 
             entity = parrot;

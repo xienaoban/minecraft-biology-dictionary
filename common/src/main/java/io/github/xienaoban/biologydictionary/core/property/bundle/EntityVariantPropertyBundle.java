@@ -21,6 +21,7 @@ import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.entity.animal.equine.Markings;
 import net.minecraft.world.entity.animal.equine.Variant;
@@ -47,9 +48,9 @@ public final class EntityVariantPropertyBundle {
     public static void init() {
         register(STANDARD_PATTERN);
 
-        register(EntityType.VILLAGER, new VillagerTypeHandler());
-        register(EntityType.HORSE, new HorseVariantHandler(), new HorseMarkingsHandler());
-        register(EntityType.PANDA, new PandaMainGeneHandler(), new PandaHiddenGeneHandler());
+        register(EntityTypes.VILLAGER, new VillagerTypeHandler());
+        register(EntityTypes.HORSE, new HorseVariantHandler(), new HorseMarkingsHandler());
+        register(EntityTypes.PANDA, new PandaMainGeneHandler(), new PandaHiddenGeneHandler());
     }
 
     public static void register(Function<Entity, VariantHandler<?, ?>> pattern) {

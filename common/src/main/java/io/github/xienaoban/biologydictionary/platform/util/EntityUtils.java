@@ -104,7 +104,7 @@ public final class EntityUtils {
     }
 
     public static Optional<Entity> create(ValueInput valueInput, Level level, EntitySpawnReason reason) {
-        return EntityType.create(valueInput, level, reason);
+        return EntityType.create(valueInput, level, new EntitySpawnRequest(reason, true));
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(E entity) {
@@ -112,7 +112,8 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(String key) {
-        return Misc.cast(EntityType.byString(key).orElse(null));
+        Identifier id = Identifier.tryParse(key);
+        return id == null ? null : getEntityType(id);
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(ResourceKey<EntityType<?>> key) {

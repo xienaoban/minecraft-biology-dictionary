@@ -62,7 +62,7 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
             cws.getDiscoveryClientCache().incrementalSync(packet.entityType, packet.record);
 
             // Show toast
-            client.getToastManager().addToast(new DiscoveryToast(packet.entityType));
+            client.gui.toastManager().addToast(new DiscoveryToast(packet.entityType));
 
             // Swing if INTERACT
             if (packet.record.source() == DiscoverySource.INTERACT) {

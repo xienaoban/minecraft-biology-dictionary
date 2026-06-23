@@ -58,7 +58,7 @@ public final class ClientUtils {
     }
 
     public static boolean isSingleplayer() {
-        return getClient().isSingleplayer();
+        return getClient().hasSingleplayerServer();
     }
 
     public static boolean isLocalServer() {
@@ -85,7 +85,7 @@ public final class ClientUtils {
     }
 
     public static <S extends Screen> S getCurrentScreen(Minecraft client) {
-        return Misc.cast(client.screen);
+        return Misc.cast(client.gui.screen());
     }
 
     public static void setScreen(Screen screen) {
@@ -93,7 +93,7 @@ public final class ClientUtils {
     }
 
     public static void setScreen(Minecraft client, Screen screen) {
-        client.setScreen(screen);
+        client.gui.setScreen(screen);
     }
 
     public static long getGameTimeMillis(float tickDelta) {

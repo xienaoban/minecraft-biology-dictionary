@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,7 +24,7 @@ public record ReplyBeehiveInfoPacket(CompoundTag bees) implements Packet {
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO { static void receive(ReplyBeehiveInfoPacket packet, ClientNetApi.Context ctx) {
-            if (ctx.client().screen instanceof BeehiveScreen screen) {
+            if (ClientUtils.getCurrentScreen(ctx.client()) instanceof BeehiveScreen screen) {
                 BeehiveBlockEntity.Occupant.LIST_CODEC
                         .parse(NbtOps.INSTANCE, packet.bees().get("bees"))
                         .resultOrPartial(string -> LOGGER.error("Failed to parse bees: '{}'", string))

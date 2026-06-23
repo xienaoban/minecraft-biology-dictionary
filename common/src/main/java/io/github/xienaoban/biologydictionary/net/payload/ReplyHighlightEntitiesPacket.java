@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;

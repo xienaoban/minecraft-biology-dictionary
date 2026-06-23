@@ -13,7 +13,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
@@ -52,7 +52,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
                 Vec3 pos = model.position();
                 model.setPos(pos.x(), pos.y() - 4097, pos.z());
             } else {
-                model = EntityUtils.create(EntityType.ARMOR_STAND, EntityUtils.getLevel(entity));
+                model = EntityUtils.create(EntityTypes.ARMOR_STAND, EntityUtils.getLevel(entity));
             }
         }
         updateCompoundTag(entity, model);

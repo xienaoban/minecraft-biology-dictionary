@@ -8,16 +8,14 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.AgeableWaterCreature;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.animal.allay.Allay;
+import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.world.entity.animal.happyghast.HappyGhast;
+import net.minecraft.world.entity.animal.parrot.Parrot;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.level.Level;
@@ -61,7 +59,7 @@ public final class EntityManager {
         initEntitiesSortTreeNode();
         initMcTagTagGroups();
         initJavaTagGroups();
-        initDefaultTags();
+        initDefaultTags(level);
     }
 
     private void initEntities(Level level) {
@@ -82,7 +80,7 @@ public final class EntityManager {
             clazzToType.put(entityClassInfo.getClazz(), entityType);
             getOrCreateEntityTreeNode(entityClassInfo.getClazz());
         }
-        // [Should I?] info.put(EntityType.PLAYER, new EntityClassInfo(EntityType.PLAYER, PlayerEntity.class));
+        // [Should I?] info.put(EntityTypes.PLAYER, new EntityClassInfo(EntityTypes.PLAYER, PlayerEntity.class));
         // [Should I?] getEntityTreeNode(PlayerEntity.class);
     }
 
@@ -177,7 +175,7 @@ public final class EntityManager {
         interfaceTags.getRootTags().sort(DevUtils.getClassNameComparator(Tag::getName));
     }
 
-    private void initDefaultTags() {
+    private void initDefaultTags(Level level) {
         defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_FRIENDLY));
         defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL, defaultTags.getTag(Lang.TAG_DEFAULT_FRIENDLY)));
         defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_FRIENDLY_HUMANOID,    defaultTags.getTag(Lang.TAG_DEFAULT_FRIENDLY_TERRESTRIAL)));
@@ -226,8 +224,8 @@ public final class EntityManager {
                 if (WaterAnimal.class.isAssignableFrom(entityClazz)
                         || AgeableWaterCreature.class.isAssignableFrom(entityClazz)) {
                     aquaticList.add(info);
-                } else if (FlyingAnimal.class.isAssignableFrom(entityClazz)
-                        || entityClazz == Bat.class || entityClazz == Allay.class) {
+                } else if (entityClazz == Bat.class || entityClazz == Allay.class
+                        || entityClazz == Bee.class || entityClazz == HappyGhast.class || entityClazz == Parrot.class) {
                     flyingList.add(info);
                 } else {
                     terrestrialList.add(info);
@@ -238,10 +236,10 @@ public final class EntityManager {
                 }
             }
         }
-        humanList.add(getEntityClassInfo(EntityType.IRON_GOLEM));
-        aquaticList.add(getEntityClassInfo(EntityType.TURTLE));
-        aquaticList.add(getEntityClassInfo(EntityType.AXOLOTL));
-        aquaticList.add(getEntityClassInfo(EntityType.FROG));
+        humanList.add(getEntityClassInfo(EntityTypes.IRON_GOLEM));
+        aquaticList.add(getEntityClassInfo(EntityTypes.TURTLE));
+        aquaticList.add(getEntityClassInfo(EntityTypes.AXOLOTL));
+        aquaticList.add(getEntityClassInfo(EntityTypes.FROG));
         humanList.sort(Comparator.comparingInt(EntityClassInfo::getSortId));
         aquaticList.sort(Comparator.comparingInt(EntityClassInfo::getSortId));
 
@@ -332,7 +330,7 @@ public final class EntityManager {
         public static EntityClassInfo create(EntityType<?> entityType, Level level) {
             Entity entity = EntityUtils.create(entityType, level);
             if (entity == null) {
-                if (entityType == EntityType.PLAYER) { return null; }
+                if (entityType == EntityTypes.PLAYER) { return null; }
                 if (!entityType.isEnabled(level.enabledFeatures())) { return null; }
                 throw new RuntimeException("Failed to create \"" + EntityType.getKey(entityType) + "\".");
             }

@@ -32,13 +32,11 @@
     ],
     "client": [
         "MinecraftMixin",
-        "rendering.FeatureRenderDispatcherIMixin",
         "rendering.GuiGraphicsExtractorIMixin",
-        "rendering.GuiMixin",
+        "rendering.HudMixin",
         "rendering.ItemInHandRendererMixin",
         "rendering.LevelRendererIMixin",
-        "rendering.LevelRendererMixin",
-        "rendering.PictureInPictureRendererMixin"
+        "rendering.LevelRendererMixin"
     ],
     "injectors": {
         "defaultRequire": 1

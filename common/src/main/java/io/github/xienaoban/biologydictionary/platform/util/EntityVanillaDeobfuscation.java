@@ -142,8 +142,8 @@ final class EntityVanillaDeobfuscation {
         /*------*/ r(net.minecraft.world.entity.boss.enderdragon.EnderDragon.class, "net.minecraft.world.entity.boss.enderdragon.EnderDragon");
         /*------*/ r(net.minecraft.world.entity.monster.Ghast.class, "net.minecraft.world.entity.monster.Ghast");
         /*------*/ r(net.minecraft.world.entity.monster.Phantom.class, "net.minecraft.world.entity.monster.Phantom");
-        /*------*/ r(net.minecraft.world.entity.monster.Slime.class, "net.minecraft.world.entity.monster.Slime");
-        /*--------*/ r(net.minecraft.world.entity.monster.MagmaCube.class, "net.minecraft.world.entity.monster.MagmaCube");
+        /*------*/ r(net.minecraft.world.entity.monster.cubemob.Slime.class, "net.minecraft.world.entity.monster.cubemob.Slime");
+        /*--------*/ r(net.minecraft.world.entity.monster.cubemob.MagmaCube.class, "net.minecraft.world.entity.monster.cubemob.MagmaCube");
         /*----*/ r(net.minecraft.world.entity.decoration.ArmorStand.class, "net.minecraft.world.entity.decoration.ArmorStand");
 
         // interfaces
@@ -167,8 +167,7 @@ final class EntityVanillaDeobfuscation {
         r(net.minecraft.world.entity.SlotProvider.class, "net.minecraft.world.entity.SlotProvider");
         r(net.minecraft.world.entity.Targeting.class, "net.minecraft.world.entity.Targeting");
         r(net.minecraft.world.entity.TraceableEntity.class, "net.minecraft.world.entity.TraceableEntity");
-        r(net.minecraft.world.entity.animal.Bucketable.class, "net.minecraft.world.entity.animal.Bucketable");
-        r(net.minecraft.world.entity.animal.FlyingAnimal.class, "net.minecraft.world.entity.animal.FlyingAnimal");
+        r(net.minecraft.world.entity.Bucketable.class, "net.minecraft.world.entity.Bucketable");
         r(net.minecraft.world.entity.monster.CrossbowAttackMob.class, "net.minecraft.world.entity.monster.CrossbowAttackMob");
         r(net.minecraft.world.entity.monster.Enemy.class, "net.minecraft.world.entity.monster.Enemy");
         r(net.minecraft.world.entity.monster.RangedAttackMob.class, "net.minecraft.world.entity.monster.RangedAttackMob");
