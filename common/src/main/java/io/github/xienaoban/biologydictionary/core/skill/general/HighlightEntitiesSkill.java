@@ -12,6 +12,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Items;
 
 public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) implements GeneralSkill {
@@ -61,10 +62,10 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
         if (entityType == null) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
                     TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE)), "entityType == null");
-        } else if (entityType == EntityType.PLAYER) {
+        } else if (entityType == EntityTypes.PLAYER) {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_FAILED_TO_HIGHLIGHT,
                     TextUtils.translate(Lang.TEXT_NOT_ALLOWED_TO_HIGHLIGHT_PLAYERS)),
-                    "entityType == EntityType.PLAYER");
+                    "entityType == EntityTypes.PLAYER");
         }
     }
 

@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.level.GameType;
 import org.apache.logging.log4j.LogManager;
@@ -250,18 +251,18 @@ public class VanillaEntitySkillTest {
 
             // Test with various entity types
             EntityType<?>[] testEntityTypes = {
-                EntityType.CHICKEN,
-                EntityType.COW,
-                EntityType.SHEEP,
-                EntityType.PIG,
-                EntityType.BEE,
-                EntityType.VILLAGER,
-                EntityType.WANDERING_TRADER,
-                EntityType.ZOMBIE,
-                EntityType.CREEPER,
-                EntityType.WOLF,
-                EntityType.HORSE,
-                EntityType.PARROT
+                EntityTypes.CHICKEN,
+                EntityTypes.COW,
+                EntityTypes.SHEEP,
+                EntityTypes.PIG,
+                EntityTypes.BEE,
+                EntityTypes.VILLAGER,
+                EntityTypes.WANDERING_TRADER,
+                EntityTypes.ZOMBIE,
+                EntityTypes.CREEPER,
+                EntityTypes.WOLF,
+                EntityTypes.HORSE,
+                EntityTypes.PARROT
             };
 
             int successCount = 0;

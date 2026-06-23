@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.Item;
@@ -34,7 +34,7 @@ public class PlaceholderFallbackEntityRenderer {
         this.entity = entity;
         ClientWorldSession cws = ClientWorldSession.get();
         if (cws != null && cws.hasRenderFailed(entity.getType())) {
-            this.placeholder = new ArmorStand(EntityType.ARMOR_STAND, entity.level());
+            this.placeholder = new ArmorStand(EntityTypes.ARMOR_STAND, entity.level());
         } else {
             this.placeholder = null;
         }
@@ -52,7 +52,7 @@ public class PlaceholderFallbackEntityRenderer {
                 if (cws != null) {
                     cws.markRenderFailed(entity.getType());
                 }
-                placeholder = new ArmorStand(EntityType.ARMOR_STAND, entity.level());
+                placeholder = new ArmorStand(EntityTypes.ARMOR_STAND, entity.level());
                 cache = new ScreenRenderingContext.EntityRenderingCache();
             }
         }

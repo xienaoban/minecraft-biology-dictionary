@@ -16,7 +16,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BeehiveBlock;
@@ -156,7 +156,7 @@ public class BeehiveScreen extends ElementScreen {
                 LATTICES[6][0] + lw + 16 - 8.5F, LATTICES[6][1] + lh + 8);
         ctx.renderCenteredText(TextUtils.translate(Lang.TEXT_HONEY), color, ctx.getZ(),
                 LATTICES[5][0] + lw + 16.5F, LATTICES[5][1] + lh + 16);
-        ctx.renderCenteredText(EntityType.BEE.getDescription(), color, ctx.getZ(),
+        ctx.renderCenteredText(EntityTypes.BEE.getDescription(), color, ctx.getZ(),
                 LATTICES[6][0] + lw + 16.5F, LATTICES[6][1] + lh + 16);
         if (hoveredBeeTooltip != null) {
             ctx.renderComponentTooltipCentered(hoveredBeeTooltip, hoveredBeeTooltipX, hoveredBeeTooltipY);
@@ -227,7 +227,7 @@ public class BeehiveScreen extends ElementScreen {
                 = new ScreenRenderingContext.EntityRenderingCache();
 
         public BeeInfo(Level level) {
-            entity = EntityUtils.create(EntityType.BEE, level);
+            entity = EntityUtils.create(EntityTypes.BEE, level);
             ticksInHive = -1;
             minTicksInHive = -1;
         }

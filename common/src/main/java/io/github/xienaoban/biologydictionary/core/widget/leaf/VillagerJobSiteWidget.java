@@ -50,7 +50,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
         if (jobSitePos == null) { return NO_DIS; }
         if (jobSitePos.dimension() != e().level().dimension()) { return NO_DIS; }
         Vec3 entityPos = e().position();
-        return (float) entityPos.distanceTo(jobSitePos.pos().getCenter());
+        return (float) entityPos.distanceTo(Vec3.atCenterOf(jobSitePos.pos()));
     }
 
     @Override

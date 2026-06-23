@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -247,7 +248,7 @@ public final class EntitySpawnManager {
             for (int i = 0; i < entities.size(); i++) {
                 CompoundTag entityTag = entities.getCompoundOrEmpty(i);
                 CompoundTag nbt = entityTag.getCompoundOrEmpty("nbt");
-                nbt.getString("id").flatMap(EntityType::byString).ifPresent(entityType -> {
+                nbt.getString("id").map(id -> (EntityType<?>) EntityUtils.getEntityType(id)).ifPresent(entityType -> {
                     if (seenStructureEntities.add(entityType)) {
                         structureSpawnMap.add(entityType, structureId);
                     }
@@ -290,7 +291,7 @@ public final class EntitySpawnManager {
                 continue;
             }
             Identifier entityId = Identifier.tryParse(entityStr.replace('.', ':'));
-            EntityType<?> entityType = EntityType.byString(entityId.toString()).orElse(null);
+            EntityType<?> entityType = EntityUtils.getEntityType(entityId);
             if (entityType == null) {
                 LOGGER.warn("Unknown entity type '{}' in spawn override data pack, skipping.", entityId);
                 continue;

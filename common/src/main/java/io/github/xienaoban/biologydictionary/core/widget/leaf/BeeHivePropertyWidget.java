@@ -58,7 +58,7 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         BlockPos hivePos = hivePosProperty.getVal();
         if (hivePos == null) { return NO_DIS; }
         Vec3 entityPos = e().position();
-        return (float) entityPos.distanceTo(hivePos.getCenter());
+        return (float) entityPos.distanceTo(Vec3.atCenterOf(hivePos));
     }
 
     @Override

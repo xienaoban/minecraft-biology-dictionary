@@ -7,7 +7,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.animal.chicken.Chicken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +17,7 @@ public class VanillaEntityBehaviorTest {
 
     public void testAgeableMobAge(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        Chicken chicken = EntityUtils.create(EntityType.CHICKEN, level, EntitySpawnReason.NATURAL);
+        Chicken chicken = EntityUtils.create(EntityTypes.CHICKEN, level, EntitySpawnReason.NATURAL);
         chicken.setBaby(true);
         helper.assertTrue(chicken.isBaby(), TextUtils.literal("setBaby() not work?"));
 
@@ -31,7 +31,7 @@ public class VanillaEntityBehaviorTest {
 
     public void testAgeableMobAgeLocked(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        Chicken chicken = EntityUtils.create(EntityType.CHICKEN, level, EntitySpawnReason.NATURAL);
+        Chicken chicken = EntityUtils.create(EntityTypes.CHICKEN, level, EntitySpawnReason.NATURAL);
         chicken.setBaby(true);
         helper.assertTrue(chicken.isBaby(), TextUtils.literal("setBaby() not work?"));
 

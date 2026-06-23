@@ -12,8 +12,8 @@ import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.screens.Screen;
@@ -316,7 +316,7 @@ public final class ScreenRenderingContext {
     }
 
     public void renderEffect(Holder<MobEffect> effect, float left, float top) {
-        Identifier id = Gui.getMobEffectSprite(effect);
+        Identifier id = Hud.getMobEffectSprite(effect);
         getGuiGraphics().blitSprite(RenderPipelines.GUI_TEXTURED, id, (int) left, (int) top, 18, 18);
     }
 
