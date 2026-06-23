@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
-import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
@@ -17,7 +16,7 @@ public class VanillaEntityBehaviorTest {
 
     public void testAgeableMobAge(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        Chicken chicken = EntityUtils.create(EntityTypes.CHICKEN, level, EntitySpawnReason.NATURAL);
+        Chicken chicken = EntityTypes.CHICKEN.create(level, EntitySpawnReason.NATURAL);
         chicken.setBaby(true);
         helper.assertTrue(chicken.isBaby(), TextUtils.literal("setBaby() not work?"));
 
@@ -31,7 +30,7 @@ public class VanillaEntityBehaviorTest {
 
     public void testAgeableMobAgeLocked(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        Chicken chicken = EntityUtils.create(EntityTypes.CHICKEN, level, EntitySpawnReason.NATURAL);
+        Chicken chicken = EntityTypes.CHICKEN.create(level, EntitySpawnReason.NATURAL);
         chicken.setBaby(true);
         helper.assertTrue(chicken.isBaby(), TextUtils.literal("setBaby() not work?"));
 

@@ -34,7 +34,7 @@ public class PlaceholderFallbackEntityRenderer {
         this.entity = entity;
         ClientWorldSession cws = ClientWorldSession.get();
         if (cws != null && cws.hasRenderFailed(entity.getType())) {
-            this.placeholder = new ArmorStand(EntityTypes.ARMOR_STAND, entity.level());
+            this.placeholder = EntityUtils.create(EntityTypes.ARMOR_STAND, entity.level());
         } else {
             this.placeholder = null;
         }
@@ -52,7 +52,7 @@ public class PlaceholderFallbackEntityRenderer {
                 if (cws != null) {
                     cws.markRenderFailed(entity.getType());
                 }
-                placeholder = new ArmorStand(EntityTypes.ARMOR_STAND, entity.level());
+                placeholder = EntityUtils.create(EntityTypes.ARMOR_STAND, entity.level());
                 cache = new ScreenRenderingContext.EntityRenderingCache();
             }
         }

@@ -23,13 +23,10 @@ public class ItemInHandRendererMixin {
     @Shadow @Final private EntityRenderDispatcher entityRenderDispatcher;
 
     @Inject(
-            method = "renderHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;"
+            method = "submitHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;"
                     + "Lnet/minecraft/client/renderer/SubmitNodeCollector;"
                     + "Lnet/minecraft/client/player/LocalPlayer;I)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderAllFeatures()V",
-                    shift = At.Shift.AFTER))
+            at = @At("TAIL"))
     private void biologydictionary$renderFirstPerson(float tickDelta, PoseStack poseStack,
                                                     SubmitNodeCollector submitNodeCollector, LocalPlayer localPlayer,
                                                     int light, CallbackInfo ci) {

@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
@@ -82,13 +81,6 @@ public final class FirstPersonShoulderEntityRenderer {
         long diffTime = Math.min(50, curTime - lastTime);
         lastTime = curTime;
 
-        PoseStack ps = new PoseStack();
-        // @see net.minecraft.client.renderer.ItemInHandRenderer.submitHandsWithItems
-        float xp = Mth.lerp(tickDelta, player.xBobO, player.xBob);
-        float yp = Mth.lerp(tickDelta, player.yBobO, player.yBob);
-        ps.mulPose(Axis.XP.rotationDegrees((player.getViewXRot(tickDelta) - xp) * 0.1F));
-        ps.mulPose(Axis.YP.rotationDegrees((player.getViewYRot(tickDelta) - yp) * 0.1F));
-
         CameraRenderState camera = ((LevelRendererIMixin) client.levelRenderer)
                 .biologydictionary$getLevelRenderState().cameraRenderState;
 
@@ -115,13 +107,13 @@ public final class FirstPersonShoulderEntityRenderer {
             entityRenderState.lightCoords = light;
 
             int pos = i * -2 + 1;
-            ps.pushPose();
-            ps.mulPose(Axis.XP.rotation(hudPos.xRot()));
-            ps.mulPose(Axis.YP.rotation(hudPos.yRot()));
-            ps.mulPose(Axis.ZP.rotation(hudPos.zRot()));
-            ps.translate(pos * hudPos.xPos(), hudPos.yPos() + player.getXRot() * hudPos.yOffset(), hudPos.zPos());
-            entityRenderDispatcher.submit(entityRenderState, camera, 0, 0, 0, ps, submitNodeCollector);
-            ps.popPose();
+            poseStack.pushPose();
+            poseStack.mulPose(Axis.XP.rotation(hudPos.xRot()));
+            poseStack.mulPose(Axis.YP.rotation(hudPos.yRot()));
+            poseStack.mulPose(Axis.ZP.rotation(hudPos.zRot()));
+            poseStack.translate(pos * hudPos.xPos(), hudPos.yPos() + player.getXRot() * hudPos.yOffset(), hudPos.zPos());
+            entityRenderDispatcher.submit(entityRenderState, camera, 0, 0, 0, poseStack, submitNodeCollector);
+            poseStack.popPose();
         }
     }
 
