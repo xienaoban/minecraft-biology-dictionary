@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -84,7 +85,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                     updatePercent(0);
                 }
                 super.onRender(ctx);
-                if (ctx.isDebug()) {
+                if (BiologyDictionaryClient.isDebugMode()) {
                     renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 } else {
                     if (isAdultClient()) {
@@ -99,7 +100,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
             int forcedAge = forcedAgeOpt;
             updatePercent(forcedAge < ADULT_MIN_AGE ? 0F : (1F - (float) age / BABY_MIN_AGE));
             super.onRender(ctx);
-            if (ctx.isDebug()) {
+            if (BiologyDictionaryClient.isDebugMode()) {
                 renderInnerText(ctx, TextUtils.literal(age + "t/" + ADULT_MIN_AGE + "t"));
             } else if (!isAdultClient()) {
                 if (forcedAge < ADULT_MIN_AGE) {

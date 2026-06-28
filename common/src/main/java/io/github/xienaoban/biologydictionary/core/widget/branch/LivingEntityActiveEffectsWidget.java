@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -79,7 +80,7 @@ public final class LivingEntityActiveEffectsWidget extends EntityPropertyStandar
                         TextUtils.literal(String.valueOf(effect.getAmplifier() + 1))));
                 int duration = effect.getDuration();
                 Component time;
-                if (ctx.isDebug()) {
+                if (BiologyDictionaryClient.isDebugMode()) {
                     time = TextUtils.literal(duration + "t").withStyle(ChatFormatting.GRAY);
                 } else if (duration == MobEffectInstance.INFINITE_DURATION) {
                     time = TextUtils.translate(Lang.TEXT_INFINITY_CHARACTER).withStyle(ChatFormatting.GRAY);

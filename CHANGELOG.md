@@ -10,6 +10,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 - Refactored Biology Dictionary screen scaling to improve compatibility with other mods.
 - Moved demo mode out of config and behind a debug-only hidden toggle on the About screen.
+- Moved debug mode to a static variable.
 
 ### Fixed
 

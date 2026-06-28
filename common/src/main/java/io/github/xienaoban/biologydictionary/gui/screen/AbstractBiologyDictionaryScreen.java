@@ -117,7 +117,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 (width + BOOK_TEXTURE_WIDTH) / 2F, (height + BOOK_TEXTURE_HEIGHT) / 2F + BOOK_TOP_OFFSET);
         renderTitle(ctx, title);
 
-        if (ctx.isDebug()) {
+        if (BiologyDictionaryClient.isDebugMode()) {
             renderDebug(ctx);
         }
 
@@ -185,8 +185,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
             onClose();
             return true;
         } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
-            screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
-            sendScreenMessage(TextUtils.literal("Debug mode " + (screenRenderingContext.isDebug() ? "on" : "off")));
+            sendScreenMessage(TextUtils.literal("Debug mode " + (BiologyDictionaryClient.toggleDebugMode() ? "on" : "off")));
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);

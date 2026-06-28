@@ -227,7 +227,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             }
 
             ScreenElementBox box = getBox();
-            float mouseY = screenRenderingContext.getMouseY() - box.getTop();
+            float mouseY = y - box.getTop();
 
             if (mouseY < BUTTONS_CUT) {
                 if (isMouseLeft(code)) {

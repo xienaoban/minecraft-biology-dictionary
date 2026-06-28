@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.mixin.rendering.ScreenIMixin;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import com.mojang.blaze3d.platform.Lighting;
@@ -59,7 +60,6 @@ public final class ScreenRenderingContext {
     private float rawMouseX, rawMouseY;
     private float mouseX, mouseY;   // scaled
     private float tickDelta;
-    private boolean debug;
 
     public ScreenRenderingContext() {
         this(null, null);
@@ -81,7 +81,6 @@ public final class ScreenRenderingContext {
         int h = guiGraphics == null ? client.getWindow().getGuiScaledHeight() : guiGraphics.guiHeight();
         Font f = screen == null ? client.font : ((ScreenIMixin) screen).biologydictionary$getFont();
         update(w, h, f, 0F, 1F);
-        this.debug = false;
     }
 
     /**
@@ -135,8 +134,6 @@ public final class ScreenRenderingContext {
     public float getTickDelta()             { return tickDelta; }
     public Font getFont()                   { return font; }
     public float getZ()                     { return z; }
-    public boolean isDebug()                { return debug; }
-    public void setDebug(boolean debug)     { this.debug = debug; }
 
     public CommonScreen getCommonScreen()   { return (CommonScreen) screen; }
     public ElementScreen getElementScreen() { return (ElementScreen) screen; }
@@ -683,7 +680,7 @@ public final class ScreenRenderingContext {
 
         getGuiGraphics().disableScissor();
 
-        if (isDebug() && width > 0 && height > 0) {
+        if (BiologyDictionaryClient.isDebugMode() && width > 0 && height > 0) {
             final int color = 0xFFAAAAAA;
             renderRectangle(color, 0.6F, getZ(), left, top, right, bottom);
         }

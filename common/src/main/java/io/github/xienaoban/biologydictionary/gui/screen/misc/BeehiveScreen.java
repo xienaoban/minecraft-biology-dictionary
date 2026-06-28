@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
@@ -173,7 +174,7 @@ public class BeehiveScreen extends ElementScreen {
             onClose();
             return true;
         } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
-            screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
+            BiologyDictionaryClient.toggleDebugMode();
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
