@@ -40,18 +40,18 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    protected boolean mouseClicked(float mouseX, float mouseY, int code) {
         try {
             updateSelectedElement();
             if (getSelectedElement() != null) {
-                return getSelectedElement().mouseDown((float) mouseX, (float) mouseY, button);
+                return getSelectedElement().mouseDown(mouseX, mouseY, code);
             } else {
-                return super.mouseClicked(mouseX, mouseY, button);
+                return super.mouseClicked(mouseX, mouseY, code);
             }
         } catch (Throwable e) {
             showExceptionMessageAndCloseScreen("Error in mouse clicking on screen", e);
+            return true;
         }
-        return true;
     }
 
     @Override
@@ -108,7 +108,7 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     public final void updateBoxSizes() {
-        rootScreenElement.resize(width, height);
+        rootScreenElement.resize(screenRenderingContext.getScreenWidth(), screenRenderingContext.getScreenHeight());
     }
 
     public final int getTicks() {
@@ -117,8 +117,8 @@ public abstract class ElementScreen extends CommonScreen {
 
     /**
      * Relocate the sub elements of root element.
-     * @param width the new width of the screen, same with this.width
-     * @param height the new height of the screen, same with this.height
+     * @param width the scaled width of the screen after applying Biology Dictionary screen scale
+     * @param height the scaled height of the screen after applying Biology Dictionary screen scale
      */
     protected abstract void resizeBox(int width, int height);
 

@@ -11,7 +11,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -24,6 +23,13 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 public abstract class CommonScreen extends Screen implements ScreenConsts {
     private static boolean commonScreenOpened = false;
 
+    // Avoid using Screen.width/height in subclasses. Biology Dictionary screens
+    // apply a second scale, so layout code must use ScreenRenderingContext sizes.
+    @SuppressWarnings("unused")
+    private final int width = 0;
+    @SuppressWarnings("unused")
+    private final int height = 0;
+
     public static boolean isOpened() {
         return commonScreenOpened;
     }
@@ -31,18 +37,6 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
     protected final ScreenRenderingContext screenRenderingContext;
 
     private Screen lastScreen;
-
-    /**
-     * Screen scale factor for rendering the screen.
-     * <p>
-     * Relationship between GUI Scale and Screen Scale:
-     * Actual Screen Size = Default Screen Size * GUI Scale * Screen Scale
-     * <p>
-     * For example: scale=2.0 makes UI elements appear twice as large,
-     * while scale=0.5 makes them appear half as large.
-     * </p>
-     */
-    private float screenScale, reciprocalScreenScale;
 
     protected CommonScreen(Component component) {
         super(component);
@@ -52,10 +46,7 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
 
     @Override
     protected final void init() {
-        screenScale = ConfigsManager.getClient().getScreenScale();
-        reciprocalScreenScale = 1F / screenScale;
-        super.width = Mth.ceil(super.width * reciprocalScreenScale);
-        super.height = Mth.ceil(super.height * reciprocalScreenScale);
+        screenRenderingContext.update(super.width, super.height, getFont(), getZ(), ConfigsManager.getClient().getScreenScale());
         super.init();
         resize();
     }
@@ -64,11 +55,12 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
 
     @Override
     public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
-        screenRenderingContext.update(guiGraphics, screenScale, reciprocalScreenScale, mouseX, mouseY, tickDelta);
-        try (ScaleRAII ignored = screenRenderingContext.scaleOnce(screenScale)) {
-            beforeRender(screenRenderingContext);
-            render(screenRenderingContext);
-            afterRender(screenRenderingContext);
+        ScreenRenderingContext ctx = screenRenderingContext;
+        ctx.update(guiGraphics, mouseX, mouseY, tickDelta);
+        try (ScaleRAII ignored = ctx.scaleOnce(ctx.getScreenScale())) {
+            beforeRender(ctx);
+            render(ctx);
+            afterRender(ctx);
         }
     }
 
@@ -76,7 +68,9 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
     public final void renderBackground(GuiGraphics guiGraphics) {}
 
     public final void renderTransparentBackground(ScreenRenderingContext ctx) {
-        super.renderBackground(ctx.getGuiGraphics());
+        try (ScaleRAII ignored = ctx.scaleToOriginalOnce()) {
+            super.renderBackground(ctx.getGuiGraphics());
+        }
     }
 
     protected void beforeRender(ScreenRenderingContext ctx) {}
@@ -84,8 +78,21 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
     protected void render(ScreenRenderingContext ctx) {}
 
     protected void afterRender(ScreenRenderingContext ctx) {
-        super.render(ctx.getGuiGraphics(), (int) ctx.getMouseX(), (int) ctx.getMouseY(), ctx.getTickDelta());
+        try (ScaleRAII ignored = ctx.scaleToOriginalOnce()) {
+            super.render(ctx.getGuiGraphics(), (int) ctx.getRawMouseX(), (int) ctx.getRawMouseY(), ctx.getTickDelta());
+        }
     }
+
+    @Override
+    public final boolean mouseClicked(double mouseX, double mouseY, int button) {
+        ScreenRenderingContext ctx = screenRenderingContext;
+        if (mouseClicked(ctx.calcScaledValue((float) mouseX), ctx.calcScaledValue((float) mouseY), button)) {
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    protected boolean mouseClicked(float mouseX, float mouseY, int code) { return false; }
 
     public Font getFont() { return ((ScreenIMixin) this).biologydictionary$getFont(); }
 

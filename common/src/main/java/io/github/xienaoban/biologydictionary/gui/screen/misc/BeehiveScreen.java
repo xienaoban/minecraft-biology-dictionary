@@ -72,6 +72,8 @@ public class BeehiveScreen extends ElementScreen {
     @Override
     protected void render(ScreenRenderingContext ctx) {
         super.render(ctx);
+        int width = ctx.getScreenWidth();
+        int height = ctx.getScreenHeight();
         long lastMills = mills;
         mills = System.currentTimeMillis();
         int diff = (int) (mills - lastMills);
