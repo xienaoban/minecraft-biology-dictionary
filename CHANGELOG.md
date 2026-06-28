@@ -8,9 +8,12 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Changed
 
+- Refactored Biology Dictionary screen scaling to improve compatibility with other mods.
+- Moved demo mode out of config and behind a debug-only hidden toggle on the About screen.
+
 ### Fixed
 
-- Fixed modded spawn eggs not rendering in discovery toasts on Forge 1.20.1.
+- Fixed beehive screen rendering on Forge.
 
 ## Previous Versions
 

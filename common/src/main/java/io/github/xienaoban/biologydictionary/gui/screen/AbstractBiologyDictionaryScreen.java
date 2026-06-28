@@ -1,9 +1,9 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
-import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPagePlaceholder;
@@ -65,8 +65,6 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     private final CenteredMessage centeredMessage = new CenteredMessage();
 
-    private final boolean demoMode;
-
     public AbstractBiologyDictionaryScreen(MutableComponent title) {
         super(title.withStyle(s -> s.withColor(Colors.TITLE)));
         check();
@@ -77,8 +75,6 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         turnRight.setParent(getRootScreenElement());
 
         centeredMessage.setParent(getRootScreenElement());
-
-        demoMode = ConfigsManager.getClient().isDemoMode();
     }
 
     private void check() {
@@ -107,7 +103,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     protected void render(ScreenRenderingContext ctx) {
-        if (demoMode) {
+        int width = ctx.getScreenWidth();
+        int height = ctx.getScreenHeight();
+        if (BiologyDictionaryClient.isDemoMode()) {
             ctx.renderRectangle(0xFF000000, ctx.getZ(), 0, 0, width, height);
         } else {
             renderTransparentBackground(ctx);
@@ -128,6 +126,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     private void renderTitle(ScreenRenderingContext ctx, Component title) {
+        int width = ctx.getScreenWidth();
+        int height = ctx.getScreenHeight();
         float left = width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH;
         float top = (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN - 12;
         ctx.renderText(title, 0x66000000, ctx.getZ(), left + 0.5F, top + 0.5F);
