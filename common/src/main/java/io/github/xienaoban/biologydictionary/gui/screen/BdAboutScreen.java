@@ -65,14 +65,14 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            if (ctx.isDebug() && PlayerUtils.isCreative(player)) {
+            if (BiologyDictionaryClient.isDebugMode() && PlayerUtils.isCreative(player)) {
                 ctx.renderCenteredText(TextUtils.literal("Get Book Item"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
             }
         }
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            if (screenRenderingContext.isDebug() && PlayerUtils.isCreative(player)) {
+            if (BiologyDictionaryClient.isDebugMode() && PlayerUtils.isCreative(player)) {
                 onClose();
                 ClientNetManager.requestBookItem();
                 return true;
@@ -88,14 +88,14 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            if (ctx.isDebug()) {
+            if (BiologyDictionaryClient.isDebugMode()) {
                 ctx.renderCenteredText(TextUtils.literal("Toggle Demo Mode"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
             }
         }
 
         @Override
         protected boolean onMouseDown(float x, float y, int code) {
-            if (screenRenderingContext.isDebug() && isMouseLeft(code)) {
+            if (BiologyDictionaryClient.isDebugMode() && isMouseLeft(code)) {
                 boolean enabled = BiologyDictionaryClient.toggleDemoMode();
                 sendScreenMessage(TextUtils.literal("Demo mode " + (enabled ? "on" : "off")));
                 return true;
@@ -111,7 +111,7 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            if (ctx.isDebug()) {
+            if (BiologyDictionaryClient.isDebugMode()) {
                 ctx.renderCenteredText(TextUtils.literal(ctx.getScreenWidth() + " , " + ctx.getScreenHeight()), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
                 ctx.renderCenteredText(TextUtils.literal(ctx.getMouseX() + " , " + ctx.getMouseY()), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 5.5F);
             }

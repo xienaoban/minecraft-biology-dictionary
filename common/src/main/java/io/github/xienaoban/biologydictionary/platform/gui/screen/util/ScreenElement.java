@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -105,7 +106,7 @@ public abstract class ScreenElement implements ScreenConsts {
 
     public final void render(ScreenRenderingContext ctx) {
         onRender(ctx);
-        if (ctx.isDebug() && box.getWidth() > 0 && box.getHeight() > 0) {
+        if (BiologyDictionaryClient.isDebugMode() && box.getWidth() > 0 && box.getHeight() > 0) {
             ElementScreen screen = ctx.getElementScreen();
             final int alpha = 0xFF000000;
             final int color;

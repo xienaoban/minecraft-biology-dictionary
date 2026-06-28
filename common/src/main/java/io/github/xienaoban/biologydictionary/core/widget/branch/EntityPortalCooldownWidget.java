@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
@@ -116,12 +117,12 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             updatePercent((float) cooldown / (float) maxCooldown);
             super.onRender(ctx);
             if (cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
-                if (ctx.isDebug()) {
+                if (BiologyDictionaryClient.isDebugMode()) {
                     renderInnerText(ctx, TextUtils.translate(Lang.TEXT_INFINITY));
                 } else {
                     renderInnerText(ctx, TextUtils.translate(Lang.TEXT_INFINITY_CHARACTER));
                 }
-            } else if (ctx.isDebug()) {
+            } else if (BiologyDictionaryClient.isDebugMode()) {
                 renderInnerText(ctx, TextUtils.literal(cooldown + "t/" + maxCooldown + "t"));
             } else {
                 renderInnerText(ctx, TextUtils.literal((cooldown / ClientUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / ClientUtils.getClientTickCountPerSecond()) + "s"));
