@@ -108,8 +108,8 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 if (BiologySkills.activate(e(), new WanderingTraderRetainSkill())) {
                     despawnDelayProperty.setVal(despawnDelayProperty.getVal() + WanderingTraderRetainSkill.STAY_TICKS);
                 }

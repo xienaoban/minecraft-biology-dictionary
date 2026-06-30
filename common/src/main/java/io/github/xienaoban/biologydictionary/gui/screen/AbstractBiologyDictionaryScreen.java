@@ -369,8 +369,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 BdHomeScreen home;
                 if (getLastScreen() instanceof BdHomeScreen lastHome) {
                     home = lastHome;
@@ -381,7 +381,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 ClientUtils.setScreen(client, home);
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
     }
 
@@ -391,13 +391,13 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 ClientUtils.setScreen(client, new BdConfigScreen());
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
     }
 
@@ -407,13 +407,13 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 ClientUtils.setScreen(client, new BdAboutScreen());
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
     }
 
@@ -527,13 +527,13 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
                 turn();
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
 
         @Override

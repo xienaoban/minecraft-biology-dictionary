@@ -120,7 +120,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             Integer forcedAgeOpt = forcedAgeProperty.getVal();
             if (forcedAgeOpt == null) {
                 return true;
@@ -131,7 +131,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
             }
 
             int forcedAge = forcedAgeOpt;
-            if (isMouseLeft(code)) {
+            if (isMouseLeft(button)) {
                 final int newForcedAge;
                 if (forcedAge == ADULT_MIN_AGE) {
                     newForcedAge = BABY_MIN_AGE;
@@ -144,7 +144,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                     ageProperty.setVal(BABY_MIN_AGE);
                 }
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
 
         @Override
