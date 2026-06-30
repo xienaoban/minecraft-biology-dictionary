@@ -136,13 +136,13 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             Integer cooldownOpt = portalCooldownProperty.getVal();
             if (cooldownOpt == null) {
                 return true;
             }
             int cooldown = cooldownOpt;
-            if (isMouseLeft(code)) {
+            if (isMouseLeft(button)) {
                 final int newCooldown;
                 if (cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
                     newCooldown = 0;
@@ -153,7 +153,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
                     portalCooldownProperty.setVal(newCooldown);
                 }
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
 
         @Override

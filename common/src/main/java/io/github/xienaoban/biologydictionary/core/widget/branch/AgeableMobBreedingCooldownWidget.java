@@ -120,7 +120,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             Integer forcedAgeOpt = forcedAgeProperty.getVal();
             if (forcedAgeOpt == null) {
                 return true;
@@ -131,7 +131,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
             }
 
             int forcedAge = forcedAgeOpt;
-            if (isMouseLeft(code)) {
+            if (isMouseLeft(button)) {
                 final int newForcedAge;
                 if (forcedAge == BREED_COOLDOWN_OFF) {
                     newForcedAge = BREED_COOLDOWN_MAX;
@@ -144,7 +144,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                     ageProperty.setVal(BREED_COOLDOWN_MAX);
                 }
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
 
         @Override

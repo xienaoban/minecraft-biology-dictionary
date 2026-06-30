@@ -92,7 +92,7 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    protected boolean mouseClicked(float mouseX, float mouseY, int code) { return false; }
+    protected boolean mouseClicked(float mouseX, float mouseY, int button) { return false; }
 
     public Font getFont() { return ((ScreenIMixin) this).biologydictionary$getFont(); }
 

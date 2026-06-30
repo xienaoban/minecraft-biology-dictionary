@@ -40,13 +40,13 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     @Override
-    protected boolean mouseClicked(float mouseX, float mouseY, int code) {
+    protected boolean mouseClicked(float mouseX, float mouseY, int button) {
         try {
             updateSelectedElement();
             if (getSelectedElement() != null) {
-                return getSelectedElement().mouseDown(mouseX, mouseY, code);
+                return getSelectedElement().mouseDown(mouseX, mouseY, button);
             } else {
-                return super.mouseClicked(mouseX, mouseY, code);
+                return super.mouseClicked(mouseX, mouseY, button);
             }
         } catch (Throwable e) {
             showExceptionMessageAndCloseScreen("Error in mouse clicking on screen", e);

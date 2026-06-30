@@ -71,7 +71,7 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             if (BiologyDictionaryClient.isDebugMode() && PlayerUtils.isCreative(player)) {
                 onClose();
                 ClientNetManager.requestBookItem();
@@ -94,8 +94,8 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (BiologyDictionaryClient.isDebugMode() && isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (BiologyDictionaryClient.isDebugMode() && isMouseLeft(button)) {
                 boolean enabled = BiologyDictionaryClient.toggleDemoMode();
                 sendScreenMessage(TextUtils.literal("Demo mode " + (enabled ? "on" : "off")));
                 return true;
