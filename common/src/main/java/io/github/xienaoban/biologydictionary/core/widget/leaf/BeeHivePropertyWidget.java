@@ -116,8 +116,8 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 BlockPos currHivePos = hivePosProperty.getVal();
                 if (currHivePos == null) {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_LOCATE));
@@ -145,8 +145,8 @@ public class BeeHivePropertyWidget extends EntityPropertyStandardWidget<Bee> {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 BlockPos currHivePos = hivePosProperty.getVal();
                 if (currHivePos == null) {
                     AbstractBiologyDictionaryScreen.current().sendScreenMessage(TextUtils.translate(Lang.TEXT_NO_BLOCK_TO_CLEAR));

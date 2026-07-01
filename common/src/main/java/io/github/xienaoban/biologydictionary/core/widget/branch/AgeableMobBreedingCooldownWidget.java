@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -84,7 +85,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
             if (ageOpt == null || forcedAgeOpt == null) {
                 updatePercent(0);
                 super.onRender(ctx);
-                if (ctx.isDebug()) {
+                if (BiologyDictionaryClient.isDebugMode()) {
                     renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 } else {
                     if (isAdultClient()) {
@@ -99,7 +100,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
             int forcedAge = forcedAgeOpt;
             updatePercent(forcedAge > BREED_COOLDOWN_OFF ? 1 : ((float) age / BREED_COOLDOWN_MAX));
             super.onRender(ctx);
-            if (ctx.isDebug()) {
+            if (BiologyDictionaryClient.isDebugMode()) {
                 renderInnerText(ctx, TextUtils.literal(age + "t/" + BREED_COOLDOWN_MAX + "t"));
             } else if (isAdultClient()) {
                 if (forcedAge > BREED_COOLDOWN_OFF) {
@@ -119,7 +120,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             Integer forcedAgeOpt = forcedAgeProperty.getVal();
             if (forcedAgeOpt == null) {
                 return true;
@@ -130,7 +131,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
             }
 
             int forcedAge = forcedAgeOpt;
-            if (isMouseLeft(code)) {
+            if (isMouseLeft(button)) {
                 final int newForcedAge;
                 if (forcedAge == BREED_COOLDOWN_OFF) {
                     newForcedAge = BREED_COOLDOWN_MAX;
@@ -143,7 +144,7 @@ public final class AgeableMobBreedingCooldownWidget extends EntityPropertyStanda
                     ageProperty.setVal(BREED_COOLDOWN_MAX);
                 }
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
 
         @Override

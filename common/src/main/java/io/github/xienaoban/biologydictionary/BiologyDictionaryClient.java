@@ -30,6 +30,8 @@ public final class BiologyDictionaryClient {
     public static final BiologyDictionaryClient BDC = new BiologyDictionaryClient();
 
     private static final Queue<Component> pendingTextBoxLogs = new ConcurrentLinkedQueue<>();
+    private static boolean demoMode = false;
+    private static boolean debugMode = false;
 
     private int ticks;
 
@@ -141,5 +143,19 @@ public final class BiologyDictionaryClient {
                         )
                 )
         ));
+    }
+
+    public static boolean isDemoMode() { return demoMode; }
+
+    public static boolean toggleDemoMode() {
+        demoMode = !demoMode;
+        return demoMode;
+    }
+
+    public static boolean isDebugMode() { return debugMode; }
+
+    public static boolean toggleDebugMode() {
+        debugMode = !debugMode;
+        return debugMode;
     }
 }
