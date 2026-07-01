@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -226,7 +227,7 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
             int w1 = ctx.calcTextWidth(txt1) / 2;
 
             String str2;
-            if (ctx.isDebug()) {
+            if (BiologyDictionaryClient.isDebugMode()) {
                 str2 = (timeline[last].time() + ZERO_TIME) % MAX_TIME + "-" + (timeline[idx].time() + ZERO_TIME) % MAX_TIME;
             } else {
                 str2 = tickZeroToTime(timeline[last].time()) + "-" + tickZeroToTime(timeline[idx].time());

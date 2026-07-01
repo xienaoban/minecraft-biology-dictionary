@@ -85,8 +85,8 @@ public class VillagerRestocksTodayWidget extends EntityPropertyStandardWidget<Vi
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 Integer r = restocksTodayProperty.getVal();
                 if (r != null) {
                     GlobalPos j = jboSiteProperty.getVal();

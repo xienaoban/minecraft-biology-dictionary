@@ -21,8 +21,6 @@
   "config.biologydictionary.entry.firstPersonShoulderEntityPosition.tooltip": "第一人称下玩家肩膀上生物在屏幕上的显示位置。",
   "config.biologydictionary.entry.hideEntityDescriptionWidgetIfNotFound": "未找到生物简介时隐藏简介组件",
   "config.biologydictionary.entry.hideEntityDescriptionWidgetIfNotFound.tooltip": "当没有数据包/模组提供当前生物的简介信息时，不展示简介组件。",
-  "config.biologydictionary.entry.demoMode": "演示模式",
-  "config.biologydictionary.entry.demoMode.tooltip": "作者自用，请保持该选项为否。",
 
   "config.biologydictionary.category.server": "服务端",
   "config.biologydictionary.entry.bookItemRequired": "需要生物辞典物品",
