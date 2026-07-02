@@ -83,14 +83,14 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(ClientUtils.getClient(), SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 ClientUtils.setScreen(ClientUtils.getClient(),
                         ClothConfigScreenProvider.provideScreen(ClientUtils.getCurrentScreen()));
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
     }
 
@@ -120,8 +120,8 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 synchronized (ReloadLocalConfigsWidget.class) {
                     ConfigsManager.load();
                     ConfigsManager.onUpdated();
@@ -131,7 +131,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
                 }
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
     }
 
@@ -163,13 +163,13 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(ClientUtils.getClient(), SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 ClientUtils.setScreen(ClientUtils.getClient(), new ChatScreen(COMMAND, false));
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
     }
 

@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -117,12 +118,12 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
             updatePercent((float) cooldown / (float) maxCooldown);
             super.onRender(ctx);
             if (cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
-                if (ctx.isDebug()) {
+                if (BiologyDictionaryClient.isDebugMode()) {
                     renderInnerText(ctx, TextUtils.translate(Lang.TEXT_INFINITY));
                 } else {
                     renderInnerText(ctx, TextUtils.translate(Lang.TEXT_INFINITY_CHARACTER));
                 }
-            } else if (ctx.isDebug()) {
+            } else if (BiologyDictionaryClient.isDebugMode()) {
                 renderInnerText(ctx, TextUtils.literal(cooldown + "t/" + maxCooldown + "t"));
             } else {
                 renderInnerText(ctx, TextUtils.literal((cooldown / ClientUtils.getClientTickCountPerSecond()) + "s/" + (maxCooldown / ClientUtils.getClientTickCountPerSecond()) + "s"));
@@ -136,13 +137,13 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             Integer cooldownOpt = portalCooldownProperty.getVal();
             if (cooldownOpt == null) {
                 return true;
             }
             int cooldown = cooldownOpt;
-            if (isMouseLeft(code)) {
+            if (isMouseLeft(button)) {
                 final int newCooldown;
                 if (cooldown == EntitySetPortalCooldownSkill.ENTITY_PORTAL_COOLDOWN_INFINITY) {
                     newCooldown = 0;
@@ -153,7 +154,7 @@ public final class EntityPortalCooldownWidget extends EntityPropertyStandardWidg
                     portalCooldownProperty.setVal(newCooldown);
                 }
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
 
         @Override

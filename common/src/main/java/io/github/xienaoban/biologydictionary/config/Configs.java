@@ -47,12 +47,6 @@ public final class Configs {
         @ConfigEntry
         boolean hideEntityDescriptionWidgetIfNotFound = true;
 
-        /**
-         * Use a pure black background for Biology Dictionary screens.
-         */
-        @ConfigEntry
-        boolean demoMode = false;
-
         // =========================== Getters ============================
 
         public float getScreenScale() {
@@ -65,10 +59,6 @@ public final class Configs {
 
         public boolean isHideEntityDescriptionWidgetIfNotFound() {
             return hideEntityDescriptionWidgetIfNotFound;
-        }
-
-        public boolean isDemoMode() {
-            return demoMode;
         }
 
         // ============================= Misc =============================
@@ -108,7 +98,7 @@ public final class Configs {
          * Set to 0 to disable this information feature and produce empty data.
          */
         @ConfigEntry(min = 0)
-        int entitySpawnAnalysisTimeoutSeconds = 10;
+        int entitySpawnAnalysisTimeoutSeconds = 6;
 
         /**
          * Whether baby entities inherit the "silent" trait when both parents are silent.

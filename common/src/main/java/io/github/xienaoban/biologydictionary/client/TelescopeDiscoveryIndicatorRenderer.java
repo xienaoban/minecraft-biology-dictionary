@@ -31,8 +31,7 @@ public final class TelescopeDiscoveryIndicatorRenderer {
         float centerX = guiGraphics.guiWidth() / 2F;
         float barY = guiGraphics.guiHeight() / 2F + 9;
 
-        ScreenRenderingContext ctx = new ScreenRenderingContext(null);
-        ctx.update(guiGraphics, 1f, 1F, 0, 0, 0);
+        ScreenRenderingContext ctx = new ScreenRenderingContext(guiGraphics);
 
         if (completed) {
             ctx.renderTexture(Textures.GENE, 0, BAR_HEIGHT * 2, 0, centerX - BAR_WIDTH / 2F, barY, BAR_WIDTH, BAR_HEIGHT - 1);

@@ -4,7 +4,6 @@ import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 @ClientOnly
@@ -41,18 +40,18 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
+    protected boolean mouseClicked(float mouseX, float mouseY, int button) {
         try {
             updateSelectedElement();
             if (getSelectedElement() != null) {
-                return getSelectedElement().mouseDown((float) mouseButtonEvent.x(), (float) mouseButtonEvent.y(), mouseButtonEvent.button());
+                return getSelectedElement().mouseDown(mouseX, mouseY, button);
             } else {
-                return super.mouseClicked(mouseButtonEvent, bl);
+                return super.mouseClicked(mouseX, mouseY, button);
             }
         } catch (Throwable e) {
             showExceptionMessageAndCloseScreen("Error in mouse clicking on screen", e);
+            return true;
         }
-        return true;
     }
 
     @Override
@@ -110,7 +109,7 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     public final void updateBoxSizes() {
-        rootScreenElement.resize(width, height);
+        rootScreenElement.resize(screenRenderingContext.getScreenWidth(), screenRenderingContext.getScreenHeight());
     }
 
     public final int getTicks() {
@@ -119,8 +118,8 @@ public abstract class ElementScreen extends CommonScreen {
 
     /**
      * Relocate the sub elements of root element.
-     * @param width the new width of the screen, same with this.width
-     * @param height the new height of the screen, same with this.height
+     * @param width the scaled width of the screen after applying Biology Dictionary screen scale
+     * @param height the scaled height of the screen after applying Biology Dictionary screen scale
      */
     protected abstract void resizeBox(int width, int height);
 
