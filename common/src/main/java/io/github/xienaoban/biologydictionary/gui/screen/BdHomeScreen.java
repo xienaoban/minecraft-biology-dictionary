@@ -112,13 +112,13 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 resetAndAddEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
     }
 
@@ -131,8 +131,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 ArrayList<Widget> tags = new ArrayList<>();
                 group.dfsTags((nbt, depth) -> {
@@ -143,7 +143,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 resetAndAndWidgetsOneByOne(tags);
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
     }
 
@@ -158,13 +158,13 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 1.5F);
                 resetAndAddEntityWidgets(tag.getEntities());
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
 
         @Override
@@ -214,7 +214,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             if (!isClickable()) {
                 AbstractBiologyDictionaryScreen.current()
                         .sendScreenMessage(TextUtils.translate(Lang.TEXT_ENTITY_NOT_DISCOVERED));
@@ -222,10 +222,10 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             }
 
             ScreenElementBox box = getBox();
-            float mouseY = screenRenderingContext.getMouseY() - box.getTop();
+            float relativeMouseY = mouseY - box.getTop();
 
-            if (mouseY < BUTTONS_CUT) {
-                if (isMouseLeft(code)) {
+            if (relativeMouseY < BUTTONS_CUT) {
+                if (isMouseLeft(button)) {
                     // Overview button
                     ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                     BdEntityOverviewScreen screen = new BdEntityOverviewScreen(EntityUtils.getEntityType(entity));
@@ -234,7 +234,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     screen.initOrRequestProperties();
                 } else {
                     // Highlight button
-                    int distance = isMouseRight(code) ? HighlightEntitiesSkill.NEAR_RADIUS : HighlightEntitiesSkill.FAR_RADIUS;
+                    int distance = isMouseRight(button) ? HighlightEntitiesSkill.NEAR_RADIUS : HighlightEntitiesSkill.FAR_RADIUS;
                     ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
                     if (BiologySkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance))) {
                         onClose();

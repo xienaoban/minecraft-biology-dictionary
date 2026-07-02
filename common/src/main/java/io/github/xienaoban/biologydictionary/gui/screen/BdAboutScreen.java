@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -31,6 +32,7 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
         List<Widget> widgets = Arrays.asList(
                 new ModNameAuthorNameWidget(),
                 new GetBookItemWidget(),
+                new ToggleDemoModeWidget(),
                 new ShowGuiSizeWidget()
         );
 
@@ -63,16 +65,39 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            if (ctx.isDebug() && PlayerUtils.isCreative(player)) {
+            if (BiologyDictionaryClient.isDebugMode() && PlayerUtils.isCreative(player)) {
                 ctx.renderCenteredText(TextUtils.literal("Get Book Item"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
             }
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (screenRenderingContext.isDebug() && PlayerUtils.isCreative(player)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (BiologyDictionaryClient.isDebugMode() && PlayerUtils.isCreative(player)) {
                 onClose();
                 ClientNetManager.requestBookItem();
+                return true;
+            }
+            return false;
+        }
+    }
+
+    private class ToggleDemoModeWidget extends Widget {
+        protected ToggleDemoModeWidget() {
+            super(1, Page.COLUMNS);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            if (BiologyDictionaryClient.isDebugMode()) {
+                ctx.renderCenteredText(TextUtils.literal("Toggle Demo Mode"), 0xFF000000, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 2);
+            }
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (BiologyDictionaryClient.isDebugMode() && isMouseLeft(button)) {
+                boolean enabled = BiologyDictionaryClient.toggleDemoMode();
+                sendScreenMessage(TextUtils.literal("Demo mode " + (enabled ? "on" : "off")));
                 return true;
             }
             return false;
@@ -86,8 +111,8 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            if (ctx.isDebug()) {
-                ctx.renderCenteredText(TextUtils.literal(ctx.getScreen().width + " , " + ctx.getScreen().height), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
+            if (BiologyDictionaryClient.isDebugMode()) {
+                ctx.renderCenteredText(TextUtils.literal(ctx.getScreenWidth() + " , " + ctx.getScreenHeight()), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 1);
                 ctx.renderCenteredText(TextUtils.literal(ctx.getMouseX() + " , " + ctx.getMouseY()), 0xFF000000, 0.5F, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 5.5F);
             }
         }

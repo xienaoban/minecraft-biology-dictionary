@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -75,7 +76,7 @@ public final class AnimalInLoveWidget extends EntityPropertyStandardWidget<Anima
             int inLoveMaxTime = IN_LOVE_MAX_TIME;
             updatePercent((float) inLoveTime / inLoveMaxTime);
             super.onRender(ctx);
-            if (ctx.isDebug()) {
+            if (BiologyDictionaryClient.isDebugMode()) {
                 renderInnerText(ctx, TextUtils.literal(inLoveTime + "t/" + inLoveMaxTime + "t"));
             } else if (isBabyClient()) {
                 renderInnerText(ctx, TextUtils.translate(Lang.TEXT_BABY));

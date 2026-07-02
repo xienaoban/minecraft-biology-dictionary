@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
-import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPagePlaceholder;
@@ -65,8 +65,6 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private final PageTurnButton turnRight = new PageTurnButton(2);
     private final CenteredMessage centeredMessage = new CenteredMessage();
 
-    private final boolean demoMode;
-
     public AbstractBiologyDictionaryScreen(MutableComponent title) {
         super(title.withColor(Colors.TITLE));
         check();
@@ -76,8 +74,6 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         turnLeft.setParent(getRootScreenElement());
         turnRight.setParent(getRootScreenElement());
         centeredMessage.setParent(getRootScreenElement());
-
-        demoMode = ConfigsManager.getClient().isDemoMode();
     }
 
     private void check() {
@@ -106,7 +102,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     protected void render(ScreenRenderingContext ctx) {
-        if (demoMode) {
+        int width = ctx.getScreenWidth();
+        int height = ctx.getScreenHeight();
+        if (BiologyDictionaryClient.isDemoMode()) {
             ctx.renderRectangle(0xFF000000, ctx.getZ(), 0, 0, width, height);
         } else {
             renderTransparentBackground(ctx);
@@ -118,7 +116,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 (width + BOOK_TEXTURE_WIDTH) / 2F, (height + BOOK_TEXTURE_HEIGHT) / 2F + BOOK_TOP_OFFSET);
         renderTitle(ctx, title);
 
-        if (ctx.isDebug()) {
+        if (BiologyDictionaryClient.isDebugMode()) {
             renderDebug(ctx);
         }
 
@@ -127,6 +125,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     private void renderTitle(ScreenRenderingContext ctx, Component title) {
+        int width = ctx.getScreenWidth();
+        int height = ctx.getScreenHeight();
         float left = width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH;
         float top = (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN - 12;
         ctx.renderText(title, 0x66000000, ctx.getZ(), left + 0.5F, top + 0.5F);
@@ -184,8 +184,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
             onClose();
             return true;
         } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyEvent)) {
-            screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
-            sendScreenMessage(TextUtils.literal("Debug mode " + (screenRenderingContext.isDebug() ? "on" : "off")));
+            sendScreenMessage(TextUtils.literal("Debug mode " + (BiologyDictionaryClient.toggleDebugMode() ? "on" : "off")));
             return true;
         }
         return super.keyPressed(keyEvent);
@@ -374,8 +373,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 BdHomeScreen home;
                 if (getLastScreen() instanceof BdHomeScreen lastHome) {
                     home = lastHome;
@@ -386,7 +385,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 ClientUtils.setScreen(client, home);
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
     }
 
@@ -396,13 +395,13 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 ClientUtils.setScreen(client, new BdConfigScreen());
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
     }
 
@@ -412,13 +411,13 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
                 ClientUtils.setScreen(client, new BdAboutScreen());
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
     }
 
@@ -532,13 +531,13 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
                 turn();
                 return true;
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
 
         @Override

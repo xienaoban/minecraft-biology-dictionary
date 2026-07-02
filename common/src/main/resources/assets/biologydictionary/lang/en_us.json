@@ -21,8 +21,6 @@
   "config.biologydictionary.entry.firstPersonShoulderEntityPosition.tooltip": "Position of entities riding on your shoulder in first person view.",
   "config.biologydictionary.entry.hideEntityDescriptionWidgetIfNotFound": "Hide Entity Description Widget If Not Found",
   "config.biologydictionary.entry.hideEntityDescriptionWidgetIfNotFound.tooltip": "Do not show the desc widget when no desc is available for the current entity.",
-  "config.biologydictionary.entry.demoMode": "Demo Mode",
-  "config.biologydictionary.entry.demoMode.tooltip": "For author use only. Please keep this option disabled.",
 
   "config.biologydictionary.category.server": "Server",
   "config.biologydictionary.entry.bookItemRequired": "Book Item Required",

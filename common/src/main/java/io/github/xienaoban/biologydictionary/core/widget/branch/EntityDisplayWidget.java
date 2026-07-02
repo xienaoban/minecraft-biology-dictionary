@@ -102,9 +102,9 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     }
 
     @Override
-    protected boolean onMouseDown(float x, float y, int code) {
+    protected boolean onMouseDown(float mouseX, float mouseY, int button) {
         Entity entity = e();
-        if (isMouseLeft(code)) {
+        if (isMouseLeft(button)) {
             if (entity instanceof LivingEntity livingEntity) {
                 leftClickCount++;
                 if (leftClickCount % 5 == 0) {
@@ -113,7 +113,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
                     playHurtSound(livingEntity);
                 }
             }
-        } else if (isMouseRight(code)) {
+        } else if (isMouseRight(button)) {
             if (entity instanceof Mob mob) {
                 playAmbientSound(mob);
             }

@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -55,12 +56,12 @@ public abstract class ScreenElement implements ScreenConsts {
 
     /**
      * MouseDown event.
-     * @param x the x of mouse
-     * @param y the y of mouse
-     * @param code the mouse code
+     * @param mouseX the x of mouse
+     * @param mouseY the y of mouse
+     * @param button the mouse button
      * @return whether to consume the event (return false to pass the event to the parent element)
      */
-    protected boolean onMouseDown(float x, float y, int code) { return false; }
+    protected boolean onMouseDown(float mouseX, float mouseY, int button) { return false; }
 
     /**
      * Render the content of the current element.
@@ -106,7 +107,7 @@ public abstract class ScreenElement implements ScreenConsts {
 
     public final void render(ScreenRenderingContext ctx) {
         onRender(ctx);
-        if (ctx.isDebug() && box.getWidth() > 0 && box.getHeight() > 0) {
+        if (BiologyDictionaryClient.isDebugMode() && box.getWidth() > 0 && box.getHeight() > 0) {
             ElementScreen screen = ctx.getElementScreen();
             final int alpha = 0xFF000000;
             final int color;
@@ -149,11 +150,11 @@ public abstract class ScreenElement implements ScreenConsts {
         return isHoverable() && x >= box.getLeft() && x < box.getRight() && y >= box.getTop() && y < box.getBottom();
     }
 
-    public final boolean mouseDown(float x, float y, int code) {
-        if (isSelectable() && onMouseDown(x, y, code)) {
+    public final boolean mouseDown(float mouseX, float mouseY, int button) {
+        if (isSelectable() && onMouseDown(mouseX, mouseY, button)) {
             return true;
         }
-        return getParent() != null && getParent().mouseDown(x, y , code);
+        return getParent() != null && getParent().mouseDown(mouseX, mouseY, button);
     }
 
     public final ScreenElementBox getBox() { return box; }
@@ -216,12 +217,12 @@ public abstract class ScreenElement implements ScreenConsts {
         subScreenElements.remove(sub);
     }
 
-    public static boolean isMouseLeft(int code) {
-        return code == GLFW.GLFW_MOUSE_BUTTON_LEFT;
+    public static boolean isMouseLeft(int button) {
+        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT;
     }
 
-    public static boolean isMouseRight(int code) {
-        return code == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+    public static boolean isMouseRight(int button) {
+        return button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
     }
 
     public static MutableComponent tooltipEmpty() {

@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -75,7 +76,7 @@ public class DolphinMoistnessWidget extends EntityPropertyStandardWidget<Dolphin
             int mMax = TOTAL_MOISTNESS_LEVEL;
             updatePercent((float) m / mMax);
             super.onRender(ctx);
-            if (ctx.isDebug()) {
+            if (BiologyDictionaryClient.isDebugMode()) {
                 renderInnerText(ctx, TextUtils.literal(m + "t/" + mMax + "t"));
             } else {
                 renderInnerText(ctx, TextUtils.literal((m / 20) + "s/" + (mMax / 20) + "s"));
