@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
@@ -13,15 +14,22 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 
 import java.util.Arrays;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @ClientOnly
 public final class BiologyDictionaryClient {
+    private static final Queue<Component> pendingTextBoxLogs = new ConcurrentLinkedQueue<>();
+
     private static int ticks;
     private static Entity hitEntity;
     private static BlockPos hitBlock;
     private static EntityProperties<? extends Entity> hitEntityProperties;
+
+    private static boolean demoMode = false;
+    private static boolean debugMode = false;
 
     static {
         EntityPropertyWidgets.init();
@@ -86,15 +94,53 @@ public final class BiologyDictionaryClient {
 
     public static void printThrowableToLoggerAndGame(String message, Throwable throwable) {
         LOGGER.error("{}", message, throwable);
+        printLogToTextBox(TextUtils.literal(message).withStyle(ChatFormatting.RED), throwable);
+    }
+
+    public static void printLogToTextBox(Component message, Throwable throwable) {
         ClientUtils.sendTextBoxMessage(TextUtils.concat(
                 Arrays.asList(
                         TextUtils.translate(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN),
-                        TextUtils.literal(message).withStyle(ChatFormatting.RED),
-                        TextUtils.newline(),
-                        TextUtils.literal(throwable.toString()).withStyle(ChatFormatting.RED),
-                        TextUtils.newline(),
-                        TextUtils.translate(Lang.TEXT_PLEASE_REPORT_ISSUE).withStyle(ChatFormatting.GOLD)
+                        message,
+                        throwable == null ? TextUtils.empty() : TextUtils.concat(
+                                TextUtils.newline(),
+                                TextUtils.literal(throwable.toString()).withStyle(ChatFormatting.RED),
+                                TextUtils.newline(),
+                                TextUtils.translate(Lang.TEXT_PLEASE_REPORT_ISSUE).withStyle(ChatFormatting.GOLD)
+                        )
                 )
         ));
+    }
+
+    public static void printLogToTextBoxWhenReady(Component text) {
+        pendingTextBoxLogs.add(text);
+        printPendingTextBoxLogs();
+    }
+
+    public static void printPendingTextBoxLogs() {
+        if (ClientWorldSession.get() == null) { return; }
+
+        Component text;
+        while ((text = pendingTextBoxLogs.poll()) != null) {
+            printLogToTextBox(text, null);
+        }
+    }
+
+    public static boolean isDemoMode() {
+        return demoMode;
+    }
+
+    public static boolean toggleDemoMode() {
+        demoMode = !demoMode;
+        return demoMode;
+    }
+
+    public static boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public static boolean toggleDebugMode() {
+        debugMode = !debugMode;
+        return debugMode;
     }
 }

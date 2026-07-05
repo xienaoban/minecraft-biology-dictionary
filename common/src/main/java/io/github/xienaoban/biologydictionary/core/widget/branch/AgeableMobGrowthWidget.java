@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -94,7 +95,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                     updatePercent(0);
                 }
                 super.onRender(ctx);
-                if (ctx.isDebug()) {
+                if (BiologyDictionaryClient.isDebugMode()) {
                     renderInnerText(ctx, TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));
                 } else {
                     if (isAdultClient()) {
@@ -109,7 +110,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
             boolean ageLocked = ageLockedOpt;
             updatePercent(ageLocked ? 0F : (1F - (float) age / BABY_MIN_AGE));
             super.onRender(ctx);
-            if (ctx.isDebug()) {
+            if (BiologyDictionaryClient.isDebugMode()) {
                 renderInnerText(ctx, TextUtils.literal(age + "t/" + ADULT_MIN_AGE + "t"));
             } else if (!isAdultClient()) {
                 if (ageLocked) {
@@ -130,7 +131,7 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             Boolean ageLockedOpt = ageLockedProperty.getVal();
             if (ageLockedOpt == null) {
                 return true;
@@ -140,14 +141,14 @@ public final class AgeableMobGrowthWidget extends EntityPropertyStandardWidget<A
                 return true;
             }
 
-            if (isMouseLeft(code)) {
+            if (isMouseLeft(button)) {
                 boolean newAgeLocked = !ageLockedOpt;
                 if (BiologySkills.activate(e(), new AgeableMobSetAgeLockedSkill(newAgeLocked))) {
                     ageLockedProperty.setVal(newAgeLocked);
                     ageProperty.setVal(BABY_MIN_AGE);
                 }
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
 
         @Override

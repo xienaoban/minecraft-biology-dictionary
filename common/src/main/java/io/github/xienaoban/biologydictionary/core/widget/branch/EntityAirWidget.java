@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
@@ -43,7 +44,7 @@ public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> 
         protected void onRender(ScreenRenderingContext ctx) {
             updatePercent((float) e().getAirSupply() / (float) e().getMaxAirSupply());
             super.onRender(ctx);
-            if (ctx.isDebug()) {
+            if (BiologyDictionaryClient.isDebugMode()) {
                 renderInnerText(ctx, TextUtils.literal(e().getAirSupply() + "t/" + e().getMaxAirSupply() + "t"));
             } else {
                 renderInnerText(ctx, TextUtils.literal(

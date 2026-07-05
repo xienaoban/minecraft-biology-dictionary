@@ -304,8 +304,8 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 if (isAllowedToChoose()) {
                     if (activeSkill(getVariant())) {
                         chosenIndex = index;
@@ -317,7 +317,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
                     }
                 }
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
 
         @Override

@@ -74,8 +74,8 @@ public class MobPersistenceWidget extends EntityPropertyStandardWidget<Mob> {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 boolean persistent = !isForcedPersistent();
                 if (BiologySkills.activate(e(), new MobForcePersistentSkill(persistent))) {
                     persistenceRequiredProperty.setVal(persistent);
