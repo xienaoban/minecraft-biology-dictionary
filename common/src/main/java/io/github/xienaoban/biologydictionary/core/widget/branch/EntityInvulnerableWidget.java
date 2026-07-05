@@ -58,8 +58,8 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 boolean newInv = !isInvulnerable();
                 if (BiologySkills.activate(e(), new EntitySetInvulnerableSkill(newInv))) {
                     invulnerableProperty.setVal(newInv);

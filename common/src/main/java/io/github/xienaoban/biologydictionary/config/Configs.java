@@ -47,12 +47,6 @@ public final class Configs {
         @ConfigEntry
         boolean hideEntityDescriptionWidgetIfNotFound = true;
 
-        /**
-         * Use a pure black background for Biology Dictionary screens.
-         */
-        @ConfigEntry
-        boolean demoMode = false;
-
         // =========================== Getters ============================
 
         public float getScreenScale() {
@@ -65,10 +59,6 @@ public final class Configs {
 
         public boolean isHideEntityDescriptionWidgetIfNotFound() {
             return hideEntityDescriptionWidgetIfNotFound;
-        }
-
-        public boolean isDemoMode() {
-            return demoMode;
         }
 
         // ============================= Misc =============================
@@ -102,6 +92,13 @@ public final class Configs {
          */
         @ConfigEntry
         boolean bookItemObtainableFromWanderingTrader = true;
+
+        /**
+         * Maximum time in seconds spent analyzing biome and structure spawn information during world startup.
+         * Set to 0 to disable this information feature and produce empty data.
+         */
+        @ConfigEntry(min = 0)
+        int entitySpawnAnalysisTimeoutSeconds = 6;
 
         /**
          * Whether baby entities inherit the "silent" trait when both parents are silent.
@@ -206,6 +203,10 @@ public final class Configs {
 
         public boolean isBookItemObtainableFromWanderingTrader() {
             return bookItemObtainableFromWanderingTrader;
+        }
+
+        public int getEntitySpawnAnalysisTimeoutSeconds() {
+            return entitySpawnAnalysisTimeoutSeconds;
         }
 
         public boolean isInheritSilentFromParents() {

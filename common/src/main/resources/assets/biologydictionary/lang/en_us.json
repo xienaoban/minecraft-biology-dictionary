@@ -21,8 +21,6 @@
   "config.biologydictionary.entry.firstPersonShoulderEntityPosition.tooltip": "Position of entities riding on your shoulder in first person view.",
   "config.biologydictionary.entry.hideEntityDescriptionWidgetIfNotFound": "Hide Entity Description Widget If Not Found",
   "config.biologydictionary.entry.hideEntityDescriptionWidgetIfNotFound.tooltip": "Do not show the desc widget when no desc is available for the current entity.",
-  "config.biologydictionary.entry.demoMode": "Demo Mode",
-  "config.biologydictionary.entry.demoMode.tooltip": "For author use only. Please keep this option disabled.",
 
   "config.biologydictionary.category.server": "Server",
   "config.biologydictionary.entry.bookItemRequired": "Book Item Required",
@@ -53,6 +51,8 @@
   "config.biologydictionary.entry.discoveryByKill.tooltip": "Enable discovery when killing an entity.\nOnly effective if the active strategy supports this method.",
   "config.biologydictionary.entry.discoveryByKilledBy": "Discovery by Killed By",
   "config.biologydictionary.entry.discoveryByKilledBy.tooltip": "Enable discovery when being killed by an entity.\nOnly effective if the active strategy supports this method.",
+  "config.biologydictionary.entry.entitySpawnAnalysisTimeoutSeconds": "Biome/Structure Spawn Analysis Timeout",
+  "config.biologydictionary.entry.entitySpawnAnalysisTimeoutSeconds.tooltip": "Maximum seconds spent analyzing spawn information (biomes and structures) during world startup. Set to 0 to disable it and keep it empty.",
 
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.NONE": "None",
   "enum.io.github.xienaoban.biologydictionary.config.Configs.ClientConfigs.FirstPersonShoulderEntityPosition.TOP": "Top",
@@ -238,6 +238,8 @@
   "property_widget.biologydictionary.discovery.location"        : "Location: ",
   "property_widget.biologydictionary.discovery.coordinates"     : "Coordinates: ",
   "property_widget.biologydictionary.discovery.weather"         : "Weather: ",
+
+  "warn.biologydictionary.spawn_analysis_timed_out": "Automatic analysis of entity spawn biomes/structures timed out (%s), so the information may be incomplete.\nProcessed: %s/%s biomes, %s/%s structures, %s templates.\nIncrease config entry \"%s\" for complete information (slower world startup),\nor set it to 0 to disable analysis and rely only on data pack data.",
 
   "text.biologydictionary.comma": ", ",
 

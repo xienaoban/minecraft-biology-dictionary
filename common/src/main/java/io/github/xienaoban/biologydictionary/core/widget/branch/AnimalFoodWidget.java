@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
+
 @ClientOnly
 public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal> {
     public static final Factory<Animal> FACTORY = AnimalFoodWidget::new;
@@ -94,8 +96,18 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
         return WorldSession.get().getStaticEntityPropertyCache().getOrCompute(
                 e().getType(), AnimalFoodWidget.class, () -> BuiltInRegistries.ITEM.stream()
                         .map(ItemStack::new)
-                        .filter(itemStack -> e().isFood(itemStack))
+                        .filter(this::isFoodSafely)
                         .sorted(Comparator.comparingInt(o -> BuiltInRegistries.ITEM.getId(o.getItem())))
                         .toArray(ItemStack[]::new));
+    }
+
+    private boolean isFoodSafely(ItemStack itemStack) {
+        try {
+            return e().isFood(itemStack);
+        } catch (RuntimeException exception) {
+            LOGGER.warn("Failed to check whether {} is food for {}. Skipped.",
+                    BuiltInRegistries.ITEM.getKey(itemStack.getItem()), e().getType(), exception);
+            return false;
+        }
     }
 }
