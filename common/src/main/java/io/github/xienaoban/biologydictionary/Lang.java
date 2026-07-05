@@ -226,6 +226,8 @@ public final class Lang {
     PROPERTY_WIDGET_SPAWN_COUNTED_DESC              = "property_widget.biologydictionary.spawn_counted.desc",
     PROPERTY_WIDGET_SPAWN_COUNTED_CATEGORY          = "property_widget.biologydictionary.spawn_counted.category",
 
+    WARN_SPAWN_ANALYSIS_TIMED_OUT = "warn.biologydictionary.spawn_analysis_timed_out",
+
     TEXT_COMMA  = "text.biologydictionary.comma",
 
     TEXT_OPEN_LOCAL_CONFIGS_SCREEN   = "text.biologydictionary.open_local_configs_screen",

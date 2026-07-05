@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -93,7 +94,7 @@ public final class TadpoleGrowthWidget extends EntityPropertyStandardWidget<Tadp
             boolean ageLocked = ageLockedOpt;
             updatePercent(ageLocked ? 0F : (float) age / FROG_MIN_AGE);
             super.onRender(ctx);
-            if (ctx.isDebug()) {
+            if (BiologyDictionaryClient.isDebugMode()) {
                 renderInnerText(ctx, TextUtils.literal(age + "t/" + FROG_MIN_AGE + "t"));
             } else if (ageLocked) {
                 renderInnerText(ctx, TextUtils.translate(Lang.TEXT_ALWAYS_BABY));
@@ -109,20 +110,20 @@ public final class TadpoleGrowthWidget extends EntityPropertyStandardWidget<Tadp
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             Boolean ageLockedOpt = ageLockedProperty.getVal();
             if (ageLockedOpt == null) {
                 return true;
             }
 
-            if (isMouseLeft(code)) {
+            if (isMouseLeft(button)) {
                 boolean newAgeLocked = !ageLockedOpt;
                 if (BiologySkills.activate(e(), new TadpoleSetAgeLockedSkill(newAgeLocked))) {
                     ageLockedProperty.setVal(newAgeLocked);
                     ageProperty.setVal(TADPOLE_MIN_AGE);
                 }
             }
-            return super.onMouseDown(x, y, code);
+            return super.onMouseDown(mouseX, mouseY, button);
         }
 
         @Override

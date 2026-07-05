@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsExtractorIMixin;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
@@ -57,54 +58,78 @@ public final class ScreenRenderingContext {
     private final Minecraft client;
 
     private GuiGraphicsExtractor guiGraphics;
+    private Font font;
+    private float z;
     private float screenScale;
     private float reciprocalScreenScale;
+    private int rawScreenWidth;
+    private int rawScreenHeight;
+    private int screenWidth;
+    private int screenHeight;
+    private float rawMouseX;
+    private float rawMouseY;
     private float mouseX;
     private float mouseY;
     private float tickDelta;
-    private boolean debug;
 
     public ScreenRenderingContext(Screen screen) {
         client = Objects.requireNonNull(ClientUtils.getClient());
         this.screen = screen;
-        screenScale = 1F;
-        reciprocalScreenScale = 1F;
-        debug = false;
+        update(client.getWindow().getGuiScaledWidth(), client.getWindow().getGuiScaledHeight(), screen.getFont(), 0F, 1F);
     }
 
     /**
+     * Used in init().
+     */
+    public void update(int width, int height, Font font, float z, float screenScale) {
+        this.screenScale = screenScale;
+        this.reciprocalScreenScale = 1F / screenScale;
+        this.font = font;
+        this.z = z;
+
+        this.rawScreenWidth = width;
+        this.rawScreenHeight = height;
+        this.screenWidth = calcScaledValue(rawScreenWidth);
+        this.screenHeight = calcScaledValue(rawScreenHeight);
+    }
+
+    /**
+     * Used in render().
      * We don't use the mouseX and mouseY parameters because they are int.
      * @see net.minecraft.client.renderer.GameRenderer#render(net.minecraft.client.DeltaTracker, boolean)
      *
      * @param mouseX not used
      * @param mouseY not used
      */
-    public void update(GuiGraphicsExtractor guiGraphics, float screenScale, float reciprocalScreenScale, int mouseX,
-            int mouseY, float tickDelta) {
+    public void update(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float tickDelta) {
         this.guiGraphics = guiGraphics;
-        this.screenScale = screenScale;
-        this.reciprocalScreenScale = reciprocalScreenScale;
         this.tickDelta = tickDelta;
-        this.mouseX = (float) client.mouseHandler.xpos() * (float) client.getWindow().getGuiScaledWidth()
+        this.rawMouseX = (float) client.mouseHandler.xpos() * (float) client.getWindow().getGuiScaledWidth()
                 / (float) client.getWindow().getScreenWidth();
-        this.mouseY = (float) client.mouseHandler.ypos() * (float) client.getWindow().getGuiScaledHeight()
+        this.rawMouseY = (float) client.mouseHandler.ypos() * (float) client.getWindow().getGuiScaledHeight()
                 / (float) client.getWindow().getScreenHeight();
-        assert mouseX == (int) this.mouseX && mouseY == (int) this.mouseY;
+        assert mouseX == (int) this.rawMouseX && mouseY == (int) this.rawMouseY;
 
-        this.mouseX *= reciprocalScreenScale;
-        this.mouseY *= reciprocalScreenScale;
+        this.mouseX = calcScaledValue(this.rawMouseX);
+        this.mouseY = calcScaledValue(this.rawMouseY);
     }
 
     public Minecraft getClient() { return client; }
     public Screen getScreen() { return screen; }
     public GuiGraphicsExtractor getGuiGraphics() { return guiGraphics; }
+    public int getRawScreenWidth() { return rawScreenWidth; }
+    public int getRawScreenHeight() { return rawScreenHeight; }
+    public int getScreenWidth() { return screenWidth; }
+    public int getScreenHeight() { return screenHeight; }
+    public float getRawMouseX() { return rawMouseX; }
+    public float getRawMouseY() { return rawMouseY; }
     public float getMouseX() { return mouseX; }
     public float getMouseY() { return mouseY; }
     public float getTickDelta() { return tickDelta; }
-    public Font getFont() { return screen.getFont(); }
-    public float getZ() { return getCommonScreen().getZ(); }
-    public boolean isDebug() { return debug; }
-    public void setDebug(boolean debug) { this.debug = debug; }
+    public Font getFont() { return font; }
+    public float getZ() { return z; }
+    public float getScreenScale() { return screenScale; }
+    public float getReciprocalScreenScale() { return reciprocalScreenScale; }
     public CommonScreen getCommonScreen() { return (CommonScreen) screen; }
     public ElementScreen getElementScreen() { return (ElementScreen) screen; }
 
@@ -116,12 +141,24 @@ public final class ScreenRenderingContext {
         getGuiGraphics().nextStratum();
     }
 
+    public int calcScaledValue(int value) {
+        return Mth.ceil(value * reciprocalScreenScale);
+    }
+
+    public float calcScaledValue(float value) {
+        return value * reciprocalScreenScale;
+    }
+
     public ScaleRAII scaleOnce(float size) {
         return new ScaleRAII(this, size);
     }
 
     public ScaleRAII scaleOnce(float size, float z) {
         return new ScaleRAII(this, size, z);
+    }
+
+    public ScaleRAII scaleToOriginalOnce() {
+        return scaleOnce(reciprocalScreenScale);
     }
 
     //=======================================================================================
@@ -398,9 +435,9 @@ public final class ScreenRenderingContext {
                 .map(ClientTooltipComponent::create)
                 .toList();
 
-        ClientTooltipPositioner positioner = (screenWidth, screenHeight, mouseX, mouseY, tooltipWidth, tooltipHeight) ->
+        ClientTooltipPositioner positioner = (rawScreenWidth, rawScreenHeight, mouseX, mouseY, tooltipWidth, tooltipHeight) ->
                 DefaultTooltipPositioner.INSTANCE.positionTooltip(
-                        (int) (screenWidth / size), (int) (screenHeight / size),
+                        (int) (getScreenWidth() / size), (int) (getScreenHeight() / size),
                         mouseX, mouseY, tooltipWidth, tooltipHeight);
         getGuiGraphics().tooltip(font, components, (int) (x / size - 8.0F), (int) (y / size + 16.0F),
                 positioner, Textures.BOOK_TOOLTIP);
@@ -505,7 +542,7 @@ public final class ScreenRenderingContext {
         getGuiGraphics().entity(renderState, scale, translation, rotation, null,
                 Mth.ceil(left), Mth.ceil(top), Mth.floor(right), Mth.floor(bottom));
 
-        if (isDebug() && width > 0.0F && height > 0.0F) {
+        if (BiologyDictionaryClient.isDebugMode() && width > 0.0F && height > 0.0F) {
             renderRectangle(0xFFAAAAAA, 0.6F, getZ(),
                     left / screenScale, top / screenScale, right / screenScale, bottom / screenScale);
         }

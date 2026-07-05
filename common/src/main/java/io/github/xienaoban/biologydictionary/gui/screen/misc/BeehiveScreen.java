@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.client.KeyMappings;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
@@ -72,6 +73,8 @@ public class BeehiveScreen extends ElementScreen {
     @Override
     protected void render(ScreenRenderingContext ctx) {
         super.render(ctx);
+        int width = ctx.getScreenWidth();
+        int height = ctx.getScreenHeight();
         long lastMills = mills;
         mills = System.currentTimeMillis();
         int diff = (int) (mills - lastMills);
@@ -180,7 +183,7 @@ public class BeehiveScreen extends ElementScreen {
             onClose();
             return true;
         } else if (KeyMappings.DEBUG.matches(keyEvent)) {
-            screenRenderingContext.setDebug(!screenRenderingContext.isDebug());
+            BiologyDictionaryClient.toggleDebugMode();
             return true;
         }
         return super.keyPressed(keyEvent);

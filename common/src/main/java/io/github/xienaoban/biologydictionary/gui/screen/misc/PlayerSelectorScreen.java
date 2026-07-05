@@ -46,8 +46,8 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 onClose();
             }
             return true;
@@ -63,8 +63,8 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 onClose();
                 callback.accept(targetPlayer);
             }

@@ -108,8 +108,8 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 GlobalPos currJobSitePos = jobSiteProperty.getVal();
                 if (currJobSitePos == null) {
                     AbstractBiologyDictionaryScreen.current()

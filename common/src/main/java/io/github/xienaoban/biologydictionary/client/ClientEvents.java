@@ -24,6 +24,7 @@ public final class ClientEvents {
     public static final List<ClientListener> WORLD_CONNECTED = List.of(client -> {
         WorldSession.init(ClientUtils.getClientLevel(client));
         ClientWorldSession.init();
+        BiologyDictionaryClient.printPendingTextBoxLogs();
         // Only request server configs from remote servers, not local servers.
         if (!ClientUtils.isLocalServer(client)) {
             ClientNetManager.requestServerConfigs();
