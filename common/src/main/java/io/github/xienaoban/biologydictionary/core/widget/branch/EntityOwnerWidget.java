@@ -122,8 +122,8 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 if (((OwnableEntity) e()).getOwnerReference() == null) {
                     AbstractBiologyDictionaryScreen.current()
                             .sendScreenMessage(TextUtils.translate(Lang.TEXT_ENTITY_NOT_TAMED));

@@ -74,8 +74,8 @@ public class LivingEntityInventoryWidget extends EntityPropertyStandardWidget<Li
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 // Check if entity is looking at the player before opening the screen
                 if (InventoryStealingScreen.isPlayerCaughtByEntity(e(), ClientUtils.getClientPlayer())) {
                     BiologyDictionaryClient.sendCenteredWarning(TextUtils.translate(Lang.TEXT_ENTITY_LOOKING_AT_YOU));

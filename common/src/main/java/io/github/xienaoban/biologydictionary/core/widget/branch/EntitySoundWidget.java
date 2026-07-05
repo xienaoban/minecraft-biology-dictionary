@@ -56,8 +56,8 @@ public final class EntitySoundWidget extends EntityPropertyStandardWidget<Entity
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 boolean newSilent = !isSilent();
                 if (BiologySkills.activate(e(), new EntitySetSoundSkill(newSilent))) {
                     silentProperty.setVal(newSilent);

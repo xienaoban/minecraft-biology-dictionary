@@ -413,6 +413,7 @@ public final class ConfigsManager {
                 } else if (Set.class.isAssignableFrom(fieldType)) {
                     convertedValue = Set.copyOf((Collection<?>) convertedValue);
                 }
+                convertedValue = clampConfigEntryValue(field, fieldType, convertedValue);
 
                 VarHandle.storeStoreFence();
                 field.set(configObject, convertedValue);
@@ -430,5 +431,21 @@ public final class ConfigsManager {
         }
 
         return allGood;
+    }
+
+    private static Object clampConfigEntryValue(Field field, Class<?> fieldType, Object value) {
+        if (!field.isAnnotationPresent(ConfigEntry.class) || !(value instanceof Number number)) {
+            return value;
+        }
+
+        ConfigEntry annotation = field.getAnnotation(ConfigEntry.class);
+        double clamped = number.doubleValue();
+        if (annotation.min() != Double.MIN_VALUE && clamped < annotation.min()) {
+            clamped = annotation.min();
+        }
+        if (annotation.max() != Double.MAX_VALUE && clamped > annotation.max()) {
+            clamped = annotation.max();
+        }
+        return Misc.convertNumber(clamped, fieldType);
     }
 }

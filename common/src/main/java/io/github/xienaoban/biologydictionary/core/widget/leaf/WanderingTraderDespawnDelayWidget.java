@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.leaf;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.property.VanillaEntityProperties;
@@ -88,7 +89,7 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
             int delay = delayI;
             updatePercent((float) delay / MAX_DESPAWN_DELAY);
             super.onRender(ctx);
-            if (ctx.isDebug()) {
+            if (BiologyDictionaryClient.isDebugMode()) {
                 renderInnerText(ctx, TextUtils.literal(delay + "t/" + MAX_DESPAWN_DELAY + "t"));
             } else if (delay == 0) {
                 renderInnerText(ctx, TextUtils.literal("∞/" + (MAX_DESPAWN_DELAY / 20 / 60) + "min"));
@@ -109,8 +110,8 @@ public class WanderingTraderDespawnDelayWidget extends EntityPropertyStandardWid
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 if (BiologySkills.activate(e(), new WanderingTraderRetainSkill())) {
                     despawnDelayProperty.setVal(despawnDelayProperty.getVal() + WanderingTraderRetainSkill.STAY_TICKS);
                 }

@@ -51,8 +51,8 @@ public class SheepEatGrassWidget extends EntityPropertyStandardWidget<Sheep> {
         }
 
         @Override
-        protected boolean onMouseDown(float x, float y, int code) {
-            if (isMouseLeft(code)) {
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
                 if (!SheepForceEatGrassSkill.isGrassOrGrassBlock(e())) {
                     AbstractBiologyDictionaryScreen.current()
                             .sendScreenMessage(TextUtils.translate(Lang.TEXT_SHEEP_NO_GRASS_UNDER_FEET));
