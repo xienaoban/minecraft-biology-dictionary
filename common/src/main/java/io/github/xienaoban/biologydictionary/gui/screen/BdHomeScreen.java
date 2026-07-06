@@ -14,6 +14,7 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.*;
@@ -36,6 +37,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private long currTime = 0;
     private float entityRotateX, entityRotateY;
 
+    private ScreenElement leftToolBar;
+    private ScreenElement rightToolBar;
+
     public BdHomeScreen() {
         super(TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE));
         initBookmarks();
@@ -55,24 +59,28 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         resetAndAddEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
     }
 
+    private void setToolBars(ScreenElement left, ScreenElement right) {
+        if (leftToolBar != null) { leftToolBar.setParent(null); }
+        if (rightToolBar != null) { rightToolBar.setParent(null); }
+        leftToolBar = left;
+        rightToolBar = right;
+        if (left != null) { left.setParent(getRootScreenElement()); }
+        if (right != null) { right.setParent(getRootScreenElement()); }
+    }
+
     private void resetAndAddEntityWidgets(List<EntityManager.EntityClassInfo> entityInfos) {
-        List<Widget> list = getEntityWidgets(entityInfos);
-        resetAndAndWidgetsOneByOne(list);
-        for (int i = 0; i < getPageSize(); i++) {
-            if (i % 2 == 0) {
-                getPage(i).setWidget(new DiscoveryProgressWidget(entityInfos), Page.ROWS - 1, 0);
-            } else {
-                boolean fullyDiscovered = true;
-                var cache = ClientWorldSession.get().getDiscoveryClientCache();
-                for (var info : entityInfos) {
-                    if (!cache.isDiscovered(info.getType())) {
-                        fullyDiscovered = false;
-                        break;
-                    }
-                }
-                getPage(i).setWidget(new DecorativeBarWidget(fullyDiscovered), Page.ROWS - 1, 0);
-            }
+        resetAndAndWidgetsOneByOne(getEntityWidgets(entityInfos));
+        var cache = ClientWorldSession.get().getDiscoveryClientCache();
+        int total = entityInfos.size();
+        int discovered = 0;
+        for (var info : entityInfos) {
+            if (cache.isDiscovered(info.getType())) { discovered++; }
         }
+        DiscoveryProgressWidget progress = new DiscoveryProgressWidget();
+        progress.update(total, discovered);
+        DecorativeBarWidget bar = new DecorativeBarWidget();
+        bar.update(discovered == total);
+        setToolBars(progress, bar);
         updateBoxSizes();
     }
 
@@ -142,6 +150,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 });
                 tags.addFirst(new DescriptionWidget(1, Page.COLUMNS, group.getDescription()));
                 resetAndAndWidgetsOneByOne(tags);
+                setToolBars(null, null);
                 return true;
             }
             return super.onMouseDown(mouseX, mouseY, button);
@@ -358,26 +367,30 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    private static final class DiscoveryProgressWidget extends Widget {
+    private static final class DiscoveryProgressWidget extends ScreenElement {
         private static final int BAR_LEFT_CAP = 2;
         private static final int BAR_TILE = 36;
         private static final int BAR_TILE_COUNT = 2;
         private static final int BAR_RIGHT_CAP = 2;
         private static final int BAR_WIDTH = BAR_LEFT_CAP + BAR_TILE * BAR_TILE_COUNT + BAR_RIGHT_CAP;
 
-        private final int total;
-        private final int discovered;
+        private int total;
+        private int discovered;
 
-        public DiscoveryProgressWidget(List<EntityManager.EntityClassInfo> entityInfos) {
-            super(1, Page.COLUMNS);
+        public DiscoveryProgressWidget() {
             setSelectable(false);
-            var cache = ClientWorldSession.get().getDiscoveryClientCache();
-            this.total = entityInfos.size();
-            int count = 0;
-            for (var info : entityInfos) {
-                if (cache.isDiscovered(info.getType())) { count++; }
-            }
-            this.discovered = count;
+            getBox().setSize(Widget.calcWidth(Page.COLUMNS), Widget.calcHeight(1));
+        }
+
+        public void update(int total, int discovered) {
+            this.total = total;
+            this.discovered = discovered;
+        }
+
+        @Override
+        protected void onResize(int width, int height) {
+            getBox().setPosition(leftPageLeft(width), pageTop(height)
+                    + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * (Page.ROWS - 1));
         }
 
         @Override
@@ -433,15 +446,25 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    private static final class DecorativeBarWidget extends Widget {
+    private static final class DecorativeBarWidget extends ScreenElement {
         private static final int BAR_WIDTH = 6;
 
-        private final boolean filled;
+        private boolean filled;
 
-        public DecorativeBarWidget(boolean filled) {
-            super(1, Page.COLUMNS);
+        public DecorativeBarWidget() {
+            setHoverable(false);
             setSelectable(false);
+            getBox().setSize(Widget.calcWidth(Page.COLUMNS), Widget.calcHeight(1));
+        }
+
+        public void update(boolean filled) {
             this.filled = filled;
+        }
+
+        @Override
+        protected void onResize(int width, int height) {
+            getBox().setPosition(rightPageLeft(width), pageTop(height)
+                    + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * (Page.ROWS - 1));
         }
 
         @Override
