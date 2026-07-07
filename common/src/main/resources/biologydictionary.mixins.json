@@ -36,7 +36,8 @@
         "rendering.HudMixin",
         "rendering.ItemInHandRendererMixin",
         "rendering.LevelRendererIMixin",
-        "rendering.LevelRendererMixin"
+        "rendering.LevelRendererMixin",
+        "rendering.PictureInPictureRendererMixin"
     ],
     "injectors": {
         "defaultRequire": 1
