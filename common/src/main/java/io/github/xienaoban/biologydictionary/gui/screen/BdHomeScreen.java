@@ -245,8 +245,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 } else {
                     // Highlight button
                     int distance = isMouseRight(button)
-                            ? HighlightEntitiesSkill.NEAR_RADIUS
-                            : HighlightEntitiesSkill.FAR_RADIUS;
+                            ? HighlightEntitiesSkill.getNearRadius()
+                            : HighlightEntitiesSkill.getFarRadius();
                     ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
                     if (BiologySkills.activate(
                             new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance))) {
@@ -326,6 +326,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             // Tooltip
             List<Component> tooltips;
             if (mouseY < BUTTONS_CUT) {
+                int nearRadius = HighlightEntitiesSkill.getNearRadius();
+                int farRadius = HighlightEntitiesSkill.getFarRadius();
                 tooltips = new ArrayList<>();
                 tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OVERVIEW));
                 tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OVERVIEW_DESC));
@@ -334,17 +336,17 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                         .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                 tooltips.add(TextUtils.empty());
                 tooltips.add(TextUtils.translate(
-                                Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.NEAR_RADIUS)
+                                Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, nearRadius)
                         .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                 tooltips.addAll(new HighlightEntitiesSkill(
-                        EntityUtils.getEntityType(entity), HighlightEntitiesSkill.NEAR_RADIUS)
+                        EntityUtils.getEntityType(entity), nearRadius)
                         .getRealCost().toTooltipText());
                 tooltips.add(TextUtils.empty());
                 tooltips.add(TextUtils.translate(
-                                Lang.WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC, HighlightEntitiesSkill.FAR_RADIUS)
+                                Lang.WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC, farRadius)
                         .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                 tooltips.addAll(new HighlightEntitiesSkill(
-                        EntityUtils.getEntityType(entity), HighlightEntitiesSkill.FAR_RADIUS)
+                        EntityUtils.getEntityType(entity), farRadius)
                         .getRealCost().toTooltipText());
                 tooltips.add(TextUtils.empty());
                 tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withStyle(ChatFormatting.GRAY));
