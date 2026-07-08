@@ -113,10 +113,16 @@ public final class Configs {
         boolean allowStealingPlayerInventory = false;
 
         /**
-         * Discovery strategy. Determines how entities are discovered by each player.
+         * Range (in blocks) used by the far highlight skill action.
+         */
+        @ConfigEntry(min = 50, max = 500)
+        int highlightEntitiesRange = 100;
+
+        /**
+         * Maximum range (in blocks) for telescope entity discovery.
          */
         @ConfigEntry
-        DiscoveryStrategyMode discoveryStrategy = DiscoveryStrategyMode.VANILLA_KILL;
+        int telescopeDiscoveryRange = 160;
 
         /**
          * Whether undiscovered entities are allowed to be viewed in the overview screen.
@@ -127,10 +133,10 @@ public final class Configs {
         boolean allowOverviewForUndiscoveredEntities = false;
 
         /**
-         * Maximum range (in blocks) for telescope entity discovery.
+         * Discovery strategy. Determines how entities are discovered by each player.
          */
         @ConfigEntry
-        int telescopeDiscoveryRange = 160;
+        DiscoveryStrategyMode discoveryStrategy = DiscoveryStrategyMode.VANILLA_KILL;
 
         /**
          * Enable discovery by opening entity detail screen.
@@ -217,16 +223,20 @@ public final class Configs {
             return allowStealingPlayerInventory;
         }
 
-        public DiscoveryStrategyMode getDiscoveryStrategy() {
-            return discoveryStrategy;
+        public int getHighlightEntitiesRange() {
+            return highlightEntitiesRange;
+        }
+
+        public int getTelescopeDiscoveryRange() {
+            return telescopeDiscoveryRange;
         }
 
         public boolean isAllowOverviewForUndiscoveredEntities() {
             return allowOverviewForUndiscoveredEntities;
         }
 
-        public int getTelescopeDiscoveryRange() {
-            return telescopeDiscoveryRange;
+        public DiscoveryStrategyMode getDiscoveryStrategy() {
+            return discoveryStrategy;
         }
 
         public boolean isDiscoveryByDetailScreen() {
