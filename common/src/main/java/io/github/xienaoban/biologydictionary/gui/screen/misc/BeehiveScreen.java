@@ -222,6 +222,7 @@ public class BeehiveScreen extends ElementScreen {
 
         public BeeInfo(Level level) {
             entity = EntityUtils.create(EntityType.BEE, level);
+            EntityUtils.setupForDisplay(entity);
             ticksInHive = -1;
             minTicksInHive = -1;
         }

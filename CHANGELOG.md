@@ -1,34 +1,20 @@
 # Changelog
 
-All notable changes to Biology Dictionary will be documented in this file.
+## Added
 
-## 1.0.2
+- Added tracking for entity types that fail during creation.
+- Added an About screen widget listing failed entity creation types.
 
-### Changed
+## Changed
 
-- Refactored Biology Dictionary screen scaling to improve compatibility with other mods.
-- Moved demo mode out of config and behind a debug-only hidden toggle on the About screen.
-- Moved debug mode to a static variable.
+- Improved mod compatibility by skipping entity types that fail to be created, preventing unsupported entities from breaking the dictionary screen.
+- Use `EntitySpawnReason.LOAD` when creating preview entities.
+- Centralized display setup for preview entities.
 
-### Fixed
+## Fixed
 
-- Fixed beehive screen rendering.
-
-## 1.0.1
-
-### Added
-
-- Added a server config option to limit biome/structure spawn analysis time during world startup
-- Added an in-game warning when spawn analysis times out
-
-### Changed
-
-- Greatly improved structure spawn analysis performance by caching template pool analysis and reusing pool graph closures
-- Reduced structure template parsing overhead by reading only needed NBT fields
-
-### Fixed
-
-- Worked around crashes from other mods when checking animal food items
+- Fixed display issues for water animal previews.
+- Fixed missing display setup in entity overview, variant, beehive, and entity display widgets.
 
 ## Previous Versions
 

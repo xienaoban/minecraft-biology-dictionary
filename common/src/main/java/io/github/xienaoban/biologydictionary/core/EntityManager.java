@@ -44,6 +44,8 @@ public final class EntityManager {
     private final List<EntityClassInfo> sortedInfos = new ArrayList<>();
     private final Map<Class<? extends Entity>, EntityType<?>> clazzToType = new HashMap<>();
 
+    private final Set<EntityType<?>> failedCreatedEntityTypes = new HashSet<>();
+
     private final TagGroup defaultTags   = new TagGroup(Lang.TAG_GROUP_DEFAULT,   TextUtils.translate(Lang.TAG_GROUP_DEFAULT_DESC));
     private final TagGroup mcTagTags     = new TagGroup(Lang.TAG_GROUP_TAG,       TextUtils.translate(Lang.TAG_GROUP_TAG_DESC));
     private final TagGroup namespaceTags = new TagGroup(Lang.TAG_GROUP_MODS,      TextUtils.translate(Lang.TAG_GROUP_MODS_DESC));
@@ -71,7 +73,7 @@ public final class EntityManager {
                 entityClassInfo = EntityClassInfo.create(entityType, level);
                 if (entityClassInfo == null) continue;
             } catch (Throwable e) {
-                LOGGER.error("Failed to create an EntityClassInfo of entity type \"{}\"! Skipped supporting this entity type.", EntityUtils.getEntityTypeName(entityType), e);
+                markCreatedFailed(entityType, e);
                 continue;
             }
             infos.put(entityClassInfo.getType(), entityClassInfo);
@@ -281,6 +283,20 @@ public final class EntityManager {
 
     public List<EntityClassInfo> getEntityClassInfos() {
         return sortedInfos;
+    }
+
+    public void markCreatedFailed(EntityType<?> entityType, Throwable e) {
+        if (failedCreatedEntityTypes.add(entityType)) {
+            LOGGER.error("Failed to create entity type \"{}\". Skipped supporting this entity type.", EntityUtils.getEntityTypeName(entityType), e);
+        }
+    }
+
+    public boolean hasCreatedFailed(EntityType<?> entityType) {
+        return failedCreatedEntityTypes.contains(entityType);
+    }
+
+    public Set<EntityType<?>> getFailedCreatedEntityTypes() {
+        return Collections.unmodifiableSet(failedCreatedEntityTypes);
     }
 
     public boolean isVanillaEntity(EntityType<?> entityType) {
