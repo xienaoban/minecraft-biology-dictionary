@@ -23,7 +23,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
@@ -79,13 +78,19 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
     private List<Widget> getEntityWidgets(List<EntityManager.EntityClassInfo> infos) {
         ClientLevel level = ClientUtils.getClientLevel(client);
+        EntityManager entityManager = WorldSession.get().getEntityManager();
         List<Widget> widgets = new ArrayList<>();
         for (EntityManager.EntityClassInfo eci : infos) {
             EntityType<?> type = eci.getType();
-            Entity entity = EntityUtils.create(type, level);
-            if (entity instanceof WaterAnimal) {
-                EntityUtils.setInWater(entity, true);
+            if (entityManager.hasCreatedFailed(type)) { continue; }
+            Entity entity;
+            try {
+                entity = EntityUtils.create(type, level);
+            } catch (Throwable e) {
+                entityManager.markCreatedFailed(type, e);
+                continue;
             }
+            EntityUtils.setupForDisplay(entity);
             widgets.add(new EntityWidget(entity));
         }
         return widgets;
