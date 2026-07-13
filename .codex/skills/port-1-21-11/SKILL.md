@@ -1,11 +1,15 @@
 ---
 name: port-1-21-11
-description: 用于把 Biology Dictionary 从 git branch main-architectury-1.21.11 移植到 main-26.1.2；尤其适用于判断代码应放在 common、Fabric、NeoForge、Platform.load 服务、@PlatformEntry 静态定义，还是迁移占位 facade。
+description: 仅用于把 Biology Dictionary 的特性从 git branch main-architectury-1.21.11 移植到 main-26.1.2；尤其适用于判断代码应放在 common、Fabric、NeoForge、Platform.load 服务、@PlatformEntry 静态定义，还是迁移占位 facade。普通 bug 修复、局部重构、代码清理和既有代码维护不得使用。
 ---
 
 # Port 1.21.11
 
 用于处理 Biology Dictionary 从 git branch `main-architectury-1.21.11` 迁移到 `main-26.1.2` 的任务。
+
+## 适用范围
+
+仅在实际把旧分支中的特性或实现移植到目标分支时使用本 skill。普通 bug 修复、局部重构、代码清理、代码审查、问题解释或既有目标分支代码维护均不得使用。
 
 参考项目相对路径：
 

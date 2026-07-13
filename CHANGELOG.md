@@ -24,6 +24,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Fixed display issues for water animal previews
 - Fixed missing display setup in entity overview, variant, beehive, and entity display widgets
 - Fixed silhouette rendering through distance fog
+- Fixed the owner widget being created for entities without the vanilla `Owner` property, including vexes
+- Fixed individual property widget creation failures preventing dictionary screens from opening
 
 ## Previous Versions
 

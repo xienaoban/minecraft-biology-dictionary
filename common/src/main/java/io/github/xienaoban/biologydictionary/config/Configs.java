@@ -32,7 +32,7 @@ public final class Configs {
          * Scale factor for Biology Dictionary GUI screens.
          * Does not affect other mod or vanilla interfaces.
          */
-        @ConfigEntry
+        @ConfigEntry(min = 0.1, max = 5.0)
         float screenScale = 1F;
 
         /**
@@ -115,13 +115,13 @@ public final class Configs {
         /**
          * Range (in blocks) used by the far highlight skill action.
          */
-        @ConfigEntry(min = 50, max = 500)
+        @ConfigEntry(min = 20, max = 500)
         int highlightEntitiesRange = 100;
 
         /**
          * Maximum range (in blocks) for telescope entity discovery.
          */
-        @ConfigEntry
+        @ConfigEntry(min = 20, max = 500)
         int telescopeDiscoveryRange = 160;
 
         /**
@@ -136,7 +136,7 @@ public final class Configs {
          * Discovery strategy. Determines how entities are discovered by each player.
          */
         @ConfigEntry
-        DiscoveryStrategyMode discoveryStrategy = DiscoveryStrategyMode.VANILLA_KILL;
+        DiscoveryStrategyMode discoveryStrategy = DiscoveryStrategyMode.BIOLOGY_DICTIONARY;
 
         /**
          * Enable discovery by opening entity detail screen.
