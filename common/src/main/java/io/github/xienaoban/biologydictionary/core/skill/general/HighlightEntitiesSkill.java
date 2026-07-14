@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill.general;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
@@ -34,12 +35,20 @@ public record HighlightEntitiesSkill(EntityType<?> entityType, float radius) imp
     };
 
     public static final int TICKS = 12 * 20;
-    public static final int NEAR_RADIUS = 20;
     public static final int NEAR_EXPERIENCE_POINTS_COST = 1;
-    public static final int FAR_RADIUS = 100;
     public static final int FAR_EXPERIENCE_POINTS_COST = 16;
     public static final int BLINDNESS_TICKS = 40;
     public static final int BLOCK_TICKS = 6 * 20;
+
+    private static final int NEAR_RADIUS = 20;
+
+    public static int getNearRadius() {
+        return NEAR_RADIUS;
+    }
+
+    public static int getFarRadius() {
+        return ConfigsManager.getServer().getHighlightEntitiesRange();
+    }
 
     @Override
     public void write(FriendlyByteBuf buf) {

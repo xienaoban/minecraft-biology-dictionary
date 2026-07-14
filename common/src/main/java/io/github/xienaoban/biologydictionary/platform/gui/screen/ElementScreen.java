@@ -81,15 +81,11 @@ public abstract class ElementScreen extends CommonScreen {
     }
 
     private void updateHoveredElement(float x, float y) {
-        if (hoveredElement != null && hoveredElement.isHovered(x, y)) {
-            hoveredElement = hoveredElement.hover(x, y);
-        } else {
-            hoveredElement = rootScreenElement.hover(x, y);
-        }
-    }
-
-    public final void clearHoveredElement() {
-        hoveredElement = null;
+        // Full search each frame. The old incremental shortcut only descended from
+        // the last hovered element, which assumes sibling elements never overlap —
+        // but fixed elements (e.g. the discovery bar) overlap their page, so a
+        // pointer moving from the page into the bar would stay stuck on the page.
+        hoveredElement = rootScreenElement.hover(x, y);
     }
 
     public final ScreenElement getSelectedElement() {

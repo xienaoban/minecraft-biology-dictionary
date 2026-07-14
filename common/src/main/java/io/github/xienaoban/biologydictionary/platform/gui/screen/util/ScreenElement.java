@@ -13,8 +13,9 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 
 /**
- * A rectangular element on the screen.
- * Each element does not overlap in pairs.
+ * A rectangular element on the screen. Sibling elements may overlap; among
+ * overlapping siblings the one with the higher priority is painted on top and
+ * wins hover/click (see {@link #render} and {@link #hover}).
  */
 @ClientOnly
 public abstract class ScreenElement implements ScreenConsts {
@@ -139,8 +140,10 @@ public abstract class ScreenElement implements ScreenConsts {
 
     public final ScreenElement hover(float x, float y) {
         if (!isHovered(x, y)) return null;
-        for (ScreenElement sub : subScreenElements) {
-            ScreenElement res = sub.hover(x, y);
+        // Visit the top-most child first (highest priority, painted last) so that
+        // hover/click order matches render order.
+        for (int i = subScreenElements.size() - 1; i >= 0; --i) {
+            ScreenElement res = subScreenElements.get(i).hover(x, y);
             if (res != null) return res;
         }
         return this;
