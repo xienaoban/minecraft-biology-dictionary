@@ -26,7 +26,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.OwnableEntity;
-import net.minecraft.world.entity.animal.equine.AbstractHorse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,25 +34,27 @@ import java.util.UUID;
 
 @ClientOnly
 public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
-    public static final Factory<Entity> FACTORY = properties -> {
-        if (properties.entity() instanceof OwnableEntity) {
-            return new EntityOwnerWidget(properties);
-        }
-        return null;
-    };
-
     private static final int L = 11, T = 5;
     private static final int L_GIFT = 22, T_GIFT = 4;
 
     private static final String OWNER_KEY = VanillaEntityProperties.OfTamableAnimal.createOwnerProperty().name();
 
-    private final EntityReferenceProperty<AbstractHorse> ownerProperty = p().getVanilla(OWNER_KEY);
+    public static final Factory<Entity> FACTORY = properties -> {
+        EntityReferenceProperty<Entity> ownerProperty = properties.getVanilla(OWNER_KEY);
+        if (properties.entity() instanceof OwnableEntity && ownerProperty != null) {
+            return new EntityOwnerWidget(properties, ownerProperty);
+        }
+        return null;
+    };
+
+    private final EntityReferenceProperty<Entity> ownerProperty;
 
     private UUID lastUuid = null;
     private Entity lastEntity = null;
 
-    public EntityOwnerWidget(EntityProperties<Entity> properties) {
+    private EntityOwnerWidget(EntityProperties<Entity> properties, EntityReferenceProperty<Entity> ownerProperty) {
         super(properties);
+        this.ownerProperty = ownerProperty;
         setElementIcon(new EntityPropertyIcon(Textures.ICONS, L * Widget.WIDGET_WIDTH, T * Widget.WIDGET_HEIGHT));
         setElementBar(new OwnerBar());
         addElementButton(new GiftButton());
