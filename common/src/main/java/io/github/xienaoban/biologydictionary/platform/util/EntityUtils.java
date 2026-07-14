@@ -25,6 +25,7 @@ import net.minecraft.world.entity.animal.dolphin.Dolphin;
 import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.entity.animal.equine.Markings;
 import net.minecraft.world.entity.animal.equine.Variant;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
@@ -96,7 +97,7 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity> E create(EntityType<E> entityType, Level level) {
-        return create(entityType, level, null);
+        return create(entityType, level, EntitySpawnReason.LOAD);
     }
 
     public static <E extends Entity> E create(EntityType<E> entityType, Level level, EntitySpawnReason reason) {
@@ -311,6 +312,12 @@ public final class EntityUtils {
         }
 
         return nbt;
+    }
+
+    public static <E extends Entity> void setupForDisplay(E entity) {
+        if (entity instanceof WaterAnimal) {
+            setInWater(entity, true);
+        }
     }
 
     // ============================================================================ //
