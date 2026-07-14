@@ -4,6 +4,8 @@
 
 - Added tracking for entity types that fail during creation.
 - Added an About screen widget listing failed entity creation types.
+- Added a server config option for the far highlight skill radius.
+- Added always-on telescope ranging in debug mode for both entities and blocks.
 
 ## Changed
 
@@ -11,11 +13,14 @@
 - Use `EntitySpawnReason.LOAD` when creating preview entities.
 - Centralized display setup for preview entities.
 - Improve EntitySpawnManager.
+- Refactored Biology Dictionary screen rendering internals.
 
 ## Fixed
 
 - Fixed display issues for water animal previews.
 - Fixed missing display setup in entity overview, variant, beehive, and entity display widgets.
+- Fixed the owner widget being created for entities without the vanilla `Owner` property, including vexes.
+- Fixed individual property widget creation failures preventing dictionary screens from opening.
 
 ## Previous Versions
 
