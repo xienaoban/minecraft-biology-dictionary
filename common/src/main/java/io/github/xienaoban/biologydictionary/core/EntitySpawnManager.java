@@ -18,6 +18,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.StreamTagVisitor;
@@ -45,7 +46,9 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -63,6 +66,8 @@ public final class EntitySpawnManager {
     private static final String SPAWN_OVERRIDE_PATH = "biologydictionary/entity_spawn";
     private static final FileToIdConverter STRUCTURE_LISTER = new FileToIdConverter("structures", ".nbt");
     private static final FileToIdConverter SPAWN_OVERRIDE_LISTER = FileToIdConverter.json(SPAWN_OVERRIDE_PATH);
+    private static final String JIGSAW_BLOCK_ID = "minecraft:jigsaw";
+    private static final String SPAWNER_BLOCK_ID = "minecraft:spawner";
     private static final ResourceLocation IGNORED_MISSING_TEMPLATE = new ResourceLocation(
             "minecraft", "structures/ancient_city/walls/intact_horizontal_wall_stairs_5.nbt"
     );
@@ -133,15 +138,10 @@ public final class EntitySpawnManager {
                 Biome biome = biomeEntry.getValue();
                 MobSpawnSettings spawnSettings = biome.getMobSettings();
 
-                Set<EntityType<?>> seenBiomeEntities = new HashSet<>();
                 for (MobCategory category : MobCategory.values()) {
                     WeightedRandomList<MobSpawnSettings.SpawnerData> spawners = spawnSettings.getMobs(category);
                     for (MobSpawnSettings.SpawnerData spawnerData : spawners.unwrap()) {
-                        EntityType<?> entityType = spawnerData.type;
-
-                        if (seenBiomeEntities.add(entityType)) {
-                            biomeSpawnMap.add(entityType, biomeId);
-                        }
+                        biomeSpawnMap.add(spawnerData.type, biomeId);
                     }
                 }
             } catch (Throwable e) {
@@ -163,7 +163,6 @@ public final class EntitySpawnManager {
 
         long startMillis = System.currentTimeMillis();
         LOGGER.info("Building entity spawn structure map: {} structures to process.", totalStructures);
-        Map<ResourceLocation, Set<EntityType<?>>> structureEntities = new HashMap<>();
         Map<ResourceLocation, ResourceLocation> structureStartPools = new HashMap<>();
         for (Map.Entry<ResourceKey<Structure>, Structure> structureEntry : structureEntries) {
             if (buildContext.isAnalysisTimedOut()) {
@@ -174,12 +173,10 @@ public final class EntitySpawnManager {
             try {
                 Structure structure = structureEntry.getValue();
 
-                Set<EntityType<?>> seenStructureEntities = structureEntities.computeIfAbsent(structureId, id -> new HashSet<>());
-
                 // 1. spawnOverrides (e.g. guardians in ocean monuments)
                 structure.spawnOverrides().forEach((category, override) -> {
                     for (MobSpawnSettings.SpawnerData spawnerData : override.spawns().unwrap()) {
-                        seenStructureEntities.add(spawnerData.type);
+                        structureSpawnMap.add(spawnerData.type, structureId);
                     }
                 });
 
@@ -199,13 +196,7 @@ public final class EntitySpawnManager {
             }
         }
         buildPoolComponents();
-        applyStructureTemplateEntities(structureStartPools, structureEntities);
-        for (Map.Entry<ResourceLocation, Set<EntityType<?>>> entry : structureEntities.entrySet()) {
-            ResourceLocation structureId = entry.getKey();
-            for (EntityType<?> entityType : entry.getValue()) {
-                structureSpawnMap.add(entityType, structureId);
-            }
-        }
+        applyStructureTemplateEntities(structureStartPools);
         LOGGER.info("Built entity spawn structure map: processed {}/{} structures in {} ms, cached {} component closures, {} pools, {} templates.",
             buildContext.processedStructures, totalStructures, System.currentTimeMillis() - startMillis,
             buildContext.poolClosureCache.size(), buildContext.poolDirectCache.size(), buildContext.templateCache.size());
@@ -237,17 +228,15 @@ public final class EntitySpawnManager {
         }
     }
 
-    private void applyStructureTemplateEntities(
-        Map<ResourceLocation, ResourceLocation> structureStartPools,
-        Map<ResourceLocation, Set<EntityType<?>>> structureEntities
-    ) {
+    private void applyStructureTemplateEntities(Map<ResourceLocation, ResourceLocation> structureStartPools) {
         for (Map.Entry<ResourceLocation, ResourceLocation> entry : structureStartPools.entrySet()) {
             ResourceLocation structureId = entry.getKey();
             ResourceLocation startPoolId = entry.getValue();
             ResourceLocation componentId = buildContext.poolToComponent.get(startPoolId);
             if (componentId == null) continue;
-            StructureAnalysis closure = analyzeComponentClosure(componentId);
-            structureEntities.computeIfAbsent(structureId, id -> new HashSet<>()).addAll(closure.entities());
+            for (EntityType<?> entityType : analyzeComponentClosure(componentId)) {
+                structureSpawnMap.add(entityType, structureId);
+            }
         }
     }
 
@@ -318,24 +307,21 @@ public final class EntitySpawnManager {
         buildContext.components.put(componentId, new ComponentAnalysis(Set.copyOf(entities), new HashSet<>()));
     }
 
-    private StructureAnalysis analyzeComponentClosure(ResourceLocation componentId) {
-        StructureAnalysis cached = buildContext.poolClosureCache.get(componentId);
+    private Set<EntityType<?>> analyzeComponentClosure(ResourceLocation componentId) {
+        Set<EntityType<?>> cached = buildContext.poolClosureCache.get(componentId);
         if (cached != null) return cached;
 
         ComponentAnalysis component = buildContext.components.get(componentId);
-        if (component == null) return StructureAnalysis.EMPTY;
+        if (component == null) return Set.of();
 
         Set<EntityType<?>> entities = new HashSet<>(component.entities());
-        Set<ResourceLocation> referencedComponents = new HashSet<>(component.referencedComponents());
         for (ResourceLocation referencedComponentId : component.referencedComponents()) {
-            StructureAnalysis childAnalysis = analyzeComponentClosure(referencedComponentId);
-            entities.addAll(childAnalysis.entities());
-            referencedComponents.addAll(childAnalysis.referencedPools());
+            entities.addAll(analyzeComponentClosure(referencedComponentId));
         }
 
-        StructureAnalysis analysis = new StructureAnalysis(Set.copyOf(entities), Set.copyOf(referencedComponents));
-        buildContext.poolClosureCache.put(componentId, analysis);
-        return analysis;
+        Set<EntityType<?>> closure = Set.copyOf(entities);
+        buildContext.poolClosureCache.put(componentId, closure);
+        return closure;
     }
 
     private StructureAnalysis analyzePoolDirect(
@@ -413,28 +399,47 @@ public final class EntitySpawnManager {
         }
 
         ResourceLocation resourceLoc = STRUCTURE_LISTER.idToFile(templateId);
-        TemplateVisitor visitor = new TemplateVisitor();
+        byte[] templateBytes;
         try (InputStream is = buildContext.resourceManager.open(resourceLoc)) {
-            NbtIo.parseCompressed(is, visitor);
-            buildContext.parsedTemplates++;
+            templateBytes = is.readAllBytes();
         } catch (Throwable e) {
             if (e instanceof FileNotFoundException) {
                 if (!resourceLoc.equals(IGNORED_MISSING_TEMPLATE)) {
                     buildContext.missingTemplates.add(templateId);
                 }
             } else {
-                LOGGER.warn("Failed to read structure template {}", templateId, e);
+                LOGGER.warn("Failed to read structure template resource {}", templateId, e);
             }
             buildContext.templateCache.put(templateId, StructureAnalysis.EMPTY);
             return StructureAnalysis.EMPTY;
         }
 
+        TemplateVisitor visitor;
+        try {
+            PaletteVisitor paletteVisitor = new PaletteVisitor();
+            parseTemplateNbt(templateBytes, paletteVisitor);
+
+            BlockStateVisitor blockStateVisitor = new BlockStateVisitor(paletteVisitor.jigsawStates, paletteVisitor.spawnerStates);
+            parseTemplateNbt(templateBytes, blockStateVisitor);
+
+            visitor = new TemplateVisitor(blockStateVisitor.jigsawBlocks, blockStateVisitor.spawnerBlocks);
+            parseTemplateNbt(templateBytes, visitor);
+            buildContext.parsedTemplates++;
+        } catch (Throwable e) {
+            LOGGER.warn("Failed to parse structure template {}", templateId, e);
+            buildContext.templateCache.put(templateId, StructureAnalysis.EMPTY);
+            return StructureAnalysis.EMPTY;
+        }
         StructureAnalysis analysis = new StructureAnalysis(
             Set.copyOf(visitor.entities),
             Set.copyOf(visitor.referencedPools)
         );
         buildContext.templateCache.put(templateId, analysis);
         return analysis;
+    }
+
+    private static void parseTemplateNbt(byte[] templateBytes, StreamTagVisitor visitor) throws IOException {
+        NbtIo.parseCompressed(new ByteArrayInputStream(templateBytes), visitor);
     }
 
     private static ResourceLocation getTemplateLocation(SinglePoolElement element) {
@@ -451,7 +456,183 @@ public final class EntitySpawnManager {
 
     private record ComponentAnalysis(Set<EntityType<?>> entities, Set<ResourceLocation> referencedComponents) {}
 
-    private static final class TemplateVisitor implements StreamTagVisitor {
+    private static final class PaletteVisitor extends AbstractTemplateVisitor {
+        private enum Context {
+            ROOT,
+            PALETTES_LIST,
+            PALETTE_LIST,
+            PALETTE_ENTRY
+        }
+
+        private final Set<Integer> jigsawStates = new HashSet<>();
+        private final Set<Integer> spawnerStates = new HashSet<>();
+        private final Deque<Context> contextStack = new ArrayDeque<>();
+        private int paletteIndex;
+        private boolean readingBlockName;
+
+        @Override
+        public ValueResult visit(String string) {
+            if (readingBlockName) {
+                if (JIGSAW_BLOCK_ID.equals(string)) {
+                    jigsawStates.add(paletteIndex);
+                } else if (SPAWNER_BLOCK_ID.equals(string)) {
+                    spawnerStates.add(paletteIndex);
+                }
+                readingBlockName = false;
+            }
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visitList(TagType<?> tagType, int i) {
+            Context context = contextStack.peek();
+            if (context == Context.PALETTE_LIST && tagType == CompoundTag.TYPE) {
+                return ValueResult.CONTINUE;
+            }
+            if (context == Context.PALETTES_LIST && tagType == ListTag.TYPE) {
+                return ValueResult.CONTINUE;
+            }
+            return ValueResult.BREAK;
+        }
+
+        @Override
+        public EntryResult visitEntry(TagType<?> tagType, String string) {
+            Context context = contextStack.peek();
+            if (context == Context.ROOT && tagType == ListTag.TYPE) {
+                if ("palette".equals(string)) {
+                    contextStack.push(Context.PALETTE_LIST);
+                    return EntryResult.ENTER;
+                }
+                if ("palettes".equals(string)) {
+                    contextStack.push(Context.PALETTES_LIST);
+                    return EntryResult.ENTER;
+                }
+            } else if (context == Context.PALETTE_ENTRY && tagType == StringTag.TYPE && "Name".equals(string)) {
+                readingBlockName = true;
+                return EntryResult.ENTER;
+            }
+            return EntryResult.SKIP;
+        }
+
+        @Override
+        public EntryResult visitElement(TagType<?> tagType, int i) {
+            Context context = contextStack.peek();
+            if (context == Context.PALETTE_LIST && tagType == CompoundTag.TYPE) {
+                paletteIndex = i;
+                contextStack.push(Context.PALETTE_ENTRY);
+                return EntryResult.ENTER;
+            }
+            if (context == Context.PALETTES_LIST && tagType == ListTag.TYPE) {
+                contextStack.push(Context.PALETTE_LIST);
+                return EntryResult.ENTER;
+            }
+            return EntryResult.SKIP;
+        }
+
+        @Override
+        public ValueResult visitContainerEnd() {
+            if (!contextStack.isEmpty()) {
+                contextStack.pop();
+            }
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visitRootEntry(TagType<?> tagType) {
+            if (tagType == CompoundTag.TYPE) {
+                contextStack.push(Context.ROOT);
+                return ValueResult.CONTINUE;
+            }
+            return ValueResult.HALT;
+        }
+    }
+
+    private static final class BlockStateVisitor extends AbstractTemplateVisitor {
+        private enum Context {
+            ROOT,
+            BLOCKS_LIST,
+            BLOCK
+        }
+
+        private final Set<Integer> jigsawStates;
+        private final Set<Integer> spawnerStates;
+        private final Set<Integer> jigsawBlocks = new HashSet<>();
+        private final Set<Integer> spawnerBlocks = new HashSet<>();
+        private final Deque<Context> contextStack = new ArrayDeque<>();
+        private int blockIndex;
+        private boolean readingBlockState;
+
+        private BlockStateVisitor(Set<Integer> jigsawStates, Set<Integer> spawnerStates) {
+            this.jigsawStates = jigsawStates;
+            this.spawnerStates = spawnerStates;
+        }
+
+        @Override
+        public ValueResult visit(int i) {
+            if (readingBlockState) {
+                if (jigsawStates.contains(i)) {
+                    jigsawBlocks.add(blockIndex);
+                } else if (spawnerStates.contains(i)) {
+                    spawnerBlocks.add(blockIndex);
+                }
+                readingBlockState = false;
+            }
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visitList(TagType<?> tagType, int i) {
+            Context context = contextStack.peek();
+            if (context == Context.BLOCKS_LIST && tagType == CompoundTag.TYPE) {
+                return ValueResult.CONTINUE;
+            }
+            return ValueResult.BREAK;
+        }
+
+        @Override
+        public EntryResult visitEntry(TagType<?> tagType, String string) {
+            Context context = contextStack.peek();
+            if (context == Context.ROOT && tagType == ListTag.TYPE && "blocks".equals(string)) {
+                contextStack.push(Context.BLOCKS_LIST);
+                return EntryResult.ENTER;
+            }
+            if (context == Context.BLOCK && tagType == IntTag.TYPE && "state".equals(string)) {
+                readingBlockState = true;
+                return EntryResult.ENTER;
+            }
+            return EntryResult.SKIP;
+        }
+
+        @Override
+        public EntryResult visitElement(TagType<?> tagType, int i) {
+            Context context = contextStack.peek();
+            if (context == Context.BLOCKS_LIST && tagType == CompoundTag.TYPE) {
+                blockIndex = i;
+                contextStack.push(Context.BLOCK);
+                return EntryResult.ENTER;
+            }
+            return EntryResult.SKIP;
+        }
+
+        @Override
+        public ValueResult visitContainerEnd() {
+            if (!contextStack.isEmpty()) {
+                contextStack.pop();
+            }
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visitRootEntry(TagType<?> tagType) {
+            if (tagType == CompoundTag.TYPE) {
+                contextStack.push(Context.ROOT);
+                return ValueResult.CONTINUE;
+            }
+            return ValueResult.HALT;
+        }
+    }
+
+    private static final class TemplateVisitor extends AbstractTemplateVisitor {
         private enum Context {
             ROOT,
             ENTITIES_LIST,
@@ -459,18 +640,31 @@ public final class EntitySpawnManager {
             ENTITY_NBT,
             BLOCKS_LIST,
             BLOCK,
-            BLOCK_NBT
+            TARGET_BLOCK_NBT,
+            SPAWN_DATA,
+            SPAWN_DATA_ENTITY,
+            SPAWN_POTENTIALS_LIST,
+            SPAWN_POTENTIAL
+        }
+
+        private enum BlockKind {
+            NONE,
+            JIGSAW,
+            SPAWNER
         }
 
         private final Set<EntityType<?>> entities = new HashSet<>();
         private final Set<ResourceLocation> referencedPools = new HashSet<>();
+        private final Set<Integer> jigsawBlocks;
+        private final Set<Integer> spawnerBlocks;
         private final Deque<Context> contextStack = new ArrayDeque<>();
         private boolean readingEntityId;
         private boolean readingPool;
+        private BlockKind blockKind = BlockKind.NONE;
 
-        @Override
-        public ValueResult visitEnd() {
-            return ValueResult.CONTINUE;
+        private TemplateVisitor(Set<Integer> jigsawBlocks, Set<Integer> spawnerBlocks) {
+            this.jigsawBlocks = jigsawBlocks;
+            this.spawnerBlocks = spawnerBlocks;
         }
 
         @Override
@@ -489,62 +683,13 @@ public final class EntitySpawnManager {
         }
 
         @Override
-        public ValueResult visit(byte b) {
-            return ValueResult.CONTINUE;
-        }
-
-        @Override
-        public ValueResult visit(short s) {
-            return ValueResult.CONTINUE;
-        }
-
-        @Override
-        public ValueResult visit(int i) {
-            return ValueResult.CONTINUE;
-        }
-
-        @Override
-        public ValueResult visit(long l) {
-            return ValueResult.CONTINUE;
-        }
-
-        @Override
-        public ValueResult visit(float f) {
-            return ValueResult.CONTINUE;
-        }
-
-        @Override
-        public ValueResult visit(double d) {
-            return ValueResult.CONTINUE;
-        }
-
-        @Override
-        public ValueResult visit(byte[] bs) {
-            return ValueResult.CONTINUE;
-        }
-
-        @Override
-        public ValueResult visit(int[] is) {
-            return ValueResult.CONTINUE;
-        }
-
-        @Override
-        public ValueResult visit(long[] ls) {
-            return ValueResult.CONTINUE;
-        }
-
-        @Override
         public ValueResult visitList(TagType<?> tagType, int i) {
             Context context = contextStack.peek();
-            if ((context == Context.ENTITIES_LIST || context == Context.BLOCKS_LIST) && tagType == CompoundTag.TYPE) {
+            if ((context == Context.ENTITIES_LIST || context == Context.BLOCKS_LIST || context == Context.SPAWN_POTENTIALS_LIST)
+                && tagType == CompoundTag.TYPE) {
                 return ValueResult.CONTINUE;
             }
             return ValueResult.BREAK;
-        }
-
-        @Override
-        public EntryResult visitEntry(TagType<?> tagType) {
-            return EntryResult.ENTER;
         }
 
         @Override
@@ -559,14 +704,38 @@ public final class EntitySpawnManager {
                     contextStack.push(Context.BLOCKS_LIST);
                     return EntryResult.ENTER;
                 }
-            } else if ((context == Context.ENTITY || context == Context.BLOCK) && tagType == CompoundTag.TYPE && "nbt".equals(string)) {
-                contextStack.push(context == Context.ENTITY ? Context.ENTITY_NBT : Context.BLOCK_NBT);
+            } else if (context == Context.ENTITY && tagType == CompoundTag.TYPE && "nbt".equals(string)) {
+                contextStack.push(Context.ENTITY_NBT);
                 return EntryResult.ENTER;
             } else if (context == Context.ENTITY_NBT && tagType == StringTag.TYPE && "id".equals(string)) {
                 readingEntityId = true;
                 return EntryResult.ENTER;
-            } else if (context == Context.BLOCK_NBT && tagType == StringTag.TYPE && "pool".equals(string)) {
-                readingPool = true;
+            } else if (context == Context.BLOCK && tagType == CompoundTag.TYPE && "nbt".equals(string)) {
+                if (blockKind != BlockKind.NONE) {
+                    contextStack.push(Context.TARGET_BLOCK_NBT);
+                    return EntryResult.ENTER;
+                }
+            } else if (context == Context.TARGET_BLOCK_NBT) {
+                if (blockKind == BlockKind.JIGSAW && tagType == StringTag.TYPE && "pool".equals(string)) {
+                    readingPool = true;
+                    return EntryResult.ENTER;
+                }
+                if (blockKind == BlockKind.SPAWNER && tagType == CompoundTag.TYPE && "SpawnData".equals(string)) {
+                    contextStack.push(Context.SPAWN_DATA);
+                    return EntryResult.ENTER;
+                }
+                if (blockKind == BlockKind.SPAWNER && tagType == ListTag.TYPE && "SpawnPotentials".equals(string)) {
+                    contextStack.push(Context.SPAWN_POTENTIALS_LIST);
+                    return EntryResult.ENTER;
+                }
+            } else if (context == Context.SPAWN_DATA && tagType == CompoundTag.TYPE && "entity".equals(string)) {
+                contextStack.push(Context.SPAWN_DATA_ENTITY);
+                return EntryResult.ENTER;
+            } else if (context == Context.SPAWN_DATA_ENTITY && tagType == StringTag.TYPE && "id".equals(string)) {
+                readingEntityId = true;
+                return EntryResult.ENTER;
+            } else if (context == Context.SPAWN_POTENTIAL && tagType == CompoundTag.TYPE && "data".equals(string)) {
+                contextStack.push(Context.SPAWN_DATA);
                 return EntryResult.ENTER;
             }
             return EntryResult.SKIP;
@@ -580,7 +749,18 @@ public final class EntitySpawnManager {
                 return EntryResult.ENTER;
             }
             if (context == Context.BLOCKS_LIST && tagType == CompoundTag.TYPE) {
+                if (jigsawBlocks.contains(i)) {
+                    blockKind = BlockKind.JIGSAW;
+                } else if (spawnerBlocks.contains(i)) {
+                    blockKind = BlockKind.SPAWNER;
+                } else {
+                    return EntryResult.SKIP;
+                }
                 contextStack.push(Context.BLOCK);
+                return EntryResult.ENTER;
+            }
+            if (context == Context.SPAWN_POTENTIALS_LIST && tagType == CompoundTag.TYPE) {
+                contextStack.push(Context.SPAWN_POTENTIAL);
                 return EntryResult.ENTER;
             }
             return EntryResult.SKIP;
@@ -588,8 +768,8 @@ public final class EntitySpawnManager {
 
         @Override
         public ValueResult visitContainerEnd() {
-            if (!contextStack.isEmpty()) {
-                contextStack.pop();
+            if (!contextStack.isEmpty() && contextStack.pop() == Context.BLOCK) {
+                blockKind = BlockKind.NONE;
             }
             return ValueResult.CONTINUE;
         }
@@ -765,8 +945,8 @@ public final class EntitySpawnManager {
         private final ResourceManager resourceManager;
         private final long analysisStartMillis = System.currentTimeMillis();
         private final long timeoutMillis;
-        // Component id -> all reachable entities and component ids from its component graph.
-        private final Map<ResourceLocation, StructureAnalysis> poolClosureCache = new HashMap<>();
+        // Component id -> all reachable entities from its component graph.
+        private final Map<ResourceLocation, Set<EntityType<?>>> poolClosureCache = new HashMap<>();
         // Pool -> directly contained entities and directly referenced pools.
         private final Map<ResourceLocation, StructureAnalysis> poolDirectCache = new HashMap<>();
         // Structure template NBT id -> contained entities and jigsaw-referenced pools.
@@ -836,6 +1016,68 @@ public final class EntitySpawnManager {
                 BiologyDictionaryClient.printLogToTextBoxWhenReady(message);
             }}
             CO.send(message);
+        }
+    }
+
+    private abstract static class AbstractTemplateVisitor implements StreamTagVisitor {
+        @Override
+        public ValueResult visitEnd() {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(String string) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(byte b) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(short s) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(int i) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(long l) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(float f) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(double d) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(byte[] bs) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(int[] is) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public ValueResult visit(long[] ls) {
+            return ValueResult.CONTINUE;
+        }
+
+        @Override
+        public EntryResult visitEntry(TagType<?> tagType) {
+            return EntryResult.ENTER;
         }
     }
 }

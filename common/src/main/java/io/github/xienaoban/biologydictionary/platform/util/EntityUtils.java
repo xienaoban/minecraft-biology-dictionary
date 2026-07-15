@@ -19,6 +19,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.Dolphin;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.player.Player;
@@ -223,6 +224,12 @@ public final class EntityUtils {
         CompoundTag nbt = new CompoundTag();
         entity.saveWithoutId(nbt);
         return nbt;
+    }
+
+    public static <E extends Entity> void setupForDisplay(E entity) {
+        if (entity instanceof WaterAnimal) {
+            setInWater(entity, true);
+        }
     }
 
     public static void setNbt(Entity entity, CompoundTag nbt) {

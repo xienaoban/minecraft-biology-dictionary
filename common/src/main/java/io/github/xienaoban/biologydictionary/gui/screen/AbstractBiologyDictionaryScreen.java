@@ -128,8 +128,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private void renderTitle(ScreenRenderingContext ctx, Component title) {
         int width = ctx.getScreenWidth();
         int height = ctx.getScreenHeight();
-        float left = width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH;
-        float top = (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN - 12;
+        float left = leftPageLeft(width);
+        float top = pageTop(height) - 12;
         ctx.renderText(title, 0x66000000, ctx.getZ(), left + 0.5F, top + 0.5F);
         ctx.renderText(title, 0xFF080808, ctx.getZ(), left, top);
     }
@@ -144,33 +144,43 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
             Bookmark bookmark = bookmarks[i];
             if (bookmark == null) { continue; }
             ScreenElementBox box = bookmark.getBox();
-            box.setPosition(width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH - box.getWidth() - 19 + (i % 3),
-                    (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + i * (box.getHeight() + 4));
+            box.setPosition(leftPageLeft(width) - box.getWidth() - 19 + (i % 3),
+                    pageTop(height) + i * (box.getHeight() + 4));
         }
 
         if (currLeftPage != null) {
-            currLeftPage.getBox().setPosition(width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH,
-                                             (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN);
+            currLeftPage.getBox().setPosition(leftPageLeft(width), pageTop(height));
         }
         if (currRightPage != null) {
-            currRightPage.getBox().setPosition(width / 2F + PAGE_MID_MARGIN,
-                                              (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN);
+            currRightPage.getBox().setPosition(rightPageLeft(width), pageTop(height));
         }
 
-        leftPageNum.getBox().setPosition((width - Page.PAGE_WIDTH - PageNum.WIDTH) / 2F - PAGE_MID_MARGIN,
-                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 6);
-        rightPageNum.getBox().setPosition((width + Page.PAGE_WIDTH - PageNum.WIDTH) / 2F + PAGE_MID_MARGIN,
-                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 6);
+        leftPageNum.getBox().setPosition(leftPageLeft(width) + (Page.PAGE_WIDTH - PageNum.WIDTH) / 2F,
+                pageTop(height) + Page.PAGE_HEIGHT + 6);
+        rightPageNum.getBox().setPosition(rightPageLeft(width) + (Page.PAGE_WIDTH - PageNum.WIDTH) / 2F,
+                pageTop(height) + Page.PAGE_HEIGHT + 6);
 
         turnLeft.getBox().setPosition((width - PageTurnButton.SIZE) / 2F - (Page.PAGE_WIDTH + 14),
-                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
+                pageTop(height) + Page.PAGE_HEIGHT + 2);
         turnRight.getBox().setPosition((width - PageTurnButton.SIZE) / 2F + (Page.PAGE_WIDTH + 14),
-                (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN + Page.PAGE_HEIGHT + 2);
+                pageTop(height) + Page.PAGE_HEIGHT + 2);
 
         centeredMessage.getBox().set(width / 2F - Page.PAGE_WIDTH,
                 (height + BOOK_HEIGHT) / 2F,
                 width / 2F + Page.PAGE_WIDTH,
                 (height + BOOK_HEIGHT) / 2F + 20);
+    }
+
+    protected static float leftPageLeft(int width) {
+        return width / 2F - PAGE_MID_MARGIN - Page.PAGE_WIDTH;
+    }
+
+    protected static float rightPageLeft(int width) {
+        return width / 2F + PAGE_MID_MARGIN;
+    }
+
+    protected static float pageTop(int height) {
+        return (height - BOOK_HEIGHT) / 2F + PAGE_TOP_MARGIN;
     }
 
     @Override
@@ -254,7 +264,6 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     }
 
     public void setCurrPage(int pageIndex) {
-        clearHoveredElement();
         if (pageIndex < 0 || pageIndex >= pages.size()) { return; }
         currPageIndex = pageIndex;
         updateCurrPages();
