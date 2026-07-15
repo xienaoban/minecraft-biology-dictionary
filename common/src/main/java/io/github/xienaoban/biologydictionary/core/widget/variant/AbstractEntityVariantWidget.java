@@ -276,6 +276,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             this.model.setYHeadRot(0);
             this.model.setYBodyRot(0);
             setVariantClient(model, variant);
+            EntityUtils.setupForDisplay(model);
             this.name = getVariantName(variant);
             this.entityRenderer = new PlaceholderFallbackEntityRenderer(model);
 

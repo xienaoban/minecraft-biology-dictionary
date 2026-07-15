@@ -27,6 +27,7 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
         super(TextUtils.translate(Lang.SCREEN_ENTITY_OVERVIEW_TITLE, entityType.getDescription()));
         this.entityType = entityType;
         this.entity = EntityUtils.create(entityType, ClientUtils.getClientLevel());
+        EntityUtils.setupForDisplay(entity);
         this.properties = new EntityProperties<>(entity);
 
         initBookmarks();
@@ -56,6 +57,7 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
 
     public void updateProperties(CompoundTag vanillaNbt, CompoundTag extraNbt) {
         EntityUtils.setNbt(entity, vanillaNbt);
+        EntityUtils.setupForDisplay(entity);
         properties.update(vanillaNbt, extraNbt);
     }
 
