@@ -20,6 +20,7 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRend
 import io.github.xienaoban.biologydictionary.platform.util.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -64,8 +65,14 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         if (rightToolBar != null) { rightToolBar.setParent(null); }
         leftToolBar = left;
         rightToolBar = right;
-        if (left != null) { left.setParent(getRootScreenElement()); }
-        if (right != null) { right.setParent(getRootScreenElement()); }
+        if (left != null) {
+            left.setPriority(1);
+            left.setParent(getRootScreenElement());
+        }
+        if (right != null) {
+            right.setPriority(1);
+            right.setParent(getRootScreenElement());
+        }
     }
 
     private void resetAndAddEntityWidgets(List<EntityManager.EntityClassInfo> entityInfos) {
@@ -206,7 +213,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             EntityType<?> type = EntityUtils.getEntityType(entity);
             this.entityType = type;
             this.name = type.getDescription();
-            Item item = SpawnEggItem.byId(type).map(itemHolder -> itemHolder.value()).orElse(null);
+            Item item = SpawnEggItem.byId(type).map(Holder::value).orElse(null);
             this.spawnEgg = item == null ? null : new ItemStack(item);
             this.entityRenderer = new PlaceholderFallbackEntityRenderer(entity);
         }
