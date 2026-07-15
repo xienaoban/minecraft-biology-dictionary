@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.branch.*;
 import io.github.xienaoban.biologydictionary.core.widget.leaf.*;
@@ -91,9 +92,14 @@ public final class EntityPropertyWidgets {
 
         List<EntityPropertyWidget<?>> res = new ArrayList<>(entries.size());
         for (Entry entry : entries) {
-            EntityPropertyWidget<?> widget = entry.create(properties);
-            if (widget != null) {
-                res.add(entry.create(properties));
+            try {
+                EntityPropertyWidget<?> widget = entry.create(properties);
+                if (widget != null) { res.add(widget); }
+            } catch (Throwable e) {
+                BiologyDictionaryClient.printThrowableToLoggerAndGame(
+                        "Failed to create entity property widget \"" + entry.clazz().getName()
+                                + "\" for entity \"" + EntityUtils.getEntityTypeIdName(properties.entity()) + "\"",
+                        e);
             }
         }
         return res;
