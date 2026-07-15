@@ -15,6 +15,7 @@ import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScaleRAII;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -29,7 +30,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -41,6 +41,9 @@ import java.util.List;
 public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private long currTime = 0;
     private float entityRotateX, entityRotateY;
+
+    private ScreenElement leftToolBar;
+    private ScreenElement rightToolBar;
 
     public BdHomeScreen() {
         super(TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE));
@@ -61,36 +64,46 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         resetAndAddEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
     }
 
+    private void setToolBars(ScreenElement left, ScreenElement right) {
+        if (leftToolBar != null) { leftToolBar.setParent(null); }
+        if (rightToolBar != null) { rightToolBar.setParent(null); }
+        leftToolBar = left;
+        rightToolBar = right;
+        if (left != null) { left.setParent(getRootScreenElement()); }
+        if (right != null) { right.setParent(getRootScreenElement()); }
+    }
+
     private void resetAndAddEntityWidgets(List<EntityManager.EntityClassInfo> entityInfos) {
-        List<Widget> list = getEntityWidgets(entityInfos);
-        resetAndAndWidgetsOneByOne(list);
-        for (int i = 0; i < getPageSize(); i++) {
-            if (i % 2 == 0) {
-                getPage(i).setWidget(new DiscoveryProgressWidget(entityInfos), Page.ROWS - 1, 0);
-            } else {
-                boolean fullyDiscovered = true;
-                var cache = ClientWorldSession.get().getDiscoveryClientCache();
-                for (var info : entityInfos) {
-                    if (!cache.isDiscovered(info.getType())) {
-                        fullyDiscovered = false;
-                        break;
-                    }
-                }
-                getPage(i).setWidget(new DecorativeBarWidget(fullyDiscovered), Page.ROWS - 1, 0);
-            }
+        resetAndAndWidgetsOneByOne(getEntityWidgets(entityInfos));
+        var cache = ClientWorldSession.get().getDiscoveryClientCache();
+        int total = entityInfos.size();
+        int discovered = 0;
+        for (var info : entityInfos) {
+            if (cache.isDiscovered(info.getType())) { discovered++; }
         }
+        DiscoveryProgressWidget progress = new DiscoveryProgressWidget();
+        progress.update(total, discovered);
+        DecorativeBarWidget bar = new DecorativeBarWidget();
+        bar.update(discovered == total);
+        setToolBars(progress, bar);
         updateBoxSizes();
     }
 
     private List<Widget> getEntityWidgets(List<EntityManager.EntityClassInfo> infos) {
         ClientLevel level = ClientUtils.getClientLevel(client);
+        EntityManager entityManager = WorldSession.get().getEntityManager();
         List<Widget> widgets = new ArrayList<>();
         for (EntityManager.EntityClassInfo eci : infos) {
             EntityType<?> type = eci.getType();
-            Entity entity = EntityUtils.create(type, level);
-            if (entity instanceof WaterAnimal) {
-                EntityUtils.setInWater(entity, true);
+            if (entityManager.hasCreatedFailed(type)) { continue; }
+            Entity entity;
+            try {
+                entity = EntityUtils.create(type, level);
+            } catch (Throwable e) {
+                entityManager.markCreatedFailed(type, e);
+                continue;
             }
+            EntityUtils.setupForDisplay(entity);
             widgets.add(new EntityWidget(entity));
         }
         return widgets;
@@ -142,6 +155,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 });
                 tags.add(0, new DescriptionWidget(1, Page.COLUMNS, group.getDescription()));
                 resetAndAndWidgetsOneByOne(tags);
+                setToolBars(null, null);
                 return true;
             }
             return super.onMouseDown(mouseX, mouseY, button);
@@ -239,7 +253,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     screen.initOrRequestProperties();
                 } else {
                     // Highlight button
-                    int distance = isMouseRight(button) ? HighlightEntitiesSkill.NEAR_RADIUS : HighlightEntitiesSkill.FAR_RADIUS;
+                    int distance = isMouseRight(button)
+                            ? HighlightEntitiesSkill.getNearRadius()
+                            : HighlightEntitiesSkill.getFarRadius();
                     ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
                     if (BiologySkills.activate(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), distance))) {
                         onClose();
@@ -311,17 +327,23 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 // Tooltip
                 List<Component> tooltips;
                 if (mouseY < BUTTONS_CUT) {
+                    int nearRadius = HighlightEntitiesSkill.getNearRadius();
+                    int farRadius = HighlightEntitiesSkill.getFarRadius();
                     tooltips = new ArrayList<>();
                     tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OVERVIEW));
                     tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OVERVIEW_DESC));
                     tooltips.add(TextUtils.empty());
                     tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_OVERVIEW_LEFT_DESC).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
                     tooltips.add(TextUtils.empty());
-                    tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, HighlightEntitiesSkill.NEAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
-                    tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.NEAR_RADIUS).getRealCost().toTooltipText());
+                    tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, nearRadius)
+                            .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                    tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), nearRadius)
+                            .getRealCost().toTooltipText());
                     tooltips.add(TextUtils.empty());
-                    tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC, HighlightEntitiesSkill.FAR_RADIUS).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
-                    tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), HighlightEntitiesSkill.FAR_RADIUS).getRealCost().toTooltipText());
+                    tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC, farRadius)
+                            .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+                    tooltips.addAll(new HighlightEntitiesSkill(EntityUtils.getEntityType(entity), farRadius)
+                            .getRealCost().toTooltipText());
                     tooltips.add(TextUtils.empty());
                     tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entity)).withStyle(ChatFormatting.GRAY));
                 } else {
@@ -340,26 +362,30 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    private static final class DiscoveryProgressWidget extends Widget {
+    private static final class DiscoveryProgressWidget extends ScreenElement {
         private static final int BAR_LEFT_CAP = 2;
         private static final int BAR_TILE = 36;
         private static final int BAR_TILE_COUNT = 2;
         private static final int BAR_RIGHT_CAP = 2;
         private static final int BAR_WIDTH = BAR_LEFT_CAP + BAR_TILE * BAR_TILE_COUNT + BAR_RIGHT_CAP;
 
-        private final int total;
-        private final int discovered;
+        private int total;
+        private int discovered;
 
-        public DiscoveryProgressWidget(List<EntityManager.EntityClassInfo> entityInfos) {
-            super(1, Page.COLUMNS);
+        public DiscoveryProgressWidget() {
             setSelectable(false);
-            var cache = ClientWorldSession.get().getDiscoveryClientCache();
-            this.total = entityInfos.size();
-            int count = 0;
-            for (var info : entityInfos) {
-                if (cache.isDiscovered(info.getType())) count++;
-            }
-            this.discovered = count;
+            getBox().setSize(Widget.calcWidth(Page.COLUMNS), Widget.calcHeight(1));
+        }
+
+        public void update(int total, int discovered) {
+            this.total = total;
+            this.discovered = discovered;
+        }
+
+        @Override
+        protected void onResize(int width, int height) {
+            getBox().setPosition(leftPageLeft(width), pageTop(height)
+                    + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * (Page.ROWS - 1));
         }
 
         @Override
@@ -415,15 +441,25 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    private static final class DecorativeBarWidget extends Widget {
+    private static final class DecorativeBarWidget extends ScreenElement {
         private static final int BAR_WIDTH = 6;
 
-        private final boolean filled;
+        private boolean filled;
 
-        public DecorativeBarWidget(boolean filled) {
-            super(1, Page.COLUMNS);
+        public DecorativeBarWidget() {
+            setHoverable(false);
             setSelectable(false);
+            getBox().setSize(Widget.calcWidth(Page.COLUMNS), Widget.calcHeight(1));
+        }
+
+        public void update(boolean filled) {
             this.filled = filled;
+        }
+
+        @Override
+        protected void onResize(int width, int height) {
+            getBox().setPosition(rightPageLeft(width), pageTop(height)
+                    + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * (Page.ROWS - 1));
         }
 
         @Override

@@ -16,7 +16,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -61,11 +60,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
 
     private static void updateCompoundTag(Entity from, Entity to) {
         EntityUtils.setNbt(to, EntityUtils.getNbtToDisplay(from));
-
-        // options not controlled by nbt
-        if (to instanceof WaterAnimal waterAnimal) {
-            EntityUtils.setInWater(waterAnimal, true);
-        }
+        EntityUtils.setupForDisplay(to);
     }
 
     private final Entity model;

@@ -6,15 +6,25 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
+- Added tracking for entity types that fail during creation.
+- Added an About screen widget listing failed entity creation types.
+- Added a server config option for the far highlight skill radius.
+- Added always-on telescope ranging in debug mode for both entities and blocks.
+
 ### Changed
 
-- Refactored Biology Dictionary screen scaling to improve compatibility with other mods.
-- Moved demo mode out of config and behind a debug-only hidden toggle on the About screen.
-- Moved debug mode to a static variable.
+- Improved mod compatibility by skipping entity types that fail to be created, preventing unsupported entities from breaking the dictionary screen.
+- Use `EntitySpawnReason.LOAD` when creating preview entities.
+- Centralized display setup for preview entities.
+- Improve EntitySpawnManager.
+- Refactored Biology Dictionary screen rendering internals.
 
 ### Fixed
 
-- Fixed beehive screen rendering on Forge.
+- Fixed display issues for water animal previews.
+- Fixed missing display setup in entity overview, variant, beehive, and entity display widgets.
+- Fixed the owner widget being created for entities without the vanilla `Owner` property, including vexes.
+- Fixed individual property widget creation failures preventing dictionary screens from opening.
 
 ## Previous Versions
 

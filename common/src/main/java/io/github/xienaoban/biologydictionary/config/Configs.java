@@ -32,7 +32,7 @@ public final class Configs {
          * Scale factor for Biology Dictionary GUI screens.
          * Does not affect other mod or vanilla interfaces.
          */
-        @ConfigEntry
+        @ConfigEntry(min = 0.1, max = 5.0)
         float screenScale = 1F;
 
         /**
@@ -113,10 +113,16 @@ public final class Configs {
         boolean allowStealingPlayerInventory = false;
 
         /**
-         * Discovery strategy. Determines how entities are discovered by each player.
+         * Range (in blocks) used by the far highlight skill action.
          */
-        @ConfigEntry
-        DiscoveryStrategyMode discoveryStrategy = DiscoveryStrategyMode.VANILLA_KILL;
+        @ConfigEntry(min = 20, max = 500)
+        int highlightEntitiesRange = 100;
+
+        /**
+         * Maximum range (in blocks) for telescope entity discovery.
+         */
+        @ConfigEntry(min = 20, max = 500)
+        int telescopeDiscoveryRange = 160;
 
         /**
          * Whether undiscovered entities are allowed to be viewed in the overview screen.
@@ -127,10 +133,10 @@ public final class Configs {
         boolean allowOverviewForUndiscoveredEntities = false;
 
         /**
-         * Maximum range (in blocks) for telescope entity discovery.
+         * Discovery strategy. Determines how entities are discovered by each player.
          */
         @ConfigEntry
-        int telescopeDiscoveryRange = 160;
+        DiscoveryStrategyMode discoveryStrategy = DiscoveryStrategyMode.BIOLOGY_DICTIONARY;
 
         /**
          * Enable discovery by opening entity detail screen.
@@ -217,16 +223,20 @@ public final class Configs {
             return allowStealingPlayerInventory;
         }
 
-        public DiscoveryStrategyMode getDiscoveryStrategy() {
-            return discoveryStrategy;
+        public int getHighlightEntitiesRange() {
+            return highlightEntitiesRange;
+        }
+
+        public int getTelescopeDiscoveryRange() {
+            return telescopeDiscoveryRange;
         }
 
         public boolean isAllowOverviewForUndiscoveredEntities() {
             return allowOverviewForUndiscoveredEntities;
         }
 
-        public int getTelescopeDiscoveryRange() {
-            return telescopeDiscoveryRange;
+        public DiscoveryStrategyMode getDiscoveryStrategy() {
+            return discoveryStrategy;
         }
 
         public boolean isDiscoveryByDetailScreen() {
