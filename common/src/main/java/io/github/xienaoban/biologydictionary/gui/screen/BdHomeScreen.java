@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
@@ -31,7 +32,12 @@ import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 @ClientOnly
 public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
@@ -40,11 +46,16 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
     private ScreenElement leftToolBar;
     private ScreenElement rightToolBar;
+    private ScreenElement upperRightToolBar;
+
+    private Runnable entityWidgetsInitializer;
+    private List<EntityManager.EntityClassInfo> currentEntityInfos = List.of();
+    private final Set<EntityType<?>> selectedEntityTypes = new HashSet<>();
 
     public BdHomeScreen() {
         super(TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE));
         initBookmarks();
-        initEntityWidgets();
+        recordAndInitEntityWidgets(this::initEntityWidgets);
     }
 
     private void initBookmarks() {
@@ -56,27 +67,58 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
+    private void recordAndInitEntityWidgets(Runnable initializer) {
+        entityWidgetsInitializer = initializer;
+        rebuildEntityWidgets(0);
+    }
+
+    private void rebuildEntityWidgets(int pageIndex) {
+        entityWidgetsInitializer.run();
+        setCurrPage(pageIndex);
+    }
+
+    private void clearEntityWidgetsInitializer() {
+        entityWidgetsInitializer = null;
+    }
+
     private void initEntityWidgets() {
         resetAndAddEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
     }
 
-    private void setToolBars(ScreenElement left, ScreenElement right) {
+    private void initEntityWidgets(EntityManager.Tag tag) {
+        resetAndAddEntityWidgets(tag.getEntities());
+    }
+
+    private void setToolBars(ScreenElement left, ScreenElement right, ScreenElement upperRight) {
         if (leftToolBar != null) { leftToolBar.setParent(null); }
         if (rightToolBar != null) { rightToolBar.setParent(null); }
+        if (upperRightToolBar != null) { upperRightToolBar.setParent(null); }
         leftToolBar = left;
         rightToolBar = right;
-        if (left != null) {
-            left.setPriority(1);
-            left.setParent(getRootScreenElement());
+        upperRightToolBar = upperRight;
+        addToolBar(left);
+        addToolBar(right);
+        addToolBar(upperRight);
+    }
+
+    private void addToolBar(ScreenElement toolBar) {
+        if (toolBar == null) { return; }
+        toolBar.setPriority(1);
+        toolBar.setParent(getRootScreenElement());
+    }
+
+    private HorizontalElementContainer createEntityListButtons(boolean selectionMode) {
+        HorizontalElementContainer buttons = new HorizontalElementContainer();
+        if (!selectionMode) {
+            buttons.addElement(new DiscoveredEntityFilterButton());
         }
-        if (right != null) {
-            right.setPriority(1);
-            right.setParent(getRootScreenElement());
-        }
+        return buttons.addElement(new EntitySelectionModeButton(selectionMode));
     }
 
     private void resetAndAddEntityWidgets(List<EntityManager.EntityClassInfo> entityInfos) {
-        resetAndAndWidgetsOneByOne(getEntityWidgets(entityInfos));
+        selectedEntityTypes.clear();
+        currentEntityInfos = entityInfos;
+        resetAndAndWidgetsOneByOne(getEntityWidgets(entityInfos, false));
         var cache = ClientWorldSession.get().getDiscoveryClientCache();
         int total = entityInfos.size();
         int discovered = 0;
@@ -87,16 +129,19 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         progress.update(total, discovered);
         DecorativeBarWidget bar = new DecorativeBarWidget();
         bar.update(discovered == total);
-        setToolBars(progress, bar);
+        setToolBars(progress, bar, createEntityListButtons(false));
         updateBoxSizes();
     }
 
-    private List<Widget> getEntityWidgets(List<EntityManager.EntityClassInfo> infos) {
+    private List<Widget> getEntityWidgets(List<EntityManager.EntityClassInfo> infos, boolean checkbox) {
         ClientLevel level = ClientUtils.getClientLevel(client);
         EntityManager entityManager = WorldSession.get().getEntityManager();
+        var discoveryCache = ClientWorldSession.get().getDiscoveryClientCache();
+        boolean showOnlyDiscovered = BiologyDictionaryClient.shouldShowOnlyDiscoveredEntities();
         List<Widget> widgets = new ArrayList<>();
         for (EntityManager.EntityClassInfo eci : infos) {
             EntityType<?> type = eci.getType();
+            if (showOnlyDiscovered && !discoveryCache.isDiscovered(type)) { continue; }
             if (entityManager.hasCreatedFailed(type)) { continue; }
             Entity entity;
             try {
@@ -106,9 +151,50 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 continue;
             }
             EntityUtils.setupForDisplay(entity);
-            widgets.add(new EntityWidget(entity));
+            widgets.add(checkbox ? new EntitySelectionCardWidget(entity) : new EntityActionCardWidget(entity));
         }
         return widgets;
+    }
+
+    private void enterEntitySelectionMode() {
+        Objects.requireNonNull(entityWidgetsInitializer);
+        int pageIndex = getCurrPageIndex();
+        List<Widget> widgets = getEntityWidgets(currentEntityInfos, true);
+        resetAndAndWidgetsOneByOne(widgets);
+
+        int discovered = 0;
+        var cache = ClientWorldSession.get().getDiscoveryClientCache();
+        for (var info : currentEntityInfos) {
+            if (cache.isDiscovered(info.getType())) { discovered++; }
+        }
+        DecorativeBarWidget bar = new DecorativeBarWidget();
+        bar.update(discovered == currentEntityInfos.size());
+        setToolBars(new EntitySelectionActionButton(widgets.size()), bar, createEntityListButtons(true));
+        setCurrPage(pageIndex);
+        updateBoxSizes();
+    }
+
+    private void exitEntitySelectionMode() {
+        rebuildEntityWidgets(getCurrPageIndex());
+    }
+
+    private void applyEntitySelection() {
+        List<String> selectedEntityIds = currentEntityInfos.stream()
+                .map(EntityManager.EntityClassInfo::getType)
+                .filter(selectedEntityTypes::contains)
+                .map(EntityUtils::getEntityTypeIdName)
+                .toList();
+        LOGGER.info("Selected entity types: {}", selectedEntityIds);
+        rebuildEntityWidgets(getCurrPageIndex());
+    }
+
+    @Override
+    protected void resizeBox(int width, int height) {
+        super.resizeBox(width, height);
+        if (upperRightToolBar == null) { return; }
+        ScreenElementBox box = upperRightToolBar.getBox();
+        box.setPosition(rightPageLeft(width) + Page.PAGE_WIDTH - box.getWidth(),
+                pageTop(height) - box.getHeight() - 2);
     }
 
     @Override
@@ -131,7 +217,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                resetAndAddEntityWidgets(WorldSession.get().getEntityManager().getEntityClassInfos());
+                recordAndInitEntityWidgets(BdHomeScreen.this::initEntityWidgets);
                 return true;
             }
             return super.onMouseDown(mouseX, mouseY, button);
@@ -156,8 +242,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     return true;
                 });
                 tags.addFirst(new DescriptionWidget(1, Page.COLUMNS, group.getDescription()));
+                clearEntityWidgetsInitializer();
                 resetAndAndWidgetsOneByOne(tags);
-                setToolBars(null, null);
+                setToolBars(null, null, null);
                 return true;
             }
             return super.onMouseDown(mouseX, mouseY, button);
@@ -178,7 +265,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 1.5F);
-                resetAndAddEntityWidgets(tag.getEntities());
+                recordAndInitEntityWidgets(() -> initEntityWidgets(tag));
                 return true;
             }
             return super.onMouseDown(mouseX, mouseY, button);
@@ -196,38 +283,69 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    private final class EntityWidget extends Widget {
-        private static final int BUTTONS_TOTAL = 2 * Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN;
-        private static final int BUTTONS_CUT = BUTTONS_TOTAL * 2 / 3;
-
-        private final Entity entity;
-        private final EntityType<?> entityType;
+    private abstract class EntityCardWidget extends Widget {
+        protected final Entity entity;
+        protected final EntityType<?> entityType;
         private final Component name;
-        private final ItemStack spawnEgg;
 
         private final PlaceholderFallbackEntityRenderer entityRenderer;
 
-        public EntityWidget(Entity entity) {
+        protected EntityCardWidget(Entity entity) {
             super(2, 2);
             this.entity = entity;
-            EntityType<?> type = EntityUtils.getEntityType(entity);
-            this.entityType = type;
-            this.name = type.getDescription();
-            Item item = SpawnEggItem.byId(type).map(Holder::value).orElse(null);
-            this.spawnEgg = item == null ? null : new ItemStack(item);
+            this.entityType = EntityUtils.getEntityType(entity);
+            this.name = entityType.getDescription();
             this.entityRenderer = new PlaceholderFallbackEntityRenderer(entity);
         }
 
-        private boolean isDiscovered() {
+        protected final boolean isDiscovered() {
             return ClientWorldSession.get().getDiscoveryClientCache().isDiscovered(entityType);
         }
 
-        private boolean isDiscoveredOrCreative() {
+        protected final boolean isDiscoveredOrCreative() {
             return isDiscovered() || PlayerUtils.isCreative(ClientUtils.getClientPlayer());
+        }
+
+        protected abstract boolean shouldRenderDetail();
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+
+            int silhouetteColor = isDiscoveredOrCreative() ? 0 : Colors.UNDISCOVERED_ENTITY_COLOR;
+            ScreenElementBox box = getBox();
+            entityRenderer.renderEntityCentered(ctx,
+                    box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6,
+                    entityRotateX, entityRotateY,
+                    silhouetteColor);
+
+            Component text = shouldRenderDetail()
+                    ? FontUtils.truncateByWidth(name, getBox().getWidth() + 2, 0.5F)
+                    : TextUtils.literal("??");
+            ctx.renderCenteredText(text, Colors.BROWN, 0.5F, getZ(),
+                    (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
+        }
+    }
+
+    private final class EntityActionCardWidget extends EntityCardWidget {
+        private static final int BUTTONS_TOTAL = 2 * Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN;
+        private static final int BUTTONS_CUT = BUTTONS_TOTAL * 2 / 3;
+
+        private final ItemStack spawnEgg;
+
+        public EntityActionCardWidget(Entity entity) {
+            super(entity);
+            Item item = SpawnEggItem.byId(entityType).map(Holder::value).orElse(null);
+            this.spawnEgg = item == null ? null : new ItemStack(item);
         }
 
         private boolean isClickable() {
             return ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities() || isDiscoveredOrCreative();
+        }
+
+        @Override
+        protected boolean shouldRenderDetail() {
+            return isClickable();
         }
 
         @Override
@@ -271,19 +389,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
-
-            int silhouetteColor = isDiscoveredOrCreative() ? 0 : Colors.UNDISCOVERED_ENTITY_COLOR;
             ScreenElementBox box = getBox();
-            entityRenderer.renderEntityCentered(ctx,
-                    box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6,
-                    entityRotateX, entityRotateY,
-                    silhouetteColor);
-
-            Component text = shouldRenderDetail()
-                    ? FontUtils.truncateByWidth(name, getBox().getWidth() + 2, 0.5F)
-                    : TextUtils.literal("??");
-            ctx.renderCenteredText(text, Colors.BROWN, 0.5F, getZ(),
-                    (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
+            ctx.renderRectangle(0x08794500, 1F, ctx.getZ(),
+                    box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
         }
 
         @Override
@@ -370,13 +478,176 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             ctx.renderComponentTooltipCentered(tooltips, 0.5F, midX, box.getBottom() + 2);
             return true;
         }
+    }
 
-        private boolean shouldRenderDetail() {
-            return isDiscoveredOrCreative() || ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities();
+    private final class EntitySelectionCardWidget extends EntityCardWidget {
+
+        public EntitySelectionCardWidget(Entity entity) {
+            super(entity);
+        }
+
+        @Override
+        protected boolean shouldRenderDetail() {
+            return true;
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (!isMouseLeft(button)) { return super.onMouseDown(mouseX, mouseY, button); }
+            boolean selected = selectedEntityTypes.add(entityType);
+            if (!selected) {
+                selectedEntityTypes.remove(entityType);
+            }
+            ClientUtils.playScreenSound(client,
+                    selected ? SoundEvents.WOODEN_BUTTON_CLICK_ON : SoundEvents.WOODEN_BUTTON_CLICK_OFF,
+                    1.0F, 0.8F);
+            return true;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            if (selectedEntityTypes.contains(entityType)) {
+                ScreenElementBox box = getBox();
+                ctx.renderRectangle(0x77794500, 1F, ctx.getZ(),
+                        box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
+            }
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            ScreenElementBox box = getBox();
+            ctx.renderRectangle(0x22794500, ctx.getZ(),
+                    box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
+            return true;
         }
     }
 
-    private static final class DiscoveryProgressWidget extends ScreenElement {
+    private final class EntitySelectionModeButton extends ScreenElement {
+        private static final int ICON_ROW = 23;
+        private static final int ICON_ENTER_COLUMN = 23;
+        private static final int ICON_EXIT_COLUMN = 24;
+
+        private final boolean exit;
+
+        public EntitySelectionModeButton(boolean exit) {
+            this.exit = exit;
+            getBox().setSize(Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (!isMouseLeft(button)) { return super.onMouseDown(mouseX, mouseY, button); }
+            ClientUtils.playScreenSound(client,
+                    exit ? SoundEvents.WOODEN_BUTTON_CLICK_OFF : SoundEvents.WOODEN_BUTTON_CLICK_ON,
+                    1.0F, 0.8F);
+            if (exit) {
+                exitEntitySelectionMode();
+            } else {
+                enterEntitySelectionMode();
+            }
+            return true;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            int iconColumn = exit ? ICON_EXIT_COLUMN : ICON_ENTER_COLUMN;
+            ctx.renderTexture(Textures.ICONS,
+                    iconColumn * Widget.WIDGET_WIDTH, ICON_ROW * Widget.WIDGET_HEIGHT,
+                    ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            ScreenElementBox box = getBox();
+            ctx.renderComponentTooltipCentered(
+                    List.of(TextUtils.translate(exit
+                            ? Lang.WIDGET_ENTITY_SELECTION_EXIT_DESC
+                            : Lang.WIDGET_ENTITY_SELECTION_ENTER_DESC)),
+                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+            return true;
+        }
+    }
+
+    private final class DiscoveredEntityFilterButton extends ScreenElement {
+        private static final int ICON_ROW = 23;
+        private static final int ICON_ALL_COLUMN = 21;
+        private static final int ICON_DISCOVERED_COLUMN = 22;
+
+        public DiscoveredEntityFilterButton() {
+            getBox().setSize(Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (!isMouseLeft(button)) { return super.onMouseDown(mouseX, mouseY, button); }
+            boolean showOnlyDiscovered = BiologyDictionaryClient.toggleShowOnlyDiscoveredEntities();
+            ClientUtils.playScreenSound(client,
+                    showOnlyDiscovered ? SoundEvents.WOODEN_BUTTON_CLICK_ON : SoundEvents.WOODEN_BUTTON_CLICK_OFF,
+                    1.0F, 0.8F);
+            rebuildEntityWidgets(getCurrPageIndex());
+            return true;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            boolean showOnlyDiscovered = BiologyDictionaryClient.shouldShowOnlyDiscoveredEntities();
+            int iconColumn = showOnlyDiscovered ? ICON_DISCOVERED_COLUMN : ICON_ALL_COLUMN;
+            ctx.renderTexture(Textures.ICONS,
+                    iconColumn * Widget.WIDGET_WIDTH, ICON_ROW * Widget.WIDGET_HEIGHT,
+                    ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            ScreenElementBox box = getBox();
+            boolean showOnlyDiscovered = BiologyDictionaryClient.shouldShowOnlyDiscoveredEntities();
+            ctx.renderComponentTooltipCentered(
+                    List.of(TextUtils.translate(showOnlyDiscovered
+                            ? Lang.WIDGET_ENTITY_FILTER_ALL_DESC
+                            : Lang.WIDGET_ENTITY_FILTER_DISCOVERED_DESC)),
+                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+            return true;
+        }
+    }
+
+    private final class EntitySelectionActionButton extends DiscoveryProgressWidget {
+        private final int total;
+
+        public EntitySelectionActionButton(int total) {
+            this.total = total;
+            setSelectable(true);
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (!isMouseLeft(button)) { return super.onMouseDown(mouseX, mouseY, button); }
+            ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+            applyEntitySelection();
+            return true;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            update(total, selectedEntityTypes.size());
+            super.onRender(ctx);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            ScreenElementBox box = getBox();
+            ctx.renderComponentTooltipCentered(
+                    List.of(TextUtils.translate(Lang.WIDGET_ENTITY_SELECTION_APPLY_DESC)),
+                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+            return true;
+        }
+    }
+
+    private static class DiscoveryProgressWidget extends ScreenElement {
         private static final int BAR_LEFT_CAP = 2;
         private static final int BAR_TILE = 36;
         private static final int BAR_TILE_COUNT = 2;

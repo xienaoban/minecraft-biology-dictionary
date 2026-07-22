@@ -6,6 +6,9 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
+- Added a multi-selection mode for selecting multiple entity types on the home screen
+- Added a toggle to show only discovered entities, with a configurable default and session-persistent state
+
 ### Changed
 
 ### Fixed
