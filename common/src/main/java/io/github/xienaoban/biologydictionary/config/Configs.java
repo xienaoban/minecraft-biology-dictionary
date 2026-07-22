@@ -47,6 +47,12 @@ public final class Configs {
         @ConfigEntry
         boolean hideEntityDescriptionWidgetIfNotFound = true;
 
+        /**
+         * Whether entity lists show only discovered entities when the game starts.
+         */
+        @ConfigEntry
+        boolean showOnlyDiscoveredEntitiesByDefault = false;
+
         // =========================== Getters ============================
 
         public float getScreenScale() {
@@ -59,6 +65,10 @@ public final class Configs {
 
         public boolean isHideEntityDescriptionWidgetIfNotFound() {
             return hideEntityDescriptionWidgetIfNotFound;
+        }
+
+        public boolean isShowOnlyDiscoveredEntitiesByDefault() {
+            return showOnlyDiscoveredEntitiesByDefault;
         }
 
         // ============================= Misc =============================
