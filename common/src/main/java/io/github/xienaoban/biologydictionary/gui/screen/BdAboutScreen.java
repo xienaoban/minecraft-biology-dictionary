@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -11,6 +12,7 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -21,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
 @ClientOnly
 public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
@@ -76,43 +77,50 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private static class ShowFailedCreatedEntityTypesWidget extends Widget {
+        private final Component text;
+        private final List<FormattedCharSequence> tooltipLines;
+
         protected ShowFailedCreatedEntityTypesWidget() {
             super(1, Page.COLUMNS);
+            List<EntityManager.EntityDictionaryEntry> failedEntries = new ArrayList<>();
+            for (EntityManager.EntityDictionaryEntry entry : WorldSession.get().getEntityManager().getEntityEntries()) {
+                if (entry.isInstanceCreationFailed()) {
+                    failedEntries.add(entry);
+                }
+            }
+            failedEntries.sort(Comparator.comparing(entry -> EntityUtils.getEntityTypeIdName(entry.getType())));
+
+            tooltipLines = new ArrayList<>();
+            for (EntityManager.EntityDictionaryEntry entry : failedEntries) {
+                Component component = TextUtils.concat(Arrays.asList(
+                        TextUtils.literal(EntityUtils.getEntityTypeIdName(entry.getType()))
+                                .withStyle(ChatFormatting.GRAY),
+                        entry.getType().getDescription().copy().withStyle(ChatFormatting.WHITE)
+                ), TextUtils.literal(" - "));
+                List<FormattedCharSequence> lines = FontUtils.getGlobalFont().split(component, Widget.TOOLTIP_WIDTH);
+                if (lines.isEmpty()) {
+                    tooltipLines.add(TextUtils.empty().getVisualOrderText());
+                } else {
+                    tooltipLines.addAll(lines);
+                }
+            }
+            if (tooltipLines.isEmpty()) {
+                tooltipLines.add(TextUtils.translate(Lang.TEXT_EMPTY_WITH_BRACKETS)
+                        .withStyle(ChatFormatting.GRAY).getVisualOrderText());
+            }
+            text = TextUtils.literal("Failed Created Entity Types: " + failedEntries.size());
         }
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            int size = WorldSession.get().getEntityManager().getFailedCreatedEntityTypes().size();
-            ctx.renderCenteredText(TextUtils.literal("Failed Created Entity Types: " + size),
+            ctx.renderCenteredText(text,
                     Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
                     (getBox().getLeft() + getBox().getRight()) / 2, getBox().getTop() + 3.2F);
         }
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            List<Component> tooltip = new ArrayList<>();
-
-            WorldSession.get().getEntityManager().getFailedCreatedEntityTypes().stream()
-                    .sorted(Comparator.comparing(EntityUtils::getEntityTypeIdName))
-                    .map(type -> TextUtils.concat(Arrays.asList(
-                            TextUtils.literal(EntityUtils.getEntityTypeIdName(type)).withStyle(ChatFormatting.GRAY),
-                            type.getDescription().copy().withStyle(ChatFormatting.WHITE)
-                    ), TextUtils.literal(" - ")))
-                    .forEach(tooltip::add);
-
-            if (tooltip.isEmpty()) {
-                tooltip.add(TextUtils.translate(Lang.TEXT_EMPTY_WITH_BRACKETS).withStyle(ChatFormatting.GRAY));
-            }
-
-            List<FormattedCharSequence> lines = tooltip.stream()
-                    .flatMap(c -> {
-                        List<FormattedCharSequence> splitLines = ctx.getFont().split(c, Widget.TOOLTIP_WIDTH);
-                        return splitLines.isEmpty()
-                                ? Stream.of(TextUtils.empty().getVisualOrderText())
-                                : splitLines.stream();
-                    })
-                    .toList();
-            ctx.renderLinedTooltipCentered(lines, 0.5F,
+            ctx.renderLinedTooltipCentered(tooltipLines, 0.5F,
                     (getBox().getLeft() + getBox().getRight()) / 2, getBox().getBottom());
             return true;
         }
