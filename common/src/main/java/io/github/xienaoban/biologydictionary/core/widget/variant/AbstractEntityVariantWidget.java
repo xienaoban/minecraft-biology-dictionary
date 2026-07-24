@@ -1,10 +1,12 @@
 package io.github.xienaoban.biologydictionary.core.widget.variant;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.EntitySetVariantSkill;
-import io.github.xienaoban.biologydictionary.gui.PlaceholderFallbackEntityRenderer;
+import io.github.xienaoban.biologydictionary.gui.EntityDisplay;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -17,6 +19,7 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElem
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.player.LocalPlayer;
@@ -260,26 +263,27 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         private final int index;
 
         private final V variant;
-        private final E model;
         private final Component name;
         private float nameWidth = -1;
+        private final EntityDisplay entityDisplay;
 
         private float widthFix;
         private float heightFix;
 
-        private final PlaceholderFallbackEntityRenderer entityRenderer;
-
         public VariantElement(int index, V variant) {
             this.index = index;
             this.variant = variant;
-            this.model = EntityUtils.create(EntityUtils.getEntityType(e()), e().level());
-            this.model.setYRot(0);
-            this.model.setYHeadRot(0);
-            this.model.setYBodyRot(0);
-            setVariantClient(model, variant);
-            EntityUtils.setupForDisplay(model);
             this.name = getVariantName(variant);
-            this.entityRenderer = new PlaceholderFallbackEntityRenderer(model);
+            EntityDictionaryEntry entry = WorldSession.get().getEntityManager().getEntityEntry(e().getType());
+            this.entityDisplay = new EntityDisplay(entry, e().level());
+            if (!entityDisplay.isPlaceholder()) {
+                E model = Misc.cast(entityDisplay.getModel());
+                model.setYRot(0);
+                model.setYHeadRot(0);
+                model.setYBodyRot(0);
+                setVariantClient(model, variant);
+                EntityUtils.setupForDisplay(model);
+            }
 
             getBox().setSize(variantWidth, variantHeight);
         }
@@ -290,10 +294,6 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
 
         public V getVariant() {
             return variant;
-        }
-
-        public E getModel() {
-            return model;
         }
 
         public void setWidthFix(float widthFix) {
@@ -310,10 +310,10 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
                 if (isAllowedToChoose()) {
                     if (activeSkill(getVariant())) {
                         chosenIndex = index;
-                        E m = p().getModel();
-                        if (m != null) {
+                        EntityDisplay display = p().getEntityDisplay();
+                        if (display != null && !display.isPlaceholder()) {
                             p().setNoUpdateCooldown();
-                            setVariantClient(m, getChosenVariant());
+                            setVariantClient(Misc.cast(display.getModel()), getChosenVariant());
                         }
                     }
                 }
@@ -380,7 +380,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         private void renderEntity(ScreenRenderingContext ctx) {
-            entityRenderer.renderEntityCentered(ctx,
+            entityDisplay.renderEntityCentered(ctx,
                     getBox().getLeft() - 1- widthFix / 2,
                     getBox().getTop() + 1 - heightFix,
                     getBox().getRight() + 1 + widthFix / 2,
