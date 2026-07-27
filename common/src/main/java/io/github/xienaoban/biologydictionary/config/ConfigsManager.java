@@ -448,4 +448,15 @@ public final class ConfigsManager {
         }
         return Misc.convertNumber(clamped, fieldType);
     }
+
+    // ================================ Custom Updaters ================================
+
+    public static void addEntityTypeBlacklist(Collection<String> entityIds) {
+        Configs.ServerConfigs localServerConfigs = INSTANCE.getServer();
+        Set<String> blacklist = new HashSet<>(localServerConfigs.entityTypeBlacklist);
+        if (!blacklist.addAll(entityIds)) { return; }
+        localServerConfigs.entityTypeBlacklist = Set.copyOf(blacklist);
+        save();
+        onUpdated();
+    }
 }

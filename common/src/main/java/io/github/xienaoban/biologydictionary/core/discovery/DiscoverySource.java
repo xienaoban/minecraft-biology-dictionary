@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
 import io.github.xienaoban.biologydictionary.config.Configs;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -27,8 +28,8 @@ public enum DiscoverySource {
         this.enabled = enabled;
     }
 
-    public boolean isEnabled(Configs.ServerConfigs configs) {
-        return enabled.test(configs);
+    public boolean isEnabled() {
+        return enabled.test(ConfigsManager.getServer());
     }
 
     public <P extends Player> boolean dispatch(DiscoveryEventListener<P> listener, P player, Entity entity) {
