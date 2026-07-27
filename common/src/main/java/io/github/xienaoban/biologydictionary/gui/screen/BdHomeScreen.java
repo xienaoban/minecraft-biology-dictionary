@@ -37,8 +37,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
-
 @ClientOnly
 public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private long currTime = 0;
@@ -107,7 +105,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         toolBar.setParent(getRootScreenElement());
     }
 
-    private HorizontalElementContainer createEntityListButtons(boolean selectionMode, int selectionTotal) {
+    private HorizontalElementContainer createUpperRightButtons(boolean selectionMode, int selectionTotal) {
         HorizontalElementContainer buttons = new HorizontalElementContainer();
         if (!selectionMode) {
             buttons.addElement(new DiscoveredEntityFilterButton());
@@ -131,7 +129,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         progress.update(total, discovered);
         DecorativeBarWidget bar = new DecorativeBarWidget();
         bar.update(discovered == total);
-        setToolBars(progress, bar, createEntityListButtons(false, 0));
+        setToolBars(progress, bar, createUpperRightButtons(false, 0));
         updateBoxSizes();
     }
 
@@ -163,7 +161,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         DecorativeBarWidget bar = new DecorativeBarWidget();
         bar.update(discovered == currentEntityEntries.size());
         int total = widgets.size();
-        setToolBars(new EntitySelectionActionButton(total), bar, createEntityListButtons(true, total));
+        HorizontalElementContainer actions = new HorizontalElementContainer();
+        actions.addElement(new AddToBlacklistButton());
+        setToolBars(actions, bar, createUpperRightButtons(true, total));
         setCurrPage(pageIndex);
         updateBoxSizes();
     }
@@ -172,23 +172,24 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         rebuildEntityWidgets(getCurrPageIndex());
     }
 
-    private void applyEntitySelection() {
-        List<String> selectedEntityIds = currentEntityEntries.stream()
-                .map(EntityManager.EntityDictionaryEntry::getType)
-                .filter(selectedEntityTypes::contains)
-                .map(EntityUtils::getEntityTypeIdName)
-                .toList();
-        LOGGER.info("Selected entity types: {}", selectedEntityIds);
-        rebuildEntityWidgets(getCurrPageIndex());
-    }
-
     @Override
     protected void resizeBox(int width, int height) {
         super.resizeBox(width, height);
-        if (upperRightToolBar == null) { return; }
-        ScreenElementBox box = upperRightToolBar.getBox();
-        box.setPosition(rightPageLeft(width) + Page.PAGE_WIDTH - box.getWidth(),
-                pageTop(height) - box.getHeight() - 2);
+        if (leftToolBar != null) {
+            ScreenElementBox box = leftToolBar.getBox();
+            box.setPosition(leftPageLeft(width) + (Page.PAGE_WIDTH - box.getWidth()) / 2F,
+                    pageTop(height) + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * (Page.ROWS - 1));
+        }
+        if (rightToolBar != null) {
+            ScreenElementBox box = rightToolBar.getBox();
+            box.setPosition(rightPageLeft(width) + (Page.PAGE_WIDTH - box.getWidth()) / 2F,
+                    pageTop(height) + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * (Page.ROWS - 1));
+        }
+        if (upperRightToolBar != null) {
+            ScreenElementBox box = upperRightToolBar.getBox();
+            box.setPosition(rightPageLeft(width) + Page.PAGE_WIDTH - box.getWidth(),
+                    pageTop(height) - box.getHeight() - 2);
+        }
     }
 
     @Override
@@ -631,38 +632,6 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    private final class EntitySelectionActionButton extends DiscoveryProgressWidget {
-        private final int total;
-
-        public EntitySelectionActionButton(int total) {
-            this.total = total;
-            setSelectable(true);
-        }
-
-        @Override
-        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
-            if (!isMouseLeft(button)) { return super.onMouseDown(mouseX, mouseY, button); }
-            ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-            applyEntitySelection();
-            return true;
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            update(total, selectedEntityTypes.size());
-            super.onRender(ctx);
-        }
-
-        @Override
-        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
-            ctx.renderComponentTooltipCentered(
-                    List.of(TextUtils.translate(Lang.WIDGET_ENTITY_SELECTION_APPLY_DESC)),
-                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
-            return true;
-        }
-    }
-
     private static class DiscoveryProgressWidget extends ScreenElement {
         private static final int BAR_LEFT_CAP = 2;
         private static final int BAR_TILE = 36;
@@ -681,12 +650,6 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         public void update(int total, int discovered) {
             this.total = total;
             this.discovered = discovered;
-        }
-
-        @Override
-        protected void onResize(int width, int height) {
-            getBox().setPosition(leftPageLeft(width), pageTop(height)
-                    + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * (Page.ROWS - 1));
         }
 
         @Override
@@ -758,12 +721,6 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
-        protected void onResize(int width, int height) {
-            getBox().setPosition(rightPageLeft(width), pageTop(height)
-                    + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * (Page.ROWS - 1));
-        }
-
-        @Override
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
@@ -776,6 +733,71 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             ctx.renderTexture(Textures.ICONS, 150, texY, 152, texYEnd, z, barLeft, barTop, barLeft + 2, barBottom);
             ctx.renderTexture(Textures.ICONS, 152, texY, 154, texYEnd, z, barLeft + 2, barTop, barLeft + 4, barBottom);
             ctx.renderTexture(Textures.ICONS, 188, texY, 190, texYEnd, z, barLeft + 4, barTop, barLeft + 6, barBottom);
+        }
+    }
+
+    private final class AddToBlacklistButton extends ScreenElement {
+        public AddToBlacklistButton() {
+            super(true, true);
+            getBox().setSize(Widget.calcWidth(3), Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (!isMouseLeft(button)) { return super.onMouseDown(mouseX, mouseY, button); }
+            ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+            applyBlacklist();
+            return true;
+        }
+
+        /**
+         * Add the currently selected entity types to the server blacklist, persist it,
+         * exit selection mode, and refresh the entity widgets.
+         * Because the blacklist is a server-side config, a purely local change has no
+         * effect when connected to a remote server; warn the player in that case.
+         */
+        private void applyBlacklist() {
+            if (selectedEntityTypes.isEmpty()) {
+                sendScreenMessage(TextUtils.translate(Lang.TEXT_BLACKLIST_NO_SELECTION));
+                return;
+            }
+            List<String> ids = selectedEntityTypes.stream()
+                    .map(EntityUtils::getEntityTypeIdName)
+                    .toList();
+            ConfigsManager.addEntityTypeBlacklist(ids);
+            exitEntitySelectionMode();
+            if (ClientUtils.isLocalServer()) {
+                sendScreenMessage(TextUtils.translate(Lang.TEXT_BLACKLIST_APPLIED, ids.size()));
+            } else {
+                sendScreenMessage(TextUtils.translate(Lang.TEXT_BLACKLIST_SERVER_CONFIG_WARNING));
+            }
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            boolean hovered = getHoveredElement() == this;
+            int textureTop = (hovered ? 22 : 23) * Widget.WIDGET_HEIGHT;
+            ctx.renderTexture(Textures.ICONS, 8 * Widget.WIDGET_WIDTH, textureTop, ctx.getZ(),
+                    box.getLeft(), box.getTop(), 3 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+            ctx.renderTexture(Textures.ICONS,
+                    8 * Widget.WIDGET_WIDTH, textureTop,
+                    11 * Widget.WIDGET_WIDTH, textureTop + Widget.WIDGET_HEIGHT,
+                    ctx.getZ(), box.getRight(), box.getBottom(),
+                    box.getRight() - 3 * Widget.WIDGET_WIDTH, box.getBottom() - Widget.WIDGET_HEIGHT);
+            ctx.renderCenteredText(TextUtils.translate(Lang.WIDGET_ENTITY_SELECTION_BLACKLIST),
+                    hovered ? Colors.BLACK : Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
+                    (box.getLeft() + box.getRight()) / 2, box.getTop() + 3 + TXT_TO);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            ScreenElementBox box = getBox();
+            ctx.renderComponentTooltipCentered(
+                    List.of(TextUtils.translate(Lang.WIDGET_ENTITY_SELECTION_BLACKLIST_DESC)),
+                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+            return true;
         }
     }
 }

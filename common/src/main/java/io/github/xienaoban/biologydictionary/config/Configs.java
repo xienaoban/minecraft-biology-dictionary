@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Main configuration data class for Biology Dictionary.
@@ -102,6 +103,12 @@ public final class Configs {
          */
         @ConfigEntry
         boolean bookItemObtainableFromWanderingTrader = true;
+
+        /**
+         * Entity type IDs excluded from the Biology Dictionary.
+         */
+        @ConfigEntry
+        Set<String> entityTypeBlacklist = Set.of();
 
         /**
          * Maximum time in seconds spent analyzing biome and structure spawn information during world startup.
@@ -219,6 +226,10 @@ public final class Configs {
 
         public boolean isBookItemObtainableFromWanderingTrader() {
             return bookItemObtainableFromWanderingTrader;
+        }
+
+        public boolean isEntityTypeBlacklisted(String entityTypeId) {
+            return entityTypeBlacklist.contains(entityTypeId);
         }
 
         public int getEntitySpawnAnalysisTimeoutSeconds() {

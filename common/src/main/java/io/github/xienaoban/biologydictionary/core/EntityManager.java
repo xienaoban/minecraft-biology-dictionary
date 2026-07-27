@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -33,6 +34,10 @@ public final class EntityManager {
      */
     public static Integer getMyPreferredEntityOrder(EntityType<?> clazz) {
         return EntityOrder.map.get(clazz);
+    }
+
+    public static boolean isEntityTypeBlacklisted(EntityType<?> entityType) {
+        return ConfigsManager.getServer().isEntityTypeBlacklisted(EntityUtils.getEntityTypeIdName(entityType));
     }
 
     private final Map<Class<? extends Entity>, EntityTreeNode> tree = new HashMap<>();
@@ -135,7 +140,7 @@ public final class EntityManager {
                     String key = holders.key().location().toLanguageKey();
                     List<EntityDictionaryEntry> list = holders.stream()
                             .map(Holder::unwrapKey).filter(Optional::isPresent).map(Optional::get)
-                            .map(EntityUtils::getEntityType).map(this::getEntityEntry).filter(Objects::nonNull)
+                            .map(EntityUtils::getEntityType).map(this::getRawEntityEntry).filter(Objects::nonNull)
                             .sorted(Comparator.comparingInt(EntityDictionaryEntry::getSortId))
                             .toList();
                     tags.addTag(new Tag(key, null, TextUtils.literal(holders.key().location().toString())));
@@ -248,10 +253,10 @@ public final class EntityManager {
                 }
             }
         }
-        humanList.add(getEntityEntry(EntityTypes.IRON_GOLEM));
-        aquaticList.add(getEntityEntry(EntityTypes.TURTLE));
-        aquaticList.add(getEntityEntry(EntityTypes.AXOLOTL));
-        aquaticList.add(getEntityEntry(EntityTypes.FROG));
+        humanList.add(getRawEntityEntry(EntityTypes.IRON_GOLEM));
+        aquaticList.add(getRawEntityEntry(EntityTypes.TURTLE));
+        aquaticList.add(getRawEntityEntry(EntityTypes.AXOLOTL));
+        aquaticList.add(getRawEntityEntry(EntityTypes.FROG));
         humanList.sort(Comparator.comparingInt(EntityDictionaryEntry::getSortId));
         aquaticList.sort(Comparator.comparingInt(EntityDictionaryEntry::getSortId));
 
@@ -286,7 +291,7 @@ public final class EntityManager {
     }
 
     public EntityDictionaryEntry getEntityEntry(EntityType<?> entityType) {
-        return entries.get(entityType);
+        return isEntityTypeBlacklisted(entityType) ? null : getRawEntityEntry(entityType);
     }
 
     public EntityDictionaryEntry getEntityEntry(Class<? extends Entity> entityClazz) {
@@ -294,7 +299,11 @@ public final class EntityManager {
     }
 
     public List<EntityDictionaryEntry> getEntityEntries() {
-        return sortedEntries;
+        return sortedEntries.stream().filter(entry -> !isEntityTypeBlacklisted(entry.getType())).toList();
+    }
+
+    private EntityDictionaryEntry getRawEntityEntry(EntityType<?> entityType) {
+        return entries.get(entityType);
     }
 
     public boolean isVanillaEntity(EntityType<?> entityType) {
@@ -437,7 +446,10 @@ public final class EntityManager {
         public Component getText() { return text; }
         public Component getDescription() { return description; }
 
-        public List<EntityDictionaryEntry> getEntities() { return entities; }
+        public List<EntityDictionaryEntry> getEntities() {
+            return entities.stream()
+                    .filter(entry -> !isEntityTypeBlacklisted(entry.getType())).toList();
+        }
         protected void addEntity(EntityDictionaryEntry entry) { entities.add(entry); }
         protected void addEntities(Collection<EntityDictionaryEntry> entryList) { entities.addAll(entryList); }
         protected void removeEntity(EntityDictionaryEntry entry) { entities.remove(entry); }

@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
+import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.AlwaysUnlockedDiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryDiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.VanillaKillDiscoveryStrategy;
@@ -56,7 +57,8 @@ public final class DiscoveryManager implements ConfigsUpdateCallback {
     }
 
     public boolean onDiscoveryEvent(DiscoverySource source, ServerPlayer player, Entity entity) {
-        if (!source.isEnabled(ConfigsManager.getServer())) { return false; }
+        if (!source.isEnabled()) { return false; }
+        if (EntityManager.isEntityTypeBlacklisted(entity.getType())) { return false; }
         return source.dispatch(strategy, player, entity);
     }
 }
