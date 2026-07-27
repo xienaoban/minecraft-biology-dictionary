@@ -107,6 +107,7 @@ public final class Lang {
     WIDGET_ENTITY_SELECTION_ENTER_DESC   = "widget.biologydictionary.entity_selection.enter.desc",
     WIDGET_ENTITY_SELECTION_EXIT_DESC    = "widget.biologydictionary.entity_selection.exit.desc",
     WIDGET_ENTITY_SELECTION_APPLY_DESC   = "widget.biologydictionary.entity_selection.apply.desc",
+    WIDGET_ENTITY_SELECTION_COUNT        = "widget.biologydictionary.entity_selection.count",
     WIDGET_ENTITY_FILTER_DISCOVERED_DESC = "widget.biologydictionary.entity_filter.discovered.desc",
     WIDGET_ENTITY_FILTER_ALL_DESC        = "widget.biologydictionary.entity_filter.all.desc",
 

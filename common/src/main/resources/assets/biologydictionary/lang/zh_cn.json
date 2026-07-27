@@ -125,6 +125,7 @@
   "widget.biologydictionary.entity_selection.enter.desc"   : "复选生物类型",
   "widget.biologydictionary.entity_selection.exit.desc"    : "退出复选",
   "widget.biologydictionary.entity_selection.apply.desc"   : "应用到选中的生物类型",
+  "widget.biologydictionary.entity_selection.count"        : "已选择 %s/%s",
   "widget.biologydictionary.entity_filter.discovered.desc" : "仅显示已发现的生物",
   "widget.biologydictionary.entity_filter.all.desc"        : "显示全部生物",
 
