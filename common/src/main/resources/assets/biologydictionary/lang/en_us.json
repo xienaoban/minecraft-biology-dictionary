@@ -125,6 +125,7 @@
   "widget.biologydictionary.entity_selection.enter.desc"   : "Select multiple entity types",
   "widget.biologydictionary.entity_selection.exit.desc"    : "Exit selection mode",
   "widget.biologydictionary.entity_selection.apply.desc"   : "Apply to selected entity types",
+  "widget.biologydictionary.entity_selection.count"        : "Selected %s/%s",
   "widget.biologydictionary.entity_filter.discovered.desc" : "Show only discovered entities",
   "widget.biologydictionary.entity_filter.all.desc"        : "Show all entities",
 

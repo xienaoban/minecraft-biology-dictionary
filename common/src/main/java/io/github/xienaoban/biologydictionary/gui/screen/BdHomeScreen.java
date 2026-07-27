@@ -106,10 +106,12 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         toolBar.setParent(getRootScreenElement());
     }
 
-    private HorizontalElementContainer createEntityListButtons(boolean selectionMode) {
+    private HorizontalElementContainer createEntityListButtons(boolean selectionMode, int selectionTotal) {
         HorizontalElementContainer buttons = new HorizontalElementContainer();
         if (!selectionMode) {
             buttons.addElement(new DiscoveredEntityFilterButton());
+        } else {
+            buttons.addElement(new EntitySelectionCountDisplay(selectionTotal));
         }
         return buttons.addElement(new EntitySelectionModeButton(selectionMode));
     }
@@ -128,7 +130,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         progress.update(total, discovered);
         DecorativeBarWidget bar = new DecorativeBarWidget();
         bar.update(discovered == total);
-        setToolBars(progress, bar, createEntityListButtons(false));
+        setToolBars(progress, bar, createEntityListButtons(false, 0));
         updateBoxSizes();
     }
 
@@ -159,7 +161,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
         DecorativeBarWidget bar = new DecorativeBarWidget();
         bar.update(discovered == currentEntityEntries.size());
-        setToolBars(new EntitySelectionActionButton(widgets.size()), bar, createEntityListButtons(true));
+        int total = widgets.size();
+        setToolBars(new EntitySelectionActionButton(total), bar, createEntityListButtons(true, total));
         setCurrPage(pageIndex);
         updateBoxSizes();
     }
@@ -558,6 +561,28 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                             : Lang.WIDGET_ENTITY_SELECTION_ENTER_DESC)),
                     0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
             return true;
+        }
+    }
+
+    private final class EntitySelectionCountDisplay extends ScreenElement {
+        private static final int WIDTH = Widget.calcWidth(3);
+
+        private final int total;
+
+        public EntitySelectionCountDisplay(int total) {
+            super(false, false);
+            this.total = total;
+            getBox().setSize(WIDTH, Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            Component text = TextUtils.translate(Lang.WIDGET_ENTITY_SELECTION_COUNT,
+                    selectedEntityTypes.size(), total);
+            ctx.renderRightAlignedText(text, Colors.BROWN, 0.5F, ctx.getZ(),
+                    box.getRight(), box.getTop() + 3 + TXT_TO);
         }
     }
 
