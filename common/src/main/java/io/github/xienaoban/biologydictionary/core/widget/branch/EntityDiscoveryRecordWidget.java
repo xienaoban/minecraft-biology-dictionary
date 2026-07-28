@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
+import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
@@ -47,8 +47,8 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
 
     private EntityDiscoveryRecordWidget(EntityProperties<Entity> properties) {
         super(properties, 3, COLUMNS);
-        ClientDiscoveryCache cache = ClientWorldSession.get().getDiscoveryClientCache();
-        DiscoveryRecord record = cache.getRecord(e().getType());
+        ClientDiscoveryCacheManager dcm = ClientWorldSession.get().getDiscoveryCacheManager();
+        DiscoveryRecord record = dcm.getRecord(e().getType());
         this.noRecord = (record == null);
         this.lines = buildLines(record);
     }
@@ -62,8 +62,8 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
         float z = ctx.getZ();
 
         if (noRecord) {
-            ClientDiscoveryCache cache = ClientWorldSession.get().getDiscoveryClientCache();
-            DiscoveryRecord record = cache.getRecord(e().getType());
+            ClientDiscoveryCacheManager dcm = ClientWorldSession.get().getDiscoveryCacheManager();
+            DiscoveryRecord record = dcm.getRecord(e().getType());
             if (record != null) {
                 this.noRecord = false;
                 this.lines = buildLines(record);

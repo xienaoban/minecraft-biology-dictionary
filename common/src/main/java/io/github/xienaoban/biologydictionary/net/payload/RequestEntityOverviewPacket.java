@@ -45,9 +45,8 @@ public record RequestEntityOverviewPacket(String entityTypeId) implements Packet
         EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
         if (entityType != null) {
             // Server-side guard: check if entity is locked
-            var manager = sws.getDiscoveryManager();
             if (!ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities()
-                    && !manager.isDiscovered(ctx.player(), entityType)) {
+                    && !sws.getDiscoveryManager().isDiscovered(ctx.player(), entityType)) {
                 toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);
             } else {
                 EntityOverviewCache.CacheEntry cached = ws.getEntityOverviewCache()
