@@ -15,7 +15,7 @@ import net.minecraft.world.entity.EntityType;
  * Server-side entry point for the discovery system.
  * Attached to {@link io.github.xienaoban.biologydictionary.core.session.ServerWorldSession}.
  */
-public final class DiscoveryManager implements DiscoveryStrategy, ConfigsUpdateCallback {
+public final class DiscoveryManager implements ConfigsUpdateCallback {
     private final MinecraftServer server;
 
     private volatile Configs.ServerConfigs.DiscoveryStrategyMode mode;
@@ -48,7 +48,6 @@ public final class DiscoveryManager implements DiscoveryStrategy, ConfigsUpdateC
         return mode;
     }
 
-    @Override
     public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
         if (player.isCreative()) {
             return true;
@@ -56,39 +55,8 @@ public final class DiscoveryManager implements DiscoveryStrategy, ConfigsUpdateC
         return strategy.isDiscovered(player, entityType);
     }
 
-    @Override
-    public boolean onEntityDetailScreenOpened(ServerPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByDetailScreen()) { return false; }
-        return strategy.onEntityDetailScreenOpened(player, entity);
-    }
-
-    @Override
-    public boolean onEntityHighlighted(ServerPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByHighlight()) { return false; }
-        return strategy.onEntityHighlighted(player, entity);
-    }
-
-    @Override
-    public boolean onEntityObservedWithTelescope(ServerPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByTelescope()) { return false; }
-        return strategy.onEntityObservedWithTelescope(player, entity);
-    }
-
-    @Override
-    public boolean onEntityInteracted(ServerPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByInteract()) { return false; }
-        return strategy.onEntityInteracted(player, entity);
-    }
-
-    @Override
-    public boolean onEntityKilled(ServerPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByKill()) { return false; }
-        return strategy.onEntityKilled(player, entity);
-    }
-
-    @Override
-    public boolean onPlayerKilledBy(ServerPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByKilledBy()) { return false; }
-        return strategy.onPlayerKilledBy(player, entity);
+    public boolean onDiscoveryEvent(DiscoverySource source, ServerPlayer player, Entity entity) {
+        if (!source.isEnabled(ConfigsManager.getServer())) { return false; }
+        return source.dispatch(strategy, player, entity);
     }
 }

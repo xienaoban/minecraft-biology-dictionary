@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
+import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
@@ -120,11 +121,11 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         selectedEntityTypes.clear();
         currentEntityEntries = entityEntries;
         resetAndAndWidgetsOneByOne(getEntityWidgets(entityEntries, false));
-        var cache = ClientWorldSession.get().getDiscoveryClientCache();
+        ClientDiscoveryCacheManager dcm = ClientWorldSession.get().getDiscoveryCacheManager();
         int total = entityEntries.size();
         int discovered = 0;
         for (var entry : entityEntries) {
-            if (cache.isDiscovered(entry.getType())) { discovered++; }
+            if (dcm.isDiscovered(entry.getType())) { discovered++; }
         }
         DiscoveryProgressWidget progress = new DiscoveryProgressWidget();
         progress.update(total, discovered);
@@ -136,12 +137,12 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
     private List<Widget> getEntityWidgets(List<EntityManager.EntityDictionaryEntry> entries, boolean checkbox) {
         ClientLevel level = ClientUtils.getClientLevel(client);
-        var discoveryCache = ClientWorldSession.get().getDiscoveryClientCache();
+        ClientDiscoveryCacheManager dcm = ClientWorldSession.get().getDiscoveryCacheManager();
         boolean showOnlyDiscovered = BiologyDictionaryClient.shouldShowOnlyDiscoveredEntities();
         List<Widget> widgets = new ArrayList<>();
         for (EntityManager.EntityDictionaryEntry entry : entries) {
             EntityType<?> type = entry.getType();
-            if (showOnlyDiscovered && !discoveryCache.isDiscovered(type)) { continue; }
+            if (showOnlyDiscovered && !dcm.isDiscovered(type)) { continue; }
             EntityDisplay display = new EntityDisplay(entry, level);
             widgets.add(checkbox ? new EntitySelectionCardWidget(entry, display) : new EntityActionCardWidget(entry, display));
         }
@@ -155,9 +156,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         resetAndAndWidgetsOneByOne(widgets);
 
         int discovered = 0;
-        var cache = ClientWorldSession.get().getDiscoveryClientCache();
+        ClientDiscoveryCacheManager dcm = ClientWorldSession.get().getDiscoveryCacheManager();
         for (var entry : currentEntityEntries) {
-            if (cache.isDiscovered(entry.getType())) { discovered++; }
+            if (dcm.isDiscovered(entry.getType())) { discovered++; }
         }
         DecorativeBarWidget bar = new DecorativeBarWidget();
         bar.update(discovered == currentEntityEntries.size());
@@ -290,7 +291,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
 
         protected final boolean isDiscovered() {
-            return ClientWorldSession.get().getDiscoveryClientCache().isDiscovered(entry.getType());
+            return ClientWorldSession.get().getDiscoveryCacheManager().isDiscovered(entry.getType());
         }
 
         protected final boolean isDiscoveredOrCreative() {

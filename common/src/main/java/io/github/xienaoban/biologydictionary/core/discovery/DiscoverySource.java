@@ -1,25 +1,34 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
+import io.github.xienaoban.biologydictionary.config.Configs;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.function.Predicate;
 
 /**
  * How a player discovered an entity.
  * Each value maps to the corresponding {@link DiscoveryEventListener} method.
  */
 public enum DiscoverySource {
-    ENTITY_DETAIL_SCREEN(DiscoveryEventListener::onEntityDetailScreenOpened),
-    HIGHLIGHT(DiscoveryEventListener::onEntityHighlighted),
-    TELESCOPE_OBSERVE(DiscoveryEventListener::onEntityObservedWithTelescope),
-    INTERACT(DiscoveryEventListener::onEntityInteracted),
-    KILL(DiscoveryEventListener::onEntityKilled),
-    KILLED_BY(DiscoveryEventListener::onPlayerKilledBy),
-    UNKNOWN((l, p, e) -> false);
+    ENTITY_DETAIL_SCREEN(DiscoveryEventListener::onEntityDetailScreenOpened,    Configs.ServerConfigs::isDiscoveryByDetailScreen),
+    HIGHLIGHT(           DiscoveryEventListener::onEntityHighlighted,           Configs.ServerConfigs::isDiscoveryByHighlight),
+    TELESCOPE_OBSERVE(   DiscoveryEventListener::onEntityObservedWithTelescope, Configs.ServerConfigs::isDiscoveryByTelescope),
+    INTERACT(            DiscoveryEventListener::onEntityInteracted,            Configs.ServerConfigs::isDiscoveryByInteract),
+    KILL(                DiscoveryEventListener::onEntityKilled,                Configs.ServerConfigs::isDiscoveryByKill),
+    KILLED_BY(           DiscoveryEventListener::onPlayerKilledBy,              Configs.ServerConfigs::isDiscoveryByKilledBy),
+    UNKNOWN((l, p, e) -> false, configs -> false);
 
     private final Invoker<?> invoker;
+    private final Predicate<Configs.ServerConfigs> enabled;
 
-    DiscoverySource(Invoker<?> invoker) {
+    DiscoverySource(Invoker<?> invoker, Predicate<Configs.ServerConfigs> enabled) {
         this.invoker = invoker;
+        this.enabled = enabled;
+    }
+
+    public boolean isEnabled(Configs.ServerConfigs configs) {
+        return enabled.test(configs);
     }
 
     public <P extends Player> boolean dispatch(DiscoveryEventListener<P> listener, P player, Entity entity) {

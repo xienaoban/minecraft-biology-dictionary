@@ -59,7 +59,7 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
             ClientLevel level = ClientUtils.getClientLevel(client);
 
             // Update discovery cache
-            cws.getDiscoveryClientCache().incrementalSync(packet.entityType, packet.record);
+            cws.getDiscoveryCacheManager().incrementalSync(packet.entityType, packet.record);
 
             // Show toast
             client.gui.toastManager().addToast(new DiscoveryToast(packet.entityType));

@@ -62,7 +62,7 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
                 return;
             }
 
-            if (cws.getDiscoveryClientCache().getDelegate() instanceof BiologyDictionaryClientDiscoveryCache cache) {
+            if (cws.getDiscoveryCacheManager().getDelegate() instanceof BiologyDictionaryClientDiscoveryCache cache) {
                 cache.onFullSync(packet.discoveries());
                 LOGGER.info("Full discovery records received.");
             } else {

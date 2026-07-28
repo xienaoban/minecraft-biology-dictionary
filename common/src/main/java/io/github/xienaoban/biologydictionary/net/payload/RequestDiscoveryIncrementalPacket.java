@@ -41,6 +41,6 @@ public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource so
         if (entity == null) {
             return;
         }
-        source.dispatch(sws.getDiscoveryManager(), player, entity);
+        sws.getDiscoveryManager().onDiscoveryEvent(source, player, entity);
     }
 }

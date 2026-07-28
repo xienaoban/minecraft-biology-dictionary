@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.mixin.entity;
 
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,7 +26,7 @@ public class PlayerMixin {
         if (self instanceof ServerPlayer serverPlayer) {
             ServerWorldSession sws = ServerWorldSession.get();
             if (sws != null) {
-                sws.getDiscoveryManager().onEntityKilled(serverPlayer, livingEntity);
+                sws.getDiscoveryManager().onDiscoveryEvent(DiscoverySource.KILL, serverPlayer, livingEntity);
             }
         }
     }
@@ -37,7 +38,7 @@ public class PlayerMixin {
         if (self instanceof ServerPlayer serverPlayer) {
             ServerWorldSession sws = ServerWorldSession.get();
             if (sws != null) {
-                sws.getDiscoveryManager().onEntityInteracted(serverPlayer, entity);
+                sws.getDiscoveryManager().onDiscoveryEvent(DiscoverySource.INTERACT, serverPlayer, entity);
             }
         }
     }

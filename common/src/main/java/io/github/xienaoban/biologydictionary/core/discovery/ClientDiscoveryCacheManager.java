@@ -12,15 +12,15 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 /**
- * A {@link ClientDiscoveryCache} that delegates to another cache instance.
- * Allows the delegate to be swapped based on the current server config.
+ * Client-side manager of the discovery cache.
+ * Delegates to a cache selected from the current server config.
  */
 @ClientOnly
-public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCache, ConfigsUpdateCallback {
+public final class ClientDiscoveryCacheManager implements ConfigsUpdateCallback {
     private volatile Configs.ServerConfigs.DiscoveryStrategyMode mode;
     private volatile ClientDiscoveryCache delegate;
 
-    public DelegatingClientDiscoveryCache() {
+    public ClientDiscoveryCacheManager() {
         onConfigsUpdate(ConfigsManager.getClient(), ConfigsManager.getServer());
     }
 
@@ -42,54 +42,20 @@ public final class DelegatingClientDiscoveryCache implements ClientDiscoveryCach
         return delegate;
     }
 
-    @Override
     public boolean isDiscovered(EntityType<?> entityType) {
         return delegate.isDiscovered(entityType);
     }
 
-    @Override
     public DiscoveryRecord getRecord(EntityType<?> entityType) {
         return delegate.getRecord(entityType);
     }
 
-    @Override
     public void incrementalSync(EntityType<?> entityType, DiscoveryRecord record) {
         delegate.incrementalSync(entityType, record);
     }
 
-    @Override
-    public boolean onEntityDetailScreenOpened(LocalPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByDetailScreen()) { return false; }
-        return delegate.onEntityDetailScreenOpened(player, entity);
-    }
-
-    @Override
-    public boolean onEntityHighlighted(LocalPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByHighlight()) { return false; }
-        return delegate.onEntityHighlighted(player, entity);
-    }
-
-    @Override
-    public boolean onEntityObservedWithTelescope(LocalPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByTelescope()) { return false; }
-        return delegate.onEntityObservedWithTelescope(player, entity);
-    }
-
-    @Override
-    public boolean onEntityInteracted(LocalPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByInteract()) { return false; }
-        return delegate.onEntityInteracted(player, entity);
-    }
-
-    @Override
-    public boolean onEntityKilled(LocalPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByKill()) { return false; }
-        return delegate.onEntityKilled(player, entity);
-    }
-
-    @Override
-    public boolean onPlayerKilledBy(LocalPlayer player, Entity entity) {
-        if (!ConfigsManager.getServer().isDiscoveryByKilledBy()) { return false; }
-        return delegate.onPlayerKilledBy(player, entity);
+    public boolean onDiscoveryEvent(DiscoverySource source, LocalPlayer player, Entity entity) {
+        if (!source.isEnabled(ConfigsManager.getServer())) { return false; }
+        return source.dispatch(delegate, player, entity);
     }
 }
