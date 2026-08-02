@@ -22,13 +22,11 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRend
 import io.github.xienaoban.biologydictionary.platform.util.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -328,7 +326,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
         public EntityActionCardWidget(EntityManager.EntityDictionaryEntry entry, EntityDisplay display) {
             super(entry, display);
-            Item item = SpawnEggItem.byId(entry.getType()).map(Holder::value).orElse(null);
+            Item item = EntityUtils.getSpawnEggItem(entry.getType());
             this.spawnEgg = item == null ? null : new ItemStack(item);
         }
 

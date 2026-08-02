@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.HorseIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.LivingEntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.MobIMixin;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -27,6 +28,8 @@ import net.minecraft.world.entity.animal.equine.Markings;
 import net.minecraft.world.entity.animal.equine.Variant;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
@@ -160,6 +163,10 @@ public final class EntityUtils {
 
     public static String getEntityTypeIdName(EntityType<?> entityType) {
         return getEntityTypeId(entityType).toString();
+    }
+
+    public static Item getSpawnEggItem(EntityType<?> entityType) {
+        return SpawnEggItem.byId(entityType).map(Holder::value).orElse(null);
     }
 
     // ============================================================================ //

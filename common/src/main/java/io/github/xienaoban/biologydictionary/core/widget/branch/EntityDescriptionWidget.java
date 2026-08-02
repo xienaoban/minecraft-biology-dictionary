@@ -13,10 +13,12 @@ import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.gui.Font;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
 
 import java.util.List;
 
@@ -98,6 +100,15 @@ public final class EntityDescriptionWidget extends EntityPropertyWidget<Entity> 
         for (String key : keys) {
             if (TextUtils.hasTranslation(key)) {
                 return Component.translatable(key);
+            }
+        }
+
+        Item spawnEgg = EntityUtils.getSpawnEggItem(EntityUtils.getEntityType(entity));
+        if (spawnEgg != null) {
+            Identifier spawnEggId = BuiltInRegistries.ITEM.getKey(spawnEgg);
+            String spawnEggLoreKey = "lore." + spawnEggId.getNamespace() + "." + spawnEggId.getPath();
+            if (TextUtils.hasTranslation(spawnEggLoreKey)) {
+                return Component.translatable(spawnEggLoreKey);
             }
         }
 
