@@ -11,7 +11,8 @@ import java.lang.annotation.Target;
  * <p>NeoForge discovers plugins by scanning mod bytecode for this annotation; Fabric uses the
  * {@code "biologydictionary"} entrypoint key instead, so the annotation is optional on Fabric.
  * The annotated class must implement one or more of {@link BiologySkillsPlugin},
- * {@link ExtraEntityPropertiesPlugin}, {@link EntityOrderPlugin}, and expose a public no-arg
+ * {@link ExtraEntityPropertiesPlugin}, {@link EntityOrdersPlugin}, {@link DiscoverySourcesPlugin},
+ * and expose a public no-arg
  * constructor.
  */
 @Target(ElementType.TYPE)

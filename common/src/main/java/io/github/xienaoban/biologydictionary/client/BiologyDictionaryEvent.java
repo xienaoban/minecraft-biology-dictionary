@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
@@ -95,7 +95,7 @@ public final class BiologyDictionaryEvent {
             BiologyDictionaryClient.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target, true);
             ClientWorldSession.get().getDiscoveryCacheManager().onDiscoveryEvent(
-                    DiscoverySource.ENTITY_DETAIL_SCREEN, player, target);
+                    DiscoverySources.ENTITY_DETAIL_SCREEN, player, target);
             ClientUtils.setScreen(client, new BdEntityDetailScreen(properties));
         }
         ClientUtils.playScreenSound(client, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);

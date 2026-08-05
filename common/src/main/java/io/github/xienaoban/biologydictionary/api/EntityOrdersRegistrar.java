@@ -3,8 +3,8 @@ package io.github.xienaoban.biologydictionary.api;
 import net.minecraft.world.entity.EntityType;
 
 /**
- * Registration handle for the entity display-order registry, passed to {@link EntityOrderPlugin}.
+ * Registration handle for the entity display-order registry, passed to {@link EntityOrdersPlugin}.
  */
-public interface EntityOrderRegistrar {
+public interface EntityOrdersRegistrar {
     void register(EntityType<?> entityType);
 }

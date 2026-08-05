@@ -1,6 +1,6 @@
 # 插件 API
 
-Biology Dictionary 允许其它模组通过**每类 registry 一个的插件接口**注册自定义的**技能（skill）**、**实体属性（property）**、**实体显示顺序（entity order）**，以及客户端的**组件（widget）**。
+Biology Dictionary 允许其它模组通过**每类 registry 一个的插件接口**注册自定义的**技能（skill）**、**实体属性（property）**、**实体显示顺序（entity order）**、**发现来源（discovery source）**，以及客户端的**组件（widget）**。
 
 框架在初始化期间发现每个插件、调用对应的注册方法；此后该注册表在整局游戏内不可变。注册只在启动时发生、运行时不再变更——下游系统（配置、网络、UI）读取的都是启动时固定的结果。
 
@@ -10,10 +10,11 @@ Biology Dictionary 允许其它模组通过**每类 registry 一个的插件接�
 
 | 注册表 | 插件接口 | Registrar | 回调 | 运行侧 |
 |---|---|---|---|---|
-| 技能 | `BiologySkillsPlugin` | `BiologySkillsRegistrar` | `registerSkills` | 通用 |
-| 额外实体属性 | `ExtraEntityPropertiesPlugin` | `ExtraEntityPropertiesRegistrar` | `registerProperties` | 通用 |
-| 实体显示顺序 | `EntityOrderPlugin` | `EntityOrderRegistrar` | `registerEntityOrder` | 通用 |
-| 组件 | `EntityPropertyWidgetsPlugin` | `EntityPropertyWidgetsRegistrar` | `registerWidgets` | 仅客户端 |
+| 技能 | `BiologySkillsPlugin` | `BiologySkillsRegistrar` | `registerBiologySkills` | 通用 |
+| 额外实体属性 | `ExtraEntityPropertiesPlugin` | `ExtraEntityPropertiesRegistrar` | `registerExtraEntityProperties` | 通用 |
+| 实体显示顺序 | `EntityOrdersPlugin` | `EntityOrdersRegistrar` | `registerEntityOrders` | 通用 |
+| 发现来源 | `DiscoverySourcesPlugin` | `DiscoverySourcesRegistrar` | `registerDiscoverySources` | 通用 |
+| 组件 | `EntityPropertyWidgetsPlugin` | `EntityPropertyWidgetsRegistrar` | `registerEntityPropertyWidgets` | 仅客户端 |
 
 通用接口在客户端和专用服务端都运行。组件接口仅限客户端（`@ClientOnly`），因为组件只存在于客户端。
 
@@ -56,7 +57,8 @@ Fabric 上缺失或类型不匹配的标记注解都会终止加载。插件内�
 
 - `BiologySkillsPlugin` / `BiologySkillsRegistrar`
 - `ExtraEntityPropertiesPlugin` / `ExtraEntityPropertiesRegistrar`
-- `EntityOrderPlugin` / `EntityOrderRegistrar`
+- `EntityOrdersPlugin` / `EntityOrdersRegistrar`
+- `DiscoverySourcesPlugin` / `DiscoverySourcesRegistrar`
 - `EntityPropertyWidgetsPlugin` / `EntityPropertyWidgetsRegistrar`
 - `@BiologyDictionaryPlugin`（通用）、`@BiologyDictionaryClientPlugin`（客户端）
 
@@ -72,7 +74,7 @@ import io.github.xienaoban.biologydictionary.api.BiologySkillsRegistrar;
 @BiologyDictionaryPlugin
 public final class MyPlugin implements BiologySkillsPlugin {
     @Override
-    public void registerSkills(BiologySkillsRegistrar registrar) {
+    public void registerBiologySkills(BiologySkillsRegistrar registrar) {
         registrar.register(MySkill.class, MySkill.META);
     }
 }
@@ -92,13 +94,44 @@ import io.github.xienaoban.biologydictionary.api.EntityPropertyWidgetsRegistrar;
 @BiologyDictionaryClientPlugin
 public final class MyClientPlugin implements EntityPropertyWidgetsPlugin {
     @Override
-    public void registerWidgets(EntityPropertyWidgetsRegistrar registrar) {
+    public void registerEntityPropertyWidgets(EntityPropertyWidgetsRegistrar registrar) {
         registrar.register(MyWidget.class, MyWidget.FACTORY);
     }
 }
 ```
 
 （Fabric 上，把它声明在 `biologydictionary:client` 入口点下。）
+
+## 示例：注册一个发现来源
+
+发现来源标注实体是*如何*被发现的（击杀、望远镜……），自带显示名、配置开关和双端校验。继承 `DiscoverySource`、按需 override，存到 `static` 字段以便后续触发，然后注册它。
+
+```java
+@BiologyDictionaryPlugin
+public final class MyPlugin implements DiscoverySourcesPlugin {
+    public static final DiscoverySource NET_CAPTURE = new DiscoverySource("net_capture") {
+        @Override public Component displayName() { return Component.translatable("discovery_source.mymod.net_capture"); }
+        @Override public boolean clientCheck(ClientContext ctx) {
+            return withinBlocks(ctx.player(), ctx.entity(), 5);     // 客户端闸门
+        }
+        @Override public boolean serverCheck(ServerContext ctx) {
+            return withinBlocks(ctx.player(), ctx.entity(), 5);     // 服务端权威校验
+        }
+    };
+
+    @Override
+    public void registerDiscoverySources(DiscoverySourcesRegistrar registrar) {
+        registrar.register(NET_CAPTURE);
+    }
+}
+```
+
+`displayName()` 是唯一必须 override 的；`isEnabled()`、`serverCheck(ServerContext)`、`clientCheck(ClientContext)` 默认放行。`clientCheck` 及其 `ClientContext` 仅限客户端。本模组中出现的 `@ClientOnly` 注解是内部使用的，用于替代 Fabric 的 `@Environment`；第三方模组无需关心。
+
+注册的来源**只在「生物辞典」发现策略下生效**；另外两种策略忽略插件来源。当你的触发条件满足时，通过 discovery manager 触发它：
+
+- 服务端：`ServerWorldSession.get().getDiscoveryManager().onDiscoveryEvent(source, player, entity)`
+- 客户端：`ClientWorldSession.get().getDiscoveryCacheManager().onDiscoveryEvent(source, player, entity)`
 
 ## 契约与生命周期
 

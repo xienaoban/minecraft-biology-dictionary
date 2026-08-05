@@ -59,6 +59,6 @@ public final class DiscoveryManager implements ConfigsUpdateCallback {
     public boolean onDiscoveryEvent(DiscoverySource source, ServerPlayer player, Entity entity) {
         if (!source.isEnabled()) { return false; }
         if (EntityManager.isEntityTypeBlacklisted(entity.getType())) { return false; }
-        return source.dispatch(strategy, player, entity);
+        return strategy.onDiscovery(source, new DiscoverySource.ServerContext(player, entity));
     }
 }

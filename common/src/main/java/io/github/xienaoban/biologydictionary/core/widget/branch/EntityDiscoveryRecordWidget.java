@@ -3,7 +3,6 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
@@ -88,7 +87,7 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
         if (record != null) {
             lines.addAll(FontUtils.toLines(TextUtils.concat(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_SOURCE).withStyle(ChatFormatting.BOLD),
-                getDiscoverySourceText(record.source())
+                record.source().displayName()
             ), font, maxTextWidth));
 
             lines.addAll(FontUtils.toLines(TextUtils.concat(
@@ -120,18 +119,6 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
         }
 
         return lines;
-    }
-
-    private static Component getDiscoverySourceText(DiscoverySource source) {
-        return switch (source) {
-            case ENTITY_DETAIL_SCREEN -> TextUtils.translate(Lang.DISCOVERY_SOURCE_ENTITY_DETAIL_SCREEN);
-            case HIGHLIGHT -> TextUtils.translate(Lang.DISCOVERY_SOURCE_HIGHLIGHT);
-            case TELESCOPE_OBSERVE -> TextUtils.translate(Lang.DISCOVERY_SOURCE_TELESCOPE_OBSERVE);
-            case INTERACT -> TextUtils.translate(Lang.DISCOVERY_SOURCE_INTERACT);
-            case KILL -> TextUtils.translate(Lang.DISCOVERY_SOURCE_KILL);
-            case KILLED_BY -> TextUtils.translate(Lang.DISCOVERY_SOURCE_KILLED_BY);
-            case UNKNOWN -> TextUtils.translate(Lang.DISCOVERY_SOURCE_UNKNOWN);
-        };
     }
 
     private static Component getRealWorldTimeText(long epochMillis) {

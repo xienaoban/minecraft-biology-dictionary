@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.core;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.biologydictionary.api.EntityOrderPlugin;
-import io.github.xienaoban.biologydictionary.api.EntityOrderRegistrar;
+import io.github.xienaoban.biologydictionary.api.EntityOrdersPlugin;
+import io.github.xienaoban.biologydictionary.api.EntityOrdersRegistrar;
 import io.github.xienaoban.biologydictionary.platform.PluginLookup;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
@@ -15,12 +15,12 @@ public final class EntityOrder {
     private static int order = 0;
 
     public static void init() {
-        EntityOrderRegistrar registrar = t -> map.put(t, ++order);
+        EntityOrdersRegistrar registrar = t -> map.put(t, ++order);
 
         registerBuiltIn(registrar);
-        for (EntityOrderPlugin plugin : PluginLookup.find(EntityOrderPlugin.class)) {
+        for (EntityOrdersPlugin plugin : PluginLookup.find(EntityOrdersPlugin.class)) {
             try {
-                plugin.registerEntityOrder(registrar);
+                plugin.registerEntityOrders(registrar);
             } catch (RuntimeException e) {
                 throw new IllegalStateException("Failed to register entity order from plugin "
                         + plugin.getClass().getName(), e);
@@ -28,7 +28,7 @@ public final class EntityOrder {
         }
     }
 
-    public static void registerBuiltIn(EntityOrderRegistrar registrar) {
+    public static void registerBuiltIn(EntityOrdersRegistrar registrar) {
         // peaceful
         registrar.register(EntityTypes.CHICKEN);
         registrar.register(EntityTypes.RABBIT);
@@ -130,7 +130,7 @@ public final class EntityOrder {
         registrar.register(EntityTypes.MANNEQUIN);
     }
 
-    public static void registerVanilla(EntityOrderRegistrar registrar) {
+    public static void registerVanilla(EntityOrdersRegistrar registrar) {
         registrar.register(EntityTypes.CHICKEN);
         registrar.register(EntityTypes.COW);
         registrar.register(EntityTypes.PIG);
