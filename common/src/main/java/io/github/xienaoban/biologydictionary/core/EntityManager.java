@@ -55,8 +55,6 @@ public final class EntityManager {
             Arrays.asList(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
 
     public EntityManager(Level level) {
-        EntityOrder.init();
-
         initEntities(level);
         initEntitiesSortClassInfo();
         initEntitiesSortTreeNode();

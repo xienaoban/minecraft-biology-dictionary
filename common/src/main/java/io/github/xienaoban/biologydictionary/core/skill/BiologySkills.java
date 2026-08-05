@@ -1,23 +1,29 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
+import io.github.xienaoban.biologydictionary.api.BiologySkillsPlugin;
+import io.github.xienaoban.biologydictionary.api.BiologySkillsRegistrar;
 import io.github.xienaoban.biologydictionary.core.skill.entity.*;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.PluginLookup;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class BiologySkills {
 
-    public static void registerBuiltIn(Registrar registrar) {
+    public static void registerBuiltIn(BiologySkillsRegistrar registrar) {
         registrar.register(HighlightEntitiesSkill.class, HighlightEntitiesSkill.META);
         registrar.register(GetSpawnEggSkill.class, GetSpawnEggSkill.META);
 
@@ -38,42 +44,42 @@ public final class BiologySkills {
         registrar.register(WanderingTraderRetainSkill.class, WanderingTraderRetainSkill.META);
     }
 
-    private static final Map<String, GeneralSkill.Meta<?>> commonSkills = new HashMap<>();
-    private static final Map<String, EntityTargetedSkill.Meta<?>> entityTargetedSkills = new HashMap<>();
-    private static final Map<String, Class<?>> skillClasses = new HashMap<>();
+    private static final Map<String, GeneralSkill.Meta<?>> commonSkills = new LinkedHashMap<>();
+    private static final Map<String, EntityTargetedSkill.Meta<?>> entityTargetedSkills = new LinkedHashMap<>();
+    private static final Map<String, Class<?>> skillClasses = new LinkedHashMap<>();
 
     public static void init() {
-        Registrar registrar = new Registrar() {
+        BiologySkillsRegistrar registrar = new BiologySkillsRegistrar() {
             @Override
             public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
-                register0(skillClass, meta);
+                if (commonSkills.putIfAbsent(key(skillClass), meta) != null) {
+                    throw new RuntimeException("Duplicate skill registered: " + key(skillClass));
+                }
+                if (skillClasses.putIfAbsent(meta.shortName(), skillClass) != null) {
+                    throw new RuntimeException("Duplicate short name: " + meta.shortName());
+                }
             }
 
             @Override
             public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass,
                     EntityTargetedSkill.Meta<T> meta) {
-                register0(skillClass, meta);
+                if (entityTargetedSkills.putIfAbsent(key(skillClass), meta) != null) {
+                    throw new RuntimeException("Duplicate skill registered: " + key(skillClass));
+                }
+                if (skillClasses.putIfAbsent(meta.shortName(), skillClass) != null) {
+                    throw new RuntimeException("Duplicate short name: " + meta.shortName());
+                }
             }
         };
+
         registerBuiltIn(registrar);
-    }
-
-    private static <T extends GeneralSkill> void register0(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
-        if (commonSkills.putIfAbsent(key(skillClass), meta) != null) {
-            throw new RuntimeException("Duplicate skill registered: " + key(skillClass));
-        }
-        if (skillClasses.putIfAbsent(meta.shortName(), skillClass) != null) {
-            throw new RuntimeException("Duplicate short name: " + meta.shortName());
-        }
-    }
-
-    private static <T extends EntityTargetedSkill<?>> void register0(Class<T> skillClass,
-            EntityTargetedSkill.Meta<T> meta) {
-        if (entityTargetedSkills.putIfAbsent(key(skillClass), meta) != null) {
-            throw new RuntimeException("Duplicate skill registered: " + key(skillClass));
-        }
-        if (skillClasses.putIfAbsent(meta.shortName(), skillClass) != null) {
-            throw new RuntimeException("Duplicate short name: " + meta.shortName());
+        for (BiologySkillsPlugin plugin : PluginLookup.find(BiologySkillsPlugin.class)) {
+            try {
+                plugin.registerBiologySkills(registrar);
+            } catch (RuntimeException e) {
+                throw new IllegalStateException("Failed to register skills from plugin "
+                        + plugin.getClass().getName(), e);
+            }
         }
     }
 
@@ -99,6 +105,20 @@ public final class BiologySkills {
             throw new RuntimeException("No such short name: " + shortName);
         }
         return res;
+    }
+
+    /**
+     * Read-only snapshot of all registered common-skill metas. Only valid after {@link #init()}.
+     */
+    public static Collection<GeneralSkill.Meta<?>> commonSkillMetas() {
+        return Collections.unmodifiableCollection(commonSkills.values());
+    }
+
+    /**
+     * Read-only snapshot of all registered entity-targeted-skill metas. Only valid after {@link #init()}.
+     */
+    public static Collection<EntityTargetedSkill.Meta<?>> entityTargetedSkillMetas() {
+        return Collections.unmodifiableCollection(entityTargetedSkills.values());
     }
 
     public static String key(Object skill) {
@@ -154,10 +174,5 @@ public final class BiologySkills {
             return false;
         }}
         return CO.activate(entity, skill);
-    }
-
-    public interface Registrar {
-        <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta);
-        <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta);
     }
 }
