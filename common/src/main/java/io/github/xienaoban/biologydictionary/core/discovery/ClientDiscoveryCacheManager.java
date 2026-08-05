@@ -58,6 +58,6 @@ public final class ClientDiscoveryCacheManager implements ConfigsUpdateCallback 
     public boolean onDiscoveryEvent(DiscoverySource source, LocalPlayer player, Entity entity) {
         if (!source.isEnabled()) { return false; }
         if (EntityManager.isEntityTypeBlacklisted(entity.getType())) { return false; }
-        return source.dispatch(delegate, player, entity);
+        return delegate.onDiscovery(source, new DiscoverySource.ClientContext(player, entity));
     }
 }

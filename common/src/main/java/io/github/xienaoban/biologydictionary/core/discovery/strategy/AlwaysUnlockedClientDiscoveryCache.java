@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.world.entity.EntityType;
 
@@ -19,5 +20,13 @@ public final class AlwaysUnlockedClientDiscoveryCache implements ClientDiscovery
     @Override
     public DiscoveryRecord getRecord(EntityType<?> entityType) {
         return new DiscoveryRecord();
+    }
+
+    @Override
+    public void incrementalSync(EntityType<?> entityType, DiscoveryRecord record) {}
+
+    @Override
+    public boolean onDiscovery(DiscoverySource source, DiscoverySource.ClientContext ctx) {
+        return false;
     }
 }

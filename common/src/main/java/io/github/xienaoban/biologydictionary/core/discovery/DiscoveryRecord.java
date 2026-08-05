@@ -37,14 +37,14 @@ public record DiscoveryRecord(
     private static final Identifier NO_ID = Identifier.withDefaultNamespace("unknown");
 
     private static final Codec<DiscoverySource> SOURCE_CODEC =
-            Codec.STRING.xmap(DiscoverySource::valueOf, DiscoverySource::name);
+            Codec.STRING.xmap(DiscoverySources::parseSource, source -> source.id().toString());
     private static final Codec<Biome.Precipitation> WEATHER_CODEC =
             Codec.STRING.xmap(Biome.Precipitation::valueOf, Biome.Precipitation::name);
 
     public static final Codec<DiscoveryRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.LONG.optionalFieldOf("time", NO_TIME).forGetter(DiscoveryRecord::firstDiscoveryTime),
             Codec.LONG.optionalFieldOf("tick", NO_TIME).forGetter(DiscoveryRecord::firstDiscoveryTick),
-            SOURCE_CODEC.optionalFieldOf("source", DiscoverySource.UNKNOWN).forGetter(DiscoveryRecord::source),
+            SOURCE_CODEC.optionalFieldOf("source", DiscoverySources.UNKNOWN).forGetter(DiscoveryRecord::source),
             Identifier.CODEC.optionalFieldOf("dimension", NO_ID).forGetter(DiscoveryRecord::dimension),
             Identifier.CODEC.optionalFieldOf("biome", NO_ID).forGetter(DiscoveryRecord::biome),
             BlockPos.CODEC.optionalFieldOf("position", BlockPos.ZERO).forGetter(DiscoveryRecord::position),
@@ -54,7 +54,7 @@ public record DiscoveryRecord(
     ).apply(instance, DiscoveryRecord::new));
 
     public DiscoveryRecord() {
-        this(DiscoverySource.UNKNOWN);
+        this(DiscoverySources.UNKNOWN);
     }
 
     public DiscoveryRecord(DiscoverySource source) {
@@ -64,7 +64,7 @@ public record DiscoveryRecord(
     public static DiscoveryRecord readFromBuf(FriendlyByteBuf buf) {
         long time = buf.readLong();
         long tick = buf.readLong();
-        DiscoverySource source = DiscoverySource.valueOf(buf.readUtf());
+        DiscoverySource source = DiscoverySources.parseSource(buf.readUtf());
         String dimStr = buf.readUtf();
         Identifier dimension = dimStr.isEmpty() ? null : Identifier.tryParse(dimStr);
         String bioStr = buf.readUtf();
@@ -79,7 +79,7 @@ public record DiscoveryRecord(
     public void writeToBuf(FriendlyByteBuf buf) {
         buf.writeLong(firstDiscoveryTime);
         buf.writeLong(firstDiscoveryTick);
-        buf.writeUtf(source.name());
+        buf.writeUtf(source.id().toString());
         buf.writeUtf(dimension != null ? dimension.toString() : "");
         buf.writeUtf(biome != null ? biome.toString() : "");
         buf.writeBlockPos(position);

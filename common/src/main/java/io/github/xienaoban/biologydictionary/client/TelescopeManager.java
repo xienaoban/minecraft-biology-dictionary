@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.client;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -93,7 +93,7 @@ public final class TelescopeManager {
                 float increment = 1.0f + (19.0f / 6.0f) * t;
                 discoveryProgress = Math.min(MAX_PROGRESS, discoveryProgress + increment);
                 if (discoveryProgress >= MAX_PROGRESS) {
-                    dcm.onDiscoveryEvent(DiscoverySource.TELESCOPE_OBSERVE, player, target);
+                    dcm.onDiscoveryEvent(DiscoverySources.TELESCOPE_OBSERVE, player, target);
                     completedDisplayTicks = COMPLETED_DISPLAY_TICKS;
                 }
             }

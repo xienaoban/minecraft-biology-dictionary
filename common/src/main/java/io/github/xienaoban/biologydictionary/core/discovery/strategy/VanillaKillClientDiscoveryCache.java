@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.minecraft.stats.Stats;
@@ -16,8 +17,8 @@ import net.minecraft.world.entity.EntityType;
  */
 @ClientOnly
 public final class VanillaKillClientDiscoveryCache implements ClientDiscoveryCache {
-    private final DiscoveryRecord kill = new DiscoveryRecord(DiscoverySource.KILL);
-    private final DiscoveryRecord killedBy = new DiscoveryRecord(DiscoverySource.KILLED_BY);
+    private final DiscoveryRecord kill = new DiscoveryRecord(DiscoverySources.KILL);
+    private final DiscoveryRecord killedBy = new DiscoveryRecord(DiscoverySources.KILLED_BY);
 
     @Override
     public boolean isDiscovered(EntityType<?> entityType) {
@@ -42,5 +43,13 @@ public final class VanillaKillClientDiscoveryCache implements ClientDiscoveryCac
             }
         }
         return null;
+    }
+
+    @Override
+    public void incrementalSync(EntityType<?> entityType, DiscoveryRecord record) {}
+
+    @Override
+    public boolean onDiscovery(DiscoverySource source, DiscoverySource.ClientContext ctx) {
+        return false;
     }
 }

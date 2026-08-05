@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
@@ -19,13 +20,13 @@ public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource so
             RequestDiscoveryIncrementalPacket::new;
 
     private RequestDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), DiscoverySource.valueOf(buf.readUtf()));
+        this(buf.readVarInt(), DiscoverySources.parseSource(buf.readUtf()));
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeVarInt(entityId);
-        buf.writeUtf(source.name());
+        buf.writeUtf(source.id().toString());
     }
 
     @Override

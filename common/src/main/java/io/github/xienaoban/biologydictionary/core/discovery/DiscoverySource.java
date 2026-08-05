@@ -1,45 +1,58 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
-import io.github.xienaoban.biologydictionary.config.Configs;
-import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-
-import java.util.function.Predicate;
 
 /**
- * How a player discovered an entity.
- * Each value maps to the corresponding {@link DiscoveryEventListener} method.
+ * How a player discovered an entity. Identity ({@link #id()}) is fixed at construction;
+ * the display name is derived from it as {@code discovery_source.<namespace>.<path>}.
+ * Config gate and per-side validation are overridable methods.
+ *
+ * <p>Only the Biology Dictionary strategy honors {@link #clientCheck} / {@link #serverCheck};
+ * the other two strategies are hardcoded. Built-in sources and the registry live in
+ * {@link DiscoverySources}.
  */
-public enum DiscoverySource {
-    ENTITY_DETAIL_SCREEN(DiscoveryEventListener::onEntityDetailScreenOpened,    Configs.ServerConfigs::isDiscoveryByDetailScreen),
-    HIGHLIGHT(           DiscoveryEventListener::onEntityHighlighted,           Configs.ServerConfigs::isDiscoveryByHighlight),
-    TELESCOPE_OBSERVE(   DiscoveryEventListener::onEntityObservedWithTelescope, Configs.ServerConfigs::isDiscoveryByTelescope),
-    INTERACT(            DiscoveryEventListener::onEntityInteracted,            Configs.ServerConfigs::isDiscoveryByInteract),
-    KILL(                DiscoveryEventListener::onEntityKilled,                Configs.ServerConfigs::isDiscoveryByKill),
-    KILLED_BY(           DiscoveryEventListener::onPlayerKilledBy,              Configs.ServerConfigs::isDiscoveryByKilledBy),
-    UNKNOWN((l, p, e) -> false, configs -> false);
+public abstract class DiscoverySource {
 
-    private final Invoker<?> invoker;
-    private final Predicate<Configs.ServerConfigs> enabled;
+    private final Identifier id;
 
-    DiscoverySource(Invoker<?> invoker, Predicate<Configs.ServerConfigs> enabled) {
-        this.invoker = invoker;
-        this.enabled = enabled;
+    protected DiscoverySource(Identifier id) {
+        this.id = id;
     }
 
+    /** Serialization identity. Stable, fixed at construction. */
+    public final Identifier id() {
+        return id;
+    }
+
+    /** Display name; derived from {@link #id()} as {@code discovery_source.<namespace>.<path>}. */
+    public Component displayName() {
+        return TextUtils.translate("discovery_source." + id.getNamespace() + "." + id.getPath());
+    }
+
+    /** Config gate; default permissive. */
     public boolean isEnabled() {
-        return enabled.test(ConfigsManager.getServer());
+        return true;
     }
 
-    public <P extends Player> boolean dispatch(DiscoveryEventListener<P> listener, P player, Entity entity) {
-        @SuppressWarnings("unchecked")
-        boolean res = ((Invoker<P>) invoker).invoke(listener, player, entity);
-        return res;
+    /** Client-side validation; default permissive. */
+    @ClientOnly
+    public boolean clientCheck(ClientContext ctx) {
+        return true;
     }
 
-    @FunctionalInterface
-    private interface Invoker<P extends Player> {
-        boolean invoke(DiscoveryEventListener<P> listener, P player, Entity entity);
+    /** Server-side validation; default permissive. */
+    public boolean serverCheck(ServerContext ctx) {
+        return true;
     }
+
+    @ClientOnly
+    public record ClientContext(LocalPlayer player, Entity entity) {}
+
+    public record ServerContext(ServerPlayer player, Entity entity) {}
 }

@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.client.DiscoveryToast;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
@@ -65,7 +65,7 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
             client.gui.toastManager().addToast(new DiscoveryToast(packet.entityType));
 
             // Swing if INTERACT
-            if (packet.record.source() == DiscoverySource.INTERACT) {
+            if (packet.record.source() == DiscoverySources.INTERACT) {
                 player.swing(InteractionHand.MAIN_HAND);
             }
 
