@@ -78,6 +78,7 @@ public final class EntityDisplay {
     private ArmorStand createPlaceholder(Level level) {
         ArmorStand placeholder = EntityUtils.create(EntityTypes.ARMOR_STAND, level);
         EntityUtils.setupForDisplay(placeholder);
+        placeholder.setShowArms(true);
         return placeholder;
     }
 

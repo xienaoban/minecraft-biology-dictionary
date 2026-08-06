@@ -195,6 +195,7 @@ public final class EntityManager {
         defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_ENEMY));
         defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_ENEMY_HUMANOID,       defaultTags.getTag(Lang.TAG_DEFAULT_ENEMY)));
         defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_ENEMY_PATROL,         defaultTags.getTag(Lang.TAG_DEFAULT_ENEMY)));
+        defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_BOSS,                 defaultTags.getTag(Lang.TAG_DEFAULT_ENEMY)));
         defaultTags.addTag(new Tag(Lang.TAG_DEFAULT_INSTANCE_CREATION_FAILED));
 
         List<EntityDictionaryEntry> friendlyList = new ArrayList<>();
@@ -207,7 +208,13 @@ public final class EntityManager {
         List<EntityDictionaryEntry> enemyList = new ArrayList<>();
         List<EntityDictionaryEntry> humanoidList = new ArrayList<>();
         List<EntityDictionaryEntry> patrolList = new ArrayList<>();
+        List<EntityDictionaryEntry> bossList = new ArrayList<>();
         List<EntityDictionaryEntry> failedList = new ArrayList<>();
+
+        // `c:bosses` is a cross-platform convention tag (Fabric & NeoForge), already loaded into mcTagTags.
+        Set<EntityDictionaryEntry> bossEntries = mcTagTags.containsTag("c.bosses")
+                ? new HashSet<>(mcTagTags.getTag("c.bosses").getEntities())
+                : Set.of();
 
         for (EntityDictionaryEntry entry : sortedEntries) {
             if (entry.isInstanceCreationFailed()) {
@@ -219,6 +226,9 @@ public final class EntityManager {
             boolean ratio = entry.getType().getHeight() / entry.getType().getWidth() >= 2;
             if (Enemy.class.isAssignableFrom(entityClazz)) {
                 enemyList.add(entry);
+                if (bossEntries.contains(entry)) {
+                    bossList.add(entry);
+                }
                 if (ratio) {
                     humanoidList.add(entry);
                 }
@@ -251,6 +261,7 @@ public final class EntityManager {
                 }
             }
         }
+
         humanList.add(getRawEntityEntry(EntityTypes.IRON_GOLEM));
         aquaticList.add(getRawEntityEntry(EntityTypes.TURTLE));
         aquaticList.add(getRawEntityEntry(EntityTypes.AXOLOTL));
@@ -268,6 +279,7 @@ public final class EntityManager {
         defaultTags.addAllToTag(Lang.TAG_DEFAULT_ENEMY, enemyList);
         defaultTags.addAllToTag(Lang.TAG_DEFAULT_ENEMY_HUMANOID, humanoidList);
         defaultTags.addAllToTag(Lang.TAG_DEFAULT_ENEMY_PATROL, patrolList);
+        defaultTags.addAllToTag(Lang.TAG_DEFAULT_BOSS, bossList);
         defaultTags.addAllToTag(Lang.TAG_DEFAULT_INSTANCE_CREATION_FAILED, failedList);
     }
 

@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplay;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -61,10 +62,23 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
+        ScreenElementBox box = getBox();
         display.renderEntityCentered(ctx,
-                getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
+                box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getBottom() - 1,
                 (float) Math.atan(ctx.getMouseX() / 40F) / 10,
                 (float) Math.atan(ctx.getMouseY() / 40F) / 20);
+
+        ctx.renderRectangle(0x06794500, ctx.getZ(),
+                box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getBottom() - 1);
+        int color = 0x10794500;
+        ctx.renderRectangle(color, ctx.getZ(),
+                box.getLeft(), box.getTop() + 1, box.getLeft() + 1, box.getBottom() - 1);
+        ctx.renderRectangle(color, ctx.getZ(),
+                box.getRight() - 1, box.getTop() + 1, box.getRight(), box.getBottom() - 1);
+        ctx.renderRectangle(color, ctx.getZ(),
+                box.getLeft() + 1, box.getTop(), box.getRight() - 1, box.getTop() + 1);
+        ctx.renderRectangle(color, ctx.getZ(),
+                box.getLeft() + 1, box.getBottom() - 1, box.getRight() - 1, box.getBottom());
     }
 
     @Override
