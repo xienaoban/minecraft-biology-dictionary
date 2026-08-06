@@ -105,6 +105,7 @@
   "tag.biologydictionary.default.enemy"                    : "敌对生物",
   "tag.biologydictionary.default.enemy_humanoid"           : "人形生物",
   "tag.biologydictionary.default.enemy_patrol"             : "灾厄小队",
+  "tag.biologydictionary.default.boss"                     : "首领",
   "tag.biologydictionary.default.instance_creation_failed" : "实例创建失败",
 
   "discovery_source.biologydictionary.entity_detail_screen" : "生物辞典查阅",

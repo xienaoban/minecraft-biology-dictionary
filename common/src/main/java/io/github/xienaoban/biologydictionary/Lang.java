@@ -85,6 +85,7 @@ public final class Lang {
     TAG_DEFAULT_ENEMY                    = "tag.biologydictionary.default.enemy",
     TAG_DEFAULT_ENEMY_HUMANOID           = "tag.biologydictionary.default.enemy_humanoid",
     TAG_DEFAULT_ENEMY_PATROL             = "tag.biologydictionary.default.enemy_patrol",
+    TAG_DEFAULT_BOSS                     = "tag.biologydictionary.default.boss",
     TAG_DEFAULT_INSTANCE_CREATION_FAILED = "tag.biologydictionary.default.instance_creation_failed",
 
     WIDGET_ENTITY_OVERVIEW                 = "widget.biologydictionary.overview",

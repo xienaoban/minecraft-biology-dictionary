@@ -105,6 +105,7 @@
   "tag.biologydictionary.default.enemy"                    : "Enemy",
   "tag.biologydictionary.default.enemy_humanoid"           : "Humanoid",
   "tag.biologydictionary.default.enemy_patrol"             : "Patrol",
+  "tag.biologydictionary.default.boss"                     : "Boss",
   "tag.biologydictionary.default.instance_creation_failed" : "Instance Creation Failed",
 
   "discovery_source.biologydictionary.entity_detail_screen" : "Entity Detail Screen",

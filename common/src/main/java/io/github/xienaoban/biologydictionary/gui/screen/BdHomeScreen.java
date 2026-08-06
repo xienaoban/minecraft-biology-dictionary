@@ -381,8 +381,11 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
-            ctx.renderRectangle(0x08794500, 1F, ctx.getZ(),
-                    box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
+            int color = 0x0B794500;
+            ctx.renderRectangle(color, 1F, ctx.getZ(),
+                    box.getLeft() - 1, box.getTop() - 1, box.getRight() + 1, box.getBottom() + 1);
+            ctx.renderRectangle(color, ctx.getZ(),
+                    box.getLeft(), box.getBottom() - 6, box.getRight(), box.getBottom());
         }
 
         @Override
@@ -391,7 +394,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             float midX = (box.getLeft() + box.getRight()) / 2;
             float mouseY = ctx.getMouseY() - box.getTop();
 
-            ctx.renderRectangle(0x77794500, ctx.getZ(), box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
+            ctx.renderRectangle(0x77794500, ctx.getZ(),
+                    box.getLeft() - 1, box.getTop() - 1, box.getRight() + 1, box.getBottom() + 1);
 
             // Render button sections
             int colorHighlight, colorEgg;
@@ -403,9 +407,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 colorEgg = 0xd4ffffff;
             }
             ctx.renderRectangle(colorHighlight, ctx.getZ(),
-                    box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getTop() + BUTTONS_CUT);
+                    box.getLeft(), box.getTop(), box.getRight(), box.getTop() + BUTTONS_CUT);
             ctx.renderRectangle(colorEgg, ctx.getZ(),
-                    box.getLeft() + 1, box.getTop() + BUTTONS_CUT, box.getRight() - 1, box.getBottom() - 1);
+                    box.getLeft(), box.getTop() + BUTTONS_CUT, box.getRight(), box.getBottom());
 
             // Render icons for each section
             final int wh = 10;
