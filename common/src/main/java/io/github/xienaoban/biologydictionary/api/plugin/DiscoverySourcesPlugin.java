@@ -1,7 +1,9 @@
-package io.github.xienaoban.biologydictionary.api;
+package io.github.xienaoban.biologydictionary.api.plugin;
+
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 
 /**
- * Plugin for registering custom {@link io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource}s.
+ * Plugin for registering custom {@link DiscoverySource}s.
  * Discovered and dispatched exactly once during initialization.
  *
  * <p>A registered source is effective only under the Biology Dictionary discovery strategy; the
@@ -9,5 +11,9 @@ package io.github.xienaoban.biologydictionary.api;
  * via the server/client discovery manager when its own trigger condition is met.
  */
 public interface DiscoverySourcesPlugin {
-    void registerDiscoverySources(DiscoverySourcesRegistrar registrar);
+    void registerDiscoverySources(DiscoverySourcesPlugin.Registrar registrar);
+
+    interface Registrar {
+        void register(DiscoverySource source);
+    }
 }

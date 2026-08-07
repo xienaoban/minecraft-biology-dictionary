@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform;
 
-import io.github.xienaoban.biologydictionary.api.BiologyDictionaryClientPlugin;
-import io.github.xienaoban.biologydictionary.api.BiologyDictionaryPlugin;
+import io.github.xienaoban.biologydictionary.api.plugin.BiologyDictionaryClientPlugin;
+import io.github.xienaoban.biologydictionary.api.plugin.BiologyDictionaryPlugin;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;

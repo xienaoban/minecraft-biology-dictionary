@@ -1,8 +1,6 @@
 package io.github.xienaoban.biologydictionary.core;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.biologydictionary.api.EntityOrdersPlugin;
-import io.github.xienaoban.biologydictionary.api.EntityOrdersRegistrar;
+import io.github.xienaoban.biologydictionary.api.plugin.EntityOrdersPlugin;
 import io.github.xienaoban.biologydictionary.platform.PluginLookup;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
@@ -15,7 +13,7 @@ public final class EntityOrder {
     private static int order = 0;
 
     public static void init() {
-        EntityOrdersRegistrar registrar = t -> map.put(t, ++order);
+        EntityOrdersPlugin.Registrar registrar = t -> map.put(t, ++order);
 
         registerBuiltIn(registrar);
         for (EntityOrdersPlugin plugin : PluginLookup.find(EntityOrdersPlugin.class)) {
@@ -28,7 +26,7 @@ public final class EntityOrder {
         }
     }
 
-    public static void registerBuiltIn(EntityOrdersRegistrar registrar) {
+    public static void registerBuiltIn(EntityOrdersPlugin.Registrar registrar) {
         // peaceful
         registrar.register(EntityTypes.CHICKEN);
         registrar.register(EntityTypes.RABBIT);
@@ -130,7 +128,7 @@ public final class EntityOrder {
         registrar.register(EntityTypes.MANNEQUIN);
     }
 
-    public static void registerVanilla(EntityOrdersRegistrar registrar) {
+    public static void registerVanilla(EntityOrdersPlugin.Registrar registrar) {
         registrar.register(EntityTypes.CHICKEN);
         registrar.register(EntityTypes.COW);
         registrar.register(EntityTypes.PIG);

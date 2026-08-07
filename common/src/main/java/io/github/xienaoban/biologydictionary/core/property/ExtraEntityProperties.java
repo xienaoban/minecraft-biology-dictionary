@@ -1,8 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.biologydictionary.api.ExtraEntityPropertiesPlugin;
-import io.github.xienaoban.biologydictionary.api.ExtraEntityPropertiesRegistrar;
+import io.github.xienaoban.biologydictionary.api.plugin.ExtraEntityPropertiesPlugin;
 import io.github.xienaoban.biologydictionary.core.property.extra.*;
 import io.github.xienaoban.biologydictionary.platform.PluginLookup;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
@@ -15,7 +13,7 @@ import java.util.Map;
 
 public final class ExtraEntityProperties {
 
-    public static void registerBuiltIn(ExtraEntityPropertiesRegistrar registrar) {
+    public static void registerBuiltIn(ExtraEntityPropertiesPlugin.Registrar registrar) {
         registrar.register(EntityLootTableProperty.class, EntityLootTableProperty.FACTORY);
         registrar.register(EntitySpawnCountedProperty.class, EntitySpawnCountedProperty.FACTORY);
         registrar.register(EntityInventorySizeProperty.class, EntityInventorySizeProperty.FACTORY);
@@ -28,7 +26,7 @@ public final class ExtraEntityProperties {
     static final Map<Class<? extends Entity>, List<EntityProperty.Factory<?>>> registry = new HashMap<>();
 
     static void init() {
-        ExtraEntityPropertiesRegistrar registrar = new ExtraEntityPropertiesRegistrar() {
+        ExtraEntityPropertiesPlugin.Registrar registrar = new ExtraEntityPropertiesPlugin.Registrar() {
             @Override
             public <E extends Entity> void register(Class<? extends EntityProperty<E>> propertyClazz,
                     EntityProperty.Factory<E> factory) {

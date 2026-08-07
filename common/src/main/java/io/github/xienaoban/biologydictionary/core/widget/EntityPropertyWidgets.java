@@ -1,9 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.widget;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
-import io.github.xienaoban.biologydictionary.api.EntityPropertyWidgetsPlugin;
-import io.github.xienaoban.biologydictionary.api.EntityPropertyWidgetsRegistrar;
+import io.github.xienaoban.biologydictionary.api.plugin.EntityPropertyWidgetsPlugin;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.branch.*;
 import io.github.xienaoban.biologydictionary.core.widget.leaf.*;
@@ -20,7 +18,7 @@ import java.util.*;
 @ClientOnly
 public final class EntityPropertyWidgets {
 
-    public static void registerBuiltIn(EntityPropertyWidgetsRegistrar registrar) {
+    public static void registerBuiltIn(EntityPropertyWidgetsPlugin.Registrar registrar) {
         registrar.register(EntityDescriptionWidget.class, EntityDescriptionWidget.FACTORY);
         registrar.register(EntityDisplayWidget.class, EntityDisplayWidget.FACTORY);
         registrar.register(LivingEntityHealthWidget.class, LivingEntityHealthWidget.FACTORY);
@@ -67,7 +65,7 @@ public final class EntityPropertyWidgets {
     private static final Map<Class<? extends Entity>, List<Entry>> registry = new HashMap<>();
 
     public static void init() {
-        EntityPropertyWidgetsRegistrar registrar = new EntityPropertyWidgetsRegistrar() {
+        EntityPropertyWidgetsPlugin.Registrar registrar = new EntityPropertyWidgetsPlugin.Registrar() {
             private int orderIndex = 0;
             private final Set<Class<?>> visited = new HashSet<>();
 

@@ -1,8 +1,7 @@
 package io.github.xienaoban.biologydictionary;
 
-import io.github.xienaoban.biologydictionary.api.BiologyDictionaryPlugin;
-import io.github.xienaoban.biologydictionary.api.BiologySkillsPlugin;
-import io.github.xienaoban.biologydictionary.api.BiologySkillsRegistrar;
+import io.github.xienaoban.biologydictionary.api.plugin.BiologyDictionaryPlugin;
+import io.github.xienaoban.biologydictionary.api.plugin.BiologySkillsPlugin;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
@@ -39,7 +38,7 @@ public final class PluginLookupTest {
         public static final String MARKER_SHORT_NAME = "bd_test_marker_skill";
 
         @Override
-        public void registerBiologySkills(BiologySkillsRegistrar registrar) {
+        public void registerBiologySkills(BiologySkillsPlugin.Registrar registrar) {
             registrar.register(MarkerSkill.class, MarkerSkill.META);
         }
 

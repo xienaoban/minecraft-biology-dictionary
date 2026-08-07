@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.api;
+package io.github.xienaoban.biologydictionary.api.plugin;
 
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 

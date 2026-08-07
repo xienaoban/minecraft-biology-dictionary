@@ -1,9 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
-import io.github.xienaoban.biologydictionary.api.BiologySkillsPlugin;
-import io.github.xienaoban.biologydictionary.api.BiologySkillsRegistrar;
+import io.github.xienaoban.biologydictionary.api.plugin.BiologySkillsPlugin;
 import io.github.xienaoban.biologydictionary.core.skill.entity.*;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
@@ -23,7 +21,7 @@ import java.util.Map;
 
 public final class BiologySkills {
 
-    public static void registerBuiltIn(BiologySkillsRegistrar registrar) {
+    public static void registerBuiltIn(BiologySkillsPlugin.Registrar registrar) {
         registrar.register(HighlightEntitiesSkill.class, HighlightEntitiesSkill.META);
         registrar.register(GetSpawnEggSkill.class, GetSpawnEggSkill.META);
 
@@ -49,7 +47,7 @@ public final class BiologySkills {
     private static final Map<String, Class<?>> skillClasses = new LinkedHashMap<>();
 
     public static void init() {
-        BiologySkillsRegistrar registrar = new BiologySkillsRegistrar() {
+        BiologySkillsPlugin.Registrar registrar = new BiologySkillsPlugin.Registrar() {
             @Override
             public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
                 if (commonSkills.putIfAbsent(key(skillClass), meta) != null) {
