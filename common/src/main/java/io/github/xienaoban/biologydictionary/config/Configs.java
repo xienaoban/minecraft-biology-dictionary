@@ -106,12 +106,6 @@ public final class Configs {
         boolean bookItemObtainableFromWanderingTrader = true;
 
         /**
-         * Entity type IDs excluded from the Biology Dictionary.
-         */
-        @ConfigEntry
-        Set<String> entityTypeBlacklist = Set.of();
-
-        /**
          * Maximum time in seconds spent analyzing biome and structure spawn information during world startup.
          * Set to 0 to disable this information feature and produce empty data.
          */
@@ -199,6 +193,12 @@ public final class Configs {
         boolean discoveryByKilledBy = true;
 
         /**
+         * Entity type IDs excluded from the Biology Dictionary.
+         */
+        @ConfigEntry
+        Set<String> entityTypeBlacklist = Set.of();
+
+        /**
          * Skill costs configuration in YAML-friendly format.
          * Maps skill short names to their cost data (from SkillCost.toMap()).
          * Always contains all registered skills after initialization.
@@ -227,10 +227,6 @@ public final class Configs {
 
         public boolean isBookItemObtainableFromWanderingTrader() {
             return bookItemObtainableFromWanderingTrader;
-        }
-
-        public boolean isEntityTypeBlacklisted(String entityTypeId) {
-            return entityTypeBlacklist.contains(entityTypeId);
         }
 
         public int getEntitySpawnAnalysisTimeoutSeconds() {
@@ -283,6 +279,10 @@ public final class Configs {
 
         public boolean isDiscoveryByKilledBy() {
             return discoveryByKilledBy;
+        }
+
+        public boolean isEntityTypeBlacklisted(String entityTypeId) {
+            return entityTypeBlacklist.contains(entityTypeId);
         }
 
         public Map<String, Map<String, Object>> getSkillCosts() {
