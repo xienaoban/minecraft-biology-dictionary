@@ -1,8 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.biologydictionary.api.DiscoverySourcesPlugin;
-import io.github.xienaoban.biologydictionary.api.DiscoverySourcesRegistrar;
+import io.github.xienaoban.biologydictionary.api.plugin.DiscoverySourcesPlugin;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.PluginLookup;
@@ -108,7 +107,7 @@ public final class DiscoverySources {
         return source;
     }
 
-    private static final DiscoverySourcesRegistrar REGISTRAR = DiscoverySources::register;
+    private static final DiscoverySourcesPlugin.Registrar REGISTRAR = DiscoverySources::register;
 
     /**
      * Register third-party sources. Built-ins self-register via their static fields at class init;

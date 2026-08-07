@@ -1,8 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.biologydictionary.api.BiologyDictionaryClientPlugin;
-import io.github.xienaoban.biologydictionary.api.BiologyDictionaryPlugin;
+import io.github.xienaoban.biologydictionary.api.plugin.BiologyDictionaryClientPlugin;
+import io.github.xienaoban.biologydictionary.api.plugin.BiologyDictionaryPlugin;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
