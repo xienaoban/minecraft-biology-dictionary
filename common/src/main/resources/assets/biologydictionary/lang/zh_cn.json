@@ -255,6 +255,10 @@
   "property_widget.biologydictionary.discovery.coordinates"     : "详细坐标：",
   "property_widget.biologydictionary.discovery.weather"         : "当地天气：",
 
+  "dialog.biologydictionary.entity_blacklist.title": "确认列入生物黑名单？",
+  "dialog.biologydictionary.entity_blacklist.message": "拉黑后这些生物将从辞典中隐藏，不计入生物总数。如需解除，可在设置中或手动修改配置文件。",
+  "dialog.biologydictionary.entity_blacklist.message2": "但黑名单属于服务器配置，本操作仅保存到本地，当前为远程服务器，不会生效。如需在本服生效，请联系服主修改服务器配置。\n仍然继续吗？",
+
   "warn.biologydictionary.spawn_analysis_timed_out": "「生物生成群系/结构」自动分析超时（%s），信息可能不完整。\n已解析：%s/%s 个群系、%s/%s 个结构、%s 个模板。\n如需完整信息请提高配置项「%s」（会拖慢进入世界）；\n不需要则设为 0 关闭，仅使用数据包手工数据。",
 
   "text.biologydictionary.comma": "，",

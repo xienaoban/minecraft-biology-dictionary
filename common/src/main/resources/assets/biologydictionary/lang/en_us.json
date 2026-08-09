@@ -255,6 +255,10 @@
   "property_widget.biologydictionary.discovery.coordinates"     : "Coordinates: ",
   "property_widget.biologydictionary.discovery.weather"         : "Weather: ",
 
+  "dialog.biologydictionary.entity_blacklist.title": "Add to Entity Blacklist?",
+  "dialog.biologydictionary.entity_blacklist.message": "Once blacklisted, these creatures will be hidden from the Biology Dictionary and excluded from the total count. To undo, use Settings or manually edit the config file.",
+  "dialog.biologydictionary.entity_blacklist.message2": "However, the blacklist is a server-side config; this action is only saved locally and won't take effect on the current remote server. To make it effective here, ask the server owner to update the server config.\nProceed anyway?",
+
   "warn.biologydictionary.spawn_analysis_timed_out": "Automatic analysis of entity spawn biomes/structures timed out (%s), so the information may be incomplete.\nProcessed: %s/%s biomes, %s/%s structures, %s templates.\nIncrease config entry \"%s\" for complete information (slower world startup),\nor set it to 0 to disable analysis and rely only on data pack data.",
 
   "text.biologydictionary.comma": ", ",

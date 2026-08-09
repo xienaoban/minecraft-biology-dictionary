@@ -228,6 +228,10 @@ public final class Lang {
     PROPERTY_WIDGET_SPAWN_COUNTED_DESC              = "property_widget.biologydictionary.spawn_counted.desc",
     PROPERTY_WIDGET_SPAWN_COUNTED_CATEGORY          = "property_widget.biologydictionary.spawn_counted.category",
 
+    DIALOG_BLACKLIST_TITLE         = "dialog.biologydictionary.entity_blacklist.title",
+    DIALOG_BLACKLIST_MESSAGE       = "dialog.biologydictionary.entity_blacklist.message",
+    DIALOG_BLACKLIST_MESSAGE2      = "dialog.biologydictionary.entity_blacklist.message2",
+
     WARN_SPAWN_ANALYSIS_TIMED_OUT = "warn.biologydictionary.spawn_analysis_timed_out",
 
     TEXT_COMMA  = "text.biologydictionary.comma",
