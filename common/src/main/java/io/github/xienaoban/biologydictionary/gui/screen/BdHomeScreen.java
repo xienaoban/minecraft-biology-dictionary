@@ -11,8 +11,10 @@ import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplay;
+import io.github.xienaoban.biologydictionary.gui.component.LongButton;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.component.dialog.WarningDialog;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
@@ -279,6 +281,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private abstract class EntityCardWidget extends Widget {
         protected final EntityManager.EntityDictionaryEntry entry;
         private final Component name;
+        private final boolean isDiscovered;
 
         private final EntityDisplay display;
 
@@ -286,15 +289,12 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             super(2, 2);
             this.entry = entry;
             this.name = entry.getType().getDescription();
+            this.isDiscovered = ClientWorldSession.get().getDiscoveryCacheManager().isDiscovered(entry.getType());
             this.display = display;
         }
 
-        protected final boolean isDiscovered() {
-            return ClientWorldSession.get().getDiscoveryCacheManager().isDiscovered(entry.getType());
-        }
-
         protected final boolean isDiscoveredOrCreative() {
-            return isDiscovered() || PlayerUtils.isCreative(ClientUtils.getClientPlayer());
+            return isDiscovered || PlayerUtils.isCreative(ClientUtils.getClientPlayer());
         }
 
         protected abstract boolean shouldRenderDetail();
@@ -748,7 +748,21 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             if (!isMouseLeft(button)) { return super.onMouseDown(mouseX, mouseY, button); }
             ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-            applyBlacklist();
+            if (selectedEntityTypes.isEmpty()) {
+                sendScreenMessage(TextUtils.translate(Lang.TEXT_BLACKLIST_NO_SELECTION));
+                return true;
+            }
+            Component msg = ClientUtils.isLocalServer()
+                    ? TextUtils.translate(Lang.DIALOG_BLACKLIST_MESSAGE)
+                    : TextUtils.concat(
+                            TextUtils.translate(Lang.DIALOG_BLACKLIST_MESSAGE),
+                            TextUtils.newline(),
+                            TextUtils.translate(Lang.DIALOG_BLACKLIST_MESSAGE2));
+            showDialog(new WarningDialog(
+                    TextUtils.translate(Lang.DIALOG_BLACKLIST_TITLE),
+                    msg)
+                    .addButton(TextUtils.translate(Lang.GUI_OK), LongButton.STYLE_CONFIRM, this::applyBlacklist)
+                    .addButton(TextUtils.translate(Lang.GUI_CANCEL), LongButton.STYLE_CANCEL, null));
             return true;
         }
 

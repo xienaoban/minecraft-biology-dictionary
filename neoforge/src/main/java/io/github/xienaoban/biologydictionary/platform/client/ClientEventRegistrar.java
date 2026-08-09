@@ -22,10 +22,12 @@ public final class ClientEventRegistrar {
             NeoForge.EVENT_BUS.addListener(
                     (ClientPlayerNetworkEvent.LoggingIn event) -> listener.run(Minecraft.getInstance()));
         }
-        for (ClientEvents.ClientListener listener : ClientEvents.WORLD_DISCONNECTING) {
-            NeoForge.EVENT_BUS.addListener(
-                    (ClientPlayerNetworkEvent.LoggingOut event) -> listener.run(Minecraft.getInstance()));
-        }
+        // WORLD_DISCONNECTING is fired by MinecraftMixin instead of binding to NeoForge's
+        // LoggingOut, so both platforms share the same render-thread timing.
+        // for (ClientEvents.ClientListener listener : ClientEvents.WORLD_DISCONNECTING) {
+        //     NeoForge.EVENT_BUS.addListener(
+        //             (ClientPlayerNetworkEvent.LoggingOut event) -> listener.run(Minecraft.getInstance()));
+        // }
         for (ClientEvents.ClientListener listener : ClientEvents.END_TICK) {
             NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> listener.run(Minecraft.getInstance()));
         }

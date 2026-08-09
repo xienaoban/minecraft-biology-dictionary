@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.platform.gui.screen;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.dialog.Dialog;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.minecraft.network.chat.Component;
@@ -89,6 +90,18 @@ public abstract class ElementScreen extends CommonScreen {
 
     public final void updateBoxSizes() {
         rootScreenElement.resize(screenRenderingContext.getScreenWidth(), screenRenderingContext.getScreenHeight());
+    }
+
+    /**
+     * Show a modal {@link Dialog} on top of the current screen. The dialog is
+     * mounted under {@link #getRootScreenElement()} at the highest priority so
+     * it captures all hover/click input and is painted above every other
+     * element. It is removed by {@link Dialog#close()} (clicking the backdrop,
+     * the close button, or any added button).
+     */
+    public void showDialog(Dialog dialog) {
+        dialog.setParent(rootScreenElement);
+        updateBoxSizes();
     }
 
     public final int getTicks() {
