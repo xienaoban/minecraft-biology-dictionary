@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.core.discovery;
+package io.github.xienaoban.biologydictionary.api;
 
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -15,7 +15,7 @@ import net.minecraft.world.entity.Entity;
  *
  * <p>Only the Biology Dictionary strategy honors {@link #clientCheck} / {@link #serverCheck};
  * the other two strategies are hardcoded. Built-in sources and the registry live in
- * {@link DiscoverySources}.
+ * {@code DiscoverySources} (core package).
  */
 public abstract class DiscoverySource {
 
@@ -25,28 +25,38 @@ public abstract class DiscoverySource {
         this.id = id;
     }
 
-    /** Serialization identity. Stable, fixed at construction. */
+    /**
+     * Serialization identity. Stable, fixed at construction.
+     */
     public final Identifier id() {
         return id;
     }
 
-    /** Display name; derived from {@link #id()} as {@code discovery_source.<namespace>.<path>}. */
+    /**
+     * Display name; derived from {@link #id()} as {@code discovery_source.<namespace>.<path>}.
+     */
     public Component displayName() {
         return TextUtils.translate("discovery_source." + id.getNamespace() + "." + id.getPath());
     }
 
-    /** Config gate; default permissive. */
+    /**
+     * Config gate; default permissive.
+     */
     public boolean isEnabled() {
         return true;
     }
 
-    /** Client-side validation; default permissive. */
+    /**
+     * Client-side validation; default permissive.
+     */
     @ClientOnly
     public boolean clientCheck(ClientContext ctx) {
         return true;
     }
 
-    /** Server-side validation; default permissive. */
+    /**
+     * Server-side validation; default permissive.
+     */
     public boolean serverCheck(ServerContext ctx) {
         return true;
     }

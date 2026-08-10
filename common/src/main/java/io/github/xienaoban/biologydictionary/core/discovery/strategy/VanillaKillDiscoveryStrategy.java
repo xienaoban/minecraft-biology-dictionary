@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
+import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
@@ -28,6 +28,19 @@ public final class VanillaKillDiscoveryStrategy implements DiscoveryStrategy {
             discovered |= player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) > 0;
         }
         return discovered;
+    }
+
+    @Override
+    public DiscoveryRecord getRecord(ServerPlayer player, EntityType<?> entityType) {
+        if (ConfigsManager.getServer().isDiscoveryByKill()
+                && player.getStats().getValue(Stats.ENTITY_KILLED, entityType) > 0) {
+            return new DiscoveryRecord(DiscoverySources.KILL);
+        }
+        if (ConfigsManager.getServer().isDiscoveryByKilledBy()
+                && player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) > 0) {
+            return new DiscoveryRecord(DiscoverySources.KILLED_BY);
+        }
+        return null;
     }
 
     @Override

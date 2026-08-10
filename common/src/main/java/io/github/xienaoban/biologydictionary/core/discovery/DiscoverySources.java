@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
+import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.api.plugin.DiscoverySourcesPlugin;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
@@ -95,7 +96,9 @@ public final class DiscoverySources {
         return identifier != null ? byId(identifier) : UNKNOWN;
     }
 
-    /** Read-only snapshot of all registered sources. Only valid after {@link #init()}. */
+    /**
+     * Read-only snapshot of all registered sources. Only valid after {@link #init()}.
+     */
     public static Collection<DiscoverySource> values() {
         return Collections.unmodifiableCollection(REGISTRY.values());
     }

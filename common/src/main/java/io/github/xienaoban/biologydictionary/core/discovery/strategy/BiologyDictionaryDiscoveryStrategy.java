@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
+import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.storage.SavedDataDiscoveryStorage;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
@@ -12,7 +12,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Entity is discovered when the player interacts with it via the mod
@@ -35,8 +34,9 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         return storage.getAll(player.getUUID());
     }
 
-    public DiscoveryRecord getRecord(UUID playerUUID, EntityType<?> entityType) {
-        return storage.get(playerUUID, entityType);
+    @Override
+    public DiscoveryRecord getRecord(ServerPlayer player, EntityType<?> entityType) {
+        return storage.get(player.getUUID(), entityType);
     }
 
     @Override

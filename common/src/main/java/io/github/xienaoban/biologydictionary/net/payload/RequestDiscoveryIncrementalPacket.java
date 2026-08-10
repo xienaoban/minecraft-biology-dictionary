@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
@@ -13,7 +13,8 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 /**
  * Client requests to register a discovery: C -> S.
- * The caller should optimistically insert into the local cache before sending.
+ * The caller validates on the client first, then sends this request; the server is
+ * authoritative and replies with the record via {@link SendDiscoveryIncrementalPacket}.
  */
 public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource source) implements Packet {
     public static final Packet.Factory<RequestDiscoveryIncrementalPacket> FACTORY =
