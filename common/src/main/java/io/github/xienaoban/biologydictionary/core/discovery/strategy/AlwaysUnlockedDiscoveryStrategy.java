@@ -1,7 +1,8 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
+import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.api.DiscoverySource;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
@@ -18,7 +19,7 @@ public final class AlwaysUnlockedDiscoveryStrategy implements DiscoveryStrategy 
 
     @Override
     public DiscoveryRecord getRecord(ServerPlayer player, EntityType<?> entityType) {
-        return new DiscoveryRecord();
+        return DiscoveryRecord.simple(DiscoverySources.UNKNOWN);
     }
 
     @Override
