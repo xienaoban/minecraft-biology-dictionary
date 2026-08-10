@@ -1,6 +1,6 @@
 # Plugin API
 
-Biology Dictionary lets other mods register custom **skills**, **entity properties**, **entity display order**, and client-side **widgets** through per-registry plugin interfaces.
+Biology Dictionary lets other mods register custom **skills**, **entity properties**, **entity display order**, **discovery sources**, and client-side **widgets** through per-registry plugin interfaces.
 
 The framework discovers each plugin once during initialization and calls its registration method. That registry is then immutable for the rest of the game — registration happens only at startup, so downstream systems (config, networking, the UI) read a fixed result.
 
@@ -10,11 +10,11 @@ Each registry has its own plugin interface with one registration method. Impleme
 
 | Registry | Plugin interface | Registrar | Callback | Side |
 |---|---|---|---|---|
-| Skills | `BiologySkillsPlugin` | `BiologySkillsRegistrar` | `registerBiologySkills` | common |
-| Extra entity properties | `ExtraEntityPropertiesPlugin` | `ExtraEntityPropertiesRegistrar` | `registerExtraEntityProperties` | common |
-| Entity display order | `EntityOrdersPlugin` | `EntityOrdersRegistrar` | `registerEntityOrders` | common |
-| Discovery sources | `DiscoverySourcesPlugin` | `DiscoverySourcesRegistrar` | `registerDiscoverySources` | common |
-| Widgets | `EntityPropertyWidgetsPlugin` | `EntityPropertyWidgetsRegistrar` | `registerEntityPropertyWidgets` | client only |
+| Skills | `BiologySkillsPlugin` | `BiologySkillsPlugin.Registrar` | `registerBiologySkills` | common |
+| Extra entity properties | `ExtraEntityPropertiesPlugin` | `ExtraEntityPropertiesPlugin.Registrar` | `registerExtraEntityProperties` | common |
+| Entity display order | `EntityOrdersPlugin` | `EntityOrdersPlugin.Registrar` | `registerEntityOrders` | common |
+| Discovery sources | `DiscoverySourcesPlugin` | `DiscoverySourcesPlugin.Registrar` | `registerDiscoverySources` | common |
+| Widgets | `EntityPropertyWidgetsPlugin` | `EntityPropertyWidgetsPlugin.Registrar` | `registerEntityPropertyWidgets` | client only |
 
 The common interfaces run on both the client and the dedicated server. The widget interfaces are client-only (`@ClientOnly`), because widgets only exist on the client.
 
@@ -60,11 +60,8 @@ dispatches the callback it cares about.
 
 All in package `io.github.xienaoban.biologydictionary.api`:
 
-- `BiologySkillsPlugin` / `BiologySkillsRegistrar`
-- `ExtraEntityPropertiesPlugin` / `ExtraEntityPropertiesRegistrar`
-- `EntityOrdersPlugin` / `EntityOrdersRegistrar`
-- `DiscoverySourcesPlugin` / `DiscoverySourcesRegistrar`
-- `EntityPropertyWidgetsPlugin` / `EntityPropertyWidgetsRegistrar`
+- Plugin interfaces: `BiologySkillsPlugin` / `ExtraEntityPropertiesPlugin` / `EntityOrdersPlugin` / `DiscoverySourcesPlugin` / `EntityPropertyWidgetsPlugin` (each Registrar is a nested type of its interface)
+- Discovery API: `ServerDiscoveryApi` (server) / `ClientDiscoveryApi` (client) / `DiscoveryProgress` / `DiscoverySource` / `DiscoveryRecord`
 - `@BiologyDictionaryPlugin` (common), `@BiologyDictionaryClientPlugin` (client)
 
 ## Example: registering a skill
@@ -74,12 +71,11 @@ Author your skill the way built-in skills do (a class implementing `GeneralSkill
 ```java
 import io.github.xienaoban.biologydictionary.api.BiologyDictionaryPlugin;
 import io.github.xienaoban.biologydictionary.api.BiologySkillsPlugin;
-import io.github.xienaoban.biologydictionary.api.BiologySkillsRegistrar;
 
 @BiologyDictionaryPlugin
 public final class MyPlugin implements BiologySkillsPlugin {
     @Override
-    public void registerBiologySkills(BiologySkillsRegistrar registrar) {
+    public void registerBiologySkills(BiologySkillsPlugin.Registrar registrar) {
         registrar.register(MySkill.class, MySkill.META);
     }
 }
@@ -94,12 +90,11 @@ Properties and entity order follow the same shape with their own plugin interfac
 ```java
 import io.github.xienaoban.biologydictionary.api.BiologyDictionaryClientPlugin;
 import io.github.xienaoban.biologydictionary.api.EntityPropertyWidgetsPlugin;
-import io.github.xienaoban.biologydictionary.api.EntityPropertyWidgetsRegistrar;
 
 @BiologyDictionaryClientPlugin
 public final class MyClientPlugin implements EntityPropertyWidgetsPlugin {
     @Override
-    public void registerEntityPropertyWidgets(EntityPropertyWidgetsRegistrar registrar) {
+    public void registerEntityPropertyWidgets(EntityPropertyWidgetsPlugin.Registrar registrar) {
         registrar.register(MyWidget.class, MyWidget.FACTORY);
     }
 }
@@ -112,10 +107,14 @@ public final class MyClientPlugin implements EntityPropertyWidgetsPlugin {
 A discovery source labels *how* an entity was discovered (kill, telescope, …) and carries its own display name, config gate, and per-side validation. Subclass `DiscoverySource`, override what you need, store it in a `static` field so you can fire it later, then register it.
 
 ```java
+import io.github.xienaoban.biologydictionary.api.BiologyDictionaryPlugin;
+import io.github.xienaoban.biologydictionary.api.DiscoverySource;
+import io.github.xienaoban.biologydictionary.api.DiscoverySourcesPlugin;
+
 @BiologyDictionaryPlugin
 public final class MyPlugin implements DiscoverySourcesPlugin {
-    public static final DiscoverySource NET_CAPTURE = new DiscoverySource("net_capture") {
-        @Override public Component displayName() { return Component.translatable("discovery_source.mymod.net_capture"); }
+    public static final DiscoverySource NET_CAPTURE = new DiscoverySource(
+            Identifier.fromNamespaceAndPath("mymod", "net_capture")) {
         @Override public boolean clientCheck(ClientContext ctx) {
             return withinBlocks(ctx.player(), ctx.entity(), 5);     // client-side gate
         }
@@ -125,18 +124,18 @@ public final class MyPlugin implements DiscoverySourcesPlugin {
     };
 
     @Override
-    public void registerDiscoverySources(DiscoverySourcesRegistrar registrar) {
+    public void registerDiscoverySources(DiscoverySourcesPlugin.Registrar registrar) {
         registrar.register(NET_CAPTURE);
     }
 }
 ```
 
-`displayName()` is the only required override; `isEnabled()`, `serverCheck(ServerContext)`, and `clientCheck(ClientContext)` default to permissive. `clientCheck` and its `ClientContext` are client-only. The `@ClientOnly` annotation seen in this codebase is internal, replacing Fabric's `@Environment`; third-party mods don't need it.
+`displayName()` derives from the id as `discovery_source.<namespace>.<path>` by default, so it usually needs no override; `isEnabled()`, `serverCheck(ServerContext)`, and `clientCheck(ClientContext)` default to permissive. `clientCheck` and its `ClientContext` are client-only. The `@ClientOnly` annotation seen in this codebase is internal, replacing Fabric's `@Environment`; third-party mods don't need it.
 
-A registered source is effective **only under the Biology Dictionary discovery strategy**; the other two strategies ignore plugin sources. When your trigger condition is met, fire it through the discovery manager:
+A registered source is effective **only under the Biology Dictionary discovery strategy**; the other two strategies ignore plugin sources. When your trigger condition is met, fire it:
 
-- Server: `ServerWorldSession.get().getDiscoveryManager().onDiscoveryEvent(source, player, entity)`
-- Client: `ClientWorldSession.get().getDiscoveryCacheManager().onDiscoveryEvent(source, player, entity)`
+- Server: `ServerDiscoveryApi.recordDiscovery(source, player, entity)`
+- Client: `ClientDiscoveryApi.recordDiscovery(source, entity)`
 
 ## Contract & lifecycle
 

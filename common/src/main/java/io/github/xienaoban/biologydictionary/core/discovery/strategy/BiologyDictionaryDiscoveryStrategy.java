@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
+import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.api.DiscoverySource;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.storage.SavedDataDiscoveryStorage;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
@@ -49,7 +49,7 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         if (storage.isDiscovered(player.getUUID(), entityType)) {
             return false;
         }
-        DiscoveryRecord record = DiscoveryRecord.discoveredNow(
+        DiscoveryRecord record = DiscoveryRecord.standard(
                 player.level().getGameTime(), entity, source);
         if (storage.put(player.getUUID(), entityType, record)) {
             ServerNetManager.sendDiscoveryIncremental(player, entity, entityType, record);

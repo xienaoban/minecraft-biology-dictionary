@@ -1,10 +1,10 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
+import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
@@ -19,8 +19,8 @@ import net.minecraft.world.entity.EntityType;
  */
 @ClientOnly
 public final class VanillaKillClientDiscoveryCache implements ClientDiscoveryCache {
-    private final DiscoveryRecord kill = new DiscoveryRecord(DiscoverySources.KILL);
-    private final DiscoveryRecord killedBy = new DiscoveryRecord(DiscoverySources.KILLED_BY);
+    private final DiscoveryRecord kill = DiscoveryRecord.simple(DiscoverySources.KILL);
+    private final DiscoveryRecord killedBy = DiscoveryRecord.simple(DiscoverySources.KILLED_BY);
 
     @Override
     public boolean isDiscovered(EntityType<?> entityType) {

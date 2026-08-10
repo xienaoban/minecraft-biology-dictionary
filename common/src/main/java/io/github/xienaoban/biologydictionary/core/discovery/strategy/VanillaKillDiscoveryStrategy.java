@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
+import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
@@ -34,11 +34,11 @@ public final class VanillaKillDiscoveryStrategy implements DiscoveryStrategy {
     public DiscoveryRecord getRecord(ServerPlayer player, EntityType<?> entityType) {
         if (ConfigsManager.getServer().isDiscoveryByKill()
                 && player.getStats().getValue(Stats.ENTITY_KILLED, entityType) > 0) {
-            return new DiscoveryRecord(DiscoverySources.KILL);
+            return DiscoveryRecord.simple(DiscoverySources.KILL);
         }
         if (ConfigsManager.getServer().isDiscoveryByKilledBy()
                 && player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) > 0) {
-            return new DiscoveryRecord(DiscoverySources.KILLED_BY);
+            return DiscoveryRecord.simple(DiscoverySources.KILLED_BY);
         }
         return null;
     }
@@ -52,12 +52,12 @@ public final class VanillaKillDiscoveryStrategy implements DiscoveryStrategy {
         // Injected before the stat is awarded, so the stat value is still the pre-event one.
         if (source == DiscoverySources.KILL) {
             if (player.getStats().getValue(Stats.ENTITY_KILLED, entityType) == 0) {
-                send(player, entity, entityType, DiscoveryRecord.discoveredNow(gameTick, entity, source));
+                send(player, entity, entityType, DiscoveryRecord.standard(gameTick, entity, source));
                 return true;
             }
         } else if (source == DiscoverySources.KILLED_BY) {
             if (player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) == 0) {
-                send(player, entity, entityType, DiscoveryRecord.discoveredNow(gameTick, entity, source));
+                send(player, entity, entityType, DiscoveryRecord.standard(gameTick, entity, source));
                 return true;
             }
         }
