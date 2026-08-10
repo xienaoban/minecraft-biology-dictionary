@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
+import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
@@ -50,10 +51,15 @@ public final class DiscoveryManager implements ConfigsUpdateCallback {
     }
 
     public boolean isDiscovered(ServerPlayer player, EntityType<?> entityType) {
-        if (player.isCreative()) {
-            return true;
-        }
         return strategy.isDiscovered(player, entityType);
+    }
+
+    /**
+     * Get the discovery record for the entity type, or {@code null} if undiscovered.
+     * Same pure-query semantics as {@link #isDiscovered}.
+     */
+    public DiscoveryRecord getRecord(ServerPlayer player, EntityType<?> entityType) {
+        return strategy.getRecord(player, entityType);
     }
 
     public boolean onDiscoveryEvent(DiscoverySource source, ServerPlayer player, Entity entity) {

@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
+import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 
@@ -11,9 +12,15 @@ public interface DiscoveryStrategy {
 
     /**
      * Check if the given entity type has been discovered by the player.
-     * Creative mode check should be done by the caller (DiscoveryManager).
+     * Pure query; creative mode is <b>not</b> considered here.
      */
     boolean isDiscovered(ServerPlayer player, EntityType<?> entityType);
+
+    /**
+     * Get the discovery record for the given entity type, or {@code null} if undiscovered.
+     * Requires an online player; offline queries are not supported.
+     */
+    DiscoveryRecord getRecord(ServerPlayer player, EntityType<?> entityType);
 
     /**
      * Handle a discovery event. Each strategy decides which sources to record;
