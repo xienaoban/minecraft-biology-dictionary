@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary;
 
+import io.github.xienaoban.biologydictionary.api.plugin.ExtraEntityPropertiesPlugin;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
 import io.github.xienaoban.biologydictionary.core.property.ExtraEntityProperties;
 import io.github.xienaoban.biologydictionary.net.PacketPayloads;
@@ -24,7 +25,7 @@ public class RegistrarsTest {
     //         var naming = new NamingConventionValidator(EntityPropertyWidget.class, 0);
     //         var sameSource = new SameSourceValidator("FACTORY");
     //
-    //         EntityPropertyWidgets.registerBuiltIn(new EntityPropertyWidgets.Registrar() {
+    //         EntityPropertyWidgets.registerBuiltIn(new EntityPropertyWidgetsRegistrar() {
     //             @Override
     //             public <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz, EntityPropertyWidget.Factory<E> widgetFactory) {
     //                 uniqueness.validate(widgetClazz);
@@ -46,7 +47,7 @@ public class RegistrarsTest {
             var naming = new NamingConventionValidator(EntityProperty.class, 0);
             var sameSource = new SameSourceValidator("FACTORY");
 
-            ExtraEntityProperties.registerBuiltIn(new ExtraEntityProperties.Registrar() {
+            ExtraEntityProperties.registerBuiltIn(new ExtraEntityPropertiesPlugin.Registrar() {
                 @Override
                 public <E extends Entity> void register(Class<? extends EntityProperty<E>> propertyClazz, EntityProperty.Factory<E> factory) {
                     uniqueness.validate(propertyClazz);

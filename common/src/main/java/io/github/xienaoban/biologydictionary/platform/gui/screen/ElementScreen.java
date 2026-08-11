@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.platform.gui.screen;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.dialog.Dialog;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.minecraft.network.chat.Component;
@@ -18,7 +19,6 @@ public abstract class ElementScreen extends CommonScreen {
         super(component);
         rootScreenElement = new RootScreenElement();
         hoveredElement = null;
-
         ticks = 0;
     }
 
@@ -80,24 +80,8 @@ public abstract class ElementScreen extends CommonScreen {
         return hoveredElement;
     }
 
-    private void updateHoveredElement(float x, float y) {
-        // Full search each frame. The old incremental shortcut only descended from
-        // the last hovered element, which assumes sibling elements never overlap —
-        // but fixed elements (e.g. the discovery bar) overlap their page, so a
-        // pointer moving from the page into the bar would stay stuck on the page.
-        hoveredElement = rootScreenElement.hover(x, y);
-    }
-
     public final ScreenElement getSelectedElement() {
         return selectedElement;
-    }
-
-    private void updateSelectedElement() {
-        ScreenElement element = getHoveredElement();
-        while (element != null && !element.isSelectable()) {
-            element = element.getParent();
-        }
-        selectedElement = element;
     }
 
     public final ScreenElement getRootScreenElement() {
@@ -106,6 +90,18 @@ public abstract class ElementScreen extends CommonScreen {
 
     public final void updateBoxSizes() {
         rootScreenElement.resize(screenRenderingContext.getScreenWidth(), screenRenderingContext.getScreenHeight());
+    }
+
+    /**
+     * Show a modal {@link Dialog} on top of the current screen. The dialog is
+     * mounted under {@link #getRootScreenElement()} at the highest priority so
+     * it captures all hover/click input and is painted above every other
+     * element. It is removed by {@link Dialog#close()} (clicking the backdrop,
+     * the close button, or any added button).
+     */
+    public void showDialog(Dialog dialog) {
+        dialog.setParent(rootScreenElement);
+        updateBoxSizes();
     }
 
     public final int getTicks() {
@@ -119,13 +115,29 @@ public abstract class ElementScreen extends CommonScreen {
      */
     protected abstract void resizeBox(int width, int height);
 
+    private void updateHoveredElement(float x, float y) {
+        // Full search each frame. The old incremental shortcut only descended from
+        // the last hovered element, which assumes sibling elements never overlap —
+        // but fixed elements (e.g. the discovery bar) overlap their page, so a
+        // pointer moving from the page into the bar would stay stuck on the page.
+        hoveredElement = rootScreenElement.hover(x, y);
+    }
+
+    private void updateSelectedElement() {
+        ScreenElement element = getHoveredElement();
+        while (element != null && !element.isSelectable()) {
+            element = element.getParent();
+        }
+        selectedElement = element;
+    }
+
     private void showExceptionMessageAndCloseScreen(String message, Throwable throwable) {
         onClose();
         BiologyDictionaryClient.printThrowableToLoggerAndGame(message, throwable);
     }
 
     private final class RootScreenElement extends ScreenElement {
-        public RootScreenElement() {
+        private RootScreenElement() {
             super(false);
         }
 

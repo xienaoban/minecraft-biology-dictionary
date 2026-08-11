@@ -23,8 +23,12 @@ import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.dolphin.Dolphin;
 import net.minecraft.world.entity.animal.equine.Horse;
+import net.minecraft.world.entity.animal.equine.Markings;
+import net.minecraft.world.entity.animal.equine.Variant;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
@@ -146,6 +150,10 @@ public final class EntityUtils {
         return getEntityTypeId(entityType).toString();
     }
 
+    public static Item getSpawnEggItem(EntityType<?> entityType) {
+        return SpawnEggItem.byId(entityType);
+    }
+
     // ============================================================================ //
     //                             Entity Method Utils                              //
     // ============================================================================ //
@@ -246,7 +254,8 @@ public final class EntityUtils {
     }
 
     public static void setNbt(Entity entity, CompoundTag nbt) {
-        TagValueInput nbtIn = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, entity.registryAccess(), nbt);
+        TagValueInput nbtIn = (TagValueInput) TagValueInput.create(
+                ProblemReporter.DISCARDING, entity.registryAccess(), nbt);
         entity.load(nbtIn);
     }
 
@@ -369,9 +378,7 @@ public final class EntityUtils {
         return entity.isBaby();
     }
 
-    public static void setVariantAndMarkings(Horse entity,
-                                             net.minecraft.world.entity.animal.equine.Variant variant,
-                                             net.minecraft.world.entity.animal.equine.Markings markings) {
+    public static void setVariantAndMarkings(Horse entity, Variant variant, Markings markings) {
         ((HorseIMixin) entity).biologydictionary$invokeSetVariantAndMarkings(variant, markings);
     }
 }

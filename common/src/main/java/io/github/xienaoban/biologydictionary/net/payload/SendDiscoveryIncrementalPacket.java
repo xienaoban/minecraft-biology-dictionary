@@ -1,8 +1,9 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
+import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.client.DiscoveryToast;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecordSerializer;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
@@ -23,11 +24,12 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 /**
  * Server notifies client of a new discovery: S -> C.
  */
-public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityType, DiscoveryRecord record) implements Packet {
+public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityType, DiscoveryRecord record)
+        implements Packet {
     public static final Packet.Factory<SendDiscoveryIncrementalPacket> FACTORY = SendDiscoveryIncrementalPacket::new;
 
     private SendDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), readEntityType(buf), DiscoveryRecord.readFromBuf(buf));
+        this(buf.readVarInt(), readEntityType(buf), DiscoveryRecordSerializer.readFromBuf(buf));
     }
 
     private static EntityType<?> readEntityType(FriendlyByteBuf buf) {
@@ -39,13 +41,14 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
     public void write(FriendlyByteBuf buf) {
         buf.writeVarInt(entityId);
         buf.writeUtf(EntityUtils.getEntityTypeIdName(entityType));
-        record.writeToBuf(buf);
+        DiscoveryRecordSerializer.writeToBuf(buf, record);
     }
 
     @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        @ClientOnly final class CO { static void receive(SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(
+                SendDiscoveryIncrementalPacket packet, ClientNetApi.Context ctx) {
             ClientWorldSession cws = ClientWorldSession.get();
             if (cws == null) {
                 LOGGER.warn("Null ClientWorldSession. Ignored.", new RuntimeException());
@@ -57,13 +60,13 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
             ClientLevel level = ClientUtils.getClientLevel(client);
 
             // Update discovery cache
-            cws.getDiscoveryClientCache().incrementalSync(packet.entityType, packet.record);
+            cws.getDiscoveryCacheManager().incrementalSync(packet.entityType, packet.record);
 
             // Show toast
             client.getToastManager().addToast(new DiscoveryToast(packet.entityType));
 
             // Swing if INTERACT
-            if (packet.record.source() == DiscoverySource.INTERACT) {
+            if (packet.record.source() == DiscoverySources.INTERACT) {
                 player.swing(InteractionHand.MAIN_HAND);
             }
 

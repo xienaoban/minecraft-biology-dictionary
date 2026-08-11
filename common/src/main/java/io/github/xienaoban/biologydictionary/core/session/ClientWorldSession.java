@@ -6,7 +6,7 @@ import io.github.xienaoban.biologydictionary.client.HighlightManager;
 import io.github.xienaoban.biologydictionary.client.TelescopeManager;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
-import io.github.xienaoban.biologydictionary.core.discovery.DelegatingClientDiscoveryCache;
+import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.world.entity.EntityType;
 
@@ -32,7 +32,8 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
                     LOGGER.info("ClientWorldSession initialized.");
                 } catch (Throwable e) {
                     LOGGER.error("Failed to initialize ClientWorldSession!", e);
-                    BiologyDictionaryClient.printThrowableToLoggerAndGame("ClientWorldSession failed to initialize!", e);
+                    BiologyDictionaryClient.printThrowableToLoggerAndGame(
+                            "ClientWorldSession failed to initialize!", e);
                 }
             }
         }
@@ -54,14 +55,14 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
     }
 
     private final HighlightManager highlightManager;
-    private final DelegatingClientDiscoveryCache discoveryClientCache;
+    private final ClientDiscoveryCacheManager discoveryCacheManager;
     private final FirstPersonShoulderEntityRenderer shoulderEntityRenderer;
     private final TelescopeManager telescopeManager;
     private final Set<EntityType<?>> failedRenderEntityTypes;
 
     private ClientWorldSession() {
         highlightManager = new HighlightManager();
-        discoveryClientCache = new DelegatingClientDiscoveryCache();
+        discoveryCacheManager = new ClientDiscoveryCacheManager();
         shoulderEntityRenderer = new FirstPersonShoulderEntityRenderer();
         telescopeManager = new TelescopeManager();
         failedRenderEntityTypes = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -69,15 +70,15 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
 
     @Override
     public void onConfigsUpdate(Configs.ClientConfigs clientConfigs, Configs.ServerConfigs serverConfigs) {
-        discoveryClientCache.onConfigsUpdate(clientConfigs, serverConfigs);
+        discoveryCacheManager.onConfigsUpdate(clientConfigs, serverConfigs);
     }
 
     public HighlightManager getHighlightManager() {
         return highlightManager;
     }
 
-    public DelegatingClientDiscoveryCache getDiscoveryClientCache() {
-        return discoveryClientCache;
+    public ClientDiscoveryCacheManager getDiscoveryCacheManager() {
+        return discoveryCacheManager;
     }
 
     public FirstPersonShoulderEntityRenderer getShoulderEntityRenderer() {
