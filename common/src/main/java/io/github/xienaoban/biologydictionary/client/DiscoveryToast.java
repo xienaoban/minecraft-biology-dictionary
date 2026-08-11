@@ -14,8 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 import org.jspecify.annotations.Nullable;
 
 @ClientOnly
@@ -30,8 +30,8 @@ public class DiscoveryToast implements Toast {
 
     public DiscoveryToast(EntityType<?> entityType) {
         this.entityName = EntityUtils.getEntityTypeNameText(entityType);
-        SpawnEggItem egg = SpawnEggItem.byId(entityType);
-        this.eggStack = egg != null ? egg.getDefaultInstance() : null;
+        Item spawnEgg = EntityUtils.getSpawnEggItem(entityType);
+        this.eggStack = spawnEgg == null ? null : spawnEgg.getDefaultInstance();
         this.createdAt = System.currentTimeMillis();
     }
 
