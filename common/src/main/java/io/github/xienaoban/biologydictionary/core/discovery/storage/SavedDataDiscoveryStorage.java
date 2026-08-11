@@ -3,7 +3,8 @@ package io.github.xienaoban.biologydictionary.core.discovery.storage;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecordSerializer;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.Identifier;
@@ -84,8 +85,9 @@ public final class SavedDataDiscoveryStorage extends SavedData {
 
     record Packed(Map<UUID, Map<Identifier, DiscoveryRecord>> players) {
         public static final Codec<Packed> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.unboundedMap(Identifier.CODEC, DiscoveryRecord.CODEC))
-                        .fieldOf("players").forGetter(Packed::players)
+                Codec.unboundedMap(UUIDUtil.STRING_CODEC,
+                                Codec.unboundedMap(Identifier.CODEC, DiscoveryRecordSerializer.CODEC)
+                        ).fieldOf("players").forGetter(Packed::players)
         ).apply(instance, Packed::new));
     }
 }

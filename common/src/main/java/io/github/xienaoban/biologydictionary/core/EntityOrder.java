@@ -1,22 +1,32 @@
 package io.github.xienaoban.biologydictionary.core;
 
+import io.github.xienaoban.biologydictionary.api.plugin.EntityOrdersPlugin;
+import io.github.xienaoban.biologydictionary.platform.PluginLookup;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 
 import java.util.HashMap;
 
-final class EntityOrder {
+public final class EntityOrder {
     static HashMap<EntityType<?>, Integer> map = new HashMap<>();
 
     private static int order = 0;
 
     public static void init() {
-        map.clear();
-        registerBuiltIn(EntityOrder::register);
-        // registerVanilla(EntityOrder::register);
+        EntityOrdersPlugin.Registrar registrar = t -> map.put(t, ++order);
+
+        registerBuiltIn(registrar);
+        for (EntityOrdersPlugin plugin : PluginLookup.find(EntityOrdersPlugin.class)) {
+            try {
+                plugin.registerEntityOrders(registrar);
+            } catch (RuntimeException e) {
+                throw new IllegalStateException("Failed to register entity order from plugin "
+                        + plugin.getClass().getName(), e);
+            }
+        }
     }
 
-    public static void registerBuiltIn(Registrar registrar) {
+    public static void registerBuiltIn(EntityOrdersPlugin.Registrar registrar) {
         // peaceful
         registrar.register(EntityTypes.CHICKEN);
         registrar.register(EntityTypes.RABBIT);
@@ -118,7 +128,7 @@ final class EntityOrder {
         registrar.register(EntityTypes.MANNEQUIN);
     }
 
-    public static void registerVanilla(Registrar registrar) {
+    public static void registerVanilla(EntityOrdersPlugin.Registrar registrar) {
         registrar.register(EntityTypes.CHICKEN);
         registrar.register(EntityTypes.COW);
         registrar.register(EntityTypes.PIG);
@@ -205,13 +215,5 @@ final class EntityOrder {
         registrar.register(EntityTypes.ENDERMAN);
         registrar.register(EntityTypes.ENDERMITE);
         registrar.register(EntityTypes.SHULKER);
-    }
-
-    private static void register(EntityType<?> t) {
-        map.put(t, ++order);
-    }
-
-    public interface Registrar {
-        void register(EntityType<?> entityType);
     }
 }
