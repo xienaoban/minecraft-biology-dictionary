@@ -68,18 +68,17 @@ public class VanillaEntityCollectionTest {
         boolean success = true;
 
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
-            EntityManager.EntityClassInfo classInfo = WorldSession.get()
+            EntityManager.EntityDictionaryEntry entry = WorldSession.get()
                 .getEntityManager()
-                .getEntityClassInfo(entityType);
+                .getEntityEntry(entityType);
 
-            // skip entities that are not LivingEntity (like arrow or boat)
-            if (classInfo == null) {
+            if (entry == null || entry.getClazz().isEmpty()) {
                 LOGGER.trace("Skipped entities like arrow or boat: \"{}\".", EntityType.getKey(entityType));
                 continue;
             }
 
             // skip non-vanilla classes
-            Class<?> clazz = classInfo.getClazz();
+            Class<?> clazz = entry.getClazz().get();
             if (!DevUtils.isVanillaClass(clazz)) {
                 LOGGER.info("Skipped non-vanilla class for order: \"{}\".", clazz.getName());
                 continue;
@@ -87,7 +86,7 @@ public class VanillaEntityCollectionTest {
 
             if (EntityManager.getMyPreferredEntityOrder(entityType) == null) {
                 success = false;
-                LOGGER.error("Entity \"{}\" is not assigned an order.", classInfo.getStringId());
+                LOGGER.error("Entity \"{}\" is not assigned an order.", entry.getStringId());
             }
         }
         if (success) { helper.succeed(); }

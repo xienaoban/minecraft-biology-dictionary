@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+import io.github.xienaoban.biologydictionary.api.DiscoverySource;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
@@ -12,20 +13,21 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 /**
  * Client requests to register a discovery: C -> S.
- * The caller should optimistically insert into the local cache before sending.
+ * The caller validates on the client first, then sends this request; the server is
+ * authoritative and replies with the record via {@link SendDiscoveryIncrementalPacket}.
  */
 public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource source) implements Packet {
     public static final Packet.Factory<RequestDiscoveryIncrementalPacket> FACTORY =
             RequestDiscoveryIncrementalPacket::new;
 
     private RequestDiscoveryIncrementalPacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), DiscoverySource.valueOf(buf.readUtf()));
+        this(buf.readVarInt(), DiscoverySources.parseSource(buf.readUtf()));
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeVarInt(entityId);
-        buf.writeUtf(source.name());
+        buf.writeUtf(source.id().toString());
     }
 
     @Override
@@ -41,6 +43,6 @@ public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource so
         if (entity == null) {
             return;
         }
-        source.dispatch(sws.getDiscoveryManager(), player, entity);
+        sws.getDiscoveryManager().onDiscoveryEvent(source, player, entity);
     }
 }

@@ -29,17 +29,17 @@ public class VanillaEntityPropertyTest {
             for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
                 try {
                     // Skip entities that are not in our entity tree
-                    EntityManager.EntityClassInfo classInfo = WorldSession.get()
+                    EntityManager.EntityDictionaryEntry entry = WorldSession.get()
                         .getEntityManager()
-                        .getEntityClassInfo(entityType);
-                    if (classInfo == null) {
+                        .getEntityEntry(entityType);
+                    if (entry == null || entry.getClazz().isEmpty()) {
                         LOGGER.debug("Skipped entity type (no class info): {}", EntityType.getKey(entityType));
                         skipCount++;
                         continue;
                     }
 
                     // Skip non-vanilla classes
-                    Class<?> clazz = classInfo.getClazz();
+                    Class<?> clazz = entry.getClazz().get();
                     if (!DevUtils.isVanillaClass(clazz)) {
                         LOGGER.debug("Skipped non-vanilla entity class: {}", clazz.getName());
                         skipCount++;

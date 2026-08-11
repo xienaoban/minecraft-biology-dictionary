@@ -21,9 +21,12 @@ public final class ClientEventRegistrar {
         for (ClientEvents.ClientListener listener : ClientEvents.WORLD_CONNECTED) {
             ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> listener.run(client));
         }
-        for (ClientEvents.ClientListener listener : ClientEvents.WORLD_DISCONNECTING) {
-            ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> listener.run(client));
-        }
+        // WORLD_DISCONNECTING is fired by MinecraftMixin instead of binding to Fabric's DISCONNECT:
+        // Fabric's DISCONNECT fires on the network thread (Connection.channelInactive) while the
+        // render thread still draws the last frame, so teardown there races with the screen.
+        // for (ClientEvents.ClientListener listener : ClientEvents.WORLD_DISCONNECTING) {
+        //     ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> listener.run(client));
+        // }
         for (ClientEvents.ClientListener listener : ClientEvents.END_TICK) {
             ClientTickEvents.END_CLIENT_TICK.register(listener::run);
         }

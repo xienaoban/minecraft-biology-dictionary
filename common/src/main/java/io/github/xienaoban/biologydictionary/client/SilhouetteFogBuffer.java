@@ -35,9 +35,13 @@ import java.nio.ByteOrder;
  */
 @ClientOnly
 public final class SilhouetteFogBuffer {
-    /** start == end <= 0 makes linear_fog_value return 1 for every vertexDistance > 0. */
+    /**
+     * start == end <= 0 makes linear_fog_value return 1 for every vertexDistance > 0.
+     */
     private static final float FULL_FOG_EDGE = -1.0F;
-    /** Disable the render-distance fog term so only the environmental term decides. */
+    /**
+     * Disable the render-distance fog term so only the environmental term decides.
+     */
     private static final float FOG_OFF = Float.MAX_VALUE;
 
     private static GpuBufferSlice silhouetteSlice;
