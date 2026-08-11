@@ -1,10 +1,10 @@
-# 高 MC 版本 → 低 MC 版本移植指南
+# 不同 MC 版本的 Mod 移植指南
 
-阅读 `minecraft-biology-dictionary-26.2/AGENTS.md`，该规范同样适用于此。
+先阅读 `minecraft-biology-dictionary-26.2/AGENTS.md`，该规范同样适用于此。
 
 ## 版本链与目录
 
-需要用户手动指定回合的内容，通常为 vX.X.X ~ HEAD 的所有内容。
+需要用户手动指定回合的内容（通常为 tag:vX.X.X ~ HEAD 或 main-X.X.X ~ dev 的所有内容）。
 
 链式移植方法：
 - 26.2 移植到 26.1.2
@@ -12,11 +12,15 @@
 - 移植后的 1.21.11 移植到 1.21.1
 - 移植后的 1.21.1 移植到 1.20.1
 
-不要 26.2 -> 26.1.2、26.2 -> 1.21.11、26.2 ->1.21.1 ... 相邻版本移植改动更小，全都从 26.2 回合会有大量重复工作。
+不要 **26.2** -> 26.1.2、**26.2** -> 1.21.11、**26.2** ->1.21.1 ... 相邻版本移植改动更小，全都从 26.2 回合会有大量重复工作。
+
+这里描述的是“高 MC 版本 → 低 MC 版本”的移植顺序，反过来“低 → 高”原理是一样的，只是知识要反着使用。
 
 移植顺序：按上述链路，每做完一个版本停下来让维护者检查，不要连续移植，因为出问题概率还挺大的。
 
-| 目录 | 目标分支 | 架构 | MC | Java | 反射 | `资源`类名 |
+各版本主要特征与差异：
+
+| 目录 | 目标分支 | 架构 | MC | Java | 反射 | 资源类名 |
 |------|----------|------|-----|------|------|----------|
 | `minecraft-biology-dictionary-26.2` | `main-26.2` | 手写多平台 | 26.2 | 25 | ✅ 允许 | `Identifier` |
 | `minecraft-biology-dictionary-26.1.2` | `main-26.1.2` | 手写多平台 | 26.1.2 | 25 | ✅ 允许 | `Identifier` |
@@ -26,70 +30,115 @@
 
 所有目录共享同一 git remote (`git@github.com:xienaoban/minecraft-biology-dictionary.git`)，不同分支。
 
-MC 第一方源码：`mc-source/<MC 版本>/`。
+MC 第一方源码：`mc-source/<MC 版本>/`，可供查询。
 
 ## 工作流程
 
-1. 进入移植目标项目目录，`git pull` 目标分支（有冲突停下询问）
-2. 创建本地工作分支（如 `port-v1.2.3-from-26.2`），可自由 commit
-3. **获取增量改动清单**：
-   - 26.2 → 26.1.2：用户指定要移植的 commit/branch 区域
-   - 26.1.2 → 1.21.11：移植 26.1.2 的 `port-v1.2.3-from-26.2`
-   - 1.21.11 → 1.21.1：移植 1.21.11 的 `port-v1.2.3-from-26.1.2`
-   - 以此类推
-4. **逐文件遍历清单**，按 P1→P2→P3 策略处理，每个文件不可跳过
+1. 进入目标移植项目目录，拉取最新的目标分支（有冲突停下询问）
+2. 创建本地工作分支（如 `port-v1.2.3-from-26.2`），此分支内自由 commit
+3. **获取增量改动清单**：用户指定要移植的 commit/branch 区域、或者已知的上次移植的前序版本 `port-v1.2.3-from-26.2`、`port-v1.2.3-from-1.21.1`
+4. **机械移植**，核心流程，后面我会重点讲什么是我定义的“机械移植”
 5. 小步提交，编译验证
 6. 全部完成后执行完整性检查
 
-### 为什么是增量链路
+## 核心原则与目标：机械移植 = 行级一致
 
-```
-26.2 dev ──diff打入──→ 26.1.2 port-from-26.2 ──diff打入──→ 1.21.11 port-from-26.2 ──diff打入──→ ...
-```
+所谓机械移植，就是不仅功能一致，还要求源码尽可能 **行级一致**。未来移植任务会非常多，尽可能统一不同版本源码可避免逐步失控。
 
-全程用 **diff 打入**（以目标底本为基础）。
+以下为“行级一致”的解释：
+- 本项目不同 MC 版本间始终保持着绝大部分代码的完全一致，只有少量代码因 MC 版本差异、模组平台架构差异而存在中等差异甚至完全不同
+- 因此大部分来自源 diff 的代码，都能在目标代码中找到完美匹配的位置进行插入/替换/删除，且无需修改任何源 diff 内容
+- 行级一致就是要达到这种类似 apply diff 的效果（之所以说是类似，因为 apply 未必成功），几乎仅需适配一下 MC 源码变化
+- 对于少量无法行级一致的代码，可以变通处理，偏向于少量适配，极端情况允许完全重写
 
-## 核心原则：机械移植 = 行级一致
+**一个约定：你可以认为，除了我让你移植的部分以外，各个版本的 main 分支的已实现功能是几乎完全一致的（版本差异导致的功能缺失除外）。**
+因此当遇到两边框架不一致时，不要想着把源框架顺手一起移植过来，而是必须在目标框架上适配（基本上，差异都是有原因的，尝试移植框架大概率失败）。
+也就是说，“行级一致”不仅要求 diff 部分被正确移植，还要求**非 diff 部分禁止被移植**。
 
-所谓机械移植，就是不仅功能一致，还要求源码尽可能 **行级一致**。未来移植任务会非常多，统一不同版本源码可避免逐步失控。
+移植完成后，最终需要能通过逐行的 diff 审计，**每个移植差异点都必须可归因**。
 
-最终要能逐行 diff 审计，**每个与 26.2 dev 原版的差异都必须可归因**。
+典型的不符合行级一致的错误案例举例（基本都是手贱的自以为是，我对此深恶痛绝）：
 
-### P1→P2→P3 策略
+1. 注释、字符串被自说自话地“优化润色”：
+   ```java
+   /**
+    * ABCD
+    */
+   ```
+   被移植为
+   ```java
+   /** ABCD */
+   ```
+   ，
+   ```java
+   "This is a pet of mine" + "设置文件"
+   ```
+   被移植为
+   ```java
+   "This is my pet" + "配置文件"
+   ```
+2. 代码结构被自说自话地 format：
+   ```java
+   if (A) { return 1; }
+   ```
+   被移植为
+   ```java
+   if (A) {
+      return 1;
+   }
+   ```
+   ，
+   ```java
+   if (!A) B;
+   else C;
+   ```
+   被移植为
+   ```java
+   if (A) C;
+   else B;
+   ```
+3. 移植不仅移植了 diff，还顺手把新框架移植了（违反“非 diff 部分禁止被移植”）
 
-| 优先级 | 策略 | 说明 |
-|--------|------|------|
-| **P1** | 以目标文件为底本，将源 diff 打入（A 新增文件可直接复制，无底本冲突） | 绝不整体复制源文件 |
-| **P2** | 编译报错 → 最小 API 适配 | 只改报错行，改动面收窄到最小 |
-| **P3** | API 差异太大（渲染管线等）→ 理解原意、等价重写 | 不得已才用，差异需记录归因 |
+不过 Java 的那几行 import 不在“行级一致”的范围，名字变了 import 顺序也变，是正常的，但是不用过度关心 import 顺序，后面我会单独 format imports。
 
-核心：**绝不整体复制源文件**。以目标文件为底本，用 `git diff <源base>..<源commit> -- <path>` 查看改动，逐处打入目标——只打入逻辑变更，不改架构相关代码（如 `Platform.load()` vs `@ExpectPlatform` 是基线差异，不是本次 diff）。
+### 移植策略
 
-### 三类文件处理
+**我并不限制你的移植策略**，反正原则和目标都和你说了，最终要达成目标、通过 diff 审查，以及我会手动进行测试。
 
-| 类型 | 处理 |
-|------|------|
-| **A 新增** | 直接复制（新文件没有底本冲突）→ P2 适配 |
-| **M 修改** | 以目标文件为底本，打入源 diff → P2 适配 |
-| **D 删除** | 删除目标对应文件，grep 清除残留引用 |
-| **R 重命名** | 执行重命名，旧文件删除 |
+但是我不得不警告你，有时改动的代码量会非常大非常杂，历史上你经常陷于其中久久不能收敛问题。因此以下有几点经验可供参考：
+
+1. 梳理要移植的内容，对于能够明确分段的内容，**分段移植**，每段移植完进行编译，编译通过后移植下一段，例如
+   - 类名重命名、类移动与包名修改，可批量完成
+   - 两个功能几乎无交集，可各自独立移植
+   - 新增大量文件，直接复制过来
+2. 可以尝试 apply diff，如果大量失败则放弃此方案，否则可以考虑适配少量 apply 失败的
+3. 有时代码比较大块，将所有代码移植完后可能要多次编译仍然有较多失败，记得及时反思问题所在，必要时停下与我讨论
+4. 对于差异大的代码，多参考 mc-source，理解修改的原本意图，适配/重新开发（但是历史上有时你会判断错意图，建议找我问一下），这部分代码的合理性会受严格质询
+5. 可能有少量代码是源版本特有的，如新生物的适配、特定版本特有问题修复、自制模组平台框架加固等，无需移植，拿不定主意就问我
+
+以上可供参考，但最终的移植方案需要你基于实际情况灵活考虑，例如
+- 从 26.2 移植到 26.1.2 有时甚至直接 git cherry pick 即可完成，因为这两个 MC 版本差异极小；
+- 但同样的内容从 26.1.2 移植到 1.21.11 可能就非常复杂，因为两者 MC 代码差异大、反射支持情况不同、模组平台也不同。
+对于复杂场景，建议你决定方案后找我对一下。
+
+## 注意事项
 
 ### 需要手动适配的文件
 
-以下文件不能简单 P1 复制或 diff 打入（版本差异太大），需逐文件手动处理：
+- 差异的二进制文件可以直接复制
+- 涉及版本号、构建的文件需要注意，可能需要部分手动适配合适的版本，例如
+  - `gradle.properties` 的依赖项版本，必须是目标版本可用的（建议问我）
+  - `build.gradle`、`gradle/wrapper/*` 的构建工具版本、写法
+  - `fabric.mod.json`
+- 涉及不同 MC 版本的文件，经常要重新寻找访问的 MC 接口，例如
+  - Mixin 类与 Mixin 配置
+  - Access 文件（`*.accesswidener`、`accesstransformer.cfg`）
+- 当然，还有源实现差异巨大的代码要手动适配，例如
+  - 高亮生物/方块的渲染、第一人称生物的渲染等各自客户端渲染模块
 
-- 构建系统：`build.gradle`、`settings.gradle`、`gradle.properties`、`gradle/wrapper/*`、`buildSrc/**`
-- 平台入口：`FabricBiologyDictionary.java`、`NeoForgeBiologyDictionary.java`、`BiologyDictionaryFabric.java`、`BiologyDictionaryNeoForge.java` 及其 Client 变体
-- Mixin 配置：`*.mixins.json`
-- 平台 metadata：`fabric.mod.json`、`META-INF/neoforge.mods.toml`
-- access 文件：`*.accesswidener`、`accesstransformer.cfg`
-- `architectury.common.json`
-- `.codex/`、`AGENTS.md`、`CLAUDE.md`、`TODO.md`
-- 图片二进制：`*.png`、`*.aseprite`
+### 架构转换映射表
 
-## 架构转换映射表
-
-26.x（手写多平台）与 1.21.x（Architectury）之间的等价关系：
+26.x（手写多平台）与 1.21.x（Architectury）差异非常大，里面有一些等价关系：
 
 | 26.x 模式 | 1.21.x 等价 |
 |-----------|-------------|
@@ -101,7 +150,11 @@ MC 第一方源码：`mc-source/<MC 版本>/`。
 | `FabricBiologyDictionary` 等入口 | **不覆盖**，保持目标版本 |
 | `PluginLookup + Bridge + Impl` | `PluginLookup` + `@ExpectPlatform static getBridge()` + 平台 `Impl` |
 
-## 各段 API 差异速查
+这部分框架改变，要求你必须使用目标平台的方式去实现。
+
+## 各版本 API 差异速查
+
+常见问题就直接基于下表修了，避免每次都吭哧吭哧查半天源码。
 
 ### 26.2 → 26.1.2
 
@@ -150,96 +203,24 @@ MC 第一方源码：`mc-source/<MC 版本>/`。
 | `VertexConsumer` 无 `defaultColor` | 有 `defaultColor`/`unsetDefaultColor` 抽象方法 |
 | `SpawnEggItem.byId(entityType)` | 走 `ItemUtils.getSpawnEggItem(entityType)` |
 
-## 操作流程（Phase by Phase）
+## 完整性检查
 
-### Phase 0：分析
+移植完成后进行移植完整性检查，宗旨是：
+- 不许少移植
+- 不许多移植
+- 不许自作主张、自作聪明、自说自话、自以为是
 
-```bash
-git diff --name-status origin/main-26.2..origin/dev
-```
-输出分类汇总：A 新增 / M 修改 / D 删除 / R 重命名。**只看不做**。
+### 逐文件 diff 审计
 
-### Phase 1：逐文件移植
+对每个被移植文件，拉取其在源仓库的 diff、与其在目标仓库移植的 diff；
+对每一处 diff，逐句逐字审计，确保没有不符合要求的差异，对每处差异归因。
+- MC 类名变更、API 差异导致的细微差别是合理的
+- 对于差异大的部分，需要二次判断实现是否合理
 
-按依赖从底层到上层（core → session → net → skill/widget → GUI → mixin）。
-
-1. 对 A 文件：直接复制（目标无底本冲突）
-2. 对 M 文件：以目标文件为底本，用 `git diff <源base>..<源commit> -- <path>` 查看改动，优先将 diff 打入，失败太多则逐行手动打入目标——只打入逻辑变更，不改架构相关代码。尽可能与源代码行级一致，形成类似 diff apply 的效果。
-3. 简单大块改动（如类重命名、包移动）可理解意图后按功能批量进行，不必拘泥于逐行。
-4. 对 D 文件：删除
-5. 对 R 文件：重命名
-
-每完成一批逻辑相关的文件，编译一次。内容基本对齐后，解决编译问题。
-
-最后按 diff 逐行审计是否机械，有问题再补。
-
-### Phase 2：编译 + 适配
-
-编译报错 → 按 P2 最小适配。常见适配：
-- `EntityTypes` → `EntityType`（26.2→旧版）
-- `Identifier` → `ResourceLocation`（1.21.1/1.20.1）
-- `net.neoforged` → `net.minecraftforge`（1.20.1）
-- `Platform.load()` → `@ExpectPlatform`（26.x→Architectury）
-- `List.addFirst()` → `list.add(0, e)`（1.20.1）
-- 架构差异大到无法 P2 → P3 重写
-
-### Phase 3：完整性检查
-
-```bash
-# 被删除的类是否仍有引用
-grep -rn "DeletedClassName" --include="*.java" .
-
-# @ExpectPlatform 配对（fabric/ 和 neoforge/或forge/ 都有实现）
-grep -rn "@ExpectPlatform" common/ --include="*.java"
-
-# Java 21 API 残留（仅 1.20.1）
-grep -rn "\.addFirst(" --include="*.java" .
-
-# neoforge → forge 路径（仅 1.20.1）
-grep -rn "neoforge\|net\.neoforged" forge/ --include="*.java"
-
-# 残留 TODO
-grep -rn "TODO.*adapt\|TODO.*port" --include="*.java" .
-```
-
-### Phase 4：逐文件 diff 审计
-
-对每个移植文件：
-```bash
-diff <(cd ../minecraft-biology-dictionary-26.2 && git show origin/dev:<path>) <target-path>
-```
-每个差异归因：P2 适配 / 架构差异 / P3 重写 / 文件不适用。
-
-## 构建命令
-
-### 26.x 项目
-```bash
-./gradlew common:compileJava fabric:compileJava neoforge:compileJava
-./gradlew fabric:runTestServer
-```
-
-### Architectury 项目（1.21.x / 1.20.1）
-```bash
-./gradlew fabric:compileJava neoforge:compileJava    # 1.20.1: forge:compileJava
-./gradlew build
-./gradlew fabric:runTestServer
-```
-
-## 编码约定（来自 AGENTS.md）
-
-- 26.x 之前（1.21.x、1.20.1）**禁止反射**调用 MC 原版，必须用 Mixin（混淆环境）
-- 26.x 允许反射但 Mixin 仍优先
-- 禁止 `org.jetbrains.annotations.Nullable` 和 `@NotNull`
-- `if`/`for` 等必须带花括号
-- 避免使用全限定类名，用 `import` + simple name
-- 不要格式化、重构或改动已有代码
+最终给出总结报告，给我审阅。
 
 ## 已知坑
 
-1. **不要用 `git am` / `git format-patch`**：大 commit 冲突多，直接逐文件手动移植
-2. **不要对 mod 自定义类留 TODO**：先在目标项目 grep 搜索确认是否存在
-3. **不要猜测 API 是否存在**：先查 `../mc-source/<version>/`
-4. **Mixin target 签名**：跨版本几乎肯定不同，需在目标 MC 源码找对应方法
-5. **Accessor 转型**：1.21.1 需要 `(XxxIMixin) (Object) obj` 中间转型
-6. **渲染部分**：`ScreenRenderingContext`、Mixin、渲染管线是 P3 重灾区
-7. **WSL 编译慢/I/O 错**：让用户在 Windows/IDEA 侧编译
+- **不要猜测 API 是否存在**：先查 `../mc-source/<version>/`
+- **Mixin target 签名**：跨版本几乎肯定不同，需在目标 MC 源码找对应方法
+- **渲染部分**：`ScreenRenderingContext`、Mixin、渲染管线是手动移植问题重灾区
