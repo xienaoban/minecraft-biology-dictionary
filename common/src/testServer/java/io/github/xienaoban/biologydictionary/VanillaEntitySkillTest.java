@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary;
 
 import com.mojang.authlib.GameProfile;
+import io.github.xienaoban.biologydictionary.api.plugin.BiologySkillsPlugin;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.skill.*;
 import io.github.xienaoban.biologydictionary.core.skill.entity.*;
@@ -55,7 +56,7 @@ public class VanillaEntitySkillTest {
 
     private static void generateEntityToSkillMapping() {
         // Use BiologySkills#registerBuiltIn to iterate through all registered skills
-        BiologySkills.registerBuiltIn(new BiologySkills.Registrar() {
+        BiologySkills.registerBuiltIn(new BiologySkillsPlugin.Registrar() {
             @Override
             public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
                 // Skip GeneralSkills, only process EntityTargetedSkills
@@ -175,7 +176,7 @@ public class VanillaEntitySkillTest {
 
     public void testSkillNamingConvention(GameTestHelper helper) {
         try {
-            BiologySkills.registerBuiltIn(new BiologySkills.Registrar() {
+            BiologySkills.registerBuiltIn(new BiologySkillsPlugin.Registrar() {
                 @Override
                 public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
                     // Skip GeneralSkills

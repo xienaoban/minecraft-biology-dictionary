@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary;
 
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
@@ -28,6 +29,8 @@ public final class BiologyDictionaryClient {
     private static BlockPos hitBlock;
     private static EntityProperties<? extends Entity> hitEntityProperties;
 
+    private static boolean showOnlyDiscoveredEntities =
+            ConfigsManager.getClient().isShowOnlyDiscoveredEntitiesByDefault();
     private static boolean demoMode = false;
     private static boolean debugMode = false;
 
@@ -124,6 +127,15 @@ public final class BiologyDictionaryClient {
         while ((text = pendingTextBoxLogs.poll()) != null) {
             printLogToTextBox(text, null);
         }
+    }
+
+    public static boolean shouldShowOnlyDiscoveredEntities() {
+        return showOnlyDiscoveredEntities;
+    }
+
+    public static boolean toggleShowOnlyDiscoveredEntities() {
+        showOnlyDiscoveredEntities = !showOnlyDiscoveredEntities;
+        return showOnlyDiscoveredEntities;
     }
 
     public static boolean isDemoMode() {
