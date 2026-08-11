@@ -1,8 +1,9 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
+import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -30,28 +31,40 @@ public final class VanillaKillDiscoveryStrategy implements DiscoveryStrategy {
     }
 
     @Override
-    public boolean onEntityKilled(ServerPlayer player, Entity entity) {
+    public DiscoveryRecord getRecord(ServerPlayer player, EntityType<?> entityType) {
+        if (ConfigsManager.getServer().isDiscoveryByKill()
+                && player.getStats().getValue(Stats.ENTITY_KILLED, entityType) > 0) {
+            return DiscoveryRecord.simple(DiscoverySources.KILL);
+        }
+        if (ConfigsManager.getServer().isDiscoveryByKilledBy()
+                && player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) > 0) {
+            return DiscoveryRecord.simple(DiscoverySources.KILLED_BY);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean onDiscovery(DiscoverySource source, DiscoverySource.ServerContext ctx) {
+        ServerPlayer player = ctx.player();
+        Entity entity = ctx.entity();
         EntityType<?> entityType = EntityUtils.getEntityType(entity);
-        // Injected at HEAD of Player.killedEntity, stats not yet updated
-        if (player.getStats().getValue(Stats.ENTITY_KILLED, entityType) == 0) {
-            DiscoveryRecord record = DiscoveryRecord.discoveredNow(
-                    player.level().getGameTime(), entity, DiscoverySource.KILL);
-            ServerNetManager.sendDiscoveryIncremental(player, entity, entityType, record);
-            return true;
+        long gameTick = player.level().getGameTime();
+        // Injected before the stat is awarded, so the stat value is still the pre-event one.
+        if (source == DiscoverySources.KILL) {
+            if (player.getStats().getValue(Stats.ENTITY_KILLED, entityType) == 0) {
+                send(player, entity, entityType, DiscoveryRecord.standard(gameTick, entity, source));
+                return true;
+            }
+        } else if (source == DiscoverySources.KILLED_BY) {
+            if (player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) == 0) {
+                send(player, entity, entityType, DiscoveryRecord.standard(gameTick, entity, source));
+                return true;
+            }
         }
         return false;
     }
 
-    @Override
-    public boolean onPlayerKilledBy(ServerPlayer player, Entity entity) {
-        EntityType<?> entityType = EntityUtils.getEntityType(entity);
-        // Injected before awardStat in ServerPlayer.die, stats not yet updated
-        if (player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) == 0) {
-            DiscoveryRecord record = DiscoveryRecord.discoveredNow(
-                    player.level().getGameTime(), entity, DiscoverySource.KILLED_BY);
-            ServerNetManager.sendDiscoveryIncremental(player, entity, entityType, record);
-            return true;
-        }
-        return false;
+    private static void send(ServerPlayer player, Entity entity, EntityType<?> entityType, DiscoveryRecord record) {
+        ServerNetManager.sendDiscoveryIncremental(player, entity, entityType, record);
     }
 }

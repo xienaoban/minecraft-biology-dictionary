@@ -44,10 +44,12 @@ public record RequestEntityOverviewPacket(String entityTypeId) implements Packet
         ReplyEntityOverviewPacket toSend;
         EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
         if (entityType != null) {
-            // Server-side guard: check if entity is locked
-            var manager = sws.getDiscoveryManager();
+            // Server-side guard: check if entity is locked.
+            // Creative players can always view the overview, so the check is done here manually
+            // rather than inside DiscoveryManager.isDiscovered (which is a pure query).
             if (!ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities()
-                    && !manager.isDiscovered(ctx.player(), entityType)) {
+                    && !ctx.player().isCreative()
+                    && !sws.getDiscoveryManager().isDiscovered(ctx.player(), entityType)) {
                 toSend = new ReplyEntityOverviewPacket(false, entityTypeId, null, null);
             } else {
                 EntityOverviewCache.CacheEntry cached = ws.getEntityOverviewCache()
