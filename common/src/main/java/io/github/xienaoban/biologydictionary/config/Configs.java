@@ -7,11 +7,13 @@ import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
+import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Main configuration data class for Biology Dictionary.
@@ -47,6 +49,12 @@ public final class Configs {
         @ConfigEntry
         boolean hideEntityDescriptionWidgetIfNotFound = true;
 
+        /**
+         * Whether entity lists show only discovered entities when the game starts.
+         */
+        @ConfigEntry
+        boolean showOnlyDiscoveredEntitiesByDefault = false;
+
         // =========================== Getters ============================
 
         public float getScreenScale() {
@@ -59,6 +67,10 @@ public final class Configs {
 
         public boolean isHideEntityDescriptionWidgetIfNotFound() {
             return hideEntityDescriptionWidgetIfNotFound;
+        }
+
+        public boolean isShowOnlyDiscoveredEntitiesByDefault() {
+            return showOnlyDiscoveredEntitiesByDefault;
         }
 
         // ============================= Misc =============================
@@ -181,6 +193,12 @@ public final class Configs {
         boolean discoveryByKilledBy = true;
 
         /**
+         * Entity type IDs excluded from the Biology Dictionary.
+         */
+        @ConfigEntry
+        Set<String> entityTypeBlacklist = Set.of();
+
+        /**
          * Skill costs configuration in YAML-friendly format.
          * Maps skill short names to their cost data (from SkillCost.toMap()).
          * Always contains all registered skills after initialization.
@@ -263,6 +281,10 @@ public final class Configs {
             return discoveryByKilledBy;
         }
 
+        public boolean isEntityTypeBlacklisted(String entityTypeId) {
+            return entityTypeBlacklist.contains(entityTypeId);
+        }
+
         public Map<String, Map<String, Object>> getSkillCosts() {
             return skillCosts;
         }
@@ -284,21 +306,14 @@ public final class Configs {
          */
         private void completeSkillCosts() {
             Map<String, Map<String, Object>> newCosts = new LinkedHashMap<>();
-            BiologySkills.registerBuiltIn(new BiologySkills.Registrar() {
-                @Override
-                public <T extends GeneralSkill> void register(Class<T> skillClass, GeneralSkill.Meta<T> meta) {
-                    String shortName = meta.shortName();
-                    Map<String, Object> v = skillCosts.get(shortName);
-                    newCosts.put(shortName, Objects.requireNonNullElseGet(v, () -> meta.getDefaultCost().toMap()));
-                }
-
-                @Override
-                public <T extends EntityTargetedSkill<?>> void register(Class<T> skillClass, EntityTargetedSkill.Meta<T> meta) {
-                    String shortName = meta.shortName();
-                    Map<String, Object> v = skillCosts.get(shortName);
-                    newCosts.put(shortName, Objects.requireNonNullElseGet(v, () -> meta.getDefaultCost().toMap()));
-                }
-            });
+            for (GeneralSkill.Meta<?> meta : BiologySkills.commonSkillMetas()) {
+                newCosts.put(meta.shortName(), Objects.requireNonNullElseGet(
+                        skillCosts.get(meta.shortName()), meta.getDefaultCost()::toMap));
+            }
+            for (EntityTargetedSkill.Meta<?> meta : BiologySkills.entityTargetedSkillMetas()) {
+                newCosts.put(meta.shortName(), Objects.requireNonNullElseGet(
+                        skillCosts.get(meta.shortName()), meta.getDefaultCost()::toMap));
+            }
             // Reduce the possibility of concurrency issues.
             skillCosts = newCosts;
         }

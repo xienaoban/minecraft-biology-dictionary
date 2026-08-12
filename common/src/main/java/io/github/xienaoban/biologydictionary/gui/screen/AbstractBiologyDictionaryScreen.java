@@ -240,6 +240,10 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         LOGGER.error("Bookmarks are full. Failed to add {} from last!", bookmark.getClass());
     }
 
+    public int getCurrPageIndex() {
+        return currPageIndex;
+    }
+
     public Page getCurrLeftPage() {
         return currLeftPage;
     }
@@ -338,6 +342,45 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     public final void sendScreenMessage(Component text, int color) {
         centeredMessage.setText(text, color);
+    }
+
+    protected static final class HorizontalElementContainer extends ScreenElement {
+        private static final float ELEMENT_PADDING = 2;
+
+        private final List<ScreenElement> elements = new ArrayList<>();
+
+        public HorizontalElementContainer() {
+            super(false);
+        }
+
+        public HorizontalElementContainer addElement(ScreenElement element) {
+            elements.add(element);
+            element.setParent(this);
+            resizeToFitElements();
+            return this;
+        }
+
+        private void resizeToFitElements() {
+            float width = 0;
+            float height = 0;
+            for (ScreenElement element : elements) {
+                if (width > 0) { width += ELEMENT_PADDING; }
+                width += element.getBox().getWidth();
+                height = Math.max(height, element.getBox().getHeight());
+            }
+            getBox().setSize(width, height);
+        }
+
+        @Override
+        protected void onResize(int width, int height) {
+            ScreenElementBox box = getBox();
+            float elementLeft = box.getLeft();
+            for (ScreenElement element : elements) {
+                ScreenElementBox elementBox = element.getBox();
+                elementBox.setPosition(elementLeft, box.getTop() + (box.getHeight() - elementBox.getHeight()) / 2);
+                elementLeft += elementBox.getWidth() + ELEMENT_PADDING;
+            }
+        }
     }
 
     public abstract class Bookmark extends ScreenElement {

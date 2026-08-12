@@ -40,6 +40,9 @@ public final class BiologyDictionaryClient {
 
     private EntityProperties<? extends Entity> hitEntityProperties;
 
+    private static boolean showOnlyDiscoveredEntities =
+            ConfigsManager.getClient().isShowOnlyDiscoveredEntitiesByDefault();
+
     private BiologyDictionaryClient() {
         hitEntity = null;
         hitBlock = null;
@@ -143,6 +146,15 @@ public final class BiologyDictionaryClient {
                         )
                 )
         ));
+    }
+
+    public static boolean shouldShowOnlyDiscoveredEntities() {
+        return showOnlyDiscoveredEntities;
+    }
+
+    public static boolean toggleShowOnlyDiscoveredEntities() {
+        showOnlyDiscoveredEntities = !showOnlyDiscoveredEntities;
+        return showOnlyDiscoveredEntities;
     }
 
     public static boolean isDemoMode() { return demoMode; }

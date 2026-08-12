@@ -159,10 +159,12 @@ public final class ScreenRenderingContext {
     }
 
     public ScaleRAII scaleOnce(float size) {
+        if (size == 1) { return ScaleRAII.DO_NOTHING; }
         return new ScaleRAII(this, size);
     }
 
     public ScaleRAII scaleOnce(float size, float z) {
+        if (size == 1 && z == 0) { return ScaleRAII.DO_NOTHING; }
         return new ScaleRAII(this, size, z);
     }
 
@@ -257,8 +259,8 @@ public final class ScreenRenderingContext {
     public void renderRectangle(int color, float width, float z, float left, float top, float right, float bottom) {
          renderRectangle(color, z, left, top, right, top + width);
          renderRectangle(color, z, left, bottom - width, right, bottom);
-         renderRectangle(color, z, left, top, left + width, bottom);
-         renderRectangle(color, z, right - width, top, right, bottom);
+         renderRectangle(color, z, left, top + width, left + width, bottom - width);
+         renderRectangle(color, z, right - width, top + width, right, bottom - width);
     }
 
     /**

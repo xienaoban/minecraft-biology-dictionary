@@ -24,10 +24,6 @@ public final class ClientEventRegistryImpl {
         ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(player -> listener.run(Minecraft.getInstance()));
     }
 
-    public static void registerWorldDisconnecting(ClientEventRegistry.ClientListener listener) {
-        ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(player -> listener.run(Minecraft.getInstance()));
-    }
-
     public static void registerEndTick(ClientEventRegistry.ClientListener listener) {
         ClientTickEvent.CLIENT_POST.register(listener::run);
     }

@@ -6,25 +6,28 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Added tracking for entity types that fail during creation.
-- Added an About screen widget listing failed entity creation types.
-- Added a server config option for the far highlight skill radius.
-- Added always-on telescope ranging in debug mode for both entities and blocks.
+- Added a multi-selection mode for selecting multiple entity types on the home screen
+- Added a toggle to show only discovered entities, with a configurable default and session-persistent state
+- Added a selection count display while in selection mode
+- Added a blacklist feature: the server config `entityTypeBlacklist` excludes entity types from the dictionary, and selection mode can add the selected entities to it
+- Added a confirmation dialog before applying the blacklist, including a warning that the blacklist is server-side when playing on a remote server
+- Added a new default "Boss" tag to the entity catalog, populated from the `c:bosses` convention tag
+- Added spawn egg lore display in the entity description widget, reading `lore.<namespace>.<path>` translation keys
+- Added a plugin API for third-party mods to register custom skills, extra entity properties, entity display order, client-side property widgets, and discovery sources via `@BiologyDictionaryPlugin` / `@BiologyDictionaryClientPlugin`
+- Added public discovery API facades (`ServerDiscoveryApi` / `ClientDiscoveryApi`) for querying and recording discoveries
 
 ### Changed
 
-- Improved mod compatibility by skipping entity types that fail to be created, preventing unsupported entities from breaking the dictionary screen.
-- Use `EntitySpawnReason.LOAD` when creating preview entities.
-- Centralized display setup for preview entities.
-- Improve EntitySpawnManager.
-- Refactored Biology Dictionary screen rendering internals.
+- Refactored the discovery system: discovery sources are now pluggable and registered through a central `DiscoverySources` registry; the client discovery cache was consolidated into `ClientDiscoveryCacheManager`
+- Refactored `EntityManager` around per-entry creation-failure tracking (`EntityDictionaryEntry`); introduced the `EntityDisplay` helper and removed the placeholder fallback renderer
+- Reorganized plugin interfaces into the `api.plugin` package
+- Improved entity display widget rendering with an inner border
+- Reordered server config entries
 
 ### Fixed
 
-- Fixed display issues for water animal previews.
-- Fixed missing display setup in entity overview, variant, beehive, and entity display widgets.
-- Fixed the owner widget being created for entities without the vanilla `Owner` property, including vexes.
-- Fixed individual property widget creation failures preventing dictionary screens from opening.
+- Fixed the discovery progress tooltip not appearing after turning pages on the home screen
+- Fixed session teardown when leaving a world so no screen renders against a torn-down session on the render thread
 
 ## Previous Versions
 

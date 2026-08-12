@@ -1,13 +1,15 @@
 package io.github.xienaoban.biologydictionary.core.widget;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
+import io.github.xienaoban.biologydictionary.api.plugin.EntityPropertyWidgetsPlugin;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.widget.branch.*;
 import io.github.xienaoban.biologydictionary.core.widget.leaf.*;
 import io.github.xienaoban.biologydictionary.core.widget.variant.*;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
-import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.PluginLookup;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.world.entity.Entity;
 
@@ -16,7 +18,7 @@ import java.util.*;
 @ClientOnly
 public final class EntityPropertyWidgets {
 
-    public static void registerBuiltIn(Registrar registrar) {
+    public static void registerBuiltIn(EntityPropertyWidgetsPlugin.Registrar registrar) {
         registrar.register(EntityDescriptionWidget.class, EntityDescriptionWidget.FACTORY);
         registrar.register(EntityDisplayWidget.class, EntityDisplayWidget.FACTORY);
         registrar.register(LivingEntityHealthWidget.class, LivingEntityHealthWidget.FACTORY);
@@ -62,16 +64,31 @@ public final class EntityPropertyWidgets {
     private static final Map<Class<? extends Entity>, List<Entry>> registry = new HashMap<>();
 
     public static void init() {
-        Registrar registrar = new Registrar() {
+        EntityPropertyWidgetsPlugin.Registrar registrar = new EntityPropertyWidgetsPlugin.Registrar() {
             private int orderIndex = 0;
             private final Set<Class<?>> visited = new HashSet<>();
 
             @Override
-            public <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz, EntityPropertyWidget.Factory<E> widgetFactory) {
-                register0(widgetClazz, widgetFactory, ++orderIndex, visited);
+            public <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz,
+                    EntityPropertyWidget.Factory<E> widgetFactory) {
+                if (!visited.add(widgetClazz)) {
+                    throw new IllegalStateException(widgetClazz + " is already registered!");
+                }
+                Class<?> tmp = Misc.getClazzGeneric(widgetClazz, EntityPropertyWidget.class, 0);
+                final Class<E> entityClazz = Misc.cast(tmp.asSubclass(Entity.class));
+                Entry entry = new Entry(++orderIndex, widgetClazz, widgetFactory);
+                registry.computeIfAbsent(entityClazz, clazz -> new ArrayList<>()).add(entry);
             }
         };
         registerBuiltIn(registrar);
+        for (EntityPropertyWidgetsPlugin plugin : PluginLookup.findClient(EntityPropertyWidgetsPlugin.class)) {
+            try {
+                plugin.registerEntityPropertyWidgets(registrar);
+            } catch (RuntimeException e) {
+                throw new IllegalStateException("Failed to register widgets from plugin "
+                        + plugin.getClass().getName(), e);
+            }
+        }
     }
 
     private record Entry(int order, Class<? extends EntityPropertyWidget<?>> clazz,
@@ -105,29 +122,7 @@ public final class EntityPropertyWidgets {
         return res;
     }
 
-    private static <E extends Entity> void register0(Class<? extends EntityPropertyWidget<E>> widgetClazz,
-                                                    EntityPropertyWidget.Factory<?> widgetFactory,
-                                                    int orderIndex, Set<Class<?>> visited) {
-        if (!visited.add(widgetClazz)) {
-            throw new IllegalStateException(widgetClazz + " is already registered!");
-        }
-
-        Class<?> tmp = Misc.getClazzGeneric(widgetClazz, EntityPropertyWidget.class, 0);
-        final Class<E> entityClazz = Misc.cast(tmp.asSubclass(Entity.class));
-
-        // Register it.
-        Entry entry = new Entry(orderIndex, widgetClazz, widgetFactory);
-        EntityPropertyWidgets.registry.computeIfAbsent(entityClazz,
-                clazz -> new ArrayList<>()).add(entry);
-    }
-
     private static List<Entry> getEntries(Class<? extends Entity> clazz) {
         return registry.getOrDefault(clazz, Collections.emptyList());
-    }
-
-    @FunctionalInterface
-    public interface Registrar {
-        <E extends Entity> void register(Class<? extends EntityPropertyWidget<E>> widgetClazz,
-                                         EntityPropertyWidget.Factory<E> widgetFactory);
     }
 }

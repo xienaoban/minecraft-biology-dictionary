@@ -242,68 +242,11 @@ jobs:
         env:
           LOADER_TYPE: forge
 
-  publish-fabric:
-    needs: integration-test-fabric
+  publish:
+    needs: [integration-test-fabric, integration-test-forge]
     runs-on: ubuntu-24.04
-    outputs:
-      mod_version: ${{ steps.export.outputs.mod_version }}
-      mc_version: ${{ steps.export.outputs.mc_version }}
-      release_type: ${{ steps.export.outputs.release_type }}
-      mod_jar: ${{ steps.export.outputs.mod_jar }}
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v4
-
-      - name: export outputs
-        id: export
-        env:
-          MOD_VERSION: ${{ needs.integration-test-fabric.outputs.mod_version }}
-          MC_VERSION: ${{ needs.integration-test-fabric.outputs.mc_version }}
-          RELEASE_TYPE: ${{ needs.integration-test-fabric.outputs.release_type }}
-          MOD_JAR: ${{ needs.integration-test-fabric.outputs.mod_jar }}
-        run: |
-          chmod +x .github/scripts/export-outputs.sh
-          .github/scripts/export-outputs.sh
-
-      - name: download fabric jar
-        uses: actions/download-artifact@v4
-        with:
-          name: fabric-jar
-          path: .
-
-      - name: publish fabric version to modrinth and curseforge
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: biology-dictionary
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          curseforge-id: 1426515
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          name: "Biology Dictionary ${{ github.ref_name }}-fabric"
-          version: "${{ github.ref_name }}-fabric"
-          version-type: ${{ env.RELEASE_TYPE }}
-          changelog-file: CHANGELOG.md
-
-          game-versions: ${{ env.MC_VERSION }}
-          loaders: fabric
-          java: |
-            17
-
-          files: ${{ env.MOD_JAR }}
-
-          dependencies: |
-            fabric-api
-            cloth-config
-
-  publish-forge:
-    needs: integration-test-forge
-    runs-on: ubuntu-24.04
-    outputs:
-      mod_version: ${{ steps.export.outputs.mod_version }}
-      mc_version: ${{ steps.export.outputs.mc_version }}
-      release_type: ${{ steps.export.outputs.release_type }}
-      mod_jar: ${{ steps.export.outputs.mod_jar }}
+    permissions:
+      contents: write
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
@@ -314,10 +257,11 @@ jobs:
           MOD_VERSION: ${{ needs.integration-test-forge.outputs.mod_version }}
           MC_VERSION: ${{ needs.integration-test-forge.outputs.mc_version }}
           RELEASE_TYPE: ${{ needs.integration-test-forge.outputs.release_type }}
-          MOD_JAR: ${{ needs.integration-test-forge.outputs.mod_jar }}
+          MOD_JAR_FABRIC: ${{ needs.integration-test-fabric.outputs.mod_jar }}
+          MOD_JAR_FORGE: ${{ needs.integration-test-forge.outputs.mod_jar }}
         run: |
           chmod +x .github/scripts/export-outputs.sh
-          .github/scripts/export-outputs.sh
+          .github/scripts/export-outputs.sh both-jars
 
       - name: download forge jar
         uses: actions/download-artifact@v4
@@ -344,32 +288,11 @@ jobs:
           java: |
             17
 
-          files: ${{ env.MOD_JAR }}
+          files: ${{ env.MOD_JAR_FORGE }}
 
           dependencies: |
             architectury-api
             cloth-config
-
-  publish-github:
-    needs: [publish-fabric, publish-forge]
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v4
-
-      - name: export outputs
-        id: export
-        env:
-          MOD_VERSION: ${{ needs.publish-fabric.outputs.mod_version }}
-          MC_VERSION: ${{ needs.publish-fabric.outputs.mc_version }}
-          RELEASE_TYPE: ${{ needs.publish-fabric.outputs.release_type }}
-          MOD_JAR_FABRIC: ${{ needs.publish-fabric.outputs.mod_jar }}
-          MOD_JAR_FORGE: ${{ needs.publish-forge.outputs.mod_jar }}
-        run: |
-          chmod +x .github/scripts/export-outputs.sh
-          .github/scripts/export-outputs.sh both-jars
 
       - name: download fabric jar
         uses: actions/download-artifact@v4
@@ -377,11 +300,30 @@ jobs:
           name: fabric-jar
           path: .
 
-      - name: download forge jar
-        uses: actions/download-artifact@v4
+      - name: publish fabric version to modrinth and curseforge
+        uses: Kir-Antipov/mc-publish@v3.3
         with:
-          name: forge-jar
-          path: .
+          modrinth-id: biology-dictionary
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 1426515
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          name: "Biology Dictionary ${{ github.ref_name }}-fabric"
+          version: "${{ github.ref_name }}-fabric"
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: CHANGELOG.md
+
+          game-versions: ${{ env.MC_VERSION }}
+          loaders: fabric
+          java: |
+            17
+
+          files: ${{ env.MOD_JAR_FABRIC }}
+
+          dependencies: |
+            fabric-api
+            cloth-config
 
       - name: publish fabric & forge version to github
         uses: Kir-Antipov/mc-publish@v3.3

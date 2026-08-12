@@ -1,12 +1,11 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
+import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -46,23 +45,11 @@ public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscov
     }
 
     @Override
-    public boolean onEntityDetailScreenOpened(LocalPlayer player, Entity entity) {
+    public boolean onDiscovery(DiscoverySource source, DiscoverySource.ClientContext ctx) {
+        Entity entity = ctx.entity();
         if (isDiscovered(EntityUtils.getEntityType(entity))) { return false; }
-        ClientNetManager.requestDiscoveryIncremental(EntityUtils.getId(entity), DiscoverySource.ENTITY_DETAIL_SCREEN);
-        return true;
-    }
-
-    @Override
-    public boolean onEntityHighlighted(LocalPlayer player, Entity entity) {
-        if (isDiscovered(EntityUtils.getEntityType(entity))) { return false; }
-        ClientNetManager.requestDiscoveryIncremental(EntityUtils.getId(entity), DiscoverySource.HIGHLIGHT);
-        return true;
-    }
-
-    @Override
-    public boolean onEntityObservedWithTelescope(LocalPlayer player, Entity entity) {
-        if (isDiscovered(EntityUtils.getEntityType(entity))) { return false; }
-        ClientNetManager.requestDiscoveryIncremental(EntityUtils.getId(entity), DiscoverySource.TELESCOPE_OBSERVE);
+        if (!source.clientCheck(ctx)) { return false; }
+        ClientNetManager.requestDiscoveryIncremental(EntityUtils.getId(entity), source);
         return true;
     }
 }

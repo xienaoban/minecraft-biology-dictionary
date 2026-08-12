@@ -3,6 +3,8 @@ package io.github.xienaoban.biologydictionary;
 import io.github.xienaoban.biologydictionary.compat.CompatibilityManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
+import io.github.xienaoban.biologydictionary.core.EntityOrder;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
@@ -32,10 +34,12 @@ public final class BiologyDictionary {
     private BiologyDictionary() {
         CompatibilityManager.init();
         EntityUtils.init();
+        EntityOrder.init();
         ServerNetManager.init();
         BiologyDictionaryItem.init();
         EntityProperties.init();
         BiologySkills.init();
+        DiscoverySources.init();
         ConfigsManager.load();
         CommandManager.init();
 

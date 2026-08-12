@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
@@ -39,7 +40,8 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
     @ClientOnly
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
-        @ClientOnly final class CO { static void receive(ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
+        @ClientOnly final class CO { static void receive(
+                ReplyHighlightEntitiesPacket packet, ClientNetApi.Context ctx) {
             if (!packet.allowed()) { return; }
 
             ClientWorldSession cws = ClientWorldSession.get();
@@ -62,7 +64,7 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
                 cws.getHighlightManager().highlightEntity(e, HighlightEntitiesSkill.TICKS);
             }
             if (first != null) {
-                cws.getDiscoveryClientCache().onEntityHighlighted(player, first);
+                cws.getDiscoveryCacheManager().onDiscoveryEvent(DiscoverySources.HIGHLIGHT, player, first);
             }
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
                     cnt, packet.entityType().getDescription(), packet.radius()));

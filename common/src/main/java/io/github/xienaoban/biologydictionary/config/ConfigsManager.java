@@ -11,6 +11,7 @@ import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
+import io.github.xienaoban.biologydictionary.platform.util.ServerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,6 +27,7 @@ import org.yaml.snakeyaml.representer.Representer;
 import java.io.*;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -206,23 +208,21 @@ public final class ConfigsManager {
     private static void broadcastServerConfigs(MinecraftServer server) {
         String serverConfigsYaml = serializeConfigCategory(INSTANCE.getServer());
 
-        if (server.isDedicatedServer()) {
+        if (ServerUtils.isDedicated(server)) {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
             }
             LOGGER.info("New server configs broadcasted to all players.");
-        } else {
-            if (ClientUtils.isSingleplayer()) {
-                LOGGER.info("We are on a single-player server. No need to broadcast new configs.");
-            } else {
-                Player owner = ClientUtils.getClientPlayerCommon();
-                for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                    if (!Objects.equals(owner.getUUID(), player.getUUID())) {
-                        ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
-                    }
+        } else if (ServerUtils.isMultiplayerOpen(server)) {
+            Player owner = ClientUtils.getClientPlayerCommon();
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                if (!Objects.equals(owner.getUUID(), player.getUUID())) {
+                    ServerNetManager.replyServerConfigs(player, serverConfigsYaml);
                 }
-                LOGGER.info("New server configs broadcasted to remote players.");
             }
+            LOGGER.info("New server configs broadcasted to remote players.");
+        } else {
+            LOGGER.info("We are on a single-player server. No need to broadcast new configs.");
         }
     }
 
@@ -365,7 +365,7 @@ public final class ConfigsManager {
         Map<String, Object> map = new LinkedHashMap<>();
         for (Field field : configObject.getClass().getDeclaredFields()) {
             // Skip transient fields like skillCosts (they're handled separately)
-            if (java.lang.reflect.Modifier.isTransient(field.getModifiers())) {
+            if (Modifier.isTransient(field.getModifiers())) {
                 continue;
             }
             if (field.isAnnotationPresent(ConfigEntry.class)) {
@@ -405,7 +405,8 @@ public final class ConfigsManager {
 
                 // special cases
                 if (Enum.class.isAssignableFrom(fieldType)) {
-                    convertedValue = Enum.valueOf(fieldType.asSubclass(Enum.class), ((String) convertedValue).toUpperCase());
+                    convertedValue = Enum.valueOf(
+                            fieldType.asSubclass(Enum.class), ((String) convertedValue).toUpperCase());
                 } else if (Set.class.isAssignableFrom(fieldType)) {
                     convertedValue = Set.copyOf((Collection<?>) convertedValue);
                 }
@@ -443,5 +444,16 @@ public final class ConfigsManager {
             clamped = annotation.max();
         }
         return Misc.convertNumber(clamped, fieldType);
+    }
+
+    // ================================ Custom Updaters ================================
+
+    public static void addEntityTypeBlacklist(Collection<String> entityIds) {
+        Configs.ServerConfigs localServerConfigs = INSTANCE.getServer();
+        Set<String> blacklist = new HashSet<>(localServerConfigs.entityTypeBlacklist);
+        if (!blacklist.addAll(entityIds)) { return; }
+        localServerConfigs.entityTypeBlacklist = Set.copyOf(blacklist);
+        save();
+        onUpdated();
     }
 }
