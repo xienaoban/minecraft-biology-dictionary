@@ -22,7 +22,11 @@ import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.animal.horse.Markings;
+import net.minecraft.world.entity.animal.horse.Variant;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -135,6 +139,10 @@ public final class EntityUtils {
 
     public static String getEntityTypeIdName(EntityType<?> entityType) {
         return getEntityTypeId(entityType).toString();
+    }
+
+    public static Item getSpawnEggItem(EntityType<?> entityType) {
+        return SpawnEggItem.byId(entityType);
     }
 
     // ============================================================================ //
@@ -357,9 +365,7 @@ public final class EntityUtils {
         return entity.isBaby();
     }
 
-    public static void setVariantAndMarkings(Horse entity,
-                                             net.minecraft.world.entity.animal.horse.Variant variant,
-                                             net.minecraft.world.entity.animal.horse.Markings markings) {
+    public static void setVariantAndMarkings(Horse entity, Variant variant, Markings markings) {
         ((HorseIMixin) entity).biologydictionary$invokeSetVariantAndMarkings(variant, markings);
     }
 }

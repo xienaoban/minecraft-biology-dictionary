@@ -21,10 +21,6 @@ public final class ClientEventRegistryImpl {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> listener.run(client));
     }
 
-    public static void registerWorldDisconnecting(ClientEventRegistry.ClientListener listener) {
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> listener.run(client));
-    }
-
     public static void registerEndTick(ClientEventRegistry.ClientListener listener) {
         ClientTickEvents.END_CLIENT_TICK.register(listener::run);
     }

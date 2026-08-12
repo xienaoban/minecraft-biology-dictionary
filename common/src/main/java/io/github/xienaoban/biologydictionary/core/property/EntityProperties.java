@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.property;
 
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
+import io.github.xienaoban.biologydictionary.gui.EntityDisplay;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +30,9 @@ public class EntityProperties<E extends Entity> {
 
     // Skip updating some client data for some time because of the client-server sync problem.
     private int noUpdateCooldown = 0;
-    private E model;
+
+    // Client-only display state, kept here only as a shared widget access point.
+    private EntityDisplay entityDisplay;
 
     public EntityProperties(E entity) {
         this.entity = entity;
@@ -53,13 +56,13 @@ public class EntityProperties<E extends Entity> {
         this.vanillaProperties = Collections.unmodifiableMap(vMap);
         this.extraProperties = Collections.unmodifiableMap(eMap);
 
-        this.model = null;
+        this.entityDisplay = null;
     }
 
     public E entity() { return entity; }
 
-    public E getModel() { return model; }
-    public void setModel(E model) { this.model = model; }
+    public EntityDisplay getEntityDisplay() { return entityDisplay; }
+    public void setEntityDisplay(EntityDisplay entityDisplay) { this.entityDisplay = entityDisplay; }
 
     public boolean isInNoUpdateCooldown() { return noUpdateCooldown > 0; }
     public boolean isNotInNoUpdateCooldown() { return noUpdateCooldown <= 0; }
