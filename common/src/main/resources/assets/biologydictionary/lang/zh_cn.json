@@ -37,6 +37,8 @@
   "config.biologydictionary.entry.inheritSilentFromParents.tooltip": "如果为是，父母均为静音时生下的小生物也会被静音。",
   "config.biologydictionary.entry.allowStealingPlayerInventory": "允许窃取玩家背包",
   "config.biologydictionary.entry.allowStealingPlayerInventory.tooltip": "如果为是，玩家可以偷取其他玩家的背包物品。默认为否。",
+  "config.biologydictionary.entry.entityDetailScreenRange": "生物详情页范围",
+  "config.biologydictionary.entry.entityDetailScreenRange.tooltip": "生物远离玩家该距离（米）后强制关闭生物详情页面。",
   "config.biologydictionary.entry.highlightEntitiesRange": "高亮技能范围",
   "config.biologydictionary.entry.highlightEntitiesRange.tooltip": "技能「高亮」的高亮半径（米)，超过 160 通常意义有限：\n* 太远的生物可能未加载\n* 小实体可能只剩几个像素\n* 也可能被原版渲染距离跳过",
   "config.biologydictionary.entry.telescopeDiscoveryRange": "望远镜发现范围",
