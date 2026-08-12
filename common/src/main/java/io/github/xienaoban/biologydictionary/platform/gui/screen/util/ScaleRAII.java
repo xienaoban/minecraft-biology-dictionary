@@ -1,26 +1,33 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
-import net.minecraft.client.gui.GuiGraphics;
 
 @ClientOnly
 public final class ScaleRAII implements AutoCloseable {
-    private final GuiGraphics guiGraphics;
+    static final ScaleRAII DO_NOTHING = new ScaleRAII();
+
+    private final PoseStack poseStack;
 
     ScaleRAII(ScreenRenderingContext ctx, float size) {
-        guiGraphics = ctx.getGuiGraphics();
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(size, size, size);
+        poseStack = ctx.getGuiGraphics().pose();
+        poseStack.pushPose();
+        poseStack.scale(size, size, size);
     }
 
-    // TODO: remove it
     ScaleRAII(ScreenRenderingContext ctx, float size, float z) {
         this(ctx, size);
-        guiGraphics.pose().translate(0, 0, z);
+        poseStack.translate(0, 0, z);
+    }
+
+    private ScaleRAII() {
+        poseStack = null;
     }
 
     @Override
     public void close() {
-        guiGraphics.pose().popPose();
+        if (poseStack != null) {
+            poseStack.popPose();
+        }
     }
 }

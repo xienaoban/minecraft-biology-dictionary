@@ -105,26 +105,37 @@ public abstract class ScreenElement implements ScreenConsts {
         }
     }
 
+    /**
+     * Depth offset (GUI z units) applied to this element's whole subtree via a
+     * pose translate, lifting it above deeper content regardless of draw order.
+     * Override to raise a subtree above GUI-rendered entities, which are drawn
+     * at z=50 (see {@code ScreenRenderingContext#renderEntity}) and would
+     * otherwise punch through later GUI draws via the LEQUAL depth test.
+     */
+    protected float getZOffset() { return 0; }
+
     public final void render(ScreenRenderingContext ctx) {
-        onRender(ctx);
-        if (BiologyDictionaryClient.isDebugMode() && box.getWidth() > 0 && box.getHeight() > 0) {
-            ElementScreen screen = ctx.getElementScreen();
-            final int alpha = 0xFF000000;
-            final int color;
-            if (this == screen.getSelectedElement()) color = 0x0044CC00;
-            else if (this == screen.getHoveredElement()) color = 0x00FFAA00;
-            else if (isInBox(screen.getHoveredElement())) color = 0x000055FF;
-            else color = 0x00CC0000;
-            ctx.renderRectangle(color | alpha, 0.6F, screen.getZ(),
-                    box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
-            if (this == screen.getHoveredElement()) {
-                ctx.renderText(TextUtils.literal(getClass().getSimpleName()
-                                + " (" + box.getWidth() + "*" + box.getHeight() + ")"),
-                        0xFF7719AA, 0.5F, ctx.getZ(), box.getLeft() + 1, box.getTop() - 4.5F);
+        try (ScaleRAII ignored = ctx.scaleOnce(1, getZOffset())) {
+            onRender(ctx);
+            if (BiologyDictionaryClient.isDebugMode() && box.getWidth() > 0 && box.getHeight() > 0) {
+                ElementScreen screen = ctx.getElementScreen();
+                final int alpha = 0xFF000000;
+                final int color;
+                if (this == screen.getSelectedElement()) color = 0x0044CC00;
+                else if (this == screen.getHoveredElement()) color = 0x00FFAA00;
+                else if (isInBox(screen.getHoveredElement())) color = 0x000055FF;
+                else color = 0x00CC0000;
+                ctx.renderRectangle(color | alpha, 0.6F, screen.getZ(),
+                        box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
+                if (this == screen.getHoveredElement()) {
+                    ctx.renderText(TextUtils.literal(getClass().getSimpleName()
+                                    + " (" + box.getWidth() + "*" + box.getHeight() + ")"),
+                            0xFF7719AA, 0.5F, ctx.getZ(), box.getLeft() + 1, box.getTop() - 4.5F);
+                }
             }
-        }
-        for (ScreenElement subEle : subScreenElements) {
-            subEle.render(ctx);
+            for (ScreenElement subEle : subScreenElements) {
+                subEle.render(ctx);
+            }
         }
     }
 
