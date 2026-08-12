@@ -27,6 +27,8 @@
   "config.biologydictionary.category.server": "服务端",
   "config.biologydictionary.entry.bookItemRequired": "需要生物辞典物品",
   "config.biologydictionary.entry.bookItemRequired.tooltip": "如果为否，则生存模式无需该物品也可用热键打开界面。",
+  "config.biologydictionary.entry.giveBookOnFirstJoin": "首次进入时赠送生物辞典",
+  "config.biologydictionary.entry.giveBookOnFirstJoin.tooltip": "新玩家首次加入世界时物品栏里放一本生物辞典。",
   "config.biologydictionary.entry.bookItemObtainableFromWanderingTrader": "生物辞典物品可从流浪商人处获得",
   "config.biologydictionary.entry.bookItemObtainableFromWanderingTrader.tooltip": "如果为否，则生存模式没有途径获取该物品，请自行添加获取配方。",
   "config.biologydictionary.entry.entityTypeBlacklist": "生物类型黑名单",
