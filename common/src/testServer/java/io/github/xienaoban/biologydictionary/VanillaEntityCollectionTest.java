@@ -47,7 +47,7 @@ public class VanillaEntityCollectionTest {
             return true;
         });
 
-        if (success.get()) helper.succeed();
+        if (success.get()) { helper.succeed(); }
         else {
             String path = "deobfuscation.txt";
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(path)))) {
@@ -55,7 +55,10 @@ public class VanillaEntityCollectionTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            LOGGER.info("Deobfuscation batch has been written to {}.", Paths.get(path).toAbsolutePath().normalize().toString());
+            LOGGER.info(
+                "Deobfuscation batch has been written to {}.",
+                Paths.get(path).toAbsolutePath().normalize().toString()
+            );
             helper.fail("Some entities are not covered by the deobfuscation map.");
         }
     }
@@ -64,16 +67,17 @@ public class VanillaEntityCollectionTest {
         boolean success = true;
 
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
-            EntityManager.EntityClassInfo classInfo = WorldSession.get().getEntityManager().getEntityClassInfo(entityType);
+            EntityManager.EntityDictionaryEntry entry = WorldSession.get()
+                .getEntityManager()
+                .getEntityEntry(entityType);
 
-            // skip entities that are not LivingEntity (like arrow or boat)
-            if (classInfo == null) {
+            if (entry == null || entry.getClazz().isEmpty()) {
                 LOGGER.trace("Skipped entities like arrow or boat: \"{}\".", EntityType.getKey(entityType));
                 continue;
             }
 
             // skip non-vanilla classes
-            Class<?> clazz = classInfo.getClazz();
+            Class<?> clazz = entry.getClazz().get();
             if (!DevUtils.isVanillaClass(clazz)) {
                 LOGGER.info("Skipped non-vanilla class for order: \"{}\".", clazz.getName());
                 continue;
@@ -81,11 +85,11 @@ public class VanillaEntityCollectionTest {
 
             if (EntityManager.getMyPreferredEntityOrder(entityType) == null) {
                 success = false;
-                LOGGER.error("Entity \"{}\" is not assigned an order.", classInfo.getStringId());
+                LOGGER.error("Entity \"{}\" is not assigned an order.", entry.getStringId());
             }
         }
-        if (success) helper.succeed();
-        else helper.fail("Some entities have not been assigned an order.");
+        if (success) { helper.succeed(); }
+        else { helper.fail("Some entities have not been assigned an order."); }
     }
 
     private void exportDeobfuscationOfVanillaEntities(PrintWriter out) {
@@ -97,7 +101,7 @@ public class VanillaEntityCollectionTest {
             Class<?> clazz = cur.getClazz();
 
             // skip non-vanilla classes
-            if (!DevUtils.isVanillaClass(clazz)) return true;
+            if (!DevUtils.isVanillaClass(clazz)) { return true; }
 
             out.println(space + "/*" + "-".repeat(depth * 2) + "*/ "
                     + "r(" + clazz.getName().replace('$', '.') + ".class, \""

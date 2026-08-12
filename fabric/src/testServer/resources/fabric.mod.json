@@ -5,7 +5,11 @@
   "name": "Biology Dictionary Unit Test",
   "environment": "*",
   "entrypoints": {
+    "biologydictionary": [
+      "io.github.xienaoban.biologydictionary.PluginLookupTest$TestPlugin"
+    ],
     "fabric-gametest": [
+      "io.github.xienaoban.biologydictionary.fabric.PluginLookupTestImpl",
       "io.github.xienaoban.biologydictionary.fabric.RegistrarsTestImpl",
       "io.github.xienaoban.biologydictionary.fabric.VanillaEntityBehaviorTestImpl",
       "io.github.xienaoban.biologydictionary.fabric.VanillaEntityCollectionTestImpl",
@@ -13,8 +17,7 @@
       "io.github.xienaoban.biologydictionary.fabric.VanillaEntityPropertyTestImpl",
       "io.github.xienaoban.biologydictionary.fabric.VanillaEntitySkillTestImpl",
       "io.github.xienaoban.biologydictionary.fabric.EntitySpawnManagerTestImpl",
-      "io.github.xienaoban.biologydictionary.fabric.TextUtilsTestImpl",
-      "io.github.xienaoban.biologydictionary.fabric.ClientOnlyCheckTestImpl"
+      "io.github.xienaoban.biologydictionary.fabric.TextUtilsTestImpl"
     ]
   }
 }

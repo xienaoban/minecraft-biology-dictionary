@@ -1,23 +1,20 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
-import com.mojang.authlib.GameProfile;
+import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.gui.PlaceholderFallbackEntityRenderer;
+import io.github.xienaoban.biologydictionary.core.session.WorldSession;
+import io.github.xienaoban.biologydictionary.gui.EntityDisplay;
 import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 
 /**
  * A widget that displays the target entity. <br/>
@@ -30,70 +27,58 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     private static RC calculateRowsAndColumns(Entity entity) {
         AABB box = entity.getBoundingBox();
         double x = box.getXsize(), y = box.getYsize();
-        if (x > y) return new RC(3, 6);
+        if (x > y) { return new RC(3, 6); }
         return new RC(5, 4);
     }
 
-    private static Entity createModelEntity(EntityProperties<Entity> properties) {
+    private static EntityDisplay createDisplay(EntityProperties<Entity> properties) {
         Entity entity = properties.entity();
-        Entity model;
-        if (EntityUtils.isFakeEntity(entity)) {
-            model = entity;
-        } else {
-            model = EntityUtils.create(EntityUtils.getEntityType(entity), EntityUtils.getLevel(entity));
-        }
-        if (model == null) {
-            if (entity instanceof LocalPlayer me) {
-                GameProfile profile = me.getGameProfile();
-                model = new RemotePlayer((ClientLevel) me.level(), new GameProfile(profile.getId(), profile.getName()));
-                // to make name label invisible
-                // @see net.minecraft.client.renderer.entity.LivingEntityRenderer.shouldShowName
-                Vec3 pos = model.position();
-                model.setPos(pos.x(), pos.y() - 4097, pos.z());
-            } else {
-                model = EntityUtils.create(EntityType.ARMOR_STAND, EntityUtils.getLevel(entity));
-            }
-        }
-        updateCompoundTag(entity, model);
-        return model;
+        EntityDictionaryEntry entry = WorldSession.get().getEntityManager().getEntityEntry(entity.getType());
+        return new EntityDisplay(entry, entity);
     }
 
-    private static void updateCompoundTag(Entity from, Entity to) {
-        EntityUtils.setNbt(to, EntityUtils.getNbtToDisplay(from));
-        EntityUtils.setupForDisplay(to);
-    }
-
-    private final Entity model;
-
-    private final PlaceholderFallbackEntityRenderer entityRenderer;
+    private final EntityDisplay display;
 
     private int leftClickCount;
 
     public EntityDisplayWidget(EntityProperties<Entity> properties) {
-        this(properties, createModelEntity(properties));
+        this(properties, createDisplay(properties));
     }
 
-    private EntityDisplayWidget(EntityProperties<Entity> properties, Entity model) {
-        super(properties, calculateRowsAndColumns(model));
-        this.model = model;
-        this.entityRenderer = new PlaceholderFallbackEntityRenderer(model);
-        p().setModel(model);
+    private EntityDisplayWidget(EntityProperties<Entity> properties, EntityDisplay display) {
+        super(properties, calculateRowsAndColumns(display.getModel()));
+        this.display = display;
+        p().setEntityDisplay(display);
     }
 
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
         if (ticks % ClientUtils.getClientTickCountPerSecond() == 15 && p().isNotInNoUpdateCooldown()) {
-            updateCompoundTag(e(), model);
+            display.updateNbtFrom(e());
         }
     }
 
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        entityRenderer.renderEntityCentered(ctx, getBox().getLeft(), getBox().getTop(), getBox().getRight(), getBox().getBottom(),
+        ScreenElementBox box = getBox();
+        display.renderEntityCentered(ctx,
+                box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getBottom() - 1,
                 (float) Math.atan(ctx.getMouseX() / 40F) / 10,
                 (float) Math.atan(ctx.getMouseY() / 40F) / 20);
+
+        ctx.renderRectangle(0x06794500, ctx.getZ(),
+                box.getLeft() + 1, box.getTop() + 1, box.getRight() - 1, box.getBottom() - 1);
+        int color = 0x10794500;
+        ctx.renderRectangle(color, ctx.getZ(),
+                box.getLeft(), box.getTop() + 1, box.getLeft() + 1, box.getBottom() - 1);
+        ctx.renderRectangle(color, ctx.getZ(),
+                box.getRight() - 1, box.getTop() + 1, box.getRight(), box.getBottom() - 1);
+        ctx.renderRectangle(color, ctx.getZ(),
+                box.getLeft() + 1, box.getTop(), box.getRight() - 1, box.getTop() + 1);
+        ctx.renderRectangle(color, ctx.getZ(),
+                box.getLeft() + 1, box.getBottom() - 1, box.getRight() - 1, box.getBottom());
     }
 
     @Override

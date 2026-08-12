@@ -1,7 +1,8 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecordSerializer;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
@@ -20,8 +21,10 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Discovery records sync packet: S -> C.
  * Sent in response to {@link RequestBiologyDictionaryDiscoveryFullPacket}.
  */
-public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, DiscoveryRecord> discoveries) implements Packet {
-    public static final Packet.Factory<ReplyBiologyDictionaryDiscoveryFullPacket> FACTORY = ReplyBiologyDictionaryDiscoveryFullPacket::new;
+public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, DiscoveryRecord> discoveries)
+        implements Packet {
+    public static final Packet.Factory<ReplyBiologyDictionaryDiscoveryFullPacket> FACTORY =
+            ReplyBiologyDictionaryDiscoveryFullPacket::new;
 
     private ReplyBiologyDictionaryDiscoveryFullPacket(FriendlyByteBuf buf) {
         this(readDiscoveries(buf));
@@ -32,7 +35,7 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
         Map<EntityType<?>, DiscoveryRecord> map = new HashMap<>(size);
         for (int i = 0; i < size; i++) {
             ResourceLocation id = ResourceLocation.tryParse(buf.readUtf());
-            DiscoveryRecord record = DiscoveryRecord.readFromBuf(buf);
+            DiscoveryRecord record = DiscoveryRecordSerializer.readFromBuf(buf);
             EntityType<?> type = EntityUtils.getEntityType(id);
             if (type != null) {
                 map.put(type, record);
@@ -46,7 +49,7 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
         buf.writeVarInt(discoveries.size());
         for (Map.Entry<EntityType<?>, DiscoveryRecord> entry : discoveries.entrySet()) {
             buf.writeUtf(EntityUtils.getEntityTypeIdName(entry.getKey()));
-            entry.getValue().writeToBuf(buf);
+            DiscoveryRecordSerializer.writeToBuf(buf, entry.getValue());
         }
     }
 
@@ -60,7 +63,7 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
                 return;
             }
 
-            if (cws.getDiscoveryClientCache().getDelegate() instanceof BiologyDictionaryClientDiscoveryCache cache) {
+            if (cws.getDiscoveryCacheManager().getDelegate() instanceof BiologyDictionaryClientDiscoveryCache cache) {
                 cache.onFullSync(packet.discoveries());
                 LOGGER.info("Full discovery records received.");
             } else {
