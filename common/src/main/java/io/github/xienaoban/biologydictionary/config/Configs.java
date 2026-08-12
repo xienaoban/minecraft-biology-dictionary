@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
-import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -98,6 +97,12 @@ public final class Configs {
          */
         @ConfigEntry
         boolean bookItemRequired = true;
+
+        /**
+         * Whether new players receive a Biology Dictionary item when they join the world for the first time.
+         */
+        @ConfigEntry
+        boolean giveBookOnFirstJoin = true;
 
         /**
          * Whether wandering traders have a chance to offer the Biology Dictionary item for trade.
@@ -229,6 +234,10 @@ public final class Configs {
 
         public boolean isBookItemRequired() {
             return bookItemRequired;
+        }
+
+        public boolean isGiveBookOnFirstJoin() {
+            return giveBookOnFirstJoin;
         }
 
         public boolean isBookItemObtainableFromWanderingTrader() {
