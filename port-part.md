@@ -28,6 +28,8 @@
 | `minecraft-biology-dictionary-architectury-1.21.1` | `main-architectury-1.21.1` | Architectury | 1.21.1 | 21 | ❌ 禁用 | `ResourceLocation` |
 | `minecraft-biology-dictionary-architectury-1.20.1` | `main-architectury-1.20.1` | Architectury | 1.20.1 | 17 | ❌ 禁用 | `ResourceLocation` |
 
+> 禁用反射指的是反射处理 MC 数据（因为做了混淆）。本模组、其他模组的数据可以反射。
+
 所有目录共享同一 git remote (`git@github.com:xienaoban/minecraft-biology-dictionary.git`)，不同分支。
 
 MC 第一方源码：`mc-source/<MC 版本>/`，可供查询。
@@ -143,6 +145,7 @@ MC 第一方源码：`mc-source/<MC 版本>/`，可供查询。
 - 涉及版本号、构建的文件需要注意，可能需要部分手动适配合适的版本，例如
   - `gradle.properties` 的依赖项版本，必须是目标版本可用的（建议问我）；模组版本可以同步更新；MC 版本禁止变动
   - `build.gradle`、`gradle/wrapper/*` 的构建工具版本、写法
+  - Github Action 里涉及的 Java 版本、MC 版本等版本不要动，老版本还多 Architectury 依赖，也不动
   - `fabric.mod.json`
 - 涉及不同 MC 版本的文件，经常要重新寻找访问的 MC 接口，例如
   - Mixin 类与 Mixin 配置
@@ -234,6 +237,8 @@ TODO
 
 完整性检查而修改的内容不要 git commit --amend，要区分开，方便我 review。
 最终给出总结报告，给我审阅。注意，审查的是涉及修改的部分，是双方改动的 diff，双方本次都没动过的部分（即既有版本差异）不必审查。
+
+在工程上，tree diff 不显示新增类，检查时要注意别漏了。
 
 ## 已知坑
 
