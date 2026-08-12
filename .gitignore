@@ -7,8 +7,12 @@
 
 # IntelliJ
 out/
+bin/
 # mpeltonen/sbt-idea plugin
 .idea_modules/
+
+# VS Code
+.vscode/
 
 # JIRA plugin
 atlassian-ide-plugin.xml
@@ -120,7 +124,4 @@ runs/
 
 # AI
 /.claude/
-/.codex/
-/.agents/
-/AGENTS.md
 /tmp/

@@ -1,7 +1,8 @@
 package io.github.xienaoban.biologydictionary.core.discovery.storage;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.api.DiscoverySource;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -63,8 +64,8 @@ public final class SavedDataDiscoveryStorage extends SavedData {
             CompoundTag playerTag = new CompoundTag();
             playerTag.putUUID("uuid", entry.getKey());
             CompoundTag discoveriesTag = new CompoundTag();
-            for (Map.Entry<EntityType<?>, DiscoveryRecord> discEntry : entry.getValue().entrySet()) {
-                discoveriesTag.put(EntityUtils.getEntityTypeIdName(discEntry.getKey()), writeRecord(discEntry.getValue()));
+            for (Map.Entry<EntityType<?>, DiscoveryRecord> discoveryEntry : entry.getValue().entrySet()) {
+                discoveriesTag.put(EntityUtils.getEntityTypeIdName(discoveryEntry.getKey()), writeRecord(discoveryEntry.getValue()));
             }
             playerTag.put("discoveries", discoveriesTag);
             playersList.add(playerTag);
@@ -74,7 +75,7 @@ public final class SavedDataDiscoveryStorage extends SavedData {
     }
 
     private static DiscoveryRecord readRecord(CompoundTag tag) {
-        DiscoverySource source = tag.contains(KEY_SOURCE) ? DiscoverySource.valueOf(tag.getString(KEY_SOURCE)) : DiscoverySource.UNKNOWN;
+        DiscoverySource source = DiscoverySources.parseSource(tag.getString(KEY_SOURCE));
         String dimStr = tag.getString(KEY_DIMENSION);
         ResourceLocation dimension = dimStr.isEmpty() ? new ResourceLocation("unknown") : ResourceLocation.tryParse(dimStr);
         String bioStr = tag.getString(KEY_BIOME);
@@ -98,7 +99,7 @@ public final class SavedDataDiscoveryStorage extends SavedData {
         CompoundTag tag = new CompoundTag();
         tag.putLong(KEY_TIME, record.firstDiscoveryTime());
         tag.putLong(KEY_TICK, record.firstDiscoveryTick());
-        tag.putString(KEY_SOURCE, record.source().name());
+        tag.putString(KEY_SOURCE, record.source().id().toString());
         tag.putString(KEY_DIMENSION, record.dimension() != null ? record.dimension().toString() : "");
         tag.putString(KEY_BIOME, record.biome() != null ? record.biome().toString() : "");
         BlockPos pos = record.position();
@@ -127,7 +128,7 @@ public final class SavedDataDiscoveryStorage extends SavedData {
     }
 
     public boolean put(UUID playerUUID, EntityType<?> entityType, DiscoveryRecord record) {
-        Map<EntityType<?>, DiscoveryRecord> playerData = data.computeIfAbsent(playerUUID, k -> new HashMap<>());
+        Map<EntityType<?>, DiscoveryRecord> playerData = data.computeIfAbsent(playerUUID, key -> new HashMap<>());
         if (playerData.putIfAbsent(entityType, record) != null) {
             return false;
         }

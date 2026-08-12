@@ -63,6 +63,9 @@ public final class ClientUtils {
         return getClient().getSingleplayerServer();
     }
 
+    /**
+     * Whether in a pure single-player session (local server without LAN publishing).
+     */
     public static boolean isSingleplayer() {
         return getClient().isSingleplayer();
     }
@@ -71,8 +74,11 @@ public final class ClientUtils {
         return isLocalServer(getClient());
     }
 
+    /**
+     * Whether connected to a local server, regardless of LAN publishing.
+     */
     public static boolean isLocalServer(Minecraft client) {
-        return client.isLocalServer();
+        return client.hasSingleplayerServer();
     }
 
     /**
