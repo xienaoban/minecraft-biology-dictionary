@@ -154,10 +154,12 @@ public final class ScreenRenderingContext {
     }
 
     public ScaleRAII scaleOnce(float size) {
+        if (size == 1) { return ScaleRAII.DO_NOTHING; }
         return new ScaleRAII(this, size);
     }
 
     public ScaleRAII scaleOnce(float size, float z) {
+        if (size == 1 && z == 0) { return ScaleRAII.DO_NOTHING; }
         return new ScaleRAII(this, size, z);
     }
 

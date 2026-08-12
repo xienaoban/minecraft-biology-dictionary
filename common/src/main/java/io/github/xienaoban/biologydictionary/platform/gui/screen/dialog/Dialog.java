@@ -57,4 +57,7 @@ public class Dialog extends ScreenElement {
         ctx.renderRectangle(BACKDROP_COLOR, ctx.getZ(),
                 box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
     }
+
+    @Override
+    protected float getZOffset() { return 200; }
 }
