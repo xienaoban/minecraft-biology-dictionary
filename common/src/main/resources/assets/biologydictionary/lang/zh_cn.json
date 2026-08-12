@@ -184,7 +184,7 @@
   "property_widget.biologydictionary.ai"                          : "是否有脑子（AI）",
   "property_widget.biologydictionary.ai.desc"                     : "关闭AI生物便不再移动（但也会无视重力）",
   "property_widget.biologydictionary.ai.switch"                   : "AI开关",
-  "property_widget.biologydictionary.ai.switch.desc"              : "关：定！开：解定（默认）！\n生存模式下定身的同时会开启无敌",
+  "property_widget.biologydictionary.ai.switch.desc"              : "关：定！开：解定（默认）！生存模式下定身的同时会开启无敌！\n消耗：敌对全价，中立半价，友好四分之一；解定再减半且不扣物品",
   "property_widget.biologydictionary.invulnerable"                : "是否无敌",
   "property_widget.biologydictionary.invulnerable.desc"           : "创造模式玩家仍可以对无敌生物产生伤害",
   "property_widget.biologydictionary.invulnerable.switch"         : "设置是否无敌",
