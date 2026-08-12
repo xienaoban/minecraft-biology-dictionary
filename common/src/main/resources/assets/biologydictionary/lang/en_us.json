@@ -37,6 +37,8 @@
   "config.biologydictionary.entry.inheritSilentFromParents.tooltip": "If true, baby animals will be born silent when both parents are silent.",
   "config.biologydictionary.entry.allowStealingPlayerInventory": "Allow Stealing Player Inventory",
   "config.biologydictionary.entry.allowStealingPlayerInventory.tooltip": "If true, players can steal items from other players' inventories. Default is false.",
+  "config.biologydictionary.entry.entityDetailScreenRange": "Entity Detail Screen Range",
+  "config.biologydictionary.entry.entityDetailScreenRange.tooltip": "Forcibly closes the entity detail screen when the entity is farther than this distance (m) from the player.",
   "config.biologydictionary.entry.highlightEntitiesRange": "Highlight Skill Range",
   "config.biologydictionary.entry.highlightEntitiesRange.tooltip": "Highlight radius for the \"Highlight\" skill (m); above 160 is usually of limited use:\n* Distant entities may not be loaded\n* Small entities may be only a few pixels\n* They may also be skipped by vanilla rendering distance",
   "config.biologydictionary.entry.telescopeDiscoveryRange": "Telescope Discovery Range",

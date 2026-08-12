@@ -125,15 +125,21 @@ public final class Configs {
         boolean allowStealingPlayerInventory = false;
 
         /**
+         * Maximum range (in blocks) for opening and keeping the entity detail screen.
+         */
+        @ConfigEntry(min = 1, max = 1024)
+        int entityDetailScreenRange = 10;
+
+        /**
          * Range (in blocks) used by the far highlight skill action.
          */
-        @ConfigEntry(min = 20, max = 500)
+        @ConfigEntry(min = 20, max = 1024)
         int highlightEntitiesRange = 100;
 
         /**
          * Maximum range (in blocks) for telescope entity discovery.
          */
-        @ConfigEntry(min = 20, max = 500)
+        @ConfigEntry(min = 20, max = 1024)
         int telescopeDiscoveryRange = 160;
 
         /**
@@ -239,6 +245,10 @@ public final class Configs {
 
         public boolean isAllowStealingPlayerInventory() {
             return allowStealingPlayerInventory;
+        }
+
+        public int getEntityDetailScreenRange() {
+            return entityDetailScreenRange;
         }
 
         public int getHighlightEntitiesRange() {

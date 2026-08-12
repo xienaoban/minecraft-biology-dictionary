@@ -34,12 +34,14 @@ public final class DiscoverySources {
         @ClientOnly @Override
         public boolean clientCheck(ClientContext ctx) {
             @ClientOnly final class CO { static boolean check(ClientContext ctx) {
-                return PlayerUtils.isWithinInteractionRange(ctx.player(), ctx.entity(), 10);
+                return PlayerUtils.isWithinInteractionRange(ctx.player(), ctx.entity(),
+                        ConfigsManager.getServer().getEntityDetailScreenRange());
             }}
             return CO.check(ctx);
         }
         @Override public boolean serverCheck(ServerContext ctx) {
-            return PlayerUtils.isWithinInteractionRange(ctx.player(), ctx.entity(), 10);
+            return PlayerUtils.isWithinInteractionRange(ctx.player(), ctx.entity(),
+                    ConfigsManager.getServer().getEntityDetailScreenRange());
         }
     });
 
