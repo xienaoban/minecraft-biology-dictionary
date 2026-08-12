@@ -184,7 +184,7 @@
   "property_widget.biologydictionary.ai"                          : "Has AI",
   "property_widget.biologydictionary.ai.desc"                     : "No AI, no movement (also defy gravity)",
   "property_widget.biologydictionary.ai.switch"                   : "AI Switch",
-  "property_widget.biologydictionary.ai.switch.desc"              : "Off: No AI; On: With AI (default)\nIn survival mode, disabling AI will also enable invulnerability",
+  "property_widget.biologydictionary.ai.switch.desc"              : "Off: No AI; On: With AI (default)\nIn survival mode, disabling AI will also enable invulnerability\nCost: full for hostile, half for neutral, quarter for friendly; restoring AI costs half again and no items",
   "property_widget.biologydictionary.invulnerable"                : "Is Invulnerable",
   "property_widget.biologydictionary.invulnerable.desc"           : "Players in creative mode can still hurt invulnerable mobs",
   "property_widget.biologydictionary.invulnerable.switch"         : "Set Whether Or Not To Be Invulnerable",
