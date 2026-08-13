@@ -11,6 +11,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 ### Changed
 
 - Add details to No-AI skill widget tooltip.
+- Page turn markers now support more complex page turn behaviors.
 - The range for opening and keeping the entity detail screen is now a server config (`entityDetailScreenRange`).
 - Support attack damage & armor widgets.
 
