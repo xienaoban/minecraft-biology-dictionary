@@ -140,6 +140,11 @@
 
   "property_widget.biologydictionary.health"                      : "血量",
   "property_widget.biologydictionary.health.desc"                 : "血量耗尽时即死亡",
+  "property_widget.biologydictionary.attack_damage"               : "攻击力",
+  "property_widget.biologydictionary.attack_damage.desc"          : "最终值，含装备与效果加成",
+  "property_widget.biologydictionary.armor"                       : "护甲值",
+  "property_widget.biologydictionary.armor.desc"                  : "最终值，含装备与效果加成",
+  "property_widget.biologydictionary.armor.damage_reduction"      : "折合减伤：%s%%",
   "property_widget.biologydictionary.air"                         : "体内氧气含量",
   "property_widget.biologydictionary.air.desc"                    : "氧气耗尽时会持续掉血",
   "property_widget.biologydictionary.moistness"                   : "皮肤潮湿度",

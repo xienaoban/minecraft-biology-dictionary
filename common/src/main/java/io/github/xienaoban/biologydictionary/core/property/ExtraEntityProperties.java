@@ -14,6 +14,7 @@ import java.util.Map;
 public final class ExtraEntityProperties {
 
     public static void registerBuiltIn(ExtraEntityPropertiesPlugin.Registrar registrar) {
+        registrar.register(LivingEntityAttackDamageProperty.class, LivingEntityAttackDamageProperty.FACTORY);
         registrar.register(EntityLootTableProperty.class, EntityLootTableProperty.FACTORY);
         registrar.register(EntitySpawnCountedProperty.class, EntitySpawnCountedProperty.FACTORY);
         registrar.register(EntityInventorySizeProperty.class, EntityInventorySizeProperty.FACTORY);

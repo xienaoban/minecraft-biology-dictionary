@@ -12,6 +12,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 - The No-AI skill tooltip now explains cost scaling by hostile/neutral/friendly, and friendly mobs no longer waive the experience level requirement.
 - The range for opening and keeping the entity detail screen is now a server config (`entityDetailScreenRange`), default 10m, max 1024m.
+- Support attack damage & armor widgets.
 
 ### Fixed
 
