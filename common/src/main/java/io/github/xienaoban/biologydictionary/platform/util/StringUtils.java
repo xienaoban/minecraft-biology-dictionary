@@ -41,6 +41,20 @@ public class StringUtils {
     }
 
     /**
+     * Format num to sth. like 10, 1.0, 0.1
+     * Only accept positive values.
+     */
+    public static String format2Digits(double num) {
+        if (num >= 10) {
+            return String.valueOf(Math.round(num));
+        } else if (num >= 0) {
+            return String.format("%.1f", num);
+        } else {
+            return String.valueOf(Math.round(num));
+        }
+    }
+
+    /**
      * Format num to sth. like 100, 10.0, 1.000
      * Only accept positive values.
      */

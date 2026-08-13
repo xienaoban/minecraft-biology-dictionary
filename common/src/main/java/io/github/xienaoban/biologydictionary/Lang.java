@@ -108,6 +108,11 @@ public final class Lang {
 
     PROPERTY_WIDGET_HEALTH                      = "property_widget.biologydictionary.health",
     PROPERTY_WIDGET_HEALTH_DESC                 = "property_widget.biologydictionary.health.desc",
+    PROPERTY_WIDGET_ATTACK_DAMAGE               = "property_widget.biologydictionary.attack_damage",
+    PROPERTY_WIDGET_ATTACK_DAMAGE_DESC          = "property_widget.biologydictionary.attack_damage.desc",
+    PROPERTY_WIDGET_ARMOR                       = "property_widget.biologydictionary.armor",
+    PROPERTY_WIDGET_ARMOR_DESC                  = "property_widget.biologydictionary.armor.desc",
+    PROPERTY_WIDGET_ARMOR_DAMAGE_REDUCTION      = "property_widget.biologydictionary.armor.damage_reduction",
     PROPERTY_WIDGET_AIR                         = "property_widget.biologydictionary.air",
     PROPERTY_WIDGET_AIR_DESC                    = "property_widget.biologydictionary.air.desc",
     PROPERTY_WIDGET_MOISTNESS                   = "property_widget.biologydictionary.moistness",
