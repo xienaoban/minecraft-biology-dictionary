@@ -7,6 +7,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 ### Added
 
 - New players receive a Biology Dictionary item when joining the world for the first time (config `giveBookOnFirstJoin`).
+- Show a centered warning when using a skill on the overview preview entity.
 
 ### Changed
 
@@ -14,10 +15,12 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Page turn markers now support more complex page turn behaviors.
 - The range for opening and keeping the entity detail screen is now a server config (`entityDetailScreenRange`).
 - Support attack damage & armor widgets.
+- Plugin API: refactored the discovery API and added `EntityInfoApi`.
 
 ### Fixed
 
 - Spyglass no longer shows the discovery progress bar or completion animation when observing blacklisted entities.
+- Fixed a build-time client-only validation error (common code referenced `EntityDisplay`).
 
 ## Previous Versions
 
