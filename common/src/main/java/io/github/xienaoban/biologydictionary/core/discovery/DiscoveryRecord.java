@@ -18,8 +18,8 @@ import java.util.UUID;
  *
  * <p>Fields are never null; absent values use the NO_* sentinels defined here.
  * Construction goes through {@link #simple} / {@link #standard}; serialization
- * (NBT codec and network buffer) lives in {@code DiscoveryRecordSerializer}
- * (core package), because source strings resolve through the core source registry.
+ * (NBT codec and network buffer) lives in {@link DiscoveryRecordSerializer},
+ * because source strings resolve through the source registry.
  */
 public record DiscoveryRecord(
         long firstDiscoveryTime,

@@ -1,8 +1,11 @@
 # 插件 API
 
-Biology Dictionary 允许其它模组通过**每类 registry 一个的插件接口**注册自定义的**技能（skill）**、**实体属性（property）**、**实体显示顺序（entity order）**、**发现来源（discovery source）**，以及客户端的**组件（widget）**。
+Biology Dictionary 向其它模组提供两类扩展点：
 
-框架在初始化期间发现每个插件、调用对应的注册方法；此后该注册表在整局游戏内不可变。注册只在启动时发生、运行时不再变更——下游系统（配置、网络、UI）读取的都是启动时固定的结果。
+- **注册型插件**——通过每类 registry 一个的插件接口注册自定义的**技能（skill）**、**实体属性（property）**、**实体显示顺序（entity order）**、**发现来源（discovery source）**，以及客户端的**组件（widget）**。
+- **查询 API**——读取实体目录（实体列表、tag 归属）与发现状态（是否已发现、发现记录），客户端和服务端各有对应入口。
+
+框架在初始化期间发现每个插件、调用对应的注册方法；此后注册表在整局游戏内不可变。注册只在启动时发生、运行时不再变更——下游系统（配置、网络、UI）读取的都是启动时固定的结果。
 
 ## 插件接口
 
@@ -18,6 +21,8 @@ Biology Dictionary 允许其它模组通过**每类 registry 一个的插件接�
 
 通用接口在客户端和专用服务端都运行。组件接口仅限客户端（`@ClientOnly`），因为组件只存在于客户端。
 
+插件接口位于 `io.github.xienaoban.biologydictionary.api.plugin`。注意它们会引用模组内部包的类型（如 `core.skill` 的 `GeneralSkill`、`core.property` 的 `EntityProperty`、`gui.component` 的 `EntityPropertyWidget`）；第三方插件直接依赖整个模组 jar、按需使用这些类型即可。
+
 ## 声明你的插件
 
 插件类必须实现所选接口、提供**公有无参构造函数**，并且只能标注一个对应的标记注解：
@@ -30,7 +35,7 @@ Biology Dictionary 允许其它模组通过**每类 registry 一个的插件接�
 ### Fabric —— 注解与入口点（entrypoint）
 
 除标注注解外，还要在 `fabric.mod.json` 中将该类声明在匹配的入口点下：通用插件用
-`biologydictionary`，客户端（组件）插件用 `biologydictionary:client`：
+`biologydictionary`，客户端插件用 `biologydictionary:client`：
 
 ```json
 {
@@ -51,13 +56,47 @@ public final class MyPlugin implements BiologySkillsPlugin { ... }
 
 Fabric 上缺失或类型不匹配的标记注解都会终止加载。插件内部的注册代码在两个加载器上完全一致；若该类实现了多个插件接口，每个 registry 只派发自己关心的那个回调。
 
-## API 类型
+## 查询 API
 
-均在包 `io.github.xienaoban.biologydictionary.api` 下：
+均在包 `io.github.xienaoban.biologydictionary.api` 下，是模组运行时状态的静态门面；状态缺失（world session 尚未就绪、类型未知或被黑名单、tag 不存在）一律以空结果返回——绝不返回 `null`、也不抛异常。
 
-- 插件接口：`BiologySkillsPlugin` / `ExtraEntityPropertiesPlugin` / `EntityOrdersPlugin` / `DiscoverySourcesPlugin` / `EntityPropertyWidgetsPlugin`（各 Registrar 为接口的嵌套类型）
-- 发现 API：`ServerDiscoveryApi`（服务端）/ `ClientDiscoveryApi`（客户端）/ `DiscoveryProgress` / `DiscoverySource` / `DiscoveryRecord`
-- `@BiologyDictionaryPlugin`（通用）、`@BiologyDictionaryClientPlugin`（客户端）
+### `EntityInfoApi` —— 实体目录（不分端）
+
+读取实体词典：哪些实体类型可追踪、它们的 tag 归属。
+
+| 方法 | 返回 |
+|---|---|
+| `getEntityEntry(EntityType<?>)` | `Optional<EntityDictionaryEntry>`——单个类型的条目 |
+| `getTotalEntities()` | `List<EntityDictionaryEntry>`——全部可追踪类型（已排序、已过滤黑名单） |
+| `getTagEntities(groupId, tagId)` | `List<EntityDictionaryEntry>`——某 tag group 下某 tag 的条目 |
+| `getBossEntities()` | boss 条目（默认 `boss` tag，背后是 `c:bosses` 约定 tag） |
+| `getFriendlyEntities()` / `getNeutralEntities()` / `getEnemyEntities()` | 默认友好 / 中立 / 敌对 tag 的条目 |
+
+tag group 与 tag 的 key 来自 `Lang`（如 `Lang.TAG_GROUP_DEFAULT`、`Lang.TAG_DEFAULT_BOSS`）；`getTagEntities` 是通用形式，其余方法是它的便捷封装。
+
+### `ClientDiscoveryApi` —— 客户端发现状态
+
+所有查询作用于当前本地玩家的缓存。缓存可能过期或不完整；需要权威结果时用 `ServerDiscoveryApi`。
+
+| 方法 | 返回 |
+|---|---|
+| `isDiscovered(EntityType<?>)` | `boolean` |
+| `getRecord(EntityType<?>)` | `Optional<DiscoveryRecord>` |
+| `getDiscoveredEntities(entries)` | 把给定的条目列表（如 `EntityInfoApi.getTotalEntities()`）过滤为已发现的部分 |
+| `recordDiscovery(source, entity)` | `boolean`——`true` 仅表示请求已提交，服务器仍可能拒绝 |
+
+### `ServerDiscoveryApi` —— 服务端发现状态
+
+权威数据。方法带 `ServerPlayer` 参数，因为发现状态按玩家区分。
+
+| 方法 | 返回 |
+|---|---|
+| `isDiscovered(player, type)` | `boolean` |
+| `getRecord(player, type)` | `Optional<DiscoveryRecord>` |
+| `getDiscoveredEntities(player, entries)` | 把给定的条目列表过滤为已发现的部分 |
+| `recordDiscovery(player, source, entity)` | `boolean`——`true` 表示本次事件实际产生了新发现 |
+
+服务端查询均为纯查询、**不考虑创造模式**；如需 `creative || discovered` 语义，自行与 `player.isCreative()` 组合。
 
 ## 示例：注册一个技能
 
@@ -78,7 +117,57 @@ public final class MyPlugin implements BiologySkillsPlugin {
 
 （Fabric 上，把 `com.example.MyPlugin` 声明在 `biologydictionary` 入口点下，替代注解。）
 
-属性和实体顺序同理，只是各自的插件接口和 Registrar 不同。
+## 示例：注册一个实体属性
+
+```java
+import io.github.xienaoban.biologydictionary.api.BiologyDictionaryPlugin;
+import io.github.xienaoban.biologydictionary.api.ExtraEntityPropertiesPlugin;
+
+@BiologyDictionaryPlugin
+public final class MyPlugin implements ExtraEntityPropertiesPlugin {
+    @Override
+    public void registerExtraEntityProperties(ExtraEntityPropertiesPlugin.Registrar registrar) {
+        registrar.register(MyProperty.class, MyProperty.FACTORY);
+    }
+}
+```
+
+实体显示顺序同理：实现 `EntityOrdersPlugin`，在 `registerEntityOrders` 中注册 `EntityType`。
+
+## 示例：注册一个发现来源
+
+发现来源标注实体是*如何*被发现的（击杀、望远镜……），自带显示名、配置开关和双端校验。继承 `DiscoverySource`（位于 `core.discovery`）、按需 override，存到 `static` 字段以便后续触发，然后注册它。
+
+```java
+import io.github.xienaoban.biologydictionary.api.BiologyDictionaryPlugin;
+import io.github.xienaoban.biologydictionary.api.DiscoverySourcesPlugin;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+
+@BiologyDictionaryPlugin
+public final class MyPlugin implements DiscoverySourcesPlugin {
+    public static final DiscoverySource NET_CAPTURE = new DiscoverySource(
+            Identifier.fromNamespaceAndPath("mymod", "net_capture")) {
+        @Override public boolean clientCheck(DiscoverySource.ClientContext ctx) {
+            return withinBlocks(ctx.player(), ctx.entity(), 5);     // 客户端闸门
+        }
+        @Override public boolean serverCheck(DiscoverySource.ServerContext ctx) {
+            return withinBlocks(ctx.player(), ctx.entity(), 5);     // 服务端权威校验
+        }
+    };
+
+    @Override
+    public void registerDiscoverySources(DiscoverySourcesPlugin.Registrar registrar) {
+        registrar.register(NET_CAPTURE);
+    }
+}
+```
+
+`displayName()` 默认从 id 派生翻译 key（`discovery_source.<namespace>.<path>`），一般无需 override；`isEnabled()`、`serverCheck(ServerContext)`、`clientCheck(ClientContext)` 默认放行。`clientCheck` 只在客户端被调用；服务端加载该类但不会触达任何客户端类型。
+
+注册的来源**只在「生物辞典」发现策略下生效**；另外两种策略忽略插件来源。当你的触发条件满足时，触发它：
+
+- 服务端：`ServerDiscoveryApi.recordDiscovery(player, source, entity)`
+- 客户端：`ClientDiscoveryApi.recordDiscovery(source, entity)`
 
 ## 示例：注册一个组件（仅客户端）
 
@@ -97,40 +186,22 @@ public final class MyClientPlugin implements EntityPropertyWidgetsPlugin {
 
 （Fabric 上，把它声明在 `biologydictionary:client` 入口点下。）
 
-## 示例：注册一个发现来源
-
-发现来源标注实体是*如何*被发现的（击杀、望远镜……），自带显示名、配置开关和双端校验。继承 `DiscoverySource`、按需 override，存到 `static` 字段以便后续触发，然后注册它。
+## 示例：查询
 
 ```java
-import io.github.xienaoban.biologydictionary.api.BiologyDictionaryPlugin;
-import io.github.xienaoban.biologydictionary.api.DiscoverySourcesPlugin;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
+// 全部可追踪条目，以及 boss 子集
+List<EntityDictionaryEntry> all = EntityInfoApi.getTotalEntities();
+List<EntityDictionaryEntry> bosses = EntityInfoApi.getBossEntities();
 
-@BiologyDictionaryPlugin
-public final class MyPlugin implements DiscoverySourcesPlugin {
-    public static final DiscoverySource NET_CAPTURE = new DiscoverySource(
-            Identifier.fromNamespaceAndPath("mymod", "net_capture")) {
-        @Override public boolean clientCheck(ClientContext ctx) {
-            return withinBlocks(ctx.player(), ctx.entity(), 5);     // 客户端闸门
-        }
-        @Override public boolean serverCheck(ServerContext ctx) {
-            return withinBlocks(ctx.player(), ctx.entity(), 5);     // 服务端权威校验
-        }
-    };
+// 当前玩家已发现的 boss
+List<EntityDictionaryEntry> discoveredBosses =
+        ClientDiscoveryApi.getDiscoveredEntities(EntityInfoApi.getBossEntities());
 
-    @Override
-    public void registerDiscoverySources(DiscoverySourcesPlugin.Registrar registrar) {
-        registrar.register(NET_CAPTURE);
-    }
-}
+// 服务端
+List<EntityDictionaryEntry> discovered =
+        ServerDiscoveryApi.getDiscoveredEntities(player, EntityInfoApi.getTotalEntities());
+Optional<DiscoveryRecord> record = ServerDiscoveryApi.getRecord(player, EntityTypes.ZOMBIE);
 ```
-
-`displayName()` 默认从 id 派生翻译 key（`discovery_source.<namespace>.<path>`），一般无需 override；`isEnabled()`、`serverCheck(ServerContext)`、`clientCheck(ClientContext)` 默认放行。`clientCheck` 及其 `ClientContext` 仅限客户端。本模组中出现的 `@ClientOnly` 注解是内部使用的，用于替代 Fabric 的 `@Environment`；第三方模组无需关心。
-
-注册的来源**只在「生物辞典」发现策略下生效**；另外两种策略忽略插件来源。当你的触发条件满足时，触发它：
-
-- 服务端：`ServerDiscoveryApi.recordDiscovery(source, player, entity)`
-- 客户端：`ClientDiscoveryApi.recordDiscovery(source, entity)`
 
 ## 契约与生命周期
 

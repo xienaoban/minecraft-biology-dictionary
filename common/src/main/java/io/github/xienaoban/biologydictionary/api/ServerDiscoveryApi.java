@@ -1,14 +1,15 @@
 package io.github.xienaoban.biologydictionary.api;
 
+import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
-import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,31 +42,30 @@ public final class ServerDiscoveryApi {
     }
 
     /**
-     * Discovery counts of the player across all trackable entity types.
-     * Returns {@code (0, 0)} if the discovery manager is unavailable.
+     * Discovered entity entries of the player, filtered from the given entries
+     * (e.g. the result of {@link EntityInfoApi#getTotalEntities()}).
+     * Returns an empty list if the discovery manager is unavailable.
      */
-    public static DiscoveryProgress getProgress(ServerPlayer player) {
+    public static List<EntityDictionaryEntry> getDiscoveredEntities(ServerPlayer player, List<EntityDictionaryEntry> entries) {
         ServerWorldSession sws = ServerWorldSession.get();
         DiscoveryManager dm = sws != null ? sws.getDiscoveryManager() : null;
-        WorldSession ws = WorldSession.get();
-        if (dm == null || ws == null) {
-            return new DiscoveryProgress(0, 0);
-        }
-        var entries = ws.getEntityManager().getEntityEntries();
-        int discovered = 0;
-        for (var entry : entries) {
-            if (dm.isDiscovered(player, entry.getType())) { discovered++; }
-        }
-        return new DiscoveryProgress(discovered, entries.size());
+        if (dm == null) { return List.of(); }
+        return entries.stream()
+                .filter(entry -> dm.isDiscovered(player, entry.getType()))
+                .toList();
     }
 
     /**
      * Record a discovery from a third-party {@link DiscoverySource}.
      * The source's {@link DiscoverySource#serverCheck} gate applies.
+     * <p>
+     * Note the return semantics differ from {@link ClientDiscoveryApi#recordDiscovery}:
+     * here {@code true} means a new discovery was actually recorded, not merely requested.
      * Returns {@code false} if the discovery manager is unavailable.
+     *
      * @return true if this event resulted in a new discovery
      */
-    public static boolean recordDiscovery(DiscoverySource source, ServerPlayer player, Entity entity) {
+    public static boolean recordDiscovery(ServerPlayer player, DiscoverySource source, Entity entity) {
         DiscoveryManager dm = manager();
         return dm != null && dm.onDiscoveryEvent(source, player, entity);
     }

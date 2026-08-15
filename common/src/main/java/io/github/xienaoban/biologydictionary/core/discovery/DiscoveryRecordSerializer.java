@@ -23,7 +23,7 @@ public final class DiscoveryRecordSerializer {
     private static final Codec<DiscoverySource> SOURCE_CODEC =
             Codec.STRING.xmap(DiscoverySources::parseSource, source -> source.id().toString());
     private static final Codec<Biome.Precipitation> WEATHER_CODEC =
-            Codec.STRING.xmap(Biome.Precipitation::valueOf, Biome.Precipitation::name);
+            Codec.STRING.xmap(DiscoveryRecordSerializer::parsePrecipitation, Biome.Precipitation::getSerializedName);
 
     public static final Codec<DiscoveryRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.LONG.optionalFieldOf("time", DiscoveryRecord.NO_TIME).forGetter(DiscoveryRecord::firstDiscoveryTime),
@@ -46,7 +46,7 @@ public final class DiscoveryRecordSerializer {
         String bioStr = buf.readUtf();
         Identifier biome = bioStr.isEmpty() ? DiscoveryRecord.NO_ID : Identifier.tryParse(bioStr);
         BlockPos position = buf.readBlockPos();
-        Biome.Precipitation weather = Biome.Precipitation.valueOf(buf.readUtf());
+        Biome.Precipitation weather = parsePrecipitation(buf.readUtf());
         UUID entityUUID = buf.readUUID();
         CompoundTag entityNbt = buf.readNbt();
         return new DiscoveryRecord(time, tick, source, dimension, biome, position, weather, entityUUID,
@@ -60,8 +60,24 @@ public final class DiscoveryRecordSerializer {
         buf.writeUtf(record.dimension().toString());
         buf.writeUtf(record.biome().toString());
         buf.writeBlockPos(record.position());
-        buf.writeUtf(record.weather().name());
+        buf.writeUtf(record.weather().getSerializedName());
         buf.writeUUID(record.entityUUID());
         buf.writeNbt(record.entityNbt());
+    }
+
+    /**
+     * Lenient parse of a serialized precipitation: prefers the stable serialized name
+     * ({@link Biome.Precipitation#getSerializedName()}), falls back to the legacy
+     * {@link Enum#name()} format, then to {@link Biome.Precipitation#NONE}.
+     */
+    private static Biome.Precipitation parsePrecipitation(String value) {
+        for (Biome.Precipitation precipitation : Biome.Precipitation.values()) {
+            if (precipitation.getSerializedName().equals(value)) { return precipitation; }
+        }
+        try {
+            return Biome.Precipitation.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            return Biome.Precipitation.NONE;
+        }
     }
 }
