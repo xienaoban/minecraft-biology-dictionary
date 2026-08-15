@@ -2,8 +2,6 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
