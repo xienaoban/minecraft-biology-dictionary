@@ -292,6 +292,7 @@
   "text.biologydictionary.no_biology_dictionary_book": "背包内无生物辞典书！",
   "text.biologydictionary.entity_not_discovered": "尚未发现该生物（解锁条件见服务端配置）",
   "text.biologydictionary.entity_instance_creation_failed": "无法创建此生物的展示实例，部分资料不可用。",
+  "text.biologydictionary.overview_entity_not_real": "（预览界面，操作不真实生效）",
   "text.biologydictionary.new_entity_discovered": "发现新生物！",
   "text.biologydictionary.target_entity_too_far": "目标生物离你太远了！",
   "text.biologydictionary.highlighted_entities": "感知到了%d只%s，感知半径%d米！",
