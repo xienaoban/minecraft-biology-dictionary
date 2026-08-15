@@ -108,8 +108,8 @@ A discovery source labels *how* an entity was discovered (kill, telescope, …) 
 
 ```java
 import io.github.xienaoban.biologydictionary.api.BiologyDictionaryPlugin;
-import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.api.DiscoverySourcesPlugin;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 
 @BiologyDictionaryPlugin
 public final class MyPlugin implements DiscoverySourcesPlugin {

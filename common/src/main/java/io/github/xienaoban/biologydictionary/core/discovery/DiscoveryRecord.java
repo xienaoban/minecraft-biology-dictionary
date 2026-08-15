@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.api;
+package io.github.xienaoban.biologydictionary.core.discovery;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

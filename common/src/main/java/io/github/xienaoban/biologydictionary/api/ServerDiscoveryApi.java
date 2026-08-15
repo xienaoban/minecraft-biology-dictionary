@@ -1,6 +1,8 @@
 package io.github.xienaoban.biologydictionary.api;
 
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryManager;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import net.minecraft.server.level.ServerPlayer;
