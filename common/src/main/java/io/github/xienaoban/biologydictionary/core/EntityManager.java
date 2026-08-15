@@ -24,6 +24,8 @@ import net.minecraft.world.level.Level;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -51,8 +53,9 @@ public final class EntityManager {
     private final TagGroup classTags     = new TagGroup(Lang.TAG_GROUP_CLASS,     TextUtils.translate(Lang.TAG_GROUP_CLASS_DESC));
     private final TagGroup interfaceTags = new TagGroup(Lang.TAG_GROUP_INTERFACE, TextUtils.translate(Lang.TAG_GROUP_INTERFACE_DESC));
 
-    private final List<TagGroup> tagGroups = new ArrayList<>(
-            Arrays.asList(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
+    private final Map<String, TagGroup> tagGroups = Stream.of(
+            defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags)
+            .collect(Collectors.toMap(TagGroup::getId, Function.identity(), (a, b) -> a, LinkedHashMap::new));
 
     public EntityManager(Level level) {
         initEntities(level);
@@ -292,7 +295,7 @@ public final class EntityManager {
         return node;
     }
 
-    public List<TagGroup> getTagGroups() {
+    public Map<String, TagGroup> getTagGroups() {
         return tagGroups;
     }
 
