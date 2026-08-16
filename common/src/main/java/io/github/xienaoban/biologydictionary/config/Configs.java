@@ -124,6 +124,20 @@ public final class Configs {
         boolean inheritSilentFromParents = true;
 
         /**
+         * Whether survival players can freely take from and place into the equipment slots
+         * of friendly creatures in the stealing screen.
+         */
+        @ConfigEntry
+        boolean allowStealingFriendlyEntityEquipment = false;
+
+        /**
+         * Whether survival players can freely take from and place into the equipment slots
+         * of hostile creatures in the stealing screen.
+         */
+        @ConfigEntry
+        boolean allowStealingEnemyEntityEquipment = false;
+
+        /**
          * Whether players are allowed to steal items from other players' inventories.
          */
         @ConfigEntry
@@ -250,6 +264,14 @@ public final class Configs {
 
         public boolean isInheritSilentFromParents() {
             return inheritSilentFromParents;
+        }
+
+        public boolean isAllowStealingFriendlyEntityEquipment() {
+            return allowStealingFriendlyEntityEquipment;
+        }
+
+        public boolean isAllowStealingEnemyEntityEquipment() {
+            return allowStealingEnemyEntityEquipment;
         }
 
         public boolean isAllowStealingPlayerInventory() {

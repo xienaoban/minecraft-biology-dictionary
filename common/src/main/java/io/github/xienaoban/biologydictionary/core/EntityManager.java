@@ -17,7 +17,6 @@ import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.animal.happyghast.HappyGhast;
 import net.minecraft.world.entity.animal.parrot.Parrot;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -233,7 +232,7 @@ public final class EntityManager {
             if (clazz.isEmpty()) { continue; }
             Class<? extends Entity> entityClazz = clazz.get();
             boolean ratio = entry.getType().getHeight() / entry.getType().getWidth() >= 2;
-            if (Enemy.class.isAssignableFrom(entityClazz)) {
+            if (EntityUtils.isEnemy(entityClazz)) {
                 enemyList.add(entry);
                 if (bossEntries.contains(entry)) {
                     bossList.add(entry);
@@ -251,7 +250,7 @@ public final class EntityManager {
                     humanList.add(entry);
                 }
 
-                if (NeutralMob.class.isAssignableFrom(entityClazz)) {
+                if (EntityUtils.isNeutral(entityClazz)) {
                     neutralList.add(entry);
                 }
 

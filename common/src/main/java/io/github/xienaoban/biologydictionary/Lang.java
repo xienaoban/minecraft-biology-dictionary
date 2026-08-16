@@ -292,6 +292,8 @@ public final class Lang {
     TEXT_OFFER_OR_DROP                       = "text.biologydictionary.offer_or_drop",
     TEXT_TARGET_ENTITY_NO_ABILITY            = "text.biologydictionary.target_entity_no_ability",
     TEXT_STEALING_DETECTED                   = "text.biologydictionary.stealing_detected",
+    TEXT_SERVER_FORBIDS_EQUIPMENT_STEALING   = "text.biologydictionary.server_forbids_equipment_stealing",
+    TEXT_EQUIPMENT_MAY_BE_SWALLOWED          = "text.biologydictionary.equipment_may_be_swallowed",
     TEXT_ENTITY_LOOKING_AT_YOU               = "text.biologydictionary.entity_looking_at_you",
     TEXT_BLACKLIST_NO_SELECTION              = "text.biologydictionary.blacklist_no_selection",
     TEXT_BLACKLIST_APPLIED                   = "text.biologydictionary.blacklist_applied",
