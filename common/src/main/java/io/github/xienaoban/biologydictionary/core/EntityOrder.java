@@ -124,6 +124,7 @@ public final class EntityOrder {
         registrar.register(EntityTypes.GIANT);
 
         // other
+        registrar.register(EntityTypes.PLAYER);
         registrar.register(EntityTypes.ARMOR_STAND);
         registrar.register(EntityTypes.MANNEQUIN);
     }

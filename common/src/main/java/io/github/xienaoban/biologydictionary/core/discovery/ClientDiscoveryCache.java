@@ -1,7 +1,5 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
-import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.world.entity.EntityType;
 

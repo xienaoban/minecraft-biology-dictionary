@@ -17,13 +17,15 @@ import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.animal.happyghast.HappyGhast;
 import net.minecraft.world.entity.animal.parrot.Parrot;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.PatrollingMonster;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -51,8 +53,9 @@ public final class EntityManager {
     private final TagGroup classTags     = new TagGroup(Lang.TAG_GROUP_CLASS,     TextUtils.translate(Lang.TAG_GROUP_CLASS_DESC));
     private final TagGroup interfaceTags = new TagGroup(Lang.TAG_GROUP_INTERFACE, TextUtils.translate(Lang.TAG_GROUP_INTERFACE_DESC));
 
-    private final List<TagGroup> tagGroups = new ArrayList<>(
-            Arrays.asList(defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags));
+    private final Map<String, TagGroup> tagGroups = Stream.of(
+            defaultTags, mcTagTags, namespaceTags, classTags, interfaceTags)
+            .collect(Collectors.toMap(TagGroup::getId, Function.identity(), (a, b) -> a, LinkedHashMap::new));
 
     public EntityManager(Level level) {
         initEntities(level);
@@ -77,8 +80,13 @@ public final class EntityManager {
                 if (!(entity instanceof LivingEntity)) { continue; }
                 entry = new EntityDictionaryEntry(entityType, entity.getClass());
             } catch (Throwable e) {
-                entry = new EntityDictionaryEntry(entityType, null);
-                entry.markInstanceCreationFailed(e);
+                if (entityType == EntityTypes.PLAYER) {
+                    entry = new EntityDictionaryEntry(entityType, Player.class);
+                    entry.instanceCreationFailed = true; // no print
+                } else {
+                    entry = new EntityDictionaryEntry(entityType, null);
+                    entry.markInstanceCreationFailed(e);
+                }
             }
             entries.put(entityType, entry);
             sortedEntries.add(entry);
@@ -224,7 +232,7 @@ public final class EntityManager {
             if (clazz.isEmpty()) { continue; }
             Class<? extends Entity> entityClazz = clazz.get();
             boolean ratio = entry.getType().getHeight() / entry.getType().getWidth() >= 2;
-            if (Enemy.class.isAssignableFrom(entityClazz)) {
+            if (EntityUtils.isEnemy(entityClazz)) {
                 enemyList.add(entry);
                 if (bossEntries.contains(entry)) {
                     bossList.add(entry);
@@ -242,7 +250,7 @@ public final class EntityManager {
                     humanList.add(entry);
                 }
 
-                if (NeutralMob.class.isAssignableFrom(entityClazz)) {
+                if (EntityUtils.isNeutral(entityClazz)) {
                     neutralList.add(entry);
                 }
 
@@ -292,7 +300,7 @@ public final class EntityManager {
         return node;
     }
 
-    public List<TagGroup> getTagGroups() {
+    public Map<String, TagGroup> getTagGroups() {
         return tagGroups;
     }
 
