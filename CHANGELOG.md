@@ -9,6 +9,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 - New players receive a Biology Dictionary item when joining the world for the first time (config `giveBookOnFirstJoin`).
 - Show a centered warning when using a skill on the overview preview entity.
 - Master-level librarian villagers have a chance to sell an extra Biology Dictionary without taking up a regular trade slot (config `bookItemObtainableFromMasterLibrarian`); the chance decays over game time, same as the wandering trader's.
+- JEI compatibility: the Biology Dictionary book now shows up as its own entry in JEI's item list instead of being hidden behind the plain writable book.
 - Survival players can freely take from and place into creatures' equipment slots in the stealing screen, controlled by new server configs `allowStealingFriendlyEntityEquipment` and `allowStealingEnemyEntityEquipment` (creative is always allowed).
 
 ### Changed
