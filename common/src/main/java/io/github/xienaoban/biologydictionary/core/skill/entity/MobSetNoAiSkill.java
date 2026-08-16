@@ -8,8 +8,6 @@ import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.NeutralMob;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
@@ -64,7 +62,7 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
         int expPoints, expLevels, expPointRequired, expLevelRequired, health, satiety;
         List<SkillCost.ItemCost> items;
 
-        if (entity instanceof Enemy) {
+        if (EntityUtils.isEnemy(entity)) {
             expPoints = base.getExperiencePoints();
             expLevels = base.getExperienceLevels();
             expPointRequired = base.getExperiencePointRequired();
@@ -72,7 +70,7 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
             health = base.getHealth();
             satiety = base.getSatiety();
             items = base.getItems();
-        } else if (entity instanceof NeutralMob) {
+        } else if (EntityUtils.isNeutral(entity)) {
             expPoints = base.getExperiencePoints() / 2;
             expLevels = base.getExperienceLevels() / 2;
             expPointRequired = base.getExperiencePointRequired() / 2;

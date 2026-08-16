@@ -8,6 +8,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 - New players receive a Biology Dictionary item when joining the world for the first time (config `giveBookOnFirstJoin`).
 - Show a centered warning when using a skill on the overview preview entity.
+- Survival players can freely take from and place into creatures' equipment slots in the stealing screen, controlled by new server configs `allowStealingFriendlyEntityEquipment` and `allowStealingEnemyEntityEquipment` (creative is always allowed).
 
 ### Changed
 
@@ -21,6 +22,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 - Spyglass no longer shows the discovery progress bar or completion animation when observing blacklisted entities.
 - Fixed a build-time client-only validation error (common code referenced `EntityDisplay`).
+- No more "Failed to create entity type minecraft:player" error when entering a world; the player is now specially handled and previewed with a mannequin (with the player's NBT injected) instead of the instance-creation-failed placeholder.
 
 ## Previous Versions
 

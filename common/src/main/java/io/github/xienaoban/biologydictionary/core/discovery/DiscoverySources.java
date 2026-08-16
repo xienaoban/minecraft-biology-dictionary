@@ -5,9 +5,9 @@ import io.github.xienaoban.biologydictionary.api.plugin.DiscoverySourcesPlugin;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.PluginLookup;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.monster.Enemy;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -67,7 +67,7 @@ public final class DiscoverySources {
     public static final DiscoverySource INTERACT = register(new DiscoverySource(id("interact")) {
         @Override public boolean isEnabled() { return ConfigsManager.getServer().isDiscoveryByInteract(); }
         @Override public boolean serverCheck(ServerContext ctx) {
-            return !(ctx.entity() instanceof Enemy);
+            return EntityUtils.isFriendly(ctx.entity());
         }
     });
 
