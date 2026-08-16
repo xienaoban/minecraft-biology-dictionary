@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
-import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.client.DiscoveryToast;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecordSerializer;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;

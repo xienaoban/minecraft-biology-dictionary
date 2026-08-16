@@ -123,7 +123,7 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
             super(1, Page.COLUMNS);
             Component description = TextUtils.concat(List.of(
                     TextUtils.literal(entry.getStringId()),
-                    TextUtils.translate(Lang.TEXT_ENTITY_INSTANCE_CREATION_FAILED)), Component.literal("\n"));
+                    TextUtils.translate(Lang.TEXT_ENTITY_CANNOT_OVERVIEW)), Component.literal("\n"));
             this.lines = FontUtils.toLines(description, FontUtils.getGlobalFont(),
                     (int) (Widget.calcWidth(Page.COLUMNS) / TEXT_SCALE));
         }

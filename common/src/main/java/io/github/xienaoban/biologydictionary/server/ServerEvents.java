@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.server;
 
+import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
@@ -22,7 +23,7 @@ public final class ServerEvents {
     });
 
     @PlatformEntry
-    public static final List<PlayerListener> PLAYER_LOGGED_IN = List.of();
+    public static final List<PlayerListener> PLAYER_LOGGED_IN = List.of(BiologyDictionaryItem::giveBookOnFirstJoin);
 
     private ServerEvents() {}
 

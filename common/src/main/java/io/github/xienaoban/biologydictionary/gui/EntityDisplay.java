@@ -5,15 +5,20 @@ import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.ClientMannequin;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.Level;
 
 import java.util.function.Consumer;
@@ -38,6 +43,11 @@ public final class EntityDisplay {
     private EntityDisplay(EntityDictionaryEntry entry, Level level, Entity target) {
         this.type = entry.getType();
         if (entry.isInstanceCreationFailed() || hasRenderFailed()) {
+            if (this.type == EntityTypes.PLAYER) {
+                // not placeholder
+                this.model = createPlayerPlaceholder(level, target);
+                return;
+            }
             this.placeholder = true;
             this.model = createPlaceholder(level);
             return;
@@ -80,6 +90,21 @@ public final class EntityDisplay {
         EntityUtils.setupForDisplay(placeholder);
         placeholder.setShowArms(true);
         return placeholder;
+    }
+
+    private ClientMannequin createPlayerPlaceholder(Level level, Entity target) {
+        ClientMannequin m = new ClientMannequin(level, Minecraft.getInstance().playerSkinRenderCache());
+        EntityUtils.assignRenderOnlyEntityId(m);
+        EntityUtils.setupForDisplay(m);
+        if (target != null) {
+            CompoundTag nbt = new CompoundTag();
+            ResolvableProfile profile = ResolvableProfile.createResolved(((Player) target).getGameProfile());
+            ResolvableProfile.CODEC.encodeStart(NbtOps.INSTANCE, profile)
+                    .ifSuccess(tag -> nbt.put("profile", tag));
+            EntityUtils.setNbt(m, nbt);
+            m.tick();
+        }
+        return m;
     }
 
     private void replaceWithPlaceholder() {
