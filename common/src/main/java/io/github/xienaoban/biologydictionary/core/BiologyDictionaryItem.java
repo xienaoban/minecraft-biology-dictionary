@@ -17,6 +17,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerData;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -101,7 +105,37 @@ public final class BiologyDictionaryItem {
         if (!ConfigsManager.getServer().isBookItemObtainableFromWanderingTrader()) {
             return;
         }
+        addBiologyDictionaryTradeWithChance(entity);
+    }
 
+    /**
+     * Master-level librarians have a chance to sell an extra Biology Dictionary.
+     * The offer is appended without taking up a regular trade slot,
+     * and the probability decays over game time the same way as the wandering trader's.
+     *
+     * @see #addToWanderingTraderTrades(WanderingTrader)
+     * @see net.minecraft.world.entity.npc.villager.Villager#updateTrades
+     */
+    public static void addToMasterLibrarianTrades(Villager entity) {
+        if (!ConfigsManager.getServer().isBookItemObtainableFromMasterLibrarian()) {
+            return;
+        }
+        if (!entity.getVillagerData().profession().is(VillagerProfession.LIBRARIAN)) {
+            return;
+        }
+        if (entity.getVillagerData().level() < VillagerData.MAX_VILLAGER_LEVEL) {
+            return;
+        }
+        addBiologyDictionaryTradeWithChance(entity);
+    }
+
+    /**
+     * Append a Biology Dictionary trade offer to the merchant with a probability
+     * decaying over game time.
+     *
+     * @see #addToWanderingTraderTrades(WanderingTrader)
+     */
+    private static void addBiologyDictionaryTradeWithChance(AbstractVillager entity) {
         final int maxTicks = 2 * 24 * 60 * 60 * 20;
         int r = entity.getRandom().nextInt(maxTicks + (maxTicks >> 2));
         int t = (int) Math.min(EntityUtils.getLevel(entity).getGameTime(), maxTicks);

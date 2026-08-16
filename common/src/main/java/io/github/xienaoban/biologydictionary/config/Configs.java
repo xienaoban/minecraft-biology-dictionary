@@ -105,6 +105,13 @@ public final class Configs {
         boolean giveBookOnFirstJoin = true;
 
         /**
+         * Whether master-level librarian villagers have a chance to offer
+         * an extra Biology Dictionary trade (does not take up a regular trade slot).
+         */
+        @ConfigEntry
+        boolean bookItemObtainableFromMasterLibrarian = true;
+
+        /**
          * Whether wandering traders have a chance to offer the Biology Dictionary item for trade.
          */
         @ConfigEntry
@@ -252,6 +259,10 @@ public final class Configs {
 
         public boolean isGiveBookOnFirstJoin() {
             return giveBookOnFirstJoin;
+        }
+
+        public boolean isBookItemObtainableFromMasterLibrarian() {
+            return bookItemObtainableFromMasterLibrarian;
         }
 
         public boolean isBookItemObtainableFromWanderingTrader() {
