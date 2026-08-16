@@ -291,7 +291,7 @@
   "text.biologydictionary.server_configs_reload_success": "Server configs reloaded",
   "text.biologydictionary.no_biology_dictionary_book": "No Biology Dictionary Book in inventory！",
   "text.biologydictionary.entity_not_discovered": "Not discovered yet (see server config for unlock conditions)",
-  "text.biologydictionary.entity_instance_creation_failed": "Unable to create this entity's display instance. Some information is unavailable.",
+  "text.biologydictionary.entity_cannot_overview": "Failed to create a temporary instance. Its information cannot be previewed.",
   "text.biologydictionary.overview_entity_not_real": "(Preview screen, operations have no real effect)",
   "text.biologydictionary.new_entity_discovered": "New Entity Discovered!",
   "text.biologydictionary.target_entity_too_far": "The target mob is too far from you!",
