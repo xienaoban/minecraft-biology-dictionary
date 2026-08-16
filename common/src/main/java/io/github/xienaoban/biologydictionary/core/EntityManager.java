@@ -19,6 +19,7 @@ import net.minecraft.world.entity.animal.happyghast.HappyGhast;
 import net.minecraft.world.entity.animal.parrot.Parrot;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.PatrollingMonster;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.lang.reflect.Modifier;
@@ -80,8 +81,13 @@ public final class EntityManager {
                 if (!(entity instanceof LivingEntity)) { continue; }
                 entry = new EntityDictionaryEntry(entityType, entity.getClass());
             } catch (Throwable e) {
-                entry = new EntityDictionaryEntry(entityType, null);
-                entry.markInstanceCreationFailed(e);
+                if (entityType == EntityTypes.PLAYER) {
+                    entry = new EntityDictionaryEntry(entityType, Player.class);
+                    entry.instanceCreationFailed = true; // no print
+                } else {
+                    entry = new EntityDictionaryEntry(entityType, null);
+                    entry.markInstanceCreationFailed(e);
+                }
             }
             entries.put(entityType, entry);
             sortedEntries.add(entry);
