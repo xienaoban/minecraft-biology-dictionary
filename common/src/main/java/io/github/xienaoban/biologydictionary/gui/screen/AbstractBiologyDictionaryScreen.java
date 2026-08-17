@@ -325,8 +325,15 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         boolean add = true;
         Page page = null;
         for (var widget : widgets) {
-            if (widget instanceof TurnPagePlaceholder) {
-                add = true;
+            if (widget instanceof TurnPagePlaceholder placeholder) {
+                if (page == null) { continue; }
+                int thresholdRows = (int) Math.ceil(placeholder.getPercent() * Page.ROWS);
+                int lastRow = page.getLastOccupiedRow();
+                if (lastRow >= 0 && lastRow + 1 >= thresholdRows) {
+                    add = true;
+                } else {
+                    page.advanceScanStartRow(placeholder.getGapRows());
+                }
                 continue;
             }
             if (add) {

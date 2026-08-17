@@ -31,6 +31,7 @@ final class EntityVanillaDeobfuscation {
         /*--*/ r(net.minecraft.world.entity.LivingEntity.class, "net.minecraft.world.entity.LivingEntity");
         /*----*/ r(net.minecraft.world.entity.Avatar.class, "net.minecraft.world.entity.Avatar");
         /*------*/ r(net.minecraft.world.entity.decoration.Mannequin.class, "net.minecraft.world.entity.decoration.Mannequin");
+        /*------*/ r(net.minecraft.world.entity.player.Player.class, "net.minecraft.world.entity.player.Player");
         /*----*/ r(net.minecraft.world.entity.Mob.class, "net.minecraft.world.entity.Mob");
         /*------*/ r(net.minecraft.world.entity.PathfinderMob.class, "net.minecraft.world.entity.PathfinderMob");
         /*--------*/ r(net.minecraft.world.entity.AgeableMob.class, "net.minecraft.world.entity.AgeableMob");
@@ -181,5 +182,6 @@ final class EntityVanillaDeobfuscation {
         r(net.minecraft.world.level.gameevent.vibrations.VibrationSystem.class, "net.minecraft.world.level.gameevent.vibrations.VibrationSystem");
         r(net.minecraft.world.scores.ScoreHolder.class, "net.minecraft.world.scores.ScoreHolder");
         r(net.minecraft.world.waypoints.WaypointTransmitter.class, "net.minecraft.world.waypoints.WaypointTransmitter");
+
     }
 }
