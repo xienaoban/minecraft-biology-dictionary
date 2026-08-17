@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
@@ -19,7 +20,6 @@ import java.util.List;
 public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
     private static final int SYNC_PROPERTIES_INTERVAL_TICK_CNT =
             (int) (ClientUtils.getClientTickCountPerSecond() * 1.5);
-    private static final int CLOSE_SCREEN_DISTANCE = 10;
 
     private final Entity entity;
     private final EntityProperties<? extends Entity> properties;
@@ -47,7 +47,8 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
     public void tick() {
         super.tick();
 
-        if (!PlayerUtils.isWithinInteractionRange(player, entity, CLOSE_SCREEN_DISTANCE)) {
+        if (!PlayerUtils.isWithinInteractionRange(player, entity,
+                ConfigsManager.getServer().getEntityDetailScreenRange())) {
             ClientWorldSession.get().getHighlightManager().highlightEntity(entity, 4 * 20);
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_TARGET_ENTITY_TOO_FAR)
                     .withStyle(ChatFormatting.YELLOW));

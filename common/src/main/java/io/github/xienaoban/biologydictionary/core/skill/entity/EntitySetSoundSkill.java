@@ -5,10 +5,9 @@ import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.Permissions;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.NeutralMob;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.Items;
 
 public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill<Entity> {
@@ -34,9 +33,9 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
     private static final int ENEMY_EXP_PT_COST = 64;
 
     public static int experiencePointsCost(Entity entity) {
-        if (entity instanceof Enemy) {
+        if (EntityUtils.isEnemy(entity)) {
             return ENEMY_EXP_PT_COST;
-        } else if (entity instanceof NeutralMob) {
+        } else if (EntityUtils.isNeutral(entity)) {
             return NEUTRAL_EXP_PT_COST;
         } else {
             return FRIENDLY_EXP_PT_COST;

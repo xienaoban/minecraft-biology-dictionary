@@ -1,14 +1,13 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import io.github.xienaoban.biologydictionary.api.plugin.DiscoverySourcesPlugin;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.PluginLookup;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.monster.Enemy;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -34,12 +33,14 @@ public final class DiscoverySources {
         @ClientOnly @Override
         public boolean clientCheck(ClientContext ctx) {
             @ClientOnly final class CO { static boolean check(ClientContext ctx) {
-                return PlayerUtils.isWithinInteractionRange(ctx.player(), ctx.entity(), 10);
+                return PlayerUtils.isWithinInteractionRange(ctx.player(), ctx.entity(),
+                        ConfigsManager.getServer().getEntityDetailScreenRange());
             }}
             return CO.check(ctx);
         }
         @Override public boolean serverCheck(ServerContext ctx) {
-            return PlayerUtils.isWithinInteractionRange(ctx.player(), ctx.entity(), 10);
+            return PlayerUtils.isWithinInteractionRange(ctx.player(), ctx.entity(),
+                    ConfigsManager.getServer().getEntityDetailScreenRange());
         }
     });
 
@@ -66,7 +67,7 @@ public final class DiscoverySources {
     public static final DiscoverySource INTERACT = register(new DiscoverySource(id("interact")) {
         @Override public boolean isEnabled() { return ConfigsManager.getServer().isDiscoveryByInteract(); }
         @Override public boolean serverCheck(ServerContext ctx) {
-            return !(ctx.entity() instanceof Enemy);
+            return EntityUtils.isFriendly(ctx.entity());
         }
     });
 

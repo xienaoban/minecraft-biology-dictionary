@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.config.annotation.ConfigEntry;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.EntityTargetedSkill;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
-import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -100,6 +99,19 @@ public final class Configs {
         boolean bookItemRequired = true;
 
         /**
+         * Whether new players receive a Biology Dictionary item when they join the world for the first time.
+         */
+        @ConfigEntry
+        boolean giveBookOnFirstJoin = true;
+
+        /**
+         * Whether master-level librarian villagers have a chance to offer
+         * an extra Biology Dictionary trade (does not take up a regular trade slot).
+         */
+        @ConfigEntry
+        boolean bookItemObtainableFromMasterLibrarian = true;
+
+        /**
          * Whether wandering traders have a chance to offer the Biology Dictionary item for trade.
          */
         @ConfigEntry
@@ -119,21 +131,41 @@ public final class Configs {
         boolean inheritSilentFromParents = true;
 
         /**
+         * Whether survival players can freely take from and place into the equipment slots
+         * of friendly creatures in the stealing screen.
+         */
+        @ConfigEntry
+        boolean allowStealingFriendlyEntityEquipment = false;
+
+        /**
+         * Whether survival players can freely take from and place into the equipment slots
+         * of hostile creatures in the stealing screen.
+         */
+        @ConfigEntry
+        boolean allowStealingEnemyEntityEquipment = false;
+
+        /**
          * Whether players are allowed to steal items from other players' inventories.
          */
         @ConfigEntry
         boolean allowStealingPlayerInventory = false;
 
         /**
+         * Maximum range (in blocks) for opening and keeping the entity detail screen.
+         */
+        @ConfigEntry(min = 1, max = 1024)
+        int entityDetailScreenRange = 10;
+
+        /**
          * Range (in blocks) used by the far highlight skill action.
          */
-        @ConfigEntry(min = 20, max = 500)
+        @ConfigEntry(min = 20, max = 1024)
         int highlightEntitiesRange = 100;
 
         /**
          * Maximum range (in blocks) for telescope entity discovery.
          */
-        @ConfigEntry(min = 20, max = 500)
+        @ConfigEntry(min = 20, max = 1024)
         int telescopeDiscoveryRange = 160;
 
         /**
@@ -225,6 +257,14 @@ public final class Configs {
             return bookItemRequired;
         }
 
+        public boolean isGiveBookOnFirstJoin() {
+            return giveBookOnFirstJoin;
+        }
+
+        public boolean isBookItemObtainableFromMasterLibrarian() {
+            return bookItemObtainableFromMasterLibrarian;
+        }
+
         public boolean isBookItemObtainableFromWanderingTrader() {
             return bookItemObtainableFromWanderingTrader;
         }
@@ -237,8 +277,20 @@ public final class Configs {
             return inheritSilentFromParents;
         }
 
+        public boolean isAllowStealingFriendlyEntityEquipment() {
+            return allowStealingFriendlyEntityEquipment;
+        }
+
+        public boolean isAllowStealingEnemyEntityEquipment() {
+            return allowStealingEnemyEntityEquipment;
+        }
+
         public boolean isAllowStealingPlayerInventory() {
             return allowStealingPlayerInventory;
+        }
+
+        public int getEntityDetailScreenRange() {
+            return entityDetailScreenRange;
         }
 
         public int getHighlightEntitiesRange() {
