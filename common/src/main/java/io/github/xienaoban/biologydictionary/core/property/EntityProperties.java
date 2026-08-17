@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.property;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityVariantPropertyBundle;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplay;
+import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.nbt.CompoundTag;
@@ -32,7 +33,8 @@ public final class EntityProperties<E extends Entity> {
     private int noUpdateCooldown = 0;
 
     // Client-only display state, kept here only as a shared widget access point.
-    private EntityDisplay entityDisplay;
+    // Stored as Object so this common class does not reference the client-only type.
+    private Object entityDisplay;
 
     public EntityProperties(E entity) {
         this.entity = entity;
@@ -61,7 +63,10 @@ public final class EntityProperties<E extends Entity> {
 
     public E entity() { return entity; }
 
-    public EntityDisplay getEntityDisplay() { return entityDisplay; }
+    @ClientAndServer
+    public EntityDisplay getEntityDisplay() { return (EntityDisplay) entityDisplay; }
+
+    @ClientAndServer
     public void setEntityDisplay(EntityDisplay entityDisplay) { this.entityDisplay = entityDisplay; }
 
     public boolean isInNoUpdateCooldown() { return noUpdateCooldown > 0; }

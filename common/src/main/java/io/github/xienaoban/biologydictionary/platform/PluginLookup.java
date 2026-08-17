@@ -29,9 +29,11 @@ public final class PluginLookup {
      * Common-side plugins
      * ({@code @BiologyDictionaryPlugin} / the {@code biologydictionary} entrypoint).
      */
+    @ClientAndServer
     public static <P> List<P> find(Class<P> pluginType) {
         if (commonPlugins == null) {
-            commonPlugins = validate(BRIDGE.discoverCommon(), BiologyDictionaryPlugin.class,
+            commonPlugins = validate(BRIDGE.discoverCommon(),
+                    BiologyDictionaryPlugin.class,
                     BiologyDictionaryClientPlugin.class);
         }
         return filter(commonPlugins, pluginType);

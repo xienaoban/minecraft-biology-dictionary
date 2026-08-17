@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.api;
+package io.github.xienaoban.biologydictionary.core.discovery;
 
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;

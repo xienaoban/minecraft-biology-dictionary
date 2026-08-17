@@ -14,7 +14,13 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.Filterable;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerData;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -66,6 +72,20 @@ public final class BiologyDictionaryItem {
     }
 
     /**
+     * Give a Biology Dictionary item to a player who joins the world for the first time.
+     * Called on the server when a player logs in.
+     */
+    public static void giveBookOnFirstJoin(ServerPlayer player) {
+        if (!ConfigsManager.getServer().isGiveBookOnFirstJoin() || !isFirstJoin(player)) {
+            return;
+        }
+        ItemStack book = createBook();
+        if (!player.addItem(book)) {
+            player.drop(book, false);
+        }
+    }
+
+    /**
      * The probability of the trade offer decreases as the in-game time progresses.
      * After 2 real-world days have passed, or approximately 10 spawns of wandering
      * traders, the probability will stabilize at 20%.
@@ -85,7 +105,37 @@ public final class BiologyDictionaryItem {
         if (!ConfigsManager.getServer().isBookItemObtainableFromWanderingTrader()) {
             return;
         }
+        addBiologyDictionaryTradeWithChance(entity);
+    }
 
+    /**
+     * Master-level librarians have a chance to sell an extra Biology Dictionary.
+     * The offer is appended without taking up a regular trade slot,
+     * and the probability decays over game time the same way as the wandering trader's.
+     *
+     * @see #addToWanderingTraderTrades(WanderingTrader)
+     * @see net.minecraft.world.entity.npc.villager.Villager#updateTrades
+     */
+    public static void addToMasterLibrarianTrades(Villager entity) {
+        if (!ConfigsManager.getServer().isBookItemObtainableFromMasterLibrarian()) {
+            return;
+        }
+        if (!entity.getVillagerData().profession().is(VillagerProfession.LIBRARIAN)) {
+            return;
+        }
+        if (entity.getVillagerData().level() < VillagerData.MAX_VILLAGER_LEVEL) {
+            return;
+        }
+        addBiologyDictionaryTradeWithChance(entity);
+    }
+
+    /**
+     * Append a Biology Dictionary trade offer to the merchant with a probability
+     * decaying over game time.
+     *
+     * @see #addToWanderingTraderTrades(WanderingTrader)
+     */
+    private static void addBiologyDictionaryTradeWithChance(AbstractVillager entity) {
         final int maxTicks = 2 * 24 * 60 * 60 * 20;
         int r = entity.getRandom().nextInt(maxTicks + (maxTicks >> 2));
         int t = (int) Math.min(EntityUtils.getLevel(entity).getGameTime(), maxTicks);
@@ -99,6 +149,15 @@ public final class BiologyDictionaryItem {
         MerchantOffer offer = new MerchantOffer(
                 new ItemCost(Items.EMERALD, cost), createBook(), maxUses, villagerXp, priceMultiplier);
         offers.add(offer);
+    }
+
+    /**
+     * Whether the player has never played on this server before.
+     * Based on the vanilla play-time stat to avoid writing custom player data.
+     * The stat id differs across versions: {@code PLAY_ONE_MINUTE} before 26.2, {@code PLAY_TIME} since 26.2.
+     */
+    private static boolean isFirstJoin(ServerPlayer player) {
+        return player.getStats().getValue(Stats.CUSTOM.get(Stats.PLAY_TIME)) == 0;
     }
 
     private static ItemStack createWritableBook() {
