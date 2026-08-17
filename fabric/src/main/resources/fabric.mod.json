@@ -25,6 +25,9 @@
         ],
         "modmenu": [
             "io.github.xienaoban.biologydictionary.config.fabric.ModMenuConfigScreenProvider"
+        ],
+        "jei_mod_plugin": [
+            "io.github.xienaoban.biologydictionary.compat.jei.BiologyDictionaryJeiPlugin"
         ]
     },
     "accessWidener" : "biologydictionary.accesswidener",

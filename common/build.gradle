@@ -18,6 +18,14 @@ configurations {
     testClientImplementation.extendsFrom implementation
 }
 
+repositories {
+    // JEI API (optional compatibility)
+    maven {
+        name = "BlameJared"
+        url = "https://maven.blamejared.com"
+    }
+}
+
 loom {
     accessWidenerPath = file("src/main/resources/biologydictionary.accesswidener")
 }
@@ -36,6 +44,9 @@ dependencies {
     // SnakeYAML for config file parsing
     modImplementation "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
     include "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
+
+    // JEI API (optional compatibility)
+    compileOnly "mezz.jei:jei-${rootProject.minecraft_version}-common-api:${rootProject.jei_version}"
 
     // Dependencies for testServer
     testServerImplementation "com.github.javaparser:javaparser-symbol-solver-core:${rootProject.javaparser_version}"

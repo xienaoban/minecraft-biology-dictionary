@@ -11,6 +11,11 @@ public final class Page extends ScreenElement {
 
     private final Widget[][] widgetLayout;  // widgetLayout[row][column]
 
+    // Row where addWidget starts scanning: normally the first row (from row 0) that
+    // is not completely filled, but it can also be pushed forward manually for soft
+    // page separation (memory barrier). Only affects addWidget, not setWidget.
+    private int scanStartRow = 0;
+
     public Page() {
         super(false);
         widgetLayout = new Widget[ROWS][COLUMNS];
@@ -48,9 +53,14 @@ public final class Page extends ScreenElement {
     }
 
     public boolean addWidget(Widget widget) {
-        for (int r = 0; r < ROWS; ++r) for (int c = 0; c < COLUMNS; c += widget.getColumns()) {
-            if (hasWidget(r, c)) continue;
-            if (setWidget(widget, r, c)) return true;
+        for (int r = scanStartRow; r < ROWS; ++r) for (int c = 0; c < COLUMNS; c += widget.getColumns()) {
+            if (hasWidget(r, c)) { continue; }
+            if (setWidget(widget, r, c)) {
+                if (r == scanStartRow) {
+                    advanceScanStartRow();
+                }
+                return true;
+            }
         }
         return false;
     }
@@ -70,6 +80,39 @@ public final class Page extends ScreenElement {
         }
         widgetLayout[row][col] = widget;
         widget.setParent(this);
+        return true;
+    }
+
+    /**
+     * Index of the last occupied row (0-based), or -1 if the page is empty.
+     */
+    public int getLastOccupiedRow() {
+        for (int r = ROWS - 1; r >= 0; --r) {
+            for (int c = 0; c < COLUMNS; ++c) {
+                if (hasWidget(r, c)) { return r; }
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Push the scan start row forward so that widgets added afterward start on a new
+     * row (skipping gapRows empty rows), leaving any gaps in earlier rows unfilled.
+     */
+    public void advanceScanStartRow(int gapRows) {
+        scanStartRow = Math.min(ROWS, getLastOccupiedRow() + 1 + Math.max(0, gapRows));
+    }
+
+    private void advanceScanStartRow() {
+        while (scanStartRow < ROWS && isRowFull(scanStartRow)) {
+            scanStartRow++;
+        }
+    }
+
+    private boolean isRowFull(int row) {
+        for (int c = 0; c < COLUMNS; ++c) {
+            if (!hasWidget(row, c)) { return false; }
+        }
         return true;
     }
 

@@ -2,8 +2,6 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.api.DiscoverySource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
@@ -25,7 +23,7 @@ public final class DiscoveryRecordSerializer {
     private static final Codec<DiscoverySource> SOURCE_CODEC =
             Codec.STRING.xmap(DiscoverySources::parseSource, source -> source.id().toString());
     private static final Codec<Biome.Precipitation> WEATHER_CODEC =
-            Codec.STRING.xmap(Biome.Precipitation::valueOf, Biome.Precipitation::name);
+            Codec.STRING.xmap(DiscoveryRecordSerializer::parsePrecipitation, Biome.Precipitation::name);
 
     public static final Codec<DiscoveryRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.LONG.optionalFieldOf("time", DiscoveryRecord.NO_TIME).forGetter(DiscoveryRecord::firstDiscoveryTime),
@@ -48,7 +46,7 @@ public final class DiscoveryRecordSerializer {
         String bioStr = buf.readUtf();
         ResourceLocation biome = bioStr.isEmpty() ? DiscoveryRecord.NO_ID : ResourceLocation.tryParse(bioStr);
         BlockPos position = buf.readBlockPos();
-        Biome.Precipitation weather = Biome.Precipitation.valueOf(buf.readUtf());
+        Biome.Precipitation weather = parsePrecipitation(buf.readUtf());
         UUID entityUUID = buf.readUUID();
         CompoundTag entityNbt = buf.readNbt();
         return new DiscoveryRecord(time, tick, source, dimension, biome, position, weather, entityUUID,
@@ -65,5 +63,21 @@ public final class DiscoveryRecordSerializer {
         buf.writeUtf(record.weather().name());
         buf.writeUUID(record.entityUUID());
         buf.writeNbt(record.entityNbt());
+    }
+
+    /**
+     * Lenient parse of a serialized precipitation: prefers the stable enum name
+     * ({@link Biome.Precipitation#name()}), falls back to the legacy
+     * {@link Enum#name()} format, then to {@link Biome.Precipitation#NONE}.
+     */
+    private static Biome.Precipitation parsePrecipitation(String value) {
+        for (Biome.Precipitation precipitation : Biome.Precipitation.values()) {
+            if (precipitation.name().equals(value)) { return precipitation; }
+        }
+        try {
+            return Biome.Precipitation.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            return Biome.Precipitation.NONE;
+        }
     }
 }
