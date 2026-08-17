@@ -9,13 +9,17 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -30,6 +34,10 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
 
     private int tickCounter;
     private boolean hasDetected;
+    private boolean warnedEquipmentSwallow;
+
+    private Component screenMessage = null;
+    private long screenMessageEndTime = -1;
 
     public InventoryStealingScreen(InventoryStealingMenu menu, Inventory inventory, LivingEntity entity) {
         super(menu, inventory, TextUtils.translate(Lang.SCREEN_STEALING));
@@ -59,6 +67,7 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
 
     protected void renderLabels(GuiGraphics guiGraphics, int i, int j) {
         guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 0x88FFFFFF, false);
+        extractScreenMessage(guiGraphics);
     }
 
     @Override
@@ -87,6 +96,27 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
                 ClientNetManager.sendStealingDetected(entity);
             }
         }
+    }
+
+    @Override
+    protected void slotClicked(Slot slot, int slotId, int buttonNum, ClickType clickType) {
+        if (slotId >= 0 && slotId < InventoryStealingMenu.EQUIPMENT_SLOTS) {
+            Player player = getMenu().getPlayer();
+            if (!getMenu().canModifyEquipment(player)) {
+                sendScreenWarning(TextUtils.translate(Lang.TEXT_SERVER_FORBIDS_EQUIPMENT_STEALING));
+                return;
+            }
+            // First click on an equipment slot warns about the swallowing risk and (in survival) is intercepted;
+            // creative only warns without blocking.
+            if (!warnedEquipmentSwallow) {
+                warnedEquipmentSwallow = true;
+                sendScreenWarning(TextUtils.translate(Lang.TEXT_EQUIPMENT_MAY_BE_SWALLOWED));
+                if (!PlayerUtils.isCreative(player)) {
+                    return;
+                }
+            }
+        }
+        super.slotClicked(slot, slotId, buttonNum, clickType);
     }
 
     @Override
@@ -151,5 +181,31 @@ public class InventoryStealingScreen extends AbstractContainerScreen<InventorySt
             return false;
         }
         return isEntityDetectedBy(entity, player);
+    }
+
+    /**
+     * This screen is not an element screen, so it implements its own centered message
+     * instead of {@code BiologyDictionaryClient.sendCenteredWarning}, which would fall back
+     * to the vanilla overlay rendered behind screens.
+     */
+    private void sendScreenWarning(Component text) {
+        this.screenMessage = text.copy().withStyle(ChatFormatting.YELLOW);
+        this.screenMessageEndTime = System.currentTimeMillis() + 7000;
+    }
+
+    private void extractScreenMessage(GuiGraphics guiGraphics) {
+        if (screenMessage == null) { return; }
+        long currTime = System.currentTimeMillis();
+        if (currTime > screenMessageEndTime) {
+            screenMessage = null;
+            return;
+        }
+        long beginFade = screenMessageEndTime - 2000;
+        int alpha = currTime <= beginFade ? 0xFF : (int) (0xFF * (screenMessageEndTime - currTime) / 2000);
+        int textWidth = font.width(screenMessage);
+        // The pose is already translated to the GUI origin in renderLabels, so use image-relative coordinates.
+        int x = imageWidth / 2;
+        int y = imageHeight / 2 + 100;
+        guiGraphics.drawCenteredString(font, screenMessage, x, y, 0xFFFFFF | (alpha << 24));
     }
 }

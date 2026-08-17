@@ -12,7 +12,13 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.Filterable;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerData;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -67,10 +73,40 @@ public final class BiologyDictionaryItem {
         if (!ConfigsManager.getServer().isBookItemObtainableFromWanderingTrader()) {
             return;
         }
+        addBiologyDictionaryTradeWithChance(entity);
+    }
 
+    /**
+     * Master-level librarians have a chance to sell an extra Biology Dictionary.
+     * The offer is appended without taking up a regular trade slot,
+     * and the probability decays over game time the same way as the wandering trader's.
+     *
+     * @see #addToWanderingTraderTrades(WanderingTrader)
+     * @see net.minecraft.world.entity.npc.Villager#updateTrades
+     */
+    public static void addToMasterLibrarianTrades(Villager entity) {
+        if (!ConfigsManager.getServer().isBookItemObtainableFromMasterLibrarian()) {
+            return;
+        }
+        if (entity.getVillagerData().getProfession() != VillagerProfession.LIBRARIAN) {
+            return;
+        }
+        if (entity.getVillagerData().getLevel() < VillagerData.MAX_VILLAGER_LEVEL) {
+            return;
+        }
+        addBiologyDictionaryTradeWithChance(entity);
+    }
+
+    /**
+     * Append a Biology Dictionary trade offer to the merchant with a probability
+     * decaying over game time.
+     *
+     * @see #addToWanderingTraderTrades(WanderingTrader)
+     */
+    private static void addBiologyDictionaryTradeWithChance(AbstractVillager entity) {
         final int maxTicks = 2 * 24 * 60 * 60 * 20;
         int r = entity.getRandom().nextInt(maxTicks + (maxTicks >> 2));
-        int t = (int) Math.min(EntityUtils.getLevel(entity).getDayTime(), maxTicks);
+        int t = (int) Math.min(EntityUtils.getLevel(entity).getGameTime(), maxTicks);
         if (r < t) { return; }
 
         final int cost = 64;
@@ -82,6 +118,15 @@ public final class BiologyDictionaryItem {
         offers.add(offer);
     }
 
+    /**
+     * Whether the player has never played on this server before.
+     * Based on the vanilla play-time stat to avoid writing custom player data.
+     * The stat id differs across versions: {@code PLAY_ONE_MINUTE} before 26.2, {@code PLAY_TIME} since 26.2.
+     */
+    private static boolean isFirstJoin(ServerPlayer player) {
+        return player.getStats().getValue(Stats.CUSTOM.get(Stats.PLAY_TIME)) == 0;
+    }
+
     public static ItemStack createBook() {
         return createWritableBook();
     }
@@ -91,6 +136,20 @@ public final class BiologyDictionaryItem {
         if (stack == null || !stack.is(Items.WRITABLE_BOOK)) return false;
         CustomData cd = stack.get(DataComponents.CUSTOM_DATA);
         return cd != null && cd.contains(ID);
+    }
+
+    /**
+     * Give a Biology Dictionary item to a player who joins the world for the first time.
+     * Called on the server when a player logs in.
+     */
+    public static void giveBookOnFirstJoin(ServerPlayer player) {
+        if (!ConfigsManager.getServer().isGiveBookOnFirstJoin() || !isFirstJoin(player)) {
+            return;
+        }
+        ItemStack book = createBook();
+        if (!player.addItem(book)) {
+            player.drop(book, false);
+        }
     }
 
     private static ItemStack createWritableBook() {

@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.gui;
 
+import io.github.xienaoban.biologydictionary.client.ClientMannequin;
 import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
@@ -10,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -36,6 +38,11 @@ public final class EntityDisplay {
     private EntityDisplay(EntityDictionaryEntry entry, Level level, Entity target) {
         this.type = entry.getType();
         if (entry.isInstanceCreationFailed() || hasRenderFailed()) {
+            if (this.type == EntityType.PLAYER) {
+                // not placeholder
+                this.model = createPlayerPlaceholder(level, target);
+                return;
+            }
             this.placeholder = true;
             this.model = createPlaceholder(level);
             return;
@@ -78,6 +85,18 @@ public final class EntityDisplay {
         EntityUtils.setupForDisplay(placeholder);
         placeholder.setShowArms(true);
         return placeholder;
+    }
+
+    /**
+     * The vanilla {@code net.minecraft.client.entity.ClientMannequin} does not exist in 1.21.1,
+     * so the mod's {@link ClientMannequin} is used; its profile is set via the constructor
+     * instead of the entity data sync NBT round-trip used on newer versions.
+     */
+    private ClientMannequin createPlayerPlaceholder(Level level, Entity target) {
+        ClientMannequin m = new ClientMannequin(level, target instanceof Player player ? player.getGameProfile() : null);
+        EntityUtils.setupForDisplay(m);
+        m.tick();
+        return m;
     }
 
     private void replaceWithPlaceholder() {
