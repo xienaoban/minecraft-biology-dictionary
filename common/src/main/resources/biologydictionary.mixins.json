@@ -25,6 +25,7 @@
         "entity.ServerPlayerIMixin",
         "entity.ServerPlayerMixin",
         "entity.PlayerMixin",
+        "entity.VillagerMixin",
         "entity.WanderingTraderMixin",
         "loot.CompositeEntryBaseIMixin",
         "loot.LootItemIMixin",

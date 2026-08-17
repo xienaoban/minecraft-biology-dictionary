@@ -33,6 +33,12 @@ repositories {
         name = 'Shedaniel'
         url = 'https://maven.shedaniel.me/'
     }
+
+    // JEI API (optional compatibility)
+    maven {
+        name = "BlameJared"
+        url = "https://maven.blamejared.com"
+    }
 }
 
 dependencies {
@@ -47,6 +53,11 @@ dependencies {
     modImplementation "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
     forgeRuntimeLibrary "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
     include "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
+
+    // JEI API (optional compatibility)
+    compileOnly "mezz.jei:jei-${rootProject.minecraft_version}-common-api:${rootProject.jei_version}"
+    compileOnly "mezz.jei:jei-${rootProject.minecraft_version}-neoforge-api:${rootProject.jei_version}"
+    localRuntime "mezz.jei:jei-${rootProject.minecraft_version}-neoforge:${rootProject.jei_version}"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')

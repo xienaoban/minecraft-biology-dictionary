@@ -29,6 +29,7 @@ final class EntityVanillaDeobfuscation {
         // classes
         /**/ r(net.minecraft.world.entity.Entity.class, "net.minecraft.world.entity.Entity");
         /*--*/ r(net.minecraft.world.entity.LivingEntity.class, "net.minecraft.world.entity.LivingEntity");
+        /*------*/ r(net.minecraft.world.entity.player.Player.class, "net.minecraft.world.entity.player.Player");
         /*----*/ r(net.minecraft.world.entity.Mob.class, "net.minecraft.world.entity.Mob");
         /*------*/ r(net.minecraft.world.entity.FlyingMob.class, "net.minecraft.world.entity.FlyingMob");
         /*--------*/ r(net.minecraft.world.entity.monster.Ghast.class, "net.minecraft.world.entity.monster.Ghast");
@@ -169,5 +170,6 @@ final class EntityVanillaDeobfuscation {
         r(net.minecraft.world.level.entity.EntityAccess.class, "net.minecraft.world.level.entity.EntityAccess");
         r(net.minecraft.world.level.gameevent.vibrations.VibrationSystem.class, "net.minecraft.world.level.gameevent.vibrations.VibrationSystem");
         r(net.minecraft.world.scores.ScoreHolder.class, "net.minecraft.world.scores.ScoreHolder");
+
     }
 }

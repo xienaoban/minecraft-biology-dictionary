@@ -51,6 +51,7 @@ public final class BiologyDictionary {
             ServerWorldSession.deinit();
             WorldSession.deinit();
         });
+        ServerEventRegistry.registerPlayerLoggedIn(BiologyDictionaryItem::giveBookOnFirstJoin);
 
         LOGGER.info("BiologyDictionary initialized.");
     }

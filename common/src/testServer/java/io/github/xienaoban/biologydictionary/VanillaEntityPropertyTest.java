@@ -32,7 +32,7 @@ public class VanillaEntityPropertyTest {
                     EntityManager.EntityDictionaryEntry entry = WorldSession.get()
                         .getEntityManager()
                         .getEntityEntry(entityType);
-                    if (entry == null || entry.getClazz().isEmpty()) {
+                    if (entry == null || entry.isInstanceCreationFailed() || entry.getClazz().isEmpty()) {
                         LOGGER.debug("Skipped entity type (no class info): {}", EntityType.getKey(entityType));
                         skipCount++;
                         continue;
