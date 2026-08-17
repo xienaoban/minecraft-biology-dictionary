@@ -1,3 +1,5 @@
+除非我（用户）特地说明说“阅读 port-all.md”，否则你（AI）无需读此文档。移植通常读 port-part.md。
+
 背景：正在从我的世界1.21.11（E:\project\minecraft\minecraft-biology-dictionary-architectury）移植到我的世界1.21.1（当前项目）。当前是一个模块一个模块地回合。注意1.21.1和1.21.11我的世界源码差异还是很大的。
 我的世界1.21.11的源码位置在 E:\project\minecraft\mc-source\1.21.11
 我的世界1.21.1的源码位置在 E:\project\minecraft\mc-source\1.21.1

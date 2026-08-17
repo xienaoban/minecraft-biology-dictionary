@@ -142,6 +142,7 @@ MC 第一方源码：`mc-source/<MC 版本>/`，可供查询。
   - `build.gradle`、`gradle/wrapper/*` 的构建工具版本、写法
   - Github Action 里涉及的 Java 版本、MC 版本等版本不要动，老版本还多 Architectury 依赖，也不动
   - `fabric.mod.json`
+  - `ref/` 下我放了一些与本模组相关的三方模组，若需要理解不同版本下其他模组的 API，可访问
 - 涉及不同 MC 版本的文件，经常要重新寻找访问的 MC 接口，例如
   - Mixin 类与 Mixin 配置
   - Access 文件（`*.accesswidener`、`accesstransformer.cfg`）
