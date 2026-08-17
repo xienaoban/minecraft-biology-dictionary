@@ -1,7 +1,9 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
@@ -154,6 +156,19 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         return inventory.player;
     }
 
+    /**
+     * Creative players can always modify the entity's equipment slots;
+     * survival players can only do so when the corresponding server config allows it.
+     */
+    public boolean canModifyEquipment(Player player) {
+        if (PlayerUtils.isCreative(player)) {
+            return true;
+        }
+        return EntityUtils.isEnemy(entity)
+                ? ConfigsManager.getServer().isAllowStealingEnemyEntityEquipment()
+                : ConfigsManager.getServer().isAllowStealingFriendlyEntityEquipment();
+    }
+
     private boolean isWithinTouchRange(Player player) {
         boolean good = PlayerUtils.isWithinInteractionRange(player, entity, 4.0);
         if (!good) {
@@ -228,7 +243,7 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPlace(ItemStack itemStack) {
-            if (!PlayerUtils.isCreative(getPlayer())) {
+            if (!canModifyEquipment(getPlayer())) {
                 return false;
             }
             return entity.isEquippableInSlot(itemStack, equipmentSlot);
@@ -236,7 +251,7 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPickup(Player player) {
-            if (!PlayerUtils.isCreative(player)) {
+            if (!canModifyEquipment(player)) {
                 return false;
             }
             ItemStack itemStack = getItem();

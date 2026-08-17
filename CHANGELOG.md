@@ -6,28 +6,25 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Added a multi-selection mode for selecting multiple entity types on the home screen
-- Added a toggle to show only discovered entities, with a configurable default and session-persistent state
-- Added a selection count display while in selection mode
-- Added a blacklist feature: the server config `entityTypeBlacklist` excludes entity types from the dictionary, and selection mode can add the selected entities to it
-- Added a confirmation dialog before applying the blacklist, including a warning that the blacklist is server-side when playing on a remote server
-- Added a new default "Boss" tag to the entity catalog, populated from the `c:bosses` convention tag
-- Added spawn egg lore display in the entity description widget, reading `lore.<namespace>.<path>` translation keys
-- Added a plugin API for third-party mods to register custom skills, extra entity properties, entity display order, client-side property widgets, and discovery sources via `@BiologyDictionaryPlugin` / `@BiologyDictionaryClientPlugin`
-- Added public discovery API facades (`ServerDiscoveryApi` / `ClientDiscoveryApi`) for querying and recording discoveries
+- New players receive a Biology Dictionary item when joining the world for the first time (config `giveBookOnFirstJoin`).
+- Show a centered warning when using a skill on the overview preview entity.
+- Master-level librarian villagers have a chance to sell an extra Biology Dictionary without taking up a regular trade slot (config `bookItemObtainableFromMasterLibrarian`); the chance decays over game time, same as the wandering trader's.
+- JEI compatibility: the Biology Dictionary book now shows up as its own entry in JEI's item list instead of being hidden behind the plain writable book.
+- Survival players can freely take from and place into creatures' equipment slots in the stealing screen, controlled by new server configs `allowStealingFriendlyEntityEquipment` and `allowStealingEnemyEntityEquipment` (creative is always allowed).
 
 ### Changed
 
-- Refactored the discovery system: discovery sources are now pluggable and registered through a central `DiscoverySources` registry; the client discovery cache was consolidated into `ClientDiscoveryCacheManager`
-- Refactored `EntityManager` around per-entry creation-failure tracking (`EntityDictionaryEntry`); introduced the `EntityDisplay` helper and removed the placeholder fallback renderer
-- Reorganized plugin interfaces into the `api.plugin` package
-- Improved entity display widget rendering with an inner border
-- Reordered server config entries
+- Add details to No-AI skill widget tooltip.
+- Page turn markers now support more complex page turn behaviors.
+- The range for opening and keeping the entity detail screen is now a server config (`entityDetailScreenRange`).
+- Support attack damage & armor widgets.
+- Plugin API: refactored the discovery API and added `EntityInfoApi`.
 
 ### Fixed
 
-- Fixed the discovery progress tooltip not appearing after turning pages on the home screen
-- Fixed session teardown when leaving a world so no screen renders against a torn-down session on the render thread
+- Spyglass no longer shows the discovery progress bar or completion animation when observing blacklisted entities.
+- Fixed a build-time client-only validation error (common code referenced `EntityDisplay`).
+- No more "Failed to create entity type minecraft:player" error when entering a world; the player is now specially handled and previewed with a mannequin (with the player's NBT injected) instead of the instance-creation-failed placeholder.
 
 ## Previous Versions
 

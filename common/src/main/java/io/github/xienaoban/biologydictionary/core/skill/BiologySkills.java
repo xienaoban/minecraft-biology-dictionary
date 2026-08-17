@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.api.plugin.BiologySkillsPlugin;
 import io.github.xienaoban.biologydictionary.core.skill.entity.*;
 import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
@@ -11,6 +12,7 @@ import io.github.xienaoban.biologydictionary.platform.PluginLookup;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 
@@ -152,6 +154,8 @@ public final class BiologySkills {
             try {
                 if (EntityUtils.isFakeEntity(entity)) {
                     // Entity displayed in overview screen, not a real entity in world.
+                    BiologyDictionaryClient.sendCenteredWarning(
+                            TextUtils.translate(Lang.TEXT_OVERVIEW_ENTITY_NOT_REAL));
                     return true;
                 }
                 LocalPlayer player = ClientUtils.getClientPlayer();
