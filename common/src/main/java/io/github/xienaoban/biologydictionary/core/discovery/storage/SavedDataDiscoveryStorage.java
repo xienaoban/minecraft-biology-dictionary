@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.discovery.storage;
 
-import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.api.DiscoverySource;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import net.minecraft.core.BlockPos;

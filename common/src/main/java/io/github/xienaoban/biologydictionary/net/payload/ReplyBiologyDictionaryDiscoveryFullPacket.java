@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
-import io.github.xienaoban.biologydictionary.api.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecordSerializer;
 import io.github.xienaoban.biologydictionary.core.discovery.strategy.BiologyDictionaryClientDiscoveryCache;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;

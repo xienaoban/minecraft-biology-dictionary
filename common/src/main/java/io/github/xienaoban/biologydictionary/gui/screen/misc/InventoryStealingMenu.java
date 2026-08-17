@@ -2,7 +2,9 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -77,9 +79,8 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
         addSlot(new EntityEquipmentSlot(EquipmentSlot.CHEST,    left + wh, top, EMPTY_ARMOR_SLOT_CHESTPLATE));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.LEGS,     left, top += wh, EMPTY_ARMOR_SLOT_LEGGINGS));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.FEET,     left + wh, top, EMPTY_ARMOR_SLOT_BOOTS));
-        // SADDLE is not an EquipmentSlot in 1.21.1, ignored
-        top += wh;
         // BODY slot doesn't exist in 1.20.1, ignored
+        top += wh;
         addSlot(new EntityEquipmentSlot(EquipmentSlot.MAINHAND, left, top += wh + 4, EMPTY_ARMOR_SLOT_SWORD));
         addSlot(new EntityEquipmentSlot(EquipmentSlot.OFFHAND,  left + wh, top, EMPTY_ARMOR_SLOT_SHIELD));
 
@@ -155,6 +156,19 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
     public Player getPlayer() {
         return inventory.player;
+    }
+
+    /**
+     * Creative players can always modify the entity's equipment slots;
+     * survival players can only do so when the corresponding server config allows it.
+     */
+    public boolean canModifyEquipment(Player player) {
+        if (PlayerUtils.isCreative(player)) {
+            return true;
+        }
+        return EntityUtils.isEnemy(entity)
+                ? ConfigsManager.getServer().isAllowStealingEnemyEntityEquipment()
+                : ConfigsManager.getServer().isAllowStealingFriendlyEntityEquipment();
     }
 
     private boolean isWithinTouchRange(Player player) {
@@ -247,6 +261,7 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
     /**
      * Slot wrapper for entity equipment
+     * @see net.minecraft.world.inventory.ArmorSlot
      */
     class EntityEquipmentSlot extends Slot {
         private final EquipmentSlot equipmentSlot;
@@ -272,7 +287,7 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPlace(ItemStack itemStack) {
-            if (!PlayerUtils.isCreative(getPlayer())) {
+            if (!canModifyEquipment(getPlayer())) {
                 return false;
             }
             return equipmentSlot == entity.getEquipmentSlotForItem(itemStack);
@@ -280,7 +295,7 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPickup(Player player) {
-            if (!PlayerUtils.isCreative(player)) {
+            if (!canModifyEquipment(player)) {
                 return false;
             }
             ItemStack itemStack = getItem();

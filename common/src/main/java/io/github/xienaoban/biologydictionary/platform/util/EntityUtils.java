@@ -24,6 +24,7 @@ import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.animal.horse.Markings;
 import net.minecraft.world.entity.animal.horse.Variant;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
@@ -49,6 +50,36 @@ public final class EntityUtils {
 
     public static List<Class<? extends Entity>> bottomUp(Entity entity) {
         return bottomUp(entity.getClass());
+    }
+
+    public static boolean isEnemy(Entity entity) {
+        return entity instanceof Enemy;
+    }
+
+    public static boolean isEnemy(Class<? extends Entity> entityClass) {
+        return Enemy.class.isAssignableFrom(entityClass);
+    }
+
+    public static boolean isNeutral(Entity entity) {
+        return entity instanceof NeutralMob;
+    }
+
+    public static boolean isNeutral(Class<? extends Entity> entityClass) {
+        return NeutralMob.class.isAssignableFrom(entityClass);
+    }
+
+    /**
+     * Neutral mobs are also considered friendly in this mod.
+     */
+    public static boolean isFriendly(Entity entity) {
+        return !isEnemy(entity);
+    }
+
+    /**
+     * Neutral mobs are also considered friendly in this mod.
+     */
+    public static boolean isFriendly(Class<? extends Entity> entityClass) {
+        return !isEnemy(entityClass);
     }
 
     public static List<Class<? extends Entity>> topDown(Class<? extends Entity> entityClazz) {

@@ -23,6 +23,8 @@ public final class EntityPropertyWidgets {
         registrar.register(EntityDisplayWidget.class, EntityDisplayWidget.FACTORY);
         registrar.register(LivingEntityHealthWidget.class, LivingEntityHealthWidget.FACTORY);
         registrar.register(EntityAirWidget.class, EntityAirWidget.FACTORY);
+        registrar.register(LivingEntityAttackDamageWidget.class, LivingEntityAttackDamageWidget.FACTORY);
+        registrar.register(LivingEntityArmorWidget.class, LivingEntityArmorWidget.FACTORY);
         registrar.register(DolphinMoistnessWidget.class, DolphinMoistnessWidget.FACTORY);
         registrar.register(LivingEntityActiveEffectsWidget.class, LivingEntityActiveEffectsWidget.FACTORY);
         registrar.register(AnimalFoodWidget.class, AnimalFoodWidget.FACTORY);

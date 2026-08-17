@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
@@ -64,6 +65,10 @@ public final class TelescopeManager {
         if (hitResult instanceof EntityHitResult entityHit
                 && PlayerUtils.isWithinRangeAndUnobstructed(player, entityHit.getEntity(), range)) {
             target = entityHit.getEntity();
+            // Blacklisted entities are treated as no target: no progress, no animation.
+            if (EntityManager.isEntityTypeBlacklisted(EntityUtils.getEntityType(target))) {
+                target = null;
+            }
         }
 
         // New target interrupts the completed display
