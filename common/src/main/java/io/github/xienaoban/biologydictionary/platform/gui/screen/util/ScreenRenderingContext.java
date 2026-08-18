@@ -1,14 +1,14 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
-import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin;
 import io.github.xienaoban.biologydictionary.mixin.rendering.ScreenIMixin;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;

@@ -1,11 +1,11 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
-import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

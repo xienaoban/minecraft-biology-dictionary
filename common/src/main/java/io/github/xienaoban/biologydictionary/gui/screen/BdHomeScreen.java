@@ -18,8 +18,8 @@ import io.github.xienaoban.biologydictionary.gui.component.dialog.WarningDialog;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
-import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScaleRAII;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElement;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.*;
@@ -31,12 +31,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @ClientOnly
 public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
