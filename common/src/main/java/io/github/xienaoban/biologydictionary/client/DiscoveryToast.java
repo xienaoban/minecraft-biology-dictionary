@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.client;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -19,8 +20,7 @@ import net.minecraft.world.item.ItemStack;
 
 @ClientOnly
 public class DiscoveryToast implements Toast {
-    private static final Identifier BACKGROUND_SPRITE =
-            Identifier.fromNamespaceAndPath("biologydictionary", "toast/discovery_toast");
+    private static final Identifier BACKGROUND_SPRITE = IdentifierUtils.bd("toast/discovery_toast");
     private static final int DISPLAY_TIME = 7000;
     private final Component entityName;
     private final ItemStack eggStack;

@@ -390,7 +390,7 @@ public final class SkillCost {
         public static ItemCost fromMap(Map<String, Object> map) {
             String itemId = (String) map.get("item");
             int count = ((Number) map.getOrDefault("count", 1)).intValue();
-            Identifier id = Objects.requireNonNull(Identifier.tryParse(itemId), () -> "Invalid item id: " + itemId);
+            Identifier id = IdentifierUtils.fromString(itemId);
             Item item = BuiltInRegistries.ITEM.get(id)
                     .map(Holder.Reference::value)
                     .orElseThrow(() -> new IllegalArgumentException("Unknown item: " + itemId));
