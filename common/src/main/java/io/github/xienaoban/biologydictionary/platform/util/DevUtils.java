@@ -61,7 +61,7 @@ public final class DevUtils {
     }
 
     public static boolean isVanilaResourceLocation(ResourceLocation id) {
-        return ResourceLocation.DEFAULT_NAMESPACE.equals(id.getNamespace());
+        return IdentifierUtils.isMc(id);
     }
 
     /**

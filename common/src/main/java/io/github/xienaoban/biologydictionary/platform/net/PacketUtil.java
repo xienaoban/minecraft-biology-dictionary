@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.MOD_ID;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 
 public final class PacketUtil {
 
@@ -56,6 +56,6 @@ public final class PacketUtil {
         }
         String path = className.substring(0, className.length() - classEnd.length())
                 .replaceAll("([A-Z]+)", "_$1").substring(1).toLowerCase();
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+        return IdentifierUtils.bd(path);
     }
 }

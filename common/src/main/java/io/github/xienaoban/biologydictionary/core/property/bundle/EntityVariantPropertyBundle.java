@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.property.bundle;
 
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -131,7 +132,7 @@ public final class EntityVariantPropertyBundle {
             ResourceKey<Object> rk = variant.unwrapKey().orElseThrow();
             ListTag lt = new ListTag();
             lt.add(StringTag.valueOf(rk.registry().toString()));
-            lt.add(StringTag.valueOf(rk.location().toString()));
+            lt.add(IdentifierUtils.toNbt(rk.location()));
             CompoundTag res = new CompoundTag();
             res.put(NBT_KEY, lt);
             return res;
@@ -140,8 +141,8 @@ public final class EntityVariantPropertyBundle {
         @Override
         public Holder<Object> nbtToVariant(Tag nbt, Entity entity) {
             ListTag lt = ((CompoundTag) nbt).getList(NBT_KEY, Tag.TAG_STRING);
-            ResourceLocation resReg = ResourceLocation.parse(lt.getString(0));
-            ResourceLocation resLoc = ResourceLocation.parse(lt.getString(1));
+            ResourceLocation resReg = IdentifierUtils.fromString(lt.getString(0));
+            ResourceLocation resLoc = IdentifierUtils.fromString(lt.getString(1));
             Registry<?> registry = BuiltInRegistries.REGISTRY.get(resReg);
             if (registry == null) {
                 registry = entity.registryAccess().registry(ResourceKey.createRegistryKey(resReg)).orElseThrow();
@@ -221,13 +222,13 @@ public final class EntityVariantPropertyBundle {
         @Override
         public Tag variantToNbt(ResourceKey<VillagerType> variant) {
             CompoundTag res = new CompoundTag();
-            res.putString(NBT_KEY, variant.location().toString());
+            res.putString(NBT_KEY, IdentifierUtils.toString(variant.location()));
             return res;
         }
 
         @Override
         public ResourceKey<VillagerType> nbtToVariant(Tag nbt, Villager entity) {
-            ResourceLocation location = ResourceLocation.parse(((CompoundTag) nbt).getString(NBT_KEY));
+            ResourceLocation location = IdentifierUtils.fromString(((CompoundTag) nbt).getString(NBT_KEY));
             return ResourceKey.create(Registries.VILLAGER_TYPE, location);
         }
 

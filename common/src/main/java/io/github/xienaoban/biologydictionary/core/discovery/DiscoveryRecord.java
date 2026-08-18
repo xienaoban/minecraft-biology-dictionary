@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -33,7 +34,7 @@ public record DiscoveryRecord(
     public static final long NO_TIME = -1L;
     public static final UUID NO_UUID = new UUID(-1, -1);
     public static final CompoundTag NO_NBT = new CompoundTag();
-    public static final ResourceLocation NO_ID = ResourceLocation.withDefaultNamespace("unknown");
+    public static final ResourceLocation NO_ID = IdentifierUtils.mc("unknown");
 
     /**
      * A record with only the source set; other fields get sentinel defaults.

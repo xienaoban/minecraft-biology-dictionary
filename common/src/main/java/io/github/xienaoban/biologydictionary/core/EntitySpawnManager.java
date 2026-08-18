@@ -10,6 +10,7 @@ import io.github.xienaoban.biologydictionary.mixin.*;
 import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -70,10 +71,10 @@ public final class EntitySpawnManager {
     private static final long STRUCTURE_TEMPLATE_NBT_QUOTA = 128L * 1024 * 1024;
     private static final String JIGSAW_BLOCK_ID = "minecraft:jigsaw";
     private static final String SPAWNER_BLOCK_ID = "minecraft:spawner";
-    private static final ResourceLocation IGNORED_MISSING_TEMPLATE = ResourceLocation.withDefaultNamespace(
+    private static final ResourceLocation IGNORED_MISSING_TEMPLATE = IdentifierUtils.mc(
         "structure/ancient_city/walls/intact_horizontal_wall_stairs_5.nbt"
     );
-    private static final ResourceLocation EMPTY_POOL = ResourceLocation.withDefaultNamespace("empty");
+    private static final ResourceLocation EMPTY_POOL = IdentifierUtils.mc("empty");
 
     private static final String KEY_BIOMES = "biomes";
     private static final String KEY_STRUCTURES = "structures";
@@ -679,7 +680,7 @@ public final class EntitySpawnManager {
                 EntityType.byString(string).ifPresent(entities::add);
                 readingEntityId = false;
             } else if (readingPool) {
-                ResourceLocation poolLoc = ResourceLocation.tryParse(string);
+                ResourceLocation poolLoc = IdentifierUtils.fromStringOrNull(string);
                 if (poolLoc != null && !poolLoc.equals(EMPTY_POOL)) {
                     referencedPools.add(poolLoc);
                 }
@@ -805,7 +806,7 @@ public final class EntitySpawnManager {
                 LOGGER.warn("Invalid spawn override filename '{}', expected format '<namespace>.<entity_path>.json'", fileName);
                 continue;
             }
-            ResourceLocation entityId = ResourceLocation.tryParse(entityStr.replace('.', ':'));
+            ResourceLocation entityId = IdentifierUtils.fromStringOrNull(entityStr.replace('.', ':'));
             if (entityId == null) {
                 LOGGER.warn("Invalid entity type '{}' in spawn override data pack, skipping.", entityStr);
                 continue;
@@ -922,7 +923,7 @@ public final class EntitySpawnManager {
             for (JsonElement element : array) {
                 String str = element.getAsString();
                 if (str.startsWith("#")) {
-                    TagKey<Object> tagKey = TagKey.create(Misc.cast(registryKey), ResourceLocation.parse(str.substring(1)));
+                    TagKey<Object> tagKey = TagKey.create(Misc.cast(registryKey), IdentifierUtils.fromString(str.substring(1)));
                     var optional = registry.getTag(Misc.cast(tagKey));
                     if (optional.isEmpty()) {
                         LOGGER.warn("Tag '{}' not found in registry, ignoring.", str);
@@ -930,7 +931,7 @@ public final class EntitySpawnManager {
                         optional.get().forEach(holder -> holder.unwrapKey().ifPresent(key -> result.add(key.location())));
                     }
                 } else {
-                    ResourceLocation id = ResourceLocation.tryParse(str);
+                    ResourceLocation id = IdentifierUtils.fromStringOrNull(str);
                     if (id == null) {
                         LOGGER.warn("Invalid identifier '{}' in spawn override, ignoring.", str);
                     } else if (registry.get(id) == null) {
