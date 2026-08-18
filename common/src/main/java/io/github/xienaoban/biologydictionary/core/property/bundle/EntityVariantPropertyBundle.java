@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractPrope
 import io.github.xienaoban.biologydictionary.core.property.builtin.CodecProperty;
 import io.github.xienaoban.biologydictionary.core.property.vanilla.VariantProperty;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -149,7 +150,7 @@ public final class EntityVariantPropertyBundle {
             return variant.unwrapKey().map(resourceKey -> {
                 Identifier id = resourceKey.identifier();
                 String res;
-                if (Identifier.DEFAULT_NAMESPACE.equals(id.getNamespace())) {
+                if (IdentifierUtils.isMc(id)) {
                     res = id.getPath();
                 } else {
                     res = id.getNamespace() + '.' + id.getPath();
