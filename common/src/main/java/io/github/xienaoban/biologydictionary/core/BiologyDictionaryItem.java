@@ -6,13 +6,13 @@ import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.Filterable;
@@ -51,7 +51,7 @@ public final class BiologyDictionaryItem {
     public static final String ID = BiologyDictionary.MOD_ID;
 
     public static final ResourceKey<CreativeModeTab> TOOLS_AND_UTILITIES = ResourceKey.create(
-            Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace("tools_and_utilities"));
+            Registries.CREATIVE_MODE_TAB, IdentifierUtils.mc("tools_and_utilities"));
 
     @PlatformEntry
     public static final CreativeTabEntry BIOLOGY_DICTIONARY_BOOK_CREATIVE_TAB_ENTRY = new CreativeTabEntry(

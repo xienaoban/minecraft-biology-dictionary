@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.core.EntitySpawnManager;
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -53,13 +54,13 @@ public class MobSpawnProperty extends AbstractProperty<Mob, MobSpawnProperty.Dat
         List<Identifier> biomes = new ArrayList<>();
         ListTag biomeList = tag.getList(BIOMES_KEY).orElse(new ListTag());
         for (Tag t : biomeList) {
-            biomes.add(Identifier.parse(((StringTag) t).value()));
+            biomes.add(IdentifierUtils.fromNbt((StringTag) t));
         }
 
         List<Identifier> structures = new ArrayList<>();
         ListTag structureList = tag.getList(STRUCTURES_KEY).orElse(new ListTag());
         for (Tag t : structureList) {
-            structures.add(Identifier.parse(((StringTag) t).value()));
+            structures.add(IdentifierUtils.fromNbt((StringTag) t));
         }
 
         setVal(new Data(biomes, structures));
@@ -75,13 +76,13 @@ public class MobSpawnProperty extends AbstractProperty<Mob, MobSpawnProperty.Dat
 
         ListTag biomeList = new ListTag();
         for (Identifier id : data.biomes()) {
-            biomeList.add(StringTag.valueOf(id.toString()));
+            biomeList.add(IdentifierUtils.toNbt(id));
         }
         tag.put(BIOMES_KEY, biomeList);
 
         ListTag structureList = new ListTag();
         for (Identifier id : data.structures()) {
-            structureList.add(StringTag.valueOf(id.toString()));
+            structureList.add(IdentifierUtils.toNbt(id));
         }
         tag.put(STRUCTURES_KEY, structureList);
 
