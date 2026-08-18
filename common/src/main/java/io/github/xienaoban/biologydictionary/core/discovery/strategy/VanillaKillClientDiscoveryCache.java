@@ -1,10 +1,10 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
