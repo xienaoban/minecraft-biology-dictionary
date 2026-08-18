@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.compat.jei;
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
@@ -56,7 +57,7 @@ public class BiologyDictionaryJeiPlugin implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(BiologyDictionary.MOD_ID, "jei");
+        return IdentifierUtils.bd("jei");
     }
 
     /**

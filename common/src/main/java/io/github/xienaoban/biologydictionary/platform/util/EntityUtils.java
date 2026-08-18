@@ -169,7 +169,7 @@ public final class EntityUtils {
     }
 
     public static String getEntityTypeIdName(EntityType<?> entityType) {
-        return getEntityTypeId(entityType).toString();
+        return IdentifierUtils.toString(getEntityTypeId(entityType));
     }
 
     public static Item getSpawnEggItem(EntityType<?> entityType) {
