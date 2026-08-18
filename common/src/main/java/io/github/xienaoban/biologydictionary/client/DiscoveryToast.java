@@ -1,10 +1,10 @@
 package io.github.xienaoban.biologydictionary.client;
 
-import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.skill;
 
-import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
