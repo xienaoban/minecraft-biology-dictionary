@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
-import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.platform.Platform;
 import net.minecraft.resources.Identifier;
 
