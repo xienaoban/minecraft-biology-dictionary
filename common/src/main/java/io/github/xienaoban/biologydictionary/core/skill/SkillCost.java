@@ -322,7 +322,7 @@ public final class SkillCost {
     private static ItemStack itemStackFromMap(Map<String, Object> map) {
         String itemId = (String) map.get("item");
         int count = ((Number) map.getOrDefault("count", 1)).intValue();
-        Item item = BuiltInRegistries.ITEM.get(Objects.requireNonNull(ResourceLocation.tryParse(itemId)));
+        Item item = BuiltInRegistries.ITEM.get(IdentifierUtils.fromString(itemId));
         return new ItemStack(item, count);
     }
 

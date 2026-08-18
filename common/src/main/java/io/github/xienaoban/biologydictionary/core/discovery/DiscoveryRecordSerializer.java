@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
@@ -21,7 +22,7 @@ public final class DiscoveryRecordSerializer {
     private DiscoveryRecordSerializer() {}
 
     private static final Codec<DiscoverySource> SOURCE_CODEC =
-            Codec.STRING.xmap(DiscoverySources::parseSource, source -> source.id().toString());
+            Codec.STRING.xmap(DiscoverySources::parseSource, source -> IdentifierUtils.toString(source.id()));
     private static final Codec<Biome.Precipitation> WEATHER_CODEC =
             Codec.STRING.xmap(DiscoveryRecordSerializer::parsePrecipitation, Biome.Precipitation::getSerializedName);
 
@@ -29,8 +30,8 @@ public final class DiscoveryRecordSerializer {
             Codec.LONG.optionalFieldOf("time", DiscoveryRecord.NO_TIME).forGetter(DiscoveryRecord::firstDiscoveryTime),
             Codec.LONG.optionalFieldOf("tick", DiscoveryRecord.NO_TIME).forGetter(DiscoveryRecord::firstDiscoveryTick),
             SOURCE_CODEC.optionalFieldOf("source", DiscoverySources.UNKNOWN).forGetter(DiscoveryRecord::source),
-            ResourceLocation.CODEC.optionalFieldOf("dimension", DiscoveryRecord.NO_ID).forGetter(DiscoveryRecord::dimension),
-            ResourceLocation.CODEC.optionalFieldOf("biome", DiscoveryRecord.NO_ID).forGetter(DiscoveryRecord::biome),
+            IdentifierUtils.codec().optionalFieldOf("dimension", DiscoveryRecord.NO_ID).forGetter(DiscoveryRecord::dimension),
+            IdentifierUtils.codec().optionalFieldOf("biome", DiscoveryRecord.NO_ID).forGetter(DiscoveryRecord::biome),
             BlockPos.CODEC.optionalFieldOf("position", BlockPos.ZERO).forGetter(DiscoveryRecord::position),
             WEATHER_CODEC.optionalFieldOf("weather", Biome.Precipitation.NONE).forGetter(DiscoveryRecord::weather),
             UUIDUtil.CODEC.optionalFieldOf("entity_uuid", DiscoveryRecord.NO_UUID).forGetter(DiscoveryRecord::entityUUID),
@@ -42,9 +43,9 @@ public final class DiscoveryRecordSerializer {
         long tick = buf.readLong();
         DiscoverySource source = DiscoverySources.parseSource(buf.readUtf());
         String dimStr = buf.readUtf();
-        ResourceLocation dimension = dimStr.isEmpty() ? DiscoveryRecord.NO_ID : ResourceLocation.tryParse(dimStr);
+        ResourceLocation dimension = dimStr.isEmpty() ? DiscoveryRecord.NO_ID : IdentifierUtils.fromString(dimStr);
         String bioStr = buf.readUtf();
-        ResourceLocation biome = bioStr.isEmpty() ? DiscoveryRecord.NO_ID : ResourceLocation.tryParse(bioStr);
+        ResourceLocation biome = bioStr.isEmpty() ? DiscoveryRecord.NO_ID : IdentifierUtils.fromString(bioStr);
         BlockPos position = buf.readBlockPos();
         Biome.Precipitation weather = parsePrecipitation(buf.readUtf());
         UUID entityUUID = buf.readUUID();
@@ -56,9 +57,9 @@ public final class DiscoveryRecordSerializer {
     public static void writeToBuf(FriendlyByteBuf buf, DiscoveryRecord record) {
         buf.writeLong(record.firstDiscoveryTime());
         buf.writeLong(record.firstDiscoveryTick());
-        buf.writeUtf(record.source().id().toString());
-        buf.writeUtf(record.dimension().toString());
-        buf.writeUtf(record.biome().toString());
+        IdentifierUtils.toBuf(buf, record.source().id());
+        IdentifierUtils.toBuf(buf, record.dimension());
+        IdentifierUtils.toBuf(buf, record.biome());
         buf.writeBlockPos(record.position());
         buf.writeUtf(record.weather().getSerializedName());
         buf.writeUUID(record.entityUUID());

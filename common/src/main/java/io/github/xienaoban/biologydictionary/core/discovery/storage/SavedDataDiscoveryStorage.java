@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -53,7 +54,7 @@ public final class SavedDataDiscoveryStorage extends SavedData {
             CompoundTag discoveriesTag = playerTag.getCompound("discoveries");
             Map<EntityType<?>, DiscoveryRecord> entityMap = new HashMap<>();
             for (String key : discoveriesTag.getAllKeys()) {
-                EntityType<?> type = EntityUtils.getEntityType(ResourceLocation.tryParse(key));
+                EntityType<?> type = EntityUtils.getEntityType(IdentifierUtils.fromStringOrNull(key));
                 if (type != null) {
                     entityMap.put(type, readRecord(discoveriesTag.getCompound(key)));
                 }
@@ -83,9 +84,9 @@ public final class SavedDataDiscoveryStorage extends SavedData {
     private static DiscoveryRecord readRecord(CompoundTag tag) {
         DiscoverySource source = DiscoverySources.parseSource(tag.getString(KEY_SOURCE));
         String dimStr = tag.getString(KEY_DIMENSION);
-        ResourceLocation dimension = dimStr.isEmpty() ? ResourceLocation.withDefaultNamespace("unknown") : ResourceLocation.tryParse(dimStr);
+        ResourceLocation dimension = dimStr.isEmpty() ? IdentifierUtils.mc("unknown") : IdentifierUtils.fromStringOrNull(dimStr);
         String bioStr = tag.getString(KEY_BIOME);
-        ResourceLocation biome = bioStr.isEmpty() ? ResourceLocation.withDefaultNamespace("unknown") : ResourceLocation.tryParse(bioStr);
+        ResourceLocation biome = bioStr.isEmpty() ? IdentifierUtils.mc("unknown") : IdentifierUtils.fromStringOrNull(bioStr);
         int posX = tag.getInt(KEY_POS_X);
         int posY = tag.getInt(KEY_POS_Y);
         int posZ = tag.getInt(KEY_POS_Z);
@@ -105,9 +106,9 @@ public final class SavedDataDiscoveryStorage extends SavedData {
         CompoundTag tag = new CompoundTag();
         tag.putLong(KEY_TIME, record.firstDiscoveryTime());
         tag.putLong(KEY_TICK, record.firstDiscoveryTick());
-        tag.putString(KEY_SOURCE, record.source().id().toString());
-        tag.putString(KEY_DIMENSION, record.dimension() != null ? record.dimension().toString() : "");
-        tag.putString(KEY_BIOME, record.biome() != null ? record.biome().toString() : "");
+        tag.putString(KEY_SOURCE, IdentifierUtils.toString(record.source().id()));
+        tag.putString(KEY_DIMENSION, record.dimension() != null ? IdentifierUtils.toString(record.dimension()) : "");
+        tag.putString(KEY_BIOME, record.biome() != null ? IdentifierUtils.toString(record.biome()) : "");
         BlockPos pos = record.position();
         tag.putInt(KEY_POS_X, pos.getX());
         tag.putInt(KEY_POS_Y, pos.getY());

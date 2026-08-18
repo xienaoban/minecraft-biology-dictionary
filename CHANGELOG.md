@@ -4,27 +4,11 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ## Release
 
-### Added
-
-- New players receive a Biology Dictionary item when joining the world for the first time (config `giveBookOnFirstJoin`).
-- Show a centered warning when using a skill on the overview preview entity.
-- Master-level librarian villagers have a chance to sell an extra Biology Dictionary without taking up a regular trade slot (config `bookItemObtainableFromMasterLibrarian`); the chance decays over game time, same as the wandering trader's.
-- JEI compatibility: the Biology Dictionary book now shows up as its own entry in JEI's item list instead of being hidden behind the plain writable book.
-- Survival players can freely take from and place into creatures' equipment slots in the stealing screen, controlled by new server configs `allowStealingFriendlyEntityEquipment` and `allowStealingEnemyEntityEquipment` (creative is always allowed).
-
 ### Changed
 
-- Add details to No-AI skill widget tooltip.
-- Page turn markers now support more complex page turn behaviors.
-- The range for opening and keeping the entity detail screen is now a server config (`entityDetailScreenRange`).
-- Support attack damage & armor widgets.
-- Plugin API: refactored the discovery API and added `EntityInfoApi`.
+- Added `IdentifierUtils` (in `platform.util`) as the unified entry point for creating and serializing Identifiers/ResourceLocations; all direct creation and serialization calls across the codebase now go through it.
 
 ### Fixed
-
-- Spyglass no longer shows the discovery progress bar or completion animation when observing blacklisted entities.
-- Fixed a build-time client-only validation error (common code referenced `EntityDisplay`).
-- No more "Failed to create entity type minecraft:player" error when entering a world; the player is now specially handled and previewed with a mannequin (with the player's NBT injected) instead of the instance-creation-failed placeholder.
 
 ## Previous Versions
 

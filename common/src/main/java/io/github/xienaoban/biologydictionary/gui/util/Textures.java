@@ -2,30 +2,21 @@ package io.github.xienaoban.biologydictionary.gui.util;
 
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.resources.ResourceLocation;
-
-import static io.github.xienaoban.biologydictionary.BiologyDictionary.MOD_ID;
 
 @ClientOnly
 public final class Textures {
-    private static ResourceLocation mc(String path) {
-        return ResourceLocation.withDefaultNamespace(path);
-    }
+    public static final TextureInfo HORSE_SCREEN = new TextureInfo(IdentifierUtils.mc("textures/gui/container/horse.png"), 256, 256);
 
-    private static ResourceLocation my(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
-    }
+    public static final TextureInfo ICON = new TextureInfo(IdentifierUtils.bd("icon.png"), 256, 256);
+    public static final TextureInfo BOOK = new TextureInfo(IdentifierUtils.bd("textures/gui/book.png"), 512, 256);
+    public static final TextureInfo ICONS = new TextureInfo(IdentifierUtils.bd("textures/gui/icons.png"), 256, 256);
+    public static final TextureInfo GENE = new TextureInfo(IdentifierUtils.bd("textures/gui/telescope_discovery.png"), 32, 32);
+    public static final TextureInfo BEEHIVE = new TextureInfo(IdentifierUtils.bd("textures/gui/beehive.png"), 256, 256);
+    public static final TextureInfo STEALING_INVENTORY = new TextureInfo(IdentifierUtils.bd("textures/gui/stealing_inventory.png"), 256, 256);
 
-    public static final TextureInfo HORSE_SCREEN = new TextureInfo(mc("textures/gui/container/horse.png"), 256, 256);
-
-    public static final TextureInfo ICON = new TextureInfo(my("icon.png"), 256, 256);
-    public static final TextureInfo BOOK = new TextureInfo(my("textures/gui/book.png"), 512, 256);
-    public static final TextureInfo ICONS = new TextureInfo(my("textures/gui/icons.png"), 256, 256);
-    public static final TextureInfo GENE = new TextureInfo(my("textures/gui/telescope_discovery.png"), 32, 32);
-    public static final TextureInfo BEEHIVE = new TextureInfo(my("textures/gui/beehive.png"), 256, 256);
-    public static final TextureInfo STEALING_INVENTORY = new TextureInfo(my("textures/gui/stealing_inventory.png"), 256, 256);
-
-    public static final ResourceLocation BOOK_TOOLTIP = my("book_tooltip");
-    public static final ResourceLocation BOOK_TOOLTIP_BACKGROUND = my("tooltip/book_tooltip_background");
-    public static final ResourceLocation BOOK_TOOLTIP_FRAME = my("tooltip/book_tooltip_frame");
+    public static final ResourceLocation BOOK_TOOLTIP = IdentifierUtils.bd("book_tooltip");
+    public static final ResourceLocation BOOK_TOOLTIP_BACKGROUND = IdentifierUtils.bd("tooltip/book_tooltip_background");
+    public static final ResourceLocation BOOK_TOOLTIP_FRAME = IdentifierUtils.bd("tooltip/book_tooltip_frame");
 }
