@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.api.plugin;
 
 import io.github.xienaoban.biologydictionary.api.ClientDiscoveryApi;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.api.ServerDiscoveryApi;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 
 /**
  * Plugin for registering custom {@link DiscoverySource}s.
