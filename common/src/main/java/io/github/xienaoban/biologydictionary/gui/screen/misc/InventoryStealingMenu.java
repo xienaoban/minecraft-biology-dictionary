@@ -6,7 +6,6 @@ import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventor
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
-import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.resources.Identifier;

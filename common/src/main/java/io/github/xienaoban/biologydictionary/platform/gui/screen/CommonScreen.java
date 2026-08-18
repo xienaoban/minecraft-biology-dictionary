@@ -8,8 +8,8 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRend
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
