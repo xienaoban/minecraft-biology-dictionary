@@ -5,13 +5,13 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.client.ClientEventRegistry;
 import io.github.xienaoban.biologydictionary.platform.client.KeyMappingRegistry;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 @ClientOnly
 public final class KeyMappingManager {
-    public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(Lang.BIOLOGY_DICTIONARY, Lang.BIOLOGY_DICTIONARY));
+    public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(IdentifierUtils.bd(Lang.BIOLOGY_DICTIONARY));
 
     public static final KeyMapping OPEN_BIOLOGY_DICTIONARY_SCREEN = new KeyMapping(Lang.KEY_OPEN_HANDBOOK, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_GRAVE_ACCENT, CATEGORY);
     public static final KeyMapping TOGGLE_DEBUG = new KeyMapping(Lang.KEY_DEBUG, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_ALT, CATEGORY);

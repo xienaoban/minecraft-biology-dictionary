@@ -323,7 +323,7 @@ public final class SkillCost {
     private static ItemStack itemStackFromMap(Map<String, Object> map) {
         String itemId = (String) map.get("item");
         int count = ((Number) map.getOrDefault("count", 1)).intValue();
-        Item item = BuiltInRegistries.ITEM.get(Objects.requireNonNull(Identifier.tryParse(itemId)))
+        Item item = BuiltInRegistries.ITEM.get(IdentifierUtils.fromString(itemId))
                 .map(Holder.Reference::value)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown item: " + itemId));
         return new ItemStack(item, count);
