@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.PluginLookup;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.resources.ResourceLocation;
 
@@ -80,7 +81,7 @@ public final class DiscoverySources {
     });
 
     private static ResourceLocation id(String path) {
-        return new ResourceLocation(BiologyDictionary.MOD_ID, path);
+        return IdentifierUtils.bd(path);
     }
 
     public static DiscoverySource byId(ResourceLocation id) {
@@ -92,7 +93,7 @@ public final class DiscoverySources {
      * migrating them to the mod's namespace. Unknown ids resolve to {@link #UNKNOWN}.
      */
     public static DiscoverySource parseSource(String id) {
-        ResourceLocation identifier = ResourceLocation.tryParse(
+        ResourceLocation identifier = IdentifierUtils.fromStringOrNull(
                 id.indexOf(':') < 0 ? BiologyDictionary.MOD_ID + ":" + id.toLowerCase() : id);
         return identifier != null ? byId(identifier) : UNKNOWN;
     }

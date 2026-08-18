@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -30,15 +31,15 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
 
     public static final int MAX_SLOTS = 4 * 9;
 
-    private static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD          = ResourceLocation.tryParse("item/empty_slot_sword");
+    private static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD          = IdentifierUtils.mc("item/empty_slot_sword");
     private static final ResourceLocation EMPTY_ARMOR_SLOT_SHIELD         = InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
     private static final ResourceLocation EMPTY_ARMOR_SLOT_HELMET         = InventoryMenu.EMPTY_ARMOR_SLOT_HELMET;
     private static final ResourceLocation EMPTY_ARMOR_SLOT_CHESTPLATE     = InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE;
     private static final ResourceLocation EMPTY_ARMOR_SLOT_LEGGINGS       = InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS;
     private static final ResourceLocation EMPTY_ARMOR_SLOT_BOOTS          = InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS;
     // private static final ResourceLocation EMPTY_ARMOR_SLOT_SADDLE;
-    // private static final ResourceLocation EMPTY_ARMOR_SLOT_HORSE_ARMOR = ResourceLocation.withDefaultNamespace("gui/sprites/container/horse/armor_slot");
-    // private static final ResourceLocation EMPTY_ARMOR_SLOT_LLAMA_ARMOR = ResourceLocation.withDefaultNamespace("gui/sprites/container/horse/llama_armor_slot");
+    // private static final ResourceLocation EMPTY_ARMOR_SLOT_HORSE_ARMOR = IdentifierUtils.mc("gui/sprites/container/horse/armor_slot");
+    // private static final ResourceLocation EMPTY_ARMOR_SLOT_LLAMA_ARMOR = IdentifierUtils.mc("gui/sprites/container/horse/llama_armor_slot");
 
     static int calculateMod(int size) {
         if (size > MAX_SLOTS) {

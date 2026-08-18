@@ -355,7 +355,7 @@ public final class LootTableUtils {
 
         public static LootEntry fromNbt(CompoundTag nbt) {
             String itemId = nbt.getString("item");
-            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(itemId));
+            Item item = BuiltInRegistries.ITEM.get(IdentifierUtils.fromString(itemId));
             int minCount = nbt.getInt("minCount");
             int maxCount = nbt.getInt("maxCount");
             float dropChance = nbt.getFloat("dropChance");
@@ -366,7 +366,7 @@ public final class LootTableUtils {
                 ListTag conditionsList = nbt.getList("conditions", Tag.TAG_STRING);
                 for (Tag tag : conditionsList) {
                     if (tag instanceof StringTag conditionId) {
-                        conditions.add(ResourceLocation.tryParse(conditionId.getAsString()));
+                        conditions.add(IdentifierUtils.fromString(conditionId.getAsString()));
                     }
                 }
             }
@@ -377,7 +377,7 @@ public final class LootTableUtils {
         public CompoundTag toNbt() {
             CompoundTag nbt = new CompoundTag();
             ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
-            nbt.putString("item", itemId.toString());
+            nbt.putString("item", IdentifierUtils.toString(itemId));
             nbt.putInt("minCount", minCount);
             nbt.putInt("maxCount", maxCount);
             nbt.putFloat("dropChance", dropChance);
@@ -385,7 +385,7 @@ public final class LootTableUtils {
             // Save conditions
             ListTag conditionsList = new ListTag();
             for (ResourceLocation condition : conditions) {
-                conditionsList.add(StringTag.valueOf(condition.toString()));
+                conditionsList.add(IdentifierUtils.toNbt(condition));
             }
             nbt.put("conditions", conditionsList);
 

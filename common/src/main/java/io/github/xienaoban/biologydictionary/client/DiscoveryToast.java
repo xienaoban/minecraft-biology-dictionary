@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.ItemUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.resources.ResourceLocation;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -21,8 +22,7 @@ import net.minecraft.world.item.SpawnEggItem;
 
 @ClientOnly
 public class DiscoveryToast implements Toast {
-    private static final ResourceLocation BACKGROUND_TEXTURE =
-            ResourceLocation.tryParse("biologydictionary:textures/gui/sprites/toast/discovery_toast.png");
+    private static final ResourceLocation BACKGROUND_TEXTURE = IdentifierUtils.bd("textures/gui/sprites/toast/discovery_toast.png");
     private static final int DISPLAY_TIME = 7000;
     private final Component entityName;
     private final ItemStack eggStack;

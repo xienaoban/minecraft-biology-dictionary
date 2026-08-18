@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.property.bundle;
 
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -128,13 +129,13 @@ public final class EntityVariantPropertyBundle {
         public CompoundTag variantToNbt(Holder<Object> variant) {
             ResourceKey<Object> rk = variant.unwrapKey().orElseThrow();
             CompoundTag res = new CompoundTag();
-            res.putString(NBT_KEY, rk.location().toString());
+            res.putString(NBT_KEY, IdentifierUtils.toString(rk.location()));
             return res;
         }
 
         @Override
         public Holder<Object> nbtToVariant(Tag nbt) {
-            ResourceLocation location = new ResourceLocation(((CompoundTag) nbt).getString(NBT_KEY));
+            ResourceLocation location = IdentifierUtils.fromString(((CompoundTag) nbt).getString(NBT_KEY));
             ResourceKey<Object> key = ResourceKey.create(registry.key(), location);
             return registry.getHolder(key).orElseThrow();
         }
@@ -209,13 +210,13 @@ public final class EntityVariantPropertyBundle {
         @Override
         public CompoundTag variantToNbt(ResourceKey<VillagerType> variant) {
             CompoundTag res = new CompoundTag();
-            res.putString(NBT_KEY, variant.location().toString());
+            res.putString(NBT_KEY, IdentifierUtils.toString(variant.location()));
             return res;
         }
 
         @Override
         public ResourceKey<VillagerType> nbtToVariant(Tag nbt) {
-            ResourceLocation location = new ResourceLocation(((CompoundTag) nbt).getString(NBT_KEY));
+            ResourceLocation location = IdentifierUtils.fromString(((CompoundTag) nbt).getString(NBT_KEY));
             return ResourceKey.create(Registries.VILLAGER_TYPE, location);
         }
 
