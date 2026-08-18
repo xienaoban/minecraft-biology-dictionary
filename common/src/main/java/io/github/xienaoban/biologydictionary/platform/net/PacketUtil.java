@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.net;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -57,6 +57,6 @@ public final class PacketUtil {
                 .replaceAll("([A-Z]+)", "_$1")
                 .substring(1)
                 .toLowerCase();
-        return Identifier.fromNamespaceAndPath(BiologyDictionary.MOD_ID, path);
+        return IdentifierUtils.bd(path);
     }
 }

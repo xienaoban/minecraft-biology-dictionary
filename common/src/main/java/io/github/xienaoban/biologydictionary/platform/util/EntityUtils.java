@@ -160,7 +160,7 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(String key) {
-        Identifier id = Identifier.tryParse(key);
+        Identifier id = IdentifierUtils.fromStringOrNull(key);
         return id == null ? null : getEntityType(id);
     }
 
@@ -193,7 +193,7 @@ public final class EntityUtils {
     }
 
     public static String getEntityTypeIdName(EntityType<?> entityType) {
-        return getEntityTypeId(entityType).toString();
+        return IdentifierUtils.toString(getEntityTypeId(entityType));
     }
 
     public static Item getSpawnEggItem(EntityType<?> entityType) {

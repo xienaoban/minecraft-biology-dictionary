@@ -2,10 +2,10 @@ package io.github.xienaoban.biologydictionary.core.discovery.storage;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecordSerializer;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.datafix.DataFixTypes;
@@ -23,7 +23,7 @@ import java.util.UUID;
  */
 public final class SavedDataDiscoveryStorage extends SavedData {
     public static final SavedDataType<SavedDataDiscoveryStorage> TYPE = new SavedDataType<>(
-            Identifier.fromNamespaceAndPath(BiologyDictionary.MOD_ID, "discovery"),
+            IdentifierUtils.bd("discovery"),
             SavedDataDiscoveryStorage::new,
             SavedDataDiscoveryStorage.Packed.CODEC.xmap(
                     SavedDataDiscoveryStorage::new, SavedDataDiscoveryStorage::getPacked),
@@ -86,7 +86,7 @@ public final class SavedDataDiscoveryStorage extends SavedData {
     record Packed(Map<UUID, Map<Identifier, DiscoveryRecord>> players) {
         public static final Codec<Packed> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.unboundedMap(UUIDUtil.STRING_CODEC,
-                                Codec.unboundedMap(Identifier.CODEC, DiscoveryRecordSerializer.CODEC)
+                                Codec.unboundedMap(IdentifierUtils.codec(), DiscoveryRecordSerializer.CODEC)
                         ).fieldOf("players").forGetter(Packed::players)
         ).apply(instance, Packed::new));
     }

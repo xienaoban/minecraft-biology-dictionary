@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -111,10 +112,10 @@ public final class EntityManager {
             Identifier ib = b.getId();
             int cmp = ia.getNamespace().compareTo(ib.getNamespace());
             if (cmp != 0) {
-                if (ia.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+                if (IdentifierUtils.isMc(ia)) {
                     return 1;
                 }
-                if (ib.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+                if (IdentifierUtils.isMc(ib)) {
                     return -1;
                 }
                 return cmp;
@@ -149,7 +150,7 @@ public final class EntityManager {
                             .map(EntityUtils::getEntityType).map(this::getRawEntityEntry).filter(Objects::nonNull)
                             .sorted(Comparator.comparingInt(EntityDictionaryEntry::getSortId))
                             .toList();
-                    tags.addTag(new Tag(key, null, TextUtils.literal(holders.key().location().toString())));
+                    tags.addTag(new Tag(key, null, TextUtils.literal(IdentifierUtils.toString(holders.key().location()))));
                     tags.addAllToTag(key, list);
         });
     }
@@ -325,8 +326,7 @@ public final class EntityManager {
     }
 
     public boolean isVanillaEntity(EntityType<?> entityType) {
-        return Identifier.DEFAULT_NAMESPACE
-                .equals(EntityType.getKey(entityType).getNamespace());
+        return IdentifierUtils.isMc(EntityType.getKey(entityType));
     }
 
     /**

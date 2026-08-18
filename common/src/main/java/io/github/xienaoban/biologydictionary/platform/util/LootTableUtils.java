@@ -337,7 +337,7 @@ public final class LootTableUtils {
 
         public static LootEntry fromNbt(CompoundTag nbt) {
             String itemId = nbt.getString("item").orElseThrow();
-            Item item = BuiltInRegistries.ITEM.get(Identifier.parse(itemId)).map(Holder.Reference::value).orElseThrow();
+            Item item = BuiltInRegistries.ITEM.get(IdentifierUtils.fromString(itemId)).map(Holder.Reference::value).orElseThrow();
             int minCount = nbt.getInt("minCount").orElseThrow();
             int maxCount = nbt.getInt("maxCount").orElseThrow();
             float dropChance = nbt.getFloat("dropChance").orElseThrow();
@@ -348,7 +348,7 @@ public final class LootTableUtils {
                 ListTag conditionsList = nbt.getList("conditions").orElse(new ListTag());
                 for (Tag tag : conditionsList) {
                     if (tag instanceof StringTag conditionId) {
-                        conditions.add(Identifier.parse(conditionId.asString().orElseThrow()));
+                        conditions.add(IdentifierUtils.fromString(conditionId.asString().orElseThrow()));
                     }
                 }
             }
@@ -359,7 +359,7 @@ public final class LootTableUtils {
         public CompoundTag toNbt() {
             CompoundTag nbt = new CompoundTag();
             Identifier itemId = BuiltInRegistries.ITEM.getKey(item);
-            nbt.putString("item", itemId.toString());
+            nbt.putString("item", IdentifierUtils.toString(itemId));
             nbt.putInt("minCount", minCount);
             nbt.putInt("maxCount", maxCount);
             nbt.putFloat("dropChance", dropChance);
@@ -367,7 +367,7 @@ public final class LootTableUtils {
             // Save conditions
             ListTag conditionsList = new ListTag();
             for (Identifier condition : conditions) {
-                conditionsList.add(StringTag.valueOf(condition.toString()));
+                conditionsList.add(IdentifierUtils.toNbt(condition));
             }
             nbt.put("conditions", conditionsList);
 

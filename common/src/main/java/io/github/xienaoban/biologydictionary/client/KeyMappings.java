@@ -5,14 +5,14 @@ import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 @ClientOnly
 public final class KeyMappings {
     public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
-            Identifier.fromNamespaceAndPath(BiologyDictionary.MOD_ID, BiologyDictionary.MOD_ID));
+            IdentifierUtils.bd(BiologyDictionary.MOD_ID));
 
     @PlatformEntry
     public static final KeyMapping OPEN_HANDBOOK = new KeyMapping(

@@ -10,6 +10,7 @@ import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -33,7 +34,7 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
     }
 
     private static EntityType<?> readEntityType(FriendlyByteBuf buf) {
-        Identifier id = Identifier.tryParse(buf.readUtf());
+        Identifier id = IdentifierUtils.fromBuf(buf);
         return EntityUtils.getEntityType(id);
     }
 
