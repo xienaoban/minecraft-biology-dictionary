@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -27,7 +28,7 @@ public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource so
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeVarInt(entityId);
-        buf.writeUtf(source.id().toString());
+        IdentifierUtils.toBuf(buf, source.id());
     }
 
     @Override

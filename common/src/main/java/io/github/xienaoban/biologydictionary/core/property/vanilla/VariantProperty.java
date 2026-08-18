@@ -2,10 +2,10 @@ package io.github.xienaoban.biologydictionary.core.property.vanilla;
 
 import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractProperty;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.variant.VariantUtils;
@@ -32,7 +32,7 @@ public final class VariantProperty<E extends Entity, T> extends AbstractProperty
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        Optional<Holder<T>> o1 = nbt.read(name(), Identifier.CODEC)
+        Optional<Holder<T>> o1 = nbt.read(name(), IdentifierUtils.codec())
                 .map(identifier -> ResourceKey.create(resourceKey, identifier))
                 .flatMap(key -> {
                     Level level = WorldSession.justGiveMeALevel();
@@ -46,7 +46,7 @@ public final class VariantProperty<E extends Entity, T> extends AbstractProperty
     public void writeTo(CompoundTag nbt) {
         if (getVal() != null && getVal().unwrapKey().isPresent()) {
             ResourceKey<?> resourceKey = getVal().unwrapKey().get();
-            nbt.store(name(), Identifier.CODEC, resourceKey.identifier());
+            nbt.store(name(), IdentifierUtils.codec(), resourceKey.identifier());
         } else {
             LOGGER.warn("Unknown variant key: {}", getVal());
         }

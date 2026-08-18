@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
@@ -34,7 +35,7 @@ public record ReplyBiologyDictionaryDiscoveryFullPacket(Map<EntityType<?>, Disco
         int size = buf.readVarInt();
         Map<EntityType<?>, DiscoveryRecord> map = new HashMap<>(size);
         for (int i = 0; i < size; i++) {
-            Identifier id = Identifier.tryParse(buf.readUtf());
+            Identifier id = IdentifierUtils.fromBuf(buf);
             DiscoveryRecord record = DiscoveryRecordSerializer.readFromBuf(buf);
             EntityType<?> type = EntityUtils.getEntityType(id);
             if (type != null) {

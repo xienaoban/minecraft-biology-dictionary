@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.property.bundle.EntityInventoryPropertyBundle;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -31,16 +32,16 @@ public class InventoryStealingMenu extends AbstractContainerMenu {
     public static final int EQUIPMENT_SLOTS = EquipmentSlot.values().length;
     public static final int MAX_SLOTS = 4 * 9;
 
-    private static final Identifier EMPTY_ARMOR_SLOT_SWORD          = Identifier.withDefaultNamespace("container/slot/sword");
+    private static final Identifier EMPTY_ARMOR_SLOT_SWORD          = IdentifierUtils.mc("container/slot/sword");
     private static final Identifier EMPTY_ARMOR_SLOT_SHIELD         = InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
     private static final Identifier EMPTY_ARMOR_SLOT_HELMET         = InventoryMenu.EMPTY_ARMOR_SLOT_HELMET;
     private static final Identifier EMPTY_ARMOR_SLOT_CHESTPLATE     = InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE;
     private static final Identifier EMPTY_ARMOR_SLOT_LEGGINGS       = InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS;
     private static final Identifier EMPTY_ARMOR_SLOT_BOOTS          = InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS;
-    private static final Identifier EMPTY_ARMOR_SLOT_SADDLE         = Identifier.withDefaultNamespace("container/slot/saddle");
-    private static final Identifier EMPTY_ARMOR_SLOT_HORSE_ARMOR    = Identifier.withDefaultNamespace("container/slot/horse_armor");
-    private static final Identifier EMPTY_ARMOR_SLOT_LLAMA_ARMOR    = Identifier.withDefaultNamespace("container/slot/llama_armor");
-    private static final Identifier EMPTY_ARMOR_SLOT_NAUTILUS_ARMOR = Identifier.withDefaultNamespace("container/slot/nautilus_armor_inventory");
+    private static final Identifier EMPTY_ARMOR_SLOT_SADDLE         = IdentifierUtils.mc("container/slot/saddle");
+    private static final Identifier EMPTY_ARMOR_SLOT_HORSE_ARMOR    = IdentifierUtils.mc("container/slot/horse_armor");
+    private static final Identifier EMPTY_ARMOR_SLOT_LLAMA_ARMOR    = IdentifierUtils.mc("container/slot/llama_armor");
+    private static final Identifier EMPTY_ARMOR_SLOT_NAUTILUS_ARMOR = IdentifierUtils.mc("container/slot/nautilus_armor_inventory");
 
     static int calculateMod(int size) {
         if (size > MAX_SLOTS) {
