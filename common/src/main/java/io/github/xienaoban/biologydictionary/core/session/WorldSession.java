@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.session;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
@@ -8,7 +9,6 @@ import io.github.xienaoban.biologydictionary.core.property.StaticEntityPropertyC
 import io.github.xienaoban.biologydictionary.core.skill.SkillCostsCache;
 import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
-import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;

@@ -3,10 +3,14 @@ package io.github.xienaoban.biologydictionary;
 import net.minecraft.gametest.framework.GameTestHelper;
 import org.objectweb.asm.*;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;

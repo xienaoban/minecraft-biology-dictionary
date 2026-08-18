@@ -1,12 +1,11 @@
 package io.github.xienaoban.biologydictionary.platform.net;
 
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 
 public final class PacketUtil {
 
