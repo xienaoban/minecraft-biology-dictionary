@@ -4,9 +4,9 @@ import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
 import io.github.xienaoban.biologydictionary.core.EntitySpawnManager;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryManager;
 import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
-import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryManager;
 import net.minecraft.server.MinecraftServer;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
