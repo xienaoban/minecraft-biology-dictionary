@@ -12,10 +12,10 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyProgressBar;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
-import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.entity.npc.villager.Villager;

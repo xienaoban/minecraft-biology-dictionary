@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.net;
 
+import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -8,8 +9,6 @@ import net.minecraft.resources.Identifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 
 public final class PacketUtil {
 
