@@ -1,4 +1,0 @@
-interface:
-  display_name: "Port 1.21.11"
-  short_description: "Biology Dictionary 1.21.11 移植规则"
-  default_prompt: "把 Biology Dictionary 从 1.21.11 移植到 26.1.2 时使用这个 skill。"
