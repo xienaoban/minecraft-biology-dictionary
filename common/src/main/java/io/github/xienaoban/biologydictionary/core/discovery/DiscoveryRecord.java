@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ProblemReporter;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.storage.TagValueOutput;
 
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -39,6 +41,16 @@ public record DiscoveryRecord(
     public static final Identifier NO_ID = IdentifierUtils.mc("unknown");
 
     /**
+     * Appearance-related entity NBT keys retained from the full save; everything else is dropped,
+     * because the full NBT is bulky and the client never consumes the rest.
+     */
+    private static final Set<String> APPEARANCE_KEYS = Set.of(
+            "Age", "MainGene", "HiddenGene", "variant", "Variant", "type", "Type",
+            "RabbitType", "Color", "Sheared", "CollarColor", "Size", "size", "PuffState",
+            "IsScreamingGoat", "HasLeftHorn", "HasRightHorn", "VillagerData", "CarpetColor"
+    );
+
+    /**
      * A record with only the source set; other fields get sentinel defaults.
      */
     public static DiscoveryRecord simple(DiscoverySource source) {
@@ -63,7 +75,18 @@ public record DiscoveryRecord(
                 pos,
                 level.getBiome(pos).value().getPrecipitationAt(pos, level.getSeaLevel()),
                 entity.getUUID(),
-                output.buildResult()
+                keepAppearanceOnly(output.buildResult())
         );
+    }
+
+    private static CompoundTag keepAppearanceOnly(CompoundTag nbt) {
+        CompoundTag result = new CompoundTag();
+        for (String key : APPEARANCE_KEYS) {
+            Tag tag = nbt.get(key);
+            if (tag != null) {
+                result.put(key, tag.copy());
+            }
+        }
+        return result;
     }
 }
