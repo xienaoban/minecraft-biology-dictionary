@@ -10,6 +10,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -26,6 +28,14 @@ public final class DiscoveryRecordSerializer {
     private static final Codec<Biome.Precipitation> WEATHER_CODEC =
             Codec.STRING.xmap(DiscoveryRecordSerializer::parsePrecipitation, Biome.Precipitation::getSerializedName);
 
+    private static final Codec<DiscoveryRecord.DiscoveryShareLink> SHARE_LINK_CODEC =
+            RecordCodecBuilder.create(instance -> instance.group(
+                    UUIDUtil.CODEC.optionalFieldOf("sharer", DiscoveryRecord.NO_UUID)
+                            .forGetter(DiscoveryRecord.DiscoveryShareLink::sharer),
+                    Codec.STRING.optionalFieldOf("sharer_name", DiscoveryRecord.NO_NAME)
+                            .forGetter(DiscoveryRecord.DiscoveryShareLink::sharerName)
+            ).apply(instance, DiscoveryRecord.DiscoveryShareLink::new));
+
     public static final Codec<DiscoveryRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.LONG.optionalFieldOf("time", DiscoveryRecord.NO_TIME).forGetter(DiscoveryRecord::firstDiscoveryTime),
             Codec.LONG.optionalFieldOf("tick", DiscoveryRecord.NO_TIME).forGetter(DiscoveryRecord::firstDiscoveryTick),
@@ -35,7 +45,12 @@ public final class DiscoveryRecordSerializer {
             BlockPos.CODEC.optionalFieldOf("position", BlockPos.ZERO).forGetter(DiscoveryRecord::position),
             WEATHER_CODEC.optionalFieldOf("weather", Biome.Precipitation.NONE).forGetter(DiscoveryRecord::weather),
             UUIDUtil.CODEC.optionalFieldOf("entity_uuid", DiscoveryRecord.NO_UUID).forGetter(DiscoveryRecord::entityUUID),
-            CompoundTag.CODEC.optionalFieldOf("entity_nbt", DiscoveryRecord.NO_NBT).forGetter(DiscoveryRecord::entityNbt)
+            CompoundTag.CODEC.optionalFieldOf("entity_nbt", DiscoveryRecord.NO_NBT).forGetter(DiscoveryRecord::entityNbt),
+            UUIDUtil.CODEC.optionalFieldOf("discoverer", DiscoveryRecord.NO_UUID).forGetter(DiscoveryRecord::discoverer),
+            Codec.STRING.optionalFieldOf("discoverer_name", DiscoveryRecord.NO_NAME).forGetter(DiscoveryRecord::discovererName),
+            Codec.list(SHARE_LINK_CODEC).optionalFieldOf("share_chain", List.of())
+                    .forGetter(DiscoveryRecord::shareChain),
+            Codec.BOOL.optionalFieldOf("global", false).forGetter(DiscoveryRecord::global)
     ).apply(instance, DiscoveryRecord::new));
 
     public static DiscoveryRecord readFromBuf(FriendlyByteBuf buf) {
@@ -50,8 +65,16 @@ public final class DiscoveryRecordSerializer {
         Biome.Precipitation weather = parsePrecipitation(buf.readUtf());
         UUID entityUUID = buf.readUUID();
         CompoundTag entityNbt = buf.readNbt();
+        UUID discoverer = buf.readUUID();
+        String discovererName = buf.readUtf();
+        int chainSize = buf.readVarInt();
+        List<DiscoveryRecord.DiscoveryShareLink> shareChain = new ArrayList<>(chainSize);
+        for (int i = 0; i < chainSize; i++) {
+            shareChain.add(new DiscoveryRecord.DiscoveryShareLink(buf.readUUID(), buf.readUtf()));
+        }
+        boolean global = buf.readBoolean();
         return new DiscoveryRecord(time, tick, source, dimension, biome, position, weather, entityUUID,
-                entityNbt != null ? entityNbt : DiscoveryRecord.NO_NBT);
+                entityNbt != null ? entityNbt : DiscoveryRecord.NO_NBT, discoverer, discovererName, shareChain, global);
     }
 
     public static void writeToBuf(FriendlyByteBuf buf, DiscoveryRecord record) {
@@ -65,6 +88,14 @@ public final class DiscoveryRecordSerializer {
         buf.writeUUID(record.entityUUID());
         // The entity NBT is unused on the client for now, so send an empty tag to keep the payload small.
         buf.writeNbt(DiscoveryRecord.NO_NBT);
+        buf.writeUUID(record.discoverer());
+        buf.writeUtf(record.discovererName());
+        buf.writeVarInt(record.shareChain().size());
+        for (DiscoveryRecord.DiscoveryShareLink link : record.shareChain()) {
+            buf.writeUUID(link.sharer());
+            buf.writeUtf(link.sharerName());
+        }
+        buf.writeBoolean(record.global());
     }
 
     /**

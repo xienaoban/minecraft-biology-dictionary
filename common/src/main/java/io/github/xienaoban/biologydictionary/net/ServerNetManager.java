@@ -22,6 +22,11 @@ public final class ServerNetManager {
         ServerNetApi.send(player, new SendDiscoveryIncrementalPacket(EntityUtils.getId(entity), entityType, record));
     }
 
+    public static void sendSharedDiscoveryIncremental(ServerPlayer player, String discovererName,
+                                                      EntityType<?> entityType, DiscoveryRecord record) {
+        ServerNetApi.send(player, new SendSharedDiscoveryIncrementalPacket(discovererName, entityType, record));
+    }
+
     public static void replyServerConfigs(ServerPlayer player, String serverConfigsYaml) {
         ServerNetApi.send(player, new ReplyServerConfigsPacket(serverConfigsYaml));
     }

@@ -98,6 +98,12 @@ tag group 与 tag 的 key 来自 `Lang`（如 `Lang.TAG_GROUP_DEFAULT`、`Lang.T
 
 服务端查询均为纯查询、**不考虑创造模式**；如需 `creative || discovered` 语义，自行与 `player.isCreative()` 组合。
 
+### 全局共享发现
+
+服务端配置 `discoveryGlobalShared` 开启时（仅生物辞典策略），"该玩家的发现"实际含义为"任意玩家发现过"：有效视图 = 该玩家自己的记录 + 由常驻全局统计派生的全服视图。共享是纯视图——不向存档写入任何额外数据，关闭开关只是把视图回落为各自的记录。API 签名不变——两侧接口只是反映有效视图。
+
+`DiscoveryRecord` 携带 `discoverer`/`discovererName`（身份快照）、`shareChain`（仅供显式的玩家间主动分享使用）与 `global`（派生的全局视图记录为 true）。全局视图记录保留原始发现时间与来源，且 `shareChain` 永远为空；全局共享不会读取或写入传播链。
+
 ## 示例：注册一个技能
 
 按内建技能的方式编写你的技能（一个实现 `GeneralSkill` 并带静态 `Meta` 的类），然后注册它：

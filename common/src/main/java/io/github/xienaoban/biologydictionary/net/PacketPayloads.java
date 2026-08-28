@@ -19,6 +19,7 @@ public final class PacketPayloads {
             new Entry<>(ReplyBiologyDictionaryDiscoveryFullPacket.class, ReplyBiologyDictionaryDiscoveryFullPacket.FACTORY),
             new Entry<>(RequestDiscoveryIncrementalPacket.class, RequestDiscoveryIncrementalPacket.FACTORY),
             new Entry<>(SendDiscoveryIncrementalPacket.class, SendDiscoveryIncrementalPacket.FACTORY),
+            new Entry<>(SendSharedDiscoveryIncrementalPacket.class, SendSharedDiscoveryIncrementalPacket.FACTORY),
             new Entry<>(RequestEntityOverviewPacket.class, RequestEntityOverviewPacket.FACTORY),
             new Entry<>(ReplyEntityOverviewPacket.class, ReplyEntityOverviewPacket.FACTORY),
             new Entry<>(RequestEntityDataPacket.class, RequestEntityDataPacket.FACTORY),

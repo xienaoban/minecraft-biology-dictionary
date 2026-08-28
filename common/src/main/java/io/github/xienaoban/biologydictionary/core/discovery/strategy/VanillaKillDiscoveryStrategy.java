@@ -52,12 +52,12 @@ public final class VanillaKillDiscoveryStrategy implements DiscoveryStrategy {
         // Injected before the stat is awarded, so the stat value is still the pre-event one.
         if (source == DiscoverySources.KILL) {
             if (player.getStats().getValue(Stats.ENTITY_KILLED, entityType) == 0) {
-                send(player, entity, entityType, DiscoveryRecord.standard(gameTick, entity, source));
+                send(player, entity, entityType, DiscoveryRecord.standard(gameTick, entity, source, player));
                 return true;
             }
         } else if (source == DiscoverySources.KILLED_BY) {
             if (player.getStats().getValue(Stats.ENTITY_KILLED_BY, entityType) == 0) {
-                send(player, entity, entityType, DiscoveryRecord.standard(gameTick, entity, source));
+                send(player, entity, entityType, DiscoveryRecord.standard(gameTick, entity, source, player));
                 return true;
             }
         }

@@ -97,6 +97,12 @@ Authoritative. Methods take a `ServerPlayer` because discovery state is per play
 
 All server queries are pure and do **not** consider creative mode; combine with `player.isCreative()` yourself if you want `creative || discovered` semantics.
 
+### Global shared discovery
+
+When the server config `discoveryGlobalShared` is on (Biology Dictionary strategy only), "discovered by the player" effectively means "discovered by anyone": the effective view is the player's own records plus a server-wide view derived from resident global statistics. Sharing is pure view — nothing extra is written to the save, and turning the config off simply narrows the view back to each player's own records. Signatures are unchanged — both APIs just reflect the effective view.
+
+`DiscoveryRecord` carries `discoverer`/`discovererName` (identity snapshots), `shareChain` (reserved exclusively for explicit player-to-player sharing) and `global` (true for derived global view records). Global view records keep the original discovery time and source, and always have an empty `shareChain`; global sharing never reads or writes that chain.
+
 ## Example: registering a skill
 
 Author your skill the way built-in skills do (a class implementing `GeneralSkill` with a static `Meta`), then register it:

@@ -90,6 +90,30 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
                 record.source().displayName()
             ), font, maxTextWidth));
 
+            if (!record.discovererName().isEmpty()) {
+                lines.addAll(FontUtils.toLines(TextUtils.concat(
+                    TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_DISCOVERER).withStyle(ChatFormatting.BOLD),
+                    Component.literal(record.discovererName())
+                ), font, maxTextWidth));
+            }
+            DiscoveryRecord.DiscoveryShareLink sharer = record.sharer();
+            if (sharer != null && !sharer.sharerName().isEmpty()
+                    && !sharer.sharerName().equals(record.discovererName())) {
+                lines.addAll(FontUtils.toLines(TextUtils.concat(
+                    TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_SHARER).withStyle(ChatFormatting.BOLD),
+                    Component.literal(sharer.sharerName())
+                ), font, maxTextWidth));
+            }
+            if (record.global()) {
+                Component globalValue = record.discovererName().isEmpty()
+                        ? noData
+                        : Component.literal(record.discovererName());
+                lines.addAll(FontUtils.toLines(TextUtils.concat(
+                    TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_GLOBAL).withStyle(ChatFormatting.BOLD),
+                    globalValue
+                ), font, maxTextWidth));
+            }
+
             lines.addAll(FontUtils.toLines(TextUtils.concat(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_REAL_TIME).withStyle(ChatFormatting.BOLD),
                 getRealWorldTimeText(record.firstDiscoveryTime())

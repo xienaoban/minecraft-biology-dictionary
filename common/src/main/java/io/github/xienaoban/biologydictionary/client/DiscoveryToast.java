@@ -12,7 +12,6 @@ import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -24,13 +23,22 @@ public class DiscoveryToast implements Toast {
     private static final int DISPLAY_TIME = 7000;
     private final Component entityName;
     private final ItemStack eggStack;
+    private final Component title;
     private final long createdAt;
     private Visibility wantedVisibility = Visibility.HIDE;
 
     public DiscoveryToast(EntityType<?> entityType) {
+        this(entityType, TextUtils.translate(Lang.TEXT_NEW_ENTITY_DISCOVERED));
+    }
+
+    /**
+     * @param title the toast title, styled yellow here
+     */
+    public DiscoveryToast(EntityType<?> entityType, Component title) {
         this.entityName = EntityUtils.getEntityTypeNameText(entityType);
         Item spawnEgg = EntityUtils.getSpawnEggItem(entityType);
         this.eggStack = spawnEgg == null ? null : spawnEgg.getDefaultInstance();
+        this.title = title.copy().withStyle(ChatFormatting.YELLOW);
         this.createdAt = System.currentTimeMillis();
     }
 
@@ -52,8 +60,6 @@ public class DiscoveryToast implements Toast {
         if (eggStack != null) {
             guiGraphics.fakeItem(eggStack, 8, 8);
         }
-        MutableComponent title = TextUtils.translate(Lang.TEXT_NEW_ENTITY_DISCOVERED)
-            .withStyle(ChatFormatting.YELLOW);
         guiGraphics.text(font, title, 30, 7, -256, false);
         guiGraphics.text(font, entityName, 30, 18, -1, false);
     }

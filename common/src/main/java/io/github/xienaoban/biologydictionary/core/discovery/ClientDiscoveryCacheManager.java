@@ -14,11 +14,15 @@ import net.minecraft.world.entity.EntityType;
 
 /**
  * Client-side manager of the discovery cache.
- * Delegates to a cache selected from the current server config.
+ * The strategy mode selects the delegate type (rebuilt on change); the global-shared
+ * flag only changes the data set, so instead of a rebuild it triggers a resync of the
+ * {@link BiologyDictionaryClientDiscoveryCache}: turning it off is a pure local drop
+ * of the global view entries, turning it on re-pulls the full view.
  */
 @ClientOnly
 public final class ClientDiscoveryCacheManager implements ConfigsUpdateCallback {
     private volatile Configs.ServerConfigs.DiscoveryStrategyMode mode;
+    private volatile boolean globalShared;
     private volatile ClientDiscoveryCache delegate;
 
     public ClientDiscoveryCacheManager() {
@@ -28,15 +32,27 @@ public final class ClientDiscoveryCacheManager implements ConfigsUpdateCallback 
     @Override
     public void onConfigsUpdate(Configs.ClientConfigs clientConfigs, Configs.ServerConfigs serverConfigs) {
         Configs.ServerConfigs.DiscoveryStrategyMode newMode = serverConfigs.getDiscoveryStrategy();
-        if (newMode == mode) {
+        boolean newShared = serverConfigs.isDiscoveryGlobalShared();
+        if (newMode == mode && newShared == globalShared) {
             return;
         }
+        boolean modeChanged = newMode != mode;
         mode = newMode;
-        delegate = switch (newMode) {
-            case ALWAYS_UNLOCKED -> new AlwaysUnlockedClientDiscoveryCache();
-            case VANILLA_KILL -> new VanillaKillClientDiscoveryCache();
-            case BIOLOGY_DICTIONARY -> new BiologyDictionaryClientDiscoveryCache();
-        };
+        globalShared = newShared;
+        if (modeChanged) {
+            delegate = switch (newMode) {
+                case ALWAYS_UNLOCKED -> new AlwaysUnlockedClientDiscoveryCache();
+                case VANILLA_KILL -> new VanillaKillClientDiscoveryCache();
+                case BIOLOGY_DICTIONARY -> new BiologyDictionaryClientDiscoveryCache();
+            };
+        }
+        if (delegate instanceof BiologyDictionaryClientDiscoveryCache cache) {
+            if (globalShared || modeChanged) {
+                cache.requestFullSync();
+            } else {
+                cache.dropGlobalRecords();
+            }
+        }
     }
 
     public ClientDiscoveryCache getDelegate() {
