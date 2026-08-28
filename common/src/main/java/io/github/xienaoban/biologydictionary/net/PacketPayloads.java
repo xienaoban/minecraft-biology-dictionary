@@ -29,7 +29,9 @@ public final class PacketPayloads {
             new Entry<>(ReplyInventoryStealingScreenPacket.class, ReplyInventoryStealingScreenPacket.FACTORY),
             new Entry<>(SendStealingDetectedPacket.class, SendStealingDetectedPacket.FACTORY),
             new Entry<>(RequestBeehiveInfoPacket.class, RequestBeehiveInfoPacket.FACTORY),
-            new Entry<>(ReplyBeehiveInfoPacket.class, ReplyBeehiveInfoPacket.FACTORY)
+            new Entry<>(ReplyBeehiveInfoPacket.class, ReplyBeehiveInfoPacket.FACTORY),
+            new Entry<>(RequestPlayerNamesPacket.class, RequestPlayerNamesPacket.FACTORY),
+            new Entry<>(ReplyPlayerNamesPacket.class, ReplyPlayerNamesPacket.FACTORY)
     );
 
     public record Entry<T extends Packet>(Class<T> packetClass, Packet.Factory<T> factory) {}

@@ -23,7 +23,9 @@ import net.minecraft.world.entity.EntityType;
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
 /**
- * Server notifies client of a new discovery: S -> C.
+ * Server notifies client of a new discovery: S -> C. Carries both the discoverer's
+ * own record and another player's globally shared record; {@code entityId} is the
+ * discoverer's entity and is ignored when {@code record.global()} is true.
  */
 public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityType, DiscoveryRecord record)
         implements Packet {
@@ -63,8 +65,14 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
             // Update discovery cache
             cws.getDiscoveryCacheManager().incrementalSync(packet.entityType, packet.record);
 
+            if (packet.record.global()) {
+                String discovererName = cws.getPlayerNameCache().getDisplayNameOrRequest(packet.record.discoverer());
+                client.gui.toastManager().addToast(DiscoveryToast.byGlobal(packet.entityType, discovererName));
+                return;
+            }
+
             // Show toast
-            client.gui.toastManager().addToast(new DiscoveryToast(packet.entityType));
+            client.gui.toastManager().addToast(DiscoveryToast.bySelf(packet.entityType));
 
             // Swing if INTERACT
             if (packet.record.source() == DiscoverySources.INTERACT) {
@@ -74,7 +82,7 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
             // Highlight the discovered entity for 4 seconds
             Entity target = level != null ? level.getEntity(packet.entityId) : null;
             if (target != null) {
-                ClientWorldSession.get().getHighlightManager().highlightEntity(target, 4 * 20);
+                cws.getHighlightManager().highlightEntity(target, 4 * 20);
             }
         }}
         CO.receive(this, ctx);
