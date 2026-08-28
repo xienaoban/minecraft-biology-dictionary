@@ -14,11 +14,14 @@ import net.minecraft.world.entity.EntityType;
 
 /**
  * Client-side manager of the discovery cache.
- * Delegates to a cache selected from the current server config.
+ * The strategy mode and the global-shared flag together select the delegate; any
+ * change rebuilds it. Rebuilding the {@link BiologyDictionaryClientDiscoveryCache}
+ * re-pulls the full effective view, which is how a global-shared toggle is applied.
  */
 @ClientOnly
 public final class ClientDiscoveryCacheManager implements ConfigsUpdateCallback {
     private volatile Configs.ServerConfigs.DiscoveryStrategyMode mode;
+    private volatile boolean globalShared;
     private volatile ClientDiscoveryCache delegate;
 
     public ClientDiscoveryCacheManager() {
@@ -28,10 +31,12 @@ public final class ClientDiscoveryCacheManager implements ConfigsUpdateCallback 
     @Override
     public void onConfigsUpdate(Configs.ClientConfigs clientConfigs, Configs.ServerConfigs serverConfigs) {
         Configs.ServerConfigs.DiscoveryStrategyMode newMode = serverConfigs.getDiscoveryStrategy();
-        if (newMode == mode) {
+        boolean newShared = serverConfigs.isDiscoveryGlobalShared();
+        if (newMode == mode && newShared == globalShared) {
             return;
         }
         mode = newMode;
+        globalShared = newShared;
         delegate = switch (newMode) {
             case ALWAYS_UNLOCKED -> new AlwaysUnlockedClientDiscoveryCache();
             case VANILLA_KILL -> new VanillaKillClientDiscoveryCache();

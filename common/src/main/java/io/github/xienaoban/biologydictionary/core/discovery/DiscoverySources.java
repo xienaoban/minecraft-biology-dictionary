@@ -49,7 +49,7 @@ public final class DiscoverySources {
         @Override public boolean isEnabled() { return ConfigsManager.getServer().isDiscoveryByHighlight(); }
     });
 
-    public static final DiscoverySource TELESCOPE_OBSERVE = register(new DiscoverySource(id("telescope_observe")) {
+    public static final DiscoverySource TELESCOPE = register(new DiscoverySource(id("telescope")) {
         @Override public boolean isEnabled() { return ConfigsManager.getServer().isDiscoveryByTelescope(); }
         @ClientOnly @Override
         public boolean clientCheck(ClientContext ctx) {
@@ -89,12 +89,12 @@ public final class DiscoverySources {
     }
 
     /**
-     * Lenient parse of a serialized source id. Tolerates legacy uppercase ids (no namespace) by
-     * migrating them to the mod's namespace. Unknown ids resolve to {@link #UNKNOWN}.
+     * Parse of a serialized source id. Only the current format is understood;
+     * legacy strings are migrated to it at load time by the data migrator.
+     * Unknown ids resolve to {@link #UNKNOWN}.
      */
     public static DiscoverySource parseSource(String id) {
-        Identifier identifier = IdentifierUtils.fromStringOrNull(
-                id.indexOf(':') < 0 ? BiologyDictionary.MOD_ID + ":" + id.toLowerCase() : id);
+        Identifier identifier = IdentifierUtils.fromStringOrNull(id);
         return identifier != null ? byId(identifier) : UNKNOWN;
     }
 

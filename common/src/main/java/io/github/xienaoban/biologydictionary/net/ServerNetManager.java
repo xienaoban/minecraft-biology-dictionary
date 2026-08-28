@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.Map;
+import java.util.UUID;
 
 public final class ServerNetManager {
     public static void sendCenteredMessage(ServerPlayer player, Component message) {
@@ -40,5 +41,11 @@ public final class ServerNetManager {
                                                     Container container) {
         ServerNetApi.send(player, new ReplyInventoryStealingScreenPacket(counter, EntityUtils.getId(entity),
                 container.getContainerSize()));
+    }
+
+    public static void replyPlayerNames(ServerPlayer player, Map<UUID, String> names) {
+        if (!names.isEmpty()) {
+            ServerNetApi.send(player, new ReplyPlayerNamesPacket(names));
+        }
     }
 }

@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
@@ -25,6 +24,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @ClientOnly
 public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Entity> {
@@ -38,18 +38,11 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
     private static final int TICKS_PER_DAY = 24000;
     private static final int TICKS_PER_HOUR = 1000;
 
-    private boolean noRecord;
-    private List<FormattedCharSequence> lines;
-
     private final Component title = TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_BOND)
             .withStyle(ChatFormatting.BOLD);
 
     private EntityDiscoveryRecordWidget(EntityProperties<Entity> properties) {
         super(properties, 3, COLUMNS);
-        ClientDiscoveryCacheManager dcm = ClientWorldSession.get().getDiscoveryCacheManager();
-        DiscoveryRecord record = dcm.getRecord(e().getType());
-        this.noRecord = (record == null);
-        this.lines = buildLines(record);
     }
 
     @Override
@@ -60,14 +53,9 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
         int color = Colors.COMMON_DARK_LIGHTER_TEXT;
         float z = ctx.getZ();
 
-        if (noRecord) {
-            ClientDiscoveryCacheManager dcm = ClientWorldSession.get().getDiscoveryCacheManager();
-            DiscoveryRecord record = dcm.getRecord(e().getType());
-            if (record != null) {
-                this.noRecord = false;
-                this.lines = buildLines(record);
-            }
-        }
+        ClientWorldSession cws = ClientWorldSession.get();
+        DiscoveryRecord record = cws != null ? cws.getDiscoveryCacheManager().getRecord(e().getType()) : null;
+        List<FormattedCharSequence> lines = buildLines(record);
 
         ctx.renderText(title, Colors.BLACK, TEXT_SCALE, z, x, y);
         y += lineHeight;
@@ -85,6 +73,27 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
         List<FormattedCharSequence> lines = new ArrayList<>();
 
         if (record != null) {
+            ClientWorldSession cws = ClientWorldSession.get();
+            UUID discovererId = record.discoverer();
+            UUID sharer = record.sharer();
+            Component value;
+            if (record.global()) {
+                value = TextUtils.concat(playerText(cws, discovererId),
+                        TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_DISCOVERER_GLOBAL));
+            } else if (sharer != null) {
+                value = TextUtils.concat(playerText(cws, discovererId),
+                        TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_DISCOVERER_SHARER,
+                                playerText(cws, sharer)));
+            } else if (!discovererId.equals(DiscoveryRecord.NO_UUID)) {
+                value = playerText(cws, discovererId);
+            } else {
+                value = noData;
+            }
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
+                TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_DISCOVERER).withStyle(ChatFormatting.BOLD),
+                value
+            ), font, maxTextWidth));
+
             lines.addAll(FontUtils.toLines(TextUtils.concat(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_SOURCE).withStyle(ChatFormatting.BOLD),
                 record.source().displayName()
@@ -92,12 +101,12 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
 
             lines.addAll(FontUtils.toLines(TextUtils.concat(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_REAL_TIME).withStyle(ChatFormatting.BOLD),
-                getRealWorldTimeText(record.firstDiscoveryTime())
+                getRealWorldTimeText(record.realTime())
             ), font, maxTextWidth));
 
             lines.addAll(FontUtils.toLines(TextUtils.concat(
                 TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_GAME_TIME).withStyle(ChatFormatting.BOLD),
-                getGameTimeText(record.firstDiscoveryTick())
+                getGameTimeText(record.gameTick())
             ), font, maxTextWidth));
 
             lines.addAll(FontUtils.toLines(TextUtils.concat(
@@ -119,6 +128,16 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
         }
 
         return lines;
+    }
+
+    private static Component playerText(ClientWorldSession cws, UUID playerId) {
+        if (playerId == null || playerId.equals(DiscoveryRecord.NO_UUID)) {
+            return Component.literal("-");
+        }
+        if (cws != null) {
+            return Component.literal(cws.getPlayerNameCache().getDisplayNameOrRequest(playerId));
+        }
+        return Component.literal(playerId.toString());
     }
 
     private static Component getRealWorldTimeText(long epochMillis) {

@@ -14,7 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Maintains an internal map of discovery records, populated via network packets.
- * Used for the DICTIONARY strategy on the client side.
+ * Used for the DICTIONARY strategy on the client side. Entries with
+ * {@code global=true} are derived global-view records; the manager rebuilds this
+ * cache on a server config change, so a full re-pull drops them when sharing is off.
  */
 @ClientOnly
 public final class BiologyDictionaryClientDiscoveryCache implements ClientDiscoveryCache {
