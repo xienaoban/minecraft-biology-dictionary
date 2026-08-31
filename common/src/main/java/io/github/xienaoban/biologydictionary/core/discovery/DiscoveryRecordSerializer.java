@@ -63,7 +63,8 @@ public final class DiscoveryRecordSerializer {
         buf.writeBlockPos(record.position());
         buf.writeUtf(record.weather().getSerializedName());
         buf.writeUUID(record.entityUUID());
-        buf.writeNbt(record.entityNbt());
+        // The entity NBT is unused on the client for now, so send an empty tag to keep the payload small.
+        buf.writeNbt(DiscoveryRecord.NO_NBT);
     }
 
     /**
