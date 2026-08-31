@@ -6,7 +6,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Changed
 
-- Added `IdentifierUtils` (in `platform.util`) as the unified entry point for creating and serializing Identifiers/ResourceLocations; all direct creation and serialization calls across the codebase now go through it.
+- Optimized packet size for discovery-record transmission.
 
 ### Fixed
 
