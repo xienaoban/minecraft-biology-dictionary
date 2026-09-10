@@ -2257,11 +2257,11 @@ public final class VanillaEntityProperties {
      */
     public static final class OfAbstractVillager implements Creator {
 
-        public static CodecProperty<AbstractVillager, MerchantOffers> createOffersProperty() {
-            return new CodecProperty<>("Offers", MerchantOffers.class, MerchantOffers.CODEC);
+        public static UnsupportedProperty<AbstractVillager> createOffersProperty() {
+            return new UnsupportedProperty<>("Offers");
         }
 
-        public static CodecProperty<AbstractVillager, MerchantOffers> getOffersProperty(EntityProperties<?> ep) {
+        public static UnsupportedProperty<AbstractVillager> getOffersProperty(EntityProperties<?> ep) {
             return g(ep, "Offers");
         }
 
