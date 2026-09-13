@@ -6,9 +6,8 @@ import com.mojang.brigadier.context.CommandContext;
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
-import io.github.xienaoban.biologydictionary.net.ServerNetManager;
-import io.github.xienaoban.biologydictionary.net.payload.SendEntityOverviewScreenPacket;
+import io.github.xienaoban.biologydictionary.core.ServerEntityOverviewManager;
+import io.github.xienaoban.biologydictionary.net.payload.SendEntityOverviewPacket;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -57,10 +56,6 @@ public final class Commands {
         if (player == null) {
             return 0;
         }
-        ServerWorldSession sws = ServerWorldSession.get();
-        if (sws == null) {
-            return 0;
-        }
 
         Identifier entityTypeId = IdentifierArgument.getId(context, "entity_type");
         EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
@@ -70,19 +65,17 @@ public final class Commands {
             return 0;
         }
 
-        if (!sws.getDiscoveryManager().isDiscovered(player, entityType)) {
-            player.sendSystemMessage(TextUtils.withFallbacks(TextUtils.modLog(
-                    TextUtils.translate(Lang.TEXT_ENTITY_NOT_DISCOVERED))));
-            return 0;
-        }
-
-        if (!ServerNetApi.canSend(player, SendEntityOverviewScreenPacket.class)) {
+        if (!ServerNetApi.canSend(player, SendEntityOverviewPacket.class)) {
             player.sendSystemMessage(TextUtils.withFallbacks(TextUtils.modLog(
                     TextUtils.translate(Lang.TEXT_OVERVIEW_REQUIRES_CLIENT_MOD))));
             return 0;
         }
 
-        ServerNetManager.sendEntityOverviewScreen(player, entityType);
+        if (!ServerEntityOverviewManager.send(player, entityType, true)) {
+            player.sendSystemMessage(TextUtils.withFallbacks(TextUtils.modLog(
+                    TextUtils.translate(Lang.TEXT_ENTITY_NOT_DISCOVERED))));
+            return 0;
+        }
         return Command.SINGLE_SUCCESS;
     }
 }

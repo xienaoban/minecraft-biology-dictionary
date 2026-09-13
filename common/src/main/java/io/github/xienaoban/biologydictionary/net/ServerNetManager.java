@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.net.payload.*;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -15,19 +16,29 @@ import java.util.UUID;
 
 public final class ServerNetManager {
     public static void sendCenteredMessage(ServerPlayer player, Component message) {
+        if (!ServerNetApi.canSend(player, SendCenteredMessagePacket.class)) {
+            player.sendOverlayMessage(TextUtils.withFallbacks(message));
+            return;
+        }
         ServerNetApi.send(player, new SendCenteredMessagePacket(message));
     }
 
     public static void sendDiscoveryIncremental(ServerPlayer player, Entity entity, EntityType<?> entityType,
                                                 DiscoveryRecord record) {
+        if (!ServerNetApi.canSend(player, SendDiscoveryIncrementalPacket.class)) {
+            return;
+        }
         ServerNetApi.send(player, new SendDiscoveryIncrementalPacket(EntityUtils.getId(entity), entityType, record));
     }
 
-    public static void sendEntityOverviewScreen(ServerPlayer player, EntityType<?> entityType) {
-        ServerNetApi.send(player, new SendEntityOverviewScreenPacket(EntityUtils.getEntityTypeIdName(entityType)));
+    public static void sendEntityOverview(ServerPlayer player, SendEntityOverviewPacket packet) {
+        ServerNetApi.send(player, packet);
     }
 
     public static void replyServerConfigs(ServerPlayer player, String serverConfigsYaml) {
+        if (!ServerNetApi.canSend(player, ReplyServerConfigsPacket.class)) {
+            return;
+        }
         ServerNetApi.send(player, new ReplyServerConfigsPacket(serverConfigsYaml));
     }
 
