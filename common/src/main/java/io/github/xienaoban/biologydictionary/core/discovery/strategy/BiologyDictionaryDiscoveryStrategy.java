@@ -14,6 +14,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -110,7 +111,7 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
     private static void announceDiscovery(ServerPlayer player, EntityType<?> entityType, DiscoveryRecord record,
                                           int rank) {
         int limit = ConfigsManager.getServer().getDiscoveryAnnouncementLimit();
-        Component entityName = createAnnouncementEntityName(entityType, record, rank);
+        Component entityName = createAnnouncementEntityName(entityType, record, rank, true);
         Component playerName = player.getDisplayName().copy().withStyle(ChatFormatting.YELLOW);
         Component message = TextUtils.withFallbacks(TextUtils.modLog(TextUtils.translate(
                 Lang.TEXT_DISCOVERY_ANNOUNCEMENT, playerName, entityName)));
@@ -118,30 +119,35 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         if (limit == -1 || rank <= limit) {
             server.getPlayerList().broadcastSystemMessage(message, false);
             if (limit > 0 && rank == limit) {
+                Component limitEntityName = createAnnouncementEntityName(entityType, record, rank, false);
                 server.getPlayerList().broadcastSystemMessage(TextUtils.withFallbacks(TextUtils.modLog(
-                        TextUtils.translate(Lang.TEXT_DISCOVERY_ANNOUNCEMENT_LIMIT, rank, entityName))), false);
+                        TextUtils.translate(Lang.TEXT_DISCOVERY_ANNOUNCEMENT_LIMIT, rank, limitEntityName))), false);
             }
             return;
         }
         player.sendSystemMessage(message);
     }
 
-    private static Component createAnnouncementEntityName(EntityType<?> entityType, DiscoveryRecord record, int rank) {
-        Component tooltip = TextUtils.withFallbacks(TextUtils.concat(
-                EntityUtils.getEntityTypeNameText(entityType).copy().withStyle(ChatFormatting.GREEN),
-                TextUtils.newline(),
-                TextUtils.translate(Lang.TEXT_DISCOVERY_TOOLTIP_SOURCE,
-                        record.source().displayName().copy().withStyle(ChatFormatting.YELLOW)),
-                TextUtils.newline(),
-                TextUtils.translate(Lang.TEXT_DISCOVERY_TOOLTIP_RANK,
-                        TextUtils.literal(Integer.toString(rank)).withStyle(ChatFormatting.YELLOW)),
-                TextUtils.newline(),
-                TextUtils.literal(EntityUtils.getEntityTypeIdName(entityType)).withStyle(ChatFormatting.GRAY)
-        ));
+    private static Component createAnnouncementEntityName(EntityType<?> entityType, DiscoveryRecord record, int rank,
+                                                          boolean withDiscoveryInfo) {
+        MutableComponent tooltip = TextUtils.empty();
+        tooltip.append(EntityUtils.getEntityTypeNameText(entityType).copy().withStyle(ChatFormatting.GREEN));
+        if (withDiscoveryInfo) {
+            tooltip.append(TextUtils.newline());
+            tooltip.append(TextUtils.translate(Lang.TEXT_DISCOVERY_TOOLTIP_SOURCE,
+                    record.source().displayName().copy().withStyle(ChatFormatting.YELLOW)));
+            tooltip.append(TextUtils.newline());
+            tooltip.append(TextUtils.translate(Lang.TEXT_DISCOVERY_TOOLTIP_RANK,
+                    TextUtils.literal(Integer.toString(rank)).withStyle(ChatFormatting.YELLOW)));
+        }
+        tooltip.append(TextUtils.newline());
+        tooltip.append(TextUtils.literal(EntityUtils.getEntityTypeIdName(entityType)).withStyle(ChatFormatting.GRAY));
+
+        Component finalTooltip = TextUtils.withFallbacks(tooltip);
         String command = "/" + BiologyDictionary.MOD_ID + " overview " + EntityUtils.getEntityTypeIdName(entityType);
         return EntityUtils.getEntityTypeNameText(entityType).copy().withStyle(Style.EMPTY
                 .withColor(ChatFormatting.GREEN)
-                .withHoverEvent(new HoverEvent.ShowText(tooltip))
+                .withHoverEvent(new HoverEvent.ShowText(finalTooltip))
                 .withClickEvent(new ClickEvent.RunCommand(command)));
     }
 }
