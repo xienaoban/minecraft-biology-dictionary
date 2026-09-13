@@ -265,9 +265,16 @@ public final class Lang {
     TEXT_ENTITY_NOT_DISCOVERED               = "text.biologydictionary.entity_not_discovered",
     TEXT_ENTITY_CANNOT_OVERVIEW              = "text.biologydictionary.entity_cannot_overview",
     TEXT_OVERVIEW_ENTITY_NOT_REAL            = "text.biologydictionary.overview_entity_not_real",
+    TEXT_OVERVIEW_REQUIRES_CLIENT_MOD        = "text.biologydictionary.overview_requires_client_mod",
+
     TEXT_NEW_ENTITY_DISCOVERED               = "text.biologydictionary.new_entity_discovered",
     TEXT_ENTITY_DISCOVERED_GLOBAL            = "text.biologydictionary.entity_discovered_global",
     TEXT_ENTITY_DISCOVERED_SHARED_BY         = "text.biologydictionary.entity_discovered_shared_by",
+
+    TEXT_DISCOVERY_ANNOUNCEMENT              = "text.biologydictionary.discovery_announcement",
+    TEXT_DISCOVERY_ANNOUNCEMENT_LIMIT        = "text.biologydictionary.discovery_announcement_limit",
+    TEXT_DISCOVERY_TOOLTIP_SOURCE            = "text.biologydictionary.discovery_tooltip.source",
+    TEXT_DISCOVERY_TOOLTIP_RANK              = "text.biologydictionary.discovery_tooltip.rank",
     TEXT_TARGET_ENTITY_TOO_FAR               = "text.biologydictionary.target_entity_too_far",
     TEXT_HIGHLIGHTED_ENTITIES                = "text.biologydictionary.highlighted_entities",
     TEXT_FAILED_TO_HIGHLIGHT                 = "text.biologydictionary.failed_to_highlight",

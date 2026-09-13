@@ -1,5 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.discovery.strategy;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
+import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
@@ -7,6 +9,12 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.storage.SavedDataDiscoveryStorage;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -46,7 +54,7 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
     public Map<EntityType<?>, DiscoveryRecord> getAllRecords(ServerPlayer player) {
         Map<EntityType<?>, DiscoveryRecord> result = new HashMap<>(storage.getAll(player.getUUID()));
         if (globalShared()) {
-            for (EntityType<?> entityType : storage.stats().types()) {
+            for (EntityType<?> entityType : storage.stats().discoveredEntityTypes()) {
                 result.computeIfAbsent(entityType, this::globalPresentation);
             }
         }
@@ -84,6 +92,7 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
                 }
             }
         }
+        announceDiscovery(player, entityType, record, storage.stats().discovererCount(entityType));
         return true;
     }
 
@@ -96,5 +105,43 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
     private DiscoveryRecord globalPresentation(EntityType<?> entityType) {
         DiscoveryRecord earliest = storage.stats().earliestRecord(entityType);
         return earliest == null ? null : earliest.asGlobal();
+    }
+
+    private static void announceDiscovery(ServerPlayer player, EntityType<?> entityType, DiscoveryRecord record,
+                                          int rank) {
+        int limit = ConfigsManager.getServer().getDiscoveryAnnouncementLimit();
+        Component entityName = createAnnouncementEntityName(entityType, record, rank);
+        Component playerName = player.getDisplayName().copy().withStyle(ChatFormatting.YELLOW);
+        Component message = TextUtils.withFallbacks(TextUtils.modLog(TextUtils.translate(
+                Lang.TEXT_DISCOVERY_ANNOUNCEMENT, playerName, entityName)));
+        MinecraftServer server = player.level().getServer();
+        if (limit == -1 || rank <= limit) {
+            server.getPlayerList().broadcastSystemMessage(message, false);
+            if (limit > 0 && rank == limit) {
+                server.getPlayerList().broadcastSystemMessage(TextUtils.withFallbacks(TextUtils.modLog(
+                        TextUtils.translate(Lang.TEXT_DISCOVERY_ANNOUNCEMENT_LIMIT, rank, entityName))), false);
+            }
+            return;
+        }
+        player.sendSystemMessage(message);
+    }
+
+    private static Component createAnnouncementEntityName(EntityType<?> entityType, DiscoveryRecord record, int rank) {
+        Component tooltip = TextUtils.withFallbacks(TextUtils.concat(
+                EntityUtils.getEntityTypeNameText(entityType).copy().withStyle(ChatFormatting.GREEN),
+                TextUtils.newline(),
+                TextUtils.translate(Lang.TEXT_DISCOVERY_TOOLTIP_SOURCE,
+                        record.source().displayName().copy().withStyle(ChatFormatting.YELLOW)),
+                TextUtils.newline(),
+                TextUtils.translate(Lang.TEXT_DISCOVERY_TOOLTIP_RANK,
+                        TextUtils.literal(Integer.toString(rank)).withStyle(ChatFormatting.YELLOW)),
+                TextUtils.newline(),
+                TextUtils.literal(EntityUtils.getEntityTypeIdName(entityType)).withStyle(ChatFormatting.GRAY)
+        ));
+        String command = "/" + BiologyDictionary.MOD_ID + " overview " + EntityUtils.getEntityTypeIdName(entityType);
+        return EntityUtils.getEntityTypeNameText(entityType).copy().withStyle(Style.EMPTY
+                .withColor(ChatFormatting.GREEN)
+                .withHoverEvent(new HoverEvent.ShowText(tooltip))
+                .withClickEvent(new ClickEvent.RunCommand(command)));
     }
 }

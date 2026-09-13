@@ -188,6 +188,14 @@ public final class Configs {
         boolean discoveryGlobalShared = false;
 
         /**
+         * Number of genuine discoverers whose discoveries are announced server-wide for each
+         * entity type. -1 means unlimited, 0 disables server-wide announcements, and any
+         * positive value is the limit. Active and global sharing do not count.
+         */
+        @ConfigEntry(min = -1)
+        int discoveryAnnouncementLimit = 5;
+
+        /**
          * Enable discovery by opening entity detail screen.
          * Only effective if the active strategy supports this method.
          */
@@ -316,6 +324,10 @@ public final class Configs {
 
         public boolean isDiscoveryGlobalShared() {
             return discoveryGlobalShared;
+        }
+
+        public int getDiscoveryAnnouncementLimit() {
+            return discoveryAnnouncementLimit;
         }
 
         public boolean isDiscoveryByDetailScreen() {

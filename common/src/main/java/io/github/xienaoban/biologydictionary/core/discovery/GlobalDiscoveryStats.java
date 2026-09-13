@@ -70,7 +70,15 @@ public final class GlobalDiscoveryStats {
     /**
      * All entity types that have at least one genuine discovery.
      */
-    public Set<EntityType<?>> types() {
+    public Set<EntityType<?>> discoveredEntityTypes() {
         return stats.keySet();
+    }
+
+    /**
+     * Number of genuine discoveries recorded for the entity type.
+     */
+    public int discovererCount(EntityType<?> entityType) {
+        List<DiscoveryRecord> entries = stats.get(entityType);
+        return entries != null ? entries.size() : 0;
     }
 }
