@@ -19,13 +19,22 @@ public final class KeyMappings {
             Lang.KEY_OPEN_HANDBOOK,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_GRAVE_ACCENT,
-            CATEGORY);
+            CATEGORY,
+            0);
+
+    public static final KeyMapping STEAL_INVENTORY = new KeyMapping(
+            Lang.KEY_STEAL_INVENTORY,
+            InputConstants.Type.KEYSYM,
+            InputConstants.UNKNOWN.getValue(),
+            CATEGORY,
+            1);
 
     public static final KeyMapping DEBUG = new KeyMapping(
             Lang.KEY_DEBUG,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_RIGHT_ALT,
-            CATEGORY);
+            CATEGORY,
+            2);
 
     private KeyMappings() {}
 }
