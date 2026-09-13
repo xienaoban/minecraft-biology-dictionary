@@ -38,6 +38,7 @@ public final class Lang {
     AUTHOR_NAME_TWO_LANG = "author_name.biologydictionary.two_lang",
 
     KEY_OPEN_HANDBOOK = "key.biologydictionary.open_handbook",
+    KEY_STEAL_INVENTORY = "key.biologydictionary.steal_inventory",
     KEY_DEBUG = "key.biologydictionary.debug",
 
     ACTIVITY_PREFIX         = "activity.minecraft.",
