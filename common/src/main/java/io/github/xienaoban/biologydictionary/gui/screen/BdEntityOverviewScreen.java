@@ -1,9 +1,11 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
 import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplay;
@@ -18,6 +20,7 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRend
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -29,6 +32,21 @@ import java.util.List;
 
 @ClientOnly
 public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
+    public static boolean canOpen(EntityDictionaryEntry entry) {
+        if (ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities()) {
+            return true;
+        }
+        ClientWorldSession cws = ClientWorldSession.get();
+        if (cws == null) {
+            return false;
+        }
+        if (cws.getDiscoveryCacheManager().isDiscovered(entry.getType())) {
+            return true;
+        }
+        var player = ClientUtils.getClientPlayer();
+        return player != null && PlayerUtils.isCreative(player);
+    }
+
     private final EntityType<?> entityType;
     private final Entity entity;
     private final EntityProperties<Entity> properties;
