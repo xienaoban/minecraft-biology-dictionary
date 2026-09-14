@@ -108,11 +108,22 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         return earliest == null ? null : earliest.asGlobal();
     }
 
-    private static void announceDiscovery(ServerPlayer player, EntityType<?> entityType, DiscoveryRecord record,
-                                          int rank) {
+    private void announceDiscovery(ServerPlayer player, EntityType<?> entityType, DiscoveryRecord record, int rank) {
         int limit = ConfigsManager.getServer().getDiscoveryAnnouncementLimit();
         Component entityName = createAnnouncementEntityName(entityType, record, rank, true);
-        Component playerName = player.getDisplayName().copy().withStyle(ChatFormatting.YELLOW);
+        Component playerTooltip = TextUtils.concat(
+                player.getDisplayName().copy().withStyle(ChatFormatting.YELLOW),
+                TextUtils.newline(),
+                TextUtils.translate(Lang.TEXT_DISCOVERY_ANNOUNCEMENT_PLAYER_TOOLTIP,
+                TextUtils.literal(Integer.toString(getAllRecords(player).size())).withStyle(ChatFormatting.YELLOW))
+                .withStyle(ChatFormatting.WHITE)
+        );
+        Component playerName = player.getDisplayName().copy()
+                .withStyle(ChatFormatting.YELLOW)
+                .withStyle(style -> style
+                        .withHoverEvent(new HoverEvent.ShowText(playerTooltip))
+                        .withClickEvent(new ClickEvent.SuggestCommand(
+                                "/tell " + player.getGameProfile().name() + " ")));
         Component message = TextUtils.modLog(TextUtils.translate(
                 Lang.TEXT_DISCOVERY_ANNOUNCEMENT, playerName, entityName));
         TextUtils.FallbackCache announcementCache = new TextUtils.FallbackCache(message);
@@ -139,11 +150,11 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         tooltip.append(EntityUtils.getEntityTypeNameText(entityType).copy().withStyle(ChatFormatting.GREEN));
         if (withDiscoveryInfo) {
             tooltip.append(TextUtils.newline());
-            tooltip.append(TextUtils.translate(Lang.TEXT_DISCOVERY_TOOLTIP_SOURCE,
-                    record.source().displayName().copy().withStyle(ChatFormatting.YELLOW)));
-            tooltip.append(TextUtils.newline());
             tooltip.append(TextUtils.translate(Lang.TEXT_DISCOVERY_TOOLTIP_RANK,
                     TextUtils.literal(Integer.toString(rank)).withStyle(ChatFormatting.YELLOW)));
+            tooltip.append(TextUtils.newline());
+            tooltip.append(TextUtils.translate(Lang.TEXT_DISCOVERY_TOOLTIP_SOURCE,
+                    record.source().displayName().copy().withStyle(ChatFormatting.YELLOW)));
         }
         tooltip.append(TextUtils.newline());
         tooltip.append(TextUtils.literal(EntityUtils.getEntityTypeIdName(entityType)).withStyle(ChatFormatting.GRAY));

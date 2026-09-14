@@ -12,12 +12,17 @@ import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.IdentifierArgument;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
+
+import java.net.URI;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.List;
@@ -44,7 +49,8 @@ public final class Commands {
             ConfigsManager.load();
             ConfigsManager.onUpdated();
             ServerPlayer player = context.getSource().getPlayer();
-            Component message = TextUtils.translate(Lang.TEXT_SERVER_CONFIGS_RELOAD_SUCCESS);
+            Component message = TextUtils.modLog(
+                    TextUtils.translate(Lang.TEXT_SERVER_CONFIGS_RELOAD_SUCCESS));
             context.getSource().sendSuccess(() -> TextUtils.withFallbacks(message, player), true);
             return Command.SINGLE_SUCCESS;
         } catch (Exception e) {
@@ -69,7 +75,7 @@ public final class Commands {
 
         if (!ServerNetApi.canSend(player, SendEntityOverviewPacket.class)) {
             player.sendSystemMessage(TextUtils.withFallbacks(TextUtils.modLog(
-                    TextUtils.translate(Lang.TEXT_OVERVIEW_REQUIRES_CLIENT_MOD)), player));
+                    createClientModRequiredMessage()), player));
             return 0;
         }
 
@@ -79,5 +85,17 @@ public final class Commands {
             return 0;
         }
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static Component createClientModRequiredMessage() {
+        Component modName = TextUtils.translate(Lang.TEXT_MOD_NAME_WITH_BRACKETS)
+                .withStyle(ChatFormatting.GREEN)
+                .withStyle(style -> style
+                        .withHoverEvent(new HoverEvent.ShowText(
+                                TextUtils.translate(Lang.TEXT_CLICK_TO_MODRINTH)))
+                        .withClickEvent(new ClickEvent.OpenUrl(
+                                URI.create(BiologyDictionary.MODRINTH_PAGE))));
+        return TextUtils.translate(Lang.TEXT_OVERVIEW_REQUIRES_CLIENT_MOD, modName)
+                .withStyle(ChatFormatting.YELLOW);
     }
 }
