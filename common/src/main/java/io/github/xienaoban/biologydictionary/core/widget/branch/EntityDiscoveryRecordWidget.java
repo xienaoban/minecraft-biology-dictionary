@@ -1,0 +1,178 @@
+package io.github.xienaoban.biologydictionary.core.widget.branch;
+
+import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
+import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
+import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
+import io.github.xienaoban.biologydictionary.gui.component.Page;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.util.Colors;
+import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.Entity;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@ClientOnly
+public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Entity> {
+    public static final Factory<Entity> FACTORY = EntityDiscoveryRecordWidget::new;
+
+    private static final float TEXT_SCALE = 0.5F;
+    private static final float H_PADDING = 1F;
+    private static final float V_PADDING = 1F;
+    private static final int COLUMNS = Page.COLUMNS;
+
+    private static final int TICKS_PER_DAY = 24000;
+    private static final int TICKS_PER_HOUR = 1000;
+
+    private final Component title = TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_BOND)
+            .withStyle(ChatFormatting.BOLD);
+
+    private EntityDiscoveryRecordWidget(EntityProperties<Entity> properties) {
+        super(properties, 3, COLUMNS);
+    }
+
+    @Override
+    protected void onRender(ScreenRenderingContext ctx) {
+        float lineHeight = FontUtils.getLineHeight(ctx.getFont(), TEXT_SCALE);
+        float y = getBox().getTop() + V_PADDING;
+        float x = getBox().getLeft() + H_PADDING;
+        int color = Colors.COMMON_DARK_LIGHTER_TEXT;
+        float z = ctx.getZ();
+
+        ClientWorldSession cws = ClientWorldSession.get();
+        DiscoveryRecord record = cws != null ? cws.getDiscoveryCacheManager().getRecord(e().getType()) : null;
+        List<FormattedCharSequence> lines = buildLines(record);
+
+        ctx.renderText(title, Colors.BLACK, TEXT_SCALE, z, x, y);
+        y += lineHeight;
+        for (FormattedCharSequence line : lines) {
+            ctx.renderText(line, color, TEXT_SCALE, z, x, y);
+            y += lineHeight;
+        }
+    }
+
+    private static List<FormattedCharSequence> buildLines(DiscoveryRecord record) {
+        int maxTextWidth = (int) ((Widget.calcWidth(COLUMNS) - H_PADDING * 2) / TEXT_SCALE);
+        Font font = FontUtils.getGlobalFont();
+        Component noData = TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS);
+
+        List<FormattedCharSequence> lines = new ArrayList<>();
+
+        if (record != null) {
+            ClientWorldSession cws = ClientWorldSession.get();
+            UUID discovererId = record.discoverer();
+            UUID sharer = record.sharer();
+            Component value;
+            if (record.global()) {
+                value = TextUtils.concat(playerText(cws, discovererId),
+                        TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_DISCOVERER_GLOBAL));
+            } else if (sharer != null) {
+                value = TextUtils.concat(playerText(cws, discovererId),
+                        TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_DISCOVERER_SHARER,
+                                playerText(cws, sharer)));
+            } else if (!discovererId.equals(DiscoveryRecord.NO_UUID)) {
+                value = playerText(cws, discovererId);
+            } else {
+                value = noData;
+            }
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
+                TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_DISCOVERER).withStyle(ChatFormatting.BOLD),
+                value
+            ), font, maxTextWidth));
+
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
+                TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_SOURCE).withStyle(ChatFormatting.BOLD),
+                record.source().displayName()
+            ), font, maxTextWidth));
+
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
+                TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_REAL_TIME).withStyle(ChatFormatting.BOLD),
+                getRealWorldTimeText(record.realTime())
+            ), font, maxTextWidth));
+
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
+                TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_GAME_TIME).withStyle(ChatFormatting.BOLD),
+                getGameTimeText(record.gameTick())
+            ), font, maxTextWidth));
+
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
+                TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_LOCATION).withStyle(ChatFormatting.BOLD),
+                TextUtils.concat(getDimensionText(record), TextUtils.comma(), getBiomeText(record))
+            ), font, maxTextWidth));
+
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
+                TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_COORDINATES).withStyle(ChatFormatting.BOLD),
+                getCoordinateText(record)
+            ), font, maxTextWidth));
+
+            lines.addAll(FontUtils.toLines(TextUtils.concat(
+                TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_WEATHER).withStyle(ChatFormatting.BOLD),
+                TextUtils.translate("weather." + record.weather().name().toLowerCase())
+            ), font, maxTextWidth));
+        } else {
+            lines.add(noData.getVisualOrderText());
+        }
+
+        return lines;
+    }
+
+    private static Component playerText(ClientWorldSession cws, UUID playerId) {
+        if (playerId == null || playerId.equals(DiscoveryRecord.NO_UUID)) {
+            return Component.literal("-");
+        }
+        if (cws != null) {
+            return Component.literal(cws.getPlayerNameCache().getDisplayNameOrRequest(playerId));
+        }
+        return Component.literal(playerId.toString());
+    }
+
+    private static Component getRealWorldTimeText(long epochMillis) {
+        if (epochMillis <= 0) {
+            return TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS);
+        }
+        Instant instant = Instant.ofEpochMilli(epochMillis);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            .withZone(ZoneId.systemDefault());
+        return Component.literal(formatter.format(instant));
+    }
+
+    private static Component getGameTimeText(long tick) {
+        if (tick <= 0) {
+            return TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS);
+        }
+        long day = tick / TICKS_PER_DAY + 1;
+        long timeOfDay = tick % TICKS_PER_DAY;
+        long hours = timeOfDay / TICKS_PER_HOUR;
+        long minutes = (timeOfDay % TICKS_PER_HOUR) * 60 / TICKS_PER_HOUR;
+        return TextUtils.translate(Lang.PROPERTY_WIDGET_DISCOVERY_GAME_TIME_VALUE, day, hours, minutes);
+    }
+
+    private static Component getDimensionText(DiscoveryRecord record) {
+        String dimKey = Lang.DIMENSION_PREFIX + record.dimension().getNamespace() + "." + record.dimension().getPath();
+        return TextUtils.translate(dimKey);
+    }
+
+    private static Component getBiomeText(DiscoveryRecord record) {
+        String biomeKey = Lang.BIOME_PREFIX + record.biome().getNamespace() + "." + record.biome().getPath();
+        return TextUtils.translate(biomeKey);
+    }
+
+    private static Component getCoordinateText(DiscoveryRecord record) {
+        BlockPos pos = record.position();
+        return Component.literal(pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+    }
+}
