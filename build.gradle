@@ -1,0 +1,47 @@
+plugins {
+    id "base"
+    id "net.fabricmc.fabric-loom" version "${loom_version}" apply false
+    id "net.neoforged.moddev" version "${moddev_version}" apply false
+}
+
+allprojects {
+    group = maven_group
+    version = mod_version
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "shedaniel"
+            url = "https://maven.shedaniel.me/"
+        }
+        maven {
+            name = "TerraformersMC"
+            url = "https://maven.terraformersmc.com/releases/"
+        }
+    }
+
+    pluginManager.withPlugin("java") {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(java_version as int)
+            }
+            withSourcesJar()
+        }
+
+        tasks.withType(JavaCompile).configureEach {
+            options.encoding = "UTF-8"
+            options.release = java_version as int
+        }
+    }
+}
+
+tasks.named("wrapper", Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+tasks.named("check") {
+    dependsOn(":common:checkPlatformImports")
+    dependsOn(":common:checkClientOnlyBoundaries")
+}
