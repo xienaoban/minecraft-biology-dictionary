@@ -11,6 +11,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
+import java.util.Set;
+import java.util.UUID;
+
 @ClientOnly
 public final class ClientNetManager {
     public static void requestServerConfigs() {
@@ -51,5 +54,9 @@ public final class ClientNetManager {
 
     public static void sendStealingDetected(Entity entity) {
         ClientNetApi.send(new SendStealingDetectedPacket(EntityUtils.getId(entity)));
+    }
+
+    public static void requestPlayerNames(Set<UUID> playerIds) {
+        ClientNetApi.send(new RequestPlayerNamesPacket(playerIds));
     }
 }
