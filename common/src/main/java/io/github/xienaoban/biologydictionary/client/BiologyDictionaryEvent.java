@@ -9,9 +9,12 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
+import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
+import io.github.xienaoban.biologydictionary.core.skill.entity.LivingEntityStealInventorySkill;
 import io.github.xienaoban.biologydictionary.gui.screen.BdEntityDetailScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.BdHomeScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
+import io.github.xienaoban.biologydictionary.gui.screen.misc.InventoryStealingScreen;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.*;
@@ -21,6 +24,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -45,6 +49,22 @@ public final class BiologyDictionaryEvent {
             resetHit();
             BiologyDictionaryClient.printThrowableToLoggerAndGame("Failed to open Biology Dictionary screen!", e);
         }
+    }
+
+    public static void stealInventoryFromCrosshair(Minecraft client) {
+        LocalPlayer player = ClientUtils.getClientPlayer(client);
+        if (player == null || !(client.hitResult instanceof EntityHitResult entityHit)) {
+            return;
+        }
+        Entity target = entityHit.getEntity();
+        if (!(target instanceof LivingEntity livingEntity)) {
+            return;
+        }
+        if (InventoryStealingScreen.isPlayerCaughtByEntity(livingEntity, player)) {
+            BiologyDictionaryClient.sendCenteredWarning(TextUtils.translate(Lang.TEXT_ENTITY_LOOKING_AT_YOU));
+            return;
+        }
+        BiologySkills.activate(livingEntity, new LivingEntityStealInventorySkill());
     }
 
     private static void openBookScreen0(Minecraft client, LocalPlayer player) {

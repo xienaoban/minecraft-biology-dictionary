@@ -20,7 +20,7 @@ public final class PacketPayloads {
             new Entry<>(RequestDiscoveryIncrementalPacket.class, RequestDiscoveryIncrementalPacket.FACTORY),
             new Entry<>(SendDiscoveryIncrementalPacket.class, SendDiscoveryIncrementalPacket.FACTORY),
             new Entry<>(RequestEntityOverviewPacket.class, RequestEntityOverviewPacket.FACTORY),
-            new Entry<>(ReplyEntityOverviewPacket.class, ReplyEntityOverviewPacket.FACTORY),
+            new Entry<>(SendEntityOverviewPacket.class, SendEntityOverviewPacket.FACTORY),
             new Entry<>(RequestEntityDataPacket.class, RequestEntityDataPacket.FACTORY),
             new Entry<>(ReplyEntityDataPacket.class, ReplyEntityDataPacket.FACTORY),
             new Entry<>(RequestCommonSkillPacket.class, RequestCommonSkillPacket.FACTORY),
@@ -29,7 +29,9 @@ public final class PacketPayloads {
             new Entry<>(ReplyInventoryStealingScreenPacket.class, ReplyInventoryStealingScreenPacket.FACTORY),
             new Entry<>(SendStealingDetectedPacket.class, SendStealingDetectedPacket.FACTORY),
             new Entry<>(RequestBeehiveInfoPacket.class, RequestBeehiveInfoPacket.FACTORY),
-            new Entry<>(ReplyBeehiveInfoPacket.class, ReplyBeehiveInfoPacket.FACTORY)
+            new Entry<>(ReplyBeehiveInfoPacket.class, ReplyBeehiveInfoPacket.FACTORY),
+            new Entry<>(RequestPlayerNamesPacket.class, RequestPlayerNamesPacket.FACTORY),
+            new Entry<>(ReplyPlayerNamesPacket.class, ReplyPlayerNamesPacket.FACTORY)
     );
 
     public record Entry<T extends Packet>(Class<T> packetClass, Packet.Factory<T> factory) {}

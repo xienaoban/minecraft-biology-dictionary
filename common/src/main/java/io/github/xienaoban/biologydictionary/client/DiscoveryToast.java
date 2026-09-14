@@ -12,7 +12,6 @@ import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -24,13 +23,41 @@ public class DiscoveryToast implements Toast {
     private static final int DISPLAY_TIME = 7000;
     private final Component entityName;
     private final ItemStack eggStack;
+    private final Component title;
     private final long createdAt;
     private Visibility wantedVisibility = Visibility.HIDE;
 
-    public DiscoveryToast(EntityType<?> entityType) {
-        this.entityName = EntityUtils.getEntityTypeNameText(entityType);
+    /**
+     * The local player discovered a new entity type.
+     */
+    public static DiscoveryToast bySelf(EntityType<?> entityType) {
+        return new DiscoveryToast(entityType, Component.empty());
+    }
+
+    /**
+     * Another player discovered an entity type that is shared globally.
+     */
+    public static DiscoveryToast byGlobal(EntityType<?> entityType, String discovererName) {
+        return new DiscoveryToast(entityType,
+                TextUtils.translate(Lang.TEXT_ENTITY_DISCOVERED_GLOBAL, discovererName));
+    }
+
+    /**
+     * Another player actively shared a discovery.
+     */
+    public static DiscoveryToast byOther(EntityType<?> entityType, String sharerName) {
+        return new DiscoveryToast(entityType,
+                TextUtils.translate(Lang.TEXT_ENTITY_DISCOVERED_SHARED_BY, sharerName));
+    }
+
+    /**
+     * @param nameSuffix appended to the entity name, e.g. the sharer or global-share annotation
+     */
+    private DiscoveryToast(EntityType<?> entityType, Component nameSuffix) {
+        this.entityName = TextUtils.concat(EntityUtils.getEntityTypeNameText(entityType), nameSuffix);
         Item spawnEgg = EntityUtils.getSpawnEggItem(entityType);
         this.eggStack = spawnEgg == null ? null : spawnEgg.getDefaultInstance();
+        this.title = TextUtils.translate(Lang.TEXT_NEW_ENTITY_DISCOVERED).withStyle(ChatFormatting.YELLOW);
         this.createdAt = System.currentTimeMillis();
     }
 
@@ -52,8 +79,6 @@ public class DiscoveryToast implements Toast {
         if (eggStack != null) {
             guiGraphics.fakeItem(eggStack, 8, 8);
         }
-        MutableComponent title = TextUtils.translate(Lang.TEXT_NEW_ENTITY_DISCOVERED)
-            .withStyle(ChatFormatting.YELLOW);
         guiGraphics.text(font, title, 30, 7, -256, false);
         guiGraphics.text(font, entityName, 30, 18, -1, false);
     }

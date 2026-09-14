@@ -11,9 +11,15 @@ public final class ServerNetApi {
         PB.send(player, payload);
     }
 
+    public static boolean canSend(ServerPlayer player, Class<? extends Packet> packetClass) {
+        return PB.canSend(player, packetClass);
+    }
+
     public record Context(MinecraftServer server, ServerPlayer player) {}
 
     interface PlatformBridge {
         void send(ServerPlayer player, Packet payload);
+
+        boolean canSend(ServerPlayer player, Class<? extends Packet> packetClass);
     }
 }

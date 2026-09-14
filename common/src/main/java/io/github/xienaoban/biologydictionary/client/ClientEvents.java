@@ -51,6 +51,11 @@ public final class ClientEvents {
                 BiologyDictionaryEvent.openBookScreen(client);
             }
         }
+        while (KeyMappings.STEAL_INVENTORY.consumeClick()) {
+            if (client.player != null) {
+                BiologyDictionaryEvent.stealInventoryFromCrosshair(client);
+            }
+        }
         ClientWorldSession cws = ClientWorldSession.get();
         if (cws != null) {
             cws.tick();
