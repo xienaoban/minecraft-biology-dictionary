@@ -113,19 +113,24 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         int limit = ConfigsManager.getServer().getDiscoveryAnnouncementLimit();
         Component entityName = createAnnouncementEntityName(entityType, record, rank, true);
         Component playerName = player.getDisplayName().copy().withStyle(ChatFormatting.YELLOW);
-        Component message = TextUtils.withFallbacks(TextUtils.modLog(TextUtils.translate(
-                Lang.TEXT_DISCOVERY_ANNOUNCEMENT, playerName, entityName)));
+        Component message = TextUtils.modLog(TextUtils.translate(
+                Lang.TEXT_DISCOVERY_ANNOUNCEMENT, playerName, entityName));
+        TextUtils.FallbackCache announcementCache = new TextUtils.FallbackCache(message);
         MinecraftServer server = player.level().getServer();
         if (limit == -1 || rank <= limit) {
-            server.getPlayerList().broadcastSystemMessage(message, false);
+            server.getPlayerList().broadcastSystemMessage(TextUtils.withFallbacks(message),
+                    announcementCache::get, false);
             if (limit > 0 && rank == limit) {
                 Component limitEntityName = createAnnouncementEntityName(entityType, record, rank, false);
-                server.getPlayerList().broadcastSystemMessage(TextUtils.withFallbacks(TextUtils.modLog(
-                        TextUtils.translate(Lang.TEXT_DISCOVERY_ANNOUNCEMENT_LIMIT, rank, limitEntityName))), false);
+                Component limitMessage = TextUtils.modLog(TextUtils.translate(
+                        Lang.TEXT_DISCOVERY_ANNOUNCEMENT_LIMIT, rank, limitEntityName));
+                TextUtils.FallbackCache limitCache = new TextUtils.FallbackCache(limitMessage);
+                server.getPlayerList().broadcastSystemMessage(TextUtils.withFallbacks(limitMessage),
+                        limitCache::get, false);
             }
             return;
         }
-        player.sendSystemMessage(message);
+        player.sendSystemMessage(announcementCache.get(player));
     }
 
     private static Component createAnnouncementEntityName(EntityType<?> entityType, DiscoveryRecord record, int rank,
@@ -143,11 +148,10 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         tooltip.append(TextUtils.newline());
         tooltip.append(TextUtils.literal(EntityUtils.getEntityTypeIdName(entityType)).withStyle(ChatFormatting.GRAY));
 
-        Component finalTooltip = TextUtils.withFallbacks(tooltip);
         String command = "/" + BiologyDictionary.MOD_ID + " overview " + EntityUtils.getEntityTypeIdName(entityType);
         return EntityUtils.getEntityTypeNameText(entityType).copy().withStyle(Style.EMPTY
                 .withColor(ChatFormatting.GREEN)
-                .withHoverEvent(new HoverEvent.ShowText(finalTooltip))
+                .withHoverEvent(new HoverEvent.ShowText(tooltip))
                 .withClickEvent(new ClickEvent.RunCommand(command)));
     }
 }

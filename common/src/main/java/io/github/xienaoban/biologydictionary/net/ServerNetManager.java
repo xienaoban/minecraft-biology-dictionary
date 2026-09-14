@@ -17,7 +17,7 @@ import java.util.UUID;
 public final class ServerNetManager {
     public static void sendCenteredMessage(ServerPlayer player, Component message) {
         if (!ServerNetApi.canSend(player, SendCenteredMessagePacket.class)) {
-            player.sendOverlayMessage(TextUtils.withFallbacks(message));
+            player.sendOverlayMessage(TextUtils.withFallbacks(message, player));
             return;
         }
         ServerNetApi.send(player, new SendCenteredMessagePacket(message));
