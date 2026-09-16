@@ -105,7 +105,7 @@ final class EntityVanillaDeobfuscation {
         /*----------*/ r(net.minecraft.world.entity.boss.wither.WitherBoss.class, "net.minecraft.world.entity.boss.wither.WitherBoss");
         /*----------*/ r(net.minecraft.world.entity.monster.Blaze.class, "net.minecraft.world.entity.monster.Blaze");
         /*----------*/ r(net.minecraft.world.entity.monster.Creeper.class, "net.minecraft.world.entity.monster.Creeper");
-        /*----------*/ r(net.minecraft.world.entity.monster.EnderMan.class, "net.minecraft.world.entity.monster.EnderMan");
+        /*----------*/ r(net.minecraft.world.entity.monster.Enderman.class, "net.minecraft.world.entity.monster.Enderman");
         /*----------*/ r(net.minecraft.world.entity.monster.Endermite.class, "net.minecraft.world.entity.monster.Endermite");
         /*----------*/ r(net.minecraft.world.entity.monster.Giant.class, "net.minecraft.world.entity.monster.Giant");
         /*----------*/ r(net.minecraft.world.entity.monster.Guardian.class, "net.minecraft.world.entity.monster.Guardian");

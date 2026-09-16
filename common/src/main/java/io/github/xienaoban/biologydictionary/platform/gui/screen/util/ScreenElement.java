@@ -7,7 +7,7 @@ import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 
@@ -220,11 +220,11 @@ public abstract class ScreenElement implements ScreenConsts {
     }
 
     public static boolean isMouseLeft(int button) {
-        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT;
+        return button == InputConstants.MOUSE_BUTTON_LEFT;
     }
 
     public static boolean isMouseRight(int button) {
-        return button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+        return button == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 
     public static MutableComponent tooltipEmpty() {

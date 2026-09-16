@@ -54,14 +54,11 @@ public final class FirstPersonShoulderEntityRenderer {
     }
 
     /**
-     * @see net.minecraft.client.renderer.ItemInHandRenderer#submitHandsWithItems(
+     * @see net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer#submitHandsWithItems(
      *          float, com.mojang.blaze3d.vertex.PoseStack,
      *          net.minecraft.client.renderer.SubmitNodeCollector,
-     *          net.minecraft.client.player.LocalPlayer, int)
-     * @see net.minecraft.client.renderer.ItemInHandRenderer#renderPlayerArm(
-     *          com.mojang.blaze3d.vertex.PoseStack,
-     *          net.minecraft.client.renderer.SubmitNodeCollector,
-     *          int, float, float, net.minecraft.world.entity.HumanoidArm)
+     *          net.minecraft.client.renderer.state.level.PlayerRenderState,
+     *          net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState)
      */
     private void run0(Minecraft client, EntityRenderDispatcher entityRenderDispatcher, float tickDelta,
                       PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer player, int light) {
@@ -108,9 +105,9 @@ public final class FirstPersonShoulderEntityRenderer {
 
             int pos = i * -2 + 1;
             poseStack.pushPose();
-            poseStack.mulPose(Axis.XP.rotation(hudPos.xRot()));
-            poseStack.mulPose(Axis.YP.rotation(hudPos.yRot()));
-            poseStack.mulPose(Axis.ZP.rotation(hudPos.zRot()));
+            poseStack.rotate(Axis.XP.rotation(hudPos.xRot()));
+            poseStack.rotate(Axis.YP.rotation(hudPos.yRot()));
+            poseStack.rotate(Axis.ZP.rotation(hudPos.zRot()));
             poseStack.translate(pos * hudPos.xPos(), hudPos.yPos() + player.getXRot() * hudPos.yOffset(), hudPos.zPos());
             entityRenderDispatcher.submit(entityRenderState, camera, 0, 0, 0, poseStack, submitNodeCollector);
             poseStack.popPose();

@@ -140,9 +140,9 @@ dependencies {
     jarJar "org.yaml:snakeyaml:${project.snakeyaml_version}"
     compileOnly "me.shedaniel.cloth:cloth-config-neoforge:${project.clothconfig_version}"
     localRuntime "me.shedaniel.cloth:cloth-config-neoforge:${project.clothconfig_version}"
-    compileOnly "mezz.jei:jei-${project.minecraft_version}-common-api:${project.jei_version}"
-    compileOnly "mezz.jei:jei-${project.minecraft_version}-neoforge-api:${project.jei_version}"
-    localRuntime "mezz.jei:jei-${project.minecraft_version}-neoforge:${project.jei_version}"
+    compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-common-api:${project.jei_version}"
+    compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
+    localRuntime "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
 
     commonJava project(path: ":common", configuration: "commonJava")
     commonResources project(path: ":common", configuration: "commonResources")

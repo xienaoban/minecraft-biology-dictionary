@@ -681,7 +681,7 @@
   "net.minecraft.world.entity.boss.wither.WitherBoss"                  : "WitherBoss",
   "net.minecraft.world.entity.monster.Blaze"                           : "Blaze",
   "net.minecraft.world.entity.monster.Creeper"                         : "Creeper",
-  "net.minecraft.world.entity.monster.EnderMan"                        : "EnderMan",
+  "net.minecraft.world.entity.monster.Enderman"                        : "Enderman",
   "net.minecraft.world.entity.monster.Endermite"                       : "Endermite",
   "net.minecraft.world.entity.monster.Giant"                           : "Giant",
   "net.minecraft.world.entity.monster.Guardian"                        : "Guardian",

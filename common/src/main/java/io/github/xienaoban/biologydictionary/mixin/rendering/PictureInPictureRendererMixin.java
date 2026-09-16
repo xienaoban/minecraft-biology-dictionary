@@ -1,10 +1,12 @@
 package io.github.xienaoban.biologydictionary.mixin.rendering;
 
-import io.github.xienaoban.biologydictionary.client.SilhouetteFogBuffer;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.renderpearl.api.commands.RenderPass;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.CommonScreen;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher.PreparedFrame;
 import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.minecraft.client.renderer.state.gui.pip.GuiEntityRenderState;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
@@ -15,14 +17,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Renders undiscovered entities as flat silhouettes in the GUI by swapping the shader fog
- * around the picture-in-picture {@code prepare} call. {@code prepare} spans both the submit
- * ({@code renderToTexture}) and the actual draw ({@code renderAllFeatures}), so wrapping it
- * keeps the silhouette fog live at draw time — when {@code entity.fsh} samples the FOG
- * uniform. Undiscovered entities are detected via the existing {@code renderState.outlineColor}
- * signal set in {@code ScreenRenderingContext#renderEntity}, scoped to Biology Dictionary screens.
+ * Executes Minecraft's outline phase inside the GUI picture-in-picture render pass.
+ * Vanilla {@code renderAllFeatures} does not run the outline phase for picture-in-picture
+ * rendering, so GUI entity outlines would otherwise be dropped. Biology Dictionary marks
+ * undiscovered entities via {@code EntityRenderState#outlineColor}; reusing that phase
+ * renders the normal vanilla silhouette without swapping global shader fog.
  *
- * @see SilhouetteFogBuffer
+ * @see net.minecraft.client.renderer.feature.FeatureRenderDispatcher.PreparedFrame#executeOutline(RenderPass)
  */
 @ClientOnly
 @Mixin(PictureInPictureRenderer.class)
@@ -33,23 +34,26 @@ public abstract class PictureInPictureRendererMixin {
                     + "Lnet/minecraft/client/renderer/state/gui/GuiRenderState;"
                     + "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;I)V";
 
-    @Inject(method = biologydictionary$PREPARE, at = @At("HEAD"))
-    private void biologydictionary$beginSilhouetteFog(PictureInPictureRenderState renderState,
-                                                     GuiRenderState guiRenderState,
-                                                     FeatureRenderDispatcher featureRenderDispatcher,
-                                                     int guiScale, CallbackInfo ci) {
-        if (CommonScreen.isOpened()
-                && renderState instanceof GuiEntityRenderState entityState
-                && entityState.renderState().outlineColor != 0) {
-            SilhouetteFogBuffer.beginSilhouette();
+    @Inject(
+            method = biologydictionary$PREPARE,
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;"
+                            + "renderAllFeatures(Lcom/mojang/renderpearl/api/commands/RenderPass;"
+                            + "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher$PreparedFrame;)V",
+                    shift = At.Shift.AFTER))
+    private void biologydictionary$executeGuiEntityOutline(PictureInPictureRenderState renderState,
+                                                           GuiRenderState guiRenderState,
+                                                           FeatureRenderDispatcher featureRenderDispatcher,
+                                                           int guiScale,
+                                                           CallbackInfo ci,
+                                                           @Local PreparedFrame frame,
+                                                           @Local RenderPass renderPass) {
+        if (!CommonScreen.isOpened()
+                || !(renderState instanceof GuiEntityRenderState entityState)
+                || entityState.renderState().outlineColor == 0) {
+            return;
         }
-    }
-
-    @Inject(method = biologydictionary$PREPARE, at = @At("TAIL"))
-    private void biologydictionary$endSilhouetteFog(PictureInPictureRenderState renderState,
-                                                   GuiRenderState guiRenderState,
-                                                   FeatureRenderDispatcher featureRenderDispatcher,
-                                                   int guiScale, CallbackInfo ci) {
-        SilhouetteFogBuffer.endSilhouette();
+        frame.executeOutline(renderPass);
     }
 }

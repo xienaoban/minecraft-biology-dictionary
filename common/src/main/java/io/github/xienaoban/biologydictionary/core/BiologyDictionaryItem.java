@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerData;
@@ -81,7 +82,7 @@ public final class BiologyDictionaryItem {
         }
         ItemStack book = createBook();
         if (!player.addItem(book)) {
-            player.drop(book, false);
+            player.drop(book, false, Prediction.SERVER_ONLY);
         }
     }
 

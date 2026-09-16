@@ -681,7 +681,7 @@
   "net.minecraft.world.entity.boss.wither.WitherBoss"                  : "凋灵",
   "net.minecraft.world.entity.monster.Blaze"                           : "烈焰人",
   "net.minecraft.world.entity.monster.Creeper"                         : "爬行者",
-  "net.minecraft.world.entity.monster.EnderMan"                        : "末影人",
+  "net.minecraft.world.entity.monster.Enderman"                        : "末影人",
   "net.minecraft.world.entity.monster.Endermite"                       : "末影螨",
   "net.minecraft.world.entity.monster.Giant"                           : "巨人",
   "net.minecraft.world.entity.monster.Guardian"                        : "守卫者",

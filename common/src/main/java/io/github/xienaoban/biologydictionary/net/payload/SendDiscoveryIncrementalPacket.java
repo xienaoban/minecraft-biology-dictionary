@@ -19,6 +19,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.component.SwingAnimation;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
 
@@ -76,7 +77,7 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
 
             // Swing if INTERACT
             if (packet.record.source() == DiscoverySources.INTERACT) {
-                player.swing(InteractionHand.MAIN_HAND);
+                player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
             }
 
             // Highlight the discovered entity for 4 seconds

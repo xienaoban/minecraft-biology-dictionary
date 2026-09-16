@@ -12,6 +12,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -276,7 +277,7 @@ public final class SkillCost {
         for (ItemCost item : items) {
             ItemStack stack = item.toStack();
             if (!PlayerUtils.getInventory(player).add(stack.copy())) {
-                player.drop(stack.copy(), false);
+                player.drop(stack.copy(), false, Prediction.SERVER_ONLY);
             }
         }
     }

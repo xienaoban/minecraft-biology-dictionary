@@ -26,6 +26,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.StrictJsonParser;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
@@ -126,10 +127,12 @@ public final class EntitySpawnManager {
             try {
                 Identifier biomeId = biomeEntry.getKey().identifier();
                 Biome biome = biomeEntry.getValue();
-                MobSpawnSettings spawnSettings = biome.getMobSettings();
+                MobSpawnSettings spawnSettings = biome.getAttributes().applyModifier(
+                        EnvironmentAttributes.NATURAL_MOB_SPAWNS,
+                        EnvironmentAttributes.NATURAL_MOB_SPAWNS.defaultValue());
 
                 for (MobCategory category : MobCategory.values()) {
-                    WeightedList<MobSpawnSettings.SpawnerData> spawners = spawnSettings.getMobs(category);
+                    WeightedList<MobSpawnSettings.SpawnerData> spawners = spawnSettings.getMobsToSpawn(category);
                     for (Weighted<MobSpawnSettings.SpawnerData> weighted : spawners.unwrap()) {
                         MobSpawnSettings.SpawnerData spawnerData = weighted.value();
                         biomeSpawnMap.add(spawnerData.type(), biomeId);

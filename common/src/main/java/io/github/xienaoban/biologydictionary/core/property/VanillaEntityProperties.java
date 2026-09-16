@@ -210,7 +210,7 @@ public final class VanillaEntityProperties {
         r(WitherBoss.class, new OfWitherBoss());
         r(Blaze.class, new OfBlaze());
         r(Creeper.class, new OfCreeper());
-        r(EnderMan.class, new OfEnderMan());
+        r(Enderman.class, new OfEnderman());
         r(Endermite.class, new OfEndermite());
         r(Giant.class, new OfGiant());
         r(Guardian.class, new OfGuardian());
@@ -2852,15 +2852,15 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "carriedBlockState": BlockState
      *
-     * @see net.minecraft.world.entity.monster.EnderMan
+     * @see net.minecraft.world.entity.monster.Enderman
      */
-    public static final class OfEnderMan implements Creator {
+    public static final class OfEnderman implements Creator {
 
-        public static CodecProperty<EnderMan, BlockState> createCarriedBlockStateProperty() {
+        public static CodecProperty<Enderman, BlockState> createCarriedBlockStateProperty() {
             return new CodecProperty<>("carriedBlockState", BlockState.class, BlockState.CODEC);
         }
 
-        public static CodecProperty<EnderMan, BlockState> getCarriedBlockStateProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Enderman, BlockState> getCarriedBlockStateProperty(EntityProperties<?> ep) {
             return g(ep, "carriedBlockState");
         }
 

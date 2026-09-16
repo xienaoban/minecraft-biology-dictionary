@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.gui.screen.util;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
@@ -441,7 +441,7 @@ public final class ScreenRenderingContext {
                         (int) (getScreenWidth() / size), (int) (getScreenHeight() / size),
                         mouseX, mouseY, tooltipWidth, tooltipHeight);
         getGuiGraphics().tooltip(font, components, (int) (x / size - 8.0F), (int) (y / size + 16.0F),
-                positioner, Textures.BOOK_TOOLTIP);
+                positioner, Textures.BOOK_TOOLTIP, false);
     }
 
     public void renderEntityBottomed(Entity entity, EntityRenderingCache cache,

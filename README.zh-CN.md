@@ -18,7 +18,7 @@
 ![Fabric](https://img.shields.io/badge/Fabric-A99774?style=flat-square&logo=fabric)
 ![NeoForge](https://img.shields.io/badge/NeoForge-D7742F?style=flat-square&logo=neoforge)
 ![Forge](https://img.shields.io/badge/Forge-667E9F?style=flat-square&logo=neoforge)
-![MC 26.1.2](https://img.shields.io/badge/MC-26.1.2%20%7C%201.21.11%20%7C%201.21.1%20%7C%201.20.1-59A922?style=flat-square&logo=minecraft)
+![MC 26.3 | 26.2 | 26.1.2 | 1.21.11 | 1.21.1 | 1.20.1](https://img.shields.io/badge/MC-26.3%20%7C%2026.2%20%7C%2026.1.2%20%7C%201.21.11%20%7C%201.21.1%20%7C%201.20.1-59A922?style=flat-square&logo=minecraft)
 
 </div>
 

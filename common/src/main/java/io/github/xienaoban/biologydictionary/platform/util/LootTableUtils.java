@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
-import com.mojang.datafixers.util.Either;
 import io.github.xienaoban.biologydictionary.mixin.loot.*;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -19,14 +19,15 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.*;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.SequenceFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.AllOfCondition;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithEnchantedBonusCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ints.UniformGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,39 +57,70 @@ public final class LootTableUtils {
         return ((LootItemIMixin) lootItem).biologydictionary$getItem();
     }
 
-    public static int getWeight(LootPoolSingletonContainer singleton) {
-        return ((LootPoolSingletonContainerIMixin) singleton).biologydictionary$getWeight();
+    public static int getWeight(UniformContainerBase singleton) {
+        return ((UniformContainerBaseIMixin) singleton).biologydictionary$getWeight();
     }
 
-    public static List<LootItemFunction> getFunctions(LootPoolSingletonContainer singleton) {
-        return ((LootPoolSingletonContainerIMixin) singleton).biologydictionary$getFunctions();
+    public static List<LootItemFunction> getFunctions(UniformContainerBase singleton) {
+        Optional<Holder<LootItemFunction>> modifier =
+                ((LootPoolEntryContainerIMixin) singleton).biologydictionary$getModifier();
+        if (modifier.isEmpty()) {
+            return List.of();
+        }
+
+        LootItemFunction function = modifier.get().value();
+        if (function instanceof SequenceFunction sequence) {
+            HolderSet<LootItemFunction> functions = ((SequenceFunctionIMixin) sequence).biologydictionary$getFunctions();
+            List<LootItemFunction> result = new ArrayList<>(functions.size());
+            for (Holder<LootItemFunction> holder : functions) {
+                result.add(holder.value());
+            }
+            return result;
+        }
+        return List.of(function);
     }
 
-    public static TagKey<Item> getTag(TagEntry tagEntry) {
+    public static HolderSet<Item> getTag(TagEntry tagEntry) {
         return ((TagEntryIMixin) tagEntry).biologydictionary$getTag();
     }
 
-    public static Either<ResourceKey<LootTable>, LootTable> getContents(NestedLootTable nestedLoot) {
-        return ((NestedLootTableIMixin) nestedLoot).biologydictionary$getContents();
+    public static HolderSet<LootTable> getContents(NestedLootTable nestedLoot) {
+        return ((NestedLootTableIMixin) nestedLoot).biologydictionary$getValue();
     }
 
     public static List<LootPoolEntryContainer> getChildren(CompositeEntryBase composite) {
         return ((CompositeEntryBaseIMixin) composite).biologydictionary$getChildren();
     }
 
+    private static List<LootItemCondition> conditionValues(Optional<Holder<LootItemCondition>> condition) {
+        return condition.map(holder -> flattenCondition(holder.value())).orElseGet(List::of);
+    }
+
+    private static List<LootItemCondition> flattenCondition(LootItemCondition condition) {
+        if (condition instanceof AllOfCondition) {
+            HolderSet<LootItemCondition> terms = ((CompositeLootItemConditionIMixin) condition).biologydictionary$getTerms();
+            List<LootItemCondition> result = new ArrayList<>(terms.size());
+            for (Holder<LootItemCondition> term : terms) {
+                result.addAll(flattenCondition(term.value()));
+            }
+            return result;
+        }
+        return List.of(condition);
+    }
+
     public static List<LootItemCondition> getConditions(LootPool pool) {
-        return ((LootPoolIMixin) pool).biologydictionary$getConditions();
+        return conditionValues(((LootPoolIMixin) pool).biologydictionary$getCondition());
     }
 
     public static List<LootItemCondition> getConditions(LootPoolEntryContainer entryContainer) {
-        return ((LootPoolEntryContainerIMixin) entryContainer).biologydictionary$getConditions();
+        return conditionValues(((LootPoolEntryContainerIMixin) entryContainer).biologydictionary$getCondition());
     }
 
     public static Identifier getConditionType(LootItemCondition condition) {
         return BuiltInRegistries.LOOT_CONDITION_TYPE.getKey(condition.codec());
     }
 
-    public static NumberProvider getCountValue(SetItemCountFunction function) {
+    public static Holder<ContextIntProvider> getCountValue(SetItemCountFunction function) {
         return ((SetItemCountFunctionIMixin) function).biologydictionary$getValue();
     }
 
@@ -120,7 +152,7 @@ public final class LootTableUtils {
             for (LootPoolEntryContainer entryContainer : entryContainers) {
                 // Calculate base chance by weight
                 float baseChance = poolChance;
-                if (entryContainer instanceof LootPoolSingletonContainer singleton) {
+                if (entryContainer instanceof UniformContainerBase singleton) {
                     int weight = getWeight(singleton);
                     baseChance = mulChance(baseChance, totalWeight > 0 ? (weight / totalWeight) : -1F);
                 }
@@ -140,7 +172,7 @@ public final class LootTableUtils {
     private static float calculatePoolWeight(LootPool pool) {
         float totalWeight = 0f;
         for (LootPoolEntryContainer entry : getEntries(pool)) {
-            if (entry instanceof LootPoolSingletonContainer singleton) {
+            if (entry instanceof UniformContainerBase singleton) {
                 totalWeight += getWeight(singleton);
             }
         }
@@ -167,7 +199,7 @@ public final class LootTableUtils {
         float conditionMultiplier = extractConditionChance(getConditions(entry));
         float dropChance = mulChance(baseChance, conditionMultiplier);
 
-        if (entry instanceof LootPoolSingletonContainer singleton) {
+        if (entry instanceof UniformContainerBase singleton) {
             int[] countRange = extractCountRange(singleton);
             int minCount = countRange[0];
             int maxCount = countRange[1];
@@ -198,7 +230,7 @@ public final class LootTableUtils {
     private static float extractConditionChance(List<LootItemCondition> conditions) {
         for (LootItemCondition condition : conditions) {
             if (condition instanceof LootItemRandomChanceCondition c) {
-                if (c.chance() instanceof ConstantValue(float value)) {
+                if (c.chance().value() instanceof net.minecraft.world.level.storage.loot.providers.number.floats.ConstantValue(float value)) {
                     return value;
                 }
                 return -1F;
@@ -225,16 +257,17 @@ public final class LootTableUtils {
      */
     private static List<LootEntry> parseTagEntry(TagEntry tagEntry, int minCount, int maxCount, float dropChance,
                                                  List<Identifier> conditions) {
-        TagKey<Item> tag = getTag(tagEntry);
+        HolderSet<Item> tag = getTag(tagEntry);
 
         List<LootEntry> entries = new ArrayList<>();
+        if (tag.size() == 0) {
+            return entries;
+        }
 
-        BuiltInRegistries.ITEM.get(tag).ifPresent(tagSet -> {
-            float chance = dropChance / tagSet.size();
-            for (Holder<Item> holder : tagSet) {
-                entries.add(new LootEntry(holder.value(), minCount, maxCount, chance, conditions));
-            }
-        });
+        float chance = dropChance / tag.size();
+        for (Holder<Item> holder : tag) {
+            entries.add(new LootEntry(holder.value(), minCount, maxCount, chance, conditions));
+        }
 
         return entries;
     }
@@ -245,30 +278,32 @@ public final class LootTableUtils {
      */
     private static List<LootEntry> parseNestedLootTable(NestedLootTable nestedLoot, float dropChance,
                                                         List<Identifier> conditions, int depth) {
-        Either<ResourceKey<LootTable>, LootTable> contents = getContents(nestedLoot);
+        HolderSet<LootTable> contents = getContents(nestedLoot);
+        List<LootEntry> result = new ArrayList<>();
 
-        if (contents.right().isPresent()) {
-            // Inline loot table - process recursively with increased depth
-            LootTable inlineTable = contents.right().get();
+        for (Holder<LootTable> holder : contents) {
+            LootTable inlineTable = holder.unwrap().right().orElse(null);
+            if (inlineTable == null) {
+                // Reference to another loot table; keep the existing behavior of skipping it.
+                continue;
+            }
 
-            // Create a wrapper function to apply inherited conditions to all entries from the nested table
-            return parseLootEntries(inlineTable, depth + 1).stream()
-                .map(entry -> {
-                    // Combine inherited conditions with nested entry conditions
-                    List<Identifier> combinedConditions = new ArrayList<>(conditions);
-                    combinedConditions.addAll(entry.conditions());
-                    return new LootEntry(
-                            entry.item(),
-                            entry.minCount(),
-                            entry.maxCount(),
-                            mulChance(entry.dropChance(), dropChance),
-                            combinedConditions
-                    );
-                })
-                .toList();
+            result.addAll(parseLootEntries(inlineTable, depth + 1).stream()
+                    .map(entry -> {
+                        List<Identifier> combinedConditions = new ArrayList<>(conditions);
+                        combinedConditions.addAll(entry.conditions());
+                        return new LootEntry(
+                                entry.item(),
+                                entry.minCount(),
+                                entry.maxCount(),
+                                mulChance(entry.dropChance(), dropChance),
+                                combinedConditions
+                        );
+                    })
+                    .toList());
         }
 
-        return List.of();
+        return result;
     }
 
     /**
@@ -287,17 +322,17 @@ public final class LootTableUtils {
     }
 
     /**
-     * Extract min and max count from a LootPoolSingletonContainer's functions.
+     * Extract min and max count from a UniformContainerBase's functions.
      * Returns int array [minCount, maxCount].
      */
-    private static int[] extractCountRange(LootPoolSingletonContainer singleton) {
+    private static int[] extractCountRange(UniformContainerBase singleton) {
         int minCount = 1;
         int maxCount = 1;
 
         List<LootItemFunction> functions = getFunctions(singleton);
         for (LootItemFunction function : functions) {
             if (function instanceof SetItemCountFunction setCount) {
-                NumberProvider value = getCountValue(setCount);
+                Holder<ContextIntProvider> value = getCountValue(setCount);
                 int[] range = extractRangeFromNumberProvider(value);
                 if (range != null) {
                     minCount = range[0];
@@ -311,16 +346,16 @@ public final class LootTableUtils {
     }
 
     /**
-     * Extract min and max from a NumberProvider.
+     * Extract min and max from a number provider.
      * Returns int array [min, max] or null if cannot be determined.
      */
-    private static int[] extractRangeFromNumberProvider(NumberProvider provider) {
-        if (provider instanceof ConstantValue(float value1)) {
-            int value = (int) value1;
-            return new int[]{value, value};
-        } else if (provider instanceof UniformGenerator(NumberProvider min, NumberProvider max)) {
-            int[] minRange = extractRangeFromNumberProvider(min);
-            int[] maxRange = extractRangeFromNumberProvider(max);
+    private static int[] extractRangeFromNumberProvider(Holder<ContextIntProvider> provider) {
+        ContextIntProvider value = provider.value();
+        if (value instanceof net.minecraft.world.level.storage.loot.providers.number.ints.ConstantValue(int constant)) {
+            return new int[]{constant, constant};
+        } else if (value instanceof UniformGenerator uniform) {
+            int[] minRange = extractRangeFromNumberProvider(uniform.min());
+            int[] maxRange = extractRangeFromNumberProvider(uniform.max());
             if (minRange != null && maxRange != null) {
                 return new int[]{minRange[0], maxRange[1]};
             }

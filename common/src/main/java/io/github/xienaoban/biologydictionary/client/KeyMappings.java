@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.client.KeyMapping;
-import org.lwjgl.glfw.GLFW;
 
 @ClientOnly
 public final class KeyMappings {
@@ -17,22 +16,22 @@ public final class KeyMappings {
     @PlatformEntry
     public static final KeyMapping OPEN_HANDBOOK = new KeyMapping(
             Lang.KEY_OPEN_HANDBOOK,
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_GRAVE_ACCENT,
+            InputConstants.Type.KEYBOARD,
+            InputConstants.KEY_GRAVE,
             CATEGORY,
             0);
 
     public static final KeyMapping STEAL_INVENTORY = new KeyMapping(
             Lang.KEY_STEAL_INVENTORY,
-            InputConstants.Type.KEYSYM,
+            InputConstants.Type.KEYBOARD,
             InputConstants.UNKNOWN.getValue(),
             CATEGORY,
             1);
 
     public static final KeyMapping DEBUG = new KeyMapping(
             Lang.KEY_DEBUG,
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_RIGHT_ALT,
+            InputConstants.Type.KEYBOARD,
+            InputConstants.KEY_RALT,
             CATEGORY,
             2);
 
