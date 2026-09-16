@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -17,7 +18,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerData;
@@ -81,9 +81,7 @@ public final class BiologyDictionaryItem {
             return;
         }
         ItemStack book = createBook();
-        if (!player.addItem(book)) {
-            player.drop(book, false, Prediction.SERVER_ONLY);
-        }
+        PlayerUtils.giveOrDrop(player, book);
     }
 
     /**
