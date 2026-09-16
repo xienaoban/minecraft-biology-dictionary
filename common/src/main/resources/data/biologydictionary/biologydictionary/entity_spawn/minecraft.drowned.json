@@ -1,0 +1,8 @@
+{
+  "structures": {
+    "add": [
+      "minecraft:ocean_ruin_cold",
+      "minecraft:ocean_ruin_warm"
+    ]
+  }
+}

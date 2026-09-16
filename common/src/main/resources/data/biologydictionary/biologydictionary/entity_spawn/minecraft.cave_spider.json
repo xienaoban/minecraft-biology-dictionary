@@ -1,5 +1,8 @@
 {
   "structures": {
-    "add": ["minecraft:mineshaft"]
+    "add": [
+      "minecraft:mineshaft",
+      "minecraft:mineshaft_mesa"
+    ]
   }
 }

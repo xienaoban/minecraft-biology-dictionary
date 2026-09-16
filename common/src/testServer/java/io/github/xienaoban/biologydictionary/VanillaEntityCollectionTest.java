@@ -9,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -89,7 +90,14 @@ public class VanillaEntityCollectionTest {
                 LOGGER.error("Entity \"{}\" is not assigned an order.", entry.getStringId());
             }
         }
-        if (success) { helper.succeed(); }
+        if (success) {
+            Integer mannequinOrder = EntityManager.getMyPreferredEntityOrder(EntityTypes.MANNEQUIN);
+            Integer armorStandOrder = EntityManager.getMyPreferredEntityOrder(EntityTypes.ARMOR_STAND);
+            helper.assertTrue(mannequinOrder != null && armorStandOrder != null
+                            && mannequinOrder < armorStandOrder,
+                    "Mannequin should be ordered before ArmorStand");
+            helper.succeed();
+        }
         else { helper.fail(TextUtils.literal("Some entities have not been assigned an order.")); }
     }
 

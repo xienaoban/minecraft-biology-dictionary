@@ -11,4 +11,9 @@ public class VanillaEntityPropertyTestImpl {
     public void testAllEntityProperties(GameTestHelper helper) {
         test.testAllEntityProperties(helper);
     }
+
+    @GameTest
+    public void testChangedCodecProperties(GameTestHelper helper) {
+        test.testChangedCodecProperties(helper);
+    }
 }

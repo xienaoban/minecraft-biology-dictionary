@@ -15,7 +15,9 @@ import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.parrot.Parrot;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -103,6 +105,11 @@ public final class AnimalFoodWidget extends EntityPropertyStandardWidget<Animal>
 
     private boolean isFoodSafely(ItemStack itemStack) {
         try {
+            // 26.3-specific: Parrot#isFood is always false, so use the parrot taming food tag instead.
+            // Revisit in 26.4; this workaround may no longer be needed.
+            if (e() instanceof Parrot) {
+                return itemStack.is(ItemTags.PARROT_FOOD);
+            }
             return e().isFood(itemStack);
         } catch (RuntimeException exception) {
             LOGGER.warn("Failed to check whether {} is food for {}. Skipped.",

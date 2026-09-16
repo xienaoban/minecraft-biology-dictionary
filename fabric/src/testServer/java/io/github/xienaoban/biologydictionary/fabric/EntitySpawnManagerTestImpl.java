@@ -83,6 +83,11 @@ public class EntitySpawnManagerTestImpl {
     }
 
     @GameTest
+    public void testSpecialSpawnerOverrides(GameTestHelper helper) {
+        test.testSpecialSpawnerOverrides(helper);
+    }
+
+    @GameTest
     public void testAllBiomeIdentifiersExist(GameTestHelper helper) {
         test.testAllBiomeIdentifiersExist(helper);
     }

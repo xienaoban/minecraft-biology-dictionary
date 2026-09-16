@@ -1,0 +1,7 @@
+{
+  "biomes": {
+    "add": [
+      "minecraft:desert"
+    ]
+  }
+}

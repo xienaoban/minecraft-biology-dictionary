@@ -195,6 +195,57 @@ public class EntitySpawnManagerTest {
         helper.succeed();
     }
 
+    public void testSpecialSpawnerOverrides(GameTestHelper helper) {
+        EntitySpawnManager manager = getManager(helper);
+        if (manager == null) { return; }
+
+        helper.assertTrue(manager.getSpawnBiomes(EntityTypes.PHANTOM).contains(id("plains")),
+                "Phantom should be associated with plains");
+        helper.assertTrue(manager.getSpawnBiomes(EntityTypes.PILLAGER).contains(id("plains")),
+                "Pillager patrols should be associated with plains");
+        helper.assertTrue(!manager.getSpawnBiomes(EntityTypes.PILLAGER).contains(id("mushroom_fields")),
+                "Pillager patrols should not be associated with mushroom fields");
+        helper.assertTrue(manager.getSpawnBiomes(EntityTypes.WANDERING_TRADER).contains(id("plains")),
+                "Wandering trader should be associated with plains");
+        helper.assertTrue(manager.getSpawnBiomes(EntityTypes.TRADER_LLAMA).contains(id("plains")),
+                "Trader llama should be associated with plains");
+        helper.assertTrue(manager.getSpawnBiomes(EntityTypes.CAMEL_HUSK).contains(id("desert")),
+                "Camel husk should be associated with desert");
+        helper.assertTrue(manager.getSpawnBiomes(EntityTypes.ZOMBIE_NAUTILUS).contains(id("ocean")),
+                "Zombie nautilus should be associated with ocean");
+
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.DROWNED).contains(id("ocean_ruin_cold")),
+                "Drowned should be associated with cold ocean ruins");
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.DROWNED).contains(id("ocean_ruin_warm")),
+                "Drowned should be associated with warm ocean ruins");
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.EVOKER).contains(id("mansion")),
+                "Evoker should be associated with woodland mansions");
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.VINDICATOR).contains(id("mansion")),
+                "Vindicator should be associated with woodland mansions");
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.ALLAY).contains(id("mansion")),
+                "Allay should be associated with woodland mansions");
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.WITCH).contains(id("swamp_hut")),
+                "Witch should be associated with swamp huts");
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.RAVAGER).contains(id("village_plains")),
+                "Ravager should be associated with village raids");
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.ZOMBIE).contains(id("village_plains")),
+                "Zombie should be associated with village sieges");
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.SILVERFISH).contains(id("stronghold")),
+                "Silverfish should be associated with strongholds");
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.CAVE_SPIDER).contains(id("mineshaft")),
+                "Cave spider should be associated with mineshafts");
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.CAVE_SPIDER).contains(id("mineshaft_mesa")),
+                "Cave spider should be associated with mesa mineshafts");
+        helper.assertTrue(manager.getSpawnStructures(EntityTypes.PILLAGER).contains(id("village_plains")),
+                "Pillager should be associated with village raids");
+
+        helper.succeed();
+    }
+
+    private static Identifier id(String path) {
+        return Identifier.withDefaultNamespace(path);
+    }
+
     // ---- Forward/Reverse consistency tests ----
 
     public void testAllBiomeIdentifiersExist(GameTestHelper helper) {
