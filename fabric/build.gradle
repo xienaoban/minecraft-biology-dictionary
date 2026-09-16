@@ -156,3 +156,15 @@ publishing {
         // retrieving dependencies.
     }
 }
+
+tasks.matching { it.name == "runTestServer" }.configureEach {
+    // Test-only NBT collectors read Minecraft's Java sources directly instead of
+    // relying on a decompiler. Loom's genSources supplies that jar in loom-cache.
+    dependsOn("genSources")
+}
+
+tasks.matching { it.name in ["compileJava", "compileTestServerJava"] }.configureEach {
+    // GenerateSourcesTask writes a line-numbered classes jar next to the sources
+    // jar, so keep it before compilation when both tasks are in the graph.
+    mustRunAfter("genSources")
+}

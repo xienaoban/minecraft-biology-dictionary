@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.mixin.entity.ArmadilloStateIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,7 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.gossip.GossipContainer;
 import net.minecraft.world.entity.ambient.AmbientCreature;
@@ -74,8 +76,10 @@ import net.minecraft.world.entity.decoration.Mannequin;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.monster.breeze.Breeze;
 import net.minecraft.world.entity.monster.creaking.Creaking;
+import net.minecraft.world.entity.monster.cubemob.AbstractCubeMob;
 import net.minecraft.world.entity.monster.cubemob.MagmaCube;
 import net.minecraft.world.entity.monster.cubemob.Slime;
+import net.minecraft.world.entity.monster.cubemob.SulfurCube;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.illager.*;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
@@ -90,6 +94,8 @@ import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerData;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
+import net.minecraft.world.entity.player.Abilities;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.component.CustomData;
@@ -141,6 +147,7 @@ public final class VanillaEntityProperties {
         r(LivingEntity.class, new OfLivingEntity());
         r(Avatar.class, new OfAvatar());
         r(Mannequin.class, new OfMannequin());
+        r(Player.class, new OfPlayer());
         r(Mob.class, new OfMob());
         r(PathfinderMob.class, new OfPathfinderMob());
         r(AgeableMob.class, new OfAgeableMob());
@@ -189,6 +196,10 @@ public final class VanillaEntityProperties {
         r(Turtle.class, new OfTurtle());
         r(Strider.class, new OfStrider());
         r(Hoglin.class, new OfHoglin());
+        r(AbstractCubeMob.class, new OfAbstractCubeMob());
+        r(MagmaCube.class, new OfMagmaCube());
+        r(Slime.class, new OfSlime());
+        r(SulfurCube.class, new OfSulfurCube());
         r(AbstractVillager.class, new OfAbstractVillager());
         r(Villager.class, new OfVillager());
         r(WanderingTrader.class, new OfWanderingTrader());
@@ -252,8 +263,6 @@ public final class VanillaEntityProperties {
         r(EnderDragon.class, new OfEnderDragon());
         r(Ghast.class, new OfGhast());
         r(Phantom.class, new OfPhantom());
-        r(Slime.class, new OfSlime());
-        r(MagmaCube.class, new OfMagmaCube());
         r(ArmorStand.class, new OfArmorStand());
     }
 
@@ -275,11 +284,13 @@ public final class VanillaEntityProperties {
      *  - "Rotation": Vec2
      *  - "Silent": boolean
      *  - "Tags": List<String>
+     *  - "Team": String
      *  - "TicksFrozen": int
      *  - "UUID": UUID
      *  - "data": CustomData
      *  - "fall_distance": double
      *  - "id": String
+     *  - "invulnerable_time": int
      *
      * @see net.minecraft.world.entity.Entity
      */
@@ -405,6 +416,14 @@ public final class VanillaEntityProperties {
             return g(ep, "Tags");
         }
 
+        public static StringProperty<Entity> createTeamProperty() {
+            return new StringProperty<>("Team");
+        }
+
+        public static StringProperty<Entity> getTeamProperty(EntityProperties<?> ep) {
+            return g(ep, "Team");
+        }
+
         public static IntProperty<Entity> createTicksFrozenProperty() {
             return new IntProperty<>("TicksFrozen");
         }
@@ -445,30 +464,17 @@ public final class VanillaEntityProperties {
             return g(ep, "id");
         }
 
+        public static IntProperty<Entity> createInvulnerableTimeProperty() {
+            return new IntProperty<>("invulnerable_time");
+        }
+
+        public static IntProperty<Entity> getInvulnerableTimeProperty(EntityProperties<?> ep) {
+            return g(ep, "invulnerable_time");
+        }
+
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createAirProperty(),
-                    createCustomNameProperty(),
-                    createCustomNameVisibleProperty(),
-                    createFireProperty(),
-                    createGlowingProperty(),
-                    createHasVisualFireProperty(),
-                    createInvulnerableProperty(),
-                    createMotionProperty(),
-                    createNoGravityProperty(),
-                    createOnGroundProperty(),
-                    createPortalCooldownProperty(),
-                    createPosProperty(),
-                    createRotationProperty(),
-                    createSilentProperty(),
-                    createTagsProperty(),
-                    createTicksFrozenProperty(),
-                    createUuidProperty(),
-                    createDataProperty(),
-                    createFallDistanceProperty(),
-                    createIdProperty()
-            );
+            p(map, createAirProperty(), createCustomNameProperty(), createCustomNameVisibleProperty(), createFireProperty(), createGlowingProperty(), createHasVisualFireProperty(), createInvulnerableProperty(), createMotionProperty(), createNoGravityProperty(), createOnGroundProperty(), createPortalCooldownProperty(), createPosProperty(), createRotationProperty(), createSilentProperty(), createTagsProperty(), createTeamProperty(), createTicksFrozenProperty(), createUuidProperty(), createDataProperty(), createFallDistanceProperty(), createIdProperty(), createInvulnerableTimeProperty());
         }
     }
 
@@ -476,12 +482,11 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *  - "AbsorptionAmount": float
+     *  - "Brain": Brain.Packed
      *  - "DeathTime": short
      *  - "FallFlying": boolean
      *  - "Health": float
-     *  - "HurtByTimestamp": int
      *  - "HurtTime": short
-     *  - "Team": String
      *  - "active_effects": List<MobEffectInstance>
      *  - "attributes": List<AttributeInstance.Packed>
      *  - "current_explosion_impact_pos": Vec3
@@ -489,12 +494,11 @@ public final class VanillaEntityProperties {
      *  - "equipment": EntityEquipment
      *  - "last_hurt_by_player_memory_time": int
      *  - "locator_bar_icon": Waypoint.Icon
+     *  - "sleeping_pos": BlockPos
      *  - "ticks_since_last_hurt_by_mob": int
      * [Attention] Some properties cannot be recognized yet:
-     *  - "Brain": [null]
      *  - "last_hurt_by_mob": [null, EntityReference<?>]
      *  - "last_hurt_by_player": [null, EntityReference<?>]
-     *  - "sleeping_pos": [null]
      *
      * @see net.minecraft.world.entity.LivingEntity
      */
@@ -508,11 +512,11 @@ public final class VanillaEntityProperties {
             return g(ep, "AbsorptionAmount");
         }
 
-        public static UnsupportedProperty<LivingEntity> createBrainProperty() {
-            return new UnsupportedProperty<>("Brain");
+        public static CodecProperty<LivingEntity, Brain.Packed> createBrainProperty() {
+            return new CodecProperty<>("Brain", Brain.Packed.class, Brain.Packed.CODEC);
         }
 
-        public static UnsupportedProperty<LivingEntity> getBrainProperty(EntityProperties<?> ep) {
+        public static CodecProperty<LivingEntity, Brain.Packed> getBrainProperty(EntityProperties<?> ep) {
             return g(ep, "Brain");
         }
 
@@ -540,14 +544,6 @@ public final class VanillaEntityProperties {
             return g(ep, "Health");
         }
 
-        public static IntProperty<LivingEntity> createHurtByTimestampProperty() {
-            return new IntProperty<>("HurtByTimestamp");
-        }
-
-        public static IntProperty<LivingEntity> getHurtByTimestampProperty(EntityProperties<?> ep) {
-            return g(ep, "HurtByTimestamp");
-        }
-
         public static ShortProperty<LivingEntity> createHurtTimeProperty() {
             return new ShortProperty<>("HurtTime");
         }
@@ -556,20 +552,11 @@ public final class VanillaEntityProperties {
             return g(ep, "HurtTime");
         }
 
-        public static StringProperty<LivingEntity> createTeamProperty() {
-            return new StringProperty<>("Team");
-        }
-
-        public static StringProperty<LivingEntity> getTeamProperty(EntityProperties<?> ep) {
-            return g(ep, "Team");
-        }
-
         public static CodecProperty<LivingEntity, List<MobEffectInstance>> createActiveEffectsProperty() {
             return new CodecProperty<>("active_effects", List.class, MobEffectInstance.CODEC.listOf());
         }
 
-        public static CodecProperty<LivingEntity, List<MobEffectInstance>>
-                getActiveEffectsProperty(EntityProperties<?> ep) {
+        public static CodecProperty<LivingEntity, List<MobEffectInstance>> getActiveEffectsProperty(EntityProperties<?> ep) {
             return g(ep, "active_effects");
         }
 
@@ -577,8 +564,7 @@ public final class VanillaEntityProperties {
             return new CodecProperty<>("attributes", List.class, AttributeInstance.Packed.LIST_CODEC);
         }
 
-        public static CodecProperty<LivingEntity, List<AttributeInstance.Packed>>
-                getAttributesProperty(EntityProperties<?> ep) {
+        public static CodecProperty<LivingEntity, List<AttributeInstance.Packed>> getAttributesProperty(EntityProperties<?> ep) {
             return g(ep, "attributes");
         }
 
@@ -638,11 +624,11 @@ public final class VanillaEntityProperties {
             return g(ep, "locator_bar_icon");
         }
 
-        public static UnsupportedProperty<LivingEntity> createSleepingPosProperty() {
-            return new UnsupportedProperty<>("sleeping_pos");
+        public static CodecProperty<LivingEntity, BlockPos> createSleepingPosProperty() {
+            return new CodecProperty<>("sleeping_pos", BlockPos.class, BlockPos.CODEC);
         }
 
-        public static UnsupportedProperty<LivingEntity> getSleepingPosProperty(EntityProperties<?> ep) {
+        public static CodecProperty<LivingEntity, BlockPos> getSleepingPosProperty(EntityProperties<?> ep) {
             return g(ep, "sleeping_pos");
         }
 
@@ -656,27 +642,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createAbsorptionAmountProperty(),
-                    createBrainProperty(),
-                    createDeathTimeProperty(),
-                    createFallFlyingProperty(),
-                    createHealthProperty(),
-                    createHurtByTimestampProperty(),
-                    createHurtTimeProperty(),
-                    createTeamProperty(),
-                    createActiveEffectsProperty(),
-                    createAttributesProperty(),
-                    createCurrentExplosionImpactPosProperty(),
-                    createCurrentImpulseContextResetGraceTimeProperty(),
-                    createEquipmentProperty(),
-                    createLastHurtByMobProperty(),
-                    createLastHurtByPlayerProperty(),
-                    createLastHurtByPlayerMemoryTimeProperty(),
-                    createLocatorBarIconProperty(),
-                    createSleepingPosProperty(),
-                    createTicksSinceLastHurtByMobProperty()
-            );
+            p(map, createAbsorptionAmountProperty(), createBrainProperty(), createDeathTimeProperty(), createFallFlyingProperty(), createHealthProperty(), createHurtTimeProperty(), createActiveEffectsProperty(), createAttributesProperty(), createCurrentExplosionImpactPosProperty(), createCurrentImpulseContextResetGraceTimeProperty(), createEquipmentProperty(), createLastHurtByMobProperty(), createLastHurtByPlayerProperty(), createLastHurtByPlayerMemoryTimeProperty(), createLocatorBarIconProperty(), createSleepingPosProperty(), createTicksSinceLastHurtByMobProperty());
         }
     }
 
@@ -698,13 +664,12 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *  - "description": Component
+     *  - "hidden_layers": Byte
      *  - "hide_description": boolean
      *  - "immovable": boolean
+     *  - "main_hand": HumanoidArm
+     *  - "pose": Pose
      *  - "profile": ResolvableProfile
-     * [Attention] Some properties cannot be recognized yet:
-     *  - "hidden_layers": [null]
-     *  - "main_hand": [null]
-     *  - "pose": [null]
      *
      * @see net.minecraft.world.entity.decoration.Mannequin
      */
@@ -718,11 +683,11 @@ public final class VanillaEntityProperties {
             return g(ep, "description");
         }
 
-        public static UnsupportedProperty<Mannequin> createHiddenLayersProperty() {
-            return new UnsupportedProperty<>("hidden_layers");
+        public static CodecProperty<Mannequin, Byte> createHiddenLayersProperty() {
+            return new CodecProperty<>("hidden_layers", Byte.class, LAYERS_CODEC);
         }
 
-        public static UnsupportedProperty<Mannequin> getHiddenLayersProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Mannequin, Byte> getHiddenLayersProperty(EntityProperties<?> ep) {
             return g(ep, "hidden_layers");
         }
 
@@ -742,19 +707,19 @@ public final class VanillaEntityProperties {
             return g(ep, "immovable");
         }
 
-        public static UnsupportedProperty<Mannequin> createMainHandProperty() {
-            return new UnsupportedProperty<>("main_hand");
+        public static CodecProperty<Mannequin, HumanoidArm> createMainHandProperty() {
+            return new CodecProperty<>("main_hand", HumanoidArm.class, HumanoidArm.CODEC);
         }
 
-        public static UnsupportedProperty<Mannequin> getMainHandProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Mannequin, HumanoidArm> getMainHandProperty(EntityProperties<?> ep) {
             return g(ep, "main_hand");
         }
 
-        public static UnsupportedProperty<Mannequin> createPoseProperty() {
-            return new UnsupportedProperty<>("pose");
+        public static CodecProperty<Mannequin, Pose> createPoseProperty() {
+            return new CodecProperty<>("pose", Pose.class, POSE_CODEC);
         }
 
-        public static UnsupportedProperty<Mannequin> getPoseProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Mannequin, Pose> getPoseProperty(EntityProperties<?> ep) {
             return g(ep, "pose");
         }
 
@@ -768,15 +733,102 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createDescriptionProperty(),
-                    createHiddenLayersProperty(),
-                    createHideDescriptionProperty(),
-                    createImmovableProperty(),
-                    createMainHandProperty(),
-                    createPoseProperty(),
-                    createProfileProperty()
-            );
+            p(map, createDescriptionProperty(), createHiddenLayersProperty(), createHideDescriptionProperty(), createImmovableProperty(), createMainHandProperty(), createPoseProperty(), createProfileProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "LastDeathLocation": GlobalPos
+     *  - "Score": int
+     *  - "SelectedItemSlot": int
+     *  - "SleepTimer": short
+     *  - "XpLevel": int
+     *  - "XpP": float
+     *  - "XpSeed": int
+     *  - "XpTotal": int
+     *  - "abilities": Abilities.Packed
+     *
+     * @see net.minecraft.world.entity.player.Player
+     */
+    public static final class OfPlayer implements Creator {
+
+        public static CodecProperty<Player, GlobalPos> createLastDeathLocationProperty() {
+            return new CodecProperty<>("LastDeathLocation", GlobalPos.class, GlobalPos.CODEC);
+        }
+
+        public static CodecProperty<Player, GlobalPos> getLastDeathLocationProperty(EntityProperties<?> ep) {
+            return g(ep, "LastDeathLocation");
+        }
+
+        public static IntProperty<Player> createScoreProperty() {
+            return new IntProperty<>("Score");
+        }
+
+        public static IntProperty<Player> getScoreProperty(EntityProperties<?> ep) {
+            return g(ep, "Score");
+        }
+
+        public static IntProperty<Player> createSelectedItemSlotProperty() {
+            return new IntProperty<>("SelectedItemSlot");
+        }
+
+        public static IntProperty<Player> getSelectedItemSlotProperty(EntityProperties<?> ep) {
+            return g(ep, "SelectedItemSlot");
+        }
+
+        public static ShortProperty<Player> createSleepTimerProperty() {
+            return new ShortProperty<>("SleepTimer");
+        }
+
+        public static ShortProperty<Player> getSleepTimerProperty(EntityProperties<?> ep) {
+            return g(ep, "SleepTimer");
+        }
+
+        public static IntProperty<Player> createXpLevelProperty() {
+            return new IntProperty<>("XpLevel");
+        }
+
+        public static IntProperty<Player> getXpLevelProperty(EntityProperties<?> ep) {
+            return g(ep, "XpLevel");
+        }
+
+        public static FloatProperty<Player> createXpPProperty() {
+            return new FloatProperty<>("XpP");
+        }
+
+        public static FloatProperty<Player> getXpPProperty(EntityProperties<?> ep) {
+            return g(ep, "XpP");
+        }
+
+        public static IntProperty<Player> createXpSeedProperty() {
+            return new IntProperty<>("XpSeed");
+        }
+
+        public static IntProperty<Player> getXpSeedProperty(EntityProperties<?> ep) {
+            return g(ep, "XpSeed");
+        }
+
+        public static IntProperty<Player> createXpTotalProperty() {
+            return new IntProperty<>("XpTotal");
+        }
+
+        public static IntProperty<Player> getXpTotalProperty(EntityProperties<?> ep) {
+            return g(ep, "XpTotal");
+        }
+
+        public static CodecProperty<Player, Abilities.Packed> createAbilitiesProperty() {
+            return new CodecProperty<>("abilities", Abilities.Packed.class, Abilities.Packed.CODEC);
+        }
+
+        public static CodecProperty<Player, Abilities.Packed> getAbilitiesProperty(EntityProperties<?> ep) {
+            return g(ep, "abilities");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createLastDeathLocationProperty(), createScoreProperty(), createSelectedItemSlotProperty(), createSleepTimerProperty(), createXpLevelProperty(), createXpPProperty(), createXpSeedProperty(), createXpTotalProperty(), createAbilitiesProperty());
         }
     }
 
@@ -871,17 +923,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createCanPickUpLootProperty(),
-                    createDeathLootTableProperty(),
-                    createDeathLootTableSeedProperty(),
-                    createLeftHandedProperty(),
-                    createNoAiProperty(),
-                    createPersistenceRequiredProperty(),
-                    createDropChancesProperty(),
-                    createHomePosProperty(),
-                    createHomeRadiusProperty()
-            );
+            p(map, createCanPickUpLootProperty(), createDeathLootTableProperty(), createDeathLootTableSeedProperty(), createLeftHandedProperty(), createNoAiProperty(), createPersistenceRequiredProperty(), createDropChancesProperty(), createHomePosProperty(), createHomeRadiusProperty());
         }
     }
 
@@ -1107,8 +1149,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Cat, ResourceKey<CatSoundVariant>> createSoundVariantProperty() {
-            return new CodecProperty<>("sound_variant", ResourceKey.class,
-                    ResourceKey.codec(Registries.CAT_SOUND_VARIANT));
+            return new CodecProperty<>("sound_variant", ResourceKey.class, ResourceKey.codec(Registries.CAT_SOUND_VARIANT));
         }
 
         public static CodecProperty<Cat, ResourceKey<CatSoundVariant>> getSoundVariantProperty(EntityProperties<?> ep) {
@@ -1170,8 +1211,7 @@ public final class VanillaEntityProperties {
             return new VariantProperty<>(Registries.ZOMBIE_NAUTILUS_VARIANT);
         }
 
-        public static VariantProperty<ZombieNautilus, ZombieNautilusVariant>
-                getVariantProperty(EntityProperties<?> ep) {
+        public static VariantProperty<ZombieNautilus, ZombieNautilusVariant> getVariantProperty(EntityProperties<?> ep) {
             return g(ep, "variant");
         }
 
@@ -1238,12 +1278,10 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Wolf, ResourceKey<WolfSoundVariant>> createSoundVariantProperty() {
-            return new CodecProperty<>("sound_variant", ResourceKey.class,
-                    ResourceKey.codec(Registries.WOLF_SOUND_VARIANT));
+            return new CodecProperty<>("sound_variant", ResourceKey.class, ResourceKey.codec(Registries.WOLF_SOUND_VARIANT));
         }
 
-        public static CodecProperty<Wolf, ResourceKey<WolfSoundVariant>>
-                getSoundVariantProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Wolf, ResourceKey<WolfSoundVariant>> getSoundVariantProperty(EntityProperties<?> ep) {
             return g(ep, "sound_variant");
         }
 
@@ -1280,8 +1318,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Armadillo, Armadillo.ArmadilloState> createStateProperty() {
-            return new CodecProperty<>("state", Armadillo.ArmadilloState.class,
-                    ArmadilloStateIMixin.biologydictionary$getCodec());
+            return new CodecProperty<>("state", Armadillo.ArmadilloState.class, ArmadilloStateIMixin.biologydictionary$getCodec());
         }
 
         public static CodecProperty<Armadillo, Armadillo.ArmadilloState> getStateProperty(EntityProperties<?> ep) {
@@ -1399,15 +1436,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createCannotEnterHiveTicksProperty(),
-                    createCropsGrownSincePollinationProperty(),
-                    createHasNectarProperty(),
-                    createHasStungProperty(),
-                    createTicksSincePollinationProperty(),
-                    createFlowerPosProperty(),
-                    createHivePosProperty()
-            );
+            p(map, createCannotEnterHiveTicksProperty(), createCropsGrownSincePollinationProperty(), createHasNectarProperty(), createHasStungProperty(), createTicksSincePollinationProperty(), createFlowerPosProperty(), createHivePosProperty());
         }
     }
 
@@ -1440,12 +1469,10 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Chicken, ResourceKey<ChickenSoundVariant>> createSoundVariantProperty() {
-            return new CodecProperty<>("sound_variant", ResourceKey.class,
-                    ResourceKey.codec(Registries.CHICKEN_SOUND_VARIANT));
+            return new CodecProperty<>("sound_variant", ResourceKey.class, ResourceKey.codec(Registries.CHICKEN_SOUND_VARIANT));
         }
 
-        public static CodecProperty<Chicken, ResourceKey<ChickenSoundVariant>>
-                getSoundVariantProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Chicken, ResourceKey<ChickenSoundVariant>> getSoundVariantProperty(EntityProperties<?> ep) {
             return g(ep, "sound_variant");
         }
 
@@ -1459,12 +1486,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createEggLayTimeProperty(),
-                    createIsChickenJockeyProperty(),
-                    createSoundVariantProperty(),
-                    createVariantProperty()
-            );
+            p(map, createEggLayTimeProperty(), createIsChickenJockeyProperty(), createSoundVariantProperty(), createVariantProperty());
         }
     }
 
@@ -1493,8 +1515,7 @@ public final class VanillaEntityProperties {
     public static final class OfCow implements Creator {
 
         public static CodecProperty<Cow, ResourceKey<CowSoundVariant>> createSoundVariantProperty() {
-            return new CodecProperty<>("sound_variant", ResourceKey.class,
-                    ResourceKey.codec(Registries.COW_SOUND_VARIANT));
+            return new CodecProperty<>("sound_variant", ResourceKey.class, ResourceKey.codec(Registries.COW_SOUND_VARIANT));
         }
 
         public static CodecProperty<Cow, ResourceKey<CowSoundVariant>> getSoundVariantProperty(EntityProperties<?> ep) {
@@ -1602,13 +1623,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createBredProperty(),
-                    createEatingHaystackProperty(),
-                    createOwnerProperty(),
-                    createTameProperty(),
-                    createTemperProperty()
-            );
+            p(map, createBredProperty(), createEatingHaystackProperty(), createOwnerProperty(), createTameProperty(), createTemperProperty());
         }
     }
 
@@ -1853,9 +1868,8 @@ public final class VanillaEntityProperties {
      *  - "Crouching": boolean
      *  - "Sitting": boolean
      *  - "Sleeping": boolean
+     *  - "Trusted": List<EntityReference<LivingEntity>>
      *  - "Type": Fox.Variant
-     * [Attention] Some properties cannot be recognized yet:
-     *  - "Trusted": [null]
      *
      * @see net.minecraft.world.entity.animal.fox.Fox
      */
@@ -1885,11 +1899,11 @@ public final class VanillaEntityProperties {
             return g(ep, "Sleeping");
         }
 
-        public static UnsupportedProperty<Fox> createTrustedProperty() {
-            return new UnsupportedProperty<>("Trusted");
+        public static CodecProperty<Fox, List<EntityReference<LivingEntity>>> createTrustedProperty() {
+            return new CodecProperty<>("Trusted", List.class, TRUSTED_LIST_CODEC);
         }
 
-        public static UnsupportedProperty<Fox> getTrustedProperty(EntityProperties<?> ep) {
+        public static CodecProperty<Fox, List<EntityReference<LivingEntity>>> getTrustedProperty(EntityProperties<?> ep) {
             return g(ep, "Trusted");
         }
 
@@ -1903,13 +1917,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createCrouchingProperty(),
-                    createSittingProperty(),
-                    createSleepingProperty(),
-                    createTrustedProperty(),
-                    createTypeProperty()
-            );
+            p(map, createCrouchingProperty(), createSittingProperty(), createSleepingProperty(), createTrustedProperty(), createTypeProperty());
         }
     }
 
@@ -2043,8 +2051,7 @@ public final class VanillaEntityProperties {
     public static final class OfPig implements Creator {
 
         public static CodecProperty<Pig, ResourceKey<PigSoundVariant>> createSoundVariantProperty() {
-            return new CodecProperty<>("sound_variant", ResourceKey.class,
-                    ResourceKey.codec(Registries.PIG_SOUND_VARIANT));
+            return new CodecProperty<>("sound_variant", ResourceKey.class, ResourceKey.codec(Registries.PIG_SOUND_VARIANT));
         }
 
         public static CodecProperty<Pig, ResourceKey<PigSoundVariant>> getSoundVariantProperty(EntityProperties<?> ep) {
@@ -2240,11 +2247,108 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createCannotBeHuntedProperty(),
-                    createIsImmuneToZombificationProperty(),
-                    createTimeInOverworldProperty()
-            );
+            p(map, createCannotBeHuntedProperty(), createIsImmuneToZombificationProperty(), createTimeInOverworldProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "Size": int
+     *  - "wasOnGround": boolean
+     *
+     * @see net.minecraft.world.entity.monster.cubemob.AbstractCubeMob
+     */
+    public static final class OfAbstractCubeMob implements Creator {
+
+        public static IntProperty<AbstractCubeMob> createSizeProperty() {
+            return new IntProperty<>("Size");
+        }
+
+        public static IntProperty<AbstractCubeMob> getSizeProperty(EntityProperties<?> ep) {
+            return g(ep, "Size");
+        }
+
+        public static BooleanProperty<AbstractCubeMob> createWasOnGroundProperty() {
+            return new BooleanProperty<>("wasOnGround");
+        }
+
+        public static BooleanProperty<AbstractCubeMob> getWasOnGroundProperty(EntityProperties<?> ep) {
+            return g(ep, "wasOnGround");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createSizeProperty(), createWasOnGroundProperty());
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.cubemob.MagmaCube
+     */
+    public static final class OfMagmaCube implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *
+     * @see net.minecraft.world.entity.monster.cubemob.Slime
+     */
+    public static final class OfSlime implements Creator {
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map);
+        }
+    }
+
+    /**
+     * This class is automatically generated by a script.
+     * Properties (NBT tags) of this entity:
+     *  - "from_bucket": boolean
+     *  - "fuse": int
+     *  - "pickup_timer": int
+     *
+     * @see net.minecraft.world.entity.monster.cubemob.SulfurCube
+     */
+    public static final class OfSulfurCube implements Creator {
+
+        public static BooleanProperty<SulfurCube> createFromBucketProperty() {
+            return new BooleanProperty<>("from_bucket");
+        }
+
+        public static BooleanProperty<SulfurCube> getFromBucketProperty(EntityProperties<?> ep) {
+            return g(ep, "from_bucket");
+        }
+
+        public static IntProperty<SulfurCube> createFuseProperty() {
+            return new IntProperty<>("fuse");
+        }
+
+        public static IntProperty<SulfurCube> getFuseProperty(EntityProperties<?> ep) {
+            return g(ep, "fuse");
+        }
+
+        public static IntProperty<SulfurCube> createPickupTimerProperty() {
+            return new IntProperty<>("pickup_timer");
+        }
+
+        public static IntProperty<SulfurCube> getPickupTimerProperty(EntityProperties<?> ep) {
+            return g(ep, "pickup_timer");
+        }
+
+        @Override
+        public void create(Map<String, EntityProperty<?>> map) {
+            p(map, createFromBucketProperty(), createFuseProperty(), createPickupTimerProperty());
         }
     }
 
@@ -2257,11 +2361,11 @@ public final class VanillaEntityProperties {
      */
     public static final class OfAbstractVillager implements Creator {
 
-        public static UnsupportedProperty<AbstractVillager> createOffersProperty() {
-            return new UnsupportedProperty<>("Offers");
+        public static CodecProperty<AbstractVillager, MerchantOffers> createOffersProperty() {
+            return new CodecProperty<>("Offers", MerchantOffers.class, MerchantOffers.CODEC);
         }
 
-        public static UnsupportedProperty<AbstractVillager> getOffersProperty(EntityProperties<?> ep) {
+        public static CodecProperty<AbstractVillager, MerchantOffers> getOffersProperty(EntityProperties<?> ep) {
             return g(ep, "Offers");
         }
 
@@ -2274,7 +2378,6 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
-     *  - "AssignProfessionWhenSpawned": boolean
      *  - "FoodLevel": byte
      *  - "Gossips": GossipContainer
      *  - "LastGossipDecay": long
@@ -2287,14 +2390,6 @@ public final class VanillaEntityProperties {
      * @see net.minecraft.world.entity.npc.villager.Villager
      */
     public static final class OfVillager implements Creator {
-
-        public static BooleanProperty<Villager> createAssignProfessionWhenSpawnedProperty() {
-            return new BooleanProperty<>("AssignProfessionWhenSpawned");
-        }
-
-        public static BooleanProperty<Villager> getAssignProfessionWhenSpawnedProperty(EntityProperties<?> ep) {
-            return g(ep, "AssignProfessionWhenSpawned");
-        }
 
         public static ByteProperty<Villager> createFoodLevelProperty() {
             return new ByteProperty<>("FoodLevel");
@@ -2362,17 +2457,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createAssignProfessionWhenSpawnedProperty(),
-                    createFoodLevelProperty(),
-                    createGossipsProperty(),
-                    createLastGossipDecayProperty(),
-                    createLastRestockProperty(),
-                    createRestocksTodayProperty(),
-                    createVillagerDataProperty(),
-                    createVillagerDataFinalizedProperty(),
-                    createXpProperty()
-            );
+            p(map, createFoodLevelProperty(), createGossipsProperty(), createLastGossipDecayProperty(), createLastRestockProperty(), createRestocksTodayProperty(), createVillagerDataProperty(), createVillagerDataFinalizedProperty(), createXpProperty());
         }
     }
 
@@ -2639,12 +2724,10 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<CopperGolem, WeatheringCopper.WeatherState> createWeatherStateProperty() {
-            return new CodecProperty<>("weather_state", WeatheringCopper.WeatherState.class,
-                    WeatheringCopper.WeatherState.CODEC);
+            return new CodecProperty<>("weather_state", WeatheringCopper.WeatherState.class, WeatheringCopper.WeatherState.CODEC);
         }
 
-        public static CodecProperty<CopperGolem, WeatheringCopper.WeatherState>
-                getWeatherStateProperty(EntityProperties<?> ep) {
+        public static CodecProperty<CopperGolem, WeatheringCopper.WeatherState> getWeatherStateProperty(EntityProperties<?> ep) {
             return g(ep, "weather_state");
         }
 
@@ -2838,12 +2921,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createExplosionRadiusProperty(),
-                    createFuseProperty(),
-                    createIgnitedProperty(),
-                    createPoweredProperty()
-            );
+            p(map, createExplosionRadiusProperty(), createFuseProperty(), createIgnitedProperty(), createPoweredProperty());
         }
     }
 
@@ -3326,11 +3404,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createCanPickUpLootProperty(),
-                    createIsImmuneToZombificationProperty(),
-                    createTimeInOverworldProperty()
-            );
+            p(map, createCanPickUpLootProperty(), createIsImmuneToZombificationProperty(), createTimeInOverworldProperty());
         }
     }
 
@@ -3434,23 +3508,14 @@ public final class VanillaEntityProperties {
     /**
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
-     *  - "StrayConversionTime": int
      *
      * @see net.minecraft.world.entity.monster.skeleton.Skeleton
      */
     public static final class OfSkeleton implements Creator {
 
-        public static IntProperty<Skeleton> createStrayConversionTimeProperty() {
-            return new IntProperty<>("StrayConversionTime");
-        }
-
-        public static IntProperty<Skeleton> getStrayConversionTimeProperty(EntityProperties<?> ep) {
-            return g(ep, "StrayConversionTime");
-        }
-
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createStrayConversionTimeProperty());
+            p(map);
         }
     }
 
@@ -3546,8 +3611,6 @@ public final class VanillaEntityProperties {
      * This class is automatically generated by a script.
      * Properties (NBT tags) of this entity:
      *  - "CanBreakDoors": boolean
-     *  - "DrownedConversionTime": int
-     *  - "InWaterTime": int
      *  - "IsBaby": boolean
      *
      * @see net.minecraft.world.entity.monster.zombie.Zombie
@@ -3562,22 +3625,6 @@ public final class VanillaEntityProperties {
             return g(ep, "CanBreakDoors");
         }
 
-        public static IntProperty<Zombie> createDrownedConversionTimeProperty() {
-            return new IntProperty<>("DrownedConversionTime");
-        }
-
-        public static IntProperty<Zombie> getDrownedConversionTimeProperty(EntityProperties<?> ep) {
-            return g(ep, "DrownedConversionTime");
-        }
-
-        public static IntProperty<Zombie> createInWaterTimeProperty() {
-            return new IntProperty<>("InWaterTime");
-        }
-
-        public static IntProperty<Zombie> getInWaterTimeProperty(EntityProperties<?> ep) {
-            return g(ep, "InWaterTime");
-        }
-
         public static BooleanProperty<Zombie> createIsBabyProperty() {
             return new BooleanProperty<>("IsBaby");
         }
@@ -3588,12 +3635,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createCanBreakDoorsProperty(),
-                    createDrownedConversionTimeProperty(),
-                    createInWaterTimeProperty(),
-                    createIsBabyProperty()
-            );
+            p(map, createCanBreakDoorsProperty(), createIsBabyProperty());
         }
     }
 
@@ -3698,15 +3740,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createConversionPlayerProperty(),
-                    createConversionTimeProperty(),
-                    createGossipsProperty(),
-                    createOffersProperty(),
-                    createVillagerDataProperty(),
-                    createVillagerDataFinalizedProperty(),
-                    createXpProperty()
-            );
+            p(map, createConversionPlayerProperty(), createConversionTimeProperty(), createGossipsProperty(), createOffersProperty(), createVillagerDataProperty(), createVillagerDataFinalizedProperty(), createXpProperty());
         }
     }
 
@@ -3766,6 +3800,7 @@ public final class VanillaEntityProperties {
      * Properties (NBT tags) of this entity:
      *  - "DragonDeathTime": int
      *  - "DragonPhase": int
+     *  - "sitting_damage_received": float
      *
      * @see net.minecraft.world.entity.boss.enderdragon.EnderDragon
      */
@@ -3787,9 +3822,17 @@ public final class VanillaEntityProperties {
             return g(ep, "DragonPhase");
         }
 
+        public static FloatProperty<EnderDragon> createSittingDamageReceivedProperty() {
+            return new FloatProperty<>("sitting_damage_received");
+        }
+
+        public static FloatProperty<EnderDragon> getSittingDamageReceivedProperty(EntityProperties<?> ep) {
+            return g(ep, "sitting_damage_received");
+        }
+
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createDragonDeathTimeProperty(), createDragonPhaseProperty());
+            p(map, createDragonDeathTimeProperty(), createDragonPhaseProperty(), createSittingDamageReceivedProperty());
         }
     }
 
@@ -3845,52 +3888,6 @@ public final class VanillaEntityProperties {
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
             p(map, createAnchorPosProperty(), createSizeProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *  - "Size": int
-     *  - "wasOnGround": boolean
-     *
-     * @see net.minecraft.world.entity.monster.cubemob.Slime
-     */
-    public static final class OfSlime implements Creator {
-
-        public static IntProperty<Slime> createSizeProperty() {
-            return new IntProperty<>("Size");
-        }
-
-        public static IntProperty<Slime> getSizeProperty(EntityProperties<?> ep) {
-            return g(ep, "Size");
-        }
-
-        public static BooleanProperty<Slime> createWasOnGroundProperty() {
-            return new BooleanProperty<>("wasOnGround");
-        }
-
-        public static BooleanProperty<Slime> getWasOnGroundProperty(EntityProperties<?> ep) {
-            return g(ep, "wasOnGround");
-        }
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map, createSizeProperty(), createWasOnGroundProperty());
-        }
-    }
-
-    /**
-     * This class is automatically generated by a script.
-     * Properties (NBT tags) of this entity:
-     *
-     * @see net.minecraft.world.entity.monster.cubemob.MagmaCube
-     */
-    public static final class OfMagmaCube implements Creator {
-
-        @Override
-        public void create(Map<String, EntityProperty<?>> map) {
-            p(map);
         }
     }
 
@@ -3967,15 +3964,7 @@ public final class VanillaEntityProperties {
 
         @Override
         public void create(Map<String, EntityProperty<?>> map) {
-            p(map,
-                    createDisabledSlotsProperty(),
-                    createInvisibleProperty(),
-                    createMarkerProperty(),
-                    createNoBasePlateProperty(),
-                    createPoseProperty(),
-                    createShowArmsProperty(),
-                    createSmallProperty()
-            );
+            p(map, createDisabledSlotsProperty(), createInvisibleProperty(), createMarkerProperty(), createNoBasePlateProperty(), createPoseProperty(), createShowArmsProperty(), createSmallProperty());
         }
     }
 }

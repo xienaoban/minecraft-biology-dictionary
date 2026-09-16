@@ -71,6 +71,12 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
     private final Map<String, String> fullyQualifiedTypes = new HashMap<>();
 
     /**
+     * K: simple imported class name, V: fully qualified class name.
+     * Used to resolve source-level references before loading classes.
+     */
+    private final Map<String, String> importedClasses = new HashMap<>();
+
+    /**
      * K: Field Name, V: Field Type Name
      */
     private final Map<String, String> fieldTypes = new HashMap<>();
@@ -178,6 +184,57 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
         return getFullyQualifiedType(mt.argumentTypes().get(argIdx));
     }
 
+    /**
+     * Return the raw source type of a field declared directly in the current class.
+     */
+    public String getFieldRawType(String name) {
+        return fieldTypes.get(name);
+    }
+
+    /**
+     * Resolve a source-level class reference such as {@code BlockPos},
+     * {@code Brain.Packed} or {@code Abilities.Packed} to a loaded class.
+     * AST imports are used to turn simple names into fully qualified candidates.
+     */
+    public Class<?> resolveClass(String name) {
+        if (name == null || name.isBlank()) {
+            return null;
+        }
+        String trimmed = name.trim();
+        if (trimmed.equals("this") || trimmed.equals(entityClazz.getSimpleName())
+                || trimmed.equals(entityClazz.getName())) {
+            return entityClazz;
+        }
+
+        int dot = trimmed.indexOf('.');
+        String first = dot < 0 ? trimmed : trimmed.substring(0, dot);
+        String nestedSuffix = dot < 0 ? "" : trimmed.substring(dot).replace('.', '$');
+
+        List<String> candidates = new ArrayList<>();
+        String imported = importedClasses.get(first);
+        if (imported != null) {
+            candidates.add(imported + nestedSuffix);
+        }
+        candidates.add(entityClazz.getName() + '$' + trimmed.replace('.', '$'));
+        candidates.add(entityClazz.getPackageName() + '.' + trimmed.replace('.', '$'));
+
+        for (String candidate : candidates.stream().distinct().toList()) {
+            Class<?> resolved = loadClass(candidate);
+            if (resolved != null) {
+                return resolved;
+            }
+        }
+        return null;
+    }
+
+    private Class<?> loadClass(String name) {
+        try {
+            return Class.forName(name, false, entityClazz.getClassLoader());
+        } catch (ClassNotFoundException | LinkageError e) {
+            return null;
+        }
+    }
+
     @Override
     public void visit(PackageDeclaration n, Void arg) {
         currPackageName = n.getNameAsString();
@@ -188,6 +245,9 @@ public class ClassTypeCollector extends AbstractVisitorWrapper<Void> {
     public void visit(ImportDeclaration n, Void arg) {
         String type = n.getName().getIdentifier();
         String fullyQualifiedType = n.getNameAsString();
+        if (!n.isStatic() && !n.isAsterisk()) {
+            importedClasses.put(type, fullyQualifiedType);
+        }
         if (fullyQualifiedTypes.containsKey(type)) {
             throw new RuntimeException("Duplicated fields? Field: \"" + n + "\".");
         }

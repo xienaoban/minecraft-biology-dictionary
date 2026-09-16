@@ -14,6 +14,8 @@ import org.jetbrains.java.decompiler.main.extern.IFernflowerLogger;
 import org.jetbrains.java.decompiler.main.extern.IFernflowerPreferences;
 import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 
+import io.github.xienaoban.biologydictionary.util.TestUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +37,7 @@ public final class BytecodeDecompiler {
         FabricSources, Procyon, Fernflower, Cfr
     }
 
-    private static final Tool TOOL = Tool.Procyon;
+    private static final Tool TOOL = Tool.FabricSources;
     private static final String MINECRAFT_SOURCES_JAR_PROPERTY = "biologydictionary.minecraftSourcesJar";
     private static Path fabricSourcesJar;
 
@@ -44,7 +46,9 @@ public final class BytecodeDecompiler {
      * The returned source code is for Java Parser.
      */
     public static String decompile(Class<?> clazz) {
-        // Procyon is better than Fernflower here according to my test.
+        // Minecraft's sources are the most reliable input for JavaParser. Procyon can
+        // emit syntax such as `enum ... permits ...` for enum constant subclasses,
+        // which is valid bytecode metadata but invalid Java source syntax.
         String source = switch (TOOL) {
             case FabricSources -> getFabricSource(clazz);
             case Procyon -> decompileByProcyon(clazz);
@@ -97,16 +101,25 @@ public final class BytecodeDecompiler {
             );
         }
 
-        Path loomCache = Path.of(".gradle", "loom-cache", "minecraftMaven", "net", "minecraft");
+        Path loomCache = TestUtils.PROJECT_ROOT.resolve(Path.of(
+                ".gradle", "loom-cache", "minecraftMaven", "net", "minecraft"));
         if (!Files.exists(loomCache)) {
-            throw new AssertionError("Fabric Loom Minecraft sources cache not found: " + loomCache);
+            throw new AssertionError("Fabric Loom Minecraft sources cache not found: " + loomCache
+                    + ". Run `./gradlew :fabric:genSources` first, or set -D"
+                    + MINECRAFT_SOURCES_JAR_PROPERTY + "=/path/to/minecraft-sources.jar");
         }
         try (Stream<Path> stream = Files.find(loomCache, 6, (path, attributes) -> attributes.isRegularFile()
                 && path.getFileName().toString().endsWith("-sources.jar"))) {
-            Path found = stream
-                    .filter(path -> containsSource(path, sourcePath))
+            var candidates = stream.filter(path -> containsSource(path, sourcePath)).toList();
+            if (candidates.isEmpty()) {
+                throw new AssertionError("Minecraft source not found: " + sourcePath);
+            }
+            String version = net.minecraft.SharedConstants.getCurrentVersion().name();
+            String versionMarker = "-" + version + "-";
+            Path found = candidates.stream()
+                    .filter(path -> path.getFileName().toString().contains(versionMarker))
                     .findFirst()
-                    .orElseThrow(() -> new AssertionError("Minecraft source not found: " + sourcePath));
+                    .orElse(candidates.getFirst());
             fabricSourcesJar = found;
             return found;
         } catch (IOException e) {
@@ -115,10 +128,13 @@ public final class BytecodeDecompiler {
     }
 
     private static boolean containsSource(Path sourcesJar, String sourcePath) {
+        if (!Files.isRegularFile(sourcesJar)) {
+            return false;
+        }
         try (JarFile jar = new JarFile(sourcesJar.toFile())) {
             return jar.getJarEntry(sourcePath) != null;
         } catch (IOException e) {
-            throw new AssertionError(e);
+            throw new AssertionError("Failed to read Minecraft sources jar: " + sourcesJar, e);
         }
     }
 

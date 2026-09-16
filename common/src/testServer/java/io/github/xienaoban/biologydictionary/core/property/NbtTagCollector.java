@@ -8,6 +8,7 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.mojang.serialization.Codec;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.util.TestUtils;
@@ -20,6 +21,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -360,6 +366,9 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             curr = next;
         }
         if (type == null) {
+            type = inferCodecValueType(arguments.get(1));
+        }
+        if (type == null) {
             type = inferResourceKeyCodecType(codec);
         }
         mergeNbtTagInfo(nbtTagName, new CodecTagInfo(
@@ -403,10 +412,141 @@ public class NbtTagCollector extends AbstractVisitorWrapper<Void> {
             type = knownTypes.getMethodRetType(methodCallExpr.getNameAsString());
         }
         if (type == null) {
+            type = inferCodecValueType(arguments.get(1));
+        }
+        if (type == null) {
             type = inferResourceKeyCodecType(codec);
         }
         mergeNbtTagInfo(nbtTagName, new CodecTagInfo(
                 knownTypes.getFullyQualifiedType(codec), removeOptional(type), false, true));
+    }
+
+    /**
+     * Infer the value type of a {@link Codec} expression, e.g.
+     * {@code Codec<List<String>>} -> {@code List<String>}. Source AST is used
+     * first; loaded class metadata is the fallback for external or inherited fields.
+     */
+    private String inferCodecValueType(Expression codecExpression) {
+        if (codecExpression instanceof CastExpr castExpr) {
+            return codecTypeArgument(castExpr.getTypeAsString());
+        }
+        if (codecExpression instanceof NameExpr nameExpr) {
+            String fieldName = nameExpr.getNameAsString();
+            String valueType = codecTypeArgument(knownTypes.getFieldRawType(fieldName));
+            return valueType != null ? valueType : inferCodecValueTypeFromField(entityClazz, fieldName);
+        }
+        if (codecExpression instanceof FieldAccessExpr fieldAccessExpr) {
+            String fieldName = fieldAccessExpr.getNameAsString();
+            Expression scope = fieldAccessExpr.getScope();
+            if (scope instanceof ThisExpr) {
+                return inferCodecValueTypeFromField(entityClazz, fieldName);
+            }
+            Class<?> ownerClass = knownTypes.resolveClass(scope.toString());
+            return ownerClass == null ? null : inferCodecValueTypeFromField(ownerClass, fieldName);
+        }
+        return null;
+    }
+
+    private String inferCodecValueTypeFromField(Class<?> ownerClass, String fieldName) {
+        Type fieldType = getFieldGenericType(ownerClass, fieldName);
+        String valueType = extractCodecValueType(fieldType);
+        return valueType == null ? null : knownTypes.getFullyQualifiedType(valueType);
+    }
+
+    private String codecTypeArgument(String rawType) {
+        String valueType = extractCodecTypeArgument(rawType);
+        return valueType == null ? null : knownTypes.getFullyQualifiedType(valueType);
+    }
+
+    private static Type getFieldGenericType(Class<?> ownerClass, String fieldName) {
+        Class<?> current = ownerClass;
+        while (current != null) {
+            try {
+                return current.getDeclaredField(fieldName).getGenericType();
+            } catch (NoSuchFieldException e) {
+                current = current.getSuperclass();
+            } catch (SecurityException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private static String extractCodecValueType(Type type) {
+        if (!(type instanceof ParameterizedType parameterizedType)) {
+            return null;
+        }
+        Type rawType = parameterizedType.getRawType();
+        if (!(rawType instanceof Class<?> rawClass) || !Codec.class.isAssignableFrom(rawClass)) {
+            return null;
+        }
+        Type[] typeArguments = parameterizedType.getActualTypeArguments();
+        return typeArguments.length == 1 ? reflectTypeToString(typeArguments[0]) : null;
+    }
+
+    private static String reflectTypeToString(Type type) {
+        if (type instanceof Class<?> clazz) {
+            if (clazz.isArray()) {
+                return reflectTypeToString(clazz.getComponentType()) + "[]";
+            }
+            if (clazz.isPrimitive()) {
+                return clazz.getName();
+            }
+            Class<?> enclosing = clazz.getEnclosingClass();
+            if (enclosing != null && !clazz.isAnonymousClass() && !clazz.isLocalClass()) {
+                return reflectTypeToString(enclosing) + "." + clazz.getSimpleName();
+            }
+            return clazz.getSimpleName();
+        }
+        if (type instanceof ParameterizedType parameterizedType) {
+            StringBuilder sb = new StringBuilder(reflectTypeToString(parameterizedType.getRawType()));
+            Type[] typeArguments = parameterizedType.getActualTypeArguments();
+            if (typeArguments.length > 0) {
+                sb.append('<');
+                for (int i = 0; i < typeArguments.length; ++i) {
+                    if (i > 0) {
+                        sb.append(", ");
+                    }
+                    sb.append(reflectTypeToString(typeArguments[i]));
+                }
+                sb.append('>');
+            }
+            return sb.toString();
+        }
+        if (type instanceof WildcardType wildcardType) {
+            Type[] upperBounds = wildcardType.getUpperBounds();
+            if (upperBounds.length == 0 || upperBounds[0] == Object.class) {
+                return "?";
+            }
+            return "? extends " + reflectTypeToString(upperBounds[0]);
+        }
+        if (type instanceof TypeVariable<?> typeVariable) {
+            Type[] bounds = typeVariable.getBounds();
+            if (bounds.length == 0 || bounds[0] == Object.class) {
+                return "Object";
+            }
+            return reflectTypeToString(bounds[0]);
+        }
+        if (type instanceof GenericArrayType genericArrayType) {
+            return reflectTypeToString(genericArrayType.getGenericComponentType()) + "[]";
+        }
+        return type.getTypeName();
+    }
+
+    private static String extractCodecTypeArgument(String rawType) {
+        if (rawType == null) {
+            return null;
+        }
+        String noSpaces = rawType.replace(" ", "");
+        int codecIndex = noSpaces.indexOf("Codec<");
+        if (codecIndex < 0 || !noSpaces.endsWith(">")) {
+            return null;
+        }
+        int argumentStart = noSpaces.indexOf('<', codecIndex);
+        if (argumentStart < 0) {
+            return null;
+        }
+        return noSpaces.substring(argumentStart + 1, noSpaces.length() - 1);
     }
 
     private static String inferResourceKeyCodecType(String codec) {
