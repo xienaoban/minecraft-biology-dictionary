@@ -11,11 +11,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
@@ -53,6 +57,24 @@ public final class PlayerUtils {
 
     public static Inventory getInventory(Player player) {
         return player.getInventory();
+    }
+
+    public static void giveOrDrop(Player player, ItemStack stack) {
+        if (!player.addItem(stack.copy())) {
+            dropItem(player, stack);
+        }
+    }
+
+    public static void dropItem(Player player, ItemStack stack) {
+        player.drop(stack, false, Prediction.SERVER_ONLY);
+    }
+
+    public static void swingHand(Player player, InteractionHand hand) {
+        player.swing(hand, SwingAnimation.DEFAULT, false);
+    }
+
+    public static void swingMainHand(Player player) {
+        swingHand(player, InteractionHand.MAIN_HAND);
     }
 
     public static int getExperiencePoint(Player player) {

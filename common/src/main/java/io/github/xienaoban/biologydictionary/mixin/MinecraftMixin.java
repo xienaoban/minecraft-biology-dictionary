@@ -6,12 +6,12 @@ import io.github.xienaoban.biologydictionary.client.ClientEvents;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.SwingAnimation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -34,7 +34,7 @@ public class MinecraftMixin {
             Minecraft client = (Minecraft) (Object) this;
             LocalPlayer player = ClientUtils.getClientPlayer(client);
             if (player == null) { return; }
-            player.swing(interactionHand, SwingAnimation.DEFAULT, false);
+            PlayerUtils.swingHand(player, interactionHand);
             BiologyDictionaryEvent.openBookScreen(client);
             ci.cancel();
         }
