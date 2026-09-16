@@ -184,6 +184,5 @@ final class EntityVanillaDeobfuscation {
         r(net.minecraft.world.level.gameevent.vibrations.VibrationSystem.class, "net.minecraft.world.level.gameevent.vibrations.VibrationSystem");
         r(net.minecraft.world.scores.ScoreHolder.class, "net.minecraft.world.scores.ScoreHolder");
         r(net.minecraft.world.waypoints.WaypointTransmitter.class, "net.minecraft.world.waypoints.WaypointTransmitter");
-
     }
 }

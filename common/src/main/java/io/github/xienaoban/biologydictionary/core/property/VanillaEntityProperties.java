@@ -5,6 +5,8 @@ import io.github.xienaoban.biologydictionary.core.property.vanilla.EntityReferen
 import io.github.xienaoban.biologydictionary.core.property.vanilla.VariantProperty;
 import io.github.xienaoban.biologydictionary.mixin.entity.ArmadilloStateIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
+import io.github.xienaoban.biologydictionary.mixin.entity.FoxIMixin;
+import io.github.xienaoban.biologydictionary.mixin.entity.MannequinIMixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -684,7 +686,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Mannequin, Byte> createHiddenLayersProperty() {
-            return new CodecProperty<>("hidden_layers", Byte.class, LAYERS_CODEC);
+            return new CodecProperty<>("hidden_layers", Byte.class, MannequinIMixin.biologydictionary$getLayersCodec());
         }
 
         public static CodecProperty<Mannequin, Byte> getHiddenLayersProperty(EntityProperties<?> ep) {
@@ -716,7 +718,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Mannequin, Pose> createPoseProperty() {
-            return new CodecProperty<>("pose", Pose.class, POSE_CODEC);
+            return new CodecProperty<>("pose", Pose.class, MannequinIMixin.biologydictionary$getPoseCodec());
         }
 
         public static CodecProperty<Mannequin, Pose> getPoseProperty(EntityProperties<?> ep) {
@@ -1900,7 +1902,7 @@ public final class VanillaEntityProperties {
         }
 
         public static CodecProperty<Fox, List<EntityReference<LivingEntity>>> createTrustedProperty() {
-            return new CodecProperty<>("Trusted", List.class, TRUSTED_LIST_CODEC);
+            return new CodecProperty<>("Trusted", List.class, FoxIMixin.biologydictionary$getTrustedListCodec());
         }
 
         public static CodecProperty<Fox, List<EntityReference<LivingEntity>>> getTrustedProperty(EntityProperties<?> ep) {

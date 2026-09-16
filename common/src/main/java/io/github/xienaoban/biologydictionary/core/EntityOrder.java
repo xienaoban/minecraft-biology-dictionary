@@ -125,8 +125,8 @@ public final class EntityOrder {
 
         // other
         registrar.register(EntityTypes.PLAYER);
-        registrar.register(EntityTypes.ARMOR_STAND);
         registrar.register(EntityTypes.MANNEQUIN);
+        registrar.register(EntityTypes.ARMOR_STAND);
     }
 
     public static void registerVanilla(EntityOrdersPlugin.Registrar registrar) {
