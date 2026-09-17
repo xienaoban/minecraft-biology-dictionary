@@ -179,6 +179,23 @@ public final class Configs {
         DiscoveryStrategyMode discoveryStrategy = DiscoveryStrategyMode.BIOLOGY_DICTIONARY;
 
         /**
+         * Whether discoveries are shared globally: anyone's discovery counts for
+         * everyone while this is on. Pure view — nothing is written to the save,
+         * and turning it off narrows the view back to each player's own records.
+         * Only effective under the BIOLOGY_DICTIONARY discovery strategy.
+         */
+        @ConfigEntry
+        boolean discoveryGlobalShared = false;
+
+        /**
+         * Number of genuine discoverers whose discoveries are announced server-wide for each
+         * entity type. -1 means unlimited, 0 disables server-wide announcements, and any
+         * positive value is the limit. Active and global sharing do not count.
+         */
+        @ConfigEntry(min = -1)
+        int discoveryAnnouncementLimit = 5;
+
+        /**
          * Enable discovery by opening entity detail screen.
          * Only effective if the active strategy supports this method.
          */
@@ -303,6 +320,14 @@ public final class Configs {
 
         public DiscoveryStrategyMode getDiscoveryStrategy() {
             return discoveryStrategy;
+        }
+
+        public boolean isDiscoveryGlobalShared() {
+            return discoveryGlobalShared;
+        }
+
+        public int getDiscoveryAnnouncementLimit() {
+            return discoveryAnnouncementLimit;
         }
 
         public boolean isDiscoveryByDetailScreen() {

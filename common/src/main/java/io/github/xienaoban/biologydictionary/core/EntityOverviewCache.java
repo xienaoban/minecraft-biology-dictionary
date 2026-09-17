@@ -48,5 +48,9 @@ public final class EntityOverviewCache extends ConcurrentHashMap<EntityType<?>, 
 
 
 
-    public record CacheEntry(CompoundTag vanillaNbt, CompoundTag extraNbt) {}
+    public record CacheEntry(CompoundTag vanillaNbt, CompoundTag extraNbt) {
+        public boolean isValid() {
+            return vanillaNbt != null && extraNbt != null;
+        }
+    }
 }

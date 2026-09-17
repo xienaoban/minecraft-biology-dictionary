@@ -33,4 +33,8 @@ public final class ServerNetApiImpl {
     public static void send(ServerPlayer player, Packet payload) {
         ServerPlayNetworking.send(player, payload);
     }
+
+    public static boolean canSend(ServerPlayer player, Class<? extends Packet> packetClass) {
+        return ServerPlayNetworking.canSend(player, PacketUtil.getType(packetClass));
+    }
 }

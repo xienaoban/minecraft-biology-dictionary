@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.UUID;
 
 @ClientOnly
 public final class ClientUtils {
@@ -182,5 +183,18 @@ public final class ClientUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * Resolve a player's display name from the local connection's player info, or {@code null} if absent.
+     */
+    public static String getPlayerName(UUID playerId) {
+        LocalPlayer player = getClientPlayer();
+        if (player != null && player.getUUID().equals(playerId)) {
+            return player.getGameProfile().getName();
+        }
+        ClientPacketListener connection = getClient().getConnection();
+        PlayerInfo info = connection != null ? connection.getPlayerInfo(playerId) : null;
+        return info != null ? info.getProfile().getName() : null;
     }
 }

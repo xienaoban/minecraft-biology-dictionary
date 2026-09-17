@@ -2,6 +2,10 @@ package io.github.xienaoban.biologydictionary.platform.util;
 
 import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Server-side helpers abstracting APIs that change between MC versions.
@@ -25,5 +29,20 @@ public final class ServerUtils {
     @ClientAndServer
     public static boolean isMultiplayerOpen(MinecraftServer server) {
         return server.isPublished();
+    }
+
+    /**
+     * Resolve a player's display name from the online player list, then the server's name cache.
+     */
+    @ClientAndServer
+    public static Optional<String> getPlayerName(MinecraftServer server, UUID playerId) {
+        if (playerId == null) {
+            return Optional.empty();
+        }
+        ServerPlayer online = server.getPlayerList().getPlayer(playerId);
+        if (online != null) {
+            return Optional.of(online.getGameProfile().getName());
+        }
+        return server.getProfileCache().get(playerId).map(profile -> profile.getName());
     }
 }
