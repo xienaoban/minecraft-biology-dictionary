@@ -13,6 +13,7 @@
 
 | 目录 | 目标分支 | 架构 | MC | Java | 反射 | 资源类名 |
 |------|----------|------|-----|------|------|----------|
+| `minecraft-biology-dictionary-26.3` | `main-26.3` | 手写多平台 | 26.3 | 25 | ✅ 允许 | `Identifier` |
 | `minecraft-biology-dictionary-26.2` | `main-26.2` | 手写多平台 | 26.2 | 25 | ✅ 允许 | `Identifier` |
 | `minecraft-biology-dictionary-26.1.2` | `main-26.1.2` | 手写多平台 | 26.1.2 | 25 | ✅ 允许 | `Identifier` |
 | `minecraft-biology-dictionary-architectury-1.21.11` | `main-architectury-1.21.11` | Architectury | 1.21.11 | 21 | ❌ 禁用 | `Identifier` |
@@ -130,7 +131,7 @@
 - 原因：项目在 `/mnt`（Windows 目录），WSL 下 gradle 跨文件系统访问极慢，且 WSL 内没有安装构建环境（JDK 等）；`powershell.exe` 是 Windows 原生进程，用 Windows 的 JDK、走 `E:\` 路径，速度正常。
 - 示例（先把 WSL 路径用 `wslpath -w` 转成 Windows 路径）：
   ```bash
-  powershell.exe -NoProfile -Command "Set-Location 'E:\project\minecraft\minecraft-biology-dictionary-26.2'; .\gradlew.bat fabric:build"
+  powershell.exe -NoProfile -Command "Set-Location 'E:\project\minecraft\minecraft-biology-dictionary-26.3'; .\gradlew.bat fabric:build"
   ```
 
 就是些 gradle 命令，你都懂的，不过有几条单独提一下：

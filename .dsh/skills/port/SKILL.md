@@ -40,12 +40,13 @@ whenToUse: 需要把某个 MC 版本分支（或 commit）的功能移植到另�
 需要用户手动指定回合的内容（通常为 tag:vX.X.X ~ HEAD 或 main-X.X.X ~ dev 的所有内容）。
 
 链式移植方法：
+- 26.3 移植到 26.2
 - 26.2 移植到 26.1.2
 - 移植后的 26.1.2 移植到 1.21.11
 - 移植后的 1.21.11 移植到 1.21.1
 - 移植后的 1.21.1 移植到 1.20.1
 
-不要 **26.2** -> 26.1.2、**26.2** -> 1.21.11、**26.2** ->1.21.1 ... 相邻版本移植改动更小，全都从 26.2 回合会有大量重复工作。
+不要 **26.3** -> 26.1.2、**26.3** -> 1.21.11、**26.3** -> 1.21.1 ... 相邻版本移植改动更小，全都从 26.3 出发会有大量重复工作。
 
 这里描述的是“高 MC 版本 → 低 MC 版本”的移植顺序，反过来“低 → 高”原理是一样的，只是知识要反着使用。
 
@@ -55,6 +56,7 @@ whenToUse: 需要把某个 MC 版本分支（或 commit）的功能移植到另�
 
 | 目录 | 目标分支 | 架构 | MC | Java | 反射 | 资源类名 |
 |------|----------|------|-----|------|------|----------|
+| `minecraft-biology-dictionary-26.3` | `main-26.3` | 手写多平台 | 26.3 | 25 | ✅ 允许 | `Identifier` |
 | `minecraft-biology-dictionary-26.2` | `main-26.2` | 手写多平台 | 26.2 | 25 | ✅ 允许 | `Identifier` |
 | `minecraft-biology-dictionary-26.1.2` | `main-26.1.2` | 手写多平台 | 26.1.2 | 25 | ✅ 允许 | `Identifier` |
 | `minecraft-biology-dictionary-architectury-1.21.11` | `main-architectury-1.21.11` | Architectury | 1.21.11 | 21 | ❌ 禁用 | `Identifier` |
@@ -70,8 +72,8 @@ MC 第一方源码：`mc-source/<MC 版本>/`，可供查询。
 ## 工作流程
 
 1. 进入目标移植项目目录，拉取最新的目标分支（有冲突停下询问）
-2. 创建本地工作分支（如 `port-v1.2.3-from-26.2`），此分支内自由 commit
-3. **获取增量改动清单**：用户指定要移植的 commit/branch 区域、或者已知的上次移植的前序版本 `port-v1.2.3-from-26.2`、`port-v1.2.3-from-1.21.1`
+2. 创建本地工作分支（如 `port-v1.2.3-from-26.3`），此分支内自由 commit
+3. **获取增量改动清单**：用户指定要移植的 commit/branch 区域、或者已知的上次移植的前序版本 `port-v1.2.3-from-26.3`、`port-v1.2.3-from-26.2`、`port-v1.2.3-from-1.21.1`
 4. **机械移植**，核心流程，后面我会重点讲什么是我定义的“机械移植”
 5. 小步提交，编译验证
 6. 全部完成后执行完整性检查
@@ -161,7 +163,7 @@ MC 第一方源码：`mc-source/<MC 版本>/`，可供查询。
 7. 涉及多个 commit 的移植，可以合并移植、也可以逐个移植，灵活应对
 
 以上可供参考，但最终的移植方案需要你基于实际情况灵活考虑，例如
-- 从 26.2 移植到 26.1.2 有时甚至直接 git cherry pick 即可完成，因为这两个 MC 版本差异极小；
+- 从 26.3 移植到 26.2，或从 26.2 移植到 26.1.2 有时甚至直接 git cherry pick 即可完成，因为这些相邻 MC 版本差异极小；
 - 但同样的内容从 26.1.2 移植到 1.21.11 可能就非常复杂，因为两者 MC 代码差异大、反射支持情况不同、模组平台也不同。
 对于复杂场景，建议你决定方案后找我对一下。
 
@@ -201,6 +203,31 @@ MC 第一方源码：`mc-source/<MC 版本>/`，可供查询。
 ## 各版本 API 差异速查
 
 常见问题就直接基于下表修了，避免每次都吭哧吭哧查半天源码。
+
+### 26.3 → 26.2
+
+| 方面 | 26.3 | 26.2 |
+|------|------|------|
+| 输入枚举 | `InputConstants.Type.KEYBOARD` | `InputConstants.Type.KEYSYM` |
+| 键位常量 | `InputConstants.KEY_*` | `GLFW.GLFW_KEY_*` |
+| 鼠标常量 | `InputConstants.MOUSE_BUTTON_*` | `GLFW.GLFW_MOUSE_BUTTON_*` |
+| 玩家掉落 | `player.drop(stack, false, Prediction.SERVER_ONLY)` | `player.drop(stack, false)` |
+| 玩家挥手 | `player.swing(hand, SwingAnimation.DEFAULT, false)` | `player.swing(hand)` |
+| 第一人称渲染器 | `FirstPersonHandsAndItemsRenderer` | `ItemInHandRenderer` |
+| 第一人称渲染参数 | `PlayerRenderState` / `FirstPersonHandsAndItemsRenderState` | 旧 `LocalPlayer` / light 参数 |
+| PoseStack | `poseStack.rotate(...)` | `poseStack.mulPose(...)` |
+| GUI PIP outline | `PreparedFrame.executeOutline(RenderPass)` | 旧 PIP silhouette fog 方案 |
+| 渲染管线包名 | `com.mojang.renderpearl.api.pipeline.RenderPipeline` | `com.mojang.blaze3d.pipeline.RenderPipeline` |
+| GUI tooltip | `tooltip(..., positioner, texture, false)` | `tooltip(..., positioner, texture)` |
+| Loot 容器 | `UniformContainerBase` | `LootPoolSingletonContainer` |
+| 数量 provider | `ContextIntProvider` | `NumberProvider` |
+| Nested loot | `HolderSet<LootTable>` | `Either<ResourceKey<LootTable>, LootTable>` |
+| Loot condition | `Optional<Holder<LootItemCondition>>` | `List<LootItemCondition>` |
+| Biome spawn | `EnvironmentAttributes.NATURAL_MOB_SPAWNS` | `Biome#getMobSettings()` |
+| Spawn 查询 | `MobSpawnSettings#getMobsToSpawn(category)` | `MobSpawnSettings#getMobs(category)` |
+| 私有 codec | 需要 accessor mixin | 视 26.2 类成员可见性而定 |
+
+26.3 新增/调整实体、特殊 spawner datapack、Parrot 食物特判等属于功能/数据差异，移植时按源 diff 处理，不要当作 MC API 映射强行套用。
 
 ### 26.2 → 26.1.2
 
