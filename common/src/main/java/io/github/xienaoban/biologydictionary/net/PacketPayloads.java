@@ -17,7 +17,7 @@ public final class PacketPayloads {
         registrar.register(RequestDiscoveryIncrementalPacket.class, RequestDiscoveryIncrementalPacket.FACTORY);
         registrar.register(SendDiscoveryIncrementalPacket.class, SendDiscoveryIncrementalPacket.FACTORY);
         registrar.register(RequestEntityOverviewPacket.class, RequestEntityOverviewPacket.FACTORY);
-        registrar.register(ReplyEntityOverviewPacket.class, ReplyEntityOverviewPacket.FACTORY);
+        registrar.register(SendEntityOverviewPacket.class, SendEntityOverviewPacket.FACTORY);
         registrar.register(RequestEntityDataPacket.class, RequestEntityDataPacket.FACTORY);
         registrar.register(ReplyEntityDataPacket.class, ReplyEntityDataPacket.FACTORY);
         registrar.register(RequestCommonSkillPacket.class, RequestCommonSkillPacket.FACTORY);
@@ -27,6 +27,8 @@ public final class PacketPayloads {
         registrar.register(SendStealingDetectedPacket.class, SendStealingDetectedPacket.FACTORY);
         registrar.register(RequestBeehiveInfoPacket.class, RequestBeehiveInfoPacket.FACTORY);
         registrar.register(ReplyBeehiveInfoPacket.class, ReplyBeehiveInfoPacket.FACTORY);
+        registrar.register(RequestPlayerNamesPacket.class, RequestPlayerNamesPacket.FACTORY);
+        registrar.register(ReplyPlayerNamesPacket.class, ReplyPlayerNamesPacket.FACTORY);
     }
 
     @FunctionalInterface

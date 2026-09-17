@@ -3,10 +3,13 @@ package io.github.xienaoban.biologydictionary.core.discovery.storage;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySource;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
+import io.github.xienaoban.biologydictionary.core.discovery.GlobalDiscoveryStats;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -14,8 +17,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.saveddata.SavedData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -34,6 +40,9 @@ public final class SavedDataDiscoveryStorage extends SavedData {
     private static final String KEY_ENTITY_NBT = "entity_nbt";
     private static final String KEY_TIME = "time";
     private static final String KEY_TICK = "tick";
+    private static final String KEY_DISCOVERER = "discoverer";
+    private static final String KEY_GLOBAL = "global";
+    private static final String KEY_SHARE_CHAIN = "share_chain";
 
     public static final SavedData.Factory<SavedDataDiscoveryStorage> FACTORY = new SavedData.Factory<>(
         SavedDataDiscoveryStorage::new,
@@ -42,11 +51,13 @@ public final class SavedDataDiscoveryStorage extends SavedData {
     );
 
     private final Map<UUID, Map<EntityType<?>, DiscoveryRecord>> data = new HashMap<>();
+    private final GlobalDiscoveryStats stats = new GlobalDiscoveryStats();
 
     public SavedDataDiscoveryStorage() {}
 
     public static SavedDataDiscoveryStorage load(CompoundTag tag, net.minecraft.core.HolderLookup.Provider provider) {
         SavedDataDiscoveryStorage storage = new SavedDataDiscoveryStorage();
+        boolean migrated = DiscoveryDataMigrator.migrate(tag);
         ListTag playersList = tag.getList("players", Tag.TAG_COMPOUND);
         for (int i = 0; i < playersList.size(); i++) {
             CompoundTag playerTag = playersList.getCompound(i);
@@ -60,6 +71,10 @@ public final class SavedDataDiscoveryStorage extends SavedData {
                 }
             }
             storage.data.put(uuid, entityMap);
+        }
+        storage.stats.deriveFrom(storage.data);
+        if (migrated) {
+            storage.setDirty();
         }
         return storage;
     }
@@ -94,18 +109,26 @@ public final class SavedDataDiscoveryStorage extends SavedData {
         Biome.Precipitation weather = weatherStr.isEmpty() ? Biome.Precipitation.NONE : Biome.Precipitation.valueOf(weatherStr);
         UUID entityUUID = tag.hasUUID(KEY_ENTITY_UUID) ? tag.getUUID(KEY_ENTITY_UUID) : new UUID(-1, -1);
         CompoundTag entityNbt = tag.contains(KEY_ENTITY_NBT, Tag.TAG_COMPOUND) ? tag.getCompound(KEY_ENTITY_NBT) : new CompoundTag();
+        UUID discoverer = tag.hasUUID(KEY_DISCOVERER) ? tag.getUUID(KEY_DISCOVERER) : DiscoveryRecord.NO_UUID;
+        boolean global = tag.getBoolean(KEY_GLOBAL);
+        List<UUID> shareChain = new ArrayList<>();
+        ListTag chainTag = tag.getList(KEY_SHARE_CHAIN, Tag.TAG_INT_ARRAY);
+        for (int i = 0; i < chainTag.size(); i++) {
+            shareChain.add(UUIDUtil.uuidFromIntArray(chainTag.getIntArray(i)));
+        }
         return new DiscoveryRecord(
-            tag.getLong(KEY_TIME), tag.getLong(KEY_TICK),
+            discoverer, tag.getLong(KEY_TIME), tag.getLong(KEY_TICK),
             source, dimension, biome,
             new BlockPos(posX, posY, posZ), weather,
-            entityUUID, entityNbt
+            entityUUID, entityNbt, global, shareChain
         );
     }
 
     private static CompoundTag writeRecord(DiscoveryRecord record) {
         CompoundTag tag = new CompoundTag();
-        tag.putLong(KEY_TIME, record.firstDiscoveryTime());
-        tag.putLong(KEY_TICK, record.firstDiscoveryTick());
+        tag.putUUID(KEY_DISCOVERER, record.discoverer());
+        tag.putLong(KEY_TIME, record.realTime());
+        tag.putLong(KEY_TICK, record.gameTick());
         tag.putString(KEY_SOURCE, IdentifierUtils.toString(record.source().id()));
         tag.putString(KEY_DIMENSION, record.dimension() != null ? IdentifierUtils.toString(record.dimension()) : "");
         tag.putString(KEY_BIOME, record.biome() != null ? IdentifierUtils.toString(record.biome()) : "");
@@ -116,6 +139,12 @@ public final class SavedDataDiscoveryStorage extends SavedData {
         tag.putString(KEY_WEATHER, record.weather().name());
         tag.putUUID(KEY_ENTITY_UUID, record.entityUUID());
         tag.put(KEY_ENTITY_NBT, record.entityNbt());
+        tag.putBoolean(KEY_GLOBAL, record.global());
+        ListTag chainTag = new ListTag();
+        for (UUID sharer : record.shareChain()) {
+            chainTag.add(new IntArrayTag(UUIDUtil.uuidToIntArray(sharer)));
+        }
+        tag.put(KEY_SHARE_CHAIN, chainTag);
         return tag;
     }
 
@@ -139,7 +168,25 @@ public final class SavedDataDiscoveryStorage extends SavedData {
         if (playerData.putIfAbsent(entityType, record) != null) {
             return false;
         }
+        if (record.discoverer().equals(playerUUID)) {
+            stats.append(entityType, record);
+        }
         setDirty();
         return true;
+    }
+
+    /**
+     * UUIDs of all players that have a pool.
+     */
+    public Set<UUID> players() {
+        return data.keySet();
+    }
+
+    /**
+     * Resident global discovery statistics, derived at load and maintained by {@link #put}
+     * (genuine discoveries only: discoverer must be the pool owner).
+     */
+    public GlobalDiscoveryStats stats() {
+        return stats;
     }
 }

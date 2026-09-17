@@ -11,14 +11,21 @@ import org.lwjgl.glfw.GLFW;
 @ClientOnly
 public final class KeyMappingManager {
     public static final KeyMapping OPEN_BIOLOGY_DICTIONARY_SCREEN = new KeyMapping(Lang.KEY_OPEN_HANDBOOK, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_GRAVE_ACCENT, Lang.KEY_CATEGORY);
+    public static final KeyMapping STEAL_INVENTORY = new KeyMapping(Lang.KEY_STEAL_INVENTORY, InputConstants.Type.KEYSYM, InputConstants.UNKNOWN.getValue(), Lang.KEY_CATEGORY);
     public static final KeyMapping TOGGLE_DEBUG = new KeyMapping(Lang.KEY_DEBUG, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_ALT, Lang.KEY_CATEGORY);
 
     public static void init() {
         KeyMappingRegistry.registerKeyMapping(OPEN_BIOLOGY_DICTIONARY_SCREEN);
+        KeyMappingRegistry.registerKeyMapping(STEAL_INVENTORY);
         ClientEventRegistry.registerEndTick(client -> {
             while (OPEN_BIOLOGY_DICTIONARY_SCREEN.consumeClick()) {
                 if (client.player != null) {
                     BiologyDictionaryEvent.openBookScreen(client);
+                }
+            }
+            while (STEAL_INVENTORY.consumeClick()) {
+                if (client.player != null) {
+                    BiologyDictionaryEvent.stealInventoryFromCrosshair(client);
                 }
             }
         });
