@@ -327,7 +327,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
 
         private boolean isClickable() {
-            return ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities() || isDiscoveredOrCreative();
+            return BdEntityOverviewScreen.canOpen(entry);
         }
 
         @Override

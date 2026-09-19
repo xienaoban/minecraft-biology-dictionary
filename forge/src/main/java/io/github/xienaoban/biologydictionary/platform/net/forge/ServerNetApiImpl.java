@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform.net.forge;
 
 import dev.architectury.networking.NetworkManager;
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.PacketUtil;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
@@ -10,6 +11,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.ConnectionData;
+import net.minecraftforge.network.NetworkHooks;
 
 @SuppressWarnings("unused")
 public final class ServerNetApiImpl {
@@ -34,5 +37,10 @@ public final class ServerNetApiImpl {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         packet.write(buf);
         NetworkManager.sendToPlayer(player, id, buf);
+    }
+
+    public static boolean canSend(ServerPlayer player, Class<? extends Packet> packetClass) {
+        ConnectionData connectionData = NetworkHooks.getConnectionData(player.connection.connection);
+        return connectionData == null || connectionData.getModList().contains(BiologyDictionary.MOD_ID);
     }
 }

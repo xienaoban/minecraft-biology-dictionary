@@ -43,7 +43,6 @@ dependencies {
 
     // SnakeYAML for config file parsing
     modImplementation "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
-    include "org.yaml:snakeyaml:${rootProject.snakeyaml_version}"
 
     // JEI API (optional compatibility)
     compileOnly "mezz.jei:jei-${rootProject.minecraft_version}-common-api:${rootProject.jei_version}"
