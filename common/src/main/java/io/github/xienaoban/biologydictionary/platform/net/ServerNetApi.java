@@ -16,5 +16,10 @@ public final class ServerNetApi {
         throw new AssertionError();
     }
 
+    @ExpectPlatform
+    public static boolean canSend(ServerPlayer player, Class<? extends Packet> packetClass) {
+        throw new AssertionError();
+    }
+
     public record Context(MinecraftServer server, ServerPlayer player) {}
 }

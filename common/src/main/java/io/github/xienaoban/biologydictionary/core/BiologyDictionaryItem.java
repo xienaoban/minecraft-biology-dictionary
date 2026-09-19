@@ -171,15 +171,15 @@ public final class BiologyDictionaryItem {
 
     private static String createWritablePageString() {
         return """
-                §l%s§2§l%s
-                
-                §r§0%s
-                
-                Modrinth: §9§n%s
-                
-                CurseForge: §9§n%s
-                
-                GitHub: §9§n%s
+                \u00a7l%1$s\u00a72\u00a7l%2$s
+
+                \u00a7r\u00a70%3$s
+
+                Modrinth: \u00a79\u00a7n%4$s
+
+                CurseForge: \u00a79\u00a7n%5$s
+
+                GitHub: \u00a79\u00a7n%6$s
                 """
                 .formatted(
                         trans(Lang.TEXT_MOD_NAME_IS),
