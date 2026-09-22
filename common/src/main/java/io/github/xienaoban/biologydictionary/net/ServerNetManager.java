@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
 import io.github.xienaoban.biologydictionary.net.payload.*;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,7 +18,7 @@ import java.util.UUID;
 public final class ServerNetManager {
     public static void sendCenteredMessage(ServerPlayer player, Component message) {
         if (!ServerNetApi.canSend(player, SendCenteredMessagePacket.class)) {
-            player.sendOverlayMessage(TextUtils.withFallbacks(message, player));
+            PlayerUtils.showClientCenteredMessage(player, TextUtils.withFallbacks(message, player));
             return;
         }
         ServerNetApi.send(player, new SendCenteredMessagePacket(message));

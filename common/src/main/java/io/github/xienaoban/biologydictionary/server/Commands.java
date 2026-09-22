@@ -15,14 +15,11 @@ import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.IdentifierArgument;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 
-import java.net.URI;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.List;
@@ -88,13 +85,9 @@ public final class Commands {
     }
 
     private static Component createClientModRequiredMessage() {
-        Component modName = TextUtils.translate(Lang.TEXT_MOD_NAME_WITH_BRACKETS)
-                .withStyle(ChatFormatting.GREEN)
-                .withStyle(style -> style
-                        .withHoverEvent(new HoverEvent.ShowText(
-                                TextUtils.translate(Lang.TEXT_CLICK_TO_MODRINTH)))
-                        .withClickEvent(new ClickEvent.OpenUrl(
-                                URI.create(BiologyDictionary.MODRINTH_PAGE))));
+        Component modName = TextUtils.translate(Lang.TEXT_MOD_NAME_WITH_BRACKETS).withStyle(ChatFormatting.GREEN);
+        modName = TextUtils.withHoverShowText(modName, TextUtils.translate(Lang.TEXT_CLICK_TO_MODRINTH));
+        modName = TextUtils.withClickOpenUrl(modName, BiologyDictionary.MODRINTH_PAGE);
         return TextUtils.translate(Lang.TEXT_OVERVIEW_REQUIRES_CLIENT_MOD, modName)
                 .withStyle(ChatFormatting.YELLOW);
     }

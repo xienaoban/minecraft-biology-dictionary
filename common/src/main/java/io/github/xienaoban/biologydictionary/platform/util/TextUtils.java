@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.platform.util;
 import io.github.xienaoban.biologydictionary.Lang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.ComponentUtils;
@@ -13,6 +14,7 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,6 +77,22 @@ public final class TextUtils {
     public static <T extends Component> MutableComponent concat(
             Collection<? extends T> collection, Component separator, Function<T, Component> function) {
         return ComponentUtils.formatList(collection, separator, function);
+    }
+
+    public static MutableComponent withClickRunCommand(Component component, String command) {
+        return component.copy().withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand(command)));
+    }
+
+    public static MutableComponent withClickSuggestCommand(Component component, String command) {
+        return component.copy().withStyle(style -> style.withClickEvent(new ClickEvent.SuggestCommand(command)));
+    }
+
+    public static MutableComponent withClickOpenUrl(Component component, String url) {
+        return component.copy().withStyle(style -> style.withClickEvent(new ClickEvent.OpenUrl(URI.create(url))));
+    }
+
+    public static MutableComponent withHoverShowText(Component component, Component text) {
+        return component.copy().withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(text)));
     }
 
     public static MutableComponent withFallbacks(Component input) {
