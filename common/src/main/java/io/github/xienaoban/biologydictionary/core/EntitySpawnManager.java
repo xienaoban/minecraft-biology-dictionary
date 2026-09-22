@@ -287,7 +287,7 @@ public final class EntitySpawnManager {
             memberPoolId = buildContext.tarjanStack.pop();
             buildContext.tarjanStackSet.remove(memberPoolId);
             componentPools.add(memberPoolId);
-            if (memberPoolId.toString().compareTo(componentId.toString()) < 0) {
+            if (IdentifierUtils.toString(memberPoolId).compareTo(IdentifierUtils.toString(componentId)) < 0) {
                 componentId = memberPoolId;
             }
         } while (!memberPoolId.equals(poolId));

@@ -4,8 +4,8 @@ import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionary
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.ClientMannequin;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -37,7 +37,7 @@ public final class EntityDisplay {
     }
 
     public EntityDisplay(EntityDictionaryEntry entry, Entity target) {
-        this(entry, target.level(), target);
+        this(entry, EntityUtils.getLevel(target), target);
     }
 
     private EntityDisplay(EntityDictionaryEntry entry, Level level, Entity target) {
@@ -93,7 +93,7 @@ public final class EntityDisplay {
     }
 
     private ClientMannequin createPlayerPlaceholder(Level level, Entity target) {
-        ClientMannequin m = new ClientMannequin(level, Minecraft.getInstance().playerSkinRenderCache());
+        ClientMannequin m = new ClientMannequin(level, ClientUtils.getClient().playerSkinRenderCache());
         EntityUtils.assignRenderOnlyEntityId(m);
         EntityUtils.setupForDisplay(m);
         if (target != null) {
@@ -108,7 +108,7 @@ public final class EntityDisplay {
     }
 
     private void replaceWithPlaceholder() {
-        model = createPlaceholder(model.level());
+        model = createPlaceholder(EntityUtils.getLevel(model));
         cache = new ScreenRenderingContext.EntityRenderingCache();
     }
 

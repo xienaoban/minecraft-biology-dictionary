@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.skill.NoPermissionException;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,7 +33,7 @@ public record RequestEntityTargetedSkillPacket(int entityId, EntityTargetedSkill
 
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
-        Entity entity = ctx.player().level().getEntity(entityId);
+        Entity entity = EntityUtils.getLevel(ctx.player()).getEntity(entityId);
         if (entity == null) {
             LOGGER.warn("Entity ID not found: {}", entityId);
             BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_ID));

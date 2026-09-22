@@ -9,6 +9,7 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.player.AbstractClientPlayer;
 
@@ -33,7 +34,7 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
         list.addAll(
                 ClientUtils.getClientLevel().players().stream()
                         .filter(p -> p != player)
-                        .sorted(Comparator.comparing(o -> o.getName().getString()))
+                        .sorted(Comparator.comparing(EntityUtils::getNameString))
                         .map(PlayerSelectorWidget::new)
                         .toList()
         );
@@ -80,7 +81,7 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
                         box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
             }
             ctx.renderPlayerFace(targetPlayer, box.getLeft() + 1F, box.getTop() + 1F);
-            ctx.renderText(targetPlayer.getName(), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
+            ctx.renderText(EntityUtils.getNameText(targetPlayer), Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(),
                     box.getLeft() + 11, box.getTop() + 3 + TXT_ASCII_TO);
         }
     }

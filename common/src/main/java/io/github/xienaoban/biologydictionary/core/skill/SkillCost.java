@@ -242,7 +242,7 @@ public final class SkillCost {
             PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
         }
         if (health != 0) {
-            EntityUtils.hurt(player, player.level().damageSources().wither(), health);
+            EntityUtils.hurt(player, EntityUtils.getLevel(player).damageSources().wither(), health);
             PlayerUtils.playLocalSound(player, SoundEvents.PLAYER_HURT, 0.5F, 1.0F);
         }
         if (satiety != 0) {
@@ -397,7 +397,7 @@ public final class SkillCost {
 
         public Map<String, Object> toMap() {
             Map<String, Object> map = new LinkedHashMap<>();
-            map.put("item", BuiltInRegistries.ITEM.getKey(item).toString());
+            map.put("item", IdentifierUtils.toString(BuiltInRegistries.ITEM.getKey(item)));
             if (count > 1) {
                 map.put("count", count);
             }
