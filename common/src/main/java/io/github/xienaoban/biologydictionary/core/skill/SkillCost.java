@@ -275,9 +275,7 @@ public final class SkillCost {
 
         for (ItemCost item : items) {
             ItemStack stack = item.toStack();
-            if (!PlayerUtils.getInventory(player).add(stack.copy())) {
-                player.drop(stack.copy(), false);
-            }
+            PlayerUtils.giveOrDrop(player, stack);
         }
     }
 
