@@ -11,12 +11,12 @@ import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -76,7 +76,7 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
 
             // Swing if INTERACT
             if (packet.record.source() == DiscoverySources.INTERACT) {
-                player.swing(InteractionHand.MAIN_HAND);
+                PlayerUtils.swingMainHand(player);
             }
 
             // Highlight the discovered entity for 4 seconds

@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -80,9 +81,7 @@ public final class BiologyDictionaryItem {
             return;
         }
         ItemStack book = createBook();
-        if (!player.addItem(book)) {
-            player.drop(book, false);
-        }
+        PlayerUtils.giveOrDrop(player, book);
     }
 
     /**
