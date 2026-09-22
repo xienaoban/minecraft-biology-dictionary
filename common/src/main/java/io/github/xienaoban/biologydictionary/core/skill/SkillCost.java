@@ -243,9 +243,7 @@ public final class SkillCost {
         }
 
         for (ItemStack item : items) {
-            if (!PlayerUtils.getInventory(player).add(item.copy())) {
-                player.drop(item.copy(), false);
-            }
+            PlayerUtils.giveOrDrop(player, item);
         }
     }
 
