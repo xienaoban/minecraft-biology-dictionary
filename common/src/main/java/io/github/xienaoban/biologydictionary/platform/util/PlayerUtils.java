@@ -7,12 +7,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuConstructor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -61,6 +63,16 @@ public final class PlayerUtils {
 
     public static Inventory getInventory(Player player) {
         return player.getInventory();
+    }
+
+    public static void giveOrDrop(Player player, ItemStack stack) {
+        if (!player.addItem(stack.copy())) {
+            dropItem(player, stack);
+        }
+    }
+
+    public static void dropItem(Player player, ItemStack stack) {
+        player.drop(stack, false);
     }
 
     public static int getExperiencePoint(Player player) {
@@ -155,6 +167,14 @@ public final class PlayerUtils {
         player.containerMenu = Objects.requireNonNull(menu);
         mixinPlayer.biologydictionary$invokeInitMenu(menu);
         return counter;
+    }
+
+    public static void swingHand(Player player, InteractionHand hand) {
+        player.swing(hand);
+    }
+
+    public static void swingMainHand(Player player) {
+        swingHand(player, InteractionHand.MAIN_HAND);
     }
 
     public static boolean isWithinInteractionRange(Player player, Entity entity, double distance) {
