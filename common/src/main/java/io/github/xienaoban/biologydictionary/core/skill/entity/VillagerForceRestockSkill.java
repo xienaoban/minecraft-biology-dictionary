@@ -107,6 +107,7 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
                 factor * base.getHealth(),
                 factor * base.getSatiety(),
                 base.getItems().stream()
+                        .filter(i -> factor > 0)
                         .map(i -> new SkillCost.ItemCost(i.item(), factor * i.count()))
                         .toList());
     }

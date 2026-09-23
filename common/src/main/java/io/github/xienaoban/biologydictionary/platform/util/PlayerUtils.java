@@ -76,8 +76,9 @@ public final class PlayerUtils {
     }
 
     public static void giveOrDrop(Player player, ItemStack stack) {
-        if (!player.addItem(stack.copy())) {
-            dropItem(player, stack);
+        ItemStack copy = stack.copy();
+        if (!player.addItem(copy)) {
+            dropItem(player, copy);
         }
     }
 
