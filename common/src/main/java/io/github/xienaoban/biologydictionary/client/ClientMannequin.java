@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.client;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -27,7 +28,7 @@ public final class ClientMannequin extends AbstractClientPlayer {
         this.skinLocation = DefaultPlayerSkin.getDefaultSkin(this.getUUID());
         this.modelName = DefaultPlayerSkin.getSkinModelName(this.getUUID());
         if (profile != null) {
-            Minecraft.getInstance().getSkinManager().registerSkins(profile, (type, location, texture) -> {
+            ClientUtils.getClient().getSkinManager().registerSkins(profile, (type, location, texture) -> {
                 if (type == MinecraftProfileTexture.Type.SKIN) {
                     this.skinLocation = location;
                 }

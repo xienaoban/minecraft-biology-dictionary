@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.mixin.entity.ServerPlayerIMixin;
 import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -56,6 +57,10 @@ public final class PlayerUtils {
         // The server sends commands filtered by permission level, so this is
         // a reliable way to check if the player has at least permission level 2.
         return ClientUtils.canUseDataGetCommand();
+    }
+
+    public static ServerLevel getServerLevel(ServerPlayer player) {
+        return player.serverLevel();
     }
 
     public static String getGameProfileName(GameProfile profile) {

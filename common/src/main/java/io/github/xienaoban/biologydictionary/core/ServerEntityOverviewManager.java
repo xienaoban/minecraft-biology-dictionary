@@ -37,7 +37,7 @@ public final class ServerEntityOverviewManager {
             return false;
         }
         EntityOverviewCache.CacheEntry cached = ws.getEntityOverviewCache()
-                .getOrCreate(entityType, player.serverLevel());
+                .getOrCreate(entityType, PlayerUtils.getServerLevel(player));
         ServerNetManager.sendEntityOverview(player, new SendEntityOverviewPacket(
                 EntityUtils.getEntityTypeIdName(entityType),
                 cached.isValid(), cached.vanillaNbt(), cached.extraNbt(), openScreen));

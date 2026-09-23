@@ -23,7 +23,7 @@ public final class ClientNetApiImpl {
             NetworkManager.registerReceiver(NetworkManager.Side.S2C, id, (buf, context) -> {
                 try {
                     T packet = factory.create(buf);
-                    Minecraft client = Minecraft.getInstance();
+                    Minecraft client = ClientUtils.getClient();
                     LocalPlayer player = ClientUtils.getClientPlayer(client);
                     if (player != context.getPlayer()) {
                         throw new AssertionError();
