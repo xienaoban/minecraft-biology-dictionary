@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
@@ -52,9 +53,9 @@ public record ReplyInventoryStealingScreenPacket(int counter, int entityId, int 
 
             SimpleContainer container = new SimpleContainer(packet.containerSize());
             InventoryStealingMenu menu = new InventoryStealingMenu(
-                    packet.counter(), ctx.player().getInventory(), livingEntity, container);
+                    packet.counter(), PlayerUtils.getInventory(ctx.player()), livingEntity, container);
             ctx.player().containerMenu = menu;
-            ClientUtils.setScreen(ctx.client(), new InventoryStealingScreen(menu, ctx.player().getInventory(), livingEntity));
+            ClientUtils.setScreen(ctx.client(), new InventoryStealingScreen(menu, PlayerUtils.getInventory(ctx.player()), livingEntity));
         }}
         CO.receive(this, ctx);
     }

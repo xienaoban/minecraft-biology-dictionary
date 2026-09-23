@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.xienaoban.biologydictionary.client.HighlightRenderer;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
-import net.minecraft.client.Minecraft;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
@@ -26,7 +26,7 @@ public abstract class LevelRendererMixin {
         if (cws != null && cws.getHighlightManager().hasAnyHighlighted()) {
             levelRenderState.shouldShowEntityOutlines = true;
         }
-        HighlightRenderer.submit(Minecraft.getInstance(),
+        HighlightRenderer.submit(ClientUtils.getClient(),
                 ((LevelRenderer) (Object) this).entityRenderDispatcher(),
                 poseStack, levelRenderState, submitNodeCollector);
     }

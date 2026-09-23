@@ -11,6 +11,7 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.CommonScreen;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.ElementScreen;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.RenderUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -413,7 +414,7 @@ public final class ScreenRenderingContext {
         return texts.stream()
                 .flatMap(component -> {
                     List<FormattedCharSequence> lines = getFont().split(component, TOOLTIP_WIDTH);
-                    return lines.isEmpty() ? Stream.of(Component.empty().getVisualOrderText()) : lines.stream();
+                    return lines.isEmpty() ? Stream.of(TextUtils.empty().getVisualOrderText()) : lines.stream();
                 })
                 .toList();
     }

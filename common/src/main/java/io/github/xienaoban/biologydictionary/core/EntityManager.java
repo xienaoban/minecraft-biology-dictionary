@@ -326,7 +326,7 @@ public final class EntityManager {
     }
 
     public boolean isVanillaEntity(EntityType<?> entityType) {
-        return IdentifierUtils.isMc(EntityType.getKey(entityType));
+        return IdentifierUtils.isMc(EntityUtils.getEntityTypeId(entityType));
     }
 
     /**
@@ -379,8 +379,8 @@ public final class EntityManager {
 
         public EntityType<?> getType() { return type; }
         public Optional<Class<? extends Entity>> getClazz() { return Optional.ofNullable(clazz); }
-        public Identifier getId() { return EntityType.getKey(getType()); }
-        public String getStringId() { return getId().toString(); }
+        public Identifier getId() { return EntityUtils.getEntityTypeId(getType()); }
+        public String getStringId() { return IdentifierUtils.toString(getId()); }
 
         public int getSortId() { return sortId; }
         public void setSortId(int sortId) { this.sortId = sortId; }

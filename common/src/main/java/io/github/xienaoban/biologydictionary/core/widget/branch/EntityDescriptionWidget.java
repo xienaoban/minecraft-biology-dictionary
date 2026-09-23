@@ -40,7 +40,7 @@ public final class EntityDescriptionWidget extends EntityPropertyWidget<Entity> 
 
     private static final int COLUMNS = Page.COLUMNS;
     private static final int MAX_VISIBLE_LINES = 2;
-    private static final FormattedCharSequence ELLIPSIS = Component.literal("... ...").getVisualOrderText();
+    private static final FormattedCharSequence ELLIPSIS = TextUtils.literal("... ...").getVisualOrderText();
 
     private final Component fullDescription;
     private final List<FormattedCharSequence> lines;
@@ -99,7 +99,7 @@ public final class EntityDescriptionWidget extends EntityPropertyWidget<Entity> 
 
         for (String key : keys) {
             if (TextUtils.hasTranslation(key)) {
-                return Component.translatable(key);
+                return TextUtils.translate(key);
             }
         }
 
@@ -108,7 +108,7 @@ public final class EntityDescriptionWidget extends EntityPropertyWidget<Entity> 
             Identifier spawnEggId = BuiltInRegistries.ITEM.getKey(spawnEgg);
             String spawnEggLoreKey = "lore." + spawnEggId.getNamespace() + "." + spawnEggId.getPath();
             if (TextUtils.hasTranslation(spawnEggLoreKey)) {
-                return Component.translatable(spawnEggLoreKey);
+                return TextUtils.translate(spawnEggLoreKey);
             }
         }
 

@@ -9,6 +9,7 @@ import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
@@ -25,7 +26,7 @@ public class BdEntityDetailScreen extends AbstractBiologyDictionaryScreen {
     private final EntityProperties<? extends Entity> properties;
 
     public BdEntityDetailScreen(EntityProperties<? extends Entity> properties) {
-        super(properties.entity().getType().getDescription().copy());
+        super(EntityUtils.getEntityTypeNameText(properties.entity().getType()).copy());
         this.entity = properties.entity();
         this.properties = properties;
         initBookmarks();
