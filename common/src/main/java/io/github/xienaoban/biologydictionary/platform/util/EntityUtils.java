@@ -129,17 +129,7 @@ public final class EntityUtils {
     }
 
     public static Entity create(CompoundTag nbt, Level level) {
-        Entity entity = EntityType.create(nbt, level).orElse(null);
-        // All entities created in this mod are for rendering only.
-        assignRenderOnlyEntityId(entity);
-        return entity;
-    }
-
-    /**
-     * @see net.minecraft.world.level.BaseSpawner#SET_DISPLAY_ENTITY_ID
-     */
-    public static void assignRenderOnlyEntityId(Entity entity) {
-        if (entity != null) { entity.setId(-1); }
+        return EntityType.create(nbt, level).orElse(null);
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(E entity) {
@@ -191,7 +181,7 @@ public final class EntityUtils {
     // ============================================================================ //
 
     public static String getNameString(Entity entity) {
-        return entity.getScoreboardName();
+        return entity.getName().getString();
     }
 
     public static Component getNameText(Entity entity) {

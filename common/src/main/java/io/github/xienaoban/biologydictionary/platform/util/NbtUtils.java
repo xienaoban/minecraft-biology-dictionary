@@ -96,7 +96,10 @@ public final class NbtUtils {
     }
 
     public static Byte getByteOr(CompoundTag tag, String key, Byte fallback) {
-        return tag.contains(key, Tag.TAG_BYTE) ? tag.getByte(key) : fallback;
+        if (tag.contains(key, Tag.TAG_BYTE)) {
+            return tag.getByte(key);
+        }
+        return fallback;
     }
 
     public static byte getByteOr(CompoundTag tag, String key, byte fallback) {
@@ -115,7 +118,10 @@ public final class NbtUtils {
     }
 
     public static Short getShortOr(CompoundTag tag, String key, Short fallback) {
-        return tag.contains(key, Tag.TAG_SHORT) ? tag.getShort(key) : fallback;
+        if (tag.contains(key, Tag.TAG_SHORT)) {
+            return tag.getShort(key);
+        }
+        return fallback;
     }
 
     public static short getShortOr(CompoundTag tag, String key, short fallback) {
@@ -134,7 +140,10 @@ public final class NbtUtils {
     }
 
     public static Integer getIntOr(CompoundTag tag, String key, Integer fallback) {
-        return tag.contains(key, Tag.TAG_INT) ? tag.getInt(key) : fallback;
+        if (tag.contains(key, Tag.TAG_INT)) {
+            return tag.getInt(key);
+        }
+        return fallback;
     }
 
     public static int getIntOr(CompoundTag tag, String key, int fallback) {
@@ -153,7 +162,10 @@ public final class NbtUtils {
     }
 
     public static Long getLongOr(CompoundTag tag, String key, Long fallback) {
-        return tag.contains(key, Tag.TAG_LONG) ? tag.getLong(key) : fallback;
+        if (tag.contains(key, Tag.TAG_LONG)) {
+            return tag.getLong(key);
+        }
+        return fallback;
     }
 
     public static long getLongOr(CompoundTag tag, String key, long fallback) {
@@ -172,7 +184,10 @@ public final class NbtUtils {
     }
 
     public static Float getFloatOr(CompoundTag tag, String key, Float fallback) {
-        return tag.contains(key, Tag.TAG_FLOAT) ? tag.getFloat(key) : fallback;
+        if (tag.contains(key, Tag.TAG_FLOAT)) {
+            return tag.getFloat(key);
+        }
+        return fallback;
     }
 
     public static float getFloatOr(CompoundTag tag, String key, float fallback) {
@@ -191,7 +206,10 @@ public final class NbtUtils {
     }
 
     public static Double getDoubleOr(CompoundTag tag, String key, Double fallback) {
-        return tag.contains(key, Tag.TAG_DOUBLE) ? tag.getDouble(key) : fallback;
+        if (tag.contains(key, Tag.TAG_DOUBLE)) {
+            return tag.getDouble(key);
+        }
+        return fallback;
     }
 
     public static double getDoubleOr(CompoundTag tag, String key, double fallback) {
@@ -210,7 +228,10 @@ public final class NbtUtils {
     }
 
     public static Boolean getBooleanOr(CompoundTag tag, String key, Boolean fallback) {
-        return tag.contains(key, Tag.TAG_BYTE) ? tag.getBoolean(key) : fallback;
+        if (tag.contains(key, Tag.TAG_BYTE)) {
+            return tag.getBoolean(key);
+        }
+        return fallback;
     }
 
     public static boolean getBooleanOr(CompoundTag tag, String key, boolean fallback) {
@@ -290,12 +311,21 @@ public final class NbtUtils {
     // ==================== UUID ====================
 
     public static UUID getUuid(CompoundTag tag, String key) {
-        int[] value = tag.getIntArray(key);
+        int[] value = getIntArray(tag, key);
+        if (value.length != 4) {
+            throw missing(key);
+        }
         return UUIDUtil.uuidFromIntArray(value);
     }
 
     public static UUID getUuidOr(CompoundTag tag, String key, UUID fallback) {
-        return tag.contains(key, Tag.TAG_INT_ARRAY) ? UUIDUtil.uuidFromIntArray(tag.getIntArray(key)) : fallback;
+        if (tag.contains(key, Tag.TAG_INT_ARRAY)) {
+            int[] value = tag.getIntArray(key);
+            if (value.length == 4) {
+                return UUIDUtil.uuidFromIntArray(value);
+            }
+        }
+        return fallback;
     }
 
     public static void putUuid(CompoundTag tag, String key, UUID uuid) {
@@ -306,7 +336,11 @@ public final class NbtUtils {
         ListTag list = getList(tag, key);
         List<UUID> result = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
-            result.add(UUIDUtil.uuidFromIntArray(list.getIntArray(i)));
+            int[] value = list.getIntArray(i);
+            if (value.length != 4) {
+                throw missing(key);
+            }
+            result.add(UUIDUtil.uuidFromIntArray(value));
         }
         return result;
     }
@@ -318,7 +352,11 @@ public final class NbtUtils {
         }
         List<UUID> result = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
-            result.add(UUIDUtil.uuidFromIntArray(list.getIntArray(i)));
+            int[] uuid = list.getIntArray(i);
+            if (uuid.length != 4) {
+                return fallback;
+            }
+            result.add(UUIDUtil.uuidFromIntArray(uuid));
         }
         return result;
     }

@@ -15,7 +15,6 @@ import net.minecraft.world.entity.Mob;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class MobSpawnProperty extends AbstractProperty<Mob, MobSpawnProperty.Data> {
     public static final Factory<Mob> FACTORY = MobSpawnProperty::new;
@@ -56,13 +55,17 @@ public class MobSpawnProperty extends AbstractProperty<Mob, MobSpawnProperty.Dat
         List<ResourceLocation> biomes = new ArrayList<>();
         ListTag biomeList = NbtUtils.getListOr(tag, BIOMES_KEY, new ListTag());
         for (Tag t : biomeList) {
-            biomes.add(Objects.requireNonNull(IdentifierUtils.fromNbt((StringTag) t)));
+            if (t instanceof StringTag st) {
+                biomes.add(IdentifierUtils.fromNbt(st));
+            }
         }
 
         List<ResourceLocation> structures = new ArrayList<>();
         ListTag structureList = NbtUtils.getListOr(tag, STRUCTURES_KEY, new ListTag());
         for (Tag t : structureList) {
-            structures.add(Objects.requireNonNull(IdentifierUtils.fromNbt((StringTag) t)));
+            if (t instanceof StringTag st) {
+                structures.add(IdentifierUtils.fromNbt(st));
+            }
         }
 
         setVal(new Data(biomes, structures));
