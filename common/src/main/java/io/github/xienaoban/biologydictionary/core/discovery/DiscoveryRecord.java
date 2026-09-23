@@ -1,17 +1,16 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
+import io.github.xienaoban.biologydictionary.platform.util.LevelUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.storage.TagValueOutput;
 
 import java.util.List;
 import java.util.Objects;
@@ -74,19 +73,17 @@ public record DiscoveryRecord(
     public static DiscoveryRecord standard(ServerPlayer discoverer, Entity entity, DiscoverySource source) {
         Level level = entity.level();
         BlockPos pos = entity.blockPosition();
-        TagValueOutput output = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
-        entity.saveWithoutId(output);
         return new DiscoveryRecord(
                 discoverer.getUUID(),
                 System.currentTimeMillis(),
                 level.getGameTime(),
                 source,
-                level.dimension().identifier(),
-                level.getBiome(pos).unwrapKey().map(ResourceKey::identifier).orElse(NO_ID),
+                IdentifierUtils.getId(level.dimension()),
+                level.getBiome(pos).unwrapKey().map(IdentifierUtils::getId).orElse(NO_ID),
                 pos,
-                level.getBiome(pos).value().getPrecipitationAt(pos, level.getSeaLevel()),
+                LevelUtils.getWeatherAt(level, pos),
                 entity.getUUID(),
-                keepAppearanceOnly(output.buildResult()),
+                keepAppearanceOnly(EntityUtils.getNbt(entity)),
                 false,
                 List.of()
         );

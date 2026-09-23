@@ -46,7 +46,7 @@ public final class VariantProperty<E extends Entity, T> extends AbstractProperty
     public void writeTo(CompoundTag nbt) {
         if (getVal() != null && getVal().unwrapKey().isPresent()) {
             ResourceKey<?> resourceKey = getVal().unwrapKey().get();
-            nbt.store(name(), IdentifierUtils.codec(), resourceKey.identifier());
+            nbt.store(name(), IdentifierUtils.codec(), IdentifierUtils.getId(resourceKey));
         } else {
             LOGGER.warn("Unknown variant key: {}", getVal());
         }

@@ -42,7 +42,7 @@ public final class ServerUtils {
         }
         ServerPlayer online = server.getPlayerList().getPlayer(playerId);
         if (online != null) {
-            return Optional.of(online.getGameProfile().name());
+            return Optional.of(PlayerUtils.getGameProfileName(online.getGameProfile()));
         }
         return server.services().nameToIdCache().get(playerId).map(NameAndId::name);
     }
