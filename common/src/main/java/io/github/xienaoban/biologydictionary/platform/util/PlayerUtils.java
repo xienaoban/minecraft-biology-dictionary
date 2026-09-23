@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSoundEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.sounds.SoundEvent;
@@ -54,6 +55,10 @@ public final class PlayerUtils {
 
     public static boolean isOp(Player player) {
         return player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
+    }
+
+    public static ServerLevel getServerLevel(ServerPlayer player) {
+        return player.level();
     }
 
     public static String getGameProfileName(GameProfile profile) {

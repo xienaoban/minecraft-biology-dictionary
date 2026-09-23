@@ -141,10 +141,19 @@ public final class EntityUtils {
         return entity;
     }
 
-    public static Optional<Entity> create(ValueInput valueInput, Level level, EntitySpawnReason reason) {
-        Optional<Entity> entity = EntityType.create(valueInput, level, new EntitySpawnRequest(reason, true));
+    public static Entity create(CompoundTag nbt, Level level) {
+        return create(nbt, level, EntitySpawnReason.LOAD);
+    }
+
+    public static Entity create(CompoundTag nbt, Level level, EntitySpawnReason reason) {
+        ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), nbt);
+        return create(valueInput, level, reason);
+    }
+
+    public static Entity create(ValueInput valueInput, Level level, EntitySpawnReason reason) {
+        Entity entity = EntityType.create(valueInput, level, new EntitySpawnRequest(reason, true)).orElse(null);
         // All entities created in this mod are for rendering only.
-        entity.ifPresent(EntityUtils::assignRenderOnlyEntityId);
+        assignRenderOnlyEntityId(entity);
         return entity;
     }
 
