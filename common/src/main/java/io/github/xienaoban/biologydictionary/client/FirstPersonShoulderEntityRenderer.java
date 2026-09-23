@@ -5,6 +5,7 @@ import com.mojang.math.Axis;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -110,7 +111,7 @@ public final class FirstPersonShoulderEntityRenderer {
         if (nbt == null || nbt.isEmpty()) {
             entity = null;
         } else {
-            Entity createdEntity = EntityType.create(nbt, player.level()).orElse(null);
+            Entity createdEntity = EntityType.create(nbt, EntityUtils.getLevel(player)).orElse(null);
             if (createdEntity == null || !(createdEntity instanceof LivingEntity)) {
                 entity = null;
             } else {

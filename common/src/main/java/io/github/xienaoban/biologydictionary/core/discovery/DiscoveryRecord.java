@@ -71,7 +71,7 @@ public record DiscoveryRecord(
      * A standard record captured from a live entity right now, discovered by the player.
      */
     public static DiscoveryRecord standard(ServerPlayer discoverer, Entity entity, DiscoverySource source) {
-        Level level = entity.level();
+        Level level = EntityUtils.getLevel(entity);
         BlockPos pos = entity.blockPosition();
         return new DiscoveryRecord(
                 discoverer.getUUID(),

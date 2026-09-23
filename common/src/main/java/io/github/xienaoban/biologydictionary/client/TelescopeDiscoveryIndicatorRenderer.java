@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -62,7 +63,7 @@ public final class TelescopeDiscoveryIndicatorRenderer {
 
         double dist = getRangingDistance(player, telescopeManager, debugMode);
         if (dist >= 0) {
-            Component text = Component.literal(String.format("%.0fm", dist));
+            Component text = TextUtils.literal(String.format("%.0fm", dist));
             int textY = (int) barY + BAR_HEIGHT - 3;
             guiGraphics.drawCenteredString(client.font, text, (int) centerX, textY, TEXT_COLOR);
         }

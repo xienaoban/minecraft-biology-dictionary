@@ -288,7 +288,7 @@ public final class EntitySpawnManager {
             memberPoolId = buildContext.tarjanStack.pop();
             buildContext.tarjanStackSet.remove(memberPoolId);
             componentPools.add(memberPoolId);
-            if (memberPoolId.toString().compareTo(componentId.toString()) < 0) {
+            if (IdentifierUtils.toString(memberPoolId).compareTo(IdentifierUtils.toString(componentId)) < 0) {
                 componentId = memberPoolId;
             }
         } while (!memberPoolId.equals(poolId));
@@ -803,7 +803,7 @@ public final class EntitySpawnManager {
                 LOGGER.warn("Invalid entity type '{}' in spawn override data pack, skipping.", entityStr);
                 continue;
             }
-            EntityType<?> entityType = EntityType.byString(entityId.toString()).orElse(null);
+            EntityType<?> entityType = EntityType.byString(IdentifierUtils.toString(entityId)).orElse(null);
             if (entityType == null) {
                 LOGGER.warn("Unknown entity type '{}' in spawn override data pack, skipping.", entityId);
                 continue;

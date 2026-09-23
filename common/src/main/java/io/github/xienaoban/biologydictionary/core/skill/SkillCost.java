@@ -214,7 +214,7 @@ public final class SkillCost {
             PlayerUtils.playLocalSound(player, SoundEvents.EXPERIENCE_ORB_PICKUP, 0.5F, 0.01F);
         }
         if (health != 0) {
-            EntityUtils.hurt(player, player.level().damageSources().wither(), health);
+            EntityUtils.hurt(player, EntityUtils.getLevel(player).damageSources().wither(), health);
             PlayerUtils.playLocalSound(player, SoundEvents.PLAYER_HURT, 0.5F, 1.0F);
         }
         if (satiety != 0) {
@@ -310,7 +310,7 @@ public final class SkillCost {
     private static Map<String, Object> itemStackToMap(ItemStack stack) {
         Map<String, Object> map = new java.util.LinkedHashMap<>();
         ResourceLocation key = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        map.put("item", key.toString());
+        map.put("item", IdentifierUtils.toString(key));
         if (stack.getCount() > 1) {
             map.put("count", stack.getCount());
         }

@@ -12,6 +12,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.npc.Villager;
@@ -250,7 +251,7 @@ public final class VillagerScheduleWidget extends EntityPropertyStandardWidget<V
 
     private TimelineEntry[] getTimelineEntries() {
         TimelineEntry[] timeline;
-        if (e().isBaby()) {
+        if (EntityUtils.isBaby(e())) {
             timeline = BABY_ZERO;
         } else if (Objects.equals(VillagerProfession.NONE,
                 e().getVillagerData().getProfession())) {

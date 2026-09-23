@@ -68,7 +68,7 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
             expPoints = base.getExperiencePoints();
             expLevels = base.getExperienceLevels();
             expPointRequired = base.getExperiencePointRequired();
-            expLevelRequired = base.getExperienceLevelRequired() * Math.max(1, (int) entity.getMaxHealth() / 20);
+            expLevelRequired = base.getExperienceLevelRequired() * Math.max(1, (int) EntityUtils.getMaxHealth(entity) / 20);
             health = base.getHealth();
             satiety = base.getSatiety();
             items = base.getItems();

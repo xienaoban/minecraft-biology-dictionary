@@ -52,7 +52,7 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
     private final EntityProperties<Entity> properties;
 
     public BdEntityOverviewScreen(EntityDictionaryEntry entry) {
-        super(TextUtils.translate(Lang.SCREEN_ENTITY_OVERVIEW_TITLE, entry.getType().getDescription()));
+        super(TextUtils.translate(Lang.SCREEN_ENTITY_OVERVIEW_TITLE, EntityUtils.getEntityTypeNameText(entry.getType())));
         this.entityType = entry.getType();
         this.entity = createEntity(entry);
         this.properties = entity == null ? null : new EntityProperties<>(entity);
@@ -133,7 +133,7 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
         private static final float V_PADDING = 0F;
         private static final float LINE_SPACING = 1F;
         private static final int MAX_VISIBLE_LINES = 2;
-        private static final FormattedCharSequence ELLIPSIS = Component.literal("... ...").getVisualOrderText();
+        private static final FormattedCharSequence ELLIPSIS = TextUtils.literal("... ...").getVisualOrderText();
 
         private final List<FormattedCharSequence> lines;
 
@@ -141,7 +141,7 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
             super(1, Page.COLUMNS);
             Component description = TextUtils.concat(List.of(
                     TextUtils.literal(entry.getStringId()),
-                    TextUtils.translate(Lang.TEXT_ENTITY_CANNOT_OVERVIEW)), Component.literal("\n"));
+                    TextUtils.translate(Lang.TEXT_ENTITY_CANNOT_OVERVIEW)), TextUtils.literal("\n"));
             this.lines = FontUtils.toLines(description, FontUtils.getGlobalFont(),
                     (int) (Widget.calcWidth(Page.COLUMNS) / TEXT_SCALE));
         }
