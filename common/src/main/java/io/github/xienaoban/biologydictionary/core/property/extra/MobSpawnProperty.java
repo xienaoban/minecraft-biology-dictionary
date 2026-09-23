@@ -55,13 +55,17 @@ public class MobSpawnProperty extends AbstractProperty<Mob, MobSpawnProperty.Dat
         List<Identifier> biomes = new ArrayList<>();
         ListTag biomeList = NbtUtils.getListOr(tag, BIOMES_KEY, new ListTag());
         for (Tag t : biomeList) {
-            biomes.add(IdentifierUtils.fromNbt((StringTag) t));
+            if (t instanceof StringTag st) {
+                biomes.add(IdentifierUtils.fromNbt(st));
+            }
         }
 
         List<Identifier> structures = new ArrayList<>();
         ListTag structureList = NbtUtils.getListOr(tag, STRUCTURES_KEY, new ListTag());
         for (Tag t : structureList) {
-            structures.add(IdentifierUtils.fromNbt((StringTag) t));
+            if (t instanceof StringTag st) {
+                structures.add(IdentifierUtils.fromNbt(st));
+            }
         }
 
         setVal(new Data(biomes, structures));

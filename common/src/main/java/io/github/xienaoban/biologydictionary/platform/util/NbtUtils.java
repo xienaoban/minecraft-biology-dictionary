@@ -260,12 +260,15 @@ public final class NbtUtils {
 
     public static UUID getUuid(CompoundTag tag, String key) {
         int[] value = tag.getIntArray(key).orElseThrow(() -> missing(key));
+        if (value.length != 4) {
+            throw missing(key);
+        }
         return UUIDUtil.uuidFromIntArray(value);
     }
 
     public static UUID getUuidOr(CompoundTag tag, String key, UUID fallback) {
         int[] value = tag.getIntArray(key).orElse(null);
-        return value == null ? fallback : UUIDUtil.uuidFromIntArray(value);
+        return value == null || value.length != 4 ? fallback : UUIDUtil.uuidFromIntArray(value);
     }
 
     public static void putUuid(CompoundTag tag, String key, UUID uuid) {
@@ -277,6 +280,9 @@ public final class NbtUtils {
         List<UUID> result = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
             int[] value = list.getIntArray(i).orElseThrow(() -> missing(key));
+            if (value.length != 4) {
+                throw missing(key);
+            }
             result.add(UUIDUtil.uuidFromIntArray(value));
         }
         return result;
@@ -290,7 +296,7 @@ public final class NbtUtils {
         List<UUID> result = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
             int[] uuid = list.getIntArray(i).orElse(null);
-            if (uuid == null) {
+            if (uuid == null || uuid.length != 4) {
                 return fallback;
             }
             result.add(UUIDUtil.uuidFromIntArray(uuid));
