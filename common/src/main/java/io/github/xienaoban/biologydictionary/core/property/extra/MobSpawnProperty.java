@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractPrope
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -45,20 +46,20 @@ public class MobSpawnProperty extends AbstractProperty<Mob, MobSpawnProperty.Dat
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (!nbt.contains(name())) {
+        if (!NbtUtils.contains(nbt, name())) {
             setVal(null);
             return;
         }
-        CompoundTag tag = nbt.getCompound(name()).orElse(new CompoundTag());
+        CompoundTag tag = NbtUtils.getCompoundOr(nbt, name(), new CompoundTag());
 
         List<Identifier> biomes = new ArrayList<>();
-        ListTag biomeList = tag.getList(BIOMES_KEY).orElse(new ListTag());
+        ListTag biomeList = NbtUtils.getListOr(tag, BIOMES_KEY, new ListTag());
         for (Tag t : biomeList) {
             biomes.add(IdentifierUtils.fromNbt((StringTag) t));
         }
 
         List<Identifier> structures = new ArrayList<>();
-        ListTag structureList = tag.getList(STRUCTURES_KEY).orElse(new ListTag());
+        ListTag structureList = NbtUtils.getListOr(tag, STRUCTURES_KEY, new ListTag());
         for (Tag t : structureList) {
             structures.add(IdentifierUtils.fromNbt((StringTag) t));
         }
@@ -78,15 +79,15 @@ public class MobSpawnProperty extends AbstractProperty<Mob, MobSpawnProperty.Dat
         for (Identifier id : data.biomes()) {
             biomeList.add(IdentifierUtils.toNbt(id));
         }
-        tag.put(BIOMES_KEY, biomeList);
+        NbtUtils.put(tag, BIOMES_KEY, biomeList);
 
         ListTag structureList = new ListTag();
         for (Identifier id : data.structures()) {
             structureList.add(IdentifierUtils.toNbt(id));
         }
-        tag.put(STRUCTURES_KEY, structureList);
+        NbtUtils.put(tag, STRUCTURES_KEY, structureList);
 
-        nbt.put(name(), tag);
+        NbtUtils.put(nbt, name(), tag);
     }
 
     public record Data(List<Identifier> biomes, List<Identifier> structures) {}

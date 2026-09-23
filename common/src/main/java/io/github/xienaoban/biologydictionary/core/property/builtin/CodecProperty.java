@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
@@ -41,7 +42,7 @@ public class CodecProperty<E extends Entity, T> extends AbstractProperty<E, T> {
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        Tag tag = nbt.get(name());
+        Tag tag = NbtUtils.getOr(nbt, name(), null);
         if (tag == null || tag instanceof CompoundTag ct && ct.isEmpty()) {
             setVal(null);
         } else {
@@ -55,7 +56,7 @@ public class CodecProperty<E extends Entity, T> extends AbstractProperty<E, T> {
         if (v != null) {
             nbt.store(name(), codec, v);
         } else {
-            nbt.put(name(), new CompoundTag());
+            NbtUtils.put(nbt, name(), new CompoundTag());
         }
     }
 }
