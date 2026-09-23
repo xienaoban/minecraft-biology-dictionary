@@ -91,7 +91,7 @@ public class BdAboutScreen extends AbstractBiologyDictionaryScreen {
                 Component component = TextUtils.concat(Arrays.asList(
                         TextUtils.literal(EntityUtils.getEntityTypeIdName(entry.getType()))
                                 .withStyle(ChatFormatting.GRAY),
-                        entry.getType().getDescription().copy().withStyle(ChatFormatting.WHITE)
+                        EntityUtils.getEntityTypeNameText(entry.getType()).copy().withStyle(ChatFormatting.WHITE)
                 ), TextUtils.literal(" - "));
                 List<FormattedCharSequence> lines = FontUtils.getGlobalFont().split(component, Widget.TOOLTIP_WIDTH);
                 if (lines.isEmpty()) {

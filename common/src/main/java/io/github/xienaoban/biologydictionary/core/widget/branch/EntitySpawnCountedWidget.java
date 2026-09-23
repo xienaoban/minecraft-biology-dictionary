@@ -10,7 +10,7 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
-import net.minecraft.network.chat.Component;
+import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobCategory;
 
@@ -40,7 +40,7 @@ public final class EntitySpawnCountedWidget extends EntityPropertyStandardWidget
                 tooltipTitle(Lang.PROPERTY_WIDGET_SPAWN_COUNTED),
                 tooltipDescription(Lang.PROPERTY_WIDGET_SPAWN_COUNTED_DESC),
                 tooltipEmpty(),
-                tooltipBody(Lang.PROPERTY_WIDGET_SPAWN_COUNTED_CATEGORY, Component.literal(category.getName()))
+                tooltipBody(Lang.PROPERTY_WIDGET_SPAWN_COUNTED_CATEGORY, TextUtils.literal(category.getName()))
         );
         return true;
     }

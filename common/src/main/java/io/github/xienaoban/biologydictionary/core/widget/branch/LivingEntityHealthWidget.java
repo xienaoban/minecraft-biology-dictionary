@@ -9,6 +9,7 @@ import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropert
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -40,9 +41,9 @@ public final class LivingEntityHealthWidget extends EntityPropertyStandardWidget
 
         @Override
         protected void onRender(ScreenRenderingContext ctx) {
-            updatePercent(e().getHealth() / e().getMaxHealth());
+            updatePercent(EntityUtils.getHealth(e()) / EntityUtils.getMaxHealth(e()));
             super.onRender(ctx);
-            renderInnerText(ctx, TextUtils.literal(((int) e().getHealth()) + "/" + ((int) e().getMaxHealth())));
+            renderInnerText(ctx, TextUtils.literal(((int) EntityUtils.getHealth(e())) + "/" + ((int) EntityUtils.getMaxHealth(e()))));
         }
     }
 }

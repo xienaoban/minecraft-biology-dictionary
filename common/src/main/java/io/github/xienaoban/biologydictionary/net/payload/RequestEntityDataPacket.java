@@ -20,7 +20,7 @@ public record RequestEntityDataPacket(int entityId, boolean firstAndFullSync) im
 
     @Override
     public void serverReceive(ServerNetApi.Context ctx) {
-        Entity entity = ctx.player().level().getEntity(entityId);
+        Entity entity = EntityUtils.getLevel(ctx.player()).getEntity(entityId);
 
         ReplyEntityDataPacket toSend;
         if (entity != null) {
