@@ -6,9 +6,9 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- Support 26.3!
-
 ### Changed
+
+- Extract common codes
 
 ### Fixed
 
