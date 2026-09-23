@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.component.DataComponents;
@@ -69,7 +70,7 @@ public final class BiologyDictionaryItem {
             return false;
         }
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
-        return customData != null && customData.copyTag().contains(ID);
+        return customData != null && NbtUtils.contains(customData.copyTag(), ID);
     }
 
     /**
@@ -183,7 +184,7 @@ public final class BiologyDictionaryItem {
 
     private static CompoundTag initIdNbt() {
         CompoundTag nbt = new CompoundTag();
-        nbt.putString(ID, DevUtils.getModVersion(BiologyDictionary.MOD_ID));
+        NbtUtils.putString(nbt, ID, DevUtils.getModVersion(BiologyDictionary.MOD_ID));
         return nbt;
     }
 

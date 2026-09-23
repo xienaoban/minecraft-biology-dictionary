@@ -8,6 +8,7 @@ import io.github.xienaoban.biologydictionary.core.property.vanilla.VariantProper
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -252,7 +253,7 @@ public final class EntityVariantPropertyBundle {
         @Override
         public Holder<Object> nbtToVariant(Entity entity, Tag nbt) {
             CompoundTag inputTag = new CompoundTag();
-            inputTag.put(VariantUtils.TAG_VARIANT, nbt);
+            NbtUtils.put(inputTag, VariantUtils.TAG_VARIANT, nbt);
             TagValueInput input = (TagValueInput) TagValueInput.create(
                     ProblemReporter.DISCARDING, entity.registryAccess(), inputTag);
             return VariantUtils.readVariant(input, key)

@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property.builtin;
 
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
@@ -10,15 +11,15 @@ public class IntProperty<E extends Entity> extends AbstractProperty<E, Integer> 
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        setVal(nbt.getInt(name()).orElse(null));
+        setVal(NbtUtils.getIntOr(nbt, name(), null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
         if (getVal() != null) {
-            nbt.putInt(name(), getVal());
+            NbtUtils.putInt(nbt, name(), getVal());
         } else {
-            nbt.put(name(), new CompoundTag());
+            NbtUtils.put(nbt, name(), new CompoundTag());
         }
     }
 }

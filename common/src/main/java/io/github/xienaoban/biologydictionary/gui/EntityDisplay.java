@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.client.entity.ClientMannequin;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -100,7 +101,7 @@ public final class EntityDisplay {
             CompoundTag nbt = new CompoundTag();
             ResolvableProfile profile = ResolvableProfile.createResolved(((Player) target).getGameProfile());
             ResolvableProfile.CODEC.encodeStart(NbtOps.INSTANCE, profile)
-                    .ifSuccess(tag -> nbt.put("profile", tag));
+                    .ifSuccess(tag -> NbtUtils.put(nbt, "profile", tag));
             EntityUtils.setNbt(m, nbt);
             m.tick();
         }
