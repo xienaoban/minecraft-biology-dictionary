@@ -1,6 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform.net;
 
 import io.github.xienaoban.biologydictionary.net.PacketPayloads;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -27,8 +28,8 @@ public final class ClientNetRegistrar {
         if (PacketUtil.hasClientReceiver(clazz)) {
             CustomPacketPayload.Type<T> type = PacketUtil.getType(clazz);
             event.register(type, (payload, context) -> {
-                Minecraft client = Minecraft.getInstance();
-                LocalPlayer player = client.player;
+                Minecraft client = ClientUtils.getClient();
+                LocalPlayer player = ClientUtils.getClientPlayer(client);
                 ClientNetApi.Context ctx = new ClientNetApi.Context(client, player);
                 payload.clientReceive(ctx);
             });

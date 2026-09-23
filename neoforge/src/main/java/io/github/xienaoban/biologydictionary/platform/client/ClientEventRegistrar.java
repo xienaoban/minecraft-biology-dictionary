@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform.client;
 
 import io.github.xienaoban.biologydictionary.client.ClientEvents;
-import net.minecraft.client.Minecraft;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.lifecycle.ClientStartedEvent;
@@ -20,16 +20,16 @@ public final class ClientEventRegistrar {
         }
         for (ClientEvents.ClientListener listener : ClientEvents.WORLD_CONNECTED) {
             NeoForge.EVENT_BUS.addListener(
-                    (ClientPlayerNetworkEvent.LoggingIn event) -> listener.run(Minecraft.getInstance()));
+                    (ClientPlayerNetworkEvent.LoggingIn event) -> listener.run(ClientUtils.getClient()));
         }
         // WORLD_DISCONNECTING is fired by MinecraftMixin instead of binding to NeoForge's
         // LoggingOut, so both platforms share the same render-thread timing.
         // for (ClientEvents.ClientListener listener : ClientEvents.WORLD_DISCONNECTING) {
         //     NeoForge.EVENT_BUS.addListener(
-        //             (ClientPlayerNetworkEvent.LoggingOut event) -> listener.run(Minecraft.getInstance()));
+        //             (ClientPlayerNetworkEvent.LoggingOut event) -> listener.run(ClientUtils.getClient()));
         // }
         for (ClientEvents.ClientListener listener : ClientEvents.END_TICK) {
-            NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> listener.run(Minecraft.getInstance()));
+            NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> listener.run(ClientUtils.getClient()));
         }
     }
 }
