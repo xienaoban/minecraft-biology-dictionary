@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -188,8 +189,8 @@ public final class SilhouetteMultiBufferSource implements MultiBufferSource {
 
         // Clear entityTarget BEFORE rendering starts. See pitfall #3 in class Javadoc.
         // We avoid entityTarget.clear() — see pitfall #1 in class Javadoc.
-        RenderTarget entityTarget = Minecraft.getInstance().levelRenderer.entityTarget();
-        RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
+        RenderTarget entityTarget = ClientUtils.getClient().levelRenderer.entityTarget();
+        RenderTarget mainTarget = ClientUtils.getClient().getMainRenderTarget();
         if (entityTarget != null) {
             entityTarget.bindWrite(true);
             GlStateManager._clear(16384 | 256, Minecraft.ON_OSX);
@@ -227,8 +228,8 @@ public final class SilhouetteMultiBufferSource implements MultiBufferSource {
      * {@code entityTarget} is used for the vanilla entity glow effect).</p>
      */
     public void end() {
-        RenderTarget entityTarget = Minecraft.getInstance().levelRenderer.entityTarget();
-        RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
+        RenderTarget entityTarget = ClientUtils.getClient().levelRenderer.entityTarget();
+        RenderTarget mainTarget = ClientUtils.getClient().getMainRenderTarget();
         if (entityTarget == null) return;
 
         // Flush any remaining (not-yet-auto-flushed) outline data into entityTarget.
@@ -245,8 +246,8 @@ public final class SilhouetteMultiBufferSource implements MultiBufferSource {
                 GlStateManager.SourceFactor.ZERO,
                 GlStateManager.DestFactor.ONE
         );
-        entityTarget.blitToScreen(Minecraft.getInstance().getWindow().getWidth(),
-                Minecraft.getInstance().getWindow().getHeight(), false);
+        entityTarget.blitToScreen(ClientUtils.getClient().getWindow().getWidth(),
+                ClientUtils.getClient().getWindow().getHeight(), false);
 
         // Restore default blend. Do NOT call disableBlend() — see pitfall #2.
         RenderSystem.defaultBlendFunc();

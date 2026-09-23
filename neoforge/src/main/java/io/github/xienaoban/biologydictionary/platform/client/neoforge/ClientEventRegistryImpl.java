@@ -4,7 +4,7 @@ import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import io.github.xienaoban.biologydictionary.platform.client.ClientEventRegistry;
-import net.minecraft.client.Minecraft;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -21,7 +21,7 @@ public final class ClientEventRegistryImpl {
     }
 
     public static void registerWorldConnected(ClientEventRegistry.ClientListener listener) {
-        ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(player -> listener.run(Minecraft.getInstance()));
+        ClientPlayerEvent.CLIENT_PLAYER_JOIN.register(player -> listener.run(ClientUtils.getClient()));
     }
 
     public static void registerEndTick(ClientEventRegistry.ClientListener listener) {

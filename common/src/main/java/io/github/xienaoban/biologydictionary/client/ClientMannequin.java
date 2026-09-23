@@ -3,8 +3,8 @@ package io.github.xienaoban.biologydictionary.client;
 import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
+import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -28,7 +28,7 @@ public final class ClientMannequin extends AbstractClientPlayer {
         super((ClientLevel) level, profile != null ? profile : new GameProfile(Util.NIL_UUID, "Mannequin"));
         this.skin = DefaultPlayerSkin.get(this.getUUID());
         if (profile != null) {
-            this.skinLookup = Minecraft.getInstance().getSkinManager().getOrLoad(profile);
+            this.skinLookup = ClientUtils.getClient().getSkinManager().getOrLoad(profile);
         }
     }
 

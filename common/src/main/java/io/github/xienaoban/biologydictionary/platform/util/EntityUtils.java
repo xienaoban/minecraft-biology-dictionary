@@ -128,8 +128,18 @@ public final class EntityUtils {
         return entityType.create(level);
     }
 
-    public static Optional<Entity> create(CompoundTag nbt, Level level) {
-        return EntityType.create(nbt, level);
+    public static Entity create(CompoundTag nbt, Level level) {
+        Entity entity = EntityType.create(nbt, level).orElse(null);
+        // All entities created in this mod are for rendering only.
+        assignRenderOnlyEntityId(entity);
+        return entity;
+    }
+
+    /**
+     * @see net.minecraft.world.level.BaseSpawner#SET_DISPLAY_ENTITY_ID
+     */
+    public static void assignRenderOnlyEntityId(Entity entity) {
+        if (entity != null) { entity.setId(-1); }
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(E entity) {
