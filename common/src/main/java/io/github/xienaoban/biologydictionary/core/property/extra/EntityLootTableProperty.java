@@ -51,7 +51,9 @@ public class EntityLootTableProperty extends AbstractProperty<Entity, List<LootT
         ListTag entries = NbtUtils.getListOr(nbt, name(), new ListTag());
         List<LootTableUtils.LootEntry> result = new ArrayList<>(entries.size());
         for (Tag entry : entries) {
-            result.add(LootTableUtils.LootEntry.fromNbt((CompoundTag) entry));
+            if (entry instanceof CompoundTag compoundTag) {
+                result.add(LootTableUtils.LootEntry.fromNbt(compoundTag));
+            }
         }
         setVal(result);
     }
