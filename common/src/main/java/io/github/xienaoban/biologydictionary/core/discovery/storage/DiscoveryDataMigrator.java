@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.core.discovery.storage;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryRecord;
-import net.minecraft.core.UUIDUtil;
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -48,16 +48,16 @@ public final class DiscoveryDataMigrator {
      */
     public static boolean migrate(CompoundTag root) {
         boolean changed = false;
-        ListTag players = root.getList("players", Tag.TAG_COMPOUND);
+        ListTag players = NbtUtils.getListOr(root, "players", new ListTag());
         for (int i = 0; i < players.size(); i++) {
             CompoundTag playerData = players.getCompound(i);
-            UUID owner = playerData.hasUUID("uuid") ? playerData.getUUID("uuid") : null;
+            UUID owner = NbtUtils.getUuidOr(playerData, "uuid", null);
             if (owner == null) {
                 continue;
             }
-            CompoundTag discoveries = playerData.getCompound("discoveries");
+            CompoundTag discoveries = NbtUtils.getCompoundOr(playerData, "discoveries", new CompoundTag());
             for (String typeKey : discoveries.getAllKeys()) {
-                changed |= migrateRecord(discoveries.getCompound(typeKey), owner);
+                changed |= migrateRecord(NbtUtils.getCompoundOr(discoveries, typeKey, new CompoundTag()), owner);
             }
         }
         return changed;
@@ -72,15 +72,15 @@ public final class DiscoveryDataMigrator {
             changed = true;
         }
 
-        String source = record.getString("source");
+        String source = NbtUtils.getStringOr(record, "source", "");
         String v10Id = V1_0_SOURCE_IDS.get(source);
         if (v10Id != null) {
             source = BiologyDictionary.MOD_ID + ":" + v10Id;
-            record.putString("source", source);
+            NbtUtils.putString(record, "source", source);
             changed = true;
         }
         if (source.equals(BiologyDictionary.MOD_ID + ":telescope_observe")) {
-            record.putString("source", BiologyDictionary.MOD_ID + ":telescope");
+            NbtUtils.putString(record, "source", BiologyDictionary.MOD_ID + ":telescope");
             changed = true;
         }
 
@@ -88,13 +88,10 @@ public final class DiscoveryDataMigrator {
     }
 
     private static void writeUuid(CompoundTag tag, String key, UUID uuid) {
-        tag.putIntArray(key, UUIDUtil.uuidToIntArray(uuid));
+        NbtUtils.putUuid(tag, key, uuid);
     }
 
     private static UUID readUuid(CompoundTag tag, String key) {
-        if (!tag.contains(key, Tag.TAG_INT_ARRAY)) {
-            return null;
-        }
-        return UUIDUtil.uuidFromIntArray(tag.getIntArray(key));
+        return NbtUtils.getUuidOr(tag, key, null);
     }
 }

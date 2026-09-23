@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.discovery;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.LevelUtils;
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -92,9 +93,9 @@ public record DiscoveryRecord(
     private static CompoundTag keepAppearanceOnly(CompoundTag nbt) {
         CompoundTag result = new CompoundTag();
         for (String key : APPEARANCE_KEYS) {
-            Tag tag = nbt.get(key);
+            Tag tag = NbtUtils.getOr(nbt, key, null);
             if (tag != null) {
-                result.put(key, tag.copy());
+                NbtUtils.put(result, key, tag.copy());
             }
         }
         return result;

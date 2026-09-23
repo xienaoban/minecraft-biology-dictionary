@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractPrope
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -46,20 +47,20 @@ public class MobSpawnProperty extends AbstractProperty<Mob, MobSpawnProperty.Dat
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (!nbt.contains(name())) {
+        if (!NbtUtils.contains(nbt, name())) {
             setVal(null);
             return;
         }
-        CompoundTag tag = nbt.getCompound(name());
+        CompoundTag tag = NbtUtils.getCompound(nbt, name());
 
         List<ResourceLocation> biomes = new ArrayList<>();
-        ListTag biomeList = tag.getList(BIOMES_KEY, Tag.TAG_STRING);
+        ListTag biomeList = NbtUtils.getListOr(tag, BIOMES_KEY, new ListTag());
         for (Tag t : biomeList) {
             biomes.add(Objects.requireNonNull(IdentifierUtils.fromNbt((StringTag) t)));
         }
 
         List<ResourceLocation> structures = new ArrayList<>();
-        ListTag structureList = tag.getList(STRUCTURES_KEY, Tag.TAG_STRING);
+        ListTag structureList = NbtUtils.getListOr(tag, STRUCTURES_KEY, new ListTag());
         for (Tag t : structureList) {
             structures.add(Objects.requireNonNull(IdentifierUtils.fromNbt((StringTag) t)));
         }
@@ -79,15 +80,15 @@ public class MobSpawnProperty extends AbstractProperty<Mob, MobSpawnProperty.Dat
         for (ResourceLocation id : data.biomes()) {
             biomeList.add(IdentifierUtils.toNbt(id));
         }
-        tag.put(BIOMES_KEY, biomeList);
+        NbtUtils.put(tag, BIOMES_KEY, biomeList);
 
         ListTag structureList = new ListTag();
         for (ResourceLocation id : data.structures()) {
             structureList.add(IdentifierUtils.toNbt(id));
         }
-        tag.put(STRUCTURES_KEY, structureList);
+        NbtUtils.put(tag, STRUCTURES_KEY, structureList);
 
-        nbt.put(name(), tag);
+        NbtUtils.put(nbt, name(), tag);
     }
 
     public record Data(List<ResourceLocation> biomes, List<ResourceLocation> structures) {}

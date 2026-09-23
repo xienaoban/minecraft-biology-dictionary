@@ -302,22 +302,22 @@ public final class EntityUtils {
 
     @Deprecated
     public static void removeNullNbt(CompoundTag nbt) {
-        ListTag list = (ListTag) nbt.get(NBT_TO_RM_KEY);
+        ListTag list = (ListTag) NbtUtils.getOr(nbt, NBT_TO_RM_KEY, null);
         if (list != null) {
-            nbt.remove(NBT_TO_RM_KEY);
+            NbtUtils.remove(nbt, NBT_TO_RM_KEY);
             for (Tag nbt2 : list) {
                 String key = nbt2.getAsString();
-                nbt.remove(key);
+                NbtUtils.remove(nbt, key);
             }
         }
     }
 
     @Deprecated
     public static void setNullNbt(CompoundTag nbt, String key) {
-        ListTag list = (ListTag) nbt.get(NBT_TO_RM_KEY);
+        ListTag list = (ListTag) NbtUtils.getOr(nbt, NBT_TO_RM_KEY, null);
         if (list == null) {
             list = new ListTag();
-            nbt.put(NBT_TO_RM_KEY, list);
+            NbtUtils.put(nbt, NBT_TO_RM_KEY, list);
         }
         list.add(StringTag.valueOf(key));
     }
@@ -328,27 +328,27 @@ public final class EntityUtils {
     }
 
     public static CompoundTag adaptNbtToDisplay(Entity entity, CompoundTag nbt) {
-        nbt.remove("AngryAt");
-        nbt.remove("CustomName");
-        nbt.remove("CustomNameVisible");
-        nbt.remove("Dimension");
-        nbt.remove("HurtTime");
-        nbt.remove("Pos");
-        nbt.remove("Rotation");
+        NbtUtils.remove(nbt, "AngryAt");
+        NbtUtils.remove(nbt, "CustomName");
+        NbtUtils.remove(nbt, "CustomNameVisible");
+        NbtUtils.remove(nbt, "Dimension");
+        NbtUtils.remove(nbt, "HurtTime");
+        NbtUtils.remove(nbt, "Pos");
+        NbtUtils.remove(nbt, "Rotation");
 
         if (entity instanceof LivingEntity) {
-            nbt.remove("Brain");
-            nbt.remove("SleepingX");
-            nbt.remove("SleepingY");
-            nbt.remove("SleepingZ");
+            NbtUtils.remove(nbt, "Brain");
+            NbtUtils.remove(nbt, "SleepingX");
+            NbtUtils.remove(nbt, "SleepingY");
+            NbtUtils.remove(nbt, "SleepingZ");
         }
 
         if (entity instanceof Player) {
-            nbt.remove("Inventory");
+            NbtUtils.remove(nbt, "Inventory");
         } else if (entity instanceof Dolphin) {
-            nbt.remove("GotFish");
+            NbtUtils.remove(nbt, "GotFish");
         } else if (entity instanceof Camel) {
-            nbt.remove("LastPoseTick");
+            NbtUtils.remove(nbt, "LastPoseTick");
         }
 
         return nbt;
