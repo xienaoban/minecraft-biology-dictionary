@@ -24,7 +24,7 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
 
         @Override
         public SkillCost getDefaultCost() {
-            return new SkillCost(0, 5, 0, 20, 0, 0, List.of(new ItemStack(Items.TOTEM_OF_UNDYING)));
+            return new SkillCost(0, 5, 0, 20, 0, 0, List.of(SkillCost.item(Items.TOTEM_OF_UNDYING)));
         }
 
         @Override
@@ -62,7 +62,7 @@ public record MobSetNoAiSkill(boolean noAi) implements EntityTargetedSkill<Mob> 
     public SkillCost getRealCost(Mob entity) {
         SkillCost base = EntityTargetedSkill.super.getRealCost(entity);
         int expPoints, expLevels, expPointRequired, expLevelRequired, health, satiety;
-        List<ItemStack> items;
+        List<SkillCost.ItemCost> items;
 
         if (EntityUtils.isEnemy(entity)) {
             expPoints = base.getExperiencePoints();

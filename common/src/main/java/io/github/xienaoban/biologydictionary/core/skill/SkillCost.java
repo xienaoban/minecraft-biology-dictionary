@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -14,6 +15,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.*;
 
@@ -26,9 +28,11 @@ public final class SkillCost {
     private final int experienceLevelRequired;
     private final int health;
     private final int satiety;
-    private final List<ItemStack> items;
+    private final List<ItemCost> items;
 
-    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, int health, int satiety, List<ItemStack> items) {
+    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels,
+                     int experiencePointRequired, int experienceLevelRequired, int health, int satiety,
+                     List<ItemCost> items) {
         this.banned = banned;
         this.creativeOnly = creativeOnly;
         this.experiencePoints = experiencePoints;
@@ -40,16 +44,16 @@ public final class SkillCost {
         this.items = items == null ? List.of() : List.copyOf(items);
     }
 
-    public SkillCost(boolean banned, boolean creativeOnly, int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, int health, int satiety, ItemStack... items) {
-        this(banned, creativeOnly, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, health, satiety, Arrays.asList(items));
+    public SkillCost(int experiencePoints, int experienceLevels, int experiencePointRequired,
+                     int experienceLevelRequired, int health, int satiety, List<ItemCost> items) {
+        this(false, false, experiencePoints, experienceLevels, experiencePointRequired,
+                experienceLevelRequired, health, satiety, items);
     }
 
-    public SkillCost(int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, int health, int satiety, List<ItemStack> items) {
-        this(false, false, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, health, satiety, items);
-    }
-
-    public SkillCost(int experiencePoints, int experienceLevels, int experiencePointRequired, int experienceLevelRequired, int health, int satiety, ItemStack... items) {
-        this(experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, health, satiety, Arrays.asList(items));
+    public SkillCost(int experiencePoints, int experienceLevels, int experiencePointRequired,
+                     int experienceLevelRequired, int health, int satiety, ItemCost... items) {
+        this(experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired,
+                health, satiety, Arrays.asList(items));
     }
 
     // ==================== Factory Methods ====================
@@ -82,14 +86,28 @@ public final class SkillCost {
         return new SkillCost(0, 0, 0, 0, 0, satiety, List.of());
     }
 
-    public static SkillCost ofItems(ItemStack... items) {
+    public static SkillCost ofItems(ItemLike... items) {
+        return ofItems(Arrays.stream(items).map(SkillCost::item).toArray(ItemCost[]::new));
+    }
+
+    public static SkillCost ofItems(ItemCost... items) {
         return new SkillCost(0, 0, 0, 0, 0, 0, Arrays.asList(items));
+    }
+
+    public static ItemCost item(ItemLike item) {
+        return item(item, 1);
+    }
+
+    public static ItemCost item(ItemLike item, int count) {
+        return new ItemCost(item.asItem(), count);
     }
 
     // ==================== Getters ====================
 
     public boolean isEmpty() {
-        return !banned && !creativeOnly && experiencePoints == 0 && experienceLevels == 0 && experiencePointRequired == 0 && experienceLevelRequired == 0 && health == 0 && satiety == 0 && items.isEmpty();
+        return !banned && !creativeOnly && experiencePoints == 0 && experienceLevels == 0
+                && experiencePointRequired == 0 && experienceLevelRequired == 0
+                && health == 0 && satiety == 0 && items.isEmpty();
     }
 
     public boolean isBanned() {
@@ -124,7 +142,7 @@ public final class SkillCost {
         return satiety;
     }
 
-    public List<ItemStack> getItems() {
+    public List<ItemCost> getItems() {
         return items;
     }
 
@@ -132,22 +150,23 @@ public final class SkillCost {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof SkillCost other)) return false;
-        return banned == other.banned &&
-               creativeOnly == other.creativeOnly &&
-               experiencePoints == other.experiencePoints &&
-               experienceLevels == other.experienceLevels &&
-               experiencePointRequired == other.experiencePointRequired &&
-               experienceLevelRequired == other.experienceLevelRequired &&
-               health == other.health &&
-               satiety == other.satiety &&
-               itemsEquals(items, other.items);
+        if (this == obj) { return true; }
+        if (!(obj instanceof SkillCost other)) { return false; }
+        return banned == other.banned
+                && creativeOnly == other.creativeOnly
+                && experiencePoints == other.experiencePoints
+                && experienceLevels == other.experienceLevels
+                && experiencePointRequired == other.experiencePointRequired
+                && experienceLevelRequired == other.experienceLevelRequired
+                && health == other.health
+                && satiety == other.satiety
+                && items.equals(other.items);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(banned, creativeOnly, experiencePoints, experienceLevels, experiencePointRequired, experienceLevelRequired, health, satiety, items);
+        return Objects.hash(banned, creativeOnly, experiencePoints, experienceLevels,
+                experiencePointRequired, experienceLevelRequired, health, satiety, items);
     }
 
     // ==================== CCheck & Consume ====================
@@ -167,41 +186,50 @@ public final class SkillCost {
             throw new NoPermissionException(TextUtils.translate(Lang.TEXT_SKILL_BANNED), "Skill is banned");
         }
         if (creativeOnly && !PlayerUtils.isCreative(player)) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE), "Skill only available in creative mode");
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_ONLY_IN_CREATIVE_MODE),
+                    "Skill only available in creative mode");
         }
-
         // Always free in creative mode.
         if (PlayerUtils.isCreative(player)) { return; }
 
         if (PlayerUtils.getExperiencePoint(player) < experiencePointRequired) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_EXPERIENCE_POINT_THRESHOLD_NOT_MET, experiencePointRequired), "Experience point threshold not met");
+            throw new NoPermissionException(TextUtils.translate(
+                    Lang.TEXT_EXPERIENCE_POINT_THRESHOLD_NOT_MET, experiencePointRequired),
+                    "Experience point threshold not met");
         }
         if (PlayerUtils.getExperienceLevel(player) < experienceLevelRequired) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_EXPERIENCE_LEVEL_THRESHOLD_NOT_MET, experienceLevelRequired), "Experience level threshold not met");
+            throw new NoPermissionException(TextUtils.translate(
+                    Lang.TEXT_EXPERIENCE_LEVEL_THRESHOLD_NOT_MET, experienceLevelRequired),
+                    "Experience level threshold not met");
         }
         if (PlayerUtils.getExperiencePoint(player) < experiencePoints) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_POINTS, experiencePoints), "Not enough experience points");
+            throw new NoPermissionException(TextUtils.translate(
+                    Lang.TEXT_NOT_ENOUGH_EXPERIENCE_POINTS, experiencePoints), "Not enough experience points");
         }
         if (PlayerUtils.getExperienceLevel(player) < experienceLevels) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experienceLevels), "Not enough experience levels");
+            throw new NoPermissionException(TextUtils.translate(
+                    Lang.TEXT_NOT_ENOUGH_EXPERIENCE_LEVELS, experienceLevels), "Not enough experience levels");
         }
         if (EntityUtils.getHealth(player) <= health) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_HEALTH, health), "Not enough health");
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_HEALTH, health),
+                    "Not enough health");
         }
         if (PlayerUtils.getSatiety(player) < satiety) {
-            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_SATIETY, satiety), "Not enough satiety");
+            throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_SATIETY, satiety),
+                    "Not enough satiety");
         }
 
-        for (ItemStack required : items) {
+        for (ItemCost item : items) {
+            ItemStack required = item.toStack();
             if (!InventoryUtils.hasEnoughItems(PlayerUtils.getInventory(player), required)) {
-                throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_ITEMS, required.getCount(), required.getHoverName()), "Not enough items");
+                throw new NoPermissionException(TextUtils.translate(Lang.TEXT_NOT_ENOUGH_ITEMS,
+                        required.getCount(), required.getHoverName()), "Not enough items");
             }
         }
     }
 
     public void serverConsume(ServerContext ctx) {
         ServerPlayer player = ctx.player();
-
         // Always free in creative mode.
         if (PlayerUtils.isCreative(player)) { return; }
 
@@ -222,11 +250,14 @@ public final class SkillCost {
             PlayerUtils.playLocalSound(player, SoundEvents.PLAYER_BURP, 0.5F, 1.0F);
         }
 
-        for (ItemStack required : items) {
+        for (ItemCost item : items) {
+            ItemStack required = item.toStack();
             InventoryUtils.consumeItems(PlayerUtils.getInventory(player), required);
             PlayerUtils.playLocalSound(player, SoundEvents.ITEM_PICKUP, 0.5F, 0.01F);
         }
     }
+
+    // ==================== Serialization ====================
 
     public void serverRefund(ServerPlayer player) {
         if (experiencePoints != 0) {
@@ -242,43 +273,26 @@ public final class SkillCost {
             PlayerUtils.restoreSatiety(player, satiety);
         }
 
-        for (ItemStack item : items) {
-            PlayerUtils.giveOrDrop(player, item);
+        for (ItemCost item : items) {
+            ItemStack stack = item.toStack();
+            PlayerUtils.giveOrDrop(player, stack);
         }
     }
 
-    // ==================== Serialization ====================
-
     public Map<String, Object> toMap() {
-        Map<String, Object> map = new java.util.LinkedHashMap<>();
-        if (banned) {
-            map.put("banned", true);
-        }
-        if (creativeOnly) {
-            map.put("creative_only", true);
-        }
-        if (experiencePoints != 0) {
-            map.put("exp_points", experiencePoints);
-        }
-        if (experienceLevels != 0) {
-            map.put("exp_levels", experienceLevels);
-        }
-        if (experiencePointRequired != 0) {
-            map.put("exp_point_required", experiencePointRequired);
-        }
-        if (experienceLevelRequired != 0) {
-            map.put("exp_level_required", experienceLevelRequired);
-        }
-        if (health != 0) {
-            map.put("health", health);
-        }
-        if (satiety != 0) {
-            map.put("satiety", satiety);
-        }
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (banned) { map.put("banned", true); }
+        if (creativeOnly) { map.put("creative_only", true); }
+        if (experiencePoints != 0) { map.put("exp_points", experiencePoints); }
+        if (experienceLevels != 0) { map.put("exp_levels", experienceLevels); }
+        if (experiencePointRequired != 0) { map.put("exp_point_required", experiencePointRequired); }
+        if (experienceLevelRequired != 0) { map.put("exp_level_required", experienceLevelRequired); }
+        if (health != 0) { map.put("health", health); }
+        if (satiety != 0) { map.put("satiety", satiety); }
         if (!items.isEmpty()) {
             List<Map<String, Object>> itemsList = new ArrayList<>();
-            for (ItemStack stack : items) {
-                itemsList.add(itemStackToMap(stack));
+            for (ItemCost item : items) {
+                itemsList.add(item.toMap());
             }
             map.put("items", itemsList);
         }
@@ -295,45 +309,17 @@ public final class SkillCost {
         int health = ((Number) map.getOrDefault("health", 0)).intValue();
         int satiety = ((Number) map.getOrDefault("satiety", 0)).intValue();
 
-        List<ItemStack> itemsList = List.of();
+        List<ItemCost> itemsList = List.of();
         if (map.containsKey("items")) {
             List<Map<String, Object>> itemsData = Misc.cast(map.get("items"));
             itemsList = new ArrayList<>();
             for (Map<String, Object> itemData : itemsData) {
-                itemsList.add(itemStackFromMap(itemData));
+                itemsList.add(ItemCost.fromMap(itemData));
             }
         }
 
-        return new SkillCost(banned, creativeOnly, expPoints, expLevels, expPointReq, expLevelReq, health, satiety, itemsList);
-    }
-
-    private static Map<String, Object> itemStackToMap(ItemStack stack) {
-        Map<String, Object> map = new java.util.LinkedHashMap<>();
-        ResourceLocation key = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        map.put("item", IdentifierUtils.toString(key));
-        if (stack.getCount() > 1) {
-            map.put("count", stack.getCount());
-        }
-        return map;
-    }
-
-    private static ItemStack itemStackFromMap(Map<String, Object> map) {
-        String itemId = (String) map.get("item");
-        int count = ((Number) map.getOrDefault("count", 1)).intValue();
-        Item item = BuiltInRegistries.ITEM.get(IdentifierUtils.fromString(itemId));
-        return new ItemStack(item, count);
-    }
-
-    // ==================== Private Helper Methods ====================
-
-    private static boolean itemsEquals(List<ItemStack> a, List<ItemStack> b) {
-        if (a.size() != b.size()) return false;
-        for (int i = 0; i < a.size(); i++) {
-            if (!ItemStack.matches(a.get(i), b.get(i))) {
-                return false;
-            }
-        }
-        return true;
+        return new SkillCost(banned, creativeOnly, expPoints, expLevels, expPointReq,
+                expLevelReq, health, satiety, itemsList);
     }
 
     // ==================== Formatting for UI ====================
@@ -371,25 +357,18 @@ public final class SkillCost {
         }
         if (!items.isEmpty()) {
             List<MutableComponent> itemList = items.stream()
-                    .map(itemStack -> TextUtils.concat(
-                            itemStack.getHoverName(), TextUtils.literal("x" + itemStack.getCount())))
+                    .map(item -> {
+                        ItemStack stack = item.toStack();
+                        return TextUtils.concat(stack.getHoverName(), TextUtils.literal("x" + stack.getCount()));
+                    })
                     .toList();
             MutableComponent itemsText = TextUtils.concat(itemList, TextUtils.comma());
             res.add(TextUtils.concat(TextUtils.translate(Lang.TEXT_ITEMS_COST), itemsText));
         }
 
-        if (true) {
-            if (res.isEmpty()) {
-                res.add(TextUtils.concat(TextUtils.translate(Lang.TEXT_SKILL_COST),
-                        TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS)));
-            }
-        } else {
-            if (res.isEmpty()) {
-                res.add(TextUtils.concat(TextUtils.translate(Lang.TEXT_SKILL_COST).withStyle(ChatFormatting.BOLD),
-                        TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS)));
-            } else {
-                res.add(0, TextUtils.translate(Lang.TEXT_SKILL_COST).withStyle(ChatFormatting.BOLD));
-            }
+        if (res.isEmpty()) {
+            res.add(TextUtils.concat(TextUtils.translate(Lang.TEXT_SKILL_COST),
+                    TextUtils.translate(Lang.TEXT_NONE_WITH_BRACKETS)));
         }
         return res.stream().map(txt -> (Component) txt.withStyle(ChatFormatting.GOLD)).toList();
     }
@@ -397,4 +376,37 @@ public final class SkillCost {
     @ClientOnly
     public record ClientContext(LocalPlayer player) {}
     public record ServerContext(ServerPlayer player) {}
+
+    public record ItemCost(Item item, int count) {
+        public ItemCost {
+            Objects.requireNonNull(item, "item");
+            if (count <= 0) {
+                throw new IllegalArgumentException("Item cost count must be positive: " + count);
+            }
+        }
+
+        public static ItemCost fromMap(Map<String, Object> map) {
+            String itemId = (String) map.get("item");
+            int count = ((Number) map.getOrDefault("count", 1)).intValue();
+            ResourceLocation id = IdentifierUtils.fromString(itemId);
+            Item item = BuiltInRegistries.ITEM.get(id);
+            if (item == null) {
+                throw new IllegalArgumentException("Unknown item: " + itemId);
+            }
+            return new ItemCost(item, count);
+        }
+
+        public Map<String, Object> toMap() {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("item", IdentifierUtils.toString(BuiltInRegistries.ITEM.getKey(item)));
+            if (count > 1) {
+                map.put("count", count);
+            }
+            return map;
+        }
+
+        public ItemStack toStack() {
+            return new ItemStack(item, count);
+        }
+    }
 }

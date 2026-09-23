@@ -19,7 +19,7 @@ public record AgeableMobSetForcedAgeSkill(int forcedAge, int age) implements Ent
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofItems(new ItemStack(Items.DANDELION), new ItemStack(Items.GOLD_NUGGET, 8));
+            return SkillCost.ofItems(SkillCost.item(Items.DANDELION), SkillCost.item(Items.GOLD_NUGGET, 8));
         }
 
         @Override
