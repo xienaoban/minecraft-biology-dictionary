@@ -67,7 +67,7 @@ public record ReplyHighlightEntitiesPacket(boolean allowed, EntityType<?> entity
                 cws.getDiscoveryCacheManager().onDiscoveryEvent(DiscoverySources.HIGHLIGHT, player, first);
             }
             ClientUtils.sendCenteredMessage(TextUtils.translate(Lang.TEXT_HIGHLIGHTED_ENTITIES,
-                    cnt, packet.entityType().getDescription(), packet.radius()));
+                    cnt, EntityUtils.getEntityTypeNameText(packet.entityType()), packet.radius()));
         }}
         CO.receive(this, ctx);
     }

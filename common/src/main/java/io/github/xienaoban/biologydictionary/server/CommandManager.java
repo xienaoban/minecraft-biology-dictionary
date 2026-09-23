@@ -11,6 +11,7 @@ import io.github.xienaoban.biologydictionary.net.payload.SendEntityOverviewPacke
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
 import io.github.xienaoban.biologydictionary.platform.server.CommandRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -65,19 +66,19 @@ public final class CommandManager {
         ResourceLocation entityTypeId = ResourceLocationArgument.getId(context, "entity_type");
         EntityType<?> entityType = EntityUtils.getEntityType(entityTypeId);
         if (entityType == null) {
-            player.sendSystemMessage(TextUtils.withFallbacks(TextUtils.modLog(
+            PlayerUtils.showClientTextBoxMessage(player, TextUtils.withFallbacks(TextUtils.modLog(
                     TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE)), player));
             return 0;
         }
 
         if (!ServerNetApi.canSend(player, SendEntityOverviewPacket.class)) {
-            player.sendSystemMessage(TextUtils.withFallbacks(TextUtils.modLog(
+            PlayerUtils.showClientTextBoxMessage(player, TextUtils.withFallbacks(TextUtils.modLog(
                     createClientModRequiredMessage()), player));
             return 0;
         }
 
         if (!ServerEntityOverviewManager.send(player, entityType, true)) {
-            player.sendSystemMessage(TextUtils.withFallbacks(TextUtils.modLog(
+            PlayerUtils.showClientTextBoxMessage(player, TextUtils.withFallbacks(TextUtils.modLog(
                     TextUtils.translate(Lang.TEXT_ENTITY_NOT_DISCOVERED)), player));
             return 0;
         }

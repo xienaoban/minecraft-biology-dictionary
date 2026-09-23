@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.net.ServerNetApi;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,7 +41,7 @@ public record RequestDiscoveryIncrementalPacket(int entityId, DiscoverySource so
         }
 
         ServerPlayer player = ctx.player();
-        Entity entity = player.level().getEntity(entityId);
+        Entity entity = EntityUtils.getLevel(player).getEntity(entityId);
         if (entity == null) {
             return;
         }

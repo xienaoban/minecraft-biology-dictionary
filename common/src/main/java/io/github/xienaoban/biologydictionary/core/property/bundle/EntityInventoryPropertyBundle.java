@@ -2,6 +2,7 @@ package io.github.xienaoban.biologydictionary.core.property.bundle;
 
 import io.github.xienaoban.biologydictionary.mixin.entity.AbstractHorseIMixin;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
@@ -16,7 +17,7 @@ public final class EntityInventoryPropertyBundle {
 
     public static final Function<Entity, InventoryHandler<?>> PLAYER_PATTERN = entity -> {
         if (entity instanceof Player) {
-            return (InventoryHandler<Entity>) e -> ((Player) e).getInventory();
+            return (InventoryHandler<Entity>) e -> PlayerUtils.getInventory((Player) e);
         }
         return null;
     };

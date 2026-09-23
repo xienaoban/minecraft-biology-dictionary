@@ -284,7 +284,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected EntityCardWidget(EntityManager.EntityDictionaryEntry entry, EntityDisplay display) {
             super(2, 2);
             this.entry = entry;
-            this.name = entry.getType().getDescription();
+            this.name = EntityUtils.getEntityTypeNameText(entry.getType());
             this.isDiscovered = ClientWorldSession.get().getDiscoveryCacheManager().isDiscovered(entry.getType());
             this.display = display;
         }

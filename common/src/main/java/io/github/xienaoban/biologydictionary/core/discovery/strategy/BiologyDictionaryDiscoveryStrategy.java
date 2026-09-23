@@ -86,7 +86,7 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         ServerNetManager.sendDiscoveryIncremental(player, entity, entityType, record);
         if (globalShared()) {
             DiscoveryRecord global = record.asGlobal();
-            for (ServerPlayer other : player.level().getServer().getPlayerList().getPlayers()) {
+            for (ServerPlayer other : EntityUtils.getLevel(player).getServer().getPlayerList().getPlayers()) {
                 if (!other.getUUID().equals(player.getUUID())) {
                     ServerNetManager.sendDiscoveryIncremental(other, entity, entityType, global);
                 }
@@ -124,7 +124,7 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         Component message = TextUtils.modLog(TextUtils.translate(
                 Lang.TEXT_DISCOVERY_ANNOUNCEMENT, playerName, entityName));
         TextUtils.FallbackCache announcementCache = new TextUtils.FallbackCache(message);
-        MinecraftServer server = player.level().getServer();
+        MinecraftServer server = EntityUtils.getLevel(player).getServer();
         if (limit == -1 || rank <= limit) {
             server.getPlayerList().broadcastSystemMessage(TextUtils.withFallbacks(message),
                     announcementCache::get, false);
@@ -138,7 +138,7 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
             }
             return;
         }
-        player.sendSystemMessage(announcementCache.get(player));
+        PlayerUtils.showClientTextBoxMessage(player, announcementCache.get(player));
     }
 
     private static Component createAnnouncementEntityName(EntityType<?> entityType, DiscoveryRecord record, int rank,

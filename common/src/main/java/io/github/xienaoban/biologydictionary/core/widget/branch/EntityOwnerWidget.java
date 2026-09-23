@@ -19,6 +19,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.player.LocalPlayer;
@@ -87,7 +88,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
             if (lastEntity == null) {
                 list.add(tooltipBody(Lang.PROPERTY_WIDGET_OWNER_NOT_ONLINE));
             } else {
-                list.add(tooltipBody(Lang.PROPERTY_WIDGET_OWNER_NAME, lastEntity.getName()));
+                list.add(tooltipBody(Lang.PROPERTY_WIDGET_OWNER_NAME, EntityUtils.getNameText(lastEntity)));
             }
         }
         renderTooltip(ctx, list);
@@ -110,7 +111,7 @@ public class EntityOwnerWidget extends EntityPropertyStandardWidget<Entity> {
             } else if (lastEntity == null) {
                 renderInnerText(ctx, TextUtils.literal(lastUuid.toString()), Colors.COMMON_LIGHT_TEXT);
             } else {
-                renderInnerText(ctx, lastEntity.getName(), Colors.COMMON_LIGHT_TEXT);
+                renderInnerText(ctx, EntityUtils.getNameText(lastEntity), Colors.COMMON_LIGHT_TEXT);
             }
         }
     }
