@@ -9,13 +9,11 @@ import io.github.xienaoban.biologydictionary.core.discovery.DiscoveryStrategy;
 import io.github.xienaoban.biologydictionary.core.discovery.storage.SavedDataDiscoveryStorage;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -119,12 +117,10 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
                 TextUtils.literal(Integer.toString(getAllRecords(player).size())).withStyle(ChatFormatting.YELLOW))
                 .withStyle(ChatFormatting.WHITE)
         );
-        Component playerName = player.getDisplayName().copy()
-                .withStyle(ChatFormatting.YELLOW)
-                .withStyle(style -> style
-                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, playerTooltip))
-                        .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
-                                "/tell " + player.getGameProfile().getName() + " ")));
+        Component playerName = player.getDisplayName().copy().withStyle(ChatFormatting.YELLOW);
+        playerName = TextUtils.withHoverShowText(playerName, playerTooltip);
+        playerName = TextUtils.withClickSuggestCommand(playerName,
+                "/tell " + PlayerUtils.getGameProfileName(player.getGameProfile()) + " ");
         Component message = TextUtils.modLog(TextUtils.translate(
                 Lang.TEXT_DISCOVERY_ANNOUNCEMENT, playerName, entityName));
         TextUtils.FallbackCache announcementCache = new TextUtils.FallbackCache(message);
@@ -161,9 +157,9 @@ public final class BiologyDictionaryDiscoveryStrategy implements DiscoveryStrate
         tooltip.append(TextUtils.literal(EntityUtils.getEntityTypeIdName(entityType)).withStyle(ChatFormatting.GRAY));
 
         String command = "/" + BiologyDictionary.MOD_ID + " overview " + EntityUtils.getEntityTypeIdName(entityType);
-        return EntityUtils.getEntityTypeNameText(entityType).copy().withStyle(Style.EMPTY
-                .withColor(ChatFormatting.GREEN)
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))
-                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)));
+        Component entityName = EntityUtils.getEntityTypeNameText(entityType).copy().withStyle(ChatFormatting.GREEN);
+        entityName = TextUtils.withHoverShowText(entityName, tooltip);
+        entityName = TextUtils.withClickRunCommand(entityName, command);
+        return entityName;
     }
 }

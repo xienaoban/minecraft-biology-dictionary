@@ -143,7 +143,7 @@ public final class EntityVariantPropertyBundle {
         @Override
         public String getVariantName(Holder<Object> variant) {
             return variant.unwrapKey().map(resourceKey -> {
-                ResourceLocation id = resourceKey.location();
+                ResourceLocation id = IdentifierUtils.getId(resourceKey);
                 return id.getPath().toLowerCase();
             }).orElse("unknown");
         }
@@ -222,7 +222,7 @@ public final class EntityVariantPropertyBundle {
 
         @Override
         public String getVariantName(ResourceKey<VillagerType> variant) {
-            ResourceLocation id = variant.location();
+            ResourceLocation id = IdentifierUtils.getId(variant);
             return id.getPath().toLowerCase();
         }
     }

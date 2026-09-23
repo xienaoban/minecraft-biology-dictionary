@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 public final class IdentifierUtils {
@@ -55,6 +56,10 @@ public final class IdentifierUtils {
 
     public static boolean isBd(ResourceLocation id) {
         return BiologyDictionary.MOD_ID.equals(id.getNamespace());
+    }
+
+    public static ResourceLocation getId(ResourceKey<?> key) {
+        return key.location();
     }
 
     public static Codec<ResourceLocation> codec() {

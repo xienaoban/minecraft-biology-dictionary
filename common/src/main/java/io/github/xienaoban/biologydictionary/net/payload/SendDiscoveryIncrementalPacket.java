@@ -67,12 +67,12 @@ public record SendDiscoveryIncrementalPacket(int entityId, EntityType<?> entityT
 
             if (packet.record.global()) {
                 String discovererName = cws.getPlayerNameCache().getDisplayNameOrRequest(packet.record.discoverer());
-                client.getToasts().addToast(DiscoveryToast.byGlobal(packet.entityType, discovererName));
+                ClientUtils.addToast(DiscoveryToast.byGlobal(packet.entityType, discovererName));
                 return;
             }
 
             // Show toast
-            client.getToasts().addToast(DiscoveryToast.bySelf(packet.entityType));
+            ClientUtils.addToast(DiscoveryToast.bySelf(packet.entityType));
 
             // Swing if INTERACT
             if (packet.record.source() == DiscoverySources.INTERACT) {

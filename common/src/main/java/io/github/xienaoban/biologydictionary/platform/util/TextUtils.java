@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.platform.util;
 import io.github.xienaoban.biologydictionary.Lang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.ComponentUtils;
@@ -73,6 +74,22 @@ public final class TextUtils {
 
     public static <T extends Component> MutableComponent concat(Collection<? extends T> collection, Component separator, Function<T, Component> function) {
         return ComponentUtils.formatList(collection, separator, function);
+    }
+
+    public static MutableComponent withClickRunCommand(Component component, String command) {
+        return component.copy().withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)));
+    }
+
+    public static MutableComponent withClickSuggestCommand(Component component, String command) {
+        return component.copy().withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)));
+    }
+
+    public static MutableComponent withClickOpenUrl(Component component, String url) {
+        return component.copy().withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url)));
+    }
+
+    public static MutableComponent withHoverShowText(Component component, Component text) {
+        return component.copy().withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, text)));
     }
 
     public static MutableComponent withFallbacks(Component input) {

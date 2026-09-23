@@ -141,7 +141,7 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(ResourceKey<EntityType<?>> key) {
-        return getEntityType(key.location());
+        return getEntityType(IdentifierUtils.getId(key));
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(ResourceLocation key) {

@@ -1,10 +1,11 @@
 package io.github.xienaoban.biologydictionary.core.discovery;
 
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
+import io.github.xienaoban.biologydictionary.platform.util.LevelUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -72,19 +73,17 @@ public record DiscoveryRecord(
     public static DiscoveryRecord standard(ServerPlayer discoverer, Entity entity, DiscoverySource source) {
         Level level = entity.level();
         BlockPos pos = entity.blockPosition();
-        CompoundTag entityNbt = new CompoundTag();
-        entity.saveWithoutId(entityNbt);
         return new DiscoveryRecord(
                 discoverer.getUUID(),
                 System.currentTimeMillis(),
                 level.getGameTime(),
                 source,
-                level.dimension().location(),
-                level.getBiome(pos).unwrapKey().map(ResourceKey::location).orElse(NO_ID),
+                IdentifierUtils.getId(level.dimension()),
+                level.getBiome(pos).unwrapKey().map(IdentifierUtils::getId).orElse(NO_ID),
                 pos,
-                level.getBiome(pos).value().getPrecipitationAt(pos),
+                LevelUtils.getWeatherAt(level, pos),
                 entity.getUUID(),
-                keepAppearanceOnly(entityNbt),
+                keepAppearanceOnly(EntityUtils.getNbt(entity)),
                 false,
                 List.of()
         );
