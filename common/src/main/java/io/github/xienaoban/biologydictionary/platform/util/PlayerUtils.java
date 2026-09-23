@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
+import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.biologydictionary.mixin.entity.ServerPlayerIMixin;
 import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import net.minecraft.network.chat.Component;
@@ -55,6 +56,10 @@ public final class PlayerUtils {
         // The server sends commands filtered by permission level, so this is
         // a reliable way to check if the player has at least permission level 2.
         return ClientUtils.canUseDataGetCommand();
+    }
+
+    public static String getGameProfileName(GameProfile profile) {
+        return profile.getName();
     }
 
     public static boolean isSurvival(Player player) {

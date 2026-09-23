@@ -129,7 +129,7 @@ public final class EntitySpawnManager {
                 break;
             }
             try {
-                ResourceLocation biomeId = biomeEntry.getKey().location();
+                ResourceLocation biomeId = IdentifierUtils.getId(biomeEntry.getKey());
                 Biome biome = biomeEntry.getValue();
                 MobSpawnSettings spawnSettings = biome.getMobSettings();
 
@@ -164,7 +164,7 @@ public final class EntitySpawnManager {
                 buildContext.markTimedOut();
                 break;
             }
-            ResourceLocation structureId = structureEntry.getKey().location();
+            ResourceLocation structureId = IdentifierUtils.getId(structureEntry.getKey());
             try {
                 Structure structure = structureEntry.getValue();
 
@@ -446,7 +446,7 @@ public final class EntitySpawnManager {
     }
 
     private static ResourceLocation getPoolLocation(Holder<StructureTemplatePool> pool) {
-        return pool.unwrapKey().map(ResourceKey::location).orElse(null);
+        return pool.unwrapKey().map(IdentifierUtils::getId).orElse(null);
     }
 
     private record StructureAnalysis(Set<EntityType<?>> entities, Set<ResourceLocation> referencedPools) {
@@ -920,7 +920,7 @@ public final class EntitySpawnManager {
                     if (optional.isEmpty()) {
                         LOGGER.warn("Tag '{}' not found in registry, ignoring.", str);
                     } else {
-                        optional.get().forEach(holder -> holder.unwrapKey().ifPresent(key -> result.add(key.location())));
+                        optional.get().forEach(holder -> holder.unwrapKey().ifPresent(key -> result.add(IdentifierUtils.getId(key))));
                     }
                 } else {
                     ResourceLocation id = IdentifierUtils.fromStringOrNull(str);

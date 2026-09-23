@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.mixin.entity.AbstractClientPlayerIM
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -135,8 +136,12 @@ public final class ClientUtils {
     public static void sendCenteredMessage(Component text) {
         LocalPlayer player = getClientPlayer();
         if (player != null) {
-            player.displayClientMessage(text, true);
+            PlayerUtils.showClientCenteredMessage(player, text);
         }
+    }
+
+    public static void addToast(Toast toast) {
+        getClient().getToasts().addToast(toast);
     }
 
     public static void playScreenSound(SoundEvent sound, float volume, float pitch) {
@@ -191,10 +196,10 @@ public final class ClientUtils {
     public static String getPlayerName(UUID playerId) {
         LocalPlayer player = getClientPlayer();
         if (player != null && player.getUUID().equals(playerId)) {
-            return player.getGameProfile().getName();
+            return PlayerUtils.getGameProfileName(player.getGameProfile());
         }
         ClientPacketListener connection = getClient().getConnection();
         PlayerInfo info = connection != null ? connection.getPlayerInfo(playerId) : null;
-        return info != null ? info.getProfile().getName() : null;
+        return info != null ? PlayerUtils.getGameProfileName(info.getProfile()) : null;
     }
 }

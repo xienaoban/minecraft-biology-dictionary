@@ -41,8 +41,8 @@ public final class ServerUtils {
         }
         ServerPlayer online = server.getPlayerList().getPlayer(playerId);
         if (online != null) {
-            return Optional.of(online.getGameProfile().getName());
+            return Optional.of(PlayerUtils.getGameProfileName(online.getGameProfile()));
         }
-        return server.getProfileCache().get(playerId).map(profile -> profile.getName());
+        return server.getProfileCache().get(playerId).map(PlayerUtils::getGameProfileName);
     }
 }
