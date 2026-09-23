@@ -21,7 +21,7 @@ public record MobForcePersistentSkill(boolean persistent) implements EntityTarge
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofItems(new ItemStack(Items.PAPER), new ItemStack(Items.IRON_NUGGET));
+            return SkillCost.ofItems(Items.PAPER, Items.IRON_NUGGET);
         }
 
         @Override

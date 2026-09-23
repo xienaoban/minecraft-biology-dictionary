@@ -27,7 +27,7 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofItems(new ItemStack(Items.EMERALD));
+            return SkillCost.ofItems(Items.EMERALD);
         }
 
         @Override
@@ -106,10 +106,8 @@ public record VillagerForceRestockSkill(int restocksToday, GlobalPos jobSitePos)
                 factor * base.getExperienceLevelRequired(),
                 factor * base.getHealth(),
                 factor * base.getSatiety(),
-                base.getItems().stream().map(i -> {
-                    ItemStack res = i.copy();
-                    res.setCount(factor * i.getCount());
-                    return res;
-                }).toList());
+                base.getItems().stream()
+                        .map(i -> new SkillCost.ItemCost(i.item(), factor * i.count()))
+                        .toList());
     }
 }
