@@ -1,0 +1,5 @@
+# Machine-specific: container root, host root, listen address/port.
+config.json
+
+__pycache__/
+*.pyc
