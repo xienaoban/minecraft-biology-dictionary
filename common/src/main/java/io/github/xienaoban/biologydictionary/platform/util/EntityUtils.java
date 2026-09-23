@@ -138,8 +138,17 @@ public final class EntityUtils {
         return entityType.create(level, reason);
     }
 
-    public static Optional<Entity> create(ValueInput valueInput, Level level, EntitySpawnReason reason) {
-        return EntityType.create(valueInput, level, reason);
+    public static Entity create(CompoundTag nbt, Level level) {
+        return create(nbt, level, EntitySpawnReason.LOAD);
+    }
+
+    public static Entity create(CompoundTag nbt, Level level, EntitySpawnReason reason) {
+        ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), nbt);
+        return create(valueInput, level, reason);
+    }
+
+    public static Entity create(ValueInput valueInput, Level level, EntitySpawnReason reason) {
+        return EntityType.create(valueInput, level, reason).orElse(null);
     }
 
     public static <E extends Entity> EntityType<E> getEntityType(E entity) {
