@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
+import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.biologydictionary.mixin.entity.ServerPlayerIMixin;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -51,6 +52,10 @@ public final class PlayerUtils {
 
     public static boolean isOp(Player player) {
         return player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
+    }
+
+    public static String getGameProfileName(GameProfile profile) {
+        return profile.name();
     }
 
     public static Inventory getInventory(Player player) {

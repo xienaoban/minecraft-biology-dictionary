@@ -124,7 +124,7 @@ public final class EntitySpawnManager {
                 break;
             }
             try {
-                Identifier biomeId = biomeEntry.getKey().identifier();
+                Identifier biomeId = IdentifierUtils.getId(biomeEntry.getKey());
                 Biome biome = biomeEntry.getValue();
                 MobSpawnSettings spawnSettings = biome.getMobSettings();
 
@@ -160,7 +160,7 @@ public final class EntitySpawnManager {
                 buildContext.markTimedOut();
                 break;
             }
-            Identifier structureId = structureEntry.getKey().identifier();
+            Identifier structureId = IdentifierUtils.getId(structureEntry.getKey());
             try {
                 Structure structure = structureEntry.getValue();
 
@@ -445,7 +445,7 @@ public final class EntitySpawnManager {
     }
 
     private static Identifier getPoolLocation(Holder<StructureTemplatePool> pool) {
-        return pool.unwrapKey().map(ResourceKey::identifier).orElse(null);
+        return pool.unwrapKey().map(IdentifierUtils::getId).orElse(null);
     }
 
     private record StructureAnalysis(Set<EntityType<?>> entities, Set<Identifier> referencedPools) {
@@ -919,7 +919,7 @@ public final class EntitySpawnManager {
                     boolean found = false;
                     for (Holder<?> holder : registry.getTagOrEmpty(Misc.cast(tagKey))) {
                         found = true;
-                        holder.unwrapKey().ifPresent(key -> result.add(key.identifier()));
+                        holder.unwrapKey().ifPresent(key -> result.add(IdentifierUtils.getId(key)));
                     }
                     if (!found) {
                         LOGGER.warn("Tag '{}' not found in registry, ignoring.", str);

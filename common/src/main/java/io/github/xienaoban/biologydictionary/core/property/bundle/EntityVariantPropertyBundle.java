@@ -264,7 +264,7 @@ public final class EntityVariantPropertyBundle {
         @Override
         public String getVariantName(Entity entity, Holder<Object> variant) {
             return variant.unwrapKey().map(resourceKey -> {
-                Identifier id = resourceKey.identifier();
+                Identifier id = IdentifierUtils.getId(resourceKey);
                 String res;
                 if (IdentifierUtils.isMc(id)) {
                     res = id.getPath();
@@ -391,7 +391,7 @@ public final class EntityVariantPropertyBundle {
         @Override
         public String getVariantName(Villager entity, Holder<VillagerType> variant) {
             return variant.unwrapKey().map(resourceKey -> {
-                Identifier id = resourceKey.identifier();
+                Identifier id = IdentifierUtils.getId(resourceKey);
                 return id.getPath().toLowerCase();
             }).orElse("unknown");
         }
