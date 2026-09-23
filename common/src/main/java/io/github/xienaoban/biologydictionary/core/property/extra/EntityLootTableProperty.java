@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.core.property.builtin.AbstractPrope
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.LootTableUtils;
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -42,12 +43,12 @@ public class EntityLootTableProperty extends AbstractProperty<Entity, List<LootT
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (!nbt.contains(name())) {
+        if (!NbtUtils.contains(nbt, name())) {
             setVal(null);
             return;
         }
 
-        ListTag entries = nbt.getList(name()).orElse(new ListTag());
+        ListTag entries = NbtUtils.getListOr(nbt, name(), new ListTag());
         List<LootTableUtils.LootEntry> result = new ArrayList<>(entries.size());
         for (Tag entry : entries) {
             result.add(LootTableUtils.LootEntry.fromNbt((CompoundTag) entry));
@@ -65,7 +66,7 @@ public class EntityLootTableProperty extends AbstractProperty<Entity, List<LootT
         for (LootTableUtils.LootEntry entry : getVal()) {
             entries.add(entry.toNbt());
         }
-        nbt.put(name(), entries);
+        NbtUtils.put(nbt, name(), entries);
     }
 
     private static List<LootTableUtils.LootEntry> getParsedLootEntries(Entity entity) {
