@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.property.builtin;
 
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
 public class DoubleProperty<E extends Entity> extends AbstractProperty<E, Double> {
@@ -11,19 +11,15 @@ public class DoubleProperty<E extends Entity> extends AbstractProperty<E, Double
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (nbt.contains(name(), Tag.TAG_DOUBLE)) {
-            setVal(nbt.getDouble(name()));
-        } else {
-            setVal(null);
-        }
+        setVal(NbtUtils.getDoubleOr(nbt, name(), null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
         if (getVal() != null) {
-            nbt.putDouble(name(), getVal());
+            NbtUtils.putDouble(nbt, name(), getVal());
         } else {
-            nbt.put(name(), new CompoundTag());
+            NbtUtils.put(nbt, name(), new CompoundTag());
         }
     }
 }

@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.mixin.CreativeModeTabsIMixin;
 import io.github.xienaoban.biologydictionary.platform.server.ItemRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -143,7 +144,7 @@ public final class BiologyDictionaryItem {
         ItemStack stack = new ItemStack(Items.WRITABLE_BOOK);
 
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putString(ID, DevUtils.getModVersion(BiologyDictionary.MOD_ID));
+        NbtUtils.putString(tag, ID, DevUtils.getModVersion(BiologyDictionary.MOD_ID));
         tag.putInt("CustomModelData", 14489768);
 
         stack.setHoverName(TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE).withStyle(

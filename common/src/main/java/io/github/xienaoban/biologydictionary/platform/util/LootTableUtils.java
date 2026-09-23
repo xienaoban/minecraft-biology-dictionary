@@ -354,16 +354,16 @@ public final class LootTableUtils {
     public record LootEntry(Item item, int minCount, int maxCount, float dropChance, List<ResourceLocation> conditions) {
 
         public static LootEntry fromNbt(CompoundTag nbt) {
-            String itemId = nbt.getString("item");
+            String itemId = NbtUtils.getString(nbt, "item");
             Item item = BuiltInRegistries.ITEM.get(IdentifierUtils.fromString(itemId));
-            int minCount = nbt.getInt("minCount");
-            int maxCount = nbt.getInt("maxCount");
-            float dropChance = nbt.getFloat("dropChance");
+            int minCount = NbtUtils.getInt(nbt, "minCount");
+            int maxCount = NbtUtils.getInt(nbt, "maxCount");
+            float dropChance = NbtUtils.getFloat(nbt, "dropChance");
 
             // Parse conditions
             List<ResourceLocation> conditions = new ArrayList<>();
-            if (nbt.contains("conditions")) {
-                ListTag conditionsList = nbt.getList("conditions", Tag.TAG_STRING);
+            if (NbtUtils.contains(nbt, "conditions")) {
+                ListTag conditionsList = NbtUtils.getListOr(nbt, "conditions", new ListTag());
                 for (Tag tag : conditionsList) {
                     if (tag instanceof StringTag conditionId) {
                         conditions.add(IdentifierUtils.fromString(conditionId.getAsString()));
@@ -377,17 +377,17 @@ public final class LootTableUtils {
         public CompoundTag toNbt() {
             CompoundTag nbt = new CompoundTag();
             ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
-            nbt.putString("item", IdentifierUtils.toString(itemId));
-            nbt.putInt("minCount", minCount);
-            nbt.putInt("maxCount", maxCount);
-            nbt.putFloat("dropChance", dropChance);
+            NbtUtils.putString(nbt, "item", IdentifierUtils.toString(itemId));
+            NbtUtils.putInt(nbt, "minCount", minCount);
+            NbtUtils.putInt(nbt, "maxCount", maxCount);
+            NbtUtils.putFloat(nbt, "dropChance", dropChance);
 
             // Save conditions
             ListTag conditionsList = new ListTag();
             for (ResourceLocation condition : conditions) {
                 conditionsList.add(IdentifierUtils.toNbt(condition));
             }
-            nbt.put("conditions", conditionsList);
+            NbtUtils.put(nbt, "conditions", conditionsList);
 
             return nbt;
         }

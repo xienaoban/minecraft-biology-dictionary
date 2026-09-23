@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.core.property.builtin;
 
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 
 public class LongProperty<E extends Entity> extends AbstractProperty<E, Long> {
@@ -11,19 +11,15 @@ public class LongProperty<E extends Entity> extends AbstractProperty<E, Long> {
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        if (nbt.contains(name(), Tag.TAG_LONG)) {
-            setVal(nbt.getLong(name()));
-        } else {
-            setVal(null);
-        }
+        setVal(NbtUtils.getLongOr(nbt, name(), null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
         if (getVal() != null) {
-            nbt.putLong(name(), getVal());
+            NbtUtils.putLong(nbt, name(), getVal());
         } else {
-            nbt.put(name(), new CompoundTag());
+            NbtUtils.put(nbt, name(), new CompoundTag());
         }
     }
 }

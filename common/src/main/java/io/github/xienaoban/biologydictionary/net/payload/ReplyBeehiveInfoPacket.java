@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.gui.screen.misc.BeehiveScreen;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
 import io.github.xienaoban.biologydictionary.platform.net.Packet;
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -26,14 +27,14 @@ public record ReplyBeehiveInfoPacket(CompoundTag bees) implements Packet {
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO { static void receive(ReplyBeehiveInfoPacket packet, ClientNetApi.Context ctx) {
             if (ctx.client().screen instanceof BeehiveScreen screen) {
-                ListTag beesList = packet.bees().getList(BeehiveBlockEntity.BEES, Tag.TAG_COMPOUND);
+                ListTag beesList = NbtUtils.getListOr(packet.bees(), BeehiveBlockEntity.BEES, new ListTag());
                 List<BeehiveBlockEntity.BeeData> beeDataList = new ArrayList<>();
 
                 for (int i = 0; i < beesList.size(); i++) {
                     CompoundTag beeTag = beesList.getCompound(i);
-                    CompoundTag entityData = beeTag.getCompound(BeehiveBlockEntity.ENTITY_DATA);
-                    int ticksInHive = beeTag.getInt(BeehiveBlockEntity.TICKS_IN_HIVE);
-                    int minOccupationTicks = beeTag.getInt(BeehiveBlockEntity.MIN_OCCUPATION_TICKS);
+                    CompoundTag entityData = NbtUtils.getCompoundOr(beeTag, BeehiveBlockEntity.ENTITY_DATA, new CompoundTag());
+                    int ticksInHive = NbtUtils.getIntOr(beeTag, BeehiveBlockEntity.TICKS_IN_HIVE, 0);
+                    int minOccupationTicks = NbtUtils.getIntOr(beeTag, BeehiveBlockEntity.MIN_OCCUPATION_TICKS, 0);
                     beeDataList.add(new BeehiveBlockEntity.BeeData(entityData, ticksInHive, minOccupationTicks));
                 }
 
