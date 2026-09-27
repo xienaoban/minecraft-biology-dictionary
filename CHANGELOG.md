@@ -8,9 +8,9 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Changed
 
-- Extract common codes
-
 ### Fixed
+
+- Fix the JEI subtype registration of the dictionary book
 
 ## Previous Versions
 
