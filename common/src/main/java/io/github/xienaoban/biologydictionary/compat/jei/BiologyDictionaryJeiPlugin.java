@@ -6,7 +6,8 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.IExtraIngredientRegistration;
 import mezz.jei.api.registration.IIngredientAliasRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
@@ -63,18 +64,39 @@ public class BiologyDictionaryJeiPlugin implements IModPlugin {
     /**
      * NBT-based variants are distinct subtypes of their base items,
      * so they get their own uids instead of being deduplicated into the plain ones.
+     * <p>
+     * A plain stack must report an empty subtype: null for the data method, and an empty
+     * string (never null) for the legacy string method, whose callers call {@code String#isEmpty()}.
      */
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         NBT_ITEM_VARIANTS.forEach((item, variants) ->
-                registration.registerSubtypeInterpreter(item, (stack, context) -> {
-                    for (NbtItemVariant variant : variants) {
-                        if (variant.tester().test(stack)) {
-                            return variant.subtypeKey();
-                        }
+                registration.registerSubtypeInterpreter(item, new ISubtypeInterpreter<ItemStack>() {
+                    @Override
+                    public Object getSubtypeData(ItemStack stack, UidContext context) {
+                        return getSubtypeKey(variants, stack);
                     }
-                    return IIngredientSubtypeInterpreter.NONE;
+
+                    @Override
+                    public String getLegacyStringSubtypeInfo(ItemStack stack, UidContext context) {
+                        String subtypeKey = getSubtypeKey(variants, stack);
+                        return subtypeKey == null ? "" : subtypeKey;
+                    }
                 }));
+    }
+
+    /**
+     * Look up the subtype key of the variant matching the given stack.
+     *
+     * @return the key of the matching variant, or null if the stack is a plain one
+     */
+    private static String getSubtypeKey(List<NbtItemVariant> variants, ItemStack stack) {
+        for (NbtItemVariant variant : variants) {
+            if (variant.tester().test(stack)) {
+                return variant.subtypeKey();
+            }
+        }
+        return null;
     }
 
     /**
