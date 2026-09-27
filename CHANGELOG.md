@@ -8,9 +8,9 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Changed
 
-- Extract common codes
-
 ### Fixed
+
+- Fix a crash when JEI shows the uses of an ink sac
 
 ## Previous Versions
 
