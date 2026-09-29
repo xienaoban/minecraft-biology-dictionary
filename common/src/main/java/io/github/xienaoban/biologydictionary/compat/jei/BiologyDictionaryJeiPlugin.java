@@ -66,14 +66,22 @@ public class BiologyDictionaryJeiPlugin implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         NBT_ITEM_VARIANTS.forEach((item, variants) ->
-                registration.registerSubtypeInterpreter(item, (stack, context) -> {
-                    for (NbtItemVariant variant : variants) {
-                        if (variant.tester().test(stack)) {
-                            return variant.subtypeKey();
-                        }
-                    }
-                    return null;
-                }));
+                registration.registerSubtypeInterpreter(item,
+                        (stack, context) -> getSubtypeKey(variants, stack)));
+    }
+
+    /**
+     * Look up the subtype key of the variant matching the given stack.
+     *
+     * @return the key of the matching variant, or null if the stack is a plain one
+     */
+    private static String getSubtypeKey(List<NbtItemVariant> variants, ItemStack stack) {
+        for (NbtItemVariant variant : variants) {
+            if (variant.tester().test(stack)) {
+                return variant.subtypeKey();
+            }
+        }
+        return null;
     }
 
     /**
