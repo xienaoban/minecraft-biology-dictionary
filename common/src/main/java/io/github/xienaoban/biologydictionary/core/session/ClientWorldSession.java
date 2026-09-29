@@ -59,6 +59,7 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
     private final FirstPersonShoulderEntityRenderer shoulderEntityRenderer;
     private final TelescopeManager telescopeManager;
     private final Set<EntityType<?>> failedRenderEntityTypes;
+    private final PlayerNameCache playerNameCache = new PlayerNameCache();
 
     private ClientWorldSession() {
         highlightManager = new HighlightManager();
@@ -95,6 +96,10 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
 
     public boolean hasRenderFailed(EntityType<?> entityType) {
         return failedRenderEntityTypes.contains(entityType);
+    }
+
+    public PlayerNameCache getPlayerNameCache() {
+        return playerNameCache;
     }
 
     public void tick() {

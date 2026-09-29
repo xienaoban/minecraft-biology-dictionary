@@ -136,8 +136,7 @@ public final class BiologyDictionaryClient {
     public static void printLogToTextBox(Component message, Throwable throwable) {
         ClientUtils.sendTextBoxMessage(TextUtils.concat(
                 Arrays.asList(
-                        TextUtils.translate(Lang.TEXT_INFO_FROM_THIS_MOD).withStyle(ChatFormatting.DARK_GREEN),
-                        message,
+                        TextUtils.modLog(message),
                         throwable == null ? TextUtils.empty() : TextUtils.concat(
                                 TextUtils.newline(),
                                 TextUtils.literal(throwable.toString()).withStyle(ChatFormatting.RED),

@@ -34,4 +34,8 @@ public final class ServerNetApiImpl {
     public static void send(ServerPlayer player, Packet payload) {
         NetworkManager.sendToPlayer(player, payload);
     }
+
+    public static boolean canSend(ServerPlayer player, Class<? extends Packet> packetClass) {
+        return NetworkManager.canPlayerReceive(player, PacketUtil.getType(packetClass));
+    }
 }
