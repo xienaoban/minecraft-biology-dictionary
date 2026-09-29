@@ -20,7 +20,7 @@ public record EntitySetSoundSkill(boolean silent) implements EntityTargetedSkill
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofItems(new ItemStack(Items.WHITE_WOOL));
+            return SkillCost.ofItems(Items.WHITE_WOOL);
         }
 
         @Override

@@ -21,7 +21,7 @@ public record WanderingTraderRetainSkill() implements EntityTargetedSkill<Wander
 
         @Override
         public SkillCost getDefaultCost() {
-            return SkillCost.ofItems(new ItemStack(Items.WATER_BUCKET));
+            return SkillCost.ofItems(Items.WATER_BUCKET);
         }
 
         @Override
