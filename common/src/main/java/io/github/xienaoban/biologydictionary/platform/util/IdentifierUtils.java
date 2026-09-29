@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 public final class IdentifierUtils {
     private IdentifierUtils() {}
@@ -55,6 +56,10 @@ public final class IdentifierUtils {
 
     public static boolean isBd(Identifier id) {
         return BiologyDictionary.MOD_ID.equals(id.getNamespace());
+    }
+
+    public static Identifier getId(ResourceKey<?> key) {
+        return key.identifier();
     }
 
     public static Codec<Identifier> codec() {

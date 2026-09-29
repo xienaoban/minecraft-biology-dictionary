@@ -15,6 +15,7 @@ import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.StringUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.core.GlobalPos;
@@ -48,7 +49,7 @@ public class VillagerJobSiteWidget extends EntityPropertyStandardWidget<Villager
     private float calcDistToJobSite() {
         GlobalPos jobSitePos = jobSiteProperty.getVal();
         if (jobSitePos == null) { return NO_DIS; }
-        if (jobSitePos.dimension() != e().level().dimension()) { return NO_DIS; }
+        if (jobSitePos.dimension() != EntityUtils.getLevel(e()).dimension()) { return NO_DIS; }
         Vec3 entityPos = e().position();
         return (float) entityPos.distanceTo(jobSitePos.pos().getCenter());
     }

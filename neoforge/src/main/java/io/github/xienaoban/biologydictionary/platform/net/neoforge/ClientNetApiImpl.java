@@ -21,7 +21,7 @@ public final class ClientNetApiImpl {
             CustomPacketPayload.Type<T> type = PacketUtil.getType(clazz);
             StreamCodec<FriendlyByteBuf, T> codec = PacketUtil.generateCodec(factory);
             NetworkManager.registerReceiver(NetworkManager.Side.S2C, type, codec, (payload, context) -> {
-                Minecraft client = Minecraft.getInstance();
+                Minecraft client = ClientUtils.getClient();
                 ClientNetApi.Context ctx = new ClientNetApi.Context(client, ClientUtils.getClientPlayer(client));
                 ctx.client().execute(() -> payload.clientReceive(ctx));
             });

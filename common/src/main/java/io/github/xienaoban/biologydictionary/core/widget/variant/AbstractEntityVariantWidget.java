@@ -271,7 +271,7 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
             this.variant = variant;
             this.name = getVariantName(variant);
             EntityDictionaryEntry entry = WorldSession.get().getEntityManager().getEntityEntry(e().getType());
-            this.entityDisplay = new EntityDisplay(entry, e().level());
+            this.entityDisplay = new EntityDisplay(entry, EntityUtils.getLevel(e()));
             if (!entityDisplay.isPlaceholder()) {
                 E model = Misc.cast(entityDisplay.getModel());
                 model.setYRot(0);

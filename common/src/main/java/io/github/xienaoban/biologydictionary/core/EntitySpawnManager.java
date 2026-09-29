@@ -128,7 +128,7 @@ public final class EntitySpawnManager {
                 break;
             }
             try {
-                Identifier biomeId = biomeEntry.getKey().identifier();
+                Identifier biomeId = IdentifierUtils.getId(biomeEntry.getKey());
                 Biome biome = biomeEntry.getValue();
                 MobSpawnSettings spawnSettings = biome.getMobSettings();
 
@@ -164,7 +164,7 @@ public final class EntitySpawnManager {
                 buildContext.markTimedOut();
                 break;
             }
-            Identifier structureId = structureEntry.getKey().identifier();
+            Identifier structureId = IdentifierUtils.getId(structureEntry.getKey());
             try {
                 Structure structure = structureEntry.getValue();
 
@@ -288,7 +288,7 @@ public final class EntitySpawnManager {
             memberPoolId = buildContext.tarjanStack.pop();
             buildContext.tarjanStackSet.remove(memberPoolId);
             componentPools.add(memberPoolId);
-            if (memberPoolId.toString().compareTo(componentId.toString()) < 0) {
+            if (IdentifierUtils.toString(memberPoolId).compareTo(IdentifierUtils.toString(componentId)) < 0) {
                 componentId = memberPoolId;
             }
         } while (!memberPoolId.equals(poolId));
@@ -446,7 +446,7 @@ public final class EntitySpawnManager {
     }
 
     private static Identifier getPoolLocation(Holder<StructureTemplatePool> pool) {
-        return pool.unwrapKey().map(ResourceKey::identifier).orElse(null);
+        return pool.unwrapKey().map(IdentifierUtils::getId).orElse(null);
     }
 
     private record StructureAnalysis(Set<EntityType<?>> entities, Set<Identifier> referencedPools) {
@@ -920,7 +920,7 @@ public final class EntitySpawnManager {
                     if (optional.isEmpty()) {
                         LOGGER.warn("Tag '{}' not found in registry, ignoring.", str);
                     } else {
-                        optional.get().forEach(holder -> holder.unwrapKey().ifPresent(key -> result.add(key.identifier())));
+                        optional.get().forEach(holder -> holder.unwrapKey().ifPresent(key -> result.add(IdentifierUtils.getId(key))));
                     }
                 } else {
                     Identifier id = IdentifierUtils.fromStringOrNull(str);

@@ -132,12 +132,12 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
 
     private static Component playerText(ClientWorldSession cws, UUID playerId) {
         if (playerId == null || playerId.equals(DiscoveryRecord.NO_UUID)) {
-            return Component.literal("-");
+            return TextUtils.literal("-");
         }
         if (cws != null) {
-            return Component.literal(cws.getPlayerNameCache().getDisplayNameOrRequest(playerId));
+            return TextUtils.literal(cws.getPlayerNameCache().getDisplayNameOrRequest(playerId));
         }
-        return Component.literal(playerId.toString());
+        return TextUtils.literal(playerId.toString());
     }
 
     private static Component getRealWorldTimeText(long epochMillis) {
@@ -147,7 +147,7 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
         Instant instant = Instant.ofEpochMilli(epochMillis);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             .withZone(ZoneId.systemDefault());
-        return Component.literal(formatter.format(instant));
+        return TextUtils.literal(formatter.format(instant));
     }
 
     private static Component getGameTimeText(long tick) {
@@ -173,6 +173,6 @@ public final class EntityDiscoveryRecordWidget extends EntityPropertyWidget<Enti
 
     private static Component getCoordinateText(DiscoveryRecord record) {
         BlockPos pos = record.position();
-        return Component.literal(pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+        return TextUtils.literal(pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
     }
 }

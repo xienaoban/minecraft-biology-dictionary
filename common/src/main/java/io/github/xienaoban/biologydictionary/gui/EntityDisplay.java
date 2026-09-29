@@ -36,7 +36,7 @@ public final class EntityDisplay {
     }
 
     public EntityDisplay(EntityDictionaryEntry entry, Entity target) {
-        this(entry, target.level(), target);
+        this(entry, EntityUtils.getLevel(target), target);
     }
 
     private EntityDisplay(EntityDictionaryEntry entry, Level level, Entity target) {
@@ -106,7 +106,7 @@ public final class EntityDisplay {
     }
 
     private void replaceWithPlaceholder() {
-        model = createPlaceholder(model.level());
+        model = createPlaceholder(EntityUtils.getLevel(model));
         cache = new ScreenRenderingContext.EntityRenderingCache();
     }
 

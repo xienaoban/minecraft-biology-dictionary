@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
+import com.mojang.authlib.GameProfile;
 import io.github.xienaoban.biologydictionary.mixin.entity.ServerPlayerIMixin;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -7,16 +8,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSoundEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuConstructor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -51,8 +55,26 @@ public final class PlayerUtils {
         return player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
     }
 
+    public static ServerLevel getServerLevel(ServerPlayer player) {
+        return player.level();
+    }
+
+    public static String getGameProfileName(GameProfile profile) {
+        return profile.name();
+    }
+
     public static Inventory getInventory(Player player) {
         return player.getInventory();
+    }
+
+    public static void giveOrDrop(Player player, ItemStack stack) {
+        if (!player.addItem(stack.copy())) {
+            dropItem(player, stack);
+        }
+    }
+
+    public static void dropItem(Player player, ItemStack stack) {
+        player.drop(stack, false);
     }
 
     public static int getExperiencePoint(Player player) {
@@ -158,6 +180,14 @@ public final class PlayerUtils {
             // On client side, play locally at position
             player.level().playSound(player, x, y, z, soundEvent, SoundSource.UI, volume, pitch);
         }
+    }
+
+    public static void swingHand(Player player, InteractionHand hand) {
+        player.swing(hand);
+    }
+
+    public static void swingMainHand(Player player) {
+        swingHand(player, InteractionHand.MAIN_HAND);
     }
 
     public static boolean isWithinInteractionRange(Player player, Entity entity, double distance) {

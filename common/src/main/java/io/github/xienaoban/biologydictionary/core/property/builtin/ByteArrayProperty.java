@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.core.property.builtin;
 
+import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 
@@ -10,15 +11,15 @@ public class ByteArrayProperty<E extends Entity> extends AbstractProperty<E, byt
 
     @Override
     public void readFrom(CompoundTag nbt) {
-        setVal(nbt.getByteArray(name()).orElse(null));
+        setVal(NbtUtils.getByteArrayOr(nbt, name(), null));
     }
 
     @Override
     public void writeTo(CompoundTag nbt) {
         if (getVal() != null) {
-            nbt.putByteArray(name(), getVal());
+            NbtUtils.putByteArray(nbt, name(), getVal());
         } else {
-            nbt.put(name(), new CompoundTag());
+            NbtUtils.put(nbt, name(), new CompoundTag());
         }
     }
 }

@@ -25,7 +25,7 @@ import java.util.List;
  */
 @ClientOnly
 public class TextBlock extends ScreenElement implements ScreenConsts {
-    private static final FormattedCharSequence ELLIPSIS = Component.literal("...").getVisualOrderText();
+    private static final FormattedCharSequence ELLIPSIS = TextUtils.literal("...").getVisualOrderText();
     private static final HorizontalAlignment DEFAULT_HORIZONTAL_ALIGNMENT = HorizontalAlignment.LEFT;
     private static final VerticalAlignment DEFAULT_VERTICAL_ALIGNMENT = VerticalAlignment.CENTER;
     private static final float DEFAULT_LINE_SPACING = 0F;

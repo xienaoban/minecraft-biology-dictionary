@@ -34,7 +34,7 @@ public class DiscoveryToast implements Toast {
      * The local player discovered a new entity type.
      */
     public static DiscoveryToast bySelf(EntityType<?> entityType) {
-        return new DiscoveryToast(entityType, Component.empty());
+        return new DiscoveryToast(entityType, TextUtils.empty());
     }
 
     /**

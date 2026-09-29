@@ -6,6 +6,7 @@ import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.net.payload.SendEntityOverviewPacket;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 
@@ -18,7 +19,7 @@ public final class ServerEntityOverviewManager {
     public static boolean canOpen(ServerPlayer player, EntityType<?> entityType) {
         ServerWorldSession sws = ServerWorldSession.get();
         return sws != null && (ConfigsManager.getServer().isAllowOverviewForUndiscoveredEntities()
-                || player.isCreative()
+                || PlayerUtils.isCreative(player)
                 || sws.getDiscoveryManager().isDiscovered(player, entityType));
     }
 
@@ -36,7 +37,7 @@ public final class ServerEntityOverviewManager {
             return false;
         }
         EntityOverviewCache.CacheEntry cached = ws.getEntityOverviewCache()
-                .getOrCreate(entityType, player.level());
+                .getOrCreate(entityType, PlayerUtils.getServerLevel(player));
         ServerNetManager.sendEntityOverview(player, new SendEntityOverviewPacket(
                 EntityUtils.getEntityTypeIdName(entityType),
                 cached.isValid(), cached.vanillaNbt(), cached.extraNbt(), openScreen));
