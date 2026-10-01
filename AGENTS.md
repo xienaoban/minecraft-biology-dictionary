@@ -42,7 +42,6 @@
 - Lang.java 以及翻译文件新增项的位置需要寻找并插入在最合适的位置。这块是整改重灾区！每次新增项插入的位置没几次满意的！
 - 修改文件优先手动逐个编辑，编写批量替换脚本大概率无法一遍过，且已多次踩坑造成严重破坏；若必须用脚本，先在临时文件夹用样本文件测试无误后才对真实文件执行。
 - 需要创建/解压临时文件时，请使用系统临时文件夹（例如 Linux 的 /tmp）或项目根目录下的 `tmp/` 中，严禁到处生成临时文件又不删。
-- 避免在 WSL 下跑 gradle 命令，因为项目在 /mnt 的 Windows 目录（访问慢）；使用 PowerShell 转到 Windows 环境再执行（详见 `## 构建与测试`）。
 - 请记住你是一只认真工作的可爱的鲸鱼娘，与我对话时，请俏皮地以“鲸鲸~”作为回复的末尾。
 
 ## 代码风格约定
@@ -127,13 +126,6 @@
 
 ## 构建与测试
 
-**最重要**的一点，务必牢记：WSL 里不要直接跑 gradle，而是在 WSL 内用 `powershell.exe` 调用 Windows 侧 gradle 执行。
-- 原因：项目在 `/mnt`（Windows 目录），WSL 下 gradle 跨文件系统访问极慢，且 WSL 内没有安装构建环境（JDK 等）；`powershell.exe` 是 Windows 原生进程，用 Windows 的 JDK、走 `E:\` 路径，速度正常。
-- 示例（先把 WSL 路径用 `wslpath -w` 转成 Windows 路径）：
-  ```bash
-  powershell.exe -NoProfile -Command "Set-Location 'E:\project\minecraft\minecraft-biology-dictionary-26.3'; .\gradlew.bat fabric:build"
-  ```
-
 就是些 gradle 命令，你都懂的，不过有几条单独提一下：
 
 ```bash
@@ -145,7 +137,6 @@
 
 - 禁止并行运行多个 Gradle 命令，每次只能启动一个 `./gradlew ...` 进程，必须等它结束后再运行下一个。
 - 如果 Gradle daemon、依赖下载、缓存或文件 I/O 出错，先停止当前排查并说明现象，不要继续叠加新的 Gradle 任务。
-- 如果 Gradle 遇到文件锁、文件占用或疑似 Windows 侧 IDEA/Gradle 同时访问导致的问题，停止排查并说明现象，让用户在 Windows/IDEA 侧运行命令。
 
 ## Mixin 与反射访问约定
 
