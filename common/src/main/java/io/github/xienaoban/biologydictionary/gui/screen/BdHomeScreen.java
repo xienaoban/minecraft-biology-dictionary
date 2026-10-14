@@ -7,10 +7,10 @@ import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
-import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
-import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill;
-import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplay;
+import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
+import io.github.xienaoban.biologydictionary.gui.component.EntityActionCardWidget;
+import io.github.xienaoban.biologydictionary.gui.component.EntityCardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.LongButton;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
@@ -22,21 +22,15 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElem
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.*;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
 
 @ClientOnly
 public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
-    private long currTime = 0;
-    private float entityRotateX, entityRotateY;
-
     private ScreenElement leftToolBar;
     private ScreenElement rightToolBar;
     private ScreenElement upperRightToolBar;
@@ -44,6 +38,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private Runnable entityWidgetsInitializer;
     private List<EntityManager.EntityDictionaryEntry> currentEntityEntries = List.of();
     private final Set<EntityType<?>> selectedEntityTypes = new HashSet<>();
+    private final EntityDisplayRotation displayRotation = new EntityDisplayRotation();
 
     public BdHomeScreen() {
         super(TextUtils.translate(Lang.BIOLOGY_DICTIONARY_TITLE));
@@ -129,15 +124,14 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private List<Widget> getEntityWidgets(List<EntityManager.EntityDictionaryEntry> entries, boolean checkbox) {
+        if (!checkbox) {
+            return EntityActionCardWidget.createWidgets(entries, displayRotation);
+        }
         ClientLevel level = ClientUtils.getClientLevel(client);
-        ClientDiscoveryCacheManager dcm = ClientWorldSession.get().getDiscoveryCacheManager();
-        boolean showOnlyDiscovered = BiologyDictionaryClient.shouldShowOnlyDiscoveredEntities();
         List<Widget> widgets = new ArrayList<>();
         for (EntityManager.EntityDictionaryEntry entry : entries) {
-            EntityType<?> type = entry.getType();
-            if (showOnlyDiscovered && !dcm.isDiscovered(type)) { continue; }
-            EntityDisplay display = new EntityDisplay(entry, level);
-            widgets.add(checkbox ? new EntitySelectionCardWidget(entry, display) : new EntityActionCardWidget(entry, display));
+            if (!EntityCardWidget.isShown(entry)) { continue; }
+            widgets.add(new EntitySelectionCardWidget(entry, new EntityDisplay(entry, level)));
         }
         return widgets;
     }
@@ -189,12 +183,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
     @Override
     protected void render(ScreenRenderingContext ctx) {
-        currTime = System.currentTimeMillis();
-        int t = (int) (currTime % 8000);
-        t = t > 4000 ? 6000 - t : t - 2000;
-        entityRotateX = (float) Math.atan(t / 400F);
-        entityRotateY = (float) Math.atan(45 / 40F);
-
+        displayRotation.update(System.currentTimeMillis());
         super.render(ctx);
     }
 
@@ -273,209 +262,10 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    private abstract class EntityCardWidget extends Widget {
-        protected final EntityManager.EntityDictionaryEntry entry;
-        private final Component name;
-        private final boolean isDiscovered;
-
-        private final EntityDisplay display;
-
-        protected EntityCardWidget(EntityManager.EntityDictionaryEntry entry, EntityDisplay display) {
-            super(2, 2);
-            this.entry = entry;
-            this.name = EntityUtils.getEntityTypeNameText(entry.getType());
-            this.isDiscovered = ClientWorldSession.get().getDiscoveryCacheManager().isDiscovered(entry.getType());
-            this.display = display;
-        }
-
-        protected final boolean isDiscoveredOrCreative() {
-            return isDiscovered || PlayerUtils.isCreative(ClientUtils.getClientPlayer());
-        }
-
-        protected abstract boolean shouldRenderDetail();
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            super.onRender(ctx);
-
-            int silhouetteColor = isDiscoveredOrCreative() ? 0 : Colors.UNDISCOVERED_ENTITY_COLOR;
-            ScreenElementBox box = getBox();
-            display.renderEntityCentered(ctx,
-                    box.getLeft(), box.getTop(), box.getRight(), box.getBottom() - 6,
-                    entityRotateX, entityRotateY,
-                    silhouetteColor);
-
-            Component text = shouldRenderDetail()
-                    ? FontUtils.truncateByWidth(name, getBox().getWidth() + 2, 0.5F)
-                    : TextUtils.literal("??");
-            ctx.renderCenteredText(text, Colors.BROWN, 0.5F, getZ(),
-                    (box.getLeft() + box.getRight()) / 2, box.getBottom() - 5);
-        }
-    }
-
-    private final class EntityActionCardWidget extends EntityCardWidget {
-        private static final int BUTTONS_TOTAL = 2 * Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN;
-        private static final int BUTTONS_CUT = BUTTONS_TOTAL * 2 / 3;
-
-        private final ItemStack spawnEgg;
-
-        public EntityActionCardWidget(EntityManager.EntityDictionaryEntry entry, EntityDisplay display) {
-            super(entry, display);
-            Item item = EntityUtils.getSpawnEggItem(entry.getType());
-            this.spawnEgg = item == null ? null : new ItemStack(item);
-        }
-
-        private boolean isClickable() {
-            return BdEntityOverviewScreen.canOpen(entry);
-        }
-
-        @Override
-        protected boolean shouldRenderDetail() {
-            return isClickable();
-        }
-
-        @Override
-        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
-            if (!isClickable()) {
-                AbstractBiologyDictionaryScreen.current()
-                        .sendScreenMessage(TextUtils.translate(Lang.TEXT_ENTITY_NOT_DISCOVERED));
-                return true;
-            }
-
-            ScreenElementBox box = getBox();
-            float relativeMouseY = mouseY - box.getTop();
-
-            if (relativeMouseY < BUTTONS_CUT) {
-                if (isMouseLeft(button)) {
-                    // Overview button
-                    ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                    BdEntityOverviewScreen screen = new BdEntityOverviewScreen(entry);
-                    screen.setLastScreen(BdHomeScreen.this);
-                    ClientUtils.setScreen(screen);
-                    screen.initOrRequestProperties();
-                } else {
-                    // Highlight button
-                    int distance = isMouseRight(button)
-                            ? HighlightEntitiesSkill.getNearRadius()
-                            : HighlightEntitiesSkill.getFarRadius();
-                    ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 0.8F);
-                    if (BiologySkills.activate(
-                            new HighlightEntitiesSkill(entry.getType(), distance))) {
-                        onClose();
-                    }
-                }
-            } else {
-                // Spawn egg button - bottom section
-                BiologySkills.activate(new GetSpawnEggSkill(entry.getType()));
-            }
-
-            return true;
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            super.onRender(ctx);
-            ScreenElementBox box = getBox();
-            int color = 0x0B794500;
-            ctx.renderRectangle(color, 1F, ctx.getZ(),
-                    box.getLeft() - 1, box.getTop() - 1, box.getRight() + 1, box.getBottom() + 1);
-            ctx.renderRectangle(color, ctx.getZ(),
-                    box.getLeft(), box.getBottom() - 6, box.getRight(), box.getBottom());
-        }
-
-        @Override
-        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
-            float midX = (box.getLeft() + box.getRight()) / 2;
-            float mouseY = ctx.getMouseY() - box.getTop();
-
-            ctx.renderRectangle(0x77794500, ctx.getZ(),
-                    box.getLeft() - 1, box.getTop() - 1, box.getRight() + 1, box.getBottom() + 1);
-
-            // Render button sections
-            int colorHighlight, colorEgg;
-            if (mouseY < BUTTONS_CUT) {
-                colorHighlight = 0xd4ffffff;
-                colorEgg = 0xaaffffff;
-            } else {
-                colorHighlight = 0xaaffffff;
-                colorEgg = 0xd4ffffff;
-            }
-            ctx.renderRectangle(colorHighlight, ctx.getZ(),
-                    box.getLeft(), box.getTop(), box.getRight(), box.getTop() + BUTTONS_CUT);
-            ctx.renderRectangle(colorEgg, ctx.getZ(),
-                    box.getLeft(), box.getTop() + BUTTONS_CUT, box.getRight(), box.getBottom());
-
-            // Render icons for each section
-            final int wh = 10;
-
-            // Highlight icon (top) - animated
-            final int wink = 600, cycle = 2400;
-            long time = currTime % cycle;
-            int u;
-            if (time < wink) { u = -1; }
-            else if (time < cycle / 2) { u = 0; }
-            else if (time < cycle / 2 + wink) { u = 1; }
-            else { u = 0; }
-            ctx.renderTexture(Textures.ICONS, (23 + u) * wh, 24 * wh, ctx.getZ(),
-                    midX - wh / 2F, box.getTop() + (BUTTONS_CUT - wh) / 2F,
-                    Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
-
-            if (shouldRenderDetail()) {
-                // Spawn egg icon (bottom)
-                if (spawnEgg != null) {
-                    ctx.renderItem(spawnEgg, 0.5F, midX - 4F, box.getTop() + BUTTONS_CUT);
-                }
-            }
-
-            // Tooltip
-            List<Component> tooltips;
-            if (mouseY < BUTTONS_CUT) {
-                int nearRadius = HighlightEntitiesSkill.getNearRadius();
-                int farRadius = HighlightEntitiesSkill.getFarRadius();
-                tooltips = new ArrayList<>();
-                tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OVERVIEW));
-                tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OVERVIEW_DESC));
-                tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.translate(Lang.WIDGET_ENTITY_OVERVIEW_LEFT_DESC)
-                        .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
-                tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.translate(
-                                Lang.WIDGET_ENTITY_HIGHLIGHT_RIGHT_DESC, nearRadius)
-                        .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
-                tooltips.addAll(new HighlightEntitiesSkill(
-                        entry.getType(), nearRadius)
-                        .getRealCost().toTooltipText());
-                tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.translate(
-                                Lang.WIDGET_ENTITY_HIGHLIGHT_MIDDLE_DESC, farRadius)
-                        .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
-                tooltips.addAll(new HighlightEntitiesSkill(
-                        entry.getType(), farRadius)
-                        .getRealCost().toTooltipText());
-                tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entry.getType()))
-                        .withStyle(ChatFormatting.GRAY));
-            } else {
-                tooltips = new ArrayList<>();
-                tooltips.add(tooltipTitle(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG));
-                tooltips.add(tooltipDescription(Lang.WIDGET_ENTITY_OFFER_SPAWN_EGG_DESC));
-                tooltips.add(TextUtils.empty());
-                tooltips.addAll(new GetSpawnEggSkill(entry.getType()).getRealCost().toTooltipText());
-                tooltips.add(TextUtils.empty());
-                tooltips.add(TextUtils.literal(EntityUtils.getEntityTypeIdName(entry.getType()))
-                        .withStyle(ChatFormatting.GRAY));
-            }
-
-            ctx.renderComponentTooltipCentered(tooltips, 0.5F, midX, box.getBottom() + 2);
-            return true;
-        }
-    }
-
     private final class EntitySelectionCardWidget extends EntityCardWidget {
 
         public EntitySelectionCardWidget(EntityManager.EntityDictionaryEntry entry, EntityDisplay display) {
-            super(entry, display);
+            super(entry, display, displayRotation);
         }
 
         @Override

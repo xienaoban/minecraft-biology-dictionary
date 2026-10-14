@@ -66,6 +66,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private final PageTurnButton turnLeft = new PageTurnButton(-2);
     private final PageTurnButton turnRight = new PageTurnButton(2);
     private final CenteredMessage centeredMessage = new CenteredMessage();
+    private final SearchEntryButton searchEntryButton = new SearchEntryButton();
 
     public AbstractBiologyDictionaryScreen(MutableComponent title) {
         super(title.withColor(Colors.TITLE));
@@ -76,6 +77,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         turnLeft.setParent(getRootScreenElement());
         turnRight.setParent(getRootScreenElement());
         centeredMessage.setParent(getRootScreenElement());
+        searchEntryButton.setParent(getRootScreenElement());
     }
 
     private void check() {
@@ -170,6 +172,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 (height + BOOK_HEIGHT) / 2F,
                 width / 2F + Page.PAGE_WIDTH,
                 (height + BOOK_HEIGHT) / 2F + 20);
+
+        searchEntryButton.getBox().setPosition(rightPageLeft(width) + Page.PAGE_WIDTH + 19, pageTop(height));
     }
 
     protected static float leftPageLeft(int width) {
@@ -191,6 +195,16 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
+        if (isInputCaptured()) {
+            if (keyEvent.isEscape()) {
+                // The first escape only drops the text focus; the next one leaves the screen.
+                clearFocus();
+                return true;
+            }
+            // A vanilla text widget owns the keyboard: keys like E or the handbook
+            // key must be typed instead of closing the screen.
+            return super.keyPressed(keyEvent);
+        }
         if (KeyMappings.OPEN_HANDBOOK.matches(keyEvent)
                 || client.options.keyInventory.matches(keyEvent)) {
             onClose();
@@ -481,6 +495,44 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 return true;
             }
             return super.onMouseDown(mouseX, mouseY, button);
+        }
+    }
+
+    /**
+     * The search entry, the mirror of the bookmark column on the right of the book.
+     * Art ready later; for now it renders as a flat frame.
+     */
+    private final class SearchEntryButton extends ScreenElement {
+        private static final int HOVER_OFFSET = 2;
+
+        private final Component text = TextUtils.translate(Lang.BOOKMARK_SEARCH);
+
+        public SearchEntryButton() {
+            getBox().setSize(3 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (!isMouseLeft(button)) { return super.onMouseDown(mouseX, mouseY, button); }
+            ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+            if (AbstractBiologyDictionaryScreen.this instanceof BdSearchScreen searchScreen) {
+                searchScreen.focusInputBox();
+            } else {
+                ClientUtils.setScreen(client, new BdSearchScreen(AbstractBiologyDictionaryScreen.this));
+            }
+            return true;
+        }
+
+        @Override
+        protected void onRender(ScreenRenderingContext ctx) {
+            super.onRender(ctx);
+            ScreenElementBox box = getBox();
+            boolean hovered = getHoveredElement() == this;
+            float offset = hovered ? HOVER_OFFSET : 0;
+            ctx.renderRectangle(hovered ? 0x88AF711F : 0x55AF711F, ctx.getZ(),
+                    box.getLeft() + offset, box.getTop(), box.getRight() + offset, box.getBottom());
+            ctx.renderText(text, Colors.BROWN, 0.5F, ctx.getZ(),
+                    box.getLeft() + offset + 2, box.getTop() + 3 + TXT_TO);
         }
     }
 

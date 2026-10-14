@@ -91,12 +91,14 @@
   "screen.biologydictionary.player_selector"       : "Player Selector",
   "screen.biologydictionary.player_selector.desc"  : "Please select an online player near you.",
   "screen.biologydictionary.stealing"              : "Stealing",
+  "screen.biologydictionary.search_title"          : "Search",
 
   "bookmark.biologydictionary.all"          : "All",
   "bookmark.biologydictionary.back_to_home" : "Home",
   "bookmark.biologydictionary.back"         : "Back",
   "bookmark.biologydictionary.config"       : "Config",
   "bookmark.biologydictionary.about"        : "About",
+  "bookmark.biologydictionary.search"       : "Search",
 
   "tag_group.biologydictionary.default"   : "Default",
   "tag_group.biologydictionary.tag"       : "By Tag",
@@ -131,6 +133,8 @@
   "discovery_source.biologydictionary.killed_by"            : "Killed By",
   "discovery_source.biologydictionary.unknown"              : "Unknown",
 
+  "widget.biologydictionary.search"                         : "Search",
+  "widget.biologydictionary.search.hint"                    : "Type keywords to filter",
   "widget.biologydictionary.overview"                       : "View Entity Properties",
   "widget.biologydictionary.overview.desc"                  : "View default/reference properties for this entity type",
   "widget.biologydictionary.overview.left.desc"             : "Lift click: View Entity Properties",

@@ -58,12 +58,14 @@ public final class Lang {
     SCREEN_PLAYER_SELECTOR              = "screen.biologydictionary.player_selector",
     SCREEN_PLAYER_SELECTOR_DESC         = "screen.biologydictionary.player_selector.desc",
     SCREEN_STEALING                     = "screen.biologydictionary.stealing",
+    SCREEN_SEARCH_TITLE                 = "screen.biologydictionary.search_title",
 
     BOOKMARK_ALL          = "bookmark.biologydictionary.all",
     BOOKMARK_BACK_TO_HOME = "bookmark.biologydictionary.back_to_home",
     BOOKMARK_BACK         = "bookmark.biologydictionary.back",
     BOOKMARK_CONFIG       = "bookmark.biologydictionary.config",
     BOOKMARK_ABOUT        = "bookmark.biologydictionary.about",
+    BOOKMARK_SEARCH       = "bookmark.biologydictionary.search",
 
     TAG_GROUP_DEFAULT        = "tag_group.biologydictionary.default",
     TAG_GROUP_TAG            = "tag_group.biologydictionary.tag",
@@ -89,6 +91,8 @@ public final class Lang {
     TAG_DEFAULT_BOSS                     = "tag.biologydictionary.default.boss",
     TAG_DEFAULT_INSTANCE_CREATION_FAILED = "tag.biologydictionary.default.instance_creation_failed",
 
+    WIDGET_SEARCH                          = "widget.biologydictionary.search",
+    WIDGET_SEARCH_HINT                     = "widget.biologydictionary.search.hint",
     WIDGET_ENTITY_OVERVIEW                 = "widget.biologydictionary.overview",
     WIDGET_ENTITY_OVERVIEW_DESC            = "widget.biologydictionary.overview.desc",
     WIDGET_ENTITY_OVERVIEW_LEFT_DESC       = "widget.biologydictionary.overview.left.desc",
