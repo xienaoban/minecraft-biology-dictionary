@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core.session;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsUpdateCallback;
+import io.github.xienaoban.biologydictionary.core.EntityCategoryManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.EntityOverviewCache;
 import io.github.xienaoban.biologydictionary.core.property.StaticEntityPropertyCache;
@@ -75,12 +76,14 @@ public final class WorldSession implements ConfigsUpdateCallback {
     }
 
     private final EntityManager entityManager;
+    private final EntityCategoryManager entityCategoryManager;
     private final SkillCostsCache skillCostsCache;
     private final EntityOverviewCache entityOverviewCache;
     private final StaticEntityPropertyCache staticEntityPropertyCache;
 
     private WorldSession(Level level) {
         this.entityManager = new EntityManager(level);
+        this.entityCategoryManager = new EntityCategoryManager(entityManager);
         this.skillCostsCache = new SkillCostsCache();
         this.entityOverviewCache = new EntityOverviewCache();
         this.staticEntityPropertyCache = new StaticEntityPropertyCache();
@@ -93,6 +96,10 @@ public final class WorldSession implements ConfigsUpdateCallback {
 
     public EntityManager getEntityManager() {
         return entityManager;
+    }
+
+    public EntityCategoryManager getEntityCategoryManager() {
+        return entityCategoryManager;
     }
 
     public SkillCostsCache getSkillCostsCache() {

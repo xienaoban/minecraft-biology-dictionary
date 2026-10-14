@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.api;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.core.EntityCategoryManager.TagGroup;
 import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
-import io.github.xienaoban.biologydictionary.core.EntityManager.TagGroup;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import net.minecraft.world.entity.EntityType;
 
@@ -11,7 +11,8 @@ import java.util.Optional;
 
 /**
  * Static facade for entity catalog queries (entity list and tag membership).
- * Reads from the {@link WorldSession} entity manager; no client/server distinction.
+ * Reads from the {@link WorldSession} entity manager and category manager; no
+ * client/server distinction.
  */
 public final class EntityInfoApi {
     private EntityInfoApi() {}
@@ -43,7 +44,7 @@ public final class EntityInfoApi {
     public static List<EntityDictionaryEntry> getTagEntities(String groupId, String tagId) {
         WorldSession ws = WorldSession.get();
         if (ws == null) { return List.of(); }
-        TagGroup group = ws.getEntityManager().getTagGroups().get(groupId);
+        TagGroup group = ws.getEntityCategoryManager().getTagGroups().get(groupId);
         if (group == null || !group.containsTag(tagId)) { return List.of(); }
         return group.getTag(tagId).getEntities();
     }

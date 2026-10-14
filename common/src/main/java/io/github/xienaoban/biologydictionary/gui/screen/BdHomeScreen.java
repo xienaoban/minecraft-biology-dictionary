@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
+import io.github.xienaoban.biologydictionary.core.EntityCategoryManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
@@ -50,7 +51,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         addBookmarkFromLast(new OpenBdAboutScreenBookmark());
         addBookmarkFromLast(new OpenBdConfigScreenBookmark());
         addBookmark(new AllEntitiesBookmark());
-        for (EntityManager.TagGroup group : WorldSession.get().getEntityManager().getTagGroups().values()) {
+        for (EntityCategoryManager.TagGroup group : WorldSession.get().getEntityCategoryManager().getTagGroups().values()) {
             addBookmark(new TagGroupBookmark(group));
         }
     }
@@ -73,7 +74,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         resetAndAddEntityWidgets(WorldSession.get().getEntityManager().getEntityEntries());
     }
 
-    private void initEntityWidgets(EntityManager.Tag tag) {
+    private void initEntityWidgets(EntityCategoryManager.Tag tag) {
         resetAndAddEntityWidgets(tag.getEntities());
     }
 
@@ -204,9 +205,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private final class TagGroupBookmark extends Bookmark {
-        private final EntityManager.TagGroup group;
+        private final EntityCategoryManager.TagGroup group;
 
-        public TagGroupBookmark(EntityManager.TagGroup group) {
+        public TagGroupBookmark(EntityCategoryManager.TagGroup group) {
             super(group.getName());
             this.group = group;
         }
@@ -231,9 +232,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private final class TagCatalog extends Catalog {
-        private final EntityManager.Tag tag;
+        private final EntityCategoryManager.Tag tag;
 
-        public TagCatalog(int depth, EntityManager.Tag tag) {
+        public TagCatalog(int depth, EntityCategoryManager.Tag tag) {
             super(depth, TextUtils.concat(
                     Arrays.asList(tag.getText(), TextUtils.literal("(" + tag.getEntities().size() + ")")),
                     TextUtils.space()));
