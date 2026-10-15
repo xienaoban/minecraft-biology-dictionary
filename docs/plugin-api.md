@@ -3,7 +3,7 @@
 Biology Dictionary exposes two kinds of extension points for other mods:
 
 - **Registration plugins** — register custom **skills**, **entity properties**, **entity display order**, **discovery sources**, and client-side **widgets** through per-registry plugin interfaces.
-- **Query APIs** — read the entity catalog (entity list, tag membership) and the discovery state (discovered / record), from both client and server.
+- **Query APIs** — read the entity catalog (entity list, category membership) and the discovery state (discovered / record), from both client and server.
 
 The framework discovers each plugin once during initialization and calls its registration method; registries are immutable afterwards. Registration happens only at startup — downstream systems (config, networking, UI) read a fixed result.
 
@@ -57,21 +57,21 @@ On Fabric, a missing or mismatched marker annotation terminates loading. The reg
 
 ## Query APIs
 
-All in package `io.github.xienaoban.biologydictionary.api`. They are static facades over the mod's runtime state; absent state (no world session yet, unknown/blacklisted entity, missing tag) is reported as an empty result — never `null` or an exception.
+All in package `io.github.xienaoban.biologydictionary.api`. They are static facades over the mod's runtime state; absent state (no world session yet, unknown/blacklisted entity, missing category) is reported as an empty result — never `null` or an exception.
 
 ### `EntityInfoApi` — entity catalog (no client/server distinction)
 
-Reads the entity dictionary: which entity types are trackable, and their tag membership.
+Reads the entity dictionary: which entity types are trackable, and their category membership.
 
 | Method | Returns |
 |---|---|
 | `getEntityEntry(EntityType<?>)` | `Optional<EntityDictionaryEntry>` — entry of a single type |
 | `getTotalEntities()` | `List<EntityDictionaryEntry>` — all trackable types (sorted, blacklist-filtered) |
-| `getTagEntities(groupId, tagId)` | `List<EntityDictionaryEntry>` — entries of a tag in a tag group |
-| `getBossEntities()` | boss entries (default `boss` tag, backed by the `c:bosses` convention tag) |
-| `getFriendlyEntities()` / `getNeutralEntities()` / `getEnemyEntities()` | entries of the default friendly / neutral / enemy tags |
+| `getCategoryEntities(classificationId, categoryId)` | `List<EntityDictionaryEntry>` — entries of a category in a classification |
+| `getBossEntities()` | boss entries (default `boss` category, backed by the `c:bosses` convention tag) |
+| `getFriendlyEntities()` / `getNeutralEntities()` / `getEnemyEntities()` | entries of the default friendly / neutral / enemy categories |
 
-Tag group and tag keys come from `Lang` (e.g. `Lang.TAG_GROUP_DEFAULT`, `Lang.TAG_DEFAULT_BOSS`); `getTagEntities` is the general form, the other methods are conveniences over it.
+Classification and category keys come from `Lang` (e.g. `Lang.CLASSIFICATION_DEFAULT`, `Lang.CATEGORY_DEFAULT_BOSS`); `getCategoryEntities` is the general form, the other methods are conveniences over it.
 
 ### `ClientDiscoveryApi` — client-side discovery state
 

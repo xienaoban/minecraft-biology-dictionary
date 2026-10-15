@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.core;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
+import io.github.xienaoban.biologydictionary.platform.util.TreeNodeVisitor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.*;
@@ -156,32 +157,32 @@ public final class EntityManager {
         return res;
     }
 
-    public void dfsEntityTree(boolean includeRoot, TreeNodeExecutor<EntityTreeNode> executor) {
-        dfsEntityTree(includeRoot, executor, TreeNodeExecutor.empty());
+    public void dfsEntityTree(boolean includeRoot, TreeNodeVisitor<EntityTreeNode> visitor) {
+        dfsEntityTree(includeRoot, visitor, TreeNodeVisitor.empty());
     }
 
-    public void dfsEntityTree(boolean includeRoot, TreeNodeExecutor<EntityTreeNode> frontExecutor,
-                              TreeNodeExecutor<EntityTreeNode> rearExecutor) {
+    public void dfsEntityTree(boolean includeRoot, TreeNodeVisitor<EntityTreeNode> frontVisitor,
+                              TreeNodeVisitor<EntityTreeNode> rearVisitor) {
         EntityTreeNode root = tree.get(Entity.class);
         if (includeRoot) {
-            dfsEntityTreePrivate(root, 0, frontExecutor, rearExecutor);
+            dfsEntityTreePrivate(root, 0, frontVisitor, rearVisitor);
         }
         else {
             for (var son : root.getSons()) {
-                dfsEntityTreePrivate(son, 1, frontExecutor, rearExecutor);
+                dfsEntityTreePrivate(son, 1, frontVisitor, rearVisitor);
             }
         }
     }
 
-    private void dfsEntityTreePrivate(EntityTreeNode root, int depth, TreeNodeExecutor<EntityTreeNode> frontExecutor,
-                                      TreeNodeExecutor<EntityTreeNode> rearExecutor) {
-        if (frontExecutor.execute(root, depth)) {
+    private void dfsEntityTreePrivate(EntityTreeNode root, int depth, TreeNodeVisitor<EntityTreeNode> frontVisitor,
+                                      TreeNodeVisitor<EntityTreeNode> rearVisitor) {
+        if (frontVisitor.execute(root, depth)) {
             int d2 = depth + 1;
             for (var son : root.getSons()) {
-                dfsEntityTreePrivate(son, d2, frontExecutor, rearExecutor);
+                dfsEntityTreePrivate(son, d2, frontVisitor, rearVisitor);
             }
         }
-        rearExecutor.execute(root, depth);
+        rearVisitor.execute(root, depth);
     }
 
     public static class EntityDictionaryEntry implements Comparable<EntityDictionaryEntry> {

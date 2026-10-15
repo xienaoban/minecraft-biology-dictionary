@@ -3,7 +3,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.core.EntityCategoryManager;
+import io.github.xienaoban.biologydictionary.core.EntityClassificationManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
@@ -51,8 +51,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         addBookmarkFromLast(new OpenBdAboutScreenBookmark());
         addBookmarkFromLast(new OpenBdConfigScreenBookmark());
         addBookmark(new AllEntitiesBookmark());
-        for (EntityCategoryManager.TagGroup group : WorldSession.get().getEntityCategoryManager().getTagGroups().values()) {
-            addBookmark(new TagGroupBookmark(group));
+        for (EntityClassificationManager.Classification classification
+                : WorldSession.get().getEntityClassificationManager().getClassifications().values()) {
+            addBookmark(new ClassificationBookmark(classification));
         }
     }
 
@@ -74,8 +75,8 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         resetAndAddEntityWidgets(WorldSession.get().getEntityManager().getEntityEntries());
     }
 
-    private void initEntityWidgets(EntityCategoryManager.Tag tag) {
-        resetAndAddEntityWidgets(tag.getEntities());
+    private void initEntityWidgets(EntityClassificationManager.Category category) {
+        resetAndAddEntityWidgets(category.getEntities());
     }
 
     private void setToolBars(ScreenElement left, ScreenElement right, ScreenElement upperRight) {
@@ -204,26 +205,26 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    private final class TagGroupBookmark extends Bookmark {
-        private final EntityCategoryManager.TagGroup group;
+    private final class ClassificationBookmark extends Bookmark {
+        private final EntityClassificationManager.Classification classification;
 
-        public TagGroupBookmark(EntityCategoryManager.TagGroup group) {
-            super(group.getName());
-            this.group = group;
+        public ClassificationBookmark(EntityClassificationManager.Classification classification) {
+            super(classification.getName());
+            this.classification = classification;
         }
 
         @Override
         protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                ArrayList<Widget> tags = new ArrayList<>();
-                group.dfsTags((nbt, depth) -> {
-                    tags.add(new TagCatalog(depth, nbt));
+                ArrayList<Widget> catalogs = new ArrayList<>();
+                classification.dfsCategories((category, depth) -> {
+                    catalogs.add(new CategoryCatalog(depth, category));
                     return true;
                 });
-                tags.addFirst(new DescriptionWidget(1, Page.COLUMNS, group.getDescription()));
+                catalogs.addFirst(new DescriptionWidget(1, Page.COLUMNS, classification.getDescription()));
                 clearEntityWidgetsInitializer();
-                resetAndAndWidgetsOneByOne(tags);
+                resetAndAndWidgetsOneByOne(catalogs);
                 setToolBars(null, null, null);
                 return true;
             }
@@ -231,21 +232,21 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
-    private final class TagCatalog extends Catalog {
-        private final EntityCategoryManager.Tag tag;
+    private final class CategoryCatalog extends Catalog {
+        private final EntityClassificationManager.Category category;
 
-        public TagCatalog(int depth, EntityCategoryManager.Tag tag) {
+        public CategoryCatalog(int depth, EntityClassificationManager.Category category) {
             super(depth, TextUtils.concat(
-                    Arrays.asList(tag.getText(), TextUtils.literal("(" + tag.getEntities().size() + ")")),
+                    Arrays.asList(category.getText(), TextUtils.literal("(" + category.getEntities().size() + ")")),
                     TextUtils.space()));
-            this.tag = tag;
+            this.category = category;
         }
 
         @Override
         protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 1.5F);
-                recordAndInitEntityWidgets(() -> initEntityWidgets(tag));
+                recordAndInitEntityWidgets(() -> initEntityWidgets(category));
                 return true;
             }
             return super.onMouseDown(mouseX, mouseY, button);
@@ -253,11 +254,11 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            if (tag.getDescription() == null) { return true; }
+            if (category.getDescription() == null) { return true; }
             int d = depth * 8;
             ScreenElementBox box = getBox();
             List<Component> texts = new ArrayList<>();
-            texts.add(tag.getDescription());
+            texts.add(category.getDescription());
             ctx.renderComponentTooltip(texts, 0.5F, box.getLeft() + d + Widget.WIDGET_WIDTH, box.getBottom() + 1);
             return true;
         }
