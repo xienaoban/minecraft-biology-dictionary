@@ -93,6 +93,9 @@ public final class Lang {
 
     WIDGET_SEARCH                          = "widget.biologydictionary.search",
     WIDGET_SEARCH_HINT                     = "widget.biologydictionary.search.hint",
+    WIDGET_SEARCH_OPTION_FULL_MATCH        = "widget.biologydictionary.search.option.full_match",
+    WIDGET_SEARCH_OPTION_CASE_SENSITIVE    = "widget.biologydictionary.search.option.case_sensitive",
+    WIDGET_SEARCH_OPTION_REGEX             = "widget.biologydictionary.search.option.regex",
     WIDGET_ENTITY_OVERVIEW                 = "widget.biologydictionary.overview",
     WIDGET_ENTITY_OVERVIEW_DESC            = "widget.biologydictionary.overview.desc",
     WIDGET_ENTITY_OVERVIEW_LEFT_DESC       = "widget.biologydictionary.overview.left.desc",
@@ -270,6 +273,9 @@ public final class Lang {
     TEXT_ENTITY_NOT_DISCOVERED                 = "text.biologydictionary.entity_not_discovered",
     TEXT_ENTITY_CANNOT_OVERVIEW                = "text.biologydictionary.entity_cannot_overview",
     TEXT_OVERVIEW_ENTITY_NOT_REAL              = "text.biologydictionary.overview_entity_not_real",
+    TEXT_SEARCH_NO_RESULT                      = "text.biologydictionary.search_no_result",
+    TEXT_SEARCH_ALL_UNDISCOVERED               = "text.biologydictionary.search_all_undiscovered",
+    TEXT_SEARCH_INVALID_REGEX                  = "text.biologydictionary.search_invalid_regex",
 
     TEXT_NEW_ENTITY_DISCOVERED                 = "text.biologydictionary.new_entity_discovered",
     TEXT_ENTITY_DISCOVERED_GLOBAL              = "text.biologydictionary.entity_discovered_global",

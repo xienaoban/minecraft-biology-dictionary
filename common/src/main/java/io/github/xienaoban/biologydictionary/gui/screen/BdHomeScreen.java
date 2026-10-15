@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.EntityClassificationManager;
@@ -11,6 +10,7 @@ import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplay;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
 import io.github.xienaoban.biologydictionary.gui.component.EntityActionCardWidget;
+import io.github.xienaoban.biologydictionary.gui.component.DiscoveredEntityFilterButton;
 import io.github.xienaoban.biologydictionary.gui.component.EntityCardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.LongButton;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
@@ -100,7 +100,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private HorizontalElementContainer createUpperRightButtons(boolean selectionMode, int selectionTotal) {
         HorizontalElementContainer buttons = new HorizontalElementContainer();
         if (!selectionMode) {
-            buttons.addElement(new DiscoveredEntityFilterButton());
+            buttons.addElement(new DiscoveredEntityFilterButton(() -> rebuildEntityWidgets(getCurrPageIndex())));
         } else {
             buttons.addElement(new EntitySelectionCountDisplay(selectionTotal));
         }
@@ -374,50 +374,6 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                     selectedEntityTypes.size(), total);
             ctx.renderRightAlignedText(text, Colors.BROWN, 0.5F, ctx.getZ(),
                     box.getRight(), box.getTop() + 3 + TXT_TO);
-        }
-    }
-
-    private final class DiscoveredEntityFilterButton extends ScreenElement {
-        private static final int ICON_ROW = 23;
-        private static final int ICON_ALL_COLUMN = 21;
-        private static final int ICON_DISCOVERED_COLUMN = 22;
-
-        public DiscoveredEntityFilterButton() {
-            getBox().setSize(Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
-        }
-
-        @Override
-        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
-            if (!isMouseLeft(button)) { return super.onMouseDown(mouseX, mouseY, button); }
-            boolean showOnlyDiscovered = BiologyDictionaryClient.toggleShowOnlyDiscoveredEntities();
-            ClientUtils.playScreenSound(client,
-                    showOnlyDiscovered ? SoundEvents.WOODEN_BUTTON_CLICK_ON : SoundEvents.WOODEN_BUTTON_CLICK_OFF,
-                    1.0F, 0.8F);
-            rebuildEntityWidgets(getCurrPageIndex());
-            return true;
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            super.onRender(ctx);
-            ScreenElementBox box = getBox();
-            boolean showOnlyDiscovered = BiologyDictionaryClient.shouldShowOnlyDiscoveredEntities();
-            int iconColumn = showOnlyDiscovered ? ICON_DISCOVERED_COLUMN : ICON_ALL_COLUMN;
-            ctx.renderTexture(Textures.ICONS,
-                    iconColumn * Widget.WIDGET_WIDTH, ICON_ROW * Widget.WIDGET_HEIGHT,
-                    ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
-        }
-
-        @Override
-        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
-            boolean showOnlyDiscovered = BiologyDictionaryClient.shouldShowOnlyDiscoveredEntities();
-            ctx.renderComponentTooltipCentered(
-                    List.of(TextUtils.translate(showOnlyDiscovered
-                            ? Lang.WIDGET_ENTITY_FILTER_ALL_DESC
-                            : Lang.WIDGET_ENTITY_FILTER_DISCOVERED_DESC)),
-                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
-            return true;
         }
     }
 
