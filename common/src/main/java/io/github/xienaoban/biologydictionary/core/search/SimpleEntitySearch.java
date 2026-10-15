@@ -31,18 +31,23 @@ public final class SimpleEntitySearch {
     public record Options(boolean fullMatch, boolean caseSensitive, boolean regex) {}
 
     /**
+     * Compile the query once, so that it can be evaluated again later without the query
+     * layer reporting the same error twice.
+     *
      * @throws PatternSyntaxException if {@link Options#regex()} is on and a keyword is not
      *                                a valid regular expression
      */
-    public static List<EntityDictionaryEntry> search(List<EntityDictionaryEntry> entries,
-                                                     String query, Options options) {
-        List<String> keywords = parseKeywords(query);
-        if (keywords.isEmpty()) { return entries; }
-
+    public static List<Predicate<String>> compile(String query, Options options) {
         List<Predicate<String>> matchers = new ArrayList<>();
-        for (String keyword : keywords) {
+        for (String keyword : parseKeywords(query)) {
             matchers.add(createMatcher(keyword, options));
         }
+        return matchers;
+    }
+
+    public static List<EntityDictionaryEntry> search(List<EntityDictionaryEntry> entries,
+                                                     List<Predicate<String>> matchers) {
+        if (matchers.isEmpty()) { return entries; }
 
         List<EntityDictionaryEntry> hits = new ArrayList<>();
         for (EntityDictionaryEntry entry : entries) {

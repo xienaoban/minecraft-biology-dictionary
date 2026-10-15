@@ -3,24 +3,35 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
 import io.github.xienaoban.biologydictionary.core.search.SimpleEntitySearch;
+import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
+import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
+import io.github.xienaoban.biologydictionary.gui.component.AddToBlacklistButton;
+import io.github.xienaoban.biologydictionary.gui.component.DecorativeBarWidget;
 import io.github.xienaoban.biologydictionary.gui.component.DiscoveredEntityFilterButton;
+import io.github.xienaoban.biologydictionary.gui.component.DiscoveryProgressWidget;
 import io.github.xienaoban.biologydictionary.gui.component.EntityActionCardWidget;
+import io.github.xienaoban.biologydictionary.gui.component.EntitySelectionCardWidget;
+import io.github.xienaoban.biologydictionary.gui.component.EntitySelectionCountDisplay;
+import io.github.xienaoban.biologydictionary.gui.component.EntitySelectionModeButton;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
-import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.PatternSyntaxException;
 
 /**
@@ -43,36 +54,35 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
     private Checkbox regexBox;
 
     private final EntityDisplayRotation displayRotation = new EntityDisplayRotation();
-    private final DiscoveredEntityFilterButton discoveredFilterButton =
-            new DiscoveredEntityFilterButton(this::rebuildCardsKeepingPage);
+    private final Set<EntityType<?>> selectedEntityTypes = new HashSet<>();
 
+    private List<Predicate<String>> executedMatchers = List.of();
     private List<EntityDictionaryEntry> executedHits = List.of();
+    private int listedCardTotal;
+    private boolean selectionMode;
 
     public BdSearchScreen(Screen source) {
         super(TextUtils.translate(Lang.SCREEN_SEARCH_TITLE));
         setLastScreen(source);
         addBookmark(new OpenBdHomeScreenBookmark());
-        discoveredFilterButton.setParent(getRootScreenElement());
-        showHits(allEntries(), 0);
+        rebuildCards(0);
     }
 
     private void search() {
         SimpleEntitySearch.Options options = new SimpleEntitySearch.Options(
                 fullMatchBox.selected(), caseSensitiveBox.selected(), regexBox.selected());
-        List<EntityDictionaryEntry> hits;
+        List<Predicate<String>> matchers;
         try {
-            hits = SimpleEntitySearch.search(allEntries(), inputBox.getValue(), options);
+            matchers = SimpleEntitySearch.compile(inputBox.getValue(), options);
         } catch (PatternSyntaxException e) {
             sendScreenMessage(TextUtils.translate(
                     Lang.TEXT_SEARCH_INVALID_REGEX, e.getDescription(), e.getIndex()));
             return;
         }
-        showHits(hits, 0);
-    }
-
-    private void showHits(List<EntityDictionaryEntry> hits, int pageIndex) {
-        executedHits = hits;
-        rebuildCards(pageIndex);
+        executedMatchers = matchers;
+        selectionMode = false;
+        selectedEntityTypes.clear();
+        rebuildCards(0);
     }
 
     private void rebuildCardsKeepingPage() {
@@ -80,12 +90,53 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
     }
 
     private void rebuildCards(int pageIndex) {
-        List<Widget> cards = EntityActionCardWidget.createWidgets(executedHits, displayRotation);
+        // Re-read the entries every time, so that blacklist or config changes are applied.
+        executedHits = SimpleEntitySearch.search(allEntries(), executedMatchers);
+        List<Widget> cards = selectionMode
+                ? EntitySelectionCardWidget.createWidgets(executedHits, displayRotation, selectedEntityTypes)
+                : EntityActionCardWidget.createWidgets(executedHits, displayRotation);
+        listedCardTotal = cards.size();
         if (cards.isEmpty()) {
             cards = List.of(new DescriptionWidget(1, Page.COLUMNS, emptyResultMessage()));
         }
         resetAndAndWidgetsOneByOne(cards);
         setCurrPage(pageIndex);
+        updateToolBars();
+    }
+
+    private void enterSelectionMode() {
+        selectionMode = true;
+        rebuildCards(getCurrPageIndex());
+    }
+
+    private void exitSelectionMode() {
+        selectionMode = false;
+        selectedEntityTypes.clear();
+        rebuildCards(getCurrPageIndex());
+    }
+
+    private void updateToolBars() {
+        ClientDiscoveryCacheManager dcm = ClientWorldSession.get().getDiscoveryCacheManager();
+        int total = executedHits.size();
+        int discovered = 0;
+        for (EntityDictionaryEntry entry : executedHits) {
+            if (dcm.isDiscovered(entry.getType())) { discovered++; }
+        }
+
+        DecorativeBarWidget bar = new DecorativeBarWidget(discovered == total);
+        HorizontalElementContainer upperRight = new HorizontalElementContainer();
+        if (selectionMode) {
+            upperRight.addElement(new EntitySelectionCountDisplay(selectedEntityTypes, listedCardTotal));
+            upperRight.addElement(new EntitySelectionModeButton(true, this::exitSelectionMode));
+            HorizontalElementContainer actions = new HorizontalElementContainer();
+            actions.addElement(new AddToBlacklistButton(selectedEntityTypes, this::exitSelectionMode));
+            setToolBars(actions, bar, upperRight);
+        } else {
+            upperRight.addElement(new DiscoveredEntityFilterButton(this::rebuildCardsKeepingPage));
+            upperRight.addElement(new EntitySelectionModeButton(false, this::enterSelectionMode));
+            setToolBars(new DiscoveryProgressWidget(total, discovered), bar, upperRight);
+        }
+        updateBoxSizes();
     }
 
     private Component emptyResultMessage() {
@@ -151,14 +202,6 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
                 .build();
         addRenderableWidget(box);
         return box;
-    }
-
-    @Override
-    protected void resizeBox(int width, int height) {
-        super.resizeBox(width, height);
-        ScreenElementBox box = discoveredFilterButton.getBox();
-        box.setPosition(rightPageLeft(width) + Page.PAGE_WIDTH - box.getWidth(),
-                pageTop(height) - box.getHeight() - 2);
     }
 
     @Override

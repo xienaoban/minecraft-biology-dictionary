@@ -68,6 +68,10 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private final CenteredMessage centeredMessage = new CenteredMessage();
     private final SearchEntryButton searchEntryButton = new SearchEntryButton();
 
+    private ScreenElement leftToolBar;
+    private ScreenElement rightToolBar;
+    private ScreenElement upperRightToolBar;
+
     public AbstractBiologyDictionaryScreen(MutableComponent title) {
         super(title.withColor(Colors.TITLE));
         check();
@@ -174,6 +178,44 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                 (height + BOOK_HEIGHT) / 2F + 20);
 
         searchEntryButton.getBox().setPosition(rightPageLeft(width) + Page.PAGE_WIDTH + 19, pageTop(height));
+
+        if (leftToolBar != null) {
+            ScreenElementBox box = leftToolBar.getBox();
+            box.setPosition(leftPageLeft(width) + (Page.PAGE_WIDTH - box.getWidth()) / 2F,
+                    pageTop(height) + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * (Page.ROWS - 1));
+        }
+        if (rightToolBar != null) {
+            ScreenElementBox box = rightToolBar.getBox();
+            box.setPosition(rightPageLeft(width) + (Page.PAGE_WIDTH - box.getWidth()) / 2F,
+                    pageTop(height) + (Widget.WIDGET_HEIGHT + Widget.WIDGET_HEIGHT_MARGIN) * (Page.ROWS - 1));
+        }
+        if (upperRightToolBar != null) {
+            ScreenElementBox box = upperRightToolBar.getBox();
+            box.setPosition(rightPageLeft(width) + Page.PAGE_WIDTH - box.getWidth(),
+                    pageTop(height) - box.getHeight() - 2);
+        }
+    }
+
+    /**
+     * Show the given tool bars, replacing the previous ones. The left and right bars sit
+     * at the bottom of their page, the upper right bar just above the pages.
+     */
+    protected final void setToolBars(ScreenElement left, ScreenElement right, ScreenElement upperRight) {
+        if (leftToolBar != null) { leftToolBar.setParent(null); }
+        if (rightToolBar != null) { rightToolBar.setParent(null); }
+        if (upperRightToolBar != null) { upperRightToolBar.setParent(null); }
+        leftToolBar = left;
+        rightToolBar = right;
+        upperRightToolBar = upperRight;
+        addToolBar(left);
+        addToolBar(right);
+        addToolBar(upperRight);
+    }
+
+    private void addToolBar(ScreenElement toolBar) {
+        if (toolBar == null) { return; }
+        toolBar.setPriority(1);
+        toolBar.setParent(getRootScreenElement());
     }
 
     protected static float leftPageLeft(int width) {
