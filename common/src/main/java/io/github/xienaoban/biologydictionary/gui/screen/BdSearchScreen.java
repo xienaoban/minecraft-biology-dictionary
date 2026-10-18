@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionary
 import io.github.xienaoban.biologydictionary.core.search.SimpleEntitySearch;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
-import io.github.xienaoban.biologydictionary.gui.component.EntityActionCardWidget;
+import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntityActionCardWidget;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;

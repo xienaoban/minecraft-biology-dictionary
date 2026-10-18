@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.gui.component;
+package io.github.xienaoban.biologydictionary.gui.component.entitylist;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
@@ -7,6 +7,7 @@ import io.github.xienaoban.biologydictionary.core.skill.general.GetSpawnEggSkill
 import io.github.xienaoban.biologydictionary.core.skill.general.HighlightEntitiesSkill;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplay;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;
 import io.github.xienaoban.biologydictionary.gui.screen.BdEntityOverviewScreen;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;

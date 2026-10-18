@@ -1,6 +1,6 @@
 package io.github.xienaoban.biologydictionary.api.plugin;
 
-import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
+import io.github.xienaoban.biologydictionary.gui.component.property.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.world.entity.Entity;
 

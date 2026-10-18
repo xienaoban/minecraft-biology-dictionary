@@ -1,10 +1,11 @@
-package io.github.xienaoban.biologydictionary.gui.component;
+package io.github.xienaoban.biologydictionary.gui.component.entitylist;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplay;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
