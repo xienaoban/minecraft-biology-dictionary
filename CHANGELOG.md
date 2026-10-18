@@ -18,6 +18,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Fixed
 
+- Non-living entities such as cushions no longer trigger a discovery
+
 ## Previous Versions
 
 For older versions, please check the releases page on:
