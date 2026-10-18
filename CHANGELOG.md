@@ -19,6 +19,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 ### Fixed
 
 - Non-living entities such as cushions no longer trigger a discovery
+- The search row no longer loses clicks to overlapping entity cards
 
 ## Previous Versions
 

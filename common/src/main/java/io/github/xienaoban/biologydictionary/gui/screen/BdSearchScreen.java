@@ -51,6 +51,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
     private EditBox inputBox;
     private final SearchButton searchButton = new SearchButton();
     private final EntitySearchFieldButton fieldButton = new EntitySearchFieldButton();
+    private final InputBoxHitGuard inputBoxHitGuard = new InputBoxHitGuard();
 
     private final EntityDisplayRotation displayRotation = new EntityDisplayRotation();
     private final Set<EntityType<?>> selectedEntityTypes = new HashSet<>();
@@ -66,8 +67,12 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
         super(TextUtils.translate(Lang.SCREEN_SEARCH_TITLE));
         setLastScreen(source);
         addBookmark(new OpenBdHomeScreenBookmark());
+        searchButton.setPriority(1);
+        fieldButton.setPriority(1);
+        inputBoxHitGuard.setPriority(1);
         searchButton.setParent(getRootScreenElement());
         fieldButton.setParent(getRootScreenElement());
+        inputBoxHitGuard.setParent(getRootScreenElement());
         rebuildCards(0);
     }
 
@@ -164,6 +169,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
         setButtonBox(searchButton, searchRowLeft, searchRowTop, searchRowHeight, searchRowHeight);
         setButtonBox(fieldButton, searchInputLeft + searchInputWidth + searchRowGap,
                 searchRowTop, searchRowHeight, searchRowHeight);
+        setButtonBox(inputBoxHitGuard, searchInputLeft, searchRowTop, searchInputWidth, searchRowHeight);
     }
 
     // The input row is laid out in raw screen coordinates; screen elements use the scaled space.
@@ -199,6 +205,12 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
         displayRotation.update(System.currentTimeMillis());
         super.render(ctx);
     }
+
+    /**
+     * Covers the vanilla input box so that page cards beneath the input row cannot win
+     * hit testing. Not consuming the click lets the original event reach the EditBox.
+     */
+    private static final class InputBoxHitGuard extends ScreenElement {}
 
     private final class SearchButton extends Widget {
         private SearchButton() {
