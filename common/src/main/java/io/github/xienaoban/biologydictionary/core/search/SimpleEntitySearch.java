@@ -9,33 +9,42 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * The first and simplest form of the entity search: a whitespace separated
- * keyword query without any syntax. A keyword matches when it occurs in the
- * entity name or in the entity id, and every keyword has to match.
+ * The first and simplest form of the entity search: a whitespace separated keyword
+ * query without any syntax. A keyword matches when it occurs in the selected field,
+ * and every keyword has to match.
  * <p>
- * The field selection, the matching options and the advanced syntax are not
- * implemented yet; they replace the internals of this class later.
+ * The advanced syntax is not implemented yet; it replaces the internals of this class
+ * later.
  */
 @ClientOnly
 public final class SimpleEntitySearch {
     private SimpleEntitySearch() {}
 
-    public static List<EntityDictionaryEntry> search(List<EntityDictionaryEntry> entries, String query) {
+    public enum Field {
+        NAME,
+        ID
+    }
+
+    public static List<EntityDictionaryEntry> search(List<EntityDictionaryEntry> entries,
+                                                     String query, Field field) {
         List<String> keywords = parseKeywords(query);
         if (keywords.isEmpty()) { return entries; }
 
         List<EntityDictionaryEntry> hits = new ArrayList<>();
         for (EntityDictionaryEntry entry : entries) {
-            if (matches(entry, keywords)) { hits.add(entry); }
+            if (matches(entry, keywords, field)) { hits.add(entry); }
         }
         return hits;
     }
 
-    private static boolean matches(EntityDictionaryEntry entry, List<String> keywords) {
-        String name = EntityUtils.getEntityTypeNameText(entry.getType()).getString().toLowerCase(Locale.ROOT);
-        String id = entry.getStringId().toLowerCase(Locale.ROOT);
+    private static boolean matches(EntityDictionaryEntry entry, List<String> keywords, Field field) {
+        String value = switch (field) {
+            case NAME -> EntityUtils.getEntityTypeNameText(entry.getType()).getString();
+            case ID -> entry.getStringId();
+        };
+        String lowerValue = value.toLowerCase(Locale.ROOT);
         for (String keyword : keywords) {
-            if (!name.contains(keyword) && !id.contains(keyword)) { return false; }
+            if (!lowerValue.contains(keyword)) { return false; }
         }
         return true;
     }
