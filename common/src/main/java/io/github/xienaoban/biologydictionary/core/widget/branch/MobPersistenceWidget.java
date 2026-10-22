@@ -8,10 +8,10 @@ import io.github.xienaoban.biologydictionary.core.property.extra.MobNaturalPersi
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.core.skill.entity.MobForcePersistentSkill;
-import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyStandardWidget;
+import io.github.xienaoban.biologydictionary.gui.component.property.EntityPropertyStandardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
-import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyButton;
-import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.biologydictionary.gui.component.property.EntityPropertyButton;
+import io.github.xienaoban.biologydictionary.gui.component.property.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;

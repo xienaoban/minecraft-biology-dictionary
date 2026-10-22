@@ -58,21 +58,21 @@ Fabric 上缺失或类型不匹配的标记注解都会终止加载。插件内�
 
 ## 查询 API
 
-均在包 `io.github.xienaoban.biologydictionary.api` 下，是模组运行时状态的静态门面；状态缺失（world session 尚未就绪、类型未知或被黑名单、tag 不存在）一律以空结果返回——绝不返回 `null`、也不抛异常。
+均在包 `io.github.xienaoban.biologydictionary.api` 下，是模组运行时状态的静态门面；状态缺失（world session 尚未就绪、类型未知或被黑名单、分类不存在）一律以空结果返回——绝不返回 `null`、也不抛异常。
 
 ### `EntityInfoApi` —— 实体目录（不分端）
 
-读取实体词典：哪些实体类型可追踪、它们的 tag 归属。
+读取实体词典：哪些实体类型可追踪、它们的分类归属。
 
 | 方法 | 返回 |
 |---|---|
 | `getEntityEntry(EntityType<?>)` | `Optional<EntityDictionaryEntry>`——单个类型的条目 |
 | `getTotalEntities()` | `List<EntityDictionaryEntry>`——全部可追踪类型（已排序、已过滤黑名单） |
-| `getTagEntities(groupId, tagId)` | `List<EntityDictionaryEntry>`——某 tag group 下某 tag 的条目 |
-| `getBossEntities()` | boss 条目（默认 `boss` tag，背后是 `c:bosses` 约定 tag） |
-| `getFriendlyEntities()` / `getNeutralEntities()` / `getEnemyEntities()` | 默认友好 / 中立 / 敌对 tag 的条目 |
+| `getCategoryEntities(classificationId, categoryId)` | `List<EntityDictionaryEntry>`——某分类方式（classification）下某分类（category）的条目 |
+| `getBossEntities()` | boss 条目（默认 `boss` 分类，背后是 `c:bosses` 约定 tag） |
+| `getFriendlyEntities()` / `getNeutralEntities()` / `getEnemyEntities()` | 默认友好 / 中立 / 敌对分类的条目 |
 
-tag group 与 tag 的 key 来自 `Lang`（如 `Lang.TAG_GROUP_DEFAULT`、`Lang.TAG_DEFAULT_BOSS`）；`getTagEntities` 是通用形式，其余方法是它的便捷封装。
+分类方式（classification）与分类（category）的 key 来自 `Lang`（如 `Lang.CLASSIFICATION_DEFAULT`、`Lang.CATEGORY_DEFAULT_BOSS`）；`getCategoryEntities` 是通用形式，其余方法是它的便捷封装。
 
 ### `ClientDiscoveryApi` —— 客户端发现状态
 
