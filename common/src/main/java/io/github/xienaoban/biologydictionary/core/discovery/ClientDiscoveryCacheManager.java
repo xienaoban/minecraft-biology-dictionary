@@ -11,6 +11,7 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 
 /**
  * Client-side manager of the discovery cache.
@@ -62,6 +63,8 @@ public final class ClientDiscoveryCacheManager implements ConfigsUpdateCallback 
 
     public boolean onDiscoveryEvent(DiscoverySource source, LocalPlayer player, Entity entity) {
         if (!source.isEnabled()) { return false; }
+        // Decoration and vehicle entities are not part of the dictionary.
+        if (!(entity instanceof LivingEntity)) { return false; }
         if (EntityManager.isEntityTypeBlacklisted(entity.getType())) { return false; }
         return delegate.onDiscovery(source, new DiscoverySource.ClientContext(player, entity));
     }

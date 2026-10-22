@@ -6,8 +6,12 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScaleRAII;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenConsts;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.MultiLineEditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -92,13 +96,40 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
     @Override
     public final boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClick) {
         ScreenRenderingContext ctx = screenRenderingContext;
-        if (mouseClicked(ctx.calcScaledValue((float) mouseButtonEvent.x()), ctx.calcScaledValue((float) mouseButtonEvent.y()), mouseButtonEvent.button())) {
+        if (mouseClicked(
+                ctx.calcScaledValue((float) mouseButtonEvent.x()),
+                ctx.calcScaledValue((float) mouseButtonEvent.y()),
+                mouseButtonEvent.button())) {
+            // A custom element handled the click, so it owns the interaction now: the
+            // vanilla focus (a focused text box, for instance) must not survive it.
+            clearFocus();
             return true;
         }
-        return super.mouseClicked(mouseButtonEvent, doubleClick);
+        if (super.mouseClicked(mouseButtonEvent, doubleClick)) {
+            return true;
+        }
+        // The click hit nothing interactive (the book background, for instance), which
+        // vanilla does not treat as a focus change by itself.
+        clearFocus();
+        return false;
     }
 
     protected boolean mouseClicked(float mouseX, float mouseY, int button) { return false; }
+
+    public boolean isInputCaptured() {
+        ComponentPath focusPath = getCurrentFocusPath();
+        if (focusPath == null) {
+            return false;
+        }
+        while (focusPath instanceof ComponentPath.Path path) {
+            focusPath = path.childPath();
+        }
+        GuiEventListener component = focusPath.component();
+        if (component instanceof EditBox editBox) {
+            return editBox.canConsumeInput();
+        }
+        return component instanceof MultiLineEditBox editBox && editBox.visible && editBox.isFocused();
+    }
 
     public Font getFont() { return super.getFont(); }
 

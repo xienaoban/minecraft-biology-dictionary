@@ -1,5 +1,6 @@
-package io.github.xienaoban.biologydictionary.gui.component;
+package io.github.xienaoban.biologydictionary.gui.component.property;
 
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
