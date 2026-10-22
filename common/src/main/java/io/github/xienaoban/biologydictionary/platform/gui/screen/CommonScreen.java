@@ -96,10 +96,7 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
     @Override
     public final boolean mouseClicked(double mouseX, double mouseY, int button) {
         ScreenRenderingContext ctx = screenRenderingContext;
-        if (mouseClicked(
-                ctx.calcScaledValue((float) mouseX),
-                ctx.calcScaledValue((float) mouseY),
-                button)) {
+        if (mouseClicked(ctx.calcScaledValue((float) mouseX), ctx.calcScaledValue((float) mouseY), button)) {
             // A custom element handled the click, so it owns the interaction now: the
             // vanilla focus (a focused text box, for instance) must not survive it.
             clearFocus();
