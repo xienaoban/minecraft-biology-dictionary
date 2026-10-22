@@ -37,7 +37,9 @@ public class EntityPropertyButton extends ScreenElement {
     @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
-        ctx.renderTexture(texture, textureLeft + textureLeftOffset, textureTop, ctx.getZ(), getBox().getLeft() - 1, getBox().getTop() - 1, getBox().getWidth() + 2, getBox().getHeight() + 2);
+        ctx.renderTexture(texture, textureLeft + textureLeftOffset, textureTop, ctx.getZ(),
+                getBox().getLeft() - 1, getBox().getTop() - 1,
+                getBox().getWidth() + 2, getBox().getHeight() + 2);
     }
 
     public final void renderItem(ScreenRenderingContext ctx, ItemStack itemStack, Integer count) {
@@ -45,8 +47,10 @@ public class EntityPropertyButton extends ScreenElement {
         ctx.renderItem(itemStack, 0.6F, box.getLeft() - 0.5F, box.getTop() - 0.5F);
         if (count != null) {
             int c = count;
-            ctx.renderRightAlignedText(TextUtils.literal(String.valueOf(c)), Colors.GRAY, 0.5F, ctx.getZ(), box.getRight() - 0.5F + 0.5F,  box.getBottom() - 4F + 0.5F);
-            ctx.renderRightAlignedText(TextUtils.literal(String.valueOf(c)), Colors.WHITE, 0.5F, ctx.getZ(), box.getRight() - 0.5F,  box.getBottom() - 4F);
+            ctx.renderRightAlignedText(TextUtils.literal(String.valueOf(c)), Colors.GRAY, 0.5F, ctx.getZ(),
+                    box.getRight(), box.getBottom() - 4F + 0.5F);
+            ctx.renderRightAlignedText(TextUtils.literal(String.valueOf(c)), Colors.WHITE, 0.5F, ctx.getZ(),
+                    box.getRight() - 0.5F, box.getBottom() - 4F);
         }
     }
 }
