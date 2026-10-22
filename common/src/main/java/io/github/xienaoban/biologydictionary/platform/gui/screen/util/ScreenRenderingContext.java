@@ -52,6 +52,8 @@ import java.util.stream.Stream;
 
 @ClientOnly
 public final class ScreenRenderingContext {
+    private static final Identifier BUTTON = Identifier.withDefaultNamespace("widget/button");
+    private static final Identifier BUTTON_HIGHLIGHTED = Identifier.withDefaultNamespace("widget/button_highlighted");
     private static final int TOOLTIP_WIDTH = 240;
     private static final float INVENTORY_ENTITY_ROTATION_DEGREES = 20.0F;
 
@@ -280,6 +282,18 @@ public final class ScreenRenderingContext {
         guiGraphicsAccessor.biologydictionary$getGuiRenderState().addGuiElement(new RectangleState(
                 RenderPipelines.GUI, TextureSetup.noTexture(),
                 pose, scissorArea, bounds, color, left, top, right, bottom));
+    }
+
+    public void renderButtonBackground(boolean highlighted, float left, float top, float width, float height) {
+        // Match the raw GUI coordinates used by vanilla input widgets.
+        int x = Math.round(left * screenScale);
+        int y = Math.round(top * screenScale);
+        int right = Math.round((left + width) * screenScale);
+        int bottom = Math.round((top + height) * screenScale);
+        try (ScaleRAII ignored = scaleToOriginalOnce()) {
+            getGuiGraphics().blitSprite(RenderPipelines.GUI_TEXTURED,
+                    highlighted ? BUTTON_HIGHLIGHTED : BUTTON, x, y, right - x, bottom - y);
+        }
     }
 
     public void renderTexture(TextureInfo texture, float left, float top) {

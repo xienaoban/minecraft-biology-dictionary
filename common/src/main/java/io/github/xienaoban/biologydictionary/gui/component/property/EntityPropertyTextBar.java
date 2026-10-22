@@ -1,4 +1,4 @@
-package io.github.xienaoban.biologydictionary.gui.component.control;
+package io.github.xienaoban.biologydictionary.gui.component.property;
 
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.TextureInfo;
