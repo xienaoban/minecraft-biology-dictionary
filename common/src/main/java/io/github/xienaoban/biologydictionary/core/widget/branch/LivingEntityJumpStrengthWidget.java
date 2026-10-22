@@ -2,9 +2,9 @@ package io.github.xienaoban.biologydictionary.core.widget.branch;
 
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
+import io.github.xienaoban.biologydictionary.gui.component.property.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
-import io.github.xienaoban.biologydictionary.gui.component.control.EntityPropertyIcon;
+import io.github.xienaoban.biologydictionary.gui.component.property.EntityPropertyIcon;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;

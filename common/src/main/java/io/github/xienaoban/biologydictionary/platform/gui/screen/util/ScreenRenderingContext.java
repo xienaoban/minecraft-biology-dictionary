@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
@@ -46,6 +47,7 @@ import java.util.stream.Stream;
 
 @ClientOnly
 public final class ScreenRenderingContext {
+    private static final ResourceLocation BUTTON = new ResourceLocation("textures/gui/widgets.png");
     private static final int BOOK_TOOLTIP_PADDING = 13;
     private static final int BOOK_TOOLTIP_TEXTURE_SIZE = 100;
 
@@ -276,6 +278,23 @@ public final class ScreenRenderingContext {
         vertexConsumer.vertex(matrix4f, right, bottom, z).color(color).endVertex();
         vertexConsumer.vertex(matrix4f, right, top, z).color(color).endVertex();
         ((io.github.xienaoban.biologydictionary.mixin.rendering.GuiGraphicsIMixin) getGuiGraphics()).biologydictionary$invokeFlushIfUnmanaged();
+    }
+
+    public void renderButtonBackground(boolean highlighted, float left, float top, float width, float height) {
+        // Match the raw GUI coordinates used by vanilla input widgets.
+        int x = Math.round(left * screenScale);
+        int y = Math.round(top * screenScale);
+        int right = Math.round((left + width) * screenScale);
+        int bottom = Math.round((top + height) * screenScale);
+        try (ScaleRAII ignored = scaleToOriginalOnce()) {
+            getGuiGraphics().blitNineSliced(BUTTON, x, y, right - x, bottom - y,
+                    20, 4, 200, 20, 0, highlighted ? 86 : 66);
+        }
+    }
+
+    public void renderTexture(TextureInfo texture, float left, float top, float width, float height) {
+        renderTexture(texture, 0.0F, 0.0F, texture.width(), texture.height(),
+                getZ(), left, top, left + width, top + height);
     }
 
     public void renderTexture(TextureInfo texture,

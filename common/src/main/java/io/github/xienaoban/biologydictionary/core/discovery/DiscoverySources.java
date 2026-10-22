@@ -9,6 +9,7 @@ import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -68,7 +69,7 @@ public final class DiscoverySources {
     public static final DiscoverySource INTERACT = register(new DiscoverySource(id("interact")) {
         @Override public boolean isEnabled() { return ConfigsManager.getServer().isDiscoveryByInteract(); }
         @Override public boolean serverCheck(ServerContext ctx) {
-            return EntityUtils.isFriendly(ctx.entity());
+            return ctx.entity() instanceof LivingEntity living && EntityUtils.isFriendly(living);
         }
     });
 

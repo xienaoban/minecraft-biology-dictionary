@@ -6,11 +6,20 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
+- A search entry beside the book, opening a new search screen
+- Simple keyword search: whitespace separated keywords, matched against either the entity name (default) or the entity id
+- A search field toggle between the entity name and the entity id
+- The search results keep the tool bars of the entity list: discovery progress, "only discovered entities", multi selection and add to blacklist
+- A generic hint when an entity list has no entities to display
+
 ### Changed
+
+- Extract the entity category model out of `EntityManager` into the new `EntityClassificationManager`
 
 ### Fixed
 
-- Fix a crash when JEI shows the uses of an ink sac
+- Non-living entities such as cushions no longer trigger a discovery
+- The search row no longer loses clicks to overlapping entity cards
 
 ## Previous Versions
 
