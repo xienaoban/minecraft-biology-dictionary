@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
@@ -45,6 +46,8 @@ import java.util.stream.Stream;
 
 @ClientOnly
 public final class ScreenRenderingContext {
+    private static final ResourceLocation BUTTON = ResourceLocation.withDefaultNamespace("widget/button");
+    private static final ResourceLocation BUTTON_HIGHLIGHTED = ResourceLocation.withDefaultNamespace("widget/button_highlighted");
     private static final int BOOK_TOOLTIP_PADDING = 13;
     private static final int BOOK_TOOLTIP_BACKGROUND_COLOR = 0xF0100010;
 
@@ -271,6 +274,22 @@ public final class ScreenRenderingContext {
         vertexConsumer.addVertex(matrix4f, right, bottom, z).setColor(color);
         vertexConsumer.addVertex(matrix4f, right, top, z).setColor(color);
         getGuiGraphics().flush();
+    }
+
+    public void renderButtonBackground(boolean highlighted, float left, float top, float width, float height) {
+        // Match the raw GUI coordinates used by vanilla input widgets.
+        int x = Math.round(left * screenScale);
+        int y = Math.round(top * screenScale);
+        int right = Math.round((left + width) * screenScale);
+        int bottom = Math.round((top + height) * screenScale);
+        try (ScaleRAII ignored = scaleToOriginalOnce()) {
+            getGuiGraphics().blitSprite(highlighted ? BUTTON_HIGHLIGHTED : BUTTON, x, y, right - x, bottom - y);
+        }
+    }
+
+    public void renderTexture(TextureInfo texture, float left, float top, float width, float height) {
+        renderTexture(texture, 0.0F, 0.0F, texture.width(), texture.height(),
+                getZ(), left, top, left + width, top + height);
     }
 
     public void renderTexture(TextureInfo texture,

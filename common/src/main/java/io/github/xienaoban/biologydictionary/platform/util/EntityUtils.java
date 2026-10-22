@@ -69,16 +69,16 @@ public final class EntityUtils {
     }
 
     /**
-     * Neutral mobs are also considered friendly in this mod.
+     * Only living entities can be friendly. Neutral mobs are also considered friendly in this mod.
      */
-    public static boolean isFriendly(Entity entity) {
+    public static boolean isFriendly(LivingEntity entity) {
         return !isEnemy(entity);
     }
 
     /**
-     * Neutral mobs are also considered friendly in this mod.
+     * Only living entities can be friendly. Neutral mobs are also considered friendly in this mod.
      */
-    public static boolean isFriendly(Class<? extends Entity> entityClass) {
+    public static boolean isFriendly(Class<? extends LivingEntity> entityClass) {
         return !isEnemy(entityClass);
     }
 

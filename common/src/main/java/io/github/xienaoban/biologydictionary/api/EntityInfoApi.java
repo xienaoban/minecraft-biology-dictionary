@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.api;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.core.EntityClassificationManager.Classification;
 import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
-import io.github.xienaoban.biologydictionary.core.EntityManager.TagGroup;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import net.minecraft.world.entity.EntityType;
 
@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Static facade for entity catalog queries (entity list and tag membership).
- * Reads from the {@link WorldSession} entity manager; no client/server distinction.
+ * Static facade for entity catalog queries (entity list and category membership).
+ * Reads from the {@link WorldSession} entity manager and category manager; no
+ * client/server distinction.
  */
 public final class EntityInfoApi {
     private EntityInfoApi() {}
@@ -36,48 +37,49 @@ public final class EntityInfoApi {
     }
 
     /**
-     * Entity entries of a specific tag in a specific tag group, identified by string keys,
-     * e.g. {@code getTagEntities(Lang.TAG_GROUP_DEFAULT, Lang.TAG_DEFAULT_BOSS)}.
-     * Returns an empty list if the world session, group or tag is unavailable.
+     * Entity entries of a specific category in a specific classification, identified by
+     * string keys, e.g.
+     * {@code getCategoryEntities(Lang.CLASSIFICATION_DEFAULT, Lang.CATEGORY_DEFAULT_BOSS)}.
+     * Returns an empty list if the world session, classification or category is unavailable.
      */
-    public static List<EntityDictionaryEntry> getTagEntities(String groupId, String tagId) {
+    public static List<EntityDictionaryEntry> getCategoryEntities(String classificationId, String categoryId) {
         WorldSession ws = WorldSession.get();
         if (ws == null) { return List.of(); }
-        TagGroup group = ws.getEntityManager().getTagGroups().get(groupId);
-        if (group == null || !group.containsTag(tagId)) { return List.of(); }
-        return group.getTag(tagId).getEntities();
+        Classification classification = ws.getEntityClassificationManager().getClassifications().get(classificationId);
+        if (classification == null || !classification.containsCategory(categoryId)) { return List.of(); }
+        return classification.getCategory(categoryId).getEntities();
     }
 
     /**
-     * Friendly entity entries from the default {@code friendly} tag.
-     * Returns an empty list if the world session or default tag group is unavailable.
+     * Friendly entity entries from the default {@code friendly} category.
+     * Returns an empty list if the world session or default classification is unavailable.
      */
     public static List<EntityDictionaryEntry> getFriendlyEntities() {
-        return getTagEntities(Lang.TAG_GROUP_DEFAULT, Lang.TAG_DEFAULT_FRIENDLY);
+        return getCategoryEntities(Lang.CLASSIFICATION_DEFAULT, Lang.CATEGORY_DEFAULT_FRIENDLY);
     }
 
     /**
-     * Neutral entity entries from the default {@code friendly_neutral} tag.
-     * Returns an empty list if the world session or default tag group is unavailable.
+     * Neutral entity entries from the default {@code friendly_neutral} category.
+     * Returns an empty list if the world session or default classification is unavailable.
      */
     public static List<EntityDictionaryEntry> getNeutralEntities() {
-        return getTagEntities(Lang.TAG_GROUP_DEFAULT, Lang.TAG_DEFAULT_FRIENDLY_NEUTRAL);
+        return getCategoryEntities(Lang.CLASSIFICATION_DEFAULT, Lang.CATEGORY_DEFAULT_FRIENDLY_NEUTRAL);
     }
 
     /**
-     * Enemy entity entries from the default {@code enemy} tag.
-     * Returns an empty list if the world session or default tag group is unavailable.
+     * Enemy entity entries from the default {@code enemy} category.
+     * Returns an empty list if the world session or default classification is unavailable.
      */
     public static List<EntityDictionaryEntry> getEnemyEntities() {
-        return getTagEntities(Lang.TAG_GROUP_DEFAULT, Lang.TAG_DEFAULT_ENEMY);
+        return getCategoryEntities(Lang.CLASSIFICATION_DEFAULT, Lang.CATEGORY_DEFAULT_ENEMY);
     }
 
     /**
-     * Boss entity entries from the default {@code boss} tag
+     * Boss entity entries from the default {@code boss} category
      * (backed by the {@code c:bosses} convention tag).
-     * Returns an empty list if the world session or default tag group is unavailable.
+     * Returns an empty list if the world session or default classification is unavailable.
      */
     public static List<EntityDictionaryEntry> getBossEntities() {
-        return getTagEntities(Lang.TAG_GROUP_DEFAULT, Lang.TAG_DEFAULT_BOSS);
+        return getCategoryEntities(Lang.CLASSIFICATION_DEFAULT, Lang.CATEGORY_DEFAULT_BOSS);
     }
 }

@@ -5,7 +5,7 @@ import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.EntityPropertyWidgets;
-import io.github.xienaoban.biologydictionary.gui.component.EntityPropertyWidget;
+import io.github.xienaoban.biologydictionary.gui.component.property.EntityPropertyWidget;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;

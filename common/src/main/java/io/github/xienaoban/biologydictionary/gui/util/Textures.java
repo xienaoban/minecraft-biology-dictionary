@@ -12,6 +12,9 @@ public final class Textures {
     public static final TextureInfo ICON = new TextureInfo(IdentifierUtils.bd("icon.png"), 256, 256);
     public static final TextureInfo BOOK = new TextureInfo(IdentifierUtils.bd("textures/gui/book.png"), 512, 256);
     public static final TextureInfo ICONS = new TextureInfo(IdentifierUtils.bd("textures/gui/icons.png"), 256, 256);
+    public static final TextureInfo SEARCH = new TextureInfo(IdentifierUtils.bd("textures/gui/search.png"), 16, 16);
+    public static final TextureInfo SEARCH_NAME = new TextureInfo(IdentifierUtils.bd("textures/gui/search_name.png"), 16, 16);
+    public static final TextureInfo SEARCH_ID = new TextureInfo(IdentifierUtils.bd("textures/gui/search_id.png"), 16, 16);
     public static final TextureInfo GENE = new TextureInfo(IdentifierUtils.bd("textures/gui/telescope_discovery.png"), 32, 32);
     public static final TextureInfo BEEHIVE = new TextureInfo(IdentifierUtils.bd("textures/gui/beehive.png"), 256, 256);
     public static final TextureInfo STEALING_INVENTORY = new TextureInfo(IdentifierUtils.bd("textures/gui/stealing_inventory.png"), 256, 256);
