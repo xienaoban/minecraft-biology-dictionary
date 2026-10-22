@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 
 /**
  * Server-side entry point for the discovery system.
@@ -63,6 +64,8 @@ public final class DiscoveryManager implements ConfigsUpdateCallback {
 
     public boolean onDiscoveryEvent(DiscoverySource source, ServerPlayer player, Entity entity) {
         if (!source.isEnabled()) { return false; }
+        // Decoration and vehicle entities are not part of the dictionary.
+        if (!(entity instanceof LivingEntity)) { return false; }
         if (EntityManager.isEntityTypeBlacklisted(entity.getType())) { return false; }
         return strategy.onDiscovery(source, new DiscoverySource.ServerContext(player, entity));
     }
