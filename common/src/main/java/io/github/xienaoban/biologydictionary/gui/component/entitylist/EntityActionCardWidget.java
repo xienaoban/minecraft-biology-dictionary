@@ -17,6 +17,7 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElem
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.ItemUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -55,7 +56,7 @@ public final class EntityActionCardWidget extends EntityCardWidget {
 
     public EntityActionCardWidget(EntityDictionaryEntry entry, EntityDisplay display, EntityDisplayRotation rotation) {
         super(entry, display, rotation);
-        Item item = EntityUtils.getSpawnEggItem(entry.getType());
+        Item item = ItemUtils.getSpawnEggItem(entry.getType());
         this.spawnEgg = item == null ? null : new ItemStack(item);
     }
 
