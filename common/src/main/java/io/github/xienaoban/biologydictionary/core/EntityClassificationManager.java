@@ -11,12 +11,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.entity.animal.allay.Allay;
-import net.minecraft.world.entity.animal.Bee;
-import net.minecraft.world.entity.animal.WaterAnimal;
-import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 
 import java.lang.reflect.Modifier;
@@ -177,10 +172,9 @@ public final class EntityClassificationManager {
                     neutralList.add(entry);
                 }
 
-                if (WaterAnimal.class.isAssignableFrom(entityClazz)) {
+                if (EntityUtils.isAquatic(entityClazz)) {
                     aquaticList.add(entry);
-                } else if (entityClazz == Bat.class || entityClazz == Allay.class
-                        || entityClazz == Bee.class || entityClazz == Parrot.class) {
+                } else if (EntityUtils.isFlying(entityClazz)) {
                     flyingList.add(entry);
                 } else {
                     terrestrialList.add(entry);

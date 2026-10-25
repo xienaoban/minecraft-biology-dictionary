@@ -114,19 +114,31 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
         ((ScreenIMixin) this).biologydictionary$clearFocus();
     }
 
+    /**
+     * Whether a vanilla text input owns the keyboard. Implemented here rather than
+     * relying on the vanilla method, so that every supported MC version behaves the same.
+     */
     public boolean isInputCaptured() {
+        GuiEventListener element = getFocusedElement();
+        if (element instanceof EditBox editBox) {
+            return editBox.canConsumeInput();
+        }
+        return element instanceof MultiLineEditBox editBox && editBox.visible && editBox.isFocused();
+    }
+
+    /**
+     * The focus path nests the focused component inside its containers, so walk down to
+     * the component that actually owns the input.
+     */
+    private GuiEventListener getFocusedElement() {
         ComponentPath focusPath = getCurrentFocusPath();
         if (focusPath == null) {
-            return false;
+            return null;
         }
         while (focusPath instanceof ComponentPath.Path path) {
             focusPath = path.childPath();
         }
-        GuiEventListener component = focusPath.component();
-        if (component instanceof EditBox editBox) {
-            return editBox.canConsumeInput();
-        }
-        return component instanceof MultiLineEditBox editBox && editBox.visible && editBox.isFocused();
+        return focusPath.component();
     }
 
     public Font getFont() { return ((ScreenIMixin) this).biologydictionary$getFont(); }

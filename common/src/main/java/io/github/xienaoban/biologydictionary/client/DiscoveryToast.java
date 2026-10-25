@@ -15,8 +15,8 @@ import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 
 @ClientOnly
 public class DiscoveryToast implements Toast {
@@ -55,7 +55,7 @@ public class DiscoveryToast implements Toast {
      */
     private DiscoveryToast(EntityType<?> entityType, Component nameSuffix) {
         this.entityName = TextUtils.concat(EntityUtils.getEntityTypeNameText(entityType), nameSuffix);
-        SpawnEggItem egg = ItemUtils.getSpawnEggItem(entityType);
+        Item egg = ItemUtils.getSpawnEggItem(entityType);
         this.eggStack = egg == null ? null : egg.getDefaultInstance();
         this.title = TextUtils.translate(Lang.TEXT_NEW_ENTITY_DISCOVERED).withStyle(ChatFormatting.YELLOW);
         this.createdAt = System.currentTimeMillis();

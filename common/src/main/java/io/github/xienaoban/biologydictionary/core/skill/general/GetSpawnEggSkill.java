@@ -11,8 +11,8 @@ import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 
 public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill {
     public static final Meta<GetSpawnEggSkill> META = new Meta<>() {
@@ -42,7 +42,7 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
         if (entityType == null) {
             BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
         } else {
-            SpawnEggItem item = ItemUtils.getSpawnEggItem(entityType);
+            Item item = ItemUtils.getSpawnEggItem(entityType);
             if (item == null) {
                 BiologyDictionary.sendCenteredWarning(
                         ctx.player(), TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));

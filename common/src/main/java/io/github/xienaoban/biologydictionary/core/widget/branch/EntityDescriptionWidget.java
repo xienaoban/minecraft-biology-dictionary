@@ -11,6 +11,7 @@ import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.FontUtils;
+import io.github.xienaoban.biologydictionary.platform.util.ItemUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.gui.Font;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -101,7 +102,7 @@ public final class EntityDescriptionWidget extends EntityPropertyWidget<Entity> 
             }
         }
 
-        Item spawnEgg = EntityUtils.getSpawnEggItem(EntityUtils.getEntityType(entity));
+        Item spawnEgg = ItemUtils.getSpawnEggItem(EntityUtils.getEntityType(entity));
         if (spawnEgg != null) {
             ResourceLocation spawnEggId = BuiltInRegistries.ITEM.getKey(spawnEgg);
             String spawnEggLoreKey = "lore." + spawnEggId.getNamespace() + "." + spawnEggId.getPath();
