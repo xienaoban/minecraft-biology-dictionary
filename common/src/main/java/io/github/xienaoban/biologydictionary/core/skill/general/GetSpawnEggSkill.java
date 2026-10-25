@@ -5,6 +5,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.core.skill.GeneralSkill;
 import io.github.xienaoban.biologydictionary.core.skill.SkillCost;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
+import io.github.xienaoban.biologydictionary.platform.util.ItemUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -41,7 +42,7 @@ public record GetSpawnEggSkill(EntityType<?> entityType) implements GeneralSkill
         if (entityType == null) {
             BiologyDictionary.sendCenteredWarning(ctx.player(), TextUtils.translate(Lang.TEXT_UNKNOWN_ENTITY_TYPE));
         } else {
-            Item item = EntityUtils.getSpawnEggItem(entityType);
+            Item item = ItemUtils.getSpawnEggItem(entityType);
             if (item == null) {
                 BiologyDictionary.sendCenteredWarning(
                         ctx.player(), TextUtils.translate(Lang.TEXT_NO_DATA_WITH_BRACKETS));

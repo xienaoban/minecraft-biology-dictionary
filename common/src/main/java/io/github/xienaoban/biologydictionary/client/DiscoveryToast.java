@@ -4,6 +4,7 @@ import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
+import io.github.xienaoban.biologydictionary.platform.util.ItemUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -58,7 +59,7 @@ public class DiscoveryToast implements Toast {
      */
     private DiscoveryToast(EntityType<?> entityType, Component nameSuffix) {
         this.entityName = TextUtils.concat(EntityUtils.getEntityTypeNameText(entityType), nameSuffix);
-        Item spawnEgg = EntityUtils.getSpawnEggItem(entityType);
+        Item spawnEgg = ItemUtils.getSpawnEggItem(entityType);
         this.eggStack = spawnEgg == null ? null : spawnEgg.getDefaultInstance();
         this.title = TextUtils.translate(Lang.TEXT_NEW_ENTITY_DISCOVERED).withStyle(ChatFormatting.YELLOW);
         this.createdAt = System.currentTimeMillis();

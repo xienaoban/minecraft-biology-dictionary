@@ -346,9 +346,18 @@ public final class ScreenRenderingContext {
         }
     }
 
+    public void renderTexture(TextureInfo texture, float left, float top) {
+        renderTexture(texture, left, top, texture.width(), texture.height());
+    }
+
     public void renderTexture(TextureInfo texture, float left, float top, float width, float height) {
         renderTexture(texture, 0.0F, 0.0F, texture.width(), texture.height(),
                 getZ(), left, top, left + width, top + height);
+    }
+
+    public void renderTexture(TextureInfo texture, float left, float top, float u0, float v0, float u1, float v1) {
+        renderTexture(texture, u0, v0, u1, v1,
+                getZ(), left, top, left + u1 - u0, top + v1 - v0);
     }
 
     public void renderTexture(TextureInfo texture,
