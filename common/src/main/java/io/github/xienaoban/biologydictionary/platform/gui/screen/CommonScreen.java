@@ -6,8 +6,12 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScaleRAII;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenConsts;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
+import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.MultiLineEditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -112,6 +116,33 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
     }
 
     protected boolean mouseClicked(float mouseX, float mouseY, int button) { return false; }
+
+    /**
+     * Whether a vanilla text input owns the keyboard. Implemented here rather than
+     * relying on the vanilla method, so that every supported MC version behaves the same.
+     */
+    public boolean isInputCaptured() {
+        GuiEventListener element = getFocusedElement();
+        if (element instanceof EditBox editBox) {
+            return editBox.canConsumeInput();
+        }
+        return element instanceof MultiLineEditBox editBox && editBox.visible && editBox.isFocused();
+    }
+
+    /**
+     * The focus path nests the focused component inside its containers, so walk down to
+     * the component that actually owns the input.
+     */
+    private GuiEventListener getFocusedElement() {
+        ComponentPath focusPath = getCurrentFocusPath();
+        if (focusPath == null) {
+            return null;
+        }
+        while (focusPath instanceof ComponentPath.Path path) {
+            focusPath = path.childPath();
+        }
+        return focusPath.component();
+    }
 
     public Font getFont() { return super.getFont(); }
 
