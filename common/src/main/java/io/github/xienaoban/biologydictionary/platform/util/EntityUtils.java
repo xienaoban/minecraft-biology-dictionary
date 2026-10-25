@@ -4,7 +4,6 @@ import io.github.xienaoban.biologydictionary.mixin.entity.EntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.HorseIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.LivingEntityIMixin;
 import io.github.xienaoban.biologydictionary.mixin.entity.MobIMixin;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -21,16 +20,20 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.animal.AgeableWaterCreature;
+import net.minecraft.world.entity.animal.allay.Allay;
+import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.dolphin.Dolphin;
 import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.entity.animal.equine.Markings;
 import net.minecraft.world.entity.animal.equine.Variant;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.world.entity.animal.happyghast.HappyGhast;
+import net.minecraft.world.entity.animal.parrot.Parrot;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
@@ -56,36 +59,6 @@ public final class EntityUtils {
 
     public static List<Class<? extends Entity>> bottomUp(Entity entity) {
         return bottomUp(entity.getClass());
-    }
-
-    public static boolean isEnemy(Entity entity) {
-        return entity instanceof Enemy;
-    }
-
-    public static boolean isEnemy(Class<? extends Entity> entityClass) {
-        return Enemy.class.isAssignableFrom(entityClass);
-    }
-
-    public static boolean isNeutral(Entity entity) {
-        return entity instanceof NeutralMob;
-    }
-
-    public static boolean isNeutral(Class<? extends Entity> entityClass) {
-        return NeutralMob.class.isAssignableFrom(entityClass);
-    }
-
-    /**
-     * Only living entities can be friendly. Neutral mobs are also considered friendly in this mod.
-     */
-    public static boolean isFriendly(LivingEntity entity) {
-        return !isEnemy(entity);
-    }
-
-    /**
-     * Only living entities can be friendly. Neutral mobs are also considered friendly in this mod.
-     */
-    public static boolean isFriendly(Class<? extends LivingEntity> entityClass) {
-        return !isEnemy(entityClass);
     }
 
     public static List<Class<? extends Entity>> topDown(Class<? extends Entity> entityClazz) {
@@ -203,10 +176,6 @@ public final class EntityUtils {
 
     public static String getEntityTypeIdName(EntityType<?> entityType) {
         return IdentifierUtils.toString(getEntityTypeId(entityType));
-    }
-
-    public static Item getSpawnEggItem(EntityType<?> entityType) {
-        return SpawnEggItem.byId(entityType).map(Holder::value).orElse(null);
     }
 
     // ============================================================================ //
@@ -385,6 +354,61 @@ public final class EntityUtils {
     //                        Entity Data Getters & Setters                         //
     // ============================================================================ //
 
+    public static boolean isEnemy(Entity entity) {
+        return entity instanceof Enemy;
+    }
+
+    public static boolean isEnemy(Class<? extends Entity> entityClass) {
+        return Enemy.class.isAssignableFrom(entityClass);
+    }
+
+    public static boolean isNeutral(Entity entity) {
+        return entity instanceof NeutralMob;
+    }
+
+    public static boolean isNeutral(Class<? extends Entity> entityClass) {
+        return NeutralMob.class.isAssignableFrom(entityClass);
+    }
+
+    /**
+     * Only living entities can be friendly. Neutral mobs are also considered friendly in this mod.
+     */
+    public static boolean isFriendly(LivingEntity entity) {
+        return !isEnemy(entity);
+    }
+
+    /**
+     * Only living entities can be friendly. Neutral mobs are also considered friendly in this mod.
+     */
+    public static boolean isFriendly(Class<? extends LivingEntity> entityClass) {
+        return !isEnemy(entityClass);
+    }
+
+    /**
+     * Aquatic entities are the water animals plus the ageable water creatures, which are
+     * not water animals in vanilla (turtles, axolotls and frogs, for instance).
+     */
+    public static boolean isAquatic(Class<? extends Entity> entityClass) {
+        return WaterAnimal.class.isAssignableFrom(entityClass)
+                || AgeableWaterCreature.class.isAssignableFrom(entityClass);
+    }
+
+    /**
+     * The entities of the "flying" category of the entity list. Vanilla has no common
+     * ancestor for them, so they are listed one by one.
+     */
+    public static boolean isFlying(Class<? extends Entity> entityClass) {
+        return entityClass == Bat.class || entityClass == Allay.class || entityClass == Bee.class
+                || entityClass == HappyGhast.class || entityClass == Parrot.class;
+    }
+
+    /**
+     * Can be used in client side.
+     */
+    public static boolean isBaby(AgeableMob entity) {
+        return entity.isBaby();
+    }
+
     public static void setInWater(Entity entity, boolean inWater) {
         ((EntityIMixin) entity).biologydictionary$setWasTouchingWater(inWater);
     }
@@ -424,13 +448,6 @@ public final class EntityUtils {
             res.add(Misc.cast(wrappedGoal.getGoal()));
         }
         return res;
-    }
-
-    /**
-     * Can be used in client side.
-     */
-    public static boolean isBaby(AgeableMob entity) {
-        return entity.isBaby();
     }
 
     public static void setVariantAndMarkings(Horse entity, Variant variant, Markings markings) {

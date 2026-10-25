@@ -117,16 +117,31 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
 
     protected boolean mouseClicked(float mouseX, float mouseY, int button) { return false; }
 
+    /**
+     * Whether a vanilla text input owns the keyboard. Implemented here rather than
+     * relying on the vanilla method, so that every supported MC version behaves the same.
+     */
     public boolean isInputCaptured() {
-        ComponentPath focusPath = getCurrentFocusPath();
-        if (focusPath == null) {
-            return false;
-        }
-        GuiEventListener component = focusPath.leafComponent();
-        if (component instanceof EditBox editBox) {
+        GuiEventListener element = getFocusedElement();
+        if (element instanceof EditBox editBox) {
             return editBox.canConsumeInput();
         }
-        return component instanceof MultiLineEditBox editBox && editBox.visible && editBox.isFocused();
+        return element instanceof MultiLineEditBox editBox && editBox.visible && editBox.isFocused();
+    }
+
+    /**
+     * The focus path nests the focused component inside its containers, so walk down to
+     * the component that actually owns the input.
+     */
+    private GuiEventListener getFocusedElement() {
+        ComponentPath focusPath = getCurrentFocusPath();
+        if (focusPath == null) {
+            return null;
+        }
+        while (focusPath instanceof ComponentPath.Path path) {
+            focusPath = path.childPath();
+        }
+        return focusPath.component();
     }
 
     public Font getFont() { return super.getFont(); }
