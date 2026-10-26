@@ -58,8 +58,8 @@ public final class DiscoveredEntityFilterButton extends Widget {
         boolean showOnlyDiscovered = BiologyDictionaryClient.shouldShowOnlyDiscoveredEntities();
         ctx.renderComponentTooltipCentered(
                 List.of(TextUtils.translate(showOnlyDiscovered
-                        ? Lang.WIDGET_ENTITY_FILTER_ALL_DESC
-                        : Lang.WIDGET_ENTITY_FILTER_DISCOVERED_DESC)),
+                        ? Lang.WIDGET_ENTITY_FILTER_DISCOVERED_DESC
+                        : Lang.WIDGET_ENTITY_FILTER_ALL_DESC)),
                 0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
         return true;
     }

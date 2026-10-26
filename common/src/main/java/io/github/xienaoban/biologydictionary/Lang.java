@@ -111,8 +111,8 @@ public final class Lang {
     WIDGET_ENTITY_SELECTION_COUNT          = "widget.biologydictionary.entity_selection.count",
     WIDGET_ENTITY_SELECTION_BLACKLIST      = "widget.biologydictionary.entity_selection.blacklist",
     WIDGET_ENTITY_SELECTION_BLACKLIST_DESC = "widget.biologydictionary.entity_selection.blacklist.desc",
-    WIDGET_ENTITY_FILTER_DISCOVERED_DESC   = "widget.biologydictionary.entity_filter.discovered.desc",
     WIDGET_ENTITY_FILTER_ALL_DESC          = "widget.biologydictionary.entity_filter.all.desc",
+    WIDGET_ENTITY_FILTER_DISCOVERED_DESC   = "widget.biologydictionary.entity_filter.discovered.desc",
 
     PROPERTY_WIDGET_HEALTH                      = "property_widget.biologydictionary.health",
     PROPERTY_WIDGET_HEALTH_DESC                 = "property_widget.biologydictionary.health.desc",

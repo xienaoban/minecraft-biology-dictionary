@@ -135,8 +135,8 @@
 
   "widget.biologydictionary.search.desc"                    : "Click to search",
   "widget.biologydictionary.search.hint"                    : "Type keywords to filter",
-  "widget.biologydictionary.search.field.id.desc"           : "> Search entity IDs\n  Search entity names",
-  "widget.biologydictionary.search.field.name.desc"         : "  Search entity IDs\n> Search entity names",
+  "widget.biologydictionary.search.field.id.desc"           : "＞Search entity IDs\n　Search entity names",
+  "widget.biologydictionary.search.field.name.desc"         : "　Search entity IDs\n＞Search entity names",
   "widget.biologydictionary.search.category.preview.desc"   : "Preview the entities of this category",
   "widget.biologydictionary.overview"                       : "View Entity Properties",
   "widget.biologydictionary.overview.desc"                  : "View default/reference properties for this entity type",
@@ -153,8 +153,8 @@
   "widget.biologydictionary.entity_selection.count"         : "Selected %1$s/%2$s",
   "widget.biologydictionary.entity_selection.blacklist"     : "Add to Blacklist",
   "widget.biologydictionary.entity_selection.blacklist.desc": "Add the selected entity types to the blacklist. They will be hidden from the Biology Dictionary.",
-  "widget.biologydictionary.entity_filter.discovered.desc"  : "Show only discovered entities",
-  "widget.biologydictionary.entity_filter.all.desc"         : "Show all entities",
+  "widget.biologydictionary.entity_filter.all.desc"         : "＞Show all entities\n　Show only discovered entities",
+  "widget.biologydictionary.entity_filter.discovered.desc"  : "　Show all entities\n＞Show only discovered entities",
 
   "property_widget.biologydictionary.health"                      : "Health Points",
   "property_widget.biologydictionary.health.desc"                 : "Target dies if health is 0",
