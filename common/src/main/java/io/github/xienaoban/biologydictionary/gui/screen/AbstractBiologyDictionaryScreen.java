@@ -460,7 +460,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
     }
 
-    public abstract class Bookmark extends ScreenElement {
+    public static abstract class Bookmark extends ScreenElement {
         private static final int L = 1, T = 24;
         private static final int W = 3, H = 1;
         private static final int CNT = 5;
@@ -482,7 +482,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
-            float offsetL = (getHoveredElement() == this ? W : 0);
+            float offsetL = (ctx.getElementScreen().getHoveredElement() == this ? W : 0);
             float offsetT = (idx % CNT) * H;
             ctx.renderTexture(Textures.ICONS,
                     (L + offsetL) * Widget.WIDGET_WIDTH,
@@ -592,7 +592,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
     }
 
-    public abstract class Catalog extends Widget {
+    public static abstract class Catalog extends Widget {
         protected final int depth;
         protected final Component text;
 
@@ -611,7 +611,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
                     ctx.getZ(),
                     box.getLeft() + d, box.getTop(),
                     4 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
-            boolean hovered = getHoveredElement() == this;
+            boolean hovered = ctx.getElementScreen().getHoveredElement() == this;
             int textColor, lineColor;
             if (hovered) {
                 textColor = Colors.BLACK;

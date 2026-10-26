@@ -95,6 +95,7 @@ public final class Lang {
     WIDGET_SEARCH_HINT                     = "widget.biologydictionary.search.hint",
     WIDGET_SEARCH_FIELD_ID_DESC            = "widget.biologydictionary.search.field.id.desc",
     WIDGET_SEARCH_FIELD_NAME_DESC          = "widget.biologydictionary.search.field.name.desc",
+    WIDGET_SEARCH_CATEGORY_PREVIEW_DESC    = "widget.biologydictionary.search.category.preview.desc",
     WIDGET_ENTITY_OVERVIEW                 = "widget.biologydictionary.overview",
     WIDGET_ENTITY_OVERVIEW_DESC            = "widget.biologydictionary.overview.desc",
     WIDGET_ENTITY_OVERVIEW_LEFT_DESC       = "widget.biologydictionary.overview.left.desc",

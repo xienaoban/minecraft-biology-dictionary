@@ -1,14 +1,18 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.core.EntityClassificationManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
 import io.github.xienaoban.biologydictionary.core.search.SimpleEntitySearch;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
+import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.AddToBlacklistButton;
+import io.github.xienaoban.biologydictionary.gui.component.entitylist.CategoryCatalog;
+import io.github.xienaoban.biologydictionary.gui.component.entitylist.ClassificationBookmark;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DecorativeBarWidget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DiscoveredEntityFilterButton;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DiscoveryProgressWidget;
@@ -30,6 +34,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,6 +72,11 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
         super(TextUtils.translate(Lang.SCREEN_SEARCH_TITLE));
         setLastScreen(source);
         addBookmark(new OpenBdHomeScreenBookmark());
+        for (EntityClassificationManager.Classification classification
+                : WorldSession.get().getEntityClassificationManager().getClassifications().values()) {
+            addBookmark(new ClassificationBookmark(classification.getName(),
+                    () -> showClassificationTree(classification)));
+        }
         searchButton.setPriority(1);
         fieldButton.setPriority(1);
         inputBoxHitGuard.setPriority(1);
@@ -82,6 +92,32 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
         selectionMode = false;
         selectedEntityTypes.clear();
         rebuildCards(0);
+    }
+
+    private void showClassificationTree(EntityClassificationManager.Classification classification) {
+        ArrayList<Widget> rows = new ArrayList<>();
+        classification.dfsCategories((category, depth) -> {
+            rows.add(new CategoryCatalog(depth, category,
+                    () -> showPreview(category),
+                    () -> showPreview(category)));
+            return true;
+        });
+        rows.addFirst(new DescriptionWidget(1, Page.COLUMNS, classification.getDescription()));
+        resetAndAndWidgetsOneByOne(rows);
+        setToolBars(null, null, null);
+        updateBoxSizes();
+        clearFocus();
+    }
+
+    private void showPreview(EntityClassificationManager.Category category) {
+        List<Widget> cards = EntityActionCardWidget.createWidgets(category.getEntities(), displayRotation);
+        if (cards.isEmpty()) {
+            cards = List.of(noEntitiesWidget());
+        }
+        resetAndAndWidgetsOneByOne(cards);
+        setToolBars(null, null, null);
+        updateBoxSizes();
+        clearFocus();
     }
 
     private void rebuildCardsKeepingPage() {

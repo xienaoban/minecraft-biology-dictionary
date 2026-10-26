@@ -135,8 +135,9 @@
 
   "widget.biologydictionary.search.desc"                    : "Click to search",
   "widget.biologydictionary.search.hint"                    : "Type keywords to filter",
-  "widget.biologydictionary.search.field.id.desc"           : "Searching entity IDs",
-  "widget.biologydictionary.search.field.name.desc"         : "Searching entity names",
+  "widget.biologydictionary.search.field.id.desc"           : "> Search entity IDs\n  Search entity names",
+  "widget.biologydictionary.search.field.name.desc"         : "  Search entity IDs\n> Search entity names",
+  "widget.biologydictionary.search.category.preview.desc"   : "Preview the entities of this category",
   "widget.biologydictionary.overview"                       : "View Entity Properties",
   "widget.biologydictionary.overview.desc"                  : "View default/reference properties for this entity type",
   "widget.biologydictionary.overview.left.desc"             : "Lift click: View Entity Properties",

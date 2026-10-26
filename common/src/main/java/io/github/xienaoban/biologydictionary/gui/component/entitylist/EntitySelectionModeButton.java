@@ -22,6 +22,7 @@ public final class EntitySelectionModeButton extends Widget {
     private static final int ICON_EXIT_COLUMN = 24;
 
     private final boolean exit;
+
     private final Runnable action;
 
     public EntitySelectionModeButton(boolean exit, Runnable action) {

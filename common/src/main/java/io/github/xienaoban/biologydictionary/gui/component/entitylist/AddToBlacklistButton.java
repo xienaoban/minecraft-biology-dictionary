@@ -29,6 +29,7 @@ import java.util.Set;
 @ClientOnly
 public final class AddToBlacklistButton extends Widget {
     private final Set<EntityType<?>> selection;
+
     private final Runnable onBlacklistApplied;
 
     public AddToBlacklistButton(Set<EntityType<?>> selection, Runnable onBlacklistApplied) {

@@ -8,6 +8,8 @@ import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.AddToBlacklistButton;
+import io.github.xienaoban.biologydictionary.gui.component.entitylist.CategoryCatalog;
+import io.github.xienaoban.biologydictionary.gui.component.entitylist.ClassificationBookmark;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DecorativeBarWidget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DiscoveredEntityFilterButton;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DiscoveryProgressWidget;
@@ -46,8 +48,22 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         addBookmark(new AllEntitiesBookmark());
         for (EntityClassificationManager.Classification classification
                 : WorldSession.get().getEntityClassificationManager().getClassifications().values()) {
-            addBookmark(new ClassificationBookmark(classification));
+            addBookmark(new ClassificationBookmark(classification.getName(),
+                    () -> showClassification(classification)));
         }
+    }
+
+    private void showClassification(EntityClassificationManager.Classification classification) {
+        ArrayList<Widget> catalogs = new ArrayList<>();
+        classification.dfsCategories((category, depth) -> {
+            catalogs.add(new CategoryCatalog(depth, category,
+                    () -> recordAndInitEntityWidgets(() -> initEntityWidgets(category)), null));
+            return true;
+        });
+        catalogs.addFirst(new DescriptionWidget(1, Page.COLUMNS, classification.getDescription()));
+        clearEntityWidgetsInitializer();
+        resetAndAndWidgetsOneByOne(catalogs);
+        setToolBars(null, null, null);
     }
 
     private void recordAndInitEntityWidgets(Runnable initializer) {
@@ -157,64 +173,4 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
             return super.onMouseDown(mouseX, mouseY, button);
         }
     }
-
-    private final class ClassificationBookmark extends Bookmark {
-        private final EntityClassificationManager.Classification classification;
-
-        public ClassificationBookmark(EntityClassificationManager.Classification classification) {
-            super(classification.getName());
-            this.classification = classification;
-        }
-
-        @Override
-        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
-            if (isMouseLeft(button)) {
-                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                ArrayList<Widget> catalogs = new ArrayList<>();
-                classification.dfsCategories((category, depth) -> {
-                    catalogs.add(new CategoryCatalog(depth, category));
-                    return true;
-                });
-                catalogs.addFirst(new DescriptionWidget(1, Page.COLUMNS, classification.getDescription()));
-                clearEntityWidgetsInitializer();
-                resetAndAndWidgetsOneByOne(catalogs);
-                setToolBars(null, null, null);
-                return true;
-            }
-            return super.onMouseDown(mouseX, mouseY, button);
-        }
-    }
-
-    private final class CategoryCatalog extends Catalog {
-        private final EntityClassificationManager.Category category;
-
-        public CategoryCatalog(int depth, EntityClassificationManager.Category category) {
-            super(depth, TextUtils.concat(
-                    Arrays.asList(category.getText(), TextUtils.literal("(" + category.getEntities().size() + ")")),
-                    TextUtils.space()));
-            this.category = category;
-        }
-
-        @Override
-        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
-            if (isMouseLeft(button)) {
-                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 1.5F);
-                recordAndInitEntityWidgets(() -> initEntityWidgets(category));
-                return true;
-            }
-            return super.onMouseDown(mouseX, mouseY, button);
-        }
-
-        @Override
-        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            if (category.getDescription() == null) { return true; }
-            int d = depth * 8;
-            ScreenElementBox box = getBox();
-            List<Component> texts = new ArrayList<>();
-            texts.add(category.getDescription());
-            ctx.renderComponentTooltip(texts, 0.5F, box.getLeft() + d + Widget.WIDGET_WIDTH, box.getBottom() + 1);
-            return true;
-        }
-    }
-
 }
