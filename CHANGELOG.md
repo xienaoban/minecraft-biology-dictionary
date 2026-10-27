@@ -4,10 +4,17 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ## Release
 
+### Added
+
+- Akashic Tome compatibility: the Biology Dictionary book can now be stored in the Akashic Tome, and the hotkey detects it inside the tome
+
 ### Changed
 
-- The spawn egg of an entity type is now looked up by one shared platform helper
-- The aquatic and flying predicates moved next to the other entity predicates in `EntityUtils`
+- Cleaned up compatibility package and class names
+
+### Fixed
+
+- Zero-count item stacks are no longer treated as the Biology Dictionary book
 
 ## Previous Versions
 
