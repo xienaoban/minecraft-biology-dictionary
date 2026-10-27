@@ -27,7 +27,7 @@
             "io.github.xienaoban.biologydictionary.config.ModMenuConfigScreenProvider"
         ],
         "jei_mod_plugin": [
-            "io.github.xienaoban.biologydictionary.compat.jei.BiologyDictionaryJeiPlugin"
+            "io.github.xienaoban.biologydictionary.compat.jei.JeiCompat"
         ]
     },
     "accessWidener": "biologydictionary.accesswidener",
