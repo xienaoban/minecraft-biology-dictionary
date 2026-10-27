@@ -136,7 +136,7 @@ public final class BiologyDictionaryItem {
 
     @SuppressWarnings("all")
     public static boolean isBook(ItemStack stack) {
-        if (stack == null || !stack.is(Items.WRITABLE_BOOK)) return false;
+        if (stack == null || stack.isEmpty() || !stack.is(Items.WRITABLE_BOOK)) { return false; }
         CustomData cd = stack.get(DataComponents.CUSTOM_DATA);
         return cd != null && ((CustomDataIMixin) (Object) cd).biologydictionary$getTag().contains(ID);
     }
