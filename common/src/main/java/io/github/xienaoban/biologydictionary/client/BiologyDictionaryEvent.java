@@ -2,6 +2,8 @@ package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.compat.akashictome.AkashicTomeCompat;
+import io.github.xienaoban.biologydictionary.compat.CompatibilityOptions;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
@@ -25,6 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -128,8 +131,10 @@ public final class BiologyDictionaryEvent {
     }
 
     private static boolean hasBook(LocalPlayer player) {
-        return InventoryUtils.hasEnoughItems(PlayerUtils.getInventory(player), BiologyDictionaryItem.createBook(),
-                (is1, is2) -> BiologyDictionaryItem.isBook(is2));
+        Inventory inventory = PlayerUtils.getInventory(player);
+        if (InventoryUtils.hasAnyItem(inventory, BiologyDictionaryItem::isBook)) { return true; }
+        if (!CompatibilityOptions.akashicTomeLoaded() || !AkashicTomeCompat.isEnabled()) { return false; }
+        return InventoryUtils.hasAnyItem(inventory, AkashicTomeCompat::containsBook);
     }
 
     private static boolean hasPermissionToOpenBook(LocalPlayer player) {
