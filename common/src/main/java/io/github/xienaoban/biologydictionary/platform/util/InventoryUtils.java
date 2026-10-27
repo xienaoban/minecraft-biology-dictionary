@@ -18,6 +18,7 @@ public final class InventoryUtils {
         int itemCount = inventory.getContainerSize();
         for (int i = 0; i < itemCount; i++) {
             ItemStack is = inventory.getItem(i);
+            if (is.isEmpty()) { continue; }
             if (!cmp.test(itemStack, is)) { continue; }
             int cnt = is.getCount();
             left -= cnt;
@@ -36,6 +37,7 @@ public final class InventoryUtils {
         List<ItemStack> fallback = new ArrayList<>();
         for (int i = 0; i < itemCount; ++i) {
             ItemStack is = inventory.getItem(i);
+            if (is.isEmpty()) { continue; }
             if (!cmp.test(itemStack, is)) { continue; }
             int cnt = is.getCount();
             if (cnt < left) {

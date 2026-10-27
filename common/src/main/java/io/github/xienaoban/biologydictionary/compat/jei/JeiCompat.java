@@ -35,7 +35,7 @@ import java.util.function.Supplier;
  */
 @ClientOnly
 @JeiPlugin
-public class BiologyDictionaryJeiPlugin implements IModPlugin {
+public class JeiCompat implements IModPlugin {
     /**
      * An NBT-based variant of a vanilla item displayed in JEI.
      * The subtype key must be unique among the variants of the same base item,
