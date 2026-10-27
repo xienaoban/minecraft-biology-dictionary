@@ -10,6 +10,7 @@ import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 public final class CompatibilityOptions {
     private static final boolean USE_ADVANCED_TEXT_RENDERING = !DevUtils.isModLoaded(CompatibilityManager.MOD_MODERN_UI);
     private static final boolean ENTITY_OUTLINE_COMPAT_STAR_OPT = DevUtils.isModLoaded(CompatibilityManager.MOD_STAR_OPTIMIZED);
+    private static final boolean AKASHIC_TOME_LOADED = DevUtils.isModLoaded(CompatibilityManager.MOD_AKASHIC_TOME);
 
     private CompatibilityOptions() {}
 
@@ -19,5 +20,9 @@ public final class CompatibilityOptions {
 
     public static boolean entityOutlineCompatStarOpt() {
         return ENTITY_OUTLINE_COMPAT_STAR_OPT;
+    }
+
+    public static boolean akashicTomeLoaded() {
+        return AKASHIC_TOME_LOADED;
     }
 }

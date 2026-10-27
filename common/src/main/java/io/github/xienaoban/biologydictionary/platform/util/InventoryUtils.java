@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 public final class InventoryUtils {
     public static boolean hasEnoughItems(Inventory inventory, ItemStack itemStack) {
@@ -23,6 +24,15 @@ public final class InventoryUtils {
             int cnt = is.getCount();
             left -= cnt;
             if (left <= 0) { return true; }
+        }
+        return false;
+    }
+
+    public static boolean hasAnyItem(Inventory inventory, Predicate<ItemStack> predicate) {
+        int itemCount = inventory.getContainerSize();
+        for (int i = 0; i < itemCount; i++) {
+            ItemStack is = inventory.getItem(i);
+            if (!is.isEmpty() && predicate.test(is)) { return true; }
         }
         return false;
     }

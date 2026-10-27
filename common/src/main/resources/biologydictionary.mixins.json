@@ -12,6 +12,7 @@
         "SinglePoolElementIMixin",
         "StructureTemplatePoolIMixin",
         "TemptGoalIMixin",
+        "compat.AkashicTomeMorphingHandlerMixin",
         "entity.AbstractHorseIMixin",
         "entity.AgeableMobMixin",
         "entity.AnimalIMixin",
