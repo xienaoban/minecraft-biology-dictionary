@@ -66,7 +66,7 @@ public final class BiologyDictionaryItem {
     }
 
     public static boolean isBook(ItemStack stack) {
-        if (stack == null || !stack.is(Items.WRITABLE_BOOK)) {
+        if (stack == null || stack.isEmpty() || !stack.is(Items.WRITABLE_BOOK)) {
             return false;
         }
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
