@@ -123,7 +123,7 @@ public final class BiologyDictionaryItem {
 
     @SuppressWarnings("all")
     public static boolean isBook(ItemStack stack) {
-        if (stack == null || !stack.is(Items.WRITABLE_BOOK)) return false;
+        if (stack == null || stack.isEmpty() || !stack.is(Items.WRITABLE_BOOK)) { return false; }
         CompoundTag tag = stack.getTag();
         return tag != null && tag.contains(ID);
     }
