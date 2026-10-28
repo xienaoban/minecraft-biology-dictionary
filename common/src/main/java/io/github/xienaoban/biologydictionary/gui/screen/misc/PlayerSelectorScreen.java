@@ -1,6 +1,8 @@
 package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.gui.component.Bookmark;
+import io.github.xienaoban.biologydictionary.gui.component.DescriptionWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.screen.AbstractBiologyDictionaryScreen;

@@ -7,9 +7,13 @@ import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
-import io.github.xienaoban.biologydictionary.gui.component.entitylist.AddToBlacklistButton;
+import io.github.xienaoban.biologydictionary.gui.component.Bookmark;
 import io.github.xienaoban.biologydictionary.gui.component.Catalog;
-import io.github.xienaoban.biologydictionary.gui.component.entitylist.ClassificationBookmark;
+import io.github.xienaoban.biologydictionary.gui.component.DescriptionWidget;
+import io.github.xienaoban.biologydictionary.gui.component.HorizontalElementContainer;
+import io.github.xienaoban.biologydictionary.gui.component.Page;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
+import io.github.xienaoban.biologydictionary.gui.component.entitylist.AddToBlacklistButton;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DecorativeBarWidget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DiscoveredEntityFilterButton;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DiscoveryProgressWidget;
@@ -17,8 +21,6 @@ import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntityActi
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntitySelectionCardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntitySelectionCountDisplay;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntitySelectionModeButton;
-import io.github.xienaoban.biologydictionary.gui.component.Page;
-import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
@@ -48,8 +50,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         addBookmark(new AllEntitiesBookmark());
         for (EntityClassificationManager.Classification classification
                 : WorldSession.get().getEntityClassificationManager().getClassifications().values()) {
-            addBookmark(new ClassificationBookmark(classification.getName(),
-                    () -> showClassification(classification)));
+            addBookmark(new ClassificationBookmark(classification));
         }
     }
 
@@ -155,6 +156,25 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     protected void render(ScreenRenderingContext ctx) {
         displayRotation.update(System.currentTimeMillis());
         super.render(ctx);
+    }
+
+    private final class ClassificationBookmark extends Bookmark {
+        private final EntityClassificationManager.Classification classification;
+
+        private ClassificationBookmark(EntityClassificationManager.Classification classification) {
+            super(classification.getName());
+            this.classification = classification;
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                showClassification(classification);
+                return true;
+            }
+            return super.onMouseDown(mouseX, mouseY, button);
+        }
     }
 
     private final class CategoryCatalog extends Catalog {

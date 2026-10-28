@@ -8,12 +8,14 @@ import io.github.xienaoban.biologydictionary.core.search.SimpleEntitySearch;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
+import io.github.xienaoban.biologydictionary.gui.component.Bookmark;
+import io.github.xienaoban.biologydictionary.gui.component.Catalog;
+import io.github.xienaoban.biologydictionary.gui.component.Chip;
+import io.github.xienaoban.biologydictionary.gui.component.DescriptionWidget;
+import io.github.xienaoban.biologydictionary.gui.component.HorizontalElementContainer;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.AddToBlacklistButton;
-import io.github.xienaoban.biologydictionary.gui.component.Catalog;
-import io.github.xienaoban.biologydictionary.gui.component.Chip;
-import io.github.xienaoban.biologydictionary.gui.component.entitylist.ClassificationBookmark;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DecorativeBarWidget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DiscoveredEntityFilterButton;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DiscoveryProgressWidget;
@@ -87,8 +89,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
         addBookmark(new OpenBdHomeScreenBookmark());
         for (EntityClassificationManager.Classification classification
                 : WorldSession.get().getEntityClassificationManager().getClassifications().values()) {
-            addBookmark(new ClassificationBookmark(classification.getName(),
-                    () -> showClassificationTree(classification)));
+            addBookmark(new ClassificationBookmark(classification));
         }
         searchButton.setPriority(1);
         fieldButton.setPriority(1);
@@ -320,6 +321,25 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
      * Covers the vanilla input box so that page cards beneath the input row cannot win
      * hit testing. Not consuming the click lets the original event reach the EditBox.
      */
+    private final class ClassificationBookmark extends Bookmark {
+        private final EntityClassificationManager.Classification classification;
+
+        private ClassificationBookmark(EntityClassificationManager.Classification classification) {
+            super(classification.getName());
+            this.classification = classification;
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
+                ClientUtils.playScreenSound(SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                showClassificationTree(classification);
+                return true;
+            }
+            return super.onMouseDown(mouseX, mouseY, button);
+        }
+    }
+
     private final class CategoryCatalog extends Catalog {
         private final EntityClassificationManager.Category category;
         private final PreviewButton previewButton = new PreviewButton();
