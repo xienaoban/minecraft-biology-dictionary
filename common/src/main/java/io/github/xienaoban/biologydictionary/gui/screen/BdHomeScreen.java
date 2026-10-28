@@ -8,7 +8,7 @@ import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.AddToBlacklistButton;
-import io.github.xienaoban.biologydictionary.gui.component.entitylist.CategoryCatalog;
+import io.github.xienaoban.biologydictionary.gui.component.Catalog;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.ClassificationBookmark;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DecorativeBarWidget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DiscoveredEntityFilterButton;
@@ -56,8 +56,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private void showClassification(EntityClassificationManager.Classification classification) {
         ArrayList<Widget> catalogs = new ArrayList<>();
         classification.dfsCategories((category, depth) -> {
-            catalogs.add(new CategoryCatalog(depth, category,
-                    () -> recordAndInitEntityWidgets(() -> initEntityWidgets(category)), null));
+            catalogs.add(new CategoryCatalog(depth, category));
             return true;
         });
         catalogs.addFirst(new DescriptionWidget(1, Page.COLUMNS, classification.getDescription()));
@@ -156,6 +155,38 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     protected void render(ScreenRenderingContext ctx) {
         displayRotation.update(System.currentTimeMillis());
         super.render(ctx);
+    }
+
+    private final class CategoryCatalog extends Catalog {
+        private final EntityClassificationManager.Category category;
+
+        private CategoryCatalog(int depth, EntityClassificationManager.Category category) {
+            super(depth, TextUtils.concat(
+                    Arrays.asList(category.getText(), TextUtils.literal("(" + category.getEntities().size() + ")")),
+                    TextUtils.space()));
+            this.category = category;
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 1.5F);
+                recordAndInitEntityWidgets(() -> initEntityWidgets(category));
+                return true;
+            }
+            return super.onMouseDown(mouseX, mouseY, button);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            if (category.getDescription() == null) { return true; }
+            int d = depth * 8;
+            ScreenElementBox box = getBox();
+            List<Component> texts = new ArrayList<>();
+            texts.add(category.getDescription());
+            ctx.renderComponentTooltip(texts, 0.5F, box.getLeft() + d + Widget.WIDGET_WIDTH, box.getBottom() + 1);
+            return true;
+        }
     }
 
     private final class AllEntitiesBookmark extends Bookmark {

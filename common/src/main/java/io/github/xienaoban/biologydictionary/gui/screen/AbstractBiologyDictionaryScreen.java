@@ -592,42 +592,6 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         }
     }
 
-    public static abstract class Catalog extends Widget {
-        protected final int depth;
-        protected final Component text;
-
-        public Catalog(int depth, Component text) {
-            super(1, Page.COLUMNS);
-            this.depth = depth;
-            this.text = text;
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            super.onRender(ctx);
-            ScreenElementBox box = getBox();
-            int d = depth * 8;
-            ctx.renderTexture(Textures.ICONS, 7 * Widget.WIDGET_WIDTH, 24 * Widget.WIDGET_HEIGHT,
-                    ctx.getZ(),
-                    box.getLeft() + d, box.getTop(),
-                    4 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
-            boolean hovered = ctx.getElementScreen().getHoveredElement() == this;
-            int textColor, lineColor;
-            if (hovered) {
-                textColor = Colors.BLACK;
-                lineColor = 0x44AF711F;
-            } else {
-                textColor = Colors.COMMON_DARK_LIGHTER_TEXT;
-                lineColor = 0x22AF711F;
-            }
-            if (depth != 0) {
-                ctx.renderHorizontalLine(lineColor, 1F, ctx.getZ(), (box.getTop() + box.getBottom()) / 2,
-                        box.getLeft() + 1, box.getLeft() + d - 1);
-            }
-            ctx.renderText(text, textColor, 0.5F, ctx.getZ(), box.getLeft() + d + 12, box.getTop() + 3 + TXT_TO);
-        }
-    }
-
     public static final class PlaceHolderWidget extends Widget {
         public PlaceHolderWidget(int rows, int columns) {
             super(rows, columns);
