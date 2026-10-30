@@ -104,6 +104,7 @@ public final class ClientWorldSession implements ConfigsUpdateCallback {
 
     public void tick() {
         highlightManager.tick();
+        shoulderEntityRenderer.tick();
         telescopeManager.tick();
     }
 }

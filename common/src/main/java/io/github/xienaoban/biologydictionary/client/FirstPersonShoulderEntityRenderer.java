@@ -55,6 +55,17 @@ public final class FirstPersonShoulderEntityRenderer {
     }
 
     /**
+     * Ages the shoulder entities by one client tick, as in {@code EntityDisplay#tick()}.
+     */
+    public void tick() {
+        for (LivingEntity entity : entities) {
+            if (entity != null) {
+                ++entity.tickCount;
+            }
+        }
+    }
+
+    /**
      * @see net.minecraft.client.renderer.ItemInHandRenderer#renderHandsWithItems(
      *          float, com.mojang.blaze3d.vertex.PoseStack,
      *          net.minecraft.client.renderer.SubmitNodeCollector,
@@ -109,6 +120,11 @@ public final class FirstPersonShoulderEntityRenderer {
                 float xRotDiff     = HEAD_ROT_SPEED * diffTime * (nextXHeadRot[i] - entity.getXRot());
                 entity.setYHeadRot(entity.getYHeadRot() + yHeadRotDiff);
                 entity.setXRot(    entity.getXRot()     + xRotDiff);
+                // The entity never ticks, so its previous-frame fields would stay at 0 and
+                // renderers would interpolate the head from 0 to the current value on every
+                // tick, which reads as the head jittering. The value is already smoothed above.
+                entity.yHeadRotO = entity.getYHeadRot();
+                entity.xRotO = entity.getXRot();
             }
             extract(i);
             EntityRenderState entityRenderState = entityRenderStates[i];
@@ -143,6 +159,7 @@ public final class FirstPersonShoulderEntityRenderer {
             VanillaEntityProperties.OfParrot.createVariantProperty().withVal(variant).setTo(parrot);
 
             entity = parrot;
+            EntityUtils.setupForDisplay(entity);
             entity.setYRot(0);
             entity.setYHeadRot(0);
             entity.setYBodyRot(0);
