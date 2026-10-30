@@ -183,6 +183,9 @@ public class BeehiveScreen extends ElementScreen {
     @Override
     public void tick() {
         super.tick();
+        for (BeeInfo bee : bees) {
+            bee.tick();
+        }
         passedClientTickCount++;
         if (passedClientTickCount % 5 == 0) {
             if (!(level.getBlockState(pos).getBlock() instanceof BeehiveBlock)) {
@@ -204,6 +207,7 @@ public class BeehiveScreen extends ElementScreen {
             beeInfo.entity.setCustomName(null);
             CompoundTag newTag = EntityUtils.getNbt(beeInfo.entity);
             EntityUtils.setNbt(beeInfo.entity, newTag.merge(occupant.entityData().copyTagWithoutId()));
+            EntityUtils.setupForDisplay(beeInfo.entity);
 
             beeInfo.ticksInHive = occupant.ticksInHive();
             beeInfo.minTicksInHive = occupant.minTicksInHive();
@@ -225,6 +229,14 @@ public class BeehiveScreen extends ElementScreen {
             EntityUtils.setupForDisplay(entity);
             ticksInHive = -1;
             minTicksInHive = -1;
+        }
+
+        /**
+         * Ages the display entity so that renderers derive a continuous animation time, as in
+         * {@code EntityDisplay#tick()}.
+         */
+        public void tick() {
+            ++entity.tickCount;
         }
     }
 
