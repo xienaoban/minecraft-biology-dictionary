@@ -55,6 +55,12 @@ public abstract class EntityCardWidget extends Widget {
     protected abstract boolean shouldRenderDetail();
 
     @Override
+    protected void onTick(int ticks) {
+        super.onTick(ticks);
+        display.tick();
+    }
+
+    @Override
     protected void onRender(ScreenRenderingContext ctx) {
         super.onRender(ctx);
 
