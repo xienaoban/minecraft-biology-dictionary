@@ -54,6 +54,7 @@ public final class EntityDisplayWidget extends EntityPropertyWidget<Entity> {
     @Override
     protected void onTick(int ticks) {
         super.onTick(ticks);
+        display.tick();
         if (ticks % ClientUtils.getClientTickCountPerSecond() == 15 && p().isNotInNoUpdateCooldown()) {
             display.updateNbtFrom(e());
         }

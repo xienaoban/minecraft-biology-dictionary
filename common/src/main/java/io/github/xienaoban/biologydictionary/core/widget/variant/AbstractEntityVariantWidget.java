@@ -301,6 +301,12 @@ public abstract class AbstractEntityVariantWidget<E extends Entity, V> extends E
         }
 
         @Override
+        protected void onTick(int ticks) {
+            super.onTick(ticks);
+            entityDisplay.tick();
+        }
+
+        @Override
         protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             if (isMouseLeft(button)) {
                 if (isAllowedToChoose()) {
