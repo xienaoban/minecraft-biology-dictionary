@@ -64,6 +64,18 @@ public final class EntityDisplay {
     public Entity getModel() { return model; }
     public boolean isPlaceholder() { return placeholder; }
 
+    /**
+     * Ages the display model by one client tick.
+     *
+     * <p>The model never enters a level, so nothing else advances its {@code tickCount}. Renderers
+     * derive animation time from {@code tickCount + partialTick}; with a frozen {@code tickCount}
+     * and a running world (the screens are not pause screens), that time sawtooths once per tick,
+     * which Entity Model Features exposes as Fresh Animations twitching at 20 Hz.
+     */
+    public void tick() {
+        ++model.tickCount;
+    }
+
     public void updateNbtFrom(Entity target) {
         if (placeholder || target == null) { return; }
         updateNbt(EntityUtils.getNbtToDisplay(target));

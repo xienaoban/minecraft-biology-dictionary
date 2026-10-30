@@ -242,6 +242,9 @@ public final class EntityUtils {
     }
 
     public static <E extends Entity> void setupForDisplay(E entity) {
+        // Display entities never enter a level, so nothing would ever ground them; without this,
+        // animation packs play their airborne poses (e.g. the falling/limb-spread animation).
+        entity.setOnGround(true);
         if (entity instanceof WaterAnimal) {
             setInWater(entity, true);
         }
