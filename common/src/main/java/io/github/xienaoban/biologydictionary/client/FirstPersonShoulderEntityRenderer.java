@@ -55,6 +55,17 @@ public final class FirstPersonShoulderEntityRenderer {
         }
     }
 
+    /**
+     * Ages the shoulder entities by one client tick, as in {@code EntityDisplay#tick()}.
+     */
+    public void tick() {
+        for (LivingEntity entity : entities) {
+            if (entity != null) {
+                ++entity.tickCount;
+            }
+        }
+    }
+
     private void run0(EntityRenderDispatcher entityRenderDispatcher, float tickDelta, PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LocalPlayer player, int light) {
         HudPosition hudPos = switch (ConfigsManager.getClient().getFirstPersonShoulderEntityPosition()) {
             case NONE -> null;
@@ -90,6 +101,11 @@ public final class FirstPersonShoulderEntityRenderer {
                 float xRotDiff     = HEAD_ROT_SPEED * diffTime * (nextXHeadRot[i] - entity.getXRot());
                 entity.setYHeadRot(entity.getYHeadRot() + yHeadRotDiff);
                 entity.setXRot(    entity.getXRot()     + xRotDiff);
+                // The entity never ticks, so its previous-frame fields would stay at 0 and
+                // renderers would interpolate the head from 0 to the current value on every
+                // tick, which reads as the head jittering. The value is already smoothed above.
+                entity.yHeadRotO = entity.getYHeadRot();
+                entity.xRotO = entity.getXRot();
             }
             int pos = i * -2 + 1;
             poseStack.pushPose();
@@ -116,6 +132,7 @@ public final class FirstPersonShoulderEntityRenderer {
                 entity = null;
             } else {
                 entity = (LivingEntity) createdEntity;
+                EntityUtils.setupForDisplay(entity);
                 entity.setYRot(0);
                 entity.setYHeadRot(0);
                 entity.setYBodyRot(0);

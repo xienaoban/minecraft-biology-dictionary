@@ -15,6 +15,8 @@ All notable changes to Biology Dictionary will be documented in this file.
 ### Fixed
 
 - Zero-count item stacks are no longer treated as the Biology Dictionary book
+- Entity models in the dictionary no longer twitch or drift into their airborne pose when animation resource packs are installed
+- The first-person shoulder parrot no longer flaps its wings or jitters its head
 
 ## Previous Versions
 
