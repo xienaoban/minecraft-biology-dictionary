@@ -120,6 +120,12 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
         }
 
         @Override
+        protected void onTick(int ticks) {
+            super.onTick(ticks);
+            display.tick();
+        }
+
+        @Override
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
