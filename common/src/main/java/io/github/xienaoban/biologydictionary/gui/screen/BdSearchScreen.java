@@ -362,7 +362,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
             super.onResize(width, height);
             ScreenElementBox rowBox = getBox();
             ScreenElementBox buttonBox = previewButton.getBox();
-            buttonBox.setPosition(rowBox.getRight() - buttonBox.getWidth() - 2,
+            buttonBox.setPosition(rowBox.getRight() - buttonBox.getWidth(),
                     rowBox.getTop() + (rowBox.getHeight() - buttonBox.getHeight()) / 2);
         }
 
@@ -378,16 +378,22 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            if (category.getDescription() == null) { return true; }
+            List<Component> texts = new ArrayList<>();
+            texts.add(tooltipTitle(isSelected()
+                    ? Lang.WIDGET_SEARCH_FILTER_REMOVE_DESC
+                    : Lang.WIDGET_SEARCH_FILTER_ADD_DESC));
+            if (category.getDescription() != null) {
+                texts.add(tooltipDescription(category.getDescription()));
+            }
             int d = depth * 8;
             ScreenElementBox box = getBox();
-            List<Component> texts = new ArrayList<>();
-            texts.add(category.getDescription());
             ctx.renderComponentTooltip(texts, 0.5F, box.getLeft() + d + Widget.WIDGET_WIDTH, box.getBottom() + 1);
             return true;
         }
 
         private final class PreviewButton extends Widget {
+            private static final int L_PREVIEW = 210, T_PREVIEW = 240;
+
             private PreviewButton() {
                 super(1, 1);
             }
@@ -405,9 +411,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
                 ScreenElementBox rowBox = CategoryCatalog.this.getBox();
                 if (!rowBox.isInBox(ctx.getMouseX(), ctx.getMouseY())) { return; }
                 ScreenElementBox box = getBox();
-                ctx.renderButtonBackground(ctx.getElementScreen().getHoveredElement() == this,
-                        box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
-                ctx.renderTexture(Textures.SEARCH, box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
+                ctx.renderTexture(Textures.ICONS, L_PREVIEW, T_PREVIEW, ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
             }
 
             @Override

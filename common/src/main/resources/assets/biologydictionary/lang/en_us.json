@@ -138,6 +138,8 @@
   "widget.biologydictionary.search.field.id.desc"           : "＞Search entity IDs\n　Search entity names",
   "widget.biologydictionary.search.field.name.desc"         : "　Search entity IDs\n＞Search entity names",
   "widget.biologydictionary.search.category.preview.desc"   : "Preview the entities of this category",
+  "widget.biologydictionary.search.filter.add.desc"         : "Click to add to the filter",
+  "widget.biologydictionary.search.filter.remove.desc"      : "Click to remove from the filter",
   "widget.biologydictionary.overview"                       : "View Entity Properties",
   "widget.biologydictionary.overview.desc"                  : "View default/reference properties for this entity type",
   "widget.biologydictionary.overview.left.desc"             : "Lift click: View Entity Properties",

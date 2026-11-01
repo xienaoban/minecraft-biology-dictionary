@@ -35,6 +35,6 @@ public final class DecorativeBarWidget extends Widget {
         int texYEnd = texY + 10;
         ctx.renderTexture(Textures.ICONS, 150, texY, 152, texYEnd, z, barLeft, barTop, barLeft + 2, barBottom);
         ctx.renderTexture(Textures.ICONS, 152, texY, 154, texYEnd, z, barLeft + 2, barTop, barLeft + 4, barBottom);
-        ctx.renderTexture(Textures.ICONS, 188, texY, 190, texYEnd, z, barLeft + 4, barTop, barLeft + 6, barBottom);
+        ctx.renderTexture(Textures.ICONS, 168, texY, 170, texYEnd, z, barLeft + 4, barTop, barLeft + 6, barBottom);
     }
 }
