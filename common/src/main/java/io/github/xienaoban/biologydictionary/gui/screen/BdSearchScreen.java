@@ -385,9 +385,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
             if (category.getDescription() != null) {
                 texts.add(tooltipDescription(category.getDescription()));
             }
-            int d = depth * 8;
-            ScreenElementBox box = getBox();
-            ctx.renderComponentTooltip(texts, 0.5F, box.getLeft() + d + Widget.WIDGET_WIDTH, box.getBottom() + 1);
+            renderTooltipBelow(ctx, texts);
             return true;
         }
 
@@ -416,10 +414,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
 
             @Override
             protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-                ScreenElementBox box = getBox();
-                ctx.renderComponentTooltipCentered(
-                        List.of(TextUtils.translate(Lang.WIDGET_SEARCH_CATEGORY_PREVIEW_DESC)),
-                        0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+                renderTooltipBelowCentered(ctx, TextUtils.translate(Lang.WIDGET_SEARCH_CATEGORY_PREVIEW_DESC));
                 return true;
             }
         }
@@ -458,10 +453,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
-            ctx.renderComponentTooltipCentered(
-                    List.of(TextUtils.translate(Lang.WIDGET_SEARCH_DESC)),
-                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+            renderTooltipBelowCentered(ctx, TextUtils.translate(Lang.WIDGET_SEARCH_DESC));
             return true;
         }
     }
@@ -496,13 +488,10 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
             String langKey = searchField == SimpleEntitySearch.Field.ID
                     ? Lang.WIDGET_SEARCH_FIELD_ID_DESC
                     : Lang.WIDGET_SEARCH_FIELD_NAME_DESC;
-            ctx.renderComponentTooltipCentered(
-                    List.of(TextUtils.translate(langKey)),
-                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+            renderTooltipBelowCentered(ctx, TextUtils.translate(langKey));
             return true;
         }
     }
