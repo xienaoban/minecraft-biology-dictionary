@@ -11,7 +11,6 @@ import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.sounds.SoundEvents;
 
-import java.util.List;
 
 /**
  * Toggles the shared "only discovered entities" filter of the entity lists and asks the
@@ -54,13 +53,10 @@ public final class DiscoveredEntityFilterButton extends Widget {
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        ScreenElementBox box = getBox();
         boolean showOnlyDiscovered = BiologyDictionaryClient.shouldShowOnlyDiscoveredEntities();
-        ctx.renderComponentTooltipCentered(
-                List.of(TextUtils.translate(showOnlyDiscovered
-                        ? Lang.WIDGET_ENTITY_FILTER_DISCOVERED_DESC
-                        : Lang.WIDGET_ENTITY_FILTER_ALL_DESC)),
-                0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+        renderTooltipBelowCentered(ctx, TextUtils.translate(showOnlyDiscovered
+                ? Lang.WIDGET_ENTITY_FILTER_DISCOVERED_DESC
+                : Lang.WIDGET_ENTITY_FILTER_ALL_DESC));
         return true;
     }
 }

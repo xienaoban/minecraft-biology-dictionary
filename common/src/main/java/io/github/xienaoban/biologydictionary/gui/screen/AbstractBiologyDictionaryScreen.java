@@ -512,10 +512,7 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
-            ctx.renderComponentTooltipCentered(
-                    List.of(TextUtils.translate(Lang.BOOKMARK_SEARCH)),
-                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+            renderTooltipBelowCentered(ctx, TextUtils.translate(Lang.BOOKMARK_SEARCH));
             return true;
         }
     }

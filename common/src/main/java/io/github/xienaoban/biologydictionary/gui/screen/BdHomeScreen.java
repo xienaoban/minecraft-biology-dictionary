@@ -22,7 +22,6 @@ import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntitySele
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntitySelectionCountDisplay;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntitySelectionModeButton;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
-import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.*;
 import net.minecraft.network.chat.Component;
@@ -200,11 +199,9 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             if (category.getDescription() == null) { return true; }
-            int d = depth * 8;
-            ScreenElementBox box = getBox();
             List<Component> texts = new ArrayList<>();
             texts.add(category.getDescription());
-            ctx.renderComponentTooltip(texts, 0.5F, box.getLeft() + d + Widget.WIDGET_WIDTH, box.getBottom() + 1);
+            renderTooltipBelow(ctx, texts);
             return true;
         }
     }

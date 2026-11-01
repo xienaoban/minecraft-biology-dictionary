@@ -223,7 +223,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
                     configText.withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
                     configTooltipText.withStyle(ChatFormatting.GRAY)
             );
-            ctx.renderComponentTooltip(list, 0.5F, getBox().getLeft(), getBox().getBottom() + 2);
+            renderTooltipBelow(ctx, list);
             return true;
         }
 

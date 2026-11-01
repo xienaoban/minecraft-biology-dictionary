@@ -11,7 +11,6 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRend
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.network.chat.Component;
 
-import java.util.List;
 
 /**
  * The discovery progress bar of an entity list, showing how many of the listed entity
@@ -81,11 +80,7 @@ public final class DiscoveryProgressWidget extends Widget {
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        ScreenElementBox box = getBox();
-        float midX = (box.getLeft() + box.getRight()) / 2;
-        ctx.renderComponentTooltipCentered(
-                List.of(TextUtils.translate(Lang.WIDGET_DISCOVERY_PROGRESS)),
-                0.5F, midX, box.getBottom() + 1);
+        renderTooltipBelowCentered(ctx, TextUtils.translate(Lang.WIDGET_DISCOVERY_PROGRESS));
         return true;
     }
 }
