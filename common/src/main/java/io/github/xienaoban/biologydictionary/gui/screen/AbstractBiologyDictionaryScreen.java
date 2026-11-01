@@ -483,9 +483,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private final class SearchEntryButton extends ScreenElement {
         private static final int SIZE_X = 20;
         private static final int SIZE_Y = 16;
-        private static final int ICON_X = 190;
-        private static final int ICON_Y = 210;
-        private static final int ICON_HOVER_Y = 230;
+        private static final int ICON_X = 70;
+        private static final int ICON_Y = 180;
 
         public SearchEntryButton() {
             getBox().setSize(SIZE_X, SIZE_Y);
@@ -507,9 +506,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
-            int iconY = getHoveredElement() == this ? ICON_HOVER_Y : ICON_Y;
-            ctx.renderTexture(Textures.ICONS, ICON_X, iconY, ICON_X + SIZE_X, iconY + SIZE_Y,
-                    ctx.getZ(), box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
+            ctx.renderTexture(Textures.ICONS, ICON_X + (getHoveredElement() == this ? 20 : 0), ICON_Y,
+                    ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
         }
 
         @Override
