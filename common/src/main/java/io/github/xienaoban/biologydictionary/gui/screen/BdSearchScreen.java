@@ -265,7 +265,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
         int searchInputLeft = searchRowLeft + searchRowHeight + searchRowGap;
         int searchRowTop = Math.max(2, Math.round(
                 (pageTop(screenRenderingContext.getScreenHeight()) - INPUT_ROW_BOTTOM_OFFSET - INPUT_ROW_HEIGHT)
-                        * scale) - 20);
+                        * scale) - 10);
 
         inputBox = new EditBox(getFont(), searchInputLeft, searchRowTop, searchInputWidth, searchRowHeight, inputBox,
                 TextUtils.translate(Lang.WIDGET_SEARCH_HINT));
@@ -422,7 +422,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
 
     private final class CategoryChip extends Chip {
         private CategoryChip(EntityClassificationManager.Category category, float textSize) {
-            super(TextUtils.concat(category.getText(), TextUtils.literal(" ×")), textSize,
+            super(TextUtils.concat(category.getText(), TextUtils.literal(" x")), textSize,
                     () -> removeCategory(category));
         }
     }
