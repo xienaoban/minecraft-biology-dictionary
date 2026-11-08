@@ -1,12 +1,19 @@
 package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.core.EntityClassificationManager;
 import io.github.xienaoban.biologydictionary.core.EntityManager.EntityDictionaryEntry;
 import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCacheManager;
 import io.github.xienaoban.biologydictionary.core.search.SimpleEntitySearch;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
+import io.github.xienaoban.biologydictionary.gui.component.Bookmark;
+import io.github.xienaoban.biologydictionary.gui.component.Catalog;
+import io.github.xienaoban.biologydictionary.gui.component.Chip;
+import io.github.xienaoban.biologydictionary.gui.component.DescriptionWidget;
+import io.github.xienaoban.biologydictionary.gui.component.HorizontalElementContainer;
+import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.AddToBlacklistButton;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DecorativeBarWidget;
@@ -26,11 +33,16 @@ import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
+import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -47,15 +59,23 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
     // Distance between the bottom of the input row and the top of the pages, so that the
     // row sits above the title and inside the book.
     private static final int INPUT_ROW_BOTTOM_OFFSET = 13;
+    private static final int CHIP_GAP = 2, CHIP_PADDING = 2;
+    // The chips are drawn at half the size of the input row.
+    private static final float CHIP_TEXT_SCALE = 0.5F, CHIP_HEIGHT_SCALE = 0.5F;
 
     private EditBox inputBox;
+
     private final SearchButton searchButton = new SearchButton();
     private final EntitySearchFieldButton fieldButton = new EntitySearchFieldButton();
     private final InputBoxHitGuard inputBoxHitGuard = new InputBoxHitGuard();
+    private final List<CategoryChip> chipChips = new ArrayList<>();
 
     private final EntityDisplayRotation displayRotation = new EntityDisplayRotation();
     private final Set<EntityType<?>> selectedEntityTypes = new HashSet<>();
+    private final Set<EntityClassificationManager.Category> selectedCategories = new LinkedHashSet<>();
 
+    private int inputRowTop;
+    private int inputRowHeight;
     private SimpleEntitySearch.Field searchField = SimpleEntitySearch.Field.NAME;
     private String executedQuery = "";
     private SimpleEntitySearch.Field executedField = SimpleEntitySearch.Field.NAME;
@@ -67,6 +87,10 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
         super(TextUtils.translate(Lang.SCREEN_SEARCH_TITLE));
         setLastScreen(source);
         addBookmark(new OpenBdHomeScreenBookmark());
+        for (EntityClassificationManager.Classification classification
+                : WorldSession.get().getEntityClassificationManager().getClassifications().values()) {
+            addBookmark(new ClassificationBookmark(classification));
+        }
         searchButton.setPriority(1);
         fieldButton.setPriority(1);
         inputBoxHitGuard.setPriority(1);
@@ -84,13 +108,96 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
         rebuildCards(0);
     }
 
+    private void showClassificationTree(EntityClassificationManager.Classification classification) {
+        ArrayList<Widget> rows = new ArrayList<>();
+        classification.dfsCategories((category, depth) -> {
+            rows.add(new CategoryCatalog(depth, category));
+            return true;
+        });
+        rows.addFirst(new DescriptionWidget(1, Page.COLUMNS, classification.getDescription()));
+        resetAndAndWidgetsOneByOne(rows);
+        setToolBars(null, null, null);
+        updateBoxSizes();
+        clearFocus();
+    }
+
+    private void showPreview(EntityClassificationManager.Category category) {
+        List<Widget> cards = EntityActionCardWidget.createWidgets(category.getEntities(), displayRotation);
+        if (cards.isEmpty()) {
+            cards = List.of(noEntitiesWidget());
+        }
+        resetAndAndWidgetsOneByOne(cards);
+        setToolBars(null, null, null);
+        updateBoxSizes();
+        clearFocus();
+    }
+
+    private void toggleCategory(EntityClassificationManager.Category category) {
+        if (!selectedCategories.remove(category)) {
+            selectedCategories.add(category);
+        }
+        rebuildChips();
+        rebuildCards(0);
+    }
+
+    private void removeCategory(EntityClassificationManager.Category category) {
+        if (!selectedCategories.remove(category)) { return; }
+        rebuildChips();
+        rebuildCards(getCurrPageIndex());
+    }
+
+    private void rebuildChips() {
+        for (CategoryChip chip : chipChips) {
+            chip.setParent(null);
+        }
+        chipChips.clear();
+        if (selectedCategories.isEmpty()) { return; }
+
+        float scale = screenRenderingContext.getScreenScale();
+        float textSize = CHIP_TEXT_SCALE / scale;
+        int gap = Math.max(1, Math.round(CHIP_GAP * scale * CHIP_HEIGHT_SCALE));
+        int height = Math.max(6, Math.round(inputRowHeight * CHIP_HEIGHT_SCALE));
+        int padding = Math.round(CHIP_PADDING * scale);
+        int maxWidth = Math.max(Math.round(120 * scale), Math.round(BOOK_WIDTH * scale) - 16);
+        int top = inputRowTop + inputRowHeight + gap;
+
+        List<CategoryChip> chips = new ArrayList<>();
+        List<Integer> widths = new ArrayList<>();
+        for (EntityClassificationManager.Category category : selectedCategories) {
+            CategoryChip chip = new CategoryChip(category, textSize);
+            chips.add(chip);
+            widths.add(Math.round(getFont().width(chip.getLabel()) * CHIP_TEXT_SCALE) + 2 * padding);
+        }
+
+        int index = 0;
+        while (index < widths.size()) {
+            int rowStart = index;
+            int rowWidth = 0;
+            while (index < widths.size()) {
+                int next = rowWidth == 0 ? widths.get(index) : rowWidth + gap + widths.get(index);
+                if (rowWidth != 0 && next > maxWidth) { break; }
+                rowWidth = next;
+                index++;
+            }
+            int x = screenRenderingContext.getRawScreenWidth() / 2 - rowWidth / 2;
+            for (int i = rowStart; i < index; i++) {
+                CategoryChip chip = chips.get(i);
+                setButtonBox(chip, x, top, widths.get(i), height);
+                chip.setParent(getRootScreenElement());
+                chipChips.add(chip);
+                x += widths.get(i) + gap;
+            }
+            top += height + gap;
+        }
+    }
+
     private void rebuildCardsKeepingPage() {
         rebuildCards(getCurrPageIndex());
     }
 
     private void rebuildCards(int pageIndex) {
         // Re-read the entries every time, so that blacklist or config changes are applied.
-        executedHits = SimpleEntitySearch.search(allEntries(), executedQuery, executedField);
+        executedHits = SimpleEntitySearch.search(allEntries(), executedQuery, executedField, selectedCategories);
         List<Widget> cards = selectionMode
                 ? EntitySelectionCardWidget.createWidgets(executedHits, displayRotation, selectedEntityTypes)
                 : EntityActionCardWidget.createWidgets(executedHits, displayRotation);
@@ -158,7 +265,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
         int searchInputLeft = searchRowLeft + searchRowHeight + searchRowGap;
         int searchRowTop = Math.max(2, Math.round(
                 (pageTop(screenRenderingContext.getScreenHeight()) - INPUT_ROW_BOTTOM_OFFSET - INPUT_ROW_HEIGHT)
-                        * scale) - 20);
+                        * scale) - 10);
 
         inputBox = new EditBox(getFont(), searchInputLeft, searchRowTop, searchInputWidth, searchRowHeight, inputBox,
                 TextUtils.translate(Lang.WIDGET_SEARCH_HINT));
@@ -170,6 +277,10 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
         setButtonBox(fieldButton, searchInputLeft + searchInputWidth + searchRowGap,
                 searchRowTop, searchRowHeight, searchRowHeight);
         setButtonBox(inputBoxHitGuard, searchInputLeft, searchRowTop, searchInputWidth, searchRowHeight);
+
+        inputRowTop = searchRowTop;
+        inputRowHeight = searchRowHeight;
+        rebuildChips();
     }
 
     // The input row is laid out in raw screen coordinates; screen elements use the scaled space.
@@ -210,6 +321,112 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
      * Covers the vanilla input box so that page cards beneath the input row cannot win
      * hit testing. Not consuming the click lets the original event reach the EditBox.
      */
+    private final class ClassificationBookmark extends Bookmark {
+        private final EntityClassificationManager.Classification classification;
+
+        private ClassificationBookmark(EntityClassificationManager.Classification classification) {
+            super(classification.getName());
+            this.classification = classification;
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
+                ClientUtils.playScreenSound(SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                showClassificationTree(classification);
+                return true;
+            }
+            return super.onMouseDown(mouseX, mouseY, button);
+        }
+    }
+
+    private final class CategoryCatalog extends Catalog {
+        private final EntityClassificationManager.Category category;
+        private final PreviewButton previewButton = new PreviewButton();
+
+        private CategoryCatalog(int depth, EntityClassificationManager.Category category) {
+            super(depth, TextUtils.concat(
+                    Arrays.asList(category.getText(), TextUtils.literal("(" + category.getEntities().size() + ")")),
+                    TextUtils.space()));
+            this.category = category;
+            previewButton.setParent(this);
+        }
+
+        @Override
+        protected boolean isSelected() {
+            return selectedCategories.contains(category);
+        }
+
+        @Override
+        protected void onResize(int width, int height) {
+            super.onResize(width, height);
+            ScreenElementBox rowBox = getBox();
+            ScreenElementBox buttonBox = previewButton.getBox();
+            buttonBox.setPosition(rowBox.getRight() - buttonBox.getWidth(),
+                    rowBox.getTop() + (rowBox.getHeight() - buttonBox.getHeight()) / 2);
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
+                ClientUtils.playScreenSound(SoundEvents.WOODEN_BUTTON_CLICK_OFF, 1.0F, 1.5F);
+                toggleCategory(category);
+                return true;
+            }
+            return super.onMouseDown(mouseX, mouseY, button);
+        }
+
+        @Override
+        protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+            List<Component> texts = new ArrayList<>();
+            texts.add(tooltipTitle(isSelected()
+                    ? Lang.WIDGET_SEARCH_FILTER_REMOVE_DESC
+                    : Lang.WIDGET_SEARCH_FILTER_ADD_DESC));
+            if (category.getDescription() != null) {
+                texts.add(tooltipDescription(category.getDescription()));
+            }
+            renderTooltipBelow(ctx, texts);
+            return true;
+        }
+
+        private final class PreviewButton extends Widget {
+            private static final int L_PREVIEW = 210, T_PREVIEW = 240;
+
+            private PreviewButton() {
+                super(1, 1);
+            }
+
+            @Override
+            protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+                if (!isMouseLeft(button)) { return super.onMouseDown(mouseX, mouseY, button); }
+                ClientUtils.playScreenSound(SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                showPreview(category);
+                return true;
+            }
+
+            @Override
+            protected void onRender(ScreenRenderingContext ctx) {
+                ScreenElementBox rowBox = CategoryCatalog.this.getBox();
+                if (!rowBox.isInBox(ctx.getMouseX(), ctx.getMouseY())) { return; }
+                ScreenElementBox box = getBox();
+                ctx.renderTexture(Textures.ICONS, L_PREVIEW, T_PREVIEW, ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
+            }
+
+            @Override
+            protected boolean onRenderHovered(ScreenRenderingContext ctx) {
+                renderTooltipBelowCentered(ctx, TextUtils.translate(Lang.WIDGET_SEARCH_CATEGORY_PREVIEW_DESC));
+                return true;
+            }
+        }
+    }
+
+    private final class CategoryChip extends Chip {
+        private CategoryChip(EntityClassificationManager.Category category, float textSize) {
+            super(TextUtils.concat(category.getText(), TextUtils.literal(" x")), textSize,
+                    () -> removeCategory(category));
+        }
+    }
+
     private static final class InputBoxHitGuard extends ScreenElement {}
 
     private final class SearchButton extends Widget {
@@ -236,10 +453,7 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
-            ctx.renderComponentTooltipCentered(
-                    List.of(TextUtils.translate(Lang.WIDGET_SEARCH_DESC)),
-                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+            renderTooltipBelowCentered(ctx, TextUtils.translate(Lang.WIDGET_SEARCH_DESC));
             return true;
         }
     }
@@ -274,13 +488,10 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
             String langKey = searchField == SimpleEntitySearch.Field.ID
                     ? Lang.WIDGET_SEARCH_FIELD_ID_DESC
                     : Lang.WIDGET_SEARCH_FIELD_NAME_DESC;
-            ctx.renderComponentTooltipCentered(
-                    List.of(TextUtils.translate(langKey)),
-                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+            renderTooltipBelowCentered(ctx, TextUtils.translate(langKey));
             return true;
         }
     }

@@ -203,7 +203,8 @@ public final class EntityActionCardWidget extends EntityCardWidget {
                         .withStyle(ChatFormatting.GRAY));
             }
 
-            ctx.renderComponentTooltipCentered(tooltips, 0.5F, midX, box.getBottom() + 2);
+            // The hovered card renders a one pixel border outside its box.
+            renderTooltipBelowCentered(ctx, 0F, 1F, tooltips);
             return true;
         }
     }

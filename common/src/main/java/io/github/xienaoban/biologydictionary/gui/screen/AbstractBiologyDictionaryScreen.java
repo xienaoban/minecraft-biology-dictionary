@@ -7,6 +7,8 @@ import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPagePlaceholder;
 import io.github.xienaoban.biologydictionary.gui.component.CenteredMessage;
+import io.github.xienaoban.biologydictionary.gui.component.Bookmark;
+import io.github.xienaoban.biologydictionary.gui.component.DescriptionWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
@@ -415,77 +417,6 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         centeredMessage.setText(text, color);
     }
 
-    protected static final class HorizontalElementContainer extends ScreenElement {
-        private static final float ELEMENT_PADDING = 2;
-
-        private final List<ScreenElement> elements = new ArrayList<>();
-
-        public HorizontalElementContainer() {
-            super(false);
-        }
-
-        public HorizontalElementContainer addElement(ScreenElement element) {
-            elements.add(element);
-            element.setParent(this);
-            resizeToFitElements();
-            return this;
-        }
-
-        private void resizeToFitElements() {
-            float width = 0;
-            float height = 0;
-            for (ScreenElement element : elements) {
-                if (width > 0) { width += ELEMENT_PADDING; }
-                width += element.getBox().getWidth();
-                height = Math.max(height, element.getBox().getHeight());
-            }
-            getBox().setSize(width, height);
-        }
-
-        @Override
-        protected void onResize(int width, int height) {
-            ScreenElementBox box = getBox();
-            float elementLeft = box.getLeft();
-            for (ScreenElement element : elements) {
-                ScreenElementBox elementBox = element.getBox();
-                elementBox.setPosition(elementLeft, box.getTop() + (box.getHeight() - elementBox.getHeight()) / 2);
-                elementLeft += elementBox.getWidth() + ELEMENT_PADDING;
-            }
-        }
-    }
-
-    public abstract class Bookmark extends ScreenElement {
-        private static final int L = 1, T = 24;
-        private static final int W = 3, H = 1;
-        private static final int CNT = 5;
-
-        private final Component text;
-
-        private int idx;
-
-        public Bookmark(Component text) {
-            this.text = text;
-            getBox().setSize(W * Widget.WIDGET_WIDTH, H * Widget.WIDGET_HEIGHT);
-        }
-
-        public void setIdx(int idx) {
-            this.idx = idx;
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            super.onRender(ctx);
-            ScreenElementBox box = getBox();
-            float offsetL = (getHoveredElement() == this ? W : 0);
-            float offsetT = (idx % CNT) * H;
-            ctx.renderTexture(Textures.ICONS,
-                    (L + offsetL) * Widget.WIDGET_WIDTH,
-                    (T - offsetT) * Widget.WIDGET_HEIGHT,
-                    ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
-            ctx.renderRightAlignedText(text, Colors.COMMON_LIGHT_TEXT, 0.5F, ctx.getZ(), box.getRight() - 2F, box.getTop() + 2.5F);
-        }
-    }
-
     public final class OpenBdHomeScreenBookmark extends Bookmark {
         public OpenBdHomeScreenBookmark() {
             super(TextUtils.translate(Lang.BOOKMARK_BACK_TO_HOME));
@@ -546,9 +477,8 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
     private final class SearchEntryButton extends ScreenElement {
         private static final int SIZE_X = 20;
         private static final int SIZE_Y = 16;
-        private static final int ICON_X = 190;
-        private static final int ICON_Y = 210;
-        private static final int ICON_HOVER_Y = 230;
+        private static final int ICON_X = 70;
+        private static final int ICON_Y = 180;
 
         public SearchEntryButton() {
             getBox().setSize(SIZE_X, SIZE_Y);
@@ -570,78 +500,14 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         protected void onRender(ScreenRenderingContext ctx) {
             super.onRender(ctx);
             ScreenElementBox box = getBox();
-            int iconY = getHoveredElement() == this ? ICON_HOVER_Y : ICON_Y;
-            ctx.renderTexture(Textures.ICONS, ICON_X, iconY, ICON_X + SIZE_X, iconY + SIZE_Y,
-                    ctx.getZ(), box.getLeft(), box.getTop(), box.getRight(), box.getBottom());
+            ctx.renderTexture(Textures.ICONS, ICON_X + (getHoveredElement() == this ? 20 : 0), ICON_Y,
+                    ctx.getZ(), box.getLeft(), box.getTop(), box.getWidth(), box.getHeight());
         }
 
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-            ScreenElementBox box = getBox();
-            ctx.renderComponentTooltipCentered(
-                    List.of(TextUtils.translate(Lang.BOOKMARK_SEARCH)),
-                    0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+            renderTooltipBelowCentered(ctx, TextUtils.translate(Lang.BOOKMARK_SEARCH));
             return true;
-        }
-    }
-
-    public abstract class Catalog extends Widget {
-        protected final int depth;
-        protected final Component text;
-
-        public Catalog(int depth, Component text) {
-            super(1, Page.COLUMNS);
-            this.depth = depth;
-            this.text = text;
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            super.onRender(ctx);
-            ScreenElementBox box = getBox();
-            int d = depth * 8;
-            ctx.renderTexture(Textures.ICONS, 7 * Widget.WIDGET_WIDTH, 24 * Widget.WIDGET_HEIGHT,
-                    ctx.getZ(),
-                    box.getLeft() + d, box.getTop(),
-                    4 * Widget.WIDGET_WIDTH, Widget.WIDGET_HEIGHT);
-            boolean hovered = getHoveredElement() == this;
-            int textColor, lineColor;
-            if (hovered) {
-                textColor = Colors.BLACK;
-                lineColor = 0x44AF711F;
-            } else {
-                textColor = Colors.COMMON_DARK_LIGHTER_TEXT;
-                lineColor = 0x22AF711F;
-            }
-            if (depth != 0) {
-                ctx.renderHorizontalLine(lineColor, 1F, ctx.getZ(), (box.getTop() + box.getBottom()) / 2,
-                        box.getLeft() + 1, box.getLeft() + d - 1);
-            }
-            ctx.renderText(text, textColor, 0.5F, ctx.getZ(), box.getLeft() + d + 12, box.getTop() + 3 + TXT_TO);
-        }
-    }
-
-    public static final class PlaceHolderWidget extends Widget {
-        public PlaceHolderWidget(int rows, int columns) {
-            super(rows, columns);
-            setHoverable(false);
-            setSelectable(false);
-        }
-    }
-
-    public static final class DescriptionWidget extends Widget {
-        private final Component text;
-
-        public DescriptionWidget(int rows, int columns, Component text) {
-            super(rows, columns);
-            this.text = text;
-        }
-
-        @Override
-        protected void onRender(ScreenRenderingContext ctx) {
-            super.onRender(ctx);
-            ScreenElementBox box = getBox();
-            ctx.renderText(text, Colors.COMMON_DARK_TEXT, 0.5F, ctx.getZ(), box.getLeft() + 2, box.getTop() + 3 + TXT_TO);
         }
     }
 
