@@ -31,10 +31,11 @@ public final class DecorativeBarWidget extends Widget {
         float barTop = box.getTop();
         float barBottom = box.getBottom();
         float z = ctx.getZ();
-        int texY = filled ? 230 : 240;
+        int texX = filled ? 170 : 150;
+        int texY = 220;
         int texYEnd = texY + 10;
-        ctx.renderTexture(Textures.ICONS, 150, texY, 152, texYEnd, z, barLeft, barTop, barLeft + 2, barBottom);
-        ctx.renderTexture(Textures.ICONS, 152, texY, 154, texYEnd, z, barLeft + 2, barTop, barLeft + 4, barBottom);
-        ctx.renderTexture(Textures.ICONS, 188, texY, 190, texYEnd, z, barLeft + 4, barTop, barLeft + 6, barBottom);
+        ctx.renderTexture(Textures.ICONS, texX, texY, texX + 2, texYEnd, z, barLeft, barTop, barLeft + 2, barBottom);
+        ctx.renderTexture(Textures.ICONS, texX + 2, texY, texX + 4, texYEnd, z, barLeft + 2, barTop, barLeft + 4, barBottom);
+        ctx.renderTexture(Textures.ICONS, texX + 18, texY, texX + 20, texYEnd, z, barLeft + 4, barTop, barLeft + 6, barBottom);
     }
 }
