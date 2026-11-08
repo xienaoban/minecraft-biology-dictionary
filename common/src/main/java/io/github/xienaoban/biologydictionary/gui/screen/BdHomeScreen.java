@@ -7,6 +7,12 @@ import io.github.xienaoban.biologydictionary.core.discovery.ClientDiscoveryCache
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.gui.EntityDisplayRotation;
+import io.github.xienaoban.biologydictionary.gui.component.Bookmark;
+import io.github.xienaoban.biologydictionary.gui.component.Catalog;
+import io.github.xienaoban.biologydictionary.gui.component.DescriptionWidget;
+import io.github.xienaoban.biologydictionary.gui.component.HorizontalElementContainer;
+import io.github.xienaoban.biologydictionary.gui.component.Page;
+import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.AddToBlacklistButton;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DecorativeBarWidget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.DiscoveredEntityFilterButton;
@@ -15,10 +21,7 @@ import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntityActi
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntitySelectionCardWidget;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntitySelectionCountDisplay;
 import io.github.xienaoban.biologydictionary.gui.component.entitylist.EntitySelectionModeButton;
-import io.github.xienaoban.biologydictionary.gui.component.Page;
-import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
-import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenElementBox;
 import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRenderingContext;
 import io.github.xienaoban.biologydictionary.platform.util.*;
 import net.minecraft.network.chat.Component;
@@ -48,6 +51,18 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
                 : WorldSession.get().getEntityClassificationManager().getClassifications().values()) {
             addBookmark(new ClassificationBookmark(classification));
         }
+    }
+
+    private void showClassification(EntityClassificationManager.Classification classification) {
+        ArrayList<Widget> catalogs = new ArrayList<>();
+        classification.dfsCategories((category, depth) -> {
+            catalogs.add(new CategoryCatalog(depth, category));
+            return true;
+        });
+        catalogs.add(0, new DescriptionWidget(1, Page.COLUMNS, classification.getDescription()));
+        clearEntityWidgetsInitializer();
+        resetAndAndWidgetsOneByOne(catalogs);
+        setToolBars(null, null, null);
     }
 
     private void recordAndInitEntityWidgets(Runnable initializer) {
@@ -142,26 +157,10 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         super.render(ctx);
     }
 
-    private final class AllEntitiesBookmark extends Bookmark {
-        public AllEntitiesBookmark() {
-            super(TextUtils.translate(Lang.BOOKMARK_ALL));
-        }
-
-        @Override
-        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
-            if (isMouseLeft(button)) {
-                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                recordAndInitEntityWidgets(BdHomeScreen.this::initEntityWidgets);
-                return true;
-            }
-            return super.onMouseDown(mouseX, mouseY, button);
-        }
-    }
-
     private final class ClassificationBookmark extends Bookmark {
         private final EntityClassificationManager.Classification classification;
 
-        public ClassificationBookmark(EntityClassificationManager.Classification classification) {
+        private ClassificationBookmark(EntityClassificationManager.Classification classification) {
             super(classification.getName());
             this.classification = classification;
         }
@@ -170,15 +169,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                ArrayList<Widget> catalogs = new ArrayList<>();
-                classification.dfsCategories((category, depth) -> {
-                    catalogs.add(new CategoryCatalog(depth, category));
-                    return true;
-                });
-                catalogs.add(0, new DescriptionWidget(1, Page.COLUMNS, classification.getDescription()));
-                clearEntityWidgetsInitializer();
-                resetAndAndWidgetsOneByOne(catalogs);
-                setToolBars(null, null, null);
+                showClassification(classification);
                 return true;
             }
             return super.onMouseDown(mouseX, mouseY, button);
@@ -188,7 +179,7 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
     private final class CategoryCatalog extends Catalog {
         private final EntityClassificationManager.Category category;
 
-        public CategoryCatalog(int depth, EntityClassificationManager.Category category) {
+        private CategoryCatalog(int depth, EntityClassificationManager.Category category) {
             super(depth, TextUtils.concat(
                     Arrays.asList(category.getText(), TextUtils.literal("(" + category.getEntities().size() + ")")),
                     TextUtils.space()));
@@ -208,13 +199,26 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         @Override
         protected boolean onRenderHovered(ScreenRenderingContext ctx) {
             if (category.getDescription() == null) { return true; }
-            int d = depth * 8;
-            ScreenElementBox box = getBox();
             List<Component> texts = new ArrayList<>();
             texts.add(category.getDescription());
-            ctx.renderComponentTooltip(texts, 0.5F, box.getLeft() + d + Widget.WIDGET_WIDTH, box.getBottom() + 1);
+            renderTooltipBelow(ctx, texts);
             return true;
         }
     }
 
+    private final class AllEntitiesBookmark extends Bookmark {
+        public AllEntitiesBookmark() {
+            super(TextUtils.translate(Lang.BOOKMARK_ALL));
+        }
+
+        @Override
+        protected boolean onMouseDown(float mouseX, float mouseY, int button) {
+            if (isMouseLeft(button)) {
+                ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
+                recordAndInitEntityWidgets(BdHomeScreen.this::initEntityWidgets);
+                return true;
+            }
+            return super.onMouseDown(mouseX, mouseY, button);
+        }
+    }
 }
