@@ -7,7 +7,6 @@ import io.github.xienaoban.biologydictionary.platform.gui.screen.util.ScreenRend
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
-import java.util.Arrays;
 import java.util.List;
 
 @ClientOnly
@@ -33,11 +32,11 @@ public abstract class EntityPropertyWidget<E extends Entity> extends Widget {
     public final EntityProperties<E> p() { return properties; }
 
     protected void renderTooltip(ScreenRenderingContext ctx, Component... texts) {
-        ctx.renderComponentTooltip(Arrays.asList(texts), 0.5F, getBox().getLeft(), getBox().getBottom() + 2);
+        renderTooltipBelow(ctx, texts);
     }
 
     protected void renderTooltip(ScreenRenderingContext ctx, List<Component> texts) {
-        ctx.renderComponentTooltip(texts, 0.5F, getBox().getLeft(), getBox().getBottom() + 2);
+        renderTooltipBelow(ctx, texts);
     }
 
     public record RC(int rows, int columns) {}
