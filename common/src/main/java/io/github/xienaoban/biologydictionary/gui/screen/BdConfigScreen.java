@@ -6,7 +6,9 @@ import io.github.xienaoban.biologydictionary.config.ClothConfigScreenProvider;
 import io.github.xienaoban.biologydictionary.config.Configs;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPagePercentWidget;
+import io.github.xienaoban.biologydictionary.gui.component.DescriptionWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Page;
+import io.github.xienaoban.biologydictionary.gui.component.PlaceHolderWidget;
 import io.github.xienaoban.biologydictionary.gui.component.Widget;
 import io.github.xienaoban.biologydictionary.gui.util.Colors;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
@@ -221,7 +223,7 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
                     configText.withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
                     configTooltipText.withStyle(ChatFormatting.GRAY)
             );
-            ctx.renderComponentTooltip(list, 0.5F, getBox().getLeft(), getBox().getBottom() + 2);
+            renderTooltipBelow(ctx, list);
             return true;
         }
 

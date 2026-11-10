@@ -29,6 +29,7 @@ import java.util.Set;
 @ClientOnly
 public final class AddToBlacklistButton extends Widget {
     private final Set<EntityType<?>> selection;
+
     private final Runnable onBlacklistApplied;
 
     public AddToBlacklistButton(Set<EntityType<?>> selection, Runnable onBlacklistApplied) {
@@ -98,10 +99,7 @@ public final class AddToBlacklistButton extends Widget {
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        ScreenElementBox box = getBox();
-        ctx.renderComponentTooltipCentered(
-                List.of(TextUtils.translate(Lang.WIDGET_ENTITY_SELECTION_BLACKLIST_DESC)),
-                0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+        renderTooltipBelowCentered(ctx, TextUtils.translate(Lang.WIDGET_ENTITY_SELECTION_BLACKLIST_DESC));
         return true;
     }
 }
