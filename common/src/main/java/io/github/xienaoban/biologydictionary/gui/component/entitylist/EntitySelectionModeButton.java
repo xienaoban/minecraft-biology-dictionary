@@ -10,7 +10,6 @@ import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.TextUtils;
 import net.minecraft.sounds.SoundEvents;
 
-import java.util.List;
 
 /**
  * Enters or leaves the selection mode of an entity list.
@@ -22,6 +21,7 @@ public final class EntitySelectionModeButton extends Widget {
     private static final int ICON_EXIT_COLUMN = 24;
 
     private final boolean exit;
+
     private final Runnable action;
 
     public EntitySelectionModeButton(boolean exit, Runnable action) {
@@ -52,12 +52,9 @@ public final class EntitySelectionModeButton extends Widget {
 
     @Override
     protected boolean onRenderHovered(ScreenRenderingContext ctx) {
-        ScreenElementBox box = getBox();
-        ctx.renderComponentTooltipCentered(
-                List.of(TextUtils.translate(exit
-                        ? Lang.WIDGET_ENTITY_SELECTION_EXIT_DESC
-                        : Lang.WIDGET_ENTITY_SELECTION_ENTER_DESC)),
-                0.5F, (box.getLeft() + box.getRight()) / 2, box.getBottom() + 1);
+        renderTooltipBelowCentered(ctx, TextUtils.translate(exit
+                ? Lang.WIDGET_ENTITY_SELECTION_EXIT_DESC
+                : Lang.WIDGET_ENTITY_SELECTION_ENTER_DESC));
         return true;
     }
 }

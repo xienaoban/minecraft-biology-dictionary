@@ -10,6 +10,8 @@ import net.minecraft.network.chat.MutableComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A rectangular element on the screen. Sibling elements may overlap; among
@@ -269,5 +271,58 @@ public abstract class ScreenElement implements ScreenConsts {
 
     public static MutableComponent tooltipBody(MutableComponent text) {
         return text.withStyle(ChatFormatting.WHITE);
+    }
+
+    /**
+     * Render a tooltip just below this element, left aligned with its left edge.
+     */
+    protected void renderTooltipBelow(ScreenRenderingContext ctx, List<Component> texts) {
+        renderTooltipBelow(ctx, 0F, 0F, texts);
+    }
+
+    protected void renderTooltipBelow(ScreenRenderingContext ctx, Component... texts) {
+        renderTooltipBelow(ctx, 0F, 0F, Arrays.asList(texts));
+    }
+
+    /**
+     * @param offsetX added to the left edge of this element
+     * @param offsetY added below the bottom edge of this element
+     */
+    protected void renderTooltipBelow(ScreenRenderingContext ctx, float offsetX, float offsetY,
+                                      List<Component> texts) {
+        ScreenElementBox box = getBox();
+        ctx.renderComponentTooltip(texts, 0.5F, box.getLeft() + offsetX, box.getBottom() + 1 + offsetY);
+    }
+
+    protected void renderTooltipBelow(ScreenRenderingContext ctx, float offsetX, float offsetY,
+                                      Component... texts) {
+        renderTooltipBelow(ctx, offsetX, offsetY, Arrays.asList(texts));
+    }
+
+    /**
+     * Render a tooltip just below this element, centered on its horizontal middle.
+     */
+    protected void renderTooltipBelowCentered(ScreenRenderingContext ctx, List<Component> texts) {
+        renderTooltipBelowCentered(ctx, 0F, 0F, texts);
+    }
+
+    protected void renderTooltipBelowCentered(ScreenRenderingContext ctx, Component... texts) {
+        renderTooltipBelowCentered(ctx, 0F, 0F, Arrays.asList(texts));
+    }
+
+    /**
+     * @param offsetX added to the horizontal middle of this element
+     * @param offsetY added below the bottom edge of this element
+     */
+    protected void renderTooltipBelowCentered(ScreenRenderingContext ctx, float offsetX, float offsetY,
+                                              List<Component> texts) {
+        ScreenElementBox box = getBox();
+        ctx.renderComponentTooltipCentered(texts, 0.5F,
+                (box.getLeft() + box.getRight()) / 2F + offsetX, box.getBottom() + 1 + offsetY);
+    }
+
+    protected void renderTooltipBelowCentered(ScreenRenderingContext ctx, float offsetX, float offsetY,
+                                              Component... texts) {
+        renderTooltipBelowCentered(ctx, offsetX, offsetY, Arrays.asList(texts));
     }
 }
