@@ -181,6 +181,7 @@
   "property_widget.biologydictionary.spawn.desc"                  : "可自然生成该生物的群系与结构\n（获取自结构化信息，硬编码的无法识别，可能有遗漏）",
   "property_widget.biologydictionary.spawn.biomes"                : "%d 个群系：",
   "property_widget.biologydictionary.spawn.structures"            : "%d 个结构：",
+  "property_widget.biologydictionary.spawn.surface_biomes"        : "%d 个群系（排除史莱姆区块）：",
   "property_widget.biologydictionary.movement_speed"              : "移动速度",
   "property_widget.biologydictionary.movement_speed.desc"         : "平时的走路速度，非跑步速度",
   "property_widget.biologydictionary.jump_strength"               : "跳跃力度",

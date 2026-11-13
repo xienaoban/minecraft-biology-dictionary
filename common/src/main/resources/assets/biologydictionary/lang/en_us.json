@@ -181,6 +181,7 @@
   "property_widget.biologydictionary.spawn.desc"                  : "Biomes and structures where this mob can naturally spawn\n(Some hardcode info may not be recognized)",
   "property_widget.biologydictionary.spawn.biomes"                : "%d biomes:",
   "property_widget.biologydictionary.spawn.structures"            : "%d structures:",
+  "property_widget.biologydictionary.spawn.surface_biomes"        : "%d biomes (excluding slime chunks):",
   "property_widget.biologydictionary.movement_speed"              : "Movement Speed",
   "property_widget.biologydictionary.movement_speed.desc"         : "Usual walking speed, not running speed",
   "property_widget.biologydictionary.jump_strength"               : "Jump Strength",

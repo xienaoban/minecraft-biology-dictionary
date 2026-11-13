@@ -31,6 +31,7 @@ public final class EntityPropertyWidgets {
         registrar.register(MobTemptWidget.class, MobTemptWidget.FACTORY);
         registrar.register(EntityLootTableWidget.class, EntityLootTableWidget.FACTORY);
         registrar.register(MobSpawnWidget.class, MobSpawnWidget.FACTORY);
+        registrar.register(SlimeSurfaceSpawnWidget.class, SlimeSurfaceSpawnWidget.FACTORY);
         registrar.register(LivingEntityMovementSpeedWidget.class, LivingEntityMovementSpeedWidget.FACTORY);
         registrar.register(LivingEntityJumpStrengthWidget.class, LivingEntityJumpStrengthWidget.FACTORY);
         registrar.register(EntityLeashableWidget.class, EntityLeashableWidget.FACTORY);
