@@ -139,6 +139,7 @@ public final class Lang {
     PROPERTY_WIDGET_SPAWN_DESC                  = "property_widget.biologydictionary.spawn.desc",
     PROPERTY_WIDGET_SPAWN_BIOMES                = "property_widget.biologydictionary.spawn.biomes",
     PROPERTY_WIDGET_SPAWN_STRUCTURES            = "property_widget.biologydictionary.spawn.structures",
+    PROPERTY_WIDGET_SPAWN_SURFACE_BIOMES        = "property_widget.biologydictionary.spawn.surface_biomes",
     PROPERTY_WIDGET_MOVEMENT_SPEED              = "property_widget.biologydictionary.movement_speed",
     PROPERTY_WIDGET_MOVEMENT_SPEED_DESC         = "property_widget.biologydictionary.movement_speed.desc",
     PROPERTY_WIDGET_JUMP_STRENGTH               = "property_widget.biologydictionary.jump_strength",
