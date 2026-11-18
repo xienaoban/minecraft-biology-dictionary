@@ -43,6 +43,11 @@ public class BdHomeScreen extends AbstractBiologyDictionaryScreen {
         recordAndInitEntityWidgets(this::initEntityWidgets);
     }
 
+    @Override
+    public int navigationLevel() {
+        return 0;
+    }
+
     private void initBookmarks() {
         addBookmarkFromLast(new OpenBdAboutScreenBookmark());
         addBookmarkFromLast(new OpenBdConfigScreenBookmark());
