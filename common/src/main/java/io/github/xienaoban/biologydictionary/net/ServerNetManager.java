@@ -17,10 +17,6 @@ import java.util.UUID;
 
 public final class ServerNetManager {
 
-    public static void init() {
-        PacketPayloads.registerBuiltIn(ServerNetApi::register);
-    }
-
     public static void sendCenteredMessage(ServerPlayer player, Component message) {
         if (!ServerNetApi.canSend(player, SendCenteredMessagePacket.class)) {
             PlayerUtils.showClientCenteredMessage(player, TextUtils.withFallbacks(message, player));
