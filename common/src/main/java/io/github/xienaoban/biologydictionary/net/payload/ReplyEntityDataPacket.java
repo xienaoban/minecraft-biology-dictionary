@@ -1,5 +1,7 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
+import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
+
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
@@ -9,7 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 
-import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 
 public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt) implements Packet {
     public static final Packet.Factory<ReplyEntityDataPacket> FACTORY = ReplyEntityDataPacket::new;
@@ -32,8 +33,8 @@ public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag v
         @ClientOnly final class CO { static void receive(ReplyEntityDataPacket packet, ClientNetApi.Context ctx) {
             if (!packet.notNull()) { return; }
 
-            Entity entity = BDC.getHitEntity();
-            EntityProperties<?> properties = BDC.getHitEntityProperties();
+            Entity entity = BiologyDictionaryClient.getHitEntity();
+            EntityProperties<?> properties = BiologyDictionaryClient.getHitEntityProperties();
             if (entity == null || EntityUtils.getId(entity) != packet.entityId() || properties == null) { return; }
             properties.update(packet.vanillaNbt(), packet.extraNbt());
         }}

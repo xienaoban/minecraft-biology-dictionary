@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen.misc;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
+import io.github.xienaoban.biologydictionary.client.KeyMappings;
 import io.github.xienaoban.biologydictionary.gui.util.Textures;
 import io.github.xienaoban.biologydictionary.net.ClientNetManager;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
@@ -169,11 +169,11 @@ public class BeehiveScreen extends ElementScreen {
 
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
-        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyEvent)
+        if (KeyMappings.OPEN_HANDBOOK.matches(keyEvent)
                 || client.options.keyInventory.matches(keyEvent)) {
             onClose();
             return true;
-        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyEvent)) {
+        } else if (KeyMappings.DEBUG.matches(keyEvent)) {
             BiologyDictionaryClient.toggleDebugMode();
             return true;
         }

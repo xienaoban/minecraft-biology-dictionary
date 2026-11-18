@@ -1,8 +1,8 @@
 {
     "schemaVersion": 1,
-    "id": "biologydictionary",
+    "id": "${mod_id}",
     "version": "${version}",
-    "name": "Biology Dictionary",
+    "name": "${mod_name}",
     "description": "To display or modify the properties and states of mobs.",
     "authors": [
         "XieNaoban"
@@ -13,33 +13,33 @@
         "repo": "https://github.com/xienaoban/minecraft-biology-dictionary",
         "issues": "https://github.com/xienaoban/minecraft-biology-dictionary/issues"
     },
-    "license": "LGPL-3.0",
+    "license": "${mod_license}",
     "icon": "assets/biologydictionary/icon.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-            "io.github.xienaoban.biologydictionary.fabric.BiologyDictionaryFabric"
+            "io.github.xienaoban.biologydictionary.FabricBiologyDictionary"
         ],
         "client": [
-            "io.github.xienaoban.biologydictionary.fabric.BiologyDictionaryFabricClient"
+            "io.github.xienaoban.biologydictionary.FabricBiologyDictionaryClient"
         ],
         "modmenu": [
-            "io.github.xienaoban.biologydictionary.config.fabric.ModMenuConfigScreenProvider"
+            "io.github.xienaoban.biologydictionary.config.ModMenuConfigScreenProvider"
         ],
         "jei_mod_plugin": [
             "io.github.xienaoban.biologydictionary.compat.jei.JeiCompat"
         ]
     },
-    "accessWidener" : "biologydictionary.accesswidener",
+    "accessWidener": "biologydictionary.accesswidener",
     "mixins": [
         "biologydictionary.mixins.json"
     ],
     "depends": {
-        "minecraft": "${minecraft_version}",
-        "fabricloader": ">=${fabric_loader_version}",
-        "fabric-api": "*",
-        "cloth-config": ">=${clothconfig_version}",
-        "java": ">=21"
+        "fabricloader": ">=${loader_version}",
+        "minecraft": "~${minecraft_version}",
+        "java": ">=21",
+        "fabric-api": ">=${fabricapi_version}",
+        "cloth-config": ">=${clothconfig_version}"
     },
     "suggests": {
         "modmenu": ">=${modmenu_version}"
