@@ -34,6 +34,11 @@ public class BdConfigScreen extends AbstractBiologyDictionaryScreen {
         initWidgets();
     }
 
+    @Override
+    public int navigationLevel() {
+        return 1;
+    }
+
     private void initBookmarks() {
         addBookmark(new OpenBdHomeScreenBookmark());
     }

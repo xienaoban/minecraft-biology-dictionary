@@ -43,6 +43,11 @@ public class PlayerSelectorScreen extends AbstractBiologyDictionaryScreen {
         addAllWidgetsOneByOne(list);
     }
 
+    @Override
+    public int navigationLevel() {
+        return 3;
+    }
+
     public final class ReturnLastScreenBookmark extends Bookmark {
         public ReturnLastScreenBookmark() {
             super(TextUtils.translate(Lang.BOOKMARK_BACK));
