@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import io.github.xienaoban.biologydictionary.client.BiologyDictionaryEvent;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
-import io.github.xienaoban.biologydictionary.platform.client.ClientEventRegistry;
+import io.github.xienaoban.biologydictionary.client.ClientEvents;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
 import net.minecraft.client.Minecraft;
@@ -35,7 +35,7 @@ public class MinecraftMixin {
 
     /**
      * Timing note for porting to other MC versions:
-     * We fire {@link ClientEventRegistry#fireWorldDisconnecting} here, at the TAIL of
+     * We fire {@link ClientEvents#WORLD_DISCONNECTING} here, at the TAIL of
      * `net.minecraft.client.Minecraft.updateLevelInEngines(
      * net.minecraft.client.multiplayer.ClientLevel)` with a null level, instead
      * of binding it to the platform DISCONNECT events (Fabric
@@ -56,6 +56,8 @@ public class MinecraftMixin {
     @Inject(method = "updateLevelInEngines(Lnet/minecraft/client/multiplayer/ClientLevel;)V", at = @At("TAIL"))
     private void biologydictionary$onWorldLeave(ClientLevel level, CallbackInfo ci) {
         if (level != null) { return; }
-        ClientEventRegistry.fireWorldDisconnecting((Minecraft) (Object) this);
+        for (ClientEvents.ClientListener listener : ClientEvents.WORLD_DISCONNECTING) {
+            listener.run((Minecraft) (Object) this);
+        }
     }
 }
