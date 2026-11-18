@@ -2,17 +2,12 @@ package io.github.xienaoban.biologydictionary;
 
 import io.github.xienaoban.biologydictionary.compat.CompatibilityManager;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
-import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.EntityOrder;
 import io.github.xienaoban.biologydictionary.core.discovery.DiscoverySources;
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
-import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
-import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.skill.BiologySkills;
 import io.github.xienaoban.biologydictionary.net.ServerNetManager;
-import io.github.xienaoban.biologydictionary.platform.server.ServerEventRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
-import io.github.xienaoban.biologydictionary.server.CommandManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -29,34 +24,20 @@ public final class BiologyDictionary {
 
     public static final Logger LOGGER = LogManager.getLogger(BiologyDictionary.class);
 
-    public static final BiologyDictionary BD = new BiologyDictionary();
-
-    private BiologyDictionary() {
+    static {
         CompatibilityManager.init();
         EntityUtils.init();
         EntityOrder.init();
-        ServerNetManager.init();
-        BiologyDictionaryItem.init();
         EntityProperties.init();
         BiologySkills.init();
         DiscoverySources.init();
         ConfigsManager.load();
-        CommandManager.init();
-
-        ServerEventRegistry.registerStarted(server -> {
-            WorldSession.init(server.getAllLevels().iterator().next());
-            ServerWorldSession.init(server);
-        });
-        ServerEventRegistry.registerStopping(server -> {
-            ServerWorldSession.deinit();
-            WorldSession.deinit();
-        });
-        ServerEventRegistry.registerPlayerLoggedIn(BiologyDictionaryItem::giveBookOnFirstJoin);
-
         LOGGER.info("BiologyDictionary initialized.");
     }
 
-    public void forceInitialize() { /* do nothing but to trigger cinit */ }
+    private BiologyDictionary() {}
+
+    public static void forceInitialize() { /* do nothing but to trigger cinit */ }
 
     public static void sendCenteredMessage(ServerPlayer player, Component text) {
         ServerNetManager.sendCenteredMessage(player, text);

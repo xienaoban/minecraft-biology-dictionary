@@ -8,24 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class PacketUtil {
+    private static final Map<Class<? extends Packet>, ResourceLocation> ID_CACHE = new HashMap<>();
 
     private PacketUtil() {}
 
-    private static final Map<Class<? extends Packet>, ResourceLocation> ID_CACHE = new HashMap<>();
-
     // Do not register after initialization. No lock here.
     public static <T extends Packet> void registerId(Class<T> clazz) {
-        if (ID_CACHE.containsKey(clazz)) {
-            throw new IllegalStateException("Packet class " + clazz.getName() + " has already been registered");
-        }
-        ID_CACHE.put(clazz, generateId(clazz));
+        ID_CACHE.computeIfAbsent(clazz, PacketUtil::generateId);
     }
 
-    @SuppressWarnings("unchecked")
     public static <T extends Packet> ResourceLocation getId(Class<T> clazz) {
         ResourceLocation id = ID_CACHE.get(clazz);
         if (id == null) {
-            throw new IllegalArgumentException("Packet type not registered: " + clazz.getName());
+            throw new IllegalArgumentException("Packet id not registered: " + clazz.getName());
         }
         return id;
     }
@@ -44,10 +39,12 @@ public final class PacketUtil {
         final String classEnd = "Packet";
         final String className = clazz.getSimpleName();
         if (!className.endsWith(classEnd)) {
-            throw new RuntimeException("Class doesn't ends with \"Packet\": " + clazz.getName());
+            throw new RuntimeException("Class doesn't end with \"Packet\": " + clazz.getName());
         }
         String path = className.substring(0, className.length() - classEnd.length())
-                .replaceAll("([A-Z]+)", "_$1").substring(1).toLowerCase();
+                .replaceAll("([A-Z]+)", "_$1")
+                .substring(1)
+                .toLowerCase();
         return IdentifierUtils.bd(path);
     }
 }

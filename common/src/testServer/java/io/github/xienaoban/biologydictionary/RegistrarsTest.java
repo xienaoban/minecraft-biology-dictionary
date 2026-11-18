@@ -4,7 +4,6 @@ import io.github.xienaoban.biologydictionary.api.plugin.ExtraEntityPropertiesPlu
 import io.github.xienaoban.biologydictionary.core.property.EntityProperty;
 import io.github.xienaoban.biologydictionary.core.property.ExtraEntityProperties;
 import io.github.xienaoban.biologydictionary.net.PacketPayloads;
-import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import io.github.xienaoban.biologydictionary.platform.util.Misc;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.Entity;
@@ -68,13 +67,10 @@ public class RegistrarsTest {
             var uniqueness = new UniquenessValidator();
             var sameSource = new SameSourceValidator("FACTORY");
 
-            PacketPayloads.registerBuiltIn(new PacketPayloads.Registrar() {
-                @Override
-                public <T extends Packet> void register(Class<T> packetClass, Packet.Factory<T> factory) {
-                    uniqueness.validate(packetClass);
-                    sameSource.validate(packetClass, factory);
-                }
-            });
+            for (PacketPayloads.Entry<?> entry : PacketPayloads.ENTRIES) {
+                uniqueness.validate(entry.packetClass());
+                sameSource.validate(entry.packetClass(), entry.factory());
+            }
 
             LOGGER.info("PacketPayloads validation passed: " + uniqueness.getCount() + " packets checked");
             helper.succeed();

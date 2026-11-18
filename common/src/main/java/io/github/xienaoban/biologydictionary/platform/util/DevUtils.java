@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import io.github.xienaoban.biologydictionary.Lang;
+import io.github.xienaoban.biologydictionary.BiologyDictionary;
+import io.github.xienaoban.biologydictionary.platform.Platform;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
@@ -11,6 +11,8 @@ import java.util.function.Function;
 public final class DevUtils {
     public static final String MINECRAFT_PACKAGE = "net.minecraft";
 
+    private static final PlatformBridge PB = Platform.load(PlatformBridge.class);
+
     private static String modVersion = null;
 
     /**
@@ -19,34 +21,29 @@ public final class DevUtils {
      * <p>This method checks whether the specified mod exists in the current runtime environment.
      * It does not require the mod to be fully initialized, only that the mod is recognized and will be loaded.</p>
      */
-    @ExpectPlatform
     public static boolean isModLoaded(String modId) {
-        throw new AssertionError();
+        return PB.isModLoaded(modId);
     }
 
     public static String getModVersion() {
-        if (modVersion != null) return modVersion;
-        return modVersion = getModVersion(Lang.BIOLOGY_DICTIONARY);
+        if (modVersion != null) { return modVersion; }
+        return modVersion = getModVersion(BiologyDictionary.MOD_ID);
     }
 
-    @ExpectPlatform
     public static String getModVersion(String modId) {
-        throw new AssertionError();
+        return PB.getModVersion(modId);
     }
 
-    @ExpectPlatform
     public static String getModName(String modId) {
-        throw new AssertionError();
+        return PB.getModName(modId);
     }
 
-    @ExpectPlatform
     public static boolean isClient() {
-        throw new AssertionError();
+        return PB.isClient();
     }
 
-    @ExpectPlatform
     public static Path getConfigDir() {
-        throw new AssertionError();
+        return PB.getConfigDir();
     }
 
     /**
@@ -96,5 +93,17 @@ public final class DevUtils {
             }
             return isVanilla1 ? -1 : 1;
         };
+    }
+
+    interface PlatformBridge {
+        boolean isModLoaded(String modId);
+
+        String getModVersion(String modId);
+
+        String getModName(String modId);
+
+        boolean isClient();
+
+        Path getConfigDir();
     }
 }
