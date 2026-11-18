@@ -32,7 +32,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
 import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
-import static io.github.xienaoban.biologydictionary.BiologyDictionaryClient.BDC;
 
 @ClientOnly
 public final class BiologyDictionaryEvent {
@@ -90,7 +89,7 @@ public final class BiologyDictionaryEvent {
             target = ((EntityHitResult) hit).getEntity();
         } else if (hit.getType() == HitResult.Type.BLOCK) {
             BlockPos pos = ((BlockHitResult) hit).getBlockPos();
-            BDC.setHitBlock(pos);
+            BiologyDictionaryClient.setHitBlock(pos);
             BlockState blockState = EntityUtils.getLevel(player).getBlockState(pos);
             if (blockState.getBlock() instanceof BeehiveBlock) {
                 ClientNetManager.requestBeehiveInfo(pos);
@@ -111,8 +110,8 @@ public final class BiologyDictionaryEvent {
             ClientUtils.setScreen(client, new BdHomeScreen());
         } else {
             EntityProperties<Entity> properties = new EntityProperties<>(target);
-            BDC.setHitEntity(target);
-            BDC.setHitEntityProperties(properties);
+            BiologyDictionaryClient.setHitEntity(target);
+            BiologyDictionaryClient.setHitEntityProperties(properties);
             ClientNetManager.requestEntityData(target, true);
             ClientWorldSession.get().getDiscoveryCacheManager().onDiscoveryEvent(
                     DiscoverySources.ENTITY_DETAIL_SCREEN, player, target);
@@ -122,9 +121,9 @@ public final class BiologyDictionaryEvent {
     }
 
     private static void resetHit() {
-        BDC.setHitEntity(null);
-        BDC.setHitBlock(null);
-        BDC.setHitEntityProperties(null);
+        BiologyDictionaryClient.setHitEntity(null);
+        BiologyDictionaryClient.setHitBlock(null);
+        BiologyDictionaryClient.setHitEntityProperties(null);
     }
 
     private static boolean hasBook(LocalPlayer player) {
