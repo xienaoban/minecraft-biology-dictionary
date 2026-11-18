@@ -1,8 +1,8 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 
 public final class ItemUtils {
     private ItemUtils() {}
@@ -15,8 +15,7 @@ public final class ItemUtils {
      *
      * @return the spawn egg item, or null if the entity type has none
      */
-    @ExpectPlatform
     public static Item getSpawnEggItem(EntityType<?> entityType) {
-        throw new AssertionError();
+        return SpawnEggItem.byId(entityType);
     }
 }

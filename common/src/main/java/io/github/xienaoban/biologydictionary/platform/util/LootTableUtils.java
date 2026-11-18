@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import io.github.xienaoban.biologydictionary.mixin.loot.*;
+import io.github.xienaoban.biologydictionary.platform.Platform;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -31,6 +31,8 @@ import java.util.List;
 
 
 public final class LootTableUtils {
+    private static final PlatformBridge PB = Platform.load(PlatformBridge.class);
+
     private static final int MAX_RECURSION_DEPTH = 3;
 
     public static boolean hasLootTable(LivingEntity entity) {
@@ -41,9 +43,8 @@ public final class LootTableUtils {
         return entity.getLootTable();
     }
 
-    @ExpectPlatform
     public static LootPool[] getPools(LootTable lootTable) {
-        throw new AssertionError();
+        return PB.getPools(lootTable);
     }
 
     public static LootPoolEntryContainer[] getEntries(LootPool pool) {
@@ -395,5 +396,9 @@ public final class LootTableUtils {
         public Component getDisplayName() {
             return item.getDescription();
         }
+    }
+
+    interface PlatformBridge {
+        LootPool[] getPools(LootTable lootTable);
     }
 }

@@ -1,7 +1,7 @@
 package io.github.xienaoban.biologydictionary.platform.util;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
+import io.github.xienaoban.biologydictionary.platform.Platform;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -12,6 +12,8 @@ import java.util.UUID;
  * Server-side helpers abstracting APIs that change between MC versions.
  */
 public final class ServerUtils {
+    private static final PlatformBridge PB = Platform.load(PlatformBridge.class);
+
     private ServerUtils() {}
 
     /**
@@ -50,8 +52,11 @@ public final class ServerUtils {
     /**
      * Resolve the language used by the player's client, or the fallback language when unavailable.
      */
-    @ExpectPlatform
     public static String getLanguage(ServerPlayer player) {
-        throw new AssertionError();
+        return PB.getLanguage(player);
+    }
+
+    interface PlatformBridge {
+        String getLanguage(ServerPlayer player);
     }
 }

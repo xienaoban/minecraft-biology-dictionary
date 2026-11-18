@@ -1,6 +1,5 @@
 package io.github.xienaoban.biologydictionary.platform;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import io.github.xienaoban.biologydictionary.api.plugin.BiologyDictionaryClientPlugin;
 import io.github.xienaoban.biologydictionary.api.plugin.BiologyDictionaryPlugin;
 
@@ -17,10 +16,7 @@ import java.util.List;
  * a plugin interface and are discovered.
  */
 public final class PluginLookup {
-    @ExpectPlatform
-    static Bridge getBridge() {
-        throw new AssertionError();
-    }
+    private static final Bridge BRIDGE = Platform.load(Bridge.class);
 
     // Lazily loaded: the Bridge instance exists on both sides, but each cache is populated
     // only when first requested on the side that actually calls the method.
@@ -36,7 +32,7 @@ public final class PluginLookup {
     @ClientAndServer
     public static <P> List<P> find(Class<P> pluginType) {
         if (commonPlugins == null) {
-            commonPlugins = validate(getBridge().discoverCommon(),
+            commonPlugins = validate(BRIDGE.discoverCommon(),
                     BiologyDictionaryPlugin.class,
                     BiologyDictionaryClientPlugin.class);
         }
@@ -50,7 +46,7 @@ public final class PluginLookup {
     @ClientOnly
     public static <P> List<P> findClient(Class<P> pluginType) {
         if (clientPlugins == null) {
-            clientPlugins = validate(getBridge().discoverClient(), BiologyDictionaryClientPlugin.class,
+            clientPlugins = validate(BRIDGE.discoverClient(), BiologyDictionaryClientPlugin.class,
                     BiologyDictionaryPlugin.class);
         }
         return filter(clientPlugins, pluginType);

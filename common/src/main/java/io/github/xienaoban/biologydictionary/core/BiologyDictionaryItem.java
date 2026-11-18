@@ -4,7 +4,6 @@ import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.Lang;
 import io.github.xienaoban.biologydictionary.config.ConfigsManager;
 import io.github.xienaoban.biologydictionary.mixin.CreativeModeTabsIMixin;
-import io.github.xienaoban.biologydictionary.platform.server.ItemRegistry;
 import io.github.xienaoban.biologydictionary.platform.util.DevUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
 import io.github.xienaoban.biologydictionary.platform.util.NbtUtils;
@@ -16,15 +15,19 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.npc.*;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.WrittenBookItem;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.function.Supplier;
 
 /**
  * If the mod is installed correctly, a biology dictionary screen will be opened when the player right-clicks the book.
@@ -39,9 +42,8 @@ public final class BiologyDictionaryItem {
     // Any writable book with this nbt key will be recognized as a biology dictionary.
     public static final String ID = BiologyDictionary.MOD_ID;
 
-    public static void init() {
-        ItemRegistry.register(CreativeModeTabsIMixin.biologydictionary$getToolsAndUtilities(), createBook());
-    }
+    public static final CreativeTabEntry BIOLOGY_DICTIONARY_BOOK_CREATIVE_TAB_ENTRY = new CreativeTabEntry(
+            CreativeModeTabsIMixin.biologydictionary$getToolsAndUtilities(), BiologyDictionaryItem::createBook);
 
     /**
      * The probability of the trade offer decreases as the in-game time progresses.
@@ -197,5 +199,8 @@ public final class BiologyDictionaryItem {
      */
     private static String trans(String translateKey) {
         return TextUtils.translate(translateKey).getString();
+    }
+
+    public record CreativeTabEntry(ResourceKey<CreativeModeTab> tabKey, Supplier<ItemStack> stack) {
     }
 }

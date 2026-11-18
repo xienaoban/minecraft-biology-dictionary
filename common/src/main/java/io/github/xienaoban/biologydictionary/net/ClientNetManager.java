@@ -17,10 +17,6 @@ import java.util.UUID;
 @ClientOnly
 public final class ClientNetManager {
 
-    public static void init() {
-        PacketPayloads.registerBuiltIn(ClientNetApi::register);
-    }
-
     public static void requestServerConfigs() {
         ClientNetApi.send(new RequestServerConfigsPacket());
     }

@@ -2,7 +2,7 @@ package io.github.xienaoban.biologydictionary.gui.screen;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
 import io.github.xienaoban.biologydictionary.Lang;
-import io.github.xienaoban.biologydictionary.client.KeyMappingManager;
+import io.github.xienaoban.biologydictionary.client.KeyMappings;
 import io.github.xienaoban.biologydictionary.core.session.ClientWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
 import io.github.xienaoban.biologydictionary.core.widget.TurnPagePlaceholder;
@@ -256,11 +256,11 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
             // key must be typed instead of closing the screen.
             return super.keyPressed(keyCode, scanCode, modifiers);
         }
-        if (KeyMappingManager.OPEN_BIOLOGY_DICTIONARY_SCREEN.matches(keyCode, scanCode)
+        if (KeyMappings.OPEN_HANDBOOK.matches(keyCode, scanCode)
                 || client.options.keyInventory.matches(keyCode, scanCode)) {
             onClose();
             return true;
-        } else if (KeyMappingManager.TOGGLE_DEBUG.matches(keyCode, scanCode)) {
+        } else if (KeyMappings.DEBUG.matches(keyCode, scanCode)) {
             sendScreenMessage(TextUtils.literal("Debug mode " + (BiologyDictionaryClient.toggleDebugMode() ? "on" : "off")));
             return true;
         }
