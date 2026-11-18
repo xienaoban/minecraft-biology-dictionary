@@ -34,7 +34,17 @@ public final class EntityPropertyWidgets {
         registrar.register(SlimeSurfaceSpawnWidget.class, SlimeSurfaceSpawnWidget.FACTORY);
         registrar.replace(MobSpawnWidget.class, SlimeSurfaceSpawnWidget.class);
         registrar.register(LivingEntityMovementSpeedWidget.class, LivingEntityMovementSpeedWidget.FACTORY);
+        registrar.register(HorseMovementSpeedWidget.class, HorseMovementSpeedWidget.FACTORY);
+        registrar.replace(LivingEntityMovementSpeedWidget.class, HorseMovementSpeedWidget.class);
+        registrar.register(ZombieHorseMovementSpeedWidget.class, ZombieHorseMovementSpeedWidget.FACTORY);
+        registrar.replace(LivingEntityMovementSpeedWidget.class, ZombieHorseMovementSpeedWidget.class);
         registrar.register(LivingEntityJumpStrengthWidget.class, LivingEntityJumpStrengthWidget.FACTORY);
+        registrar.register(HorseJumpStrengthWidget.class, HorseJumpStrengthWidget.FACTORY);
+        registrar.replace(LivingEntityJumpStrengthWidget.class, HorseJumpStrengthWidget.class);
+        registrar.register(SkeletonHorseJumpStrengthWidget.class, SkeletonHorseJumpStrengthWidget.FACTORY);
+        registrar.replace(LivingEntityJumpStrengthWidget.class, SkeletonHorseJumpStrengthWidget.class);
+        registrar.register(ZombieHorseJumpStrengthWidget.class, ZombieHorseJumpStrengthWidget.FACTORY);
+        registrar.replace(LivingEntityJumpStrengthWidget.class, ZombieHorseJumpStrengthWidget.class);
         registrar.register(EntityLeashableWidget.class, EntityLeashableWidget.FACTORY);
         registrar.register(GoatScreamingWidget.class, GoatScreamingWidget.FACTORY);
         registrar.register(EntitySpawnCountedWidget.class, EntitySpawnCountedWidget.FACTORY);

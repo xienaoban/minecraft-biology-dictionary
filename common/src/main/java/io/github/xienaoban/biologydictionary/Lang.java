@@ -116,6 +116,12 @@ public final class Lang {
     WIDGET_ENTITY_FILTER_ALL_DESC          = "widget.biologydictionary.entity_filter.all.desc",
     WIDGET_ENTITY_FILTER_DISCOVERED_DESC   = "widget.biologydictionary.entity_filter.discovered.desc",
 
+    PROPERTY_WIDGET_ATTRIBUTE_QUALITY           = "property_widget.biologydictionary.attribute_quality",
+    PROPERTY_WIDGET_ATTRIBUTE_QUALITY_VERY_LOW  = "property_widget.biologydictionary.attribute_quality.very_low",
+    PROPERTY_WIDGET_ATTRIBUTE_QUALITY_LOW       = "property_widget.biologydictionary.attribute_quality.low",
+    PROPERTY_WIDGET_ATTRIBUTE_QUALITY_MEDIUM    = "property_widget.biologydictionary.attribute_quality.medium",
+    PROPERTY_WIDGET_ATTRIBUTE_QUALITY_HIGH      = "property_widget.biologydictionary.attribute_quality.high",
+    PROPERTY_WIDGET_ATTRIBUTE_QUALITY_VERY_HIGH = "property_widget.biologydictionary.attribute_quality.very_high",
     PROPERTY_WIDGET_HEALTH                      = "property_widget.biologydictionary.health",
     PROPERTY_WIDGET_HEALTH_DESC                 = "property_widget.biologydictionary.health.desc",
     PROPERTY_WIDGET_ATTACK_DAMAGE               = "property_widget.biologydictionary.attack_damage",
