@@ -59,11 +59,14 @@ whenToUse: 需要把某个 MC 版本分支（或 commit）的功能移植到另�
 | `minecraft-biology-dictionary-26.3` | `main-26.3` | 手写多平台 | 26.3 | 25 | ✅ 允许 | `Identifier` |
 | `minecraft-biology-dictionary-26.2` | `main-26.2` | 手写多平台 | 26.2 | 25 | ✅ 允许 | `Identifier` |
 | `minecraft-biology-dictionary-26.1.2` | `main-26.1.2` | 手写多平台 | 26.1.2 | 25 | ✅ 允许 | `Identifier` |
-| `minecraft-biology-dictionary-architectury-1.21.11` | `main-architectury-1.21.11` | Architectury | 1.21.11 | 21 | ❌ 禁用 | `Identifier` |
-| `minecraft-biology-dictionary-architectury-1.21.1` | `main-architectury-1.21.1` | Architectury | 1.21.1 | 21 | ❌ 禁用 | `ResourceLocation` |
-| `minecraft-biology-dictionary-architectury-1.20.1` | `main-architectury-1.20.1` | Architectury | 1.20.1 | 17 | ❌ 禁用 | `ResourceLocation` |
+| `minecraft-biology-dictionary-1.21.11` | `main-1.21.11` | 手写多平台 | 1.21.11 | 21 | ❌ 禁用 | `Identifier` |
+| `minecraft-biology-dictionary-1.21.1` | `main-1.21.1` | 手写多平台 | 1.21.1 | 21 | ❌ 禁用 | `ResourceLocation` |
+| `minecraft-biology-dictionary-1.20.1` | `main-1.20.1` | 手写多平台 | 1.20.1 | 17 | ❌ 禁用 | `ResourceLocation` |
 
 > 禁用反射指的是反射处理 MC 数据（因为做了混淆）。本模组、其他模组的数据可以反射。
+
+1.21.11 / 1.21.1 / 1.20.1 三个版本均已完成“去 Architectury”改造，架构形态与 26.x 完全一致：
+`Platform.load(X.class)` + 同包 `*Impl`、`@PlatformEntry` 静态入口列表、平台目录 `fabric/` + `forge/`（1.21.x 为 `neoforge/`）。
 
 所有目录共享同一 git remote (`git@github.com:xienaoban/minecraft-biology-dictionary.git`)，不同分支。
 
@@ -87,6 +90,25 @@ MC 第一方源码：`mc-source/<MC 版本>/`，可供查询。
 - 因此大部分来自源 diff 的代码，都能在目标代码中找到完美匹配的位置进行插入/替换/删除，且无需修改任何源 diff 内容
 - 行级一致就是要达到这种类似 apply diff 的效果（之所以说是类似，因为 apply 未必成功），几乎仅需适配一下 MC 源码变化
 - 对于少量无法行级一致的代码，可以变通处理，偏向于少量适配，极端情况允许完全重写
+
+### 豁免范围：这些地方不要求行级一致
+
+“行级一致”约束的是业务代码（payload 定义、`*NetManager`、`core` / `gui` / `config` 的逻辑）。以下区域**豁免**，只要求 API 面尽量一致、行为等价，允许各版本实现完全不同：
+
+- **`platform/**`**：跨平台封装层，专门用来吸收版本与平台差异。判据是 API（类名、方法签名、`@PlatformEntry` 入口列表）尽量一致，**实现不要求一致**，可以整段重写。例如 `PacketUtil` 在 26.x / 1.21.11 用 `Type` + `StreamCodec`，1.20.1 用 `ResourceLocation` + id 缓存；两者的 registrar 也各写各的。
+  - 网络层是这类差异最典型的一处：`Packet` 在 26.x / 1.21.11 / 1.21.1 里 `extends CustomPacketPayload` 并带 `type()` 默认实现，1.20.1 没有 payload API，它什么都不继承，只有 `write` + `clientReceive` / `serverReceive` + `Factory`。**这是设计不是缺陷**——`Packet` 的职责就是让业务代码不关心底层。别去“统一”，也别在 `Packet` 外面再套一层 wrapper（试过 `PacketBinding`，等于在已有隔离层上再包一层，纯增开销，已废弃）。
+- **注册器**：registrar 的注册流程、`@Mod` / entrypoint 挂载、事件订阅方式，按各平台写法来，不要求同形。
+- **渲染相关**：渲染管线、`GuiGraphics` / `RenderSystem` 调用、`blit` / buffer / vertex 写法、着色器与模型层，随 MC 渲染 API 版本变化，允许完全不同的实现。
+- **`mixin/**`**：**完全不做要求**。target 签名、注入点、refmap / accesstransformer 因映射与版本而异，只要效果等价即可，不要求行级一致，也不要照抄源版本的结构。
+- **构建脚本与资源清单**（`*.gradle`、`gradle.properties`、`mixins.json`、`*.accesswidener`、`mods.toml` / `neoforge.mods.toml`、`fabric.mod.json`）：按目标平台模板写。
+
+豁免不等于可以随手改：豁免区之外的代码仍要逐行对齐；豁免区之内也不要为了“实现统一”去动已经能工作的版本，**尤其是已打 tag 的版本**（格式与命名是另一回事，见下节）。
+
+### 命名与代码风格：全局完全统一，不属于版本差异
+
+命名规范、代码风格、缩进、换行、空行、注释排版这些与游戏逻辑无关的部分，要求所有版本**完全一致**。它们不受上面的豁免保护，**不能**用“版本差异”“历史遗留”“当年就是这么写的”来解释差异 —— 长得不一样就是不一致，就是要统一的目标。
+
+这类统一走独立的 `Normalize …` 提交，不要混进功能移植的 diff（移植提交要能被逐行 review）。反过来，做移植时也不要顺手把格式差异一起改掉。
 
 **一个约定：你可以认为，除了我让你移植的部分以外，各个版本的 main 分支的已实现功能是几乎完全一致的（版本差异导致的功能缺失除外）。**
 因此当遇到两边框架不一致时，不要想着把源框架顺手一起移植过来，而是必须在目标框架上适配（基本上，差异都是有原因的，尝试移植框架大概率失败）。
@@ -175,7 +197,7 @@ MC 第一方源码：`mc-source/<MC 版本>/`，可供查询。
 - 涉及版本号、构建的文件需要注意，可能需要部分手动适配合适的版本，例如
   - `gradle.properties` 的依赖项版本，必须是目标版本可用的（建议问我）；模组版本可以同步更新；MC 版本禁止变动
   - `build.gradle`、`gradle/wrapper/*` 的构建工具版本、写法
-  - Github Action 里涉及的 Java 版本、MC 版本等版本不要动，老版本还多 Architectury 依赖，也不动
+  - Github Action 里涉及的 Java 版本、MC 版本等版本不要动；旧版本已无 Architectury 依赖，依赖清单只保留 Cloth Config
   - `fabric.mod.json`
   - `ref/` 下我放了一些与本模组相关的三方模组，若需要理解不同版本下其他模组的 API，可访问
 - 涉及不同 MC 版本的文件，经常要重新寻找访问的 MC 接口，且差异巨大的不强求一致、允许按目标版本完全重写，例如
@@ -183,21 +205,23 @@ MC 第一方源码：`mc-source/<MC 版本>/`，可供查询。
   - Access 文件（`*.accesswidener`、`accesstransformer.cfg`）
 - 源实现差异巨大的代码同理（高亮生物/方块的渲染、第一人称生物的渲染、渲染管线等客户端渲染模块）
 
-### 架构转换映射表
+### 构建环境（去 Architectury 后统一）
 
-26.x（手写多平台）与 1.21.x（Architectury）差异非常大，里面有一些等价关系：
+| 项 | 取值 | 备注 |
+|----|------|------|
+| Gradle | 9.7.1 | `gradle/wrapper/gradle-wrapper.properties` |
+| Fabric 侧 | `fabric-loom-remap` 1.18.4 | **插件自身要求 Gradle 守护进程 JVM ≥ 25**，与 MC 编译目标（17/21）无关 |
+| Forge 侧 | `net.neoforged.moddev.legacyforge` 2.0.147 | 构建 Forge 1.20.1，loader 仍是 MinecraftForge 47.4.10 |
+| NeoForge 侧 | `net.neoforged.moddev` | 1.21.x |
+| daemon JVM | `gradle/gradle-daemon-jvm.properties` 的 `toolchainVersion=25` | 让任意外部 launcher JDK 都能构建 |
+| 仓库 | fabricmc / neoforged / **minecraftforge** / mavenCentral | MDG legacyforge 不会给 `neoFormRuntimeExternalTools` 挂 Forge 官方仓库，漏了会解析失败 |
 
-| 26.x 模式 | 1.21.x 等价 |
-|-----------|-------------|
-| `Platform.load(Xxx.class)` 窄服务 | `@ExpectPlatform` static method |
-| `@PlatformEntry` 静态字段 | `@ExpectPlatform` static method，或用现有 registry facade |
-| `ClientEvents` / `ServerEvents` 静态 list | 现有 `ClientEventRegistry` / `ServerEventRegistry` facade |
-| `KeyMappings` 静态定义类 | 现有 `KeyMappingRegistry` facade |
-| `Commands` 静态定义类 | 现有 `CommandRegistry` facade |
-| `FabricBiologyDictionary` 等入口 | **不覆盖**，保持目标版本 |
-| `PluginLookup + Bridge + Impl` | `PluginLookup` + `@ExpectPlatform static getBridge()` + 平台 `Impl` |
+其他 Forge 1.20.1 专有事项：MixinExtras 只从自己的 mixin config plugin 引导 → 需 `modLocalRuntime`；`@Mod` 无 `dist` 属性 → 在 `FMLEnvironment.dist == Dist.CLIENT` 下手工调用 Client 入口；Mixin refmap 不自动生成 → 需显式 `annotationProcessor "org.spongepowered:mixin:0.8.5:processor"`，`processResources` 注入 `"refmap"` 键，`mods.toml` 写 `[[mixins]]`。
 
-这部分框架改变，要求你必须使用目标平台的方式去实现。
+### 架构一致，无需转换
+
+26.x 与 1.21.11 / 1.21.1 / 1.20.1 现在**都是手写多平台**，架构一一对应（同名类、同包 `*Impl`、同样的 `@PlatformEntry` 入口列表），移植时直接照搬即可，不需要做架构转换。
+
 
 ## 各版本 API 差异速查
 
@@ -269,12 +293,12 @@ TODO
 | `neoforge/` | `forge/`（目录名机械映射） |
 | `net.neoforged` | `net.minecraftforge` |
 | Java 21 | Java 17（`List.addFirst()` → `list.add(0, e)`） |
-| `NbtIo.readCompressed(in, accounter)` | `NbtIo.readCompressed(in)` |
 | `mob.finalizeSpawn(level, diff, type, data)` 4参 | 5参（多了 `@Nullable CompoundTag`） |
-| `ownable.getOwner()` → `LivingEntity` | `ownable.getOwnerUUID()` → `UUID` |
-| `VertexConsumer` 分离式方法 | 链式 `.vertex().color().uv().endVertex()` |
-| `VertexConsumer` 无 `defaultColor` | 有 `defaultColor`/`unsetDefaultColor` 抽象方法 |
-| `SpawnEggItem.byId(entityType)` | 走 `ItemUtils.getSpawnEggItem(entityType)` |
+| 物品数据：`DataComponents` / `CustomData` / `ItemLore` / `CustomModelData` | 物品 NBT：`stack.getOrCreateTag()` / `setHoverName` / `tag.putInt("CustomModelData", …)` |
+| 装备槽：7 个（含 `BODY`）、`ContainerSingleItem` | 6 个（无 `BODY`）、`Container`（`setByPlayer(ItemStack)` 只有 1 参） |
+| 附魔判断 `EnchantmentHelper.has(stack, EnchantmentEffectComponents.X)` | `EnchantmentHelper.getItemEnchantmentLevel(Enchantments.X, stack) > 0` |
+| `ServerPlayer(server, level, CommonListenerCookie)` | `ServerPlayer(server, level, GameProfile)` + `gameMode.changeGameModeForPlayer(...)` |
+| record pattern `instanceof Pair<?,?>(a, b)` | Java 17 不支持，改常规模式匹配 + 显式取值 |
 
 ## 完整性检查
 

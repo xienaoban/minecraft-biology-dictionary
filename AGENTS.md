@@ -16,11 +16,11 @@
 | `minecraft-biology-dictionary-26.3` | `main-26.3` | 手写多平台 | 26.3 | 25 | ✅ 允许 | `Identifier` |
 | `minecraft-biology-dictionary-26.2` | `main-26.2` | 手写多平台 | 26.2 | 25 | ✅ 允许 | `Identifier` |
 | `minecraft-biology-dictionary-26.1.2` | `main-26.1.2` | 手写多平台 | 26.1.2 | 25 | ✅ 允许 | `Identifier` |
-| `minecraft-biology-dictionary-architectury-1.21.11` | `main-architectury-1.21.11` | Architectury | 1.21.11 | 21 | ❌ 禁用 | `Identifier` |
-| `minecraft-biology-dictionary-architectury-1.21.1` | `main-architectury-1.21.1` | Architectury | 1.21.1 | 21 | ❌ 禁用 | `ResourceLocation` |
-| `minecraft-biology-dictionary-architectury-1.20.1` | `main-architectury-1.20.1` | Architectury | 1.20.1 | 17 | ❌ 禁用 | `ResourceLocation` |
+| `minecraft-biology-dictionary-1.21.11` | `main-1.21.11` | 手写多平台 | 1.21.11 | 21 | ❌ 禁用 | `Identifier` |
+| `minecraft-biology-dictionary-1.21.1` | `main-1.21.1` | 手写多平台 | 1.21.1 | 21 | ❌ 禁用 | `ResourceLocation` |
+| `minecraft-biology-dictionary-1.20.1` | `main-1.20.1` | 手写多平台 | 1.20.1 | 17 | ❌ 禁用 | `ResourceLocation` |
 
-> - 本模组支持 Fabric 与 NeoForge/Forge 双端：26.x 为手写多平台架构，1.21.x / 1.20.1 通过 Architectury 框架实现。
+> - 本模组支持 Fabric 与 NeoForge/Forge 双端：26.x 与 1.21.x / 1.20.1 全部为手写多平台架构（`Platform.load(...)` 窄服务 + 同包 `*Impl` + `@PlatformEntry`），不再依赖 Architectury。
 > - 禁用反射指的是反射处理 MC 数据（因为做了混淆）。本模组、其他模组的数据可以反射。
 
 各版本 MC 版本、模组依赖版本等见各目录的 `gradle.properties`。

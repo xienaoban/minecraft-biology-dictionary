@@ -31,9 +31,9 @@ WORKTREES="
 minecraft-biology-dictionary-26.3:main-26.3
 minecraft-biology-dictionary-26.2:main-26.2
 minecraft-biology-dictionary-26.1.2:main-26.1.2
-minecraft-biology-dictionary-architectury-1.21.11:main-architectury-1.21.11
-minecraft-biology-dictionary-architectury-1.21.1:main-architectury-1.21.1
-minecraft-biology-dictionary-architectury-1.20.1:main-architectury-1.20.1
+minecraft-biology-dictionary-1.21.11:main-1.21.11
+minecraft-biology-dictionary-1.21.1:main-1.21.1
+minecraft-biology-dictionary-1.20.1:main-1.20.1
 "
 
 usage() {
