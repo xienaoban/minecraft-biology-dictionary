@@ -11,6 +11,7 @@ public final class Misc {
     private static final Set<Class<?>> onceMap = ConcurrentHashMap.newKeySet();
 
     private Misc() {}
+
     @SuppressWarnings("unchecked")
     public static <T> T cast(Object obj) {
         return (T) obj;
