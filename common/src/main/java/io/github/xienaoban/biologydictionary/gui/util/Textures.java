@@ -17,7 +17,8 @@ public final class Textures {
     public static final TextureInfo SEARCH_ID = new TextureInfo(IdentifierUtils.bd("textures/gui/search_id.png"), 16, 16);
     public static final TextureInfo GENE = new TextureInfo(IdentifierUtils.bd("textures/gui/telescope_discovery.png"), 32, 32);
     public static final TextureInfo BEEHIVE = new TextureInfo(IdentifierUtils.bd("textures/gui/beehive.png"), 256, 256);
-    public static final TextureInfo STEALING_INVENTORY = new TextureInfo(IdentifierUtils.bd("textures/gui/stealing_inventory.png"), 256, 256);
+    public static final TextureInfo STEALING_INVENTORY =
+            new TextureInfo(IdentifierUtils.bd("textures/gui/stealing_inventory.png"), 256, 256);
 
     public static final Identifier BOOK_TOOLTIP = IdentifierUtils.bd("book_tooltip");
 }

@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary.client;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
-
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.util.ClientUtils;
 import io.github.xienaoban.biologydictionary.platform.util.EntityUtils;
@@ -14,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 
 @ClientOnly
 public final class HighlightManager {
@@ -59,7 +57,8 @@ public final class HighlightManager {
     public void highlightBlock(ClientLevel level, BlockPos blockPos, int durationTicks) {
         if (!hasHighlighted) { hasHighlighted = true; }
         BlockState blockState = level.getBlockState(blockPos);
-        highlightedBlocks.add(new HighlightedBlock(BiologyDictionaryClient.getTicks() + durationTicks, blockState, blockPos, level.dimension()));
+        highlightedBlocks.add(new HighlightedBlock(
+                BiologyDictionaryClient.getTicks() + durationTicks, blockState, blockPos, level.dimension()));
     }
 
     public record Context(ClientLevel level) {}

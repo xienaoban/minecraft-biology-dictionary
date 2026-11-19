@@ -46,7 +46,9 @@ public class CenteredMessage extends ScreenElement {
         }
 
         int color = colorNoAlpha | (alpha(currTime, endTime) << 24);
-        ctx.renderCenteredText(text, color, ctx.getZ(), (getBox().getLeft() + getBox().getRight()) / 2, (getBox().getTop() + getBox().getBottom()) / 2 - 5);
+        ctx.renderCenteredText(text, color, ctx.getZ(),
+                (getBox().getLeft() + getBox().getRight()) / 2,
+                (getBox().getTop() + getBox().getBottom()) / 2 - 5);
     }
 
     @Override
