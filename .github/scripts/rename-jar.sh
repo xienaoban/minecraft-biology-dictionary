@@ -12,7 +12,13 @@ if [ -z "$MOD_VERSION" ] || [ -z "$MC_VERSION" ]; then
   exit 1
 fi
 
-SOURCE_JAR="${PLATFORM}/build/libs/biology-dictionary-${PLATFORM}-${MOD_VERSION}.jar"
+MOD_ID=$(grep "^mod_id=" gradle.properties | cut -d'=' -f2)
+if [ -z "$MOD_ID" ]; then
+  echo "Error: mod_id not found in gradle.properties"
+  exit 1
+fi
+
+SOURCE_JAR="${PLATFORM}/build/libs/${MOD_ID}-${PLATFORM}-${MOD_VERSION}.jar"
 TARGET_JAR="${PLATFORM}/build/libs/biology-dictionary-${MOD_VERSION}-mc${MC_VERSION}-${PLATFORM}.jar"
 
 if [ ! -f "$SOURCE_JAR" ]; then
