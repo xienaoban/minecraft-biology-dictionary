@@ -153,7 +153,7 @@ Find the Biology Dictionary book at the end of the **Tools & Utilities** tab.
 | Loader | Required |
 |--------|----------|
 | Fabric | Fabric API, Cloth Config |
-| NeoForge / Forge | Architectury API, Cloth Config |
+| NeoForge / Forge | Cloth Config |
 
 ---
 

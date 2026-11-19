@@ -16,7 +16,7 @@ import java.util.List;
  * a plugin interface and are discovered.
  */
 public final class PluginLookup {
-    private static final Bridge BRIDGE = Platform.load(Bridge.class);
+    static final Bridge BRIDGE = Platform.load(Bridge.class);
 
     // Lazily loaded: the Bridge instance exists on both sides, but each cache is populated
     // only when first requested on the side that actually calls the method.
