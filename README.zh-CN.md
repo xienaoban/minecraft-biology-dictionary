@@ -153,7 +153,7 @@
 | 加载器 | 依赖模组 |
 |--------|---------|
 | Fabric | Fabric API、Cloth Config |
-| NeoForge / Forge | Architectury API、Cloth Config |
+| NeoForge / Forge | Cloth Config |
 
 ---
 

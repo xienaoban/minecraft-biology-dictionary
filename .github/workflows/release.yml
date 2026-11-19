@@ -292,7 +292,6 @@ jobs:
           files: ${{ env.MOD_JAR_NEOFORGE }}
 
           dependencies: |
-            architectury-api
             cloth-config
 
       - name: download fabric jar
@@ -351,5 +350,4 @@ jobs:
 
           dependencies: |
             fabric-api
-            architectury-api
             cloth-config
