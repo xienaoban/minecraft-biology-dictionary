@@ -291,7 +291,6 @@ jobs:
           files: ${{ env.MOD_JAR_FORGE }}
 
           dependencies: |
-            architectury-api
             cloth-config
 
       - name: download fabric jar
@@ -348,5 +347,4 @@ jobs:
 
           dependencies: |
             fabric-api
-            architectury-api
             cloth-config

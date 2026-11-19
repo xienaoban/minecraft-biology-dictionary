@@ -7,6 +7,8 @@ import io.github.xienaoban.biologydictionary.platform.net.Packet;
 import java.util.List;
 
 public final class PacketPayloads {
+    private PacketPayloads() {}
+
     @PlatformEntry
     public static final List<Entry<?>> ENTRIES = List.of(
             new Entry<>(SendCenteredMessagePacket.class, SendCenteredMessagePacket.FACTORY),
@@ -29,9 +31,8 @@ public final class PacketPayloads {
             new Entry<>(RequestBeehiveInfoPacket.class, RequestBeehiveInfoPacket.FACTORY),
             new Entry<>(ReplyBeehiveInfoPacket.class, ReplyBeehiveInfoPacket.FACTORY),
             new Entry<>(RequestPlayerNamesPacket.class, RequestPlayerNamesPacket.FACTORY),
-            new Entry<>(ReplyPlayerNamesPacket.class, ReplyPlayerNamesPacket.FACTORY));
-
-    private PacketPayloads() {}
+            new Entry<>(ReplyPlayerNamesPacket.class, ReplyPlayerNamesPacket.FACTORY)
+    );
 
     public record Entry<T extends Packet>(Class<T> packetClass, Packet.Factory<T> factory) {}
 }

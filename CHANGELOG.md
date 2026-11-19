@@ -15,6 +15,7 @@ All notable changes to Biology Dictionary will be documented in this file.
 - Refreshed the icon sheet: new search button, category preview button and chip art, plus a shorter progress bar tile
 - Search filter chips use the new chip background with white text
 - Tooltips across the book are rendered through one shared helper, so they are placed consistently
+- Removed the Architectury API dependency: the platform layer is now hand-written, so NeoForge and Forge installations only need Cloth Config
 
 ## Previous Versions
 
