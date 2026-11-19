@@ -28,7 +28,8 @@ public final class ServerWorldSession implements ConfigsUpdateCallback {
                 } catch (Throwable e) {
                     LOGGER.error("Failed to initialize ServerWorldSession!", e);
                     if (DevUtils.isClient()) {
-                        BiologyDictionaryClient.printThrowableToLoggerAndGame("ServerWorldSession failed to initialize!", e);
+                        BiologyDictionaryClient.printThrowableToLoggerAndGame(
+                                "ServerWorldSession failed to initialize!", e);
                     }
                 }
             }

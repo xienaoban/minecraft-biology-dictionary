@@ -16,7 +16,8 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  * Only sent when the server's discovery strategy is DICTIONARY.
  */
 public record RequestBiologyDictionaryDiscoveryFullPacket() implements Packet {
-    public static final Packet.Factory<RequestBiologyDictionaryDiscoveryFullPacket> FACTORY = RequestBiologyDictionaryDiscoveryFullPacket::new;
+    public static final Packet.Factory<RequestBiologyDictionaryDiscoveryFullPacket> FACTORY =
+            RequestBiologyDictionaryDiscoveryFullPacket::new;
 
     private RequestBiologyDictionaryDiscoveryFullPacket(FriendlyByteBuf buf) {
         this();
@@ -38,7 +39,8 @@ public record RequestBiologyDictionaryDiscoveryFullPacket() implements Packet {
             ServerNetManager.replyDictionaryDiscoveryRecords(player, strategy.getAllRecords(player));
             LOGGER.info("Full discovery records sent to player {}.", EntityUtils.getNameString(player));
         } else {
-            LOGGER.warn("Wrong discovery strategy from client of player {}. Ignored.", EntityUtils.getNameString(player));
+            LOGGER.warn("Wrong discovery strategy from client of player {}. Ignored.",
+                    EntityUtils.getNameString(player));
         }
     }
 }
