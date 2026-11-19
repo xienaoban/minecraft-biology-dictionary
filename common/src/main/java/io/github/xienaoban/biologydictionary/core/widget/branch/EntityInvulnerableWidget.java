@@ -27,7 +27,8 @@ public final class EntityInvulnerableWidget extends EntityPropertyStandardWidget
 
     private static final int L = 19, T = 1;
 
-    private final BooleanProperty<Entity> invulnerableProperty = VanillaEntityProperties.OfEntity.getInvulnerableProperty(p());
+    private final BooleanProperty<Entity> invulnerableProperty =
+            VanillaEntityProperties.OfEntity.getInvulnerableProperty(p());
 
     public EntityInvulnerableWidget(EntityProperties<Entity> properties) {
         super(properties, Page.COLUMNS / 4);

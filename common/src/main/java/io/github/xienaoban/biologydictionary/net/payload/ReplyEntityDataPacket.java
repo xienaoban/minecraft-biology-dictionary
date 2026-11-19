@@ -1,7 +1,6 @@
 package io.github.xienaoban.biologydictionary.net.payload;
 
 import io.github.xienaoban.biologydictionary.BiologyDictionaryClient;
-
 import io.github.xienaoban.biologydictionary.core.property.EntityProperties;
 import io.github.xienaoban.biologydictionary.platform.ClientOnly;
 import io.github.xienaoban.biologydictionary.platform.net.ClientNetApi;
@@ -11,8 +10,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 
-
-public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt) implements Packet {
+public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt)
+        implements Packet {
     public static final Packet.Factory<ReplyEntityDataPacket> FACTORY = ReplyEntityDataPacket::new;
 
     private ReplyEntityDataPacket(FriendlyByteBuf buf) {

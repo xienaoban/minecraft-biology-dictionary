@@ -43,15 +43,20 @@ public class PropertyClazzGenerator {
     public static final String OUTPUT_CLAZZ_PACKAGE = TARGET_CLAZZ.getPackageName();
     private static final String PROPERTY_WRAPPER_CLAZZ_NAME = TARGET_CLAZZ.getSimpleName();
 
-    public static final File OUTPUT_CLAZZ_DIR_PATH = new File(TestUtils.MAIN_JAVA_ROOT.toString(), OUTPUT_CLAZZ_PACKAGE.replaceAll("\\.", "/"));
-    public static final File OUTPUT_CLAZZ_FILE_PATH = Paths.get(OUTPUT_CLAZZ_DIR_PATH.toString(), PROPERTY_WRAPPER_CLAZZ_NAME + ".java").toFile();
+    public static final File OUTPUT_CLAZZ_DIR_PATH = new File(
+            TestUtils.MAIN_JAVA_ROOT.toString(), OUTPUT_CLAZZ_PACKAGE.replaceAll("\\.", "/"));
+    public static final File OUTPUT_CLAZZ_FILE_PATH = Paths.get(
+            OUTPUT_CLAZZ_DIR_PATH.toString(), PROPERTY_WRAPPER_CLAZZ_NAME + ".java").toFile();
 
     private static final Type STRING_TYPE = new ClassOrInterfaceType(null, String.class.getSimpleName());
-    private static final Type ENTITY_PROPERTY_TYPE = new ClassOrInterfaceType(null, new SimpleName(EntityProperty.class.getSimpleName()), new NodeList<>(new TypeParameter("?")));
-    private static final Type MAP_STR_PROPERTY_TYPE = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()), new NodeList<>(STRING_TYPE, ENTITY_PROPERTY_TYPE));
+    private static final Type ENTITY_PROPERTY_TYPE = new ClassOrInterfaceType(
+            null, new SimpleName(EntityProperty.class.getSimpleName()), new NodeList<>(new TypeParameter("?")));
+    private static final Type MAP_STR_PROPERTY_TYPE = new ClassOrInterfaceType(
+            null, new SimpleName(Map.class.getSimpleName()), new NodeList<>(STRING_TYPE, ENTITY_PROPERTY_TYPE));
     private static final Parameter MAP_STR_PROPERTY_PARAM = new Parameter(MAP_STR_PROPERTY_TYPE, "map");
 
-    private static final Type ENTITY_PROPERTIES_TYPE = new ClassOrInterfaceType(null, new SimpleName(EntityProperties.class.getSimpleName()), new NodeList<>(new TypeParameter("?")));
+    private static final Type ENTITY_PROPERTIES_TYPE = new ClassOrInterfaceType(
+            null, new SimpleName(EntityProperties.class.getSimpleName()), new NodeList<>(new TypeParameter("?")));
     private static final Parameter ENTITY_PROPERTIES_PARAM = new Parameter(ENTITY_PROPERTIES_TYPE, "ep");
 
     private static final BlockStmt initMethodBlock = new BlockStmt();
@@ -137,7 +142,8 @@ public class PropertyClazzGenerator {
 
     private final NodeList<Expression> creatorMethodBody = new NodeList<>(new NameExpr("map"));
 
-    private PropertyClazzGenerator(Class<? extends Entity> entityClazz, NbtTagCollector nbts, ClassOrInterfaceDeclaration wrapperClazz) {
+    private PropertyClazzGenerator(Class<? extends Entity> entityClazz, NbtTagCollector nbts,
+                                   ClassOrInterfaceDeclaration wrapperClazz) {
         String targetClazzSimpleName = "Of" + entityClazz.getSimpleName();
         this.entityClazz = entityClazz;
         this.nbts = nbts;
@@ -153,7 +159,8 @@ public class PropertyClazzGenerator {
         cu.addImport(entityClazz);
         addClazzComments();
 
-        for (String propertyName : Stream.concat(nbts.getNbtTags().keySet().stream(), nbts.getConflicts().keySet().stream()).sorted().toList()) {
+        for (String propertyName : Stream.concat(
+                nbts.getNbtTags().keySet().stream(), nbts.getConflicts().keySet().stream()).sorted().toList()) {
             addPropertyCreateAndGetMethods(propertyName, nbts.getNbtTags().getOrDefault(propertyName, null));
         }
 
@@ -171,7 +178,9 @@ public class PropertyClazzGenerator {
             comment.append("[Attention] Some properties cannot be recognized yet:\n");
             for (var e : nbts.getConflicts().entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
                 Collection<NbtTagInfo> pis = e.getValue().values();
-                comment.append(" - \"").append(e.getKey()).append("\": ").append(pis.stream().map(NbtTagInfo::typeString).toList()).append('\n');
+                comment.append(" - \"").append(e.getKey()).append("\": ")
+                        .append(pis.stream().map(NbtTagInfo::typeString).toList())
+                        .append('\n');
             }
         }
         comment.append('\n');
@@ -202,7 +211,9 @@ public class PropertyClazzGenerator {
                     returnType = returnRawType + "<" + entityClazz.getSimpleName() + ">";
                 } else if (VariantUtils.class.getSimpleName().equals(caller)) {
                     returnRawType = VariantProperty.class.getSimpleName();
-                    returnType = returnRawType + "<" + entityClazz.getSimpleName() + ", " + funcTagInfo.typeString() + ">";
+                    returnType = returnRawType + "<"
+                            + entityClazz.getSimpleName() + ", "
+                            + funcTagInfo.typeString() + ">";
                     arguments = funcTagInfo.optional();
                 } else {
                     returnRawType = UnsupportedProperty.class.getSimpleName();
@@ -243,7 +254,8 @@ public class PropertyClazzGenerator {
         MethodDeclaration method = clazzAst.addMethod(methodName, Modifier.Keyword.PUBLIC);
         method.addParameter(MAP_STR_PROPERTY_PARAM);
         method.addAnnotation(new MarkerAnnotationExpr("Override"));
-        method.setBody(new BlockStmt().addStatement(new ExpressionStmt(new MethodCallExpr(null, "p", creatorMethodBody))));
+        method.setBody(new BlockStmt().addStatement(
+                new ExpressionStmt(new MethodCallExpr(null, "p", creatorMethodBody))));
     }
 
     private static String toUpperCamelCase(String s) {
