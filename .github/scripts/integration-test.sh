@@ -126,7 +126,7 @@ echo "✓ Mod copied to mods/"
 if [ "$LOADER_TYPE" = "fabric" ]; then
   echo "Downloading Fabric API..."
   # Get Fabric API version from gradle.properties
-  FABRIC_API_VERSION=$(grep "^fabric_api_version=" ../../../gradle.properties | cut -d'=' -f2)
+  FABRIC_API_VERSION=$(grep "^fabricapi_version=" ../../../gradle.properties | cut -d'=' -f2)
 
   # Fabric API URL pattern
   FABRIC_API_URL="https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/${FABRIC_API_VERSION}/fabric-api-${FABRIC_API_VERSION}.jar"
@@ -154,21 +154,6 @@ if [ "$LOADER_TYPE" = "fabric" ]; then
     exit 1
   fi
 elif [ "$LOADER_TYPE" = "neoforge" ]; then
-  echo "Downloading Architectury API..."
-  # Get Architectury API version from gradle.properties
-  ARCHITECTURY_API_VERSION=$(grep "^architectury_api_version=" ../../../gradle.properties | cut -d'=' -f2)
-
-  # Architectury API URL
-  ARCHITECTURY_API_URL="https://maven.architectury.dev/dev/architectury/architectury-neoforge/${ARCHITECTURY_API_VERSION}/architectury-neoforge-${ARCHITECTURY_API_VERSION}.jar"
-
-  echo "Downloading Architectury API from: $ARCHITECTURY_API_URL"
-  if wget -q "$ARCHITECTURY_API_URL" -P mods/; then
-    echo "✓ Architectury API downloaded successfully"
-  else
-    echo "✗ Failed to download Architectury API for version $ARCHITECTURY_API_VERSION"
-    exit 1
-  fi
-
   echo "Downloading Cloth Config..."
   # Get Cloth Config version from gradle.properties
   CLOTHCONFIG_VERSION=$(grep "^clothconfig_version=" ../../../gradle.properties | cut -d'=' -f2)
