@@ -16,7 +16,6 @@ import java.util.UUID;
 
 @ClientOnly
 public final class ClientNetManager {
-
     public static void requestServerConfigs() {
         ClientNetApi.send(new RequestServerConfigsPacket());
     }

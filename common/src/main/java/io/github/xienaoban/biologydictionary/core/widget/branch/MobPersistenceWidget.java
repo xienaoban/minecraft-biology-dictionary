@@ -28,8 +28,10 @@ public class MobPersistenceWidget extends EntityPropertyStandardWidget<Mob> {
 
     private static final int L = 6, T = 6;
 
-    private final BooleanProperty<Mob> persistenceRequiredProperty = VanillaEntityProperties.OfMob.getPersistenceRequiredProperty(p());
-    private final MobNaturalPersistenceProperty naturalPersistenceProperty = p().getExtra(MobNaturalPersistenceProperty.class);
+    private final BooleanProperty<Mob> persistenceRequiredProperty =
+            VanillaEntityProperties.OfMob.getPersistenceRequiredProperty(p());
+    private final MobNaturalPersistenceProperty naturalPersistenceProperty =
+            p().getExtra(MobNaturalPersistenceProperty.class);
 
     public MobPersistenceWidget(EntityProperties<Mob> properties) {
         super(properties, Page.COLUMNS / 2);

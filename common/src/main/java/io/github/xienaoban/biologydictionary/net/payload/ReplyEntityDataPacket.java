@@ -10,8 +10,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 
-
-public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt) implements Packet {
+public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag vanillaNbt, CompoundTag extraNbt)
+        implements Packet {
     public static final Packet.Factory<ReplyEntityDataPacket> FACTORY = ReplyEntityDataPacket::new;
 
     private ReplyEntityDataPacket(FriendlyByteBuf buf) {
@@ -30,11 +30,11 @@ public record ReplyEntityDataPacket(boolean notNull, int entityId, CompoundTag v
     @Override
     public void clientReceive(ClientNetApi.Context ctx) {
         @ClientOnly final class CO { static void receive(ReplyEntityDataPacket packet, ClientNetApi.Context ctx) {
-            if (!packet.notNull()) return;
+            if (!packet.notNull()) { return; }
 
             Entity entity = BiologyDictionaryClient.getHitEntity();
             EntityProperties<?> properties = BiologyDictionaryClient.getHitEntityProperties();
-            if (entity == null || EntityUtils.getId(entity) != packet.entityId() || properties == null) return;
+            if (entity == null || EntityUtils.getId(entity) != packet.entityId() || properties == null) { return; }
             properties.update(packet.vanillaNbt(), packet.extraNbt());
         }}
         CO.receive(this, ctx);
