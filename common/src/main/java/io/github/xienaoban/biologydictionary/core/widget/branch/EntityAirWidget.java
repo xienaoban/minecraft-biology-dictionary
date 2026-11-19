@@ -47,7 +47,10 @@ public final class EntityAirWidget extends EntityPropertyStandardWidget<Entity> 
             if (BiologyDictionaryClient.isDebugMode()) {
                 renderInnerText(ctx, TextUtils.literal(e().getAirSupply() + "t/" + e().getMaxAirSupply() + "t"));
             } else {
-                renderInnerText(ctx, TextUtils.literal((e().getAirSupply() / ClientUtils.getClientTickCountPerSecond()) + "s/" + (e().getMaxAirSupply() / ClientUtils.getClientTickCountPerSecond()) + "s"));
+                renderInnerText(ctx, TextUtils.literal(
+                        (e().getAirSupply() / ClientUtils.getClientTickCountPerSecond())
+                                + "s/"
+                                + (e().getMaxAirSupply() / ClientUtils.getClientTickCountPerSecond()) + "s"));
             }
         }
     }

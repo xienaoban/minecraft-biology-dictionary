@@ -45,7 +45,8 @@ public abstract class Widget extends ScreenElement {
      * Append comma-separated items to the tooltip, wrapping lines manually so that
      * each individual item is never split across two lines.
      */
-    protected static void appendWrappedItems(List<Component> tooltip, ScreenRenderingContext ctx, List<Component> items) {
+    protected static void appendWrappedItems(List<Component> tooltip, ScreenRenderingContext ctx,
+                                             List<Component> items) {
         List<Component> currentLine = new ArrayList<>();
         int lineWidth = 0;
         Component separator = TextUtils.comma();

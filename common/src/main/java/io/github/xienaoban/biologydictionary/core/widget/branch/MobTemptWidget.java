@@ -85,7 +85,8 @@ public final class MobTemptWidget extends EntityPropertyStandardWidget<Mob> {
             }
 
             for (int i = tempts.size() - 1; i >= 0; --i) {
-                ctx.renderTexture(Textures.ICONS, 22 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(), getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
+                ctx.renderTexture(Textures.ICONS, 22 * Widget.WIDGET_WIDTH, 2 * Widget.WIDGET_HEIGHT, ctx.getZ(),
+                        getBox().getLeft() - 1 + i * gap, getBox().getTop() - 1, 10.0F, 10.0F);
             }
             for (int i = tempts.size() - 1; i >= 0; --i) {
                 ctx.renderItem(tempts.get(i), 0.5F, getBox().getLeft() + i * gap, getBox().getTop());
