@@ -24,6 +24,13 @@ public final class ServerNetManager {
         ServerNetApi.send(player, new SendCenteredMessagePacket(message));
     }
 
+    public static void sendManifest(ServerPlayer player) {
+        if (!ServerNetApi.canSend(player, ServerManifestPacket.class)) {
+            return;
+        }
+        ServerNetApi.send(player, new ServerManifestPacket(ManifestUtils.build()));
+    }
+
     public static void sendDiscoveryIncremental(ServerPlayer player, Entity entity, EntityType<?> entityType,
                                                 DiscoveryRecord record) {
         if (!ServerNetApi.canSend(player, SendDiscoveryIncrementalPacket.class)) {

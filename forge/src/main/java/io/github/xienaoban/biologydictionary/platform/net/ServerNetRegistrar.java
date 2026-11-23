@@ -1,15 +1,13 @@
 package io.github.xienaoban.biologydictionary.platform.net;
 
-import io.github.xienaoban.biologydictionary.BiologyDictionary;
 import io.github.xienaoban.biologydictionary.net.PacketPayloads;
 import io.github.xienaoban.biologydictionary.platform.ClientAndServer;
 import io.github.xienaoban.biologydictionary.platform.util.IdentifierUtils;
 import io.github.xienaoban.biologydictionary.platform.util.PlayerUtils;
+import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.ConnectionData;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -89,9 +87,9 @@ public final class ServerNetRegistrar {
     }
 
     static boolean canSend(ServerPlayer player) {
-        // Forge 1.20.1 answers "does the other side have this channel" from the login handshake
-        // data, which is the mod list of the connection.
-        ConnectionData connectionData = NetworkHooks.getConnectionData(player.connection.connection);
-        return connectionData == null || connectionData.getModList().contains(BiologyDictionary.MOD_ID);
+        // A peer that has the mod but not this channel is a pre-rework architectury build, which
+        // cannot read our packets. Callers fall back to a vanilla message when this returns false.
+        Connection connection = player.connection.connection;
+        return connection != null && CHANNEL.isRemotePresent(connection);
     }
 }

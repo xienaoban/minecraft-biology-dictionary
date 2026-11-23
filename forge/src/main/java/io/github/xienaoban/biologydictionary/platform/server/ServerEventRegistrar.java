@@ -1,5 +1,6 @@
 package io.github.xienaoban.biologydictionary.platform.server;
 
+import io.github.xienaoban.biologydictionary.platform.net.LegacyClientNotice;
 import io.github.xienaoban.biologydictionary.server.ServerEvents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,5 +25,11 @@ public final class ServerEventRegistrar {
                 }
             });
         }
+        // Architectury-era peers never answer the manifest, so they get a vanilla chat message.
+        MinecraftForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                LegacyClientNotice.notifyIfIncompatible(player);
+            }
+        });
     }
 }
