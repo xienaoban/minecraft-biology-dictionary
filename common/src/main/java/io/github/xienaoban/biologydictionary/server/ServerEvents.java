@@ -3,6 +3,7 @@ package io.github.xienaoban.biologydictionary.server;
 import io.github.xienaoban.biologydictionary.core.BiologyDictionaryItem;
 import io.github.xienaoban.biologydictionary.core.session.ServerWorldSession;
 import io.github.xienaoban.biologydictionary.core.session.WorldSession;
+import io.github.xienaoban.biologydictionary.net.ServerNetManager;
 import io.github.xienaoban.biologydictionary.platform.PlatformEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +24,9 @@ public final class ServerEvents {
     });
 
     @PlatformEntry
-    public static final List<PlayerListener> PLAYER_LOGGED_IN = List.of(BiologyDictionaryItem::giveBookOnFirstJoin);
+    public static final List<PlayerListener> PLAYER_LOGGED_IN = List.of(
+            ServerNetManager::sendManifest,
+            BiologyDictionaryItem::giveBookOnFirstJoin);
 
     private ServerEvents() {}
 
