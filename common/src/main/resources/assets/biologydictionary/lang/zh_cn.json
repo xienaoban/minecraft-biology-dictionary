@@ -308,6 +308,7 @@
   "text.biologydictionary.mod_version_is": "版本：",
   "text.biologydictionary.mod_not_installed": "如果您看到了此段文字，说明您本地并未安装「生物辞典」模组，您可以前往以下网址下载本模组：",
   "text.biologydictionary.click_me_to_download": "点我点我点我！（≧.≦）",
+  "text.biologydictionary.server_manifest_mismatch": "「生物辞典」版本差异大，存在兼容风险，部分功能可能无法正常使用。\n建议升级旧的一端：本客户端版本 %1$s，服务端版本 %2$s。",
   "text.biologydictionary.info_from_this_mod": "【生物辞典】",
   "text.biologydictionary.please_report_issue": "详细报错见“{游戏目录}/logs/latest.log”，若需求助作者，请务必附上此log文件（仅截图本段报错对定位问题毫无帮助！！）",
   "text.biologydictionary.local_configs_reload_success" : "本地配置已重新加载",
