@@ -12,6 +12,7 @@ public final class PacketPayloads {
     @PlatformEntry
     public static final List<Entry<?>> ENTRIES = List.of(
             new Entry<>(SendCenteredMessagePacket.class, SendCenteredMessagePacket.FACTORY),
+            new Entry<>(ServerManifestPacket.class, ServerManifestPacket.FACTORY),
             new Entry<>(RequestServerConfigsPacket.class, RequestServerConfigsPacket.FACTORY),
             new Entry<>(ReplyServerConfigsPacket.class, ReplyServerConfigsPacket.FACTORY),
             new Entry<>(RequestBiologyDictionaryItemPacket.class, RequestBiologyDictionaryItemPacket.FACTORY),
