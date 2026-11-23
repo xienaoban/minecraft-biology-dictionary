@@ -267,6 +267,7 @@ public final class Lang {
     TEXT_MOD_VERSION_IS                        = "text.biologydictionary.mod_version_is",
     TEXT_MOD_NOT_INSTALLED                     = "text.biologydictionary.mod_not_installed",
     TEXT_CLICK_ME_TO_DOWNLOAD                  = "text.biologydictionary.click_me_to_download",
+    TEXT_SERVER_MANIFEST_MISMATCH              = "text.biologydictionary.server_manifest_mismatch",
     TEXT_INFO_FROM_THIS_MOD                    = "text.biologydictionary.info_from_this_mod",
     TEXT_PLEASE_REPORT_ISSUE                   = "text.biologydictionary.please_report_issue",
     TEXT_LOCAL_CONFIGS_RELOAD_SUCCESS          = "text.biologydictionary.local_configs_reload_success",
