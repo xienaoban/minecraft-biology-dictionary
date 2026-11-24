@@ -90,8 +90,10 @@ if [ "$LOADER_TYPE" = "fabric" ]; then
 elif [ "$LOADER_TYPE" = "forge" ]; then
   echo "Downloading forge installer..."
   FORGE_VERSION=$(grep "^forge_version=" ../../../gradle.properties | cut -d'=' -f2)
-  echo "FORGE_VERSION=${FORGE_VERSION}"
-  FORGE_INSTALLER_URL="https://maven.minecraftforge.net/net/minecraftforge/forge/${FORGE_VERSION}/forge-${FORGE_VERSION}-installer.jar"
+  # The Forge maven coordinate carries the MC version, unlike gradle.properties
+  FORGE_COORDINATE="${MC_VERSION}-${FORGE_VERSION}"
+  echo "FORGE_VERSION=${FORGE_COORDINATE}"
+  FORGE_INSTALLER_URL="https://maven.minecraftforge.net/net/minecraftforge/forge/${FORGE_COORDINATE}/forge-${FORGE_COORDINATE}-installer.jar"
   echo "FORGE_INSTALLER_URL=${FORGE_INSTALLER_URL}"
   wget -q "$FORGE_INSTALLER_URL" -O forge-installer.jar
   echo "Installing forge loader..."
