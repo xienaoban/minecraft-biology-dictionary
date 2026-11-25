@@ -6,12 +6,13 @@ All notable changes to Biology Dictionary will be documented in this file.
 
 ### Added
 
-- The client now verifies the server's build when joining and warns in chat if the two sides cannot work together
-- On Forge, a server now warns players whose client is on an older, incompatible build, instead of letting them join with a half-working mod
+- Slimes now also list the biomes where they can spawn on the surface without a slime chunk (swamps by default), next to the usual biome and structure lists
+- Movement speed and jump strength are now graded from Very Low to Very High: the tooltip shows the grade and the maximum the entity can roll, and the value is tinted by its grade
 
 ### Changed
 
-- Removed the Architectury API dependency: the platform layer is now hand-written, so Fabric and Forge installations only need Cloth Config
+- Going back now steps one navigation level at a time (home, settings or search, entity page) instead of walking the raw screen history
+- A widget can now be excluded from part of an entity class tree, or handed over to a specialized one, through the plugin API
 
 ## Previous Versions
 

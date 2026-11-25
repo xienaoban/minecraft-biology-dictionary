@@ -83,6 +83,11 @@ public class BdSearchScreen extends AbstractBiologyDictionaryScreen {
     private int listedCardTotal;
     private boolean selectionMode;
 
+    @Override
+    public int navigationLevel() {
+        return 1;
+    }
+
     public BdSearchScreen(Screen source) {
         super(TextUtils.translate(Lang.SCREEN_SEARCH_TITLE));
         setLastScreen(source);

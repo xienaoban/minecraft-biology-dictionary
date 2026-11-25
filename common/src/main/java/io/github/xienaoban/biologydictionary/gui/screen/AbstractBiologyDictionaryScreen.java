@@ -448,7 +448,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                ClientUtils.setScreen(client, new BdConfigScreen());
+                BdConfigScreen config = new BdConfigScreen();
+                config.setLastScreen(AbstractBiologyDictionaryScreen.this);
+                ClientUtils.setScreen(client, config);
                 return true;
             }
             return super.onMouseDown(mouseX, mouseY, button);
@@ -464,7 +466,9 @@ public abstract class AbstractBiologyDictionaryScreen extends ElementScreen {
         protected boolean onMouseDown(float mouseX, float mouseY, int button) {
             if (isMouseLeft(button)) {
                 ClientUtils.playScreenSound(client, SoundEvents.WOODEN_BUTTON_CLICK_ON, 1.0F, 0.8F);
-                ClientUtils.setScreen(client, new BdAboutScreen());
+                BdAboutScreen about = new BdAboutScreen();
+                about.setLastScreen(AbstractBiologyDictionaryScreen.this);
+                ClientUtils.setScreen(client, about);
                 return true;
             }
             return super.onMouseDown(mouseX, mouseY, button);

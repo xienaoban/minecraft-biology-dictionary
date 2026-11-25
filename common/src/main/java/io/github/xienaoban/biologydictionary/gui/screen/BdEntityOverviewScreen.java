@@ -68,6 +68,11 @@ public class BdEntityOverviewScreen extends AbstractBiologyDictionaryScreen {
         }
     }
 
+    @Override
+    public int navigationLevel() {
+        return 2;
+    }
+
     private static Entity createEntity(EntityDictionaryEntry entry) {
         if (entry.isInstanceCreationFailed()) { return null; }
         try {

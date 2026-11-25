@@ -25,6 +25,8 @@ import static io.github.xienaoban.biologydictionary.BiologyDictionary.LOGGER;
  */
 @ClientOnly
 public abstract class CommonScreen extends Screen implements ScreenConsts {
+    private static final int MAX_BACK_CHAIN_LENGTH = 16;
+
     private static boolean commonScreenOpened = false;
 
     // Avoid using Screen.width/height in subclasses. Biology Dictionary screens
@@ -159,13 +161,59 @@ public abstract class CommonScreen extends Screen implements ScreenConsts {
         LOGGER.info("Screen {} closed.", getClass().getSimpleName());
     }
 
+    /**
+     * The fixed depth of this screen in the navigation chain:
+     * <ul>
+     *     <li>0 — the home screen, the root of every chain;</li>
+     *     <li>1 — settings and search;</li>
+     *     <li>2 — entity detail and overview;</li>
+     *     <li>3 — modal screens opened on top of a detail page.</li>
+     * </ul>
+     * A negative value means the screen takes no part in the chain and simply returns
+     * to {@link #getLastScreen()}, which is the behaviour of every screen by default.
+     *
+     * <p>Screens may be opened in any order, so the {@code lastScreen} chain is not
+     * necessarily ordered by depth. {@link #onClose()} walks it and skips every screen
+     * whose depth is not strictly smaller than this one, which keeps the chain the user
+     * actually walks — home, then settings or search, then a detail page — while still
+     * returning to the original instances, so their state (page index, query) survives.</p>
+     */
+    public int navigationLevel() {
+        return -1;
+    }
+
     @Override
     public void onClose() {
-        if (lastScreen != null) {
-            ClientUtils.setScreen(lastScreen);
+        Screen target = resolveBackScreen();
+        if (target != null) {
+            ClientUtils.setScreen(target);
         } else {
             super.onClose();
         }
+    }
+
+    /**
+     * The screen {@link #onClose()} should show: the first screen up the chain whose
+     * depth is strictly smaller than this one. Screens with a negative depth are skipped
+     * as well, since they do not belong to the chain.
+     */
+    private Screen resolveBackScreen() {
+        final int level = navigationLevel();
+        Screen parent = lastScreen;
+        if (level < 0) {
+            return parent;
+        }
+        for (int guard = 0; parent != null && guard < MAX_BACK_CHAIN_LENGTH; ++guard) {
+            if (!(parent instanceof CommonScreen screen)) {
+                return parent;
+            }
+            int parentLevel = screen.navigationLevel();
+            if (parentLevel >= 0 && parentLevel < level) {
+                return parent;
+            }
+            parent = screen.getLastScreen();
+        }
+        return null;
     }
 
     public Screen getLastScreen() {
